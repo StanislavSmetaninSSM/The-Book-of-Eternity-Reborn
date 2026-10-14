@@ -40,6 +40,14 @@ public partial class GameEngine
     {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _mortalQteRejectedRepairInput = null;
+        if (_mortalJointRepairCheckpoint is not null && activeSnapshotContext is not null && expectedTurn is not null &&
+            !MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn.Value))
+        {
+            // Detached metadata cannot make a later/foreign original a joint turn.
+            // Physical command/wave bytes still undergo their ordinary strict read.
+            _mortalJointRepairCheckpoint = null;
+            _mortalJointRepairCorrectionReady = false;
+        }
         try
         {
             if (!ordinaryUpstreamAccepted) await RevokeOwnedMortalQteCommandAsync(lease);
@@ -49,13 +57,23 @@ public partial class GameEngine
                 stageRan = true;
                 return await StageMortalQteDecisionAsync(currentLease);
             }
+            MortalJointRepairRawAdmission? jointIntake = null;
+            _mortalJointRepairCorrectionReady = false;
+            async Task<MortalJointRepairRawAdmission> InspectJoint(FileSystemManager.CanonicalWriteLease currentLease)
+            {
+                jointIntake = await InspectOrdinaryMortalJointRepairAsync(currentLease, activeSnapshotContext!, expectedTurn!.Value);
+                return jointIntake;
+            }
             var issues = await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease,
                 ordinaryUpstreamAccepted ? StageCurrentMortalDecision : null,
                 ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null,
                 ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null,
                 ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null
                     ? currentLease => PrepareOrdinaryMortalGuaranteedTreatmentAsync(currentLease, activeSnapshotContext, expectedTurn.Value)
-                    : null);
+                    : null,
+                ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null ? InspectJoint : null);
+            _mortalJointRepairCorrectionReady = jointIntake?.Disposition == MortalJointRepairRawDisposition.Owned &&
+                !issues.Any(issue => issue.Severity == IssueSeverity.Error);
             if (stageRan && _mortalQteDecisionImages is not null)
                 issues = issues.Select(issue => IsMortalQtePrivateCanonicalIssue(issue)
                         ? MortalWoundOpportunityAdapter.PrivateSourceIssue(issue) : BindMortalQteDraftRepairTarget(issue)).ToArray();

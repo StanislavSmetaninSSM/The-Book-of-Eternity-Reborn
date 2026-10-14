@@ -49,13 +49,17 @@ public partial class GameEngine
                 AcceptedTurnValidationDisposition.RetryablePublicationRearmed or
                 AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked or
                 AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
-                AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked))
+                AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased))
         {
             return false;
         }
 
         if (disposition is AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
-            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked)
+            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased)
             _inGame = false;
         else
             ClearReadySignals();
@@ -63,6 +67,10 @@ public partial class GameEngine
         {
             AcceptedTurnValidationDisposition.RetryablePublicationRearmed =>
                 "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased =>
+                "[yellow]↩ Совместное исправление отменено. Исходное состояние восстановлено, запрос лечения удалён и удержанный ресурс освобождён.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked =>
+                "[yellow]⚠ Совместное исправление смертного хода заблокировано. Текущее состояние оставлено без дальнейшего отката; требуется безопасное восстановление.[/]",
             AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked =>
                 "[yellow]⚠ Уже опубликованное состояние смертного хода сохранено. Повторный ответ не принят; исходный ход удержан для безопасного восстановления.[/]",
             AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked =>

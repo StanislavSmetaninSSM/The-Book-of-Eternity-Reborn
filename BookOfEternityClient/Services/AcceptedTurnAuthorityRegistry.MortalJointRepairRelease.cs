@@ -31,9 +31,15 @@ internal static partial class AcceptedTurnAuthorityRegistry
         if (!JointReleaseSame(guards[AcceptedMechanicsPlan.WoundCommandPath], capture.CommandBytes) ||
             guards[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] is not { } pending ||
             !JsonNode.DeepEquals(JointReleaseRoot(pending), capture.Pending) ||
-            guards[MortalWoundOpportunityAdapter.DecisionPath] is not { } draft ||
-            !(capture.Packet.MatchesRejectedDecision(JointReleaseRoot(draft)) || capture.Packet.MatchesCorrectedDecision(JointReleaseRoot(draft), JointReleaseRoot(guards["output/narrative_response.json"]!)["response"]?.GetValue<string>())) ||
-            !JointReleaseSame(guards["output/narrative_response.json"], Convert.FromBase64String(checkpoint["narrativeBase64"]!.GetValue<string>())) ||
+            // The actual baseline owner may have removed these public outputs
+            // before dispatch. Their current absence grants no acquisition or
+            // treatment authority: exact installed command/wave and retained
+            // rejected-source provenance are still mandatory above.
+            guards[MortalWoundOpportunityAdapter.DecisionPath] is { } draft &&
+                !(capture.Packet.MatchesRejectedDecision(JointReleaseRoot(draft)) || capture.Packet.MatchesCorrectedDecision(JointReleaseRoot(draft),
+                    JointReleaseRoot(Convert.FromBase64String(checkpoint["narrativeBase64"]!.GetValue<string>()))["response"]?.GetValue<string>())) ||
+            guards["output/narrative_response.json"] is { } scene &&
+                !JointReleaseSameScene(scene, Convert.FromBase64String(checkpoint["narrativeBase64"]!.GetValue<string>())) ||
             JointReleaseHash(guards[LiveTurnPreparationService.PendingTurnSnapshotManifestPath]) != checkpoint["originalManifestHash"]!.GetValue<string>() ||
             JointReleaseHash(guards[PendingTurnSnapshotAuthority.AuthorityPath]) != checkpoint["originalAuthorityHash"]!.GetValue<string>())
             return new(null, JointReleaseIssue("The entire current owned wave/command/draft/scene/original must agree before terminal preparation."));
@@ -271,6 +277,12 @@ internal static partial class AcceptedTurnAuthorityRegistry
     private static JsonObject JointReleaseRoot(byte[] bytes) => StrictJsonAuthority.Deserialize<JsonObject>(
         new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "joint terminal owned input") ??
         throw new InvalidDataException("Joint terminal owned input must be an object.");
+    private static bool JointReleaseSameScene(byte[] current, byte[] rejected)
+    {
+        var actual = JointReleaseRoot(current); var expected = JointReleaseRoot(rejected);
+        actual.Remove("timestamp"); expected.Remove("timestamp");
+        return JsonNode.DeepEquals(actual, expected);
+    }
     private static string? JointReleaseHash(byte[]? bytes) => bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes));
     private static bool JointReleaseSame(byte[]? left, byte[]? right) => left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
     private static IReadOnlyList<ValidationIssue> JointReleaseIssue(string reason) =>

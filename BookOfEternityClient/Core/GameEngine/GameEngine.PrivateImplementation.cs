@@ -136,7 +136,8 @@ public partial class GameEngine
         int CommandOrdinal,
         WoundRepairPacket Packet,
         JsonObject? ExpectedCommandRoot,
-        MortalQteRejectedRepairInput? MortalQteInput = null);
+        MortalQteRejectedRepairInput? MortalQteInput = null,
+        MortalJointRepairCheckpoint? JointCheckpoint = null);
 
     private sealed record RepairResubmissionPathObligation(
         string Path,

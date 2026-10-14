@@ -21,7 +21,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
             Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
-            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -42,7 +43,8 @@ public partial class ValidationService
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
                 writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision,
-                readMortalQteReplay: readMortalQteReplay, prepareMortalGuaranteedTreatment: prepareMortalGuaranteedTreatment);
+                readMortalQteReplay: readMortalQteReplay, prepareMortalGuaranteedTreatment: prepareMortalGuaranteedTreatment,
+                inspectMortalJointRepair: inspectMortalJointRepair);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -192,7 +194,8 @@ public partial class ValidationService
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
             Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
-            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -500,7 +503,8 @@ public partial class ValidationService
                     // retains its existing QTE/generic parser diagnostics below.
                 }
             }
-            if (prepareMortalGuaranteedTreatment is not null && parsedWound?.TreatmentCommands.Count > 0)
+            var hasOriginalMortalOccurrence = false;
+            if ((prepareMortalGuaranteedTreatment is not null || inspectMortalJointRepair is not null) && parsedWound?.TreatmentCommands.Count > 0)
             {
                 if (commandJson is not null || effectCommandJson is not null || hasStagedFullPartyResourcePackets ||
                     pendingResolutionState is { Requests.Count: > 0 } || isTerminalReceiptReplay ||
@@ -530,7 +534,8 @@ public partial class ValidationService
                             "one original-bound read-only wound intake", "the treatment owner has no admitted wound input"));
                     return issues;
                 }
-                if (admittedWound.SignedOccurrences.Occurrences.Count != 0)
+                hasOriginalMortalOccurrence = admittedWound.SignedOccurrences.Occurrences.Count != 0;
+                if (hasOriginalMortalOccurrence && inspectMortalJointRepair is null)
                     issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
                         "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no competing unconsumed wound occurrence",
                         "the occurrence/decision owner must handle this original input"));
@@ -555,6 +560,40 @@ public partial class ValidationService
                         "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no unrelated registered system outcome",
                         "the early treatment return cannot omit an existing outcome owner"));
                 if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+            }
+            // The explicit private intake follows the SAME upstream resource,
+            // owner/party/pending, effect-continuity and source/skill exclusions.
+            // It authorizes no cached plan: the canonical owner reconstructs under
+            // its own lease before the sole joint preparation/reduction/publication.
+            if (inspectMortalJointRepair is not null && parsedWound?.TreatmentCommands.Count > 0)
+            {
+                var joint = await inspectMortalJointRepair(writeLease);
+                if (joint.Disposition != GameEngine.MortalJointRepairRawDisposition.NotApplicable)
+                {
+                    try
+                    {
+                        await joint.ValidateCurrentAsync(_fs, writeLease, manifest.SessionId, manifest.RequestId,
+                            manifest.ManifestPayloadHash, manifest.TurnNumber);
+                        issues.AddRange(joint.Issues);
+                    }
+                    catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or ArgumentException or JsonException)
+                    {
+                        issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                            "mortal_joint_repair_raw_intake_changed", "the exact private current-source intake", error.Message)));
+                    }
+                    if (joint.Disposition == GameEngine.MortalJointRepairRawDisposition.Rejected &&
+                        !issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                        issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                            "mortal_joint_repair_raw_intake_refused", "a genuine accepted read-only joint correction", "rejected")));
+                    return issues;
+                }
+                if (hasOriginalMortalOccurrence)
+                {
+                    issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "the explicit real joint owner for a competing occurrence",
+                        "the private joint intake did not admit this original"));
+                    return issues;
+                }
             }
             // This callback joins only after original quartet and current owner admission.
             // Its owner issues the existing treatment common plan under THIS lease;

@@ -2093,6 +2093,14 @@ public partial class GameEngine
         string expectedSessionGeneration,
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
+        if (_mortalJointRepairCheckpoint is { } checkpoint)
+        {
+            if (pendingResolutionRepairCheckpoint is not null ||
+                checkpoint.ToJsonObject()["sessionGeneration"]!.GetValue<string>() != expectedSessionGeneration)
+                throw new InvalidDataException("Joint repair cannot share a foreign pending/root-generation restore.");
+            await RestoreMortalJointRepairBaselineAsync(snapshot, checkpoint);
+            return;
+        }
         {
             var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
             CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;

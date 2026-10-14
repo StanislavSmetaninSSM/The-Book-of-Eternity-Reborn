@@ -29,7 +29,12 @@ internal enum AcceptedTurnValidationDisposition
     SpiritualContinuationHeldBlocked,
 
     /// <summary>Retains a completed Mortal publication and its actual original turn without accepting conflicting resubmission.</summary>
-    MortalCompletedPublicationHeldBlocked
+    MortalCompletedPublicationHeldBlocked,
+
+    /// <summary>Retains the exact joint wave/original and blocks destructive outer rollback.</summary>
+    MortalJointRepairPublicationHeldBlocked,
+    /// <summary>The joint owner already performed terminal rollback/removal and released the claim.</summary>
+    MortalJointRepairTerminalReleased
 }
 
 public partial class GameEngine
@@ -453,6 +458,17 @@ public partial class GameEngine
         {
             return AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked;
         }
+        catch (Exception error) when (MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn) &&
+            error is CoordinatedStatePublicationUncertainException or InvalidDataException or IOException or
+                InvalidOperationException or ArgumentException or System.Text.Json.JsonException or AggregateException)
+        {
+            // This checkpoint was minted from genuine source reconstruction before
+            // restore. Failure grants no outer rollback or claim-loss repair. The
+            // owning source/restore/publication boundary already settled known work
+            // or retained uncertainty; preserve its current evidence for recovery.
+            _logger.LogError(error, "The source-bound joint repair owner is blocked; outer rollback is suppressed.");
+            return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+        }
     }
 
     private async Task<AcceptedTurnValidationDisposition> ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(
@@ -751,6 +767,12 @@ public partial class GameEngine
                 continue;
             }
 
+            // A read-only joint intake is never a generic publication fallback.
+            // The distinct canonical owning bridge is connected next; until then
+            // this partial WIP preserves the complete held wave rather than allow
+            // an ordinary turn to advance without its joint mechanics.
+            if (_mortalJointRepairCorrectionReady)
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
             AcceptedTurnCanonicalRefreshResult canonicalRefresh;
             try
             {
@@ -1444,6 +1466,26 @@ public partial class GameEngine
             RollbackSnapshot? rollbackSnapshot,
             string reason)
     {
+        if (_mortalJointRepairCheckpoint is { } jointCheckpoint)
+        {
+            if (!HasRollbackCapability(rollbackSnapshot))
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            var joint = await TerminateMortalJointRepairAsync(rollbackSnapshot!, jointCheckpoint,
+                _mortalJointRepairTerminalReason == "cancelled" ? "cancelled" : reason);
+            if (joint.Disposition != MortalJointRepairPublicationDisposition.TerminalReleased)
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            // The owning batch and release completed and its lease is now closed.
+            // Projection failure cannot grant permission to run a second rollback.
+            try { await RefreshRuntimeStateAfterExactRollbackAsync(); }
+            catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException)
+            {
+                _logger.LogError(error, "Joint terminal release completed but runtime projection refresh is blocked.");
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            }
+            _mortalJointRepairCheckpoint = null;
+            _mortalJointRepairCorrectionReady = false;
+            return AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased;
+        }
         if (!HasRollbackCapability(rollbackSnapshot))
             return AcceptedTurnValidationDisposition.TerminalRejected;
 
@@ -1908,6 +1950,8 @@ public partial class GameEngine
     {
         if (packets.Any(packet => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(packet.CandidateKind)))
             return Array.Empty<WoundRepairRetryObligation>();
+        if (_mortalJointRepairCheckpoint is not null)
+            return await CaptureMortalJointRepairRetryAsync(packets);
         if (_mortalQteRejectedRepairInput is { } retained)
             return await CaptureMortalQteRepairRetryAsync(packets, retained);
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
@@ -1948,6 +1992,9 @@ public partial class GameEngine
             return true;
         if (obligations.Any(obligation => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(obligation.Packet.CandidateKind)))
             return false;
+        if (obligations.Any(obligation => obligation.JointCheckpoint is not null))
+            return obligations.Count == 1 && obligations[0].JointCheckpoint is { } checkpoint &&
+                await HasExactMortalJointRepairResubmissionAsync(checkpoint);
         if (obligations.Any(obligation => obligation.MortalQteInput is not null))
             return obligations.Count == 1 && await HasExactMortalQteRepairResubmissionAsync(obligations[0]);
         if (obligations.Any(obligation => obligation.ExpectedCommandRoot is null)) return false;
@@ -3116,6 +3163,7 @@ public partial class GameEngine
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "validation_failed";
         var isBoundedPendingResolutionResubmission =
             boundedPendingResolutionResubmission &&
             IsExactBoundedPendingResolutionResubmission(errors);
@@ -3309,7 +3357,10 @@ public partial class GameEngine
                         {
                             var key = _inputSource.ReadKey(intercept: true);
                             if (key.Key == ConsoleKey.Escape)
+                            {
+                                if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "cancelled";
                                 cts.Cancel();
+                            }
                         }
 
                         await Task.Delay(1000);

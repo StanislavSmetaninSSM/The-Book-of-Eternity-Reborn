@@ -1,5 +1,49 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J6 live raw intake/whole-wave repair/terminal wiring WIP STOP — 2026-10-14
+
+Retained sole writer continued from verified5bf81a1c2a3aaa3e1ebe90fb3e0ca1d487d0b591
+under the same accepted DESIGNv2/J2-J7 release. Previous0524d70c report/8717b304 static
+and immutable ROOT receipts remain historical source observations, with no runtime or
+whole SOURCE qualification inferred.
+
+The real GameEngine resource-admitted caller now supplies an explicit default-null joint
+intake callback; its old one-bool QTE entry and unaware callers remain unchanged. The
+callback follows the same upstream resource/owner/party/pending, effect continuity and
+skill/source exclusions. It captures only genuine original-bound rejected severity
+provenance/full homogeneous held request, before any baseline restore. The private
+NotApplicable/Rejected/Owned result is read-only and lease-local: it grants no plan take
+or publication. Corrected I-II admission is independently revalidated by the real adapter;
+field-only packet matching is not a severity-range authority. A still-invalid bounded leaf
+retains the FIRST checkpoint/packet and hold. Changed proposal siblings/source/graph refuse.
+
+The existing wound retry obligation has one optional joint variant; its capture and late
+check reconstruct the real command/wave/source and bounded correction, without staging an
+acquisition command. The actual repair-session baseline restore calls the coordinated joint
+restore/install/readback before public repair dispatch. Cancellation/terminal failure now
+calls the pre-plan terminal owner, refreshes runtime only after the owned lease closes,
+and returns a distinct TerminalReleased or held-blocked disposition. Existing outer callers
+intercept both, suppressing a second rollback. Real Escape records cancelled separately
+from validation_failed. The terminal token now permits the actual baseline owner's removal
+of draft/narrative ONLY with the exact installed source-issued wave/command and retained
+rejected provenance; present public bytes still require bounded ownership/scene agreement.
+Unknown claim/state is not described as a confirmed-held success.
+
+Eight code paths plus active MD2 form this resumable source checkpoint. The raw owner closes
+its lease before canonical refresh, so no naked common plan is carried forward. The next
+block must fully reconstruct both owners under the canonical coordinator's fresh lease and
+invoke the sole joint pipeline/take/publication. A temporary explicit held-blocked boundary
+currently prevents a corrected intake from falling through generic refresh and advancing
+without its joint mechanics; positive common completion is therefore still UNIMPLEMENTED.
+Real v2 exact/changed late-idle, post-common lifecycle, warm recovery/session replacement,
+terminal artifact cleanup, and same/new-root cold continuation remain OPEN. R2-R7/C1 exact
+controls/selectors, normative FR063/FR012/private lifecycle and J8 GM example/manifest/guards
+remain required before whole SOURCE. No new tests/categories/selections/budgets or executed
+results are claimed. All compilation/API integration/native/cancellation/retry/fault/
+lease-lifetime checks are UNRUN/UNCHECKED; existing catalog730 and component1/5/1 budget5/
+default10 remain unchanged. Qualified fixture bodies/ce955, receipts/results, historical
+checkboxes/tails/global CI and frozen GM sources stay exact. Full FR063/T070/UI/parent OPEN.
+
 ## J6 compensation ownership guard and pre-plan terminal source WIP STOP — 2026-10-14
 
 Retained sole writer continued from verified16f3c0bb9f06980e3e8849a07a8bcff0986fac7e
