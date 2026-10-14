@@ -210,6 +210,8 @@ internal static partial class WoundAcceptedTurnPlanner
         TryReadJointRepair(value, out var authority) && ReferenceEquals(authority.Accepted, accepted);
     internal static MortalWoundTreatmentAcceptedStateAuthority ReadJointRepairAcceptedState(object value) =>
         TryReadJointRepair(value, out var authority) ? authority.Accepted : throw new InvalidDataException("Invalid joint state.");
+    internal static MortalWoundTreatmentResourceFinalization ReadJointRepairResourceFinalization(object value) =>
+        TryReadJointRepair(value, out var authority) ? authority.Finalization : throw new InvalidDataException("Invalid joint finalization.");
 
     // Detached views are non-authorizing. All readers first authenticate the whole
     // private prepared graph; neither a common frame nor a caller batch issues one.

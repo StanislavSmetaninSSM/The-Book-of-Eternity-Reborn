@@ -1,0 +1,139 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+
+namespace BookOfEternityClient.Core;
+
+public partial class GameEngine
+{
+    private static readonly object JointMechanicalAdmissionIssuer = new();
+
+    // The private validated frame never leaves GameEngine. This proof is issued
+    // from actual bytes, not from a caller GameResponse or bare frame coordinates.
+    internal sealed class MortalJointRepairMechanicalAdmission
+    {
+        private readonly FileSystemManager _files;
+        private readonly FileSystemManager.CanonicalWriteLease _lease;
+        private readonly Dictionary<string, byte[]?> _before;
+        private readonly WoundAcceptedTurnBinding _binding;
+        private readonly string _generation;
+        internal MortalJointRepairMechanicalAdmission(object issuer, FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string generation, WoundAcceptedTurnBinding binding,
+            IReadOnlyDictionary<string, byte[]?> before)
+        {
+            if (!ReferenceEquals(issuer, JointMechanicalAdmissionIssuer))
+                throw new InvalidOperationException("Mechanical admission requires its actual GameEngine owner.");
+            _files = files; _lease = lease; _generation = generation;
+            _binding = WoundAcceptedTurnData.CloneBinding(binding)!;
+            _before = before.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
+            Fingerprint = ComputeFingerprint();
+        }
+        internal string Fingerprint { get; }
+        internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages => _before.ToDictionary(
+            row => row.Key, row => new CanonicalBeforeImage(row.Value is not null, row.Value?.ToArray()), StringComparer.Ordinal);
+        private string ComputeFingerprint()
+        {
+            var fields = new List<string?> { "book_of_eternity.mortal_joint_repair.mechanical_admission.v1",
+                _generation, WoundAcceptedTurnFingerprints.ComputeBinding(_binding) };
+            foreach (var (path, bytes) in _before.OrderBy(row => row.Key, StringComparer.Ordinal))
+            { fields.Add(path); fields.Add(bytes is null ? null : Convert.ToHexString(SHA256.HashData(bytes))); }
+            return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
+        internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding)
+        {
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
+                !files.IsCurrentSessionGeneration(lease, _generation) || ComputeFingerprint() != Fingerprint ||
+                WoundAcceptedTurnFingerprints.ComputeBinding(binding) != WoundAcceptedTurnFingerprints.ComputeBinding(_binding))
+                throw new InvalidDataException("Joint mechanical admission belongs to a stale or foreign owner/frame.");
+            var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
+            if (original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
+                original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
+                throw new InvalidDataException("The official original no longer matches mechanical admission.");
+            foreach (var (path, expected) in _before)
+            {
+                var current = await files.ReadFileBytesAsync(lease, path);
+                if (expected is null ? current is not null : current is null || !expected.AsSpan().SequenceEqual(current))
+                    throw new InvalidDataException("Joint mechanical admission changed: " + path);
+            }
+        }
+        internal async Task<GameResponse> ReadProvedEmptyResponseAsync(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, WoundAcceptedTurnBinding binding)
+        {
+            await ValidateCurrentAsync(files, lease, binding);
+            // The owner below independently proved every concurrent mechanical input
+            // empty/unchanged. This is not a stripped display response or omission.
+            return new GameResponse();
+        }
+    }
+
+    // Unwired until the admitted joint entry is complete. Its only future caller
+    // is the real resource-admitted validation owner with its private actual frame.
+    private async Task<MortalJointRepairMechanicalAdmission> CreateMortalJointRepairMechanicalAdmissionAsync(
+        FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame,
+        AcceptedMechanicsWoundStageBundle bundle, object continuation)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
+        if (!ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, continuation) ||
+            !WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle))
+            throw new InvalidDataException("Mechanical admission requires the actual complete private joint stages.");
+        await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(_fs, lease, continuation);
+        var binding = bundle.Input.Binding;
+        var paths = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths.Concat(new[]
+            { NpcTradeRequestState.PendingRequestPath, TrainingRequestState.PendingRequestPath })
+            .Distinct(StringComparer.Ordinal).ToArray();
+        var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new PendingTurnSnapshotPathSelection(
+            new[] { "game_state/meta/soul_state.json" }, paths.Where(path => path != "game_state/meta/soul_state.json" &&
+                path != MortalWoundOpportunityAdapter.DecisionPath)));
+        if (!read.Success || read.Snapshot is not { } original)
+            throw new InvalidDataException("Joint mechanical original read failed: " + string.Join(";", read.Issues.Select(row => row.Code)));
+        if (binding.Realm != "mortal_world" || original.SessionId != frame.SessionId || original.RequestId != frame.RequestId ||
+            original.SnapshotToken != frame.Payload.ManifestPayloadHash || original.TurnNumber != frame.TurnNumber ||
+            original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
+            original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
+            throw new InvalidDataException("The actual validated frame and official original must agree with both joint owners.");
+        var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, path);
+            before.Add(path, current);
+            // Exactly this already authenticated public draft is owned by the real
+            // adapter/private preparation. It grants no exemption to other work.
+            if (path == MortalWoundOpportunityAdapter.DecisionPath) continue;
+            if (path == "game_state/meta/guardians.json") continue;
+            if (path == ResourceMaterializationContract.CommandPath || path == EffectAcceptedTurnPlan.CommandPath)
+            {
+                if (current is not null) throw new InvalidDataException("Joint concurrent command is unsupported: " + path);
+                continue;
+            }
+            if (!original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
+            {
+                if (current is not null) throw new InvalidDataException("Uncovered joint mechanical input is present: " + path);
+                // Refusal-only absence never grants pristine canonical authority.
+                continue;
+            }
+            if (current is null || !JsonNode.DeepEquals(ReadJointMechanicalNode(original.ReadRequiredBytes(path), path),
+                    ReadJointMechanicalNode(current, path)))
+                throw new InvalidDataException("Concurrent joint mechanical input changed: " + path);
+        }
+        foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+            "output/narrative_response.json", LiveTurnPreparationService.TurnRequestPath,
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
+            before.TryAdd(path, await _fs.ReadFileBytesAsync(lease, path));
+        // Revalidate exact owned command/pending/draft/scene after the complete read.
+        await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(_fs, lease, continuation);
+        var proof = new MortalJointRepairMechanicalAdmission(JointMechanicalAdmissionIssuer, _fs, lease,
+            _fs.ReadLocalGenerationSnapshot(lease).Binding.Id, binding, before);
+        await proof.ValidateCurrentAsync(_fs, lease, binding);
+        return proof;
+    }
+
+    private static JsonNode ReadJointMechanicalNode(byte[] bytes, string path) =>
+        StrictJsonAuthority.Deserialize<JsonNode>(new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path) ??
+        throw new InvalidDataException("Present joint mechanical JSON null is invalid: " + path);
+}

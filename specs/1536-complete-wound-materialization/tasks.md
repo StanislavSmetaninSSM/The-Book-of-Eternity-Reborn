@@ -1,5 +1,68 @@
 # Tasks: Complete Wound Materialization and Healing
 
+ROOT preservation receipt: the author wrote the source and this active handoff,
+but no finished external author report/static readback was supplied before ROOT
+interrupted the pass for WIP preservation at 03:52 UTC. This was a coordination
+interruption, not an observed tool refusal/project failure. ROOT verified current
+scope, hashes, 33 protected files and whitespace; author semantic/API checks remain
+UNCHECKED and every project check UNRUN. The previous fdb8e8c6 author report is
+historical J4 evidence only. The same retained Sol resumes after verified remote
+and selected GitHub recovery; this foundation grants no SOURCE/runtime acceptance.
+
+## J5 mechanical/item/skill baseline WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published060339035ae39dac47ca4df2bfaecab210db313e
+under the same accepted DESIGNv2/J2-J7 release. This bounded four-code-path foundation
+is stopped for ROOT preservation before the resource/common extraction. It is WIP,
+not a complete J5 owner, connected SOURCE READY or runtime qualification. All new
+project checks UNRUN; prior accepted evidence and acceptance checkboxes are unchanged.
+
+The actual private GameEngine validated frame stays inside GameEngine. An unwired
+owner-local issuer reads the official original and current fixed mechanical inputs,
+requires exact current G/frame/joint stages, proves unsupported work empty/unchanged,
+and pins the owned command/pending/draft/scene and source bytes. Only the previously
+authenticated QTE draft and existing guardian narrative exception are exempted from
+mechanical equality; both remain byte guarded. Services receives a private-issued
+proof and must revalidate it. A caller GameResponse, display projection or bare frame
+cannot issue this proof. Its empty command envelope descends from that actual proof,
+not arbitrary field stripping or a fabricated omission. The actual admitted caller
+is still UNWIRED and therefore no admission success is claimed.
+
+Mechanical emptiness and actual item-slot ownership are separate mandatory checks.
+The new private registry entry uses the existing current validated ordinary item slot
+and exact joint publication reservation, checks the complete preparation/effect/final
+lineage, independently requires zero transfers/clone creation and a successful item
+phase projection, then uses existing pure baseline calculations and the slot's existing
+seal method. It does not manufacture/register an empty item slot. Current joint and
+physical-byte checks run before entering the monitor. The private baseline carries
+the actual sealed item snapshot, genuine empty skill/item envelopes and existing pure
+skill projection, with exact detached joint stages/anchors and revalidation. This is
+baseline/fence ownership only, not issued common/resource/publication authority. The
+existing old item/skill readers, publisher APIs and generic guards remain unchanged.
+
+Still UNIMPLEMENTED: joint resource consumption/owned item-publication variant;
+whole-union common input/context/plan/cache; complete candidate capability/source/skill
+export, independently recomputed Finalize and aggregate resource guarantee. The old
+common composer still explicitly refuses the joint family. No resource reduction,
+common take, publication, canonical write, hold release or actual engine entry is
+added by this checkpoint. Baseline failure/abort/lifetime integration is UNCHECKED.
+J6 full member inventory, one common batch, whole-union compensation/wave cleanup,
+terminal settlement/dispositions and v2 completed proof remain OPEN, followed by
+admitted entry/retry/restore/cold reconstruction and genuine R2-R7/C1 controls.
+
+The accepted FR063/FR012/private lifecycle normative amendment and GM severity-repair
+worked example/manifest/guards are required before the complete connected SOURCE gate;
+they are not authored here. Public GM grammar and afterlife behavior are unchanged.
+Full FR063/T070/UI/parents remain OPEN. No concrete architecture blocker is established;
+resource/common APIs and final positive behavior remain UNCHECKED/UNRUN for the next block.
+
+Catalog730, existing component1method5cases1descriptor/budget5/default10 and all selector
+membership/budgets remain unchanged; these five missing-wave negatives do not cover
+this positive foundation. Qualified fixtures/ce955, old sixarg/singleton/disjoint/public
+mixed guards, source producer/parser/marker and globalCI stay protected. No author
+project execution, Git mutation, provider/model call, environment operation or new agent.
+ROOT preserves this WIP and report/readback before continuation from the verified SHA.
+
 ## J4 joint effect/final/anchor WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published286fe45e67fc4023fcfb5ae98dca469f3f049907

@@ -62,8 +62,78 @@ internal static partial class AcceptedTurnAuthorityRegistry
             reservationAuthority: reservation, jointRepairContinuationAuthority: continuation);
     }
 
+    internal static async Task<MortalItemTreatmentPublicationBaselineSealResult> SealMortalJointRepairItemBaselineAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object continuation, object reservation,
+        GameEngine.MortalJointRepairMechanicalAdmission mechanical,
+        AcceptedMechanicsWoundStageBundle bundle, IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> roots,
+        MortalTreatmentItemCommandEnvelope envelope, NpcCoreChangesContract.Authority npcAuthority,
+        CanonicalBeforeImage npcTradePending, CanonicalBeforeImage trainingPending)
+    {
+        await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(files, lease, continuation);
+        await mechanical.ValidateCurrentAsync(files, lease, bundle.Input.Binding);
+        return GetState(files, lease).SealMortalJointRepairItemBaseline(continuation, reservation, bundle,
+            roots, envelope, npcAuthority, npcTradePending, trainingPending);
+    }
+
+    internal static bool ConfirmsMortalJointRepairItemBaseline(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, object continuation, object reservation,
+        MortalItemAcceptedTurnNormalizationSnapshot expected) =>
+        GetState(files, lease).ConfirmsMortalJointRepairItemBaseline(continuation, reservation, expected);
+
     private sealed partial class AcceptedTurnAuthorityState
     {
+        internal MortalItemTreatmentPublicationBaselineSealResult SealMortalJointRepairItemBaseline(
+            object continuation, object reservation, AcceptedMechanicsWoundStageBundle bundle,
+            IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> roots, MortalTreatmentItemCommandEnvelope envelope,
+            NpcCoreChangesContract.Authority npcAuthority, CanonicalBeforeImage npcTradePending, CanonicalBeforeImage trainingPending)
+        {
+            lock (_gate)
+            {
+                var binding = bundle.Input.Binding;
+                if (!OwnsJointRepairPublicationReservation(continuation, reservation) || !envelope.IsEmpty ||
+                    !ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, continuation) ||
+                    _woundPlan.GetPreparedMismatchCode(bundle.PreparedPlan) is not null ||
+                    !CurrentWoundEffectAgrees(bundle.PreparedPlan, new WoundEffectBatchPlanningResult(bundle.EffectBatchPlan, Array.Empty<ValidationIssue>())) ||
+                    !_woundPlan.TryPeekFinal(out var final) || final.Plan?.WoundFinalPlanFingerprint != bundle.WoundFinalPlanFingerprint ||
+                    !_mortalItems.ConfirmsTreatmentContinuation(binding.SessionId, binding.SnapshotToken, roots) ||
+                    !_mortalItems.TryCaptureNormalizationSnapshot(binding.SessionId, binding.SnapshotToken, binding.Turn, out var baseline))
+                    return new(null, ItemAuthorityChangedIssue());
+                // Slot validity is not an emptiness proof: reject actual registered
+                // concurrent item creations/transfers even when roots still match.
+                if (baseline.Transfers.Count != 0 || baseline.CloneRouteCatalog().ByCreationRef.Count != 0 ||
+                    !baseline.TryProjectItemPhase(out var itemPhase, out var phaseIssues) || itemPhase is null)
+                    return new(null, ItemAuthorityChangedIssue());
+                var finalization = WoundAcceptedTurnPlanner.ReadJointRepairResourceFinalization(continuation);
+                if (!MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(false, finalization.Consumptions,
+                        _mortalItems.GetOwners(binding.SessionId, binding.SnapshotToken), itemPhase.ItemPhaseAfterImages, out var ownsNpcRoot))
+                    return new(null, ItemAuthorityChangedIssue());
+                var disposition = MortalItemNpcTradeTailPolicy.SelectDisposition(hasTreatmentContinuation: true, ownsNpcRoot);
+                if (baseline.HasFinalPublicationBaseline)
+                {
+                    if (!baseline.MatchesTreatmentPublicationBaseline(envelope, npcAuthority, npcTradePending, trainingPending, disposition))
+                        return new(null, ItemBaselineChangedIssue());
+                }
+                else
+                {
+                    var sealedBaseline = baseline.CreateTreatmentPublicationBaseline(envelope, npcAuthority, npcTradePending, trainingPending, disposition);
+                    if (!sealedBaseline.IsValid || sealedBaseline.Snapshot is null) return sealedBaseline;
+                    if (!_mortalItems.TrySealTreatmentPublicationBaseline(baseline, sealedBaseline.Snapshot))
+                        return new(null, ItemAuthorityChangedIssue());
+                }
+                return _mortalItems.TryCaptureNormalizationSnapshot(binding.SessionId, binding.SnapshotToken, binding.Turn, out var actual)
+                    ? new(actual, Array.Empty<ValidationIssue>()) : new(null, ItemAuthorityChangedIssue());
+            }
+        }
+
+        internal bool ConfirmsMortalJointRepairItemBaseline(object continuation, object reservation,
+            MortalItemAcceptedTurnNormalizationSnapshot expected)
+        {
+            lock (_gate)
+                return OwnsJointRepairPublicationReservation(continuation, reservation) &&
+                    _mortalItems.TryCaptureNormalizationSnapshot(expected.SessionId, expected.SnapshotToken, expected.Turn, out var actual) &&
+                    expected.ProofFingerprint == actual.ProofFingerprint && expected.MatchesFinalPublicationBaseline(actual);
+        }
+
         // Occupies the same exclusive publication slot as old treatment, with a
         // distinct private identity. It cannot satisfy the old continuation reader.
         private sealed class JointRepairPublicationReservationAuthority(object continuation)
