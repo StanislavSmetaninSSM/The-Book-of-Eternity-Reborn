@@ -1,5 +1,35 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 connected phase compensation/debt pair SOURCE WIP STOP — 2026-10-14
+
+Owning wiring base `6f0905a52db295fe52876f9f2e7402185433af66`; recovery2330/1801
+was verified before SOURCE GO. Earlier PhaseFaults partial was preserved explicitly INCOMPLETE/
+UNWIRED during exec-server transport incident def4e6b6; that history remains unchanged. Existing
+two Facts/probe are now routed to native scenarios5/6 with hook-bearing filesystem constructed
+before engine dependencies. Genuine nonzero common/unapplied original/control/report/cache/
+cohort prerequisites and lease release precede full raw baseline capture and hook arming;
+FIRST subsequent owning call is the actual late lifecycle, not a direct phase publisher.
+
+Known case observes exact real three-member phase Committed then injects ONE post-return
+schedule-read InvalidData failure. Source knownCommitted branch must freshly authenticate
+applied/full union and compensate only schedule/report/same-marker; two actual committed
+journals plus complete raw baseline restoration, original/report/Ready/output/backups/
+mechanics/progression/story/turn preservation are strict. Unknown case uses unchanged
+CleanupPublicationCut at real schedule MemberPublished for exact phase3 cohort: one foreign
+schedule fault causes existing recovery to refuse, retaining exact uncommitted journal/debt,
+foreign schedule and entire other session union. No claim rearm/mechanical rollback/second
+reduction or fabricated capability/marker/private source. Callback counts supplement physical
+oracles, not substitute for them. Actual outcome/probe/full raw images are retained BEFORE
+assertions/cleanup; neither child nor parent diagnostic acquires another lease to settle debt.
+
+Source predicts held/no story/turn/cleanup for both. Callback reach, closing behavior,
+compensation/debt outcome, compiler/API/fixture validity are UNCHECKED; all project/compiler/
+build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION UNRUN.
+Eleven source methods/twenty-two cases (ten Facts plus unchanged twelve-row Theory) provisional;
+no official inventory/category/selector/budget change. Production, existing strict positive/G/
+refusal cases, oldqualified/raw/transport incident and historical tails/checkmarks unchanged.
+Further fault shapes/inactive/story/live/compatibility and normative/primary-GM sync remain OPEN.
+
 ## J7 lawful foreign-donor G admission refusal SOURCE WIP STOP — 2026-10-14
 
 Owning base `9872f937d7f0f36b537237de814f4c49cd35f1f9`; recovery2323/1794

@@ -33,6 +33,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
         var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
         var generationRefusal = refusalScenario is "generation_missing" or "generation_foreign";
+        var phaseFaultControl = refusalScenario is "phase_known_compensation" or "phase_uncertain_debt";
         var childRoot = newPhysicalRoot ? Path.Combine(Path.GetTempPath(), "boe-fr063-joint-cold-" + Guid.NewGuid().ToString("N")) : _fs.BasePath;
         using var targetOwned = newPhysicalRoot ? new CleanupOwnedFixture(childRoot, Console.WriteLine) : null;
         JointNewRootTransportEvidence? transport = null;
@@ -89,7 +90,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", childRoot, output, refusalScenario == "generation_foreign" ? 4 : generationRefusal ? 3 : refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
+                "engine-mortal-joint-applied-cold", childRoot, output, refusalScenario == "phase_known_compensation" ? 5
+                    : refusalScenario == "phase_uncertain_debt" ? 6 : refusalScenario == "generation_foreign" ? 4
+                    : generationRefusal ? 3 : refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
@@ -101,7 +104,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Transport = transport,
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
-                PhysicalAfter = MortalArchiveDigests(generationRefusal
+                PhysicalAfter = MortalArchiveDigests(generationRefusal || phaseFaultControl
                     ? await CaptureJointGenerationRefusalRawImagesAsync(_fs)
                     : await CaptureMortalArchiveImagesAsync(_fs, paused.Keys.Where(path => path != "$sessionGeneration"))),
                 NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
@@ -127,7 +130,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.InRange(scenario, 0, 4);
+        Assert.InRange(scenario, 0, 6);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -135,7 +138,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var donorOwned = donorRoot is null ? null : new CleanupOwnedFixture(donorRoot, Console.WriteLine);
         JointGenerationDonor? donor = null;
         Dictionary<string, byte[]?>? donorAfter = null;
-        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        using var phaseProbe = scenario is 5 or 6 ? new JointPhaseFaultProbe(uncertain: scenario == 6) : null;
+        var files = phaseProbe is null ? new FileSystemManager(root, NullLogger<FileSystemManager>.Instance)
+            : new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, phaseProbe.Hooks);
+        phaseProbe?.Attach(files);
         var input = new QueuedConsoleInputSource([]);
         var actualCallerEntered = false;
         var engine = factory.CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
@@ -157,6 +163,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var refusalVerified = false;
         var actualOuterCallerInvoked = false;
         Exception? generationAdmissionFailure = null;
+        Exception? phaseOwningFailure = null;
         var refusalScenario = context["refusalScenario"]?.GetValue<string>();
         var sourceExpectedFrameClassification = refusalScenario switch
         {
@@ -195,7 +202,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(43, original.TurnNumber);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
                 var observedMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
-                Assert.Equal(scenario == 1 ? "unapplied" : "applied", observedMarker["progression"]!["phase"]!.GetValue<string>());
+                Assert.Equal(scenario is 1 or 5 or 6 ? "unapplied" : "applied", observedMarker["progression"]!["phase"]!.GetValue<string>());
                 Assert.Equal(context["expectedPhase"]!.GetValue<string>(), observedMarker["progression"]!["phase"]!.GetValue<string>());
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
                     SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "fresh child actual original progression control");
@@ -203,7 +210,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var cycles = context["expectedWorldCycles"]!.GetValue<int>();
                 Assert.Equal(cycles, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
                 Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
-                if (scenario != 1)
+                if (scenario is not (1 or 5 or 6))
                 {
                     Assert.Null(await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                     if (cycles > 0)
@@ -218,6 +225,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                             frozenReport["newLastWorldSimulationTimeInMinutes"]!.GetValue<int>());
                         Assert.False(observedMarker["progression"]!["reportAfter"]!["exists"]!.GetValue<bool>());
                     }
+                }
+                if (scenario is 5 or 6)
+                {
+                    Assert.Equal(1, cycles);
+                    Assert.True(observedMarker["progression"]!["reportBefore"]!["exists"]!.GetValue<bool>());
+                    Assert.False(observedMarker["progression"]!["reportAfter"]!["exists"]!.GetValue<bool>());
+                    Assert.Equal(Convert.FromBase64String(observedMarker["progression"]!["reportBefore"]!["bytes"]!.GetValue<string>()),
+                        await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                 }
                 storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
                 Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
@@ -257,6 +272,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (scenario == 3) Assert.Null(before["$sessionGeneration"]);
                 else Assert.Equal(donor!.Bytes, before["$sessionGeneration"]);
             }
+            if (scenario is 5 or 6)
+            {
+                Assert.Equal(scenario == 5 ? "phase_known_compensation" : "phase_uncertain_debt", refusalScenario);
+                before = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                phaseProbe!.Arm(); // Real phase only; no caller-created capability or marker.
+            }
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
             { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
                 FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, RefusalScenario = refusalScenario,
@@ -293,6 +314,27 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(scenario == 3 ? "Console preparation generation is missing."
                     : "Console preparation generation or identity differs; evidence retained.", refused.Message);
                 Assert.False(actualCallerEntered); Assert.Null(handled);
+                refusalVerified = true;
+                return;
+            }
+            if (scenario is 5 or 6)
+            {
+                phaseOwningFailure = await Record.ExceptionAsync(async () =>
+                {
+                    handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+                });
+                // Raw reads preserve debt. No second lease/owning call may
+                // recover the unknown journal before its outcome is retained.
+                after = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_phase_actual_owning_outcome", Observation = new
+                { actualOuterCallerInvoked, actualCallerEntered, handled, Failure = phaseOwningFailure?.ToString(),
+                    Probe = phaseProbe!.Evidence(), RawBefore = before, RawAfter = after } }));
+                Assert.Null(phaseOwningFailure);
+                phaseProbe.AssertOutcome(before!, after);
+                Assert.Equal(storyBefore, after[QteStoryPath]);
+                Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                Assert.True(actualCallerEntered); Assert.True(handled);
+                Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
                 refusalVerified = true;
                 return;
             }
@@ -422,6 +464,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 processId = Environment.ProcessId, actualOuterCallerInvoked, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
                 GenerationAdmissionFailure = generationAdmissionFailure?.ToString(),
+                PhaseOwningFailure = phaseOwningFailure?.ToString(), PhaseFaultEvidence = phaseProbe?.Evidence(),
+                PhaseFaultRawBefore = scenario is 5 or 6 ? before : null, PhaseFaultRawAfter = scenario is 5 or 6 ? after : null,
                 GenerationRefusalRawBefore = scenario is 3 or 4 ? before : null, GenerationRefusalRawAfter = scenario is 3 or 4 ? after : null,
                 GenerationDonor = donor is null ? null : new { donor.Root, donor.Generation,
                     Bytes = donor.Bytes, Before = donor.Before, After = donorAfter },
