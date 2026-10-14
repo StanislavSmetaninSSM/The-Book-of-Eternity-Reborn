@@ -1030,198 +1030,12 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     "invalid sealed baseline");
             }
 
-            var applicationByRef = applications.ToDictionary(
-                static value => value.ApplicationRef,
-                StringComparer.Ordinal);
-            var finalTransitions = new List<FinalizedWoundTransition>(
-                prepared.PreparedWounds.Count);
-            var intents = new List<WoundTransitionIntent>();
-            var historyRows = new List<WoundHistoryTransition>();
-            for (var index = 0; index < prepared.PreparedWounds.Count; index++)
-            {
-                var preparedWound = prepared.PreparedWounds[index];
-                var batch = prepared.EffectOperationBatches[index];
-                var finalized = BuildFinalWound(preparedWound, batch, applicationByRef);
-                if (finalized.Wound is null || finalized.Issues.Count != 0)
-                    return new WoundStateReductionResult(null, finalized.Issues);
-
-                var authority = batch.TransitionAuthority;
-                WoundMaterializationEnvelope? beforeWound = null;
-                if (string.Equals(
-                        authority.TransitionKind,
-                        "worsen",
-                        StringComparison.Ordinal))
-                {
-                    var matches = carrierCatalog.Occurrences.Where(value =>
-                            string.Equals(
-                                value.WoundId,
-                                finalized.Wound.WoundId,
-                                StringComparison.Ordinal))
-                        .ToArray();
-                    if (matches.Length != 1 ||
-                        !string.Equals(
-                            WoundIdentityState.ComputeSemanticFingerprint(
-                                matches[0].Wound),
-                            authority.ExpectedBeforeFingerprint,
-                            StringComparison.Ordinal) ||
-                        !identityBefore.State.TryGetEntry(
-                            finalized.Wound.WoundId,
-                            out var identityEntry) ||
-                        WoundIdentityState.ValidateActiveAgreement(
-                            identityEntry,
-                            matches[0].Wound,
-                            PlanPath + ".beforeWound").Count != 0)
-                    {
-                        return FailedReduction(
-                            "wound_plan_prepared_seal_mismatch",
-                            "The worsening transition no longer resolves to its exact sealed active wound.",
-                            authority.ExpectedBeforeFingerprint ??
-                                "sealed active wound fingerprint",
-                            matches.Length == 1
-                                ? WoundIdentityState.ComputeSemanticFingerprint(
-                                    matches[0].Wound)
-                                : $"matches={matches.Length}");
-                    }
-                    beforeWound = matches[0].Wound;
-                }
-                else if (!string.Equals(
-                             authority.TransitionKind,
-                             "create",
-                             StringComparison.Ordinal) ||
-                         carrierCatalog.Occurrences.Any(value => string.Equals(
-                             value.WoundId,
-                             finalized.Wound.WoundId,
-                             StringComparison.Ordinal)))
-                {
-                    return FailedReduction(
-                        "wound_plan_prepared_seal_mismatch",
-                        "The prepared transition kind does not agree with its sealed before-state.",
-                        "create with no prior wound or worsen with one exact prior wound",
-                        authority.TransitionKind);
-                }
-
-                var beforeFingerprint = beforeWound is null
-                    ? WoundHistoryState.ComputeNonexistentBeforeFingerprint(
-                        finalized.Wound.WoundId)
-                    : WoundIdentityState.ComputeSemanticFingerprint(beforeWound);
-                var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
-                    finalized.Wound);
-                WoundTransitionEvidence evidence = beforeWound is null
-                    ? new WoundCreateEvidence(
-                        authority.OpportunityAuthorityFingerprint,
-                        beforeFingerprint,
-                        afterFingerprint,
-                        authority.OpportunityId,
-                        authority.MaximumSeverityRank,
-                        finalized.Wound.Owner,
-                        finalized.Wound.Classification.Domain)
-                    : new WoundWorseningEvidence(
-                        authority.OpportunityAuthorityFingerprint,
-                        beforeFingerprint,
-                        afterFingerprint,
-                        authority.CauseKind!,
-                        authority.MaximumSeverityRank,
-                        beforeWound.Care.ActiveCourseId is not null ||
-                        string.Equals(
-                            beforeWound.Care.State,
-                            "recovering",
-                            StringComparison.Ordinal));
-                var reduction = WoundTransitionReducer.Reduce(new WoundTransitionRequest(
-                    authority.TransitionKind,
-                    finalized.Wound.LastTransition.TransitionId,
-                    authority.OperationKey,
-                    batch.SourceExport.CausalEventRef,
-                    prepared.Binding.Turn,
-                    beforeWound,
-                    finalized.Wound,
-                    evidence));
-                if (!reduction.IsValid)
-                {
-                    return new WoundStateReductionResult(
-                        null,
-                        reduction.Issues.Select(CloneIssue).ToArray());
-                }
-
-                finalTransitions.Add(new FinalizedWoundTransition(
-                    beforeWound,
-                    reduction.ProposedAfter!));
-                intents.AddRange(reduction.Intents);
-                var historyIntent = reduction.Intents
-                    .OfType<WoundTransitionHistoryIntent>()
-                    .Single();
-                historyRows.Add(new WoundHistoryTransition(
-                    historyIntent.TransitionId,
-                    historyIntent.WoundId,
-                    historyBefore.State.NextOrdinal + historyRows.Count,
-                    reduction.ProposedAfter!.LastTransition.Ordinal,
-                    historyIntent.Kind,
-                    historyIntent.Turn,
-                    historyIntent.EventRef,
-                    historyIntent.OperationKey,
-                    historyIntent.BeforeFingerprint,
-                    historyIntent.AfterFingerprint,
-                    authority.OpportunityAuthorityFingerprint,
-                    historyIntent.AttemptId,
-                    reduction.ProposedAfter.Care.ActiveCourseId,
-                    null,
-                    historyIntent.TickKey,
-                    null,
-                    WoundHistoryState.ComputeOutputFingerprint(
-                        historyIntent.OperationKey,
-                        historyIntent.EventRef,
-                        authority.ReadableSummary),
-                    authority.ReadableSummary,
-                    historyIntent.Terminal));
-            }
-
-            var contributions = BuildCarrierContributions(
-                operationBefore.WoundCarriers!,
-                finalTransitions);
-            var identityAfter = BuildIdentityAfterImage(
-                operationBefore.WoundIdentity!,
-                finalTransitions);
-            if (identityAfter.State is null || identityAfter.Issues.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    identityAfter.Issues.Select(CloneIssue).ToArray());
-            }
-            var identityAfterJson = JsonNode.Parse(
-                WoundIdentityState.SerializeCanonical(identityAfter.State))!
-                .AsObject();
-
-            var historyAfter = WoundHistoryState.CreateValidated(
-                historyBefore.State.NextOrdinal + historyRows.Count,
-                historyBefore.State.Transitions.Concat(historyRows));
-            if (historyAfter.State is null || historyAfter.Issues.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    historyAfter.Issues.Select(CloneIssue).ToArray());
-            }
-            var historyAfterJson = JsonNode.Parse(
-                WoundHistoryState.SerializeCanonical(historyAfter.State))!
-                .AsObject();
-
-            var carriersAfter = ApplyFinalWounds(
-                operationBefore.WoundCarriers!,
-                finalTransitions);
-            var carrierAfterCatalog = WoundCarrierCatalog.Build(carriersAfter);
-            var afterAgreement = historyAfter.State.ValidateAgreement(
-                identityAfter.State,
-                carrierAfterCatalog);
-            if (carrierAfterCatalog.Issues.Count != 0 || afterAgreement.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    carrierAfterCatalog.Issues.Concat(afterAgreement)
-                        .Select(CloneIssue)
-                        .ToArray());
-            }
-
-            return new WoundStateReductionResult(new WoundStateReduction(
-                carriersAfter, identityAfterJson, historyAfterJson, contributions, intents),
-                Array.Empty<ValidationIssue>());
+            var contributionResult = ReduceAcquisitionContributions(
+                prepared, carrierCatalog, identityBefore.State, historyBefore.State,
+                applications, prepared.PreparedWounds.Count);
+            if (contributionResult.Value is not { } contributions)
+                return new WoundStateReductionResult(null, contributionResult.Issues);
+            return AssembleWoundContributions(operationBefore, historyBefore.State, contributions);
         }
         catch (Exception exception) when (
             exception is ArgumentException or InvalidOperationException or JsonException or
@@ -1295,87 +1109,20 @@ internal static partial class WoundAcceptedTurnPlannerCore
             }
 
             stage = "transition_reduction";
-            var before = matches[0].Wound;
-            var coordinates = continuation.Resolution.Coordinates;
             var reductionBatch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
                 continuation.OutcomePreparation)
                 ? null
                 : prepared.EffectOperationBatches.Single();
-            var applicationByRef = new Dictionary<
-                string,
-                EffectAcceptedApplicationResult>(StringComparer.Ordinal);
-            foreach (var application in applications)
-                applicationByRef.Add(application.ApplicationRef, application);
-            var outcomePublication =
-                MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
-                    continuation.OutcomePreparation,
-                    continuation.Resolution,
-                    reductionBatch,
-                    applicationByRef);
-            if (!outcomePublication.IsValid)
-            {
-                return new WoundAcceptedTurnPlanningResult(
-                    null,
-                    outcomePublication.Issues.Select(CloneIssue).ToArray());
-            }
-            var after = outcomePublication.After!;
-            var outcome = outcomePublication.DeclaredOutcome!;
-            var reduction = WoundTransitionReducer.Reduce(
-                new WoundTransitionRequest(
-                    "treat",
-                    continuation.TransitionId,
-                    coordinates.OperationKey,
-                    coordinates.EventRef,
-                    coordinates.Turn,
-                    before,
-                    after,
-                    new WoundTreatmentEvidence(
-                        continuation.Resolution.ResolutionAuthorityFingerprint,
-                        WoundIdentityState.ComputeSemanticFingerprint(before),
-                        WoundIdentityState.ComputeSemanticFingerprint(after),
-                        coordinates.RouteId,
-                        coordinates.AttemptId,
-                        outcome)));
-            if (!reduction.IsValid)
-            {
-                return new WoundAcceptedTurnPlanningResult(
-                    null,
-                    reduction.Issues.Select(CloneIssue).ToArray());
-            }
-
-            stage = "history_intent";
-            var proposed = reduction.ProposedAfter!;
-            var transitions = new[]
-            {
-                new FinalizedWoundTransition(before, proposed)
-            };
-            var intents = reduction.Intents.ToArray();
-            var historyIntent = intents.OfType<WoundTransitionHistoryIntent>()
-                .Single();
-            var historyRow = new WoundHistoryTransition(
-                historyIntent.TransitionId,
-                historyIntent.WoundId,
-                historyBefore.State.NextOrdinal,
-                proposed.LastTransition.Ordinal,
-                historyIntent.Kind,
-                historyIntent.Turn,
-                historyIntent.EventRef,
-                historyIntent.OperationKey,
-                historyIntent.BeforeFingerprint,
-                historyIntent.AfterFingerprint,
-                continuation.Resolution.RequestFingerprint,
-                historyIntent.AttemptId,
-                CourseId: continuation.Resolution.CourseId,
-                CourseMilestoneOrdinal: continuation.Resolution.CourseMilestoneOrdinal,
-                CycleKey: null,
-                PaymentFingerprint: null,
-                WoundHistoryState.ComputeOutputFingerprint(
-                    historyIntent.OperationKey,
-                    historyIntent.EventRef,
-                    WoundAcceptedTurnPlanner.TreatmentPublicationSummary),
-                WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
-                Terminal: false,
-                TransitionResult: continuation.PersistedResult);
+            var contributionResult = ReduceTreatmentContribution(
+                continuation.OutcomePreparation, continuation.Resolution,
+                continuation.TransitionId, continuation.PersistedResult, reductionBatch,
+                applications, matches[0].Wound, historyBefore.State.NextOrdinal,
+                value => stage = value);
+            if (contributionResult.Value is not { } contribution)
+                return new WoundAcceptedTurnPlanningResult(null, contributionResult.Issues);
+            var transitions = contribution.Transitions;
+            var intents = contribution.Intents;
+            var historyRow = contribution.HistoryRows.Single();
             stage = "carrier_contributions";
             var contributions = BuildCarrierContributions(
                 baseline.PreTurnCarriers,

@@ -1,5 +1,46 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J4 pure reducer contribution extraction WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published9567ec56872714db3de4b35e46bfd833766dd4ff
+under the same accepted DESIGNv2/J2-J7 release. This is a resumable source WIP for
+ROOT preservation, not connected SOURCE READY or J4/J5/J6 completion. No new project
+execution or independent SOURCE acceptance. All historical evidence remains exact.
+
+Generic acquisition reduction and the old homogeneous treatment finalizer now call
+extracted private pure helpers that return typed reducer transitions/intents/history
+rows before canonical root construction. The generic path uses an extracted shared
+assembler; the old treatment path retains its existing authority/baseline checks,
+root builder, singleton restriction, stage diagnostics and final fingerprints. The
+helper logic is text-reassembled against the frozen base, with only parameter/result
+transport substitutions; no allocator, effect schedule, accepted-event binding,
+capability gate, common cache or publication semantics changed in this checkpoint.
+
+A private, currently unused joint contribution combiner requires one independently
+reduced physical player CREATE and one distinct old-wound treatment, exact transition
+identities and acquisition-then-treatment consecutive original history ordinals. It
+combines typed reducer facts before shared root assembly, never finalized JSON/history
+roots or accepted-event vectors. These facts are not accepted/publication authority.
+No live caller or joint prepared family uses this combiner yet.
+
+The next connected source chunk must add the exclusive private joint prepared/effect/
+final family, one existing allocator and schedule, per-owned-batch selection of the
+separately validated treatment event vector, anchors, whole-union common/cache/final
+capability-resource proof and publication/settlement/v2 completion. Only then connect
+normal admission/retry/restore. Exact current request/hold, packet-authorized I-II range
+and scene invariants, whole-wave cleanup/compensation and terminal dispositions remain
+required. R2-R7/C1/cold controls and GM severity-repair example/manifest/guards still OPEN.
+Do not qualify this extraction or earlier capture/restore helpers as a working owner.
+
+Catalog730, existing component1method5cases1descriptor/budget5/default10 and all
+selectors are unchanged; no new discovery or case claim. Existing acquisition planner/
+effect-agreement and homogeneous treatment controls are concrete new C1 dependencies,
+plus the two previously named rollback-hash controls, to select narrowly with the
+complete connected candidate. No passing cohort rerun or runtime released here. Public
+GM grammar/afterlife behavior unchanged by this pure refactor; required GM synchronization
+accompanies the connected capability. Historical tails/acceptance checkbox lines exact;
+full FR063/T070/UI/parents remain OPEN. ROOT preserves WIP before further authoring.
+
 ## J2/J3 reconstructed-provenance and coordinated-restore WIP STOP — 2026-10-14
 
 Retained sole Sol resumed from published d1e99ff293d17ac1312495ce56935662e483d456
