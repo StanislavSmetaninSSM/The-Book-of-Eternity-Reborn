@@ -1,5 +1,31 @@
 # Tasks: GM Documentation Modularization
 
+## Corrected pair EVIDENCE accepted; separate first real-writer release — 2026-10-14
+
+Retained independent Astra XHigh [EVIDENCE review](recovery/A-connected-pair-first-corrected-actual-independent-evidence-review-20261014.md)
+SHA256 `0970fee6685b514bb17fb93588164e1b1b81678ce63a6f538c848fe0cb16cb6c`
+accepts carrier `c437440eb3dec7782b8a6bdd423a465b6293ab04`: all47chains/raw14
+native files, nativeTRX-to-observation equality,2330direct source pins plus exact
+metadata reversal for two, all233physical binary/package pins. Two inspect-only
+cases qualified2/2PASS11.4329356s COMPLETE; four roots absent/exit/error-freeEOF/
+ownershipUnresolved=false. Actual173LiveExact/9TerminalOwnedAbsent/oneTerminalOwnedState
+checks establish this execution's identity observations, not the old failure's cause.
+No producer/fullA/orphan/signal-fault qualification or empty-receipt inference.
+GitHub-only selected recovery279materializedfiles/all47chains exact, no projectexec.
+
+Release only separate gm-doc-afterlife-package-delivery1method1case1descriptor,
+budget2/default7, official exact PlanOnly then FIRST actual. Reuse compile6f32a522
+fresh BOTHcatalog/physical binaries ONLY after all2330nonmetadata source and233
+physical pins remain exact; new metadata-carrier pins distinguish runtime/compile
+source. No pair/otherpassing/pure44/primary repeat. Freeze first outcome and obtain
+independent EVIDENCE. Producer/package/AST/exit/EOF/ownedroot prerequisites must pass
+before calling missingmodule/closure issues intended deliveryRED. A prerequisite or
+ownership failure stays separate and stops further execution pending diagnosis.
+Realwriter UNRUN at this carrier. SourceRED/history14fail and setupnativeexitUNKNOWN
+remain immutable. Content/daemon/fullA/B/Block_5 unreleased; primarysoleSol continues
+J2-J6/J7 source authoring separately. No task/acceptancecheckbox changes.
+
+
 ## Corrected source pair first actual2PASS frozen; writer1 UNRUN — 2026-10-14
 
 Fresh compile/catalog/runtime source `6f32a5221fa01123b2b74f824f51259532eefc35`,
