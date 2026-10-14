@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-14T15:27:33.670843+00:00",
+  "sourceCheckpoint": "fd2340d155d3275a81988ab13aeffeced0723bd9",
+  "kind": "SOURCE-only actual evidence-loss contour; no executed fault/test",
+  "sourceObservation": "LoadValidatedPendingTurnSnapshotContextAsync authority validation failure returnsnull (SessionAndSnapshots1105-1134); actual latecaller passesnull to jointreconciler (TurnLifecycle933-961); StoryTurn19 returnsnull; completion reaches DiscardMismatchedReadySignalAsync (TurnLifecycle1010); nullframe branch clearsReady/transientoutputs andsnapshot cleanup (SessionAndSnapshots1735-1751)",
+  "entryQualification": "already admitted FileSystemManager child validates intact prerequisites then authoritytampered; consolecohort owner caching does not reread signed authority on subsequentadmission. A brandnewPID with preexistingbad authority may instead refuse initialadmission; distinctcontours",
+  "rootActualReads": [
+    "790556",
+    "d70589",
+    "d8cf36",
+    "fd1a11",
+    "e835aa"
+  ],
+  "pins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "4534ec9dc87c79fd79e87b886cfd8f9870c45b5dcd7a854b57f8c2bc38946348",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+    "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51"
+  },
+  "status": "narrow retainedAstraHigh architecturaldisposition pending; authority row OPEN, no prodedit/projectexecution",
+  "constraints": [
+    "non-authorizing hold only; no completion/phase/take/cleanup/rollback authority from parsedmarker",
+    "preserve legacy/v1/singleton/disjoint/default and completedstale-marker inertrepeat",
+    "no genericstorage/quarantine redesign, newkeys/resealing/Grotation workaround"
+  ]
+}

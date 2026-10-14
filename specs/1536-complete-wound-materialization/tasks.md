@@ -1,5 +1,26 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 physical world-time source drift control SOURCE WIP STOP — 2026-10-14
+
+Owning base `fd2340d155d3275a81988ab13aeffeced0723bd9`; recovery2301/1772
+was verified before narrow SOURCE GO. Exactly one independent row extends the genuine
+nonzero/APPLIED fresh-child refusal Theory: actual game_state/world/world_time.json
+currentTimeInMinutes increases by one while the original and frozen source/basis seals
+remain unchanged. Intact original/G/control/phase/cache/report prerequisites precede this
+negative physical edit; then the existing full after-tamper tree/G, actual late-owner,
+unchanged story/turn42 and original/Ready/output/backups preservation oracles apply.
+No authority helper/reseal/new claim runs after corruption; production is untouched.
+
+Six source methods/twelve source cases (five Facts plus seven-row Theory) are provisional;
+no discovery/catalog/selector/budget change. All project/compiler/build/discovery/catalog/
+PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION remain UNRUN; compiler/API/fixture
+validity UNCHECKED. Signed-authority corruption is NOT authored: same-admitted-child
+null-frame can reach legacy Ready/output/snapshot cleanup; the exact source blocker is
+recorded separately for narrow disposition, not an observed runtime failure. Foreign G,
+new-root, compensation/uncertainty/inactive/story/live-caller controls, no-frame/all-owner-
+traces-erased/partial cleanup limits and normative/primary-GM sync remain OPEN. Old rows,
+qualified fixture bodies, history tails and checkboxes are preserved.
+
 ## J7 real report/basis/input refusal extension SOURCE WIP STOP — 2026-10-14
 
 Owning base `e9092adbd11786f65cc4a5b48c64451654d696b4`; recovery2298/1769

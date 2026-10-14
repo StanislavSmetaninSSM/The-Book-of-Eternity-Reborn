@@ -15,6 +15,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("mixed_report")]
     [InlineData("basis_fingerprint")]
     [InlineData("input_control")]
+    [InlineData("world_time")]
     public Task GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(string corruption) =>
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true, refusalScenario: corruption);
 
@@ -65,6 +66,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var control = Assert.IsType<JsonObject>(request["progressionControl"]);
                 control["currentWorldTimeInMinutes"] = checked(control["currentWorldTimeInMinutes"]!.GetValue<int>() + 1);
                 replacement = System.Text.Encoding.UTF8.GetBytes(request.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                break;
+            case "world_time":
+                target = "game_state/world/world_time.json";
+                var worldTime = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, target)));
+                worldTime["currentTimeInMinutes"] = checked(worldTime["currentTimeInMinutes"]!.GetValue<int>() + 1);
+                replacement = System.Text.Encoding.UTF8.GetBytes(worldTime.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
                 break;
             default:
                 throw new InvalidDataException("Unsupported joint refusal fixture corruption: " + corruption);
