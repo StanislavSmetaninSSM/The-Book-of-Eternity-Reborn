@@ -25,7 +25,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true);
 
     private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
-        string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied")
+        string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied",
+        string? refusalScenario = null)
     {
         var originalRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(originalBefore["input/turn_request.json"]!),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual cold parent original control");
@@ -63,6 +64,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
             ["requestId"] = original.RequestId, ["snapshotToken"] = original.SnapshotToken,
             ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase, ["expectedWorldCycles"] = expectedWorldCycles,
+            ["refusalScenario"] = refusalScenario,
             ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
@@ -77,7 +79,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", _fs.BasePath, output, expectedPhase == "applied" ? 0 : 1, contextPath));
+                "engine-mortal-joint-applied-cold", _fs.BasePath, output, refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
@@ -96,13 +98,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var child = ParseJsonObjectBytes(await File.ReadAllBytesAsync(output));
         Assert.NotEqual(Environment.ProcessId, child["processId"]!.GetValue<int>());
         Assert.True(child["actualCallerEntered"]!.GetValue<bool>());
-        Assert.True(child["completed"]!.GetValue<bool>());
+        Assert.Equal(refusalScenario is null, child["completed"]!.GetValue<bool>());
+        Assert.Equal(refusalScenario is not null, child["refusalVerified"]!.GetValue<bool>());
         Assert.Null(child["failure"]);
     }
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.InRange(scenario, 0, 1);
+        Assert.InRange(scenario, 0, 2);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -125,6 +128,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         Exception? failure = null;
         bool? handled = null, secondIdle = null;
         var completed = false;
+        var refusalVerified = false;
+        var refusalScenario = context["refusalScenario"]?.GetValue<string>();
+        Dictionary<string, byte[]?>? intactBeforeTamper = null;
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
         PendingTurnSnapshotReadAuthority? original = null;
         byte[]? storyBefore = null;
@@ -148,7 +154,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(43, original.TurnNumber);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
                 var observedMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
-                Assert.Equal(scenario == 0 ? "applied" : "unapplied", observedMarker["progression"]!["phase"]!.GetValue<string>());
+                Assert.Equal(scenario == 1 ? "unapplied" : "applied", observedMarker["progression"]!["phase"]!.GetValue<string>());
                 Assert.Equal(context["expectedPhase"]!.GetValue<string>(), observedMarker["progression"]!["phase"]!.GetValue<string>());
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
                     SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "fresh child actual original progression control");
@@ -156,7 +162,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var cycles = context["expectedWorldCycles"]!.GetValue<int>();
                 Assert.Equal(cycles, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
                 Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
-                if (scenario == 0)
+                if (scenario != 1)
                 {
                     Assert.Null(await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                     if (cycles > 0)
@@ -178,14 +184,44 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
                 GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
                 await AssertConfirmedClaimReadImagesAsync(files, lease, before);
+                if (scenario == 2)
+                {
+                    // All official original/control/phase and fresh-cache prerequisites
+                    // above precede the corruption. No authority helper runs afterward.
+                    Assert.NotNull(refusalScenario); Assert.Equal(1, cycles);
+                    intactBeforeTamper = before;
+                    await ApplyJointCompletionRefusalTamperAsync(files, lease, refusalScenario!);
+                    before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                    Assert.Equal(intactBeforeTamper["$sessionGeneration"], before["$sessionGeneration"]);
+                }
                 lease.EnsureNoPendingLocalDecision();
             }
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
             { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
-                FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, Before = MortalArchiveDigests(before) } }));
+                FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, RefusalScenario = refusalScenario,
+                IntactBeforeTamper = intactBeforeTamper is null ? null : MortalArchiveDigests(intactBeforeTamper),
+                Before = MortalArchiveDigests(before) } }));
             // The first owning call is the real late lifecycle. No Restore,
             // Export, correction, reducer or Compose has run in this process.
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            if (scenario == 2)
+            {
+                await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+                {
+                    after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                    await AssertConfirmedClaimReadImagesAsync(files, lease, before!);
+                    Assert.Equal(storyBefore, after[QteStoryPath]);
+                    Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json",
+                                 LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
+                        Assert.Equal(intactBeforeTamper![path], after[path]);
+                }
+                // The boolean means a blocked attempt, after complete preservation.
+                Assert.True(actualCallerEntered); Assert.True(handled);
+                Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
+                refusalVerified = true;
+                return;
+            }
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
                 after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
@@ -280,11 +316,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
-                processId = Environment.ProcessId, actualCallerEntered, handled, secondIdle, completed,
+                processId = Environment.ProcessId, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
                 AuxiliaryFactoryRoot = factory._rootPath, Root = root, BinaryPins = MortalArchiveBinaryPins(),
                 DependencyContext = MortalArchiveDependencyContext(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),
                 Original = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },
                 actualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, failure = failure?.ToString(),
+                IntactBeforeTamper = intactBeforeTamper is null ? null : MortalArchiveDigests(intactBeforeTamper),
                 Before = before is null ? null : MortalArchiveDigests(before), After = after is null ? null : MortalArchiveDigests(after),
                 Repeated = repeated is null ? null : MortalArchiveDigests(repeated)
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));

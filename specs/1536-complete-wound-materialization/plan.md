@@ -1,5 +1,29 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 three real applied-phase refusal controls SOURCE WIP STOP — 2026-10-14
+
+Owning base `5bc4edcf428915ef8b924c1811b1a0d4c8473116`; recovery2293/1764
+was verified before SOURCE GO. One new finite Theory has exactly three source rows:
+missing physical marker, changed closed progression mutationFingerprint, and physical
+schedule restored to its actual frozen beforeimage. All use the same genuine nonzero
+matching-report producer, real APPLIED pause before story, and existing fresh-PID child.
+
+The child first proves intact original43/G/control/phase, consumed report, empty common
+cache and retained story/Ready. Only then it corrupts one named real member, records the
+complete after-tamper tree/G, and invokes the actual late owner. Strict whole-tree path and
+byte equality, unchanged story/turn42 and retained original/Ready/output/backups precede
+the held boolean. No authority helper, Restore/Export/Compose/reseal or new claim runs
+after corruption. Full child log/managed result and parent afterimages remain retained.
+
+Six source methods/eight source cases now exist (five Facts plus this three-row Theory);
+o discovery/catalog/selector/budget claim is made. Compilation/API/fixture validity and
+all project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/
+FIXTURE/SELECTION remain UNRUN/UNCHECKED. Other mixed-report/basis/source/control/original/
+G negatives, known compensation/unknown retention/new-root/inactive/exact-story/live-caller
+controls, no-frame/all-traces-erased/partial-cleanup limits and normative/primary-GM sync
+remain OPEN. Production, historical J1 and qualified fixture bodies, categories, budgets,
+history tails and acceptance checkboxes remain unchanged.
+
 ## J7 combined nonzero-report consumed then applied-cold control SOURCE WIP STOP — 2026-10-14
 
 Owning base `25a9442506c70f9f9efd310bcb6f40aaecb8babe`; recovery2290/1761

@@ -1,0 +1,90 @@
+{
+  "owningBase": "5bc4edcf428915ef8b924c1811b1a0d4c8473116",
+  "status": "SOURCE WIP only; all project checks UNRUN",
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:prior_tail_preserved": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_preserved": true,
+    "specs/1536-complete-wound-materialization/tasks.md:prior_tail_preserved": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_preserved": true,
+    "exact_three_named_rows": true,
+    "one_new_theory": true,
+    "real_nonzero_applied_producer": true,
+    "optional_null_shared_default": true,
+    "official_original_before_tamper": true,
+    "fresh_cache_before_tamper": true,
+    "capture_after_tamper_before_actual_owner": true,
+    "whole_tree_proof_before_held_bool": true,
+    "real_frozen_before_schedule": true,
+    "no_resealed_fingerprint": true,
+    "target_corruption_nonvacuous": true,
+    "child_retains_intact_and_after_tamper_images": true,
+    "parent_preserves_full_drained_log": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs:base_byte_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs:base_byte_exact": true,
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs:base_byte_exact": true,
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:base_byte_exact": true,
+    "tests/categories.json:base_byte_exact": true,
+    "whitespace_diff_check": true
+  },
+  "checkCount": 23,
+  "allReportedTextChecksPassed": true,
+  "pins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": {
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "bytes": 26937
+    },
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs": {
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "bytes": 35308
+    },
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs": {
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "bytes": 61445
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "5642dc3aaab639961e12ca35e716eec1e28a40272610efd63010ade676f9c784",
+      "bytes": 48341
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "c5bade1be73bdf5debedc39010f5195086b75395cb1ca74b715bb44b7ae1bb65",
+      "bytes": 26430
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "5f19cde8aa12955c09f1a4865f375c37e25c111b02c5d26f5610665fb0db118c",
+      "bytes": 3451
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "ec524cee1cdcd831b2417fdb1763608fd3ea7381a7545e383b8bda6bc7ace97b",
+      "bytes": 1533315
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "b8311a2899ab9948e15471391a227cc31bee5eebdb918b574d89fedd306568d0",
+      "bytes": 1033931
+    }
+  },
+  "missingProtectedLocators": [],
+  "compilerApiFixtureValidity": "UNCHECKED",
+  "projectExecution": "UNRUN",
+  "scope": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "sourceInventory": {
+    "methods": 6,
+    "cases": 8,
+    "newTheoryRows": 3,
+    "discovery": "UNRUN"
+  },
+  "whitespaceOutput": ""
+}
