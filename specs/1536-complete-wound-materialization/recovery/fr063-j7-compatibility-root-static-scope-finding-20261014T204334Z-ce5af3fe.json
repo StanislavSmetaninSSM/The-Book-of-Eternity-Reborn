@@ -1,0 +1,7 @@
+{
+  "base": "cc15a7e1ec2df9c6a4e596c1204ad8f485e40863",
+  "finding": "CaptureConfirmedClaimReadImagesAsync captures GameSession files+$sessionGeneration; no RuntimeRootPath files/emptydirs. Theory separately checks turn/inGame only. Broad complete namespace/runtime-state bytes wording needs truthful narrowing.",
+  "evidence": "a7a861 actual helper400-413 and fullnewtheorye30c4f",
+  "action": "same retained writer narrow currentWIP source/report/MD2/readback claims; preserve initialrawreport unique. No behavior expansion/project run.",
+  "classification": "source scope finding; not executed RED"
+}

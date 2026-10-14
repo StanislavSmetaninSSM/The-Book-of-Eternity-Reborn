@@ -1,0 +1,13 @@
+{
+  "operation": "read-only rg source locator",
+  "command": "rg -n 'CaptureConfirmedClaimReadImagesAsync|PreparePublishedMortalCompletionProofAsync|PrepareMortalDecisionComponentAsync' BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.ConfirmedClaimRead.cs BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "chunkId": "ce98e1",
+  "exitCode": 2,
+  "exactDiagnostic": "rg: BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.ConfirmedClaimRead.cs: No such file or directory (os error 2)",
+  "remainingOutput": "successful matches in supplied QtePhysicalInjuryConsumerControls/HeldPublication paths; this receipt retains exact failure diagnostic, not full successful match listing",
+  "sourceGitMutation": false,
+  "projectExecution": false,
+  "resolution": "actual full-directory rg a05736 found helperOrdinaryOwner400; full helperread a7a861",
+  "classification": "ordinary ROOT locator error; no security/transport/runtime failure"
+}

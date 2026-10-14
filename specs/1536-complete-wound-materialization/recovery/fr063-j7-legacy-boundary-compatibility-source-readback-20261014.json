@@ -1,0 +1,285 @@
+{
+  "base": "cc15a7e1ec2df9c6a4e596c1204ad8f485e40863",
+  "status": "SOURCE WIP / FINAL STOPPED",
+  "authoredPins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompatibility.cs": {
+      "sha256": "d20fc75de3bc5659a41e3cb64fdb5a9af862eca69b65db14df32d06217fc1768",
+      "bytes": 4381
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "ecc1a4d6f0d93f3d1e9c82cc392826a1ab2dc5c6e4242aeac579dfa2e8feb4ed",
+      "bytes": 1564565
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "a4be45d7fa137aa75bf3dfbbef21cd79e2427ea032d2e67d0e3159b99bcaa1bd",
+      "bytes": 1065181
+    }
+  },
+  "protectedPins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "af0ba7a40484a3b5013ccd9d34bc71023d19d010aa7c72d2d3e89405be0488f3",
+      "bytes": 53578
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "17e697c6cab0f4c93006352ff610ef28fae93ab88cd2015b09ce938208ab2a2d",
+      "bytes": 48589
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs": {
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2",
+      "bytes": 9705
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs": {
+      "sha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7",
+      "bytes": 614
+    },
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs": {
+      "sha256": "9c7d2f6623b9d194f831350c8d47c3f63c780c0ee8c1d520c580dcd78930f66d",
+      "bytes": 32833
+    },
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs": {
+      "sha256": "2fa12b0b7b2103ba149b8c081cd656770dd55b2fa4daf1a3986d602fcee7cb6e",
+      "bytes": 29706
+    },
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs": {
+      "sha256": "12b075112e69dea09d9dc34b1744a282983e672238149241588034f538a56b41",
+      "bytes": 16911
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs": {
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "bytes": 5039
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": {
+      "sha256": "d1c6bd3dab186a097129a792fdee4a8b795aed322cfc8311dc0fbaadbcbdbc21",
+      "bytes": 503846
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": {
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "bytes": 294837
+    },
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.cs": {
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895",
+      "bytes": 23678
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Replay.cs": {
+      "sha256": "ff0040310c377fafaad5d6df1abace6f147436fb99d497258f8c2de1728c3c50",
+      "bytes": 15470
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "observations": {
+    "head_base_exact": true,
+    "one_two_row_theory": true,
+    "genuine_v1_existing_publisher_helper": true,
+    "v1_independently_verified_before_component": true,
+    "v1_version_and_no_joint_fields": true,
+    "ordinary_no_offer_existing_source_helper": true,
+    "actual_private_classifier_only": true,
+    "component_claim_explicit": true,
+    "raw_outcome_before_result_oracle": true,
+    "turn_runtime_state_preserved": true,
+    "no_auth_marker_receipt_write": true,
+    "method_map_definitions_nonempty": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs": true,
+    "protected_base_exact:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs": true,
+    "protected_base_exact:BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": true,
+    "protected_base_exact:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": true,
+    "protected_base_exact:BookOfEternityClient/Services/MortalQteDecisionPublication.cs": true,
+    "protected_base_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Replay.cs": true,
+    "protected_base_exact:tests/categories.json": true,
+    "md2_exact_reverse:specs/1536-complete-wound-materialization/plan.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/plan.md": true,
+    "md2_exact_reverse:specs/1536-complete-wound-materialization/tasks.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/tasks.md": true,
+    "diff_check_zero": true,
+    "exact_three_path_scope": true,
+    "all_game_session_file_names_bytes_and_physical_G": true,
+    "runtime_scalar_scope_only_turn_and_inGame": true,
+    "scope_comment_explicit": true,
+    "initial_raw_report_preserved_exact": true,
+    "initial_raw_readback_preserved_exact": true,
+    "prior_authored_historical_tail_exact:specs/1536-complete-wound-materialization/plan.md": true,
+    "prior_authored_historical_tail_exact:specs/1536-complete-wound-materialization/tasks.md": true
+  },
+  "observationCount": 38,
+  "allTrue": true,
+  "candidateDependencyMethodMap": [
+    {
+      "boundary": "sixarg/probe closed surface",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Replay.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "mortal-wounds-treatment-replay"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "procedure singleton publication",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "mortal-wounds-treatment-replay"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "course singleton publication",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.CoursePublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "mortal-wounds-treatment-publication"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "closed public mixed command catalog",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PersistenceHardening.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "mortal-wounds-treatment-replay"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "mixed accepted-transition family refusal candidate",
+      "method": "BookOfEternityClient.Tests.WoundMaterializationLifecycleTests.AcceptedTransitionCommand_RetainsMixedFamiliesButNeverConsumesThem",
+      "path": "BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.AcceptedTransitions.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "mortal-wounds-materialization"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.WoundMaterializationLifecycleTests.*"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "ordinary/no-offer/single draft component",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "qte-physical-injury-consumer-draft"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "actual ordinary uncommitted rollback remains live",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "qte-physical-injury-consumer-completed-proof"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "genuine privatev1 exact versus changed replay",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "qte-physical-injury-consumer-completed-proof"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "v1 NONE companion work publication",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "qte-physical-injury-consumer-publication"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "v1 CREATE periodic+resource publication",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "qte-physical-injury-consumer-created-resource-replay",
+        "qte-physical-injury-consumer-publication"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    },
+    {
+      "boundary": "mixed create/worsen anchor restriction; not all disjoint proof",
+      "method": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "path": "BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.WoundAnchorProjection.cs",
+      "sourceDefinitionPresent": true,
+      "catalogLiteralOrGlobCandidateOwners": [
+        "accepted-mechanics-planning"
+      ],
+      "matchedSelectorText": [
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase"
+      ],
+      "officialSelection": "UNRUN; candidate dependency map only"
+    }
+  ],
+  "whitespace": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "compilerApiHookClosingFixtureReach": "UNCHECKED",
+  "projectChecks": "UNRUN",
+  "inventory": "provisional16 methods/34 cases; new owner/official selection pending",
+  "scopeLimit": "component nonapplicability only; no broad native/default/disjoint qualification",
+  "backendModelEffort": "unavailable; same retained writer/cloud",
+  "scopeCoverage": {
+    "captured": "all GameSession recursive file names/bytes plus physical G bytes",
+    "runtimeAssertions": "turn and inGame only",
+    "unchecked": "RuntimeRoot file/name inventory and empty-directory inventory"
+  },
+  "rootStaticFinding": {
+    "id": "a7a861",
+    "classification": "static evidence-scope correction; not executed RED",
+    "initialReport": "/workspace/boe-cloud-tools-20261014/fr063-j7-legacy-boundary-initial-scope-wording-91ebf376-20261014.md",
+    "initialReportSha256": "91ebf376d39b0b9f841f15835304423809a050436f00ba3026ceb36ac531ea49",
+    "initialReadback": "/workspace/boe-cloud-tools-20261014/fr063-j7-legacy-boundary-initial-scope-readback-7fe1d9c4-20261014.json",
+    "initialReadbackSha256": "7fe1d9c4f49157ace97517e8fbc0eac0f0e135db25fcbd839c84f6ec1469b3a3",
+    "behaviorChange": false
+  }
+}

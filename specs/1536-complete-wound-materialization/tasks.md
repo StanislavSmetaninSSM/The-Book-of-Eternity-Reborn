@@ -1,5 +1,40 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 legacy boundary reuse / null-frame nonapplicability SOURCE WIP STOP — 2026-10-14
+
+Owning base `cc15a7e1ec2df9c6a4e596c1204ad8f485e40863`; recovery2352/1823 verified
+before SOURCE GO. Source inspection mapped existing six-argument API surface, ordinary/
+no-offer, genuine privatev1 replay/publication, singleton, public mixed-family refusal
+and mixed create/worsen-anchor restrictions to named existing controls. Their source/
+catalog stays exact; this block schedules no category or project execution and does not
+repeat ordinary13/API5/broad legacy/archive cohorts. Exact later dependency selection is
+recorded externally; incomplete literal-selector ownership is explicitly unresolved.
+
+One new two-row Theory covers the otherwise missing private null-frame guard exclusion:
+absent marker and genuine existing normal-publisher v1 marker. Existing actual prior42/
+Stage43/common v1 publisher supplies all authority; no completion marker, receipt, original
+or proof is fabricated. The component invokes only TryHoldMortalJointWithoutValidatedOriginalAsync
+and demands false/all GameSession file-name/byte plus physical-G/turn/inGame preservation.
+Raw caller outcome and these before-after file images precede assertions. RuntimeRoot
+files/names and empty-directory inventories are NOT captured and remain UNCHECKED. It grants no publication/replay authority
+and is explicitly NOT an actual late/native completion test. Existing native v2 completion
+and byte-inert idle already exercise stale marker/no active headers. The two new rows do
+not establish all default/disjoint/native compatibility or every legal combination.
+ROOT static scope finding a7a861 narrowed this authored checkpoint; it is not an
+executed failure. Initial external report/readback wording is retained byte-exact
+under unique filenames; historical tracked tails and checkbox states are unchanged.
+
+Compiler/API/actual component reach/fixture/closing validity UNCHECKED; all project/compiler/
+build/discovery/catalog/PlanOnly/test/runtime/fault and whole connected SOURCE/FIXTURE/
+SELECTION UNRUN. Provisional16 methods/34 cases (twelve Facts and12+3+5+2 Theory rows);
+new category owner/official discovery/final exact selector still pending, budgets unchanged.
+Legal active stats/level-up/newQTE support and freshPID already-bad authority remain OPEN.
+Remaining compatibility-selection sufficiency, normative/primaryGM synchronization and
+whole independent gates remain required; no broad requalification/FR063 closure claim.
+Production/shared qualified helpers/old controls/immutable raw outcomes/history/tails and
+checkboxes stay unchanged. Later normative stale-status findings remain for their own block.
+
+
 ## J7 actual LIVE and genuine retained-row replay positives SOURCE WIP STOP — 2026-10-14
 
 Owning base `8273a33874da3a04deb2141b91321c5cfe94adf7`; recovery2347/1818 verified
