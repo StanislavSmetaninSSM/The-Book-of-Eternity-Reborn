@@ -236,8 +236,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (newPhysicalRoot)
         {
-            Assert.Equal(Path.GetFullPath(childRoot), child["Root"]!.GetValue<string>());
-            Assert.NotEqual(Path.GetFullPath(_fs.BasePath), child["Root"]!.GetValue<string>());
+            Assert.Equal(Path.GetFullPath(childRoot), child["root"]!.GetValue<string>());
+            Assert.NotEqual(Path.GetFullPath(_fs.BasePath), child["root"]!.GetValue<string>());
             await using var sourceLease = await _fs.AcquireCanonicalWriteLeaseAsync();
             await AssertConfirmedClaimReadImagesAsync(_fs, sourceLease, paused);
         }
