@@ -1,0 +1,76 @@
+{
+  "createdUtc": "2026-10-15T14:49:32.127870+00:00",
+  "kind": "ROOT_FAILURE_PIN_AND_REAL_CLEANUP_READBACK_ONLY",
+  "testedSource": "0f039f19abca52df960e678dc9614d9d0753e263",
+  "compiledSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+  "packet": "fr063-finite-active-v7-frozen-0f039f19a-20261015T144644Z",
+  "manifestSha256": "647f06f10dc6a3435b38620b0bc8c17ad5da03a1cf707265e090435ce4342b77",
+  "chainsVerified": 36,
+  "exactGitCurrentSourcePinsVerified": 608,
+  "currentBinaryPayloadsVerified": 11,
+  "native": {
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 0,
+      "Failed": 3
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallTime": "00:01:03.1402113",
+    "methods": 1,
+    "cases": 3,
+    "descriptors": 1,
+    "skipCount": 0,
+    "duplicateTestIDs": 0
+  },
+  "caseCleanupAttribution": [
+    {
+      "testId": "a0a96194-62d5-1196-6135-561efa69b1e8",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"new_qte_offer\")",
+      "outcome": "Failed",
+      "receiptIndex": 0
+    },
+    {
+      "testId": "b451dc5b-a3de-d622-96a0-388d7b66c1a7",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"unprocessed_level\")",
+      "outcome": "Failed",
+      "receiptIndex": 1
+    },
+    {
+      "testId": "48e045ba-069d-12ae-0752-b09737ebc4cc",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"pending_stats\")",
+      "outcome": "Failed",
+      "receiptIndex": 2
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a546c580528c4eac879f9f14817105bb",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-1657c2de2d32464eb3a1c663b6dba0e1",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-aee2c1e320604444b98163a1e35293a5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allThreeDistinctRootsActuallyAbsent": true,
+  "causalDiagnosisPerformed": false,
+  "actualOwnerAttemptAndOracles": "UNCLASSIFIED pending independent raw failure EVIDENCE; nativeFAIL is not accepted refusal",
+  "successors": "story5/legacy2/worked2/C1 HELD; no correction/retry before independent failed EVIDENCE"
+}
