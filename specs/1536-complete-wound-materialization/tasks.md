@@ -1,5 +1,36 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## P5 authenticated completion consumer alignment SOURCE WIP — 2026-10-15
+
+Owning base `8be39c6fd298248d224fee3414d341575e51653b`. Independent EVIDENCE
+ffe21bfd ACCEPTED the actual first P5 mismatch; explicit source-only release
+e19254be permits this narrow existing-contract alignment. Previous Late2 actual
+remains immutable: 2 executed/0 PASS/2 FAIL, RetryableHeld/turn42 without Spend43.
+Both complete native messages established genuine boundary completion with stored
+base==initial and final==current full payload hashes while current!=initial.
+Predicate6 was NOT evaluated; its observed outcome remains UNKNOWN.
+
+Only P5 now requires the existing authenticated IsAcceptedBoundaryComplete proof
+plus exact ordinal stored base(initial)/final(current) FULL payload agreement.
+Current payload is still computed before initial payload from the same typed
+plan/bundle references; absent/invalid proof or hashes refuse. P5 success reaches
+the unchanged P6 private joint bundle/anchors/owner agreement. P1–4, bounded
+first-failure diagnostics, final ValidateJoint and original/source/current-byte/
+lease/G/frame/claim/reservation/inventory/probe/cache/candidate/single-Take/full-
+union/readback/compensation/settlement stay strict. No new proof/issuer/replay,
+reduction/Project/Apply/publication, fallback or weaker five-field comparison.
+
+Fixtures, assertion order, once-Spend/history/union/story/turn/repeat-idle oracles,
+selectors, categories and budgets are unchanged. Existing two-row RED is the
+regression; no mirror test or passing checkpoint5 repeat. Client-owned private
+completion provenance is the only affected contract; GM/public grammar, prompts,
+docs and examples require no update. No source/API/compiler/runtime success is
+claimed: corrected SOURCE/FIXTURE/SELECTION and all fresh project checks remain
+pending/HELD. Later12 stay UNRUN/HELD; full FR063/T070 and prior active/initially-
+bad/cold/new-root/partial-cleanup/erased-trace contours remain OPEN/UNQUALIFIED.
+Historical retained Sol XHigh requested; actual backend/model/effort telemetry
+UNAVAILABLE. Old metadata tails, checkbox lines and raw outcomes stay byte-exact.
+
 ## First lineage diagnostic outcome: predicate5 observed — 2026-10-15
 
 Tested/compile source `e666887b30acde3d68f360b4d3158682e5cdd9db` passed

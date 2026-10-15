@@ -60,7 +60,9 @@ public partial class CanonicalStateNormalizer
         {
             var currentPayload = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan.EffectPlan);
             var initialPayload = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(bundle.EffectBatchPlan.EffectPlan);
-            if (currentPayload != initialPayload)
+            if (!plan.EffectPlan.IsAcceptedBoundaryComplete ||
+                !string.Equals(plan.EffectPlan.AcceptedBoundaryBasePlanFingerprint, initialPayload, StringComparison.Ordinal) ||
+                !string.Equals(plan.EffectPlan.AcceptedBoundaryFinalPlanFingerprint, currentPayload, StringComparison.Ordinal))
             {
                 firstFailure = "5:effect_payload_mismatch";
                 details = $"; currentPayload={BoundedFingerprint(currentPayload)}; initialPayload={BoundedFingerprint(initialPayload)}" +

@@ -1,0 +1,21 @@
+{
+  "checkpoint": "8be39c6fd298248d224fee3414d341575e51653b",
+  "publicationNative": "910906 session45509/31f61b exit0",
+  "resumedRemoteReadNative": "f15107 session37596/cf1ad2 exit0",
+  "resumedRecoveryNative": "675cbe session80829/205827 exit0",
+  "readbackSHA256": "24727cc62a1b8cde5a11fd6c0df459551de347f083fda43efa3a988f2674eb68",
+  "verification": {
+    "checkpoint": "8be39c6fd298248d224fee3414d341575e51653b",
+    "remoteSha": "8be39c6fd298248d224fee3414d341575e51653b",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 3074,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2545,
+    "consumerProduction": "Resumed after single existing-auth remote read succeeded; diagnostic P5 observed and complete typed bridge; P6 UNKNOWN; pending independent EVIDENCE; source fix/runtime HELD",
+    "verifiedUtc": "2026-10-15T05:07:48.559433+00:00"
+  },
+  "priorAuthFailure": "retained exact; no credential changes; causeUNKNOWN; access restored via authorized one recheck",
+  "sourceFixRuntime": "HELD independent EVIDENCE P5 outcome required",
+  "utc": "2026-10-15T05:08:02.728124+00:00"
+}
