@@ -1,0 +1,439 @@
+{
+  "task": "#1536 RO2 supplementary pre-native repository document inputs",
+  "recordedUtc": "2026-10-15T22:03:38.801156+00:00",
+  "testedGit": "29f5bd6a4dec63e027fbe378a99d6f03c139c173",
+  "stage": "Captured while fresh build/Plan may still be running, before standalone catalog, exact NoBuildPlan or any selected runtime. No test execution has begun.",
+  "scope": "Exact6 guidance/entrypoint files plus all top-level Examples .txt/.md and manifest; three code entrypoint files already covered by code2557 pins. No source edits/native controller.",
+  "examplesEnumeration": [
+    "Examples/CLI_Example_Soul_System.md",
+    "Examples/CLI_Translation_Guide.md",
+    "Examples/E_Block_0.5.txt",
+    "Examples/E_Block_0.6.txt",
+    "Examples/E_Block_1.txt",
+    "Examples/E_Block_10.V.txt",
+    "Examples/E_Block_10.txt",
+    "Examples/E_Block_11.A.txt",
+    "Examples/E_Block_11.B.txt",
+    "Examples/E_Block_11.txt",
+    "Examples/E_Block_12.A.txt",
+    "Examples/E_Block_12.txt",
+    "Examples/E_Block_13.txt",
+    "Examples/E_Block_14.txt",
+    "Examples/E_Block_15.A.txt",
+    "Examples/E_Block_15.txt",
+    "Examples/E_Block_16.txt",
+    "Examples/E_Block_17.txt",
+    "Examples/E_Block_18.A.txt",
+    "Examples/E_Block_18.txt",
+    "Examples/E_Block_19.A.txt",
+    "Examples/E_Block_19.B.txt",
+    "Examples/E_Block_19.C.txt",
+    "Examples/E_Block_19.D.txt",
+    "Examples/E_Block_19.E.txt",
+    "Examples/E_Block_19.F.txt",
+    "Examples/E_Block_19.K.txt",
+    "Examples/E_Block_19.txt",
+    "Examples/E_Block_19_extension.txt",
+    "Examples/E_Block_2.5.txt",
+    "Examples/E_Block_2.6.txt",
+    "Examples/E_Block_2.txt",
+    "Examples/E_Block_20.txt",
+    "Examples/E_Block_21.5.txt",
+    "Examples/E_Block_21.txt",
+    "Examples/E_Block_22.txt",
+    "Examples/E_Block_23.A.txt",
+    "Examples/E_Block_23.txt",
+    "Examples/E_Block_24.txt",
+    "Examples/E_Block_25.A.txt",
+    "Examples/E_Block_25.txt",
+    "Examples/E_Block_26.txt",
+    "Examples/E_Block_27.txt",
+    "Examples/E_Block_28.txt",
+    "Examples/E_Block_29.txt",
+    "Examples/E_Block_3.txt",
+    "Examples/E_Block_31.txt",
+    "Examples/E_Block_32.txt",
+    "Examples/E_Block_4.txt",
+    "Examples/E_Block_5.A.txt",
+    "Examples/E_Block_5.txt",
+    "Examples/E_Block_6.txt",
+    "Examples/E_Block_7.txt",
+    "Examples/E_Block_8.txt",
+    "Examples/E_Block_9.txt",
+    "Examples/E_Block_9_Complete_Categories.txt",
+    "Examples/E_Block_9_Universal.txt",
+    "Examples/E_Block_9_Updated.txt",
+    "Examples/E_Block_FINAL.txt",
+    "Examples/E_CLI_Afterlife_Turns.txt",
+    "Examples/E_CLI_Effect_Materialization.txt",
+    "Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
+    "Examples/E_CLI_GM_Worker_Content_Authoring.txt",
+    "Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt",
+    "Examples/E_CLI_GM_Worker_Narrative_Draft.txt",
+    "Examples/E_CLI_GM_Worker_Npc_Content.txt",
+    "Examples/E_CLI_GM_Worker_Skill_Content.txt",
+    "Examples/E_CLI_GM_Worker_Soul_Content.txt",
+    "Examples/E_CLI_GM_Worker_Validation_Repair.txt",
+    "Examples/E_CLI_Ink_Feather_Actions.txt",
+    "Examples/E_CLI_Mortal_Item_Materialization.txt",
+    "Examples/E_CLI_Mortal_Npc_Social_Turns.txt",
+    "Examples/E_CLI_Mortal_Resources.txt",
+    "Examples/E_CLI_NPC_Trade.txt",
+    "Examples/E_CLI_QTE_Offer.txt",
+    "Examples/E_CLI_Quest_Reward_Authority.txt",
+    "Examples/E_CLI_Step_Main.txt",
+    "Examples/E_CLI_Training_Showcases.txt",
+    "Examples/E_CLI_Wound_Materialization.txt",
+    "Examples/E_Soul_Relic_Integration.txt"
+  ],
+  "sourcePins": [
+    {
+      "path": "CLI_API_Specification.md",
+      "sha256": "250a2ea151a3c932b4a460343e6d61ef2bc5ea70e2979d473189f446e6e29b22"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "sha256": "50bc7e73ae74801398a20d32b1effd2503dd773efad871ada7192764182ade89"
+    },
+    {
+      "path": "Examples/CLI_Example_Soul_System.md",
+      "sha256": "6580c002365b976173b46ccbafda53a3fd72d8c1e80c139f5468f81b72e9efc0"
+    },
+    {
+      "path": "Examples/CLI_Translation_Guide.md",
+      "sha256": "eed129dabd8678e0bef637009af76cbf68233dcb315ebb1ee5244955f38a0989"
+    },
+    {
+      "path": "Examples/E_Block_0.5.txt",
+      "sha256": "836ff98c5447157ecbab5c3f88ec25026eea1a0bd339bf01ac1b81eea50498a3"
+    },
+    {
+      "path": "Examples/E_Block_0.6.txt",
+      "sha256": "e808349feb7fbaa4dfec55ed3f695e1e8d278669f8d2b9c1ccfba8bab33254d0"
+    },
+    {
+      "path": "Examples/E_Block_1.txt",
+      "sha256": "c0476c5b9f2b51551114d8bd536c1042763bcd3b942f9fc3feffa4463f8e1b25"
+    },
+    {
+      "path": "Examples/E_Block_10.V.txt",
+      "sha256": "52d2e52ed5b587ed5a4f5fd619e0e3ad84b7436d2f8d03bcea1179aacc2b1afa"
+    },
+    {
+      "path": "Examples/E_Block_10.txt",
+      "sha256": "746e6956af06105e3c236f570ac5bd44b81e478168e1e781f269285ee064bf19"
+    },
+    {
+      "path": "Examples/E_Block_11.A.txt",
+      "sha256": "d9b76c62f27b46817d1b7dad5f5610b41abbfd08face8a6f1d5e24a0bf33037b"
+    },
+    {
+      "path": "Examples/E_Block_11.B.txt",
+      "sha256": "ae10de283fd26d183bde72d5a68a27e2bd42998bb199216ed0382e76c74430e9"
+    },
+    {
+      "path": "Examples/E_Block_11.txt",
+      "sha256": "071cc2a18993283c2564d34db77e9d65756f10f642a15ce9f369afd74bc84891"
+    },
+    {
+      "path": "Examples/E_Block_12.A.txt",
+      "sha256": "e081eed37fc5fe94e21c53202affcfb4f440b41c1d317d4efd8a819b92fa0568"
+    },
+    {
+      "path": "Examples/E_Block_12.txt",
+      "sha256": "d3b5b2832b6f768d3ae3416817c308c2ddc21aef296a152ac5a20b0f03ac9cca"
+    },
+    {
+      "path": "Examples/E_Block_13.txt",
+      "sha256": "3f941580dcc4235e58b1fc3e9c3466c427317a0647f8aac50d1343b322820a3d"
+    },
+    {
+      "path": "Examples/E_Block_14.txt",
+      "sha256": "c9df3194e1ef69e8f7219690a84198b2c2a9f3ad74978bf9afb9962e69443940"
+    },
+    {
+      "path": "Examples/E_Block_15.A.txt",
+      "sha256": "257220d187dd20a38f3b46635d1a08f4ac288b3bfdbc49ba6737cad0c1a769aa"
+    },
+    {
+      "path": "Examples/E_Block_15.txt",
+      "sha256": "1edd9d141d073fa1b42979d090a9683a262037ac331f1ec53fa30da2ec4f7a0d"
+    },
+    {
+      "path": "Examples/E_Block_16.txt",
+      "sha256": "5e4fb325c464c3a900bf88c0c82c180951cb6f0044f44131235bbbfa6f0ca65b"
+    },
+    {
+      "path": "Examples/E_Block_17.txt",
+      "sha256": "a05c7dfa13736ebc5b7ceec25ab1a27702527c7a51956e1802d478574d30b818"
+    },
+    {
+      "path": "Examples/E_Block_18.A.txt",
+      "sha256": "72ee466becf2a9105c4a50e5652b2fb2aa12ba8dfeb62d8cf14a11a2cd7cc9a9"
+    },
+    {
+      "path": "Examples/E_Block_18.txt",
+      "sha256": "470b2f521872c23dcc95fe26aa18626e90dc6eb2b509a6a227f56a16fbbc0c91"
+    },
+    {
+      "path": "Examples/E_Block_19.A.txt",
+      "sha256": "733b87f0eae692ef22af1170de4c82c235ffd44483419ef79ac88685b38fbcdb"
+    },
+    {
+      "path": "Examples/E_Block_19.B.txt",
+      "sha256": "feb1324e467d44e6b92b274c4e207ac932f7615c18c385b3dcac53c1a3199d9e"
+    },
+    {
+      "path": "Examples/E_Block_19.C.txt",
+      "sha256": "415840b12aa4cffcb55bbafc4314f973a0296f362bc77cb490fe427a1458200e"
+    },
+    {
+      "path": "Examples/E_Block_19.D.txt",
+      "sha256": "23fa1afda9234dc4ee6d3fb0a4bb4657b7157a7bad1ba94a1b2faac6453bb5e2"
+    },
+    {
+      "path": "Examples/E_Block_19.E.txt",
+      "sha256": "675b28ad71da3a39a85408773de501b9b2ece0dc869a86d1fa9cfd2916a14e9b"
+    },
+    {
+      "path": "Examples/E_Block_19.F.txt",
+      "sha256": "437e635a2bdbf5a636ba744f9e8abb7c24edca0f2d8947cc97ad96e2057d3fdd"
+    },
+    {
+      "path": "Examples/E_Block_19.K.txt",
+      "sha256": "15c2f02bee8a60586c826a98a92d10f1f95fa26568f3ebd3a545ca871a7d0530"
+    },
+    {
+      "path": "Examples/E_Block_19.txt",
+      "sha256": "8839deb40b3568b366572bf1ecea57599bc6931820522b33be87eede0414c132"
+    },
+    {
+      "path": "Examples/E_Block_19_extension.txt",
+      "sha256": "f736615f08f4dbfb39c6a434e6bf6f6bc02c331789bfaa27350c727aee8364e3"
+    },
+    {
+      "path": "Examples/E_Block_2.5.txt",
+      "sha256": "d766f73c3968a3951422a8e10c0158b64bd2d72b2d4302cbbe1b7c4c8a9bd2ca"
+    },
+    {
+      "path": "Examples/E_Block_2.6.txt",
+      "sha256": "3c99d0701170710ed60f9c9989bdb30a2aed3185237b41fde5cf9550a93a9b26"
+    },
+    {
+      "path": "Examples/E_Block_2.txt",
+      "sha256": "4ab4d6b43fee8a54ccf960dda5135dd9eb2059fbbeb5ae1d91e232fabe76a180"
+    },
+    {
+      "path": "Examples/E_Block_20.txt",
+      "sha256": "7e1a821709549d85c0d6a459ca316ae80fa294a81fc445c43ec3c302f03fe5a0"
+    },
+    {
+      "path": "Examples/E_Block_21.5.txt",
+      "sha256": "a6bc2ff8b4b0b9f08f226cb19258361be90838e2bd1408c5eeb6a6048c2c3250"
+    },
+    {
+      "path": "Examples/E_Block_21.txt",
+      "sha256": "66e45ea2bfb67779f76cb223b58e8c1317133cb7717ee0aade60f255e039633e"
+    },
+    {
+      "path": "Examples/E_Block_22.txt",
+      "sha256": "b0c36f2c2e46f6fa3fb9a7d2397b35b41d192209de1ec278b03f530366fac604"
+    },
+    {
+      "path": "Examples/E_Block_23.A.txt",
+      "sha256": "c74b6e20cb9f9902eb0562ab73d3fddfd779c3d303676f6de80eaf2fc5420388"
+    },
+    {
+      "path": "Examples/E_Block_23.txt",
+      "sha256": "4c61256d35435fec75f98a9bdb4e53ff65120a93bc5212cae5560899b089ce37"
+    },
+    {
+      "path": "Examples/E_Block_24.txt",
+      "sha256": "e4f7c54b0fc51d74db568fe1fb455e2529c9b112b0a68dd98a962ccf1a0a14dd"
+    },
+    {
+      "path": "Examples/E_Block_25.A.txt",
+      "sha256": "86b1c22676f167cdc9da62d536f146a0fbd70f476c6b444d5d9756d995ac5f1e"
+    },
+    {
+      "path": "Examples/E_Block_25.txt",
+      "sha256": "5b15ac11413fbf88703ad5910aefaf5245c50b53b44c714a83c1f8ecf4161a27"
+    },
+    {
+      "path": "Examples/E_Block_26.txt",
+      "sha256": "2d3841cc6261667351518bc1b089d5be65c3c62b7f64f794706fa7439609919d"
+    },
+    {
+      "path": "Examples/E_Block_27.txt",
+      "sha256": "cfe07b098df436f142bb7b66250e56fab0bb15d75e23a48cd7021e6e765640df"
+    },
+    {
+      "path": "Examples/E_Block_28.txt",
+      "sha256": "05d57f505efaa145860ea83bf7c5343e362ce10dafa04e04aad44ab61644b30d"
+    },
+    {
+      "path": "Examples/E_Block_29.txt",
+      "sha256": "be59b69a9d1dc0bcdb39ec738f2fdf9806b4201110eb2d06e401361e60b65d5e"
+    },
+    {
+      "path": "Examples/E_Block_3.txt",
+      "sha256": "53c831e549684b982101a88fa5363b2ba91f8a42c2d31190bdd7dcd2a7019b65"
+    },
+    {
+      "path": "Examples/E_Block_31.txt",
+      "sha256": "a98c79959ac612d1320de72998411b959b6b3b9dc3454be84852b0d69b9c33c1"
+    },
+    {
+      "path": "Examples/E_Block_32.txt",
+      "sha256": "2b35993241ff3b39c18f76ed95496a73058526c7c2ed9dca9d864e5467d16b39"
+    },
+    {
+      "path": "Examples/E_Block_4.txt",
+      "sha256": "32090a3e6a40ec08296fc3ac343385eb7ae828333969fcb1a475ccf4d1fd78fd"
+    },
+    {
+      "path": "Examples/E_Block_5.A.txt",
+      "sha256": "fe2bad32ef983e6c3a8b7f791e145dc23eb8c59e0f81af4d4eb9ce566fef259e"
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04"
+    },
+    {
+      "path": "Examples/E_Block_6.txt",
+      "sha256": "186408021e85657785fb05ba059a1a89921e8d0bde54d1f32136d05925b37454"
+    },
+    {
+      "path": "Examples/E_Block_7.txt",
+      "sha256": "2c2d31cbc3f7fae5c80545f9e7d71350b3d3e6e1d5e4f033175303a220d9a380"
+    },
+    {
+      "path": "Examples/E_Block_8.txt",
+      "sha256": "d6a7a2cd628e8a0a7bbc0ed30c4ac91cbfc6a998ba727ee88a56153886f77032"
+    },
+    {
+      "path": "Examples/E_Block_9.txt",
+      "sha256": "75cb572c818216958d901902d8403fcda6a2923047c6ceea12ce9b5992b7385a"
+    },
+    {
+      "path": "Examples/E_Block_9_Complete_Categories.txt",
+      "sha256": "d2896d996c29df57a3840fe0ac1c7a604c2c23a400571379deeeda25e63d0ea6"
+    },
+    {
+      "path": "Examples/E_Block_9_Universal.txt",
+      "sha256": "67bff5e4ba125e60d5cb92f2da0bba0deb8dc28348fb8a7869f455928cca61eb"
+    },
+    {
+      "path": "Examples/E_Block_9_Updated.txt",
+      "sha256": "cf20e5f20fed332e7e526b3e123e7a700a6c1a6a6b3937c3676f19ec703dd288"
+    },
+    {
+      "path": "Examples/E_Block_FINAL.txt",
+      "sha256": "7642127da5a1d33dfeb51fa6a9ad887df3d453312ad61cb1e01e2dc1713ca463"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49"
+    },
+    {
+      "path": "Examples/E_CLI_Effect_Materialization.txt",
+      "sha256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
+      "sha256": "2e235f1f45ba18aa65871143f2fc8bc3782a5741cee1da9445daf0db4014bad8"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Content_Authoring.txt",
+      "sha256": "a7f390394b7bb618977035f880d292ce89a5e0bf5fa7963bc424bc7d8f96ab93"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt",
+      "sha256": "3b3701676fcd369898e06356dc47bc952afc4e49bf3e54ca50637b4ee6cf2c58"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Narrative_Draft.txt",
+      "sha256": "b135b501e51cbfd58933b84b549cdb8bc0a154b0c79d5b461c4962bceb786842"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Npc_Content.txt",
+      "sha256": "4a9bd9ee89a7bc916ab0cbf0c1837a608a1161e6393d3d6facca6da6c6915c30"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Skill_Content.txt",
+      "sha256": "3197a671c424eb7e279ea2c791e88c830d5e8faa900785648178aba97fd0ae14"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Soul_Content.txt",
+      "sha256": "8f9f218effe66ad289fe708916365b1953f520bec34186f6237de1d13d737ae7"
+    },
+    {
+      "path": "Examples/E_CLI_GM_Worker_Validation_Repair.txt",
+      "sha256": "dc157f36ce7fd371d0743a0bfc65ec1e0cb82738cc4c7838824821c2e1905f0d"
+    },
+    {
+      "path": "Examples/E_CLI_Ink_Feather_Actions.txt",
+      "sha256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2"
+    },
+    {
+      "path": "Examples/E_CLI_Mortal_Item_Materialization.txt",
+      "sha256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0"
+    },
+    {
+      "path": "Examples/E_CLI_Mortal_Npc_Social_Turns.txt",
+      "sha256": "19635f19d08a8cae6de1c09e36d40c32966e6cf46f1ac791942eb50822e3361c"
+    },
+    {
+      "path": "Examples/E_CLI_Mortal_Resources.txt",
+      "sha256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398"
+    },
+    {
+      "path": "Examples/E_CLI_NPC_Trade.txt",
+      "sha256": "a19c66881c9174902bcb9ee2d1747ed3053a6726b69c351f554c3bcdc88e6b15"
+    },
+    {
+      "path": "Examples/E_CLI_QTE_Offer.txt",
+      "sha256": "691252786980c31541d02e25ea97417822916dde1043428f019a38a35cb81127"
+    },
+    {
+      "path": "Examples/E_CLI_Quest_Reward_Authority.txt",
+      "sha256": "fbe3f11210691e943329481775b74126c7e9cf5a496f737204b0e3053e63d3b9"
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3"
+    },
+    {
+      "path": "Examples/E_CLI_Training_Showcases.txt",
+      "sha256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "sha256": "f0db4343161727ec0b62b160bbf178fe828a7e72b94a93c78266ff7580acd1dd"
+    },
+    {
+      "path": "Examples/E_Soul_Relic_Integration.txt",
+      "sha256": "b52e8d8bccca3e99d445d9ca3448f74a36bd82eff6b54d07cb9aaf0425dcf723"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "sha256": "3bde751e8ffb5a1bae01ad169a0104d093a1c055f75333609a52d49a6a3fc2d3"
+    },
+    {
+      "path": "Rules/Block_CLI_Operations.txt",
+      "sha256": "a4dc12edc23a64e5380f9fdbbf9e1c93293e742c88a1bc0f03b8fefbbc9bb91e"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b"
+    }
+  ]
+}

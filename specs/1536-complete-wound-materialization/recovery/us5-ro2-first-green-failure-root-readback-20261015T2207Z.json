@@ -1,0 +1,66 @@
+{
+  "task": "#1536 RO2 first GREEN failure ROOT qualification",
+  "testedCompiledGit": "29f5bd6a4dec63e027fbe378a99d6f03c139c173",
+  "packetHashes": {
+    "us5-ro2-green-fresh-both-29f5bd6a4-20261015T220105Z": "14c4f7ae380ee4d887bc0181b52fdbf8a132a45978bd2b082218de60c4d510a3",
+    "us5-ro2-green-catalog-29f5bd6a4-20261015T220413Z": "fb67af59c89592eb5f0fe18ed1e65e319cbc1cfc4e8ba44ece122aa164bed00e",
+    "us5-ro2-green-exact-plan-29f5bd6a4-20261015T220445Z": "a713ad6750aefde5890126298fe822b3cf79a6c6023bf0467da10e0ae60c527d",
+    "us5-ro2-green-actual-29f5bd6a4-20261015T220510Z": "eacb87dcd66b156957c4b9ae182a745ab08065c1642dfb74edf90d61902d1a9a"
+  },
+  "chains": 27,
+  "testedGitCurrentCodePins": 2557,
+  "supplementaryDocumentPins": 87,
+  "documentPinSha256": "d23a74b8cdb4a5abc0568cb8e6f9401df5b674fe3f20b7f0268c1d78bc83015e",
+  "binaryPins": 8,
+  "actual": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "nativeExit": 1,
+  "wallTime": "00:00:06.7274468",
+  "cases": [
+    {
+      "executionId": "6828b045-9b70-402e-979e-846e178945db",
+      "testId": "bd2abb9f-020b-1a60-b4eb-7003ba96a45d",
+      "testName": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+      "computerName": "9bd05b0fec52",
+      "duration": "00:00:00.0178218",
+      "startTime": "2026-10-15T22:05:17.5423601+00:00",
+      "endTime": "2026-10-15T22:05:17.5423727+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "6828b045-9b70-402e-979e-846e178945db",
+      "className": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests",
+      "methodName": "MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+      "codeBase": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "trx": "TestResults/test-categories/20261015-220511-072-189342-bbddd740b89d4f6fb16c2e1a39194008-categories/documentation-afterlife-entrypoints-coverage-unit-001.trx",
+      "cleanup": [],
+      "rootOwnership": "pure_projection_or_source_guard"
+    },
+    {
+      "executionId": "48be5d90-6505-4b2c-858e-81633eb541ff",
+      "testId": "121280ab-ce07-7582-b92c-2149ed40bd12",
+      "testName": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+      "computerName": "9bd05b0fec52",
+      "duration": "00:00:00.0463304",
+      "startTime": "2026-10-15T22:05:17.5961753+00:00",
+      "endTime": "2026-10-15T22:05:17.5961755+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Failed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "48be5d90-6505-4b2c-858e-81633eb541ff",
+      "className": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests",
+      "methodName": "AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+      "codeBase": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "trx": "TestResults/test-categories/20261015-220511-072-189342-bbddd740b89d4f6fb16c2e1a39194008-categories/documentation-afterlife-entrypoints-coverage-unit-001.trx",
+      "cleanup": [],
+      "rootOwnership": "pure_projection_or_source_guard"
+    }
+  ],
+  "ownedRoots": 0,
+  "limit": "Two pure unit documentation controls only;93remainingcases UNRUN; no reader/publicUI/fixturecleanup PASS. Failed shared manifest loader rejects preexisting qtePhysicalOpportunityProjectionCoverage before numberedexample mapping assertions; root Disallow must remain strict.",
+  "preNativeDocuments": "87 exactGit/current inputs captured beforecatalog/runtime, outside repo to keep native revision clean; exactcopy now restoredto recovery. All87and80Examples enumeration unchangedpostnative."
+}
