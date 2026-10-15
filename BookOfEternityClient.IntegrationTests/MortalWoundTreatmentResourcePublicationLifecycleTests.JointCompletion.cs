@@ -84,6 +84,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         MortalWoundTreatmentResourceFinalization finalization = null!;
         WoundResponseInputCompositionResult composition = null!;
         PendingTurnSnapshotReadAuthority original = null!;
+        byte[] signedOriginalSchedule = null!;
         JsonObject decision = null!;
         string generation = null!;
         Dictionary<string, byte[]?> before = new(StringComparer.Ordinal);
@@ -132,6 +133,26 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
                 original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
+                // The progression basis is the SIGNED original, not the later
+                // current schedule that ordinary GM preparation may have updated.
+                // The QTE-only reader above does not select schedule coverage.
+                var progressionRead = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+                    new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json", ProgressionScheduleService.SchedulePath], []));
+                WritePhysicalInjuryDiagnostic("fr063_joint_original_progression_reader_before_owner", new
+                {
+                    progressionRead.Success, Issues = progressionRead.Issues.Select(issue => issue.Code).ToArray(),
+                    Expected = new { original.Realm, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },
+                    Actual = progressionRead.Snapshot is { } observed
+                        ? new { observed.Realm, observed.SessionId, observed.RequestId, observed.SnapshotToken, observed.TurnNumber } : null
+                });
+                Assert.True(progressionRead.Success, DescribeValidationIssues(progressionRead.Issues));
+                var progressionOriginal = Assert.IsType<PendingTurnSnapshotReadAuthority>(progressionRead.Snapshot);
+                Assert.Equal(original.Realm, progressionOriginal.Realm);
+                Assert.Equal(original.SessionId, progressionOriginal.SessionId); Assert.Equal(original.RequestId, progressionOriginal.RequestId);
+                Assert.Equal(original.SnapshotToken, progressionOriginal.SnapshotToken); Assert.Equal(original.TurnNumber, progressionOriginal.TurnNumber);
+                signedOriginalSchedule = progressionOriginal.ReadRequiredBytes(ProgressionScheduleService.SchedulePath).ToArray();
+                WritePhysicalInjuryDiagnostic("fr063_joint_signed_original_schedule_before_owner", new
+                { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, ScheduleBytes = signedOriginalSchedule });
                 foreach (var image in jointCurrentTail)
                     AssertJointNaturalStage43Image("current", image.Key, image.Value,
                         await _fs.ReadFileBytesAsync(lease, image.Key));
@@ -323,6 +344,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                      WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
                      MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath })
             Assert.Equal(before[path], dispatch.Images[path]);
+        Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
         if (pauseAppliedForCold || pauseUnappliedForCold)
         {
@@ -332,7 +354,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 // Verify genuine report consumption and frozen schedule arithmetic
                 // BEFORE returning to a fresh process. Unapplied must remain beforephase.
-                await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
+                await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, signedOriginalSchedule, before, milestones);
                 Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
                 Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);
                 Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);
@@ -343,7 +365,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             return;
         }
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
-        await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
+        await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, signedOriginalSchedule, before, milestones);
         Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
         Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);
         Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);
@@ -876,7 +898,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private async Task AssertJointProgressionReportOutcomeAsync(bool nonzeroProgression, PendingTurnSnapshotReadAuthority original,
-        IReadOnlyDictionary<string, byte[]?> before, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones)
+        byte[] signedOriginalSchedule, IReadOnlyDictionary<string, byte[]?> before, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones)
     {
         var request = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual progression source request");
@@ -895,7 +917,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(JsonNode.DeepEquals(initial["scheduleAfter"], final["scheduleAfter"]));
         Assert.True(JsonNode.DeepEquals(initial["reportAfter"], final["reportAfter"]));
         Assert.Equal(initial["mutationFingerprint"]!.GetValue<string>(), final["mutationFingerprint"]!.GetValue<string>());
-        var scheduleBefore = Assert.IsType<byte[]>(before[ProgressionScheduleService.SchedulePath]);
+        var preRepairCurrentSchedule = Assert.IsType<byte[]>(before[ProgressionScheduleService.SchedulePath]);
+        var scheduleBefore = signedOriginalSchedule;
         Assert.Equal(scheduleBefore, unapplied.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(scheduleBefore, Convert.FromBase64String(final["scheduleBefore"]!["bytes"]!.GetValue<string>()));
         var expectedAfter = Convert.FromBase64String(final["scheduleAfter"]!["bytes"]!.GetValue<string>());
@@ -930,7 +953,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         WritePhysicalInjuryDiagnostic("fr063_joint_progression_phase_report_arithmetic", new
         { nonzeroProgression, original.SessionId, original.RequestId, OriginalTurn = original.TurnNumber,
             ActualOriginalControl = control, Unapplied = initial, Applied = final,
-            ScheduleBefore = Convert.ToBase64String(scheduleBefore), ReportBefore = reportBefore is null ? null : Convert.ToBase64String(reportBefore),
+            SignedOriginalScheduleBefore = Convert.ToBase64String(scheduleBefore),
+            PreRepairCurrentSchedule = Convert.ToBase64String(preRepairCurrentSchedule), ReportBefore = reportBefore is null ? null : Convert.ToBase64String(reportBefore),
             ExactScheduleAfter = Convert.ToBase64String(expectedAfter), ReportAfterAbsent = true });
     }
 }
