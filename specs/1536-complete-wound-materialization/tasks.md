@@ -1,3 +1,8 @@
+## Positive fixture corrected static gates accepted; fresh preparation next — 2026-10-15
+
+- Independent SOURCE/FIXTURE/SELECTION accepted exact4e2f028bf2bd84a6ee24ad6af01caeb42777e378 (37filepins), no blockers. Three fixture changes preserve all production/authority/member/budgets/methods/cases; shared child-launcher log consumers statically compatible. Exact byte-identical report pair091732 retained. Static19selections/40methods94cases23descriptors is not official discovery/runtime.
+- This carrier only adds the exact review pair and identical status fronts. Remint full source pins including newly required BrowserInputRecovery.cs; fresh BOTH40/94/23, strict discovery, exact Late2 Plan and official catalog751/11596 then first actual Late2 ONLY. Old42fa binaries invalid for changed candidate. Positive/further stages HELD pending new Late2 EVIDENCE and separately checked controller provenance adaptation. Historical basis65d3/42fa19PASS and checkpoint540/d6 5PASS are dependency-unaffected, no new repeat/transfer claim. FullFR063/T070/#1536 and prior open scope remainOPEN.
+
 ## Bounded positive fixture correction WIP — 2026-10-15
 
 - Tracked FR063/T070/#1536: independent EVIDENCE/causal review090500 accepts exact prior basis19PASS/positive2FAIL, both36chains/197source/11binarypins/realcleanup, confirmed fixture defects and bd260575 erratum. Exact byte-identical report pair retained. No runtime release from that report.
