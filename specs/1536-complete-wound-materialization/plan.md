@@ -1,5 +1,44 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## First capture-corrected Late2 outcome: incomplete before-image inventory — 2026-10-15
+
+Tested and compile source `6b0d00fe44e276da91a55d284d09d0c409ba2fc2`.
+The capture-preservation SOURCE/FIXTURE/SELECTION gates were accepted statically.
+Fresh BOTH 140.3837369s, exact PlanOnly 4.6730196s and catalog 5.4188793s
+were native 0 and executed zero tests; official inventory 32 methods/58 cases/
+18 descriptors, catalog Valid 746 categories/11588 methods, no unmapped/stale.
+Only the failed Late2 first corrected outcome then executed: native 1,
+68.8963900s, 2 executed/0 PASS/2 FAIL, complete 1/1 descriptor and 2/2 cases,
+no timeout. All 160 source pins and 11 selected binary pins matched pre/post;
+these selected files do not cover every loaded dependency. Two actual cleanup
+receipts report removal with no failure and both owned roots were absent.
+The 49 raw artifact chains and manifest were frozen before diagnosis/metadata.
+
+Both actual owners reached checkpoint/correction-ready, PublicationUncertain,
+and one complete `wound_plan_joint_common_plan_invalid` issue: exact before-image
+missing for `game_state/control/pending_spiritual_wound_decisions.json`.
+The prior complete-private-union-context message is absent. Both remain turn 42
+and fail missing Spend43 at JointCompletion.cs:676; joint publication is unproved.
+Read-only diagnosis finds 13 omitted paths from the existing closed 40-path
+realm-independent contract: only the first is natively observed, 12 are inferred
+from source. Frozen evidence distinguishes 3 signed-original absent spiritual
+roots, 5 structurally absent journals and 5 present roots including npc_journals.
+Neither original absence nor an omitted sampled map key proves current absence.
+The initial six-absent-journals wording was corrected additively; originals remain.
+All 160 tested source pins matched before these ROOT metadata-only additions.
+
+No project source, fixture, selector, guard, GM contract or task checkbox changed.
+Same writer FINAL STOPPED; no pending tools/writes. Independent outcome EVIDENCE
+and complete-contract/authority-scope review remain required before any correction.
+A complete physical current capture under the existing lease must not fabricate
+signed absence, weaken cross-realm guards or grant active foreign-work ownership.
+All source fixes, runtime retries and later12 actual stages remain HELD/UNRUN.
+Checkpoint5 component PASS is retained without repetition. Full FR063/T070,
+live/cold/new-root, lawful active combinations, fresh-PID initially bad authority
+and arbitrary partial-cleanup/erased-ownership contours remain OPEN/UNQUALIFIED.
+Historical requested retained Sol; actual backend/model/effort telemetry UNAVAILABLE.
+All earlier metadata tails, failed outcomes and task checkmarks remain byte-exact.
+
 ## Joint assembly capture outcome preservation SOURCE WIP — 2026-10-15
 
 Owning base `456fd0e853a981e1c30485669f0c14ebafd0bda0`. Independent EVIDENCE

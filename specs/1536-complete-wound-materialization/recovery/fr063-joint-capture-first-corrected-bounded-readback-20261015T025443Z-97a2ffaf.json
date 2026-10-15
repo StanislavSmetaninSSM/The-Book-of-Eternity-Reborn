@@ -1,0 +1,192 @@
+{
+  "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+  "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+  "native": {
+    "run": "20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories",
+    "wallTime": "00:01:08.8963900",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5976c2e254c643999584a32ff3d92d28",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e98b5504ed8e4e6cbae622702d7bf355",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 2,
+      "qte_story_actual_client_append": 2,
+      "qte_story_actual_engine_result": 2,
+      "qte_physical_actual_occurrence": 2,
+      "fr063_joint_actual_prior42_inactive_tail": 2,
+      "fr063_joint_natural_stage43_image_before_assert": 38,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+      "fr063_confirmed_claim_inspection": 2,
+      "fr063_joint_completion_actual_prerequisites": 2,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+      "fr063_joint_completion_actual_owner_outcome": 2
+    }
+  },
+  "diagnosticSnapshots": [
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "PublicationUncertain",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 1,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 1,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "E3C693D84DE97C5197E9008637E29612C035E2571410AF984AA88A166566E777",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "wound_plan_joint_common_plan_invalid",
+              "OriginalLength": 36,
+              "Truncated": false,
+              "FullUtf8Sha256": "DEC327B2EE9FE6BE6436D622E70697F998499CAA045AA227A1C1FBC971704E92"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "Wound accepted mechanics path 'game_state/control/pending_spiritual_wound_decisions.json' has no exact before-image. (Parameter 'BeforeImages')",
+              "OriginalLength": 143,
+              "Truncated": false,
+              "FullUtf8Sha256": "C7E914A3FEC9E456B85D8E20FBF90E8E9BC940B394B41474372747960F3A55E5"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    },
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "PublicationUncertain",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 1,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 1,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "E3C693D84DE97C5197E9008637E29612C035E2571410AF984AA88A166566E777",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "wound_plan_joint_common_plan_invalid",
+              "OriginalLength": 36,
+              "Truncated": false,
+              "FullUtf8Sha256": "DEC327B2EE9FE6BE6436D622E70697F998499CAA045AA227A1C1FBC971704E92"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "Wound accepted mechanics path 'game_state/control/pending_spiritual_wound_decisions.json' has no exact before-image. (Parameter 'BeforeImages')",
+              "OriginalLength": 143,
+              "Truncated": false,
+              "FullUtf8Sha256": "C7E914A3FEC9E456B85D8E20FBF90E8E9BC940B394B41474372747960F3A55E5"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    }
+  ],
+  "boundedTestErrors": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    }
+  ],
+  "ownerScalars": [
+    {
+      "nonzeroProgression": true,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors",
+      "ActualTurn": 42,
+      "InputKeyAvailable": false
+    },
+    {
+      "nonzeroProgression": false,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors",
+      "ActualTurn": 42,
+      "InputKeyAvailable": false
+    }
+  ],
+  "rawFrozenBeforeThisRead": true,
+  "classification": "PENDING_SOURCE_DIAGNOSIS_AND_INDEPENDENT_EVIDENCE",
+  "furtherRunsOrSourceFix": "HELD",
+  "later12": "UNRUN"
+}
