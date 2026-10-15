@@ -1,3 +1,9 @@
+## US5-RO1 corrected SOURCE/FIXTURE/SELECTION accepted; bounded verification released — 2026-10-15
+
+- Independent203309 accepts F1/F2 through2844f5422f90ccbf9e22fa46f7d2d450bbbfe5ba including exact proposal replay. MDcfcb16ff2d9201f7ce9aefaa63a3436b2939e74ff28ef6c17378c099256b823f / JSON8682d7dfc8e3aa425697eeed01d7f501e306672be863cedc4dd62a4b70355dd5 exact copies retained; FINALSTOP/no pending writes. Requested Astra XHigh/backend telemetry unavailable.
+- Release only fresh selected BOTH build/official zero-execution Plan/catalog, then exact wounds-player-projection + wounds-player-read. Predicted33methods/65cases is static only; actual inventory required. Each category unchanged3min protective budget. First unexpected failure freezes and publishes before causal correction; no old A7, Late2 or historical blanket rerun.
+- This carrier changes only review copies and plan/tasks metadata, build inputs identical to reviewed2844. Runtime GREEN UNRUN, RO2 existing public consumers next, whole FR063/T070/#1536/lawful ACTIVE OPEN. GitHub-only recovery9f checked7changedpaths exact bytes/clean/noalternates; main unchanged.
+
 ## US5-RO1 proposal replay precision — 2026-10-15
 
 - Replace only the proposal negative fixture with the original three-field UpdateInventory itemId/creationRef/name scenario from independent F1. Prior sealed-item variation was also excluded by its envelope mismatch; it did not isolate the catalog proposal leak. Production correction, assertions, finite selection and budgets unchanged. Fresh preparation/runtime UNRUN; correction review pending.
