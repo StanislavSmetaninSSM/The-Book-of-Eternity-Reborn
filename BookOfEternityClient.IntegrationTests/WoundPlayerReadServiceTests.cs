@@ -115,9 +115,12 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         var inventory = new JsonObject { ["items"] = new JsonArray(item) };
         if (state == "proposal")
         {
-            item["creationRef"] = "proposal_secret";
             inventory["items"] = new JsonArray();
-            inventory["UpdateInventory"] = new JsonArray(item.DeepClone());
+            inventory["UpdateInventory"] = new JsonArray(new JsonObject
+            {
+                ["itemId"] = "sterile_thread", ["creationRef"] = "proposal_secret",
+                ["name"] = "Известная хирургическая нить"
+            });
         }
         if (state == "bare") inventory["items"] = new JsonArray(new JsonObject
             { ["itemId"] = "sterile_thread", ["name"] = "Известная хирургическая нить" });

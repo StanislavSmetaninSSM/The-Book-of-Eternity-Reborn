@@ -1,3 +1,7 @@
+## US5-RO1 proposal replay precision — 2026-10-15
+
+- Replace only the proposal negative fixture with the original three-field UpdateInventory itemId/creationRef/name scenario from independent F1. Prior sealed-item variation was also excluded by its envelope mismatch; it did not isolate the catalog proposal leak. Production correction, assertions, finite selection and budgets unchanged. Fresh preparation/runtime UNRUN; correction review pending.
+
 ## US5-RO1 independent F1/F2 corrections WIP — 2026-10-15
 
 - Independent SOURCE/FIXTURE/SELECTION202510 holds GREEN for unaccepted/proposal/contained item-label disclosure and missing nonempty afterlife owned-effect positives; exact MD731abc8a20e44892250e6fd9143fddb6630a08f4451f5e14e352d2473dd7c59e / JSON3a2b012bbb3066c01382a4570e88617961b8a7b5784c7c2838df9b9015672ede retained. Recorded reader RED independently verified; current implementation remains UNRUN.
