@@ -1,5 +1,46 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## First corrected-map Late2 outcome frozen: common-context refusal — 2026-10-15
+
+Source/compile39be635be4cbeb4c080ab05e3b09ed6d40c984e6; corrected private map
+handoff SOURCE/FIXTURE/SELECTION gates accepted statically before execution.
+Fresh BOTH137.7460153s/exactPlan4.5372149s/catalog5.3175846s each native0;
+32methods58cases18descriptors/catalogValid746categories11588methods/no unmapped
+or stale selectors. All three executed0tests; logs0errors/130integration+35unit
+warnings.160source/11selectedbinary pins matched; no every-loaded-dependency
+or performance qualification follows.
+
+Only Late2 ran for its first corrected outcome:2executed/0PASS2FAIL/native1,
+complete1/1,68.7795346s/no timeout.160source11binary pre/post match;2actual
+strict cleanup receipts/removal=true/failure=null and both roots absent.
+49artifact chains were frozen before diagnosis/metadata. Old failures stay
+immutable; checkpoint5componentPASS not repeated; later12actual stagesUNRUN.
+
+Both retained snapshots now have exactlyONEfully emitted issue:
+wound_plan_joint_common_plan_invalid atacceptedTurn.wounds, with the message
+that joint common context requires its complete private union authority.
+CorrectionReady=true/PublicationUncertain/held42 and missingSpend43 remain.
+Prior effect-location/stage issues are absent. Source flow supports advancement
+to common creation, not completed joint publication or downstream qualification.
+
+Read-only source trace identifies CaptureAssemblyInput retaining joint authority
+but replacing RegisteredSystemOutcomes with empty; that authority strictly
+requires the same sole registered outcome reference. ROOT verified the capture,
+constructor and Count1/reference predicate. Native evidence lacks a constructor
+stack/reduction kind, so Completed versus Awaiting callsite is not established.
+Lazy assembly reads previously computed reduction results and projections;
+source trace finds no second Reduce/Project/Apply there. A proposed joint-only
+retention of the same prevalidated outcome remains subject to independent
+EVIDENCE and corrected-source review; old nonjoint empty branch, discarded
+identity factories, fullunion/currentG/seal/claim/singleTake/publish guards and
+all strict once-spend/history oracles must stay. Constructor acceptance alone
+would not prove no replay or full-context agreement.
+
+No further source fix or rerun is released. If closure requires new replay,
+pending/issuer behavior or relaxed authority agreement, stop for architecture.
+FullFR063/T070/live/cold/newroot and previously open contours remainOPEN.
+This factual ROOT checkpoint changes no task checkmarks or historical tails.
+
 ## Joint CREATE diagnostic-location handoff correction SOURCE WIP STOP — 2026-10-15
 
 Owning base `d5ab24c7e2d7d00759611371cf7aead625de2b44`. Independent EVIDENCE
