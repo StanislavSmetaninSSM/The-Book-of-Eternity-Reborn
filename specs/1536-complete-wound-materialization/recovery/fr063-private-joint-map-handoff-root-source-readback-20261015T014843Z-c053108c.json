@@ -1,0 +1,20 @@
+{
+  "base": "d5ab24c7e2d7d00759611371cf7aead625de2b44",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPaths": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "protectedSelectedPinsExact": 152,
+  "supportingPinsExact": 12,
+  "authoredHashesExact": true,
+  "wholePlannerNineChangesInverseExact": true,
+  "MD2oldTailsCheckboxesExact": true,
+  "gitDiffCheckExitCode": 0,
+  "rootSourceRead": "642dc4 exactdiff; realcorrectedrootsealed/private mapderivationbeforeeffectfingerprint/recompose;strictguardandfixturesunchanged",
+  "compilerApiFixtureBehavior": "UNCHECKED",
+  "projectExecution": false,
+  "focusedGates": "UNRUN",
+  "GMNoUpdate": "clientowneddiagnosticprovenance/nopublicauthoredfieldgameplaychange"
+}

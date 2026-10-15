@@ -1,5 +1,35 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint CREATE diagnostic-location handoff correction SOURCE WIP STOP — 2026-10-15
+
+Owning base `d5ab24c7e2d7d00759611371cf7aead625de2b44`. Independent EVIDENCE
+d298c2ac ACCEPTED the two executed connected failures as a confirmed Important private
+joint producer handoff omission: nonnull skill scope with no required CREATE location map.
+PublicationUncertain here is a retained pre-publication stage refusal, not proof of native
+partial mechanical publication. Both actual Late2 failures and all raw evidence stay exact.
+
+One private joint-planner partial now retains a detached copy of the actual command root
+returned by fresh RevalidateCorrectionAsync under the participating lease and includes it
+in the private continuation seal. Every joint effect-input composition re-parses that
+closed acquisition root against its independently authenticated opportunity, derives the
+existing ValidateSkillScopes map, rejects malformed/ambiguous/scope errors, and binds it
+to actual prepared IDs with BindPreparedSources. The bound map is inside the SAME input
+before fingerprint/cache; agreement/final recomposition use the same producer. Guarded
+current draft/scene/source roots, original/G/confirmed claim, union/vector/one-stage and
+all old-family guards remain unchanged. No physical treatment-command substitution,
+caller map/hash, null scope, fake path/continuation, new reservation/stage or guard waiver.
+
+This is client-owned diagnostic provenance, not a public capability/GM/gameplay change;
+no prompt/example/manifest/normative update is required. No fixture/oracle/category/
+selection/budget changes; existing strict Late2 and mapping-negative/cache guards remain.
+SOURCE WIP requires saved/recovered focused SOURCE/FIXTURE/SELECTION closure before fresh
+matching prerequisites and ONLY failed Late2 first outcome/freeze. No project/compiler/
+build/discovery/catalog/PlanOnly/test/runtime/fault/provider execution ran. Current API/
+compilation/fixture/downstream behavior is UNCHECKED; later12 stages remain UNRUN/HELD,
+checkpoint5 is not repeated. All historical tails/checkmarks/provenance stay immutable.
+FullFR063 and lawful-active/initial-bad-authority/partial-cleanup/erased-trace remain OPEN;
+no completed joint turn, GREEN or qualification is claimed.
+
 ## First Late2 in-memory diagnostic outcome frozen — ROOT checkpoint 2026-10-15
 
 Source/compile76b7d5ffd997d018690494faef5740c5dfcc2c84. Diagnostic-only fixture

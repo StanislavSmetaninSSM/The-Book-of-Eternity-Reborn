@@ -16,12 +16,14 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly FileSystemManager _files;
         private readonly Dictionary<string, byte[]?> _before;
         private readonly WoundAcceptedTurnInput _acquisitionInput;
+        private readonly JsonObject _acquisitionCommandRoot;
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
         internal JointRepairContinuationAuthority(object issuer, FileSystemManager files,
             string generation, MortalJointRepairCheckpoint checkpoint,
             WoundAcceptedTurnInput acquisitionInput, WoundAcceptedTurnInput treatmentInput,
+            JsonObject acquisitionCommandRoot,
             MortalWoundTreatmentAcceptedStateAuthority accepted,
             MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution,
             MortalWoundTreatmentResourceFinalization finalization,
@@ -32,6 +34,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (!ReferenceEquals(issuer, JointRepairIssuer)) throw new InvalidOperationException("Joint preparation requires its private issuer.");
             _files = files; Generation = generation; Checkpoint = checkpoint;
             _acquisitionInput = WoundAcceptedTurnData.CloneInput(acquisitionInput)!;
+            _acquisitionCommandRoot = acquisitionCommandRoot.DeepClone().AsObject();
             _treatmentInput = WoundAcceptedTurnData.CloneInput(treatmentInput)!;
             Accepted = accepted; Request = request; Resolution = resolution; Finalization = finalization;
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
@@ -56,6 +59,18 @@ internal static partial class WoundAcceptedTurnPlanner
                 _before[path] is not { } bytes ? null : (JsonNode?)StrictJsonAuthority.Deserialize<JsonObject>(
                     new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
                     SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path), StringComparer.Ordinal);
+        internal IReadOnlyList<WoundResponseCommandDraft> ReadAcquisitionCommands()
+        {
+            // This root came only from the factory's fresh actual corrected QTE
+            // adapter, not the physical homogeneous treatment command or a caller.
+            var parsed = WoundResponseInputComposer.ParseCommandRoot(
+                System.Text.Json.JsonSerializer.SerializeToElement(_acquisitionCommandRoot),
+                _acquisitionInput.Opportunities);
+            if (!parsed.Success || parsed.Commands.Count != 1 || parsed.TreatmentCommands.Count != 0 ||
+                parsed.AcceptedTransitionCommands.Count != 0)
+                throw new InvalidDataException("The privately retained corrected acquisition command is not one exact closed CREATE source.");
+            return parsed.Commands;
+        }
         internal bool HasValidSeal => ReferenceEquals(Resolution.RequestAuthority, Request) &&
             _outcome.AgreesWith(Resolution) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
             Finalization.ResultFingerprint == Resolution.ResultFingerprint &&
@@ -68,6 +83,7 @@ internal static partial class WoundAcceptedTurnPlanner
             {
                 JointRepairDomain, Generation, Checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>(),
                 WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput),
+                _acquisitionCommandRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
                 WoundAcceptedTurnFingerprints.ComputeInput(_treatmentInput), Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
                 Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal
@@ -140,6 +156,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 correction.Transitions.Count != 1 || correction.Transitions[0].Kind != "create" ||
                 correction.MaterializedOpportunities[0].WorseningTarget is not null)
                 return JointPreparationFailure("acquisition", "The real corrected adapter must provide one independent CREATE binding.");
+            if (correction.CommandRoot is not { } acquisitionCommandRoot)
+                return JointPreparationFailure("acquisition_command", "The fresh corrected adapter must retain its actual closed acquisition command.");
             var treatmentBinding = capture.Accepted.Binding;
             if (!SameJointFrame(acquisitionBinding, treatmentBinding))
                 return JointPreparationFailure("binding", "Each independently validated owner must bind the same actual original frame.");
@@ -177,7 +195,7 @@ internal static partial class WoundAcceptedTurnPlanner
             var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
             foreach (var path in paths) before.Add(path, await files.ReadFileBytesAsync(lease, path));
             var authority = new JointRepairContinuationAuthority(JointRepairIssuer, files, capture.Accepted.SessionGeneration,
-                capture.Checkpoint, input, treatmentInput, capture.Accepted, capture.Request, capture.Resolution,
+                capture.Checkpoint, input, treatmentInput, acquisitionCommandRoot, capture.Accepted, capture.Request, capture.Resolution,
                 shell.Finalization, preparation.Preparation!, rematerialization, before);
             await authority.ValidateCurrentAsync(files, lease);
             return new(input, authority, Array.Empty<ValidationIssue>());
@@ -282,11 +300,19 @@ internal static partial class WoundAcceptedTurnPlanner
         var binding = joint.AcquisitionInput.Binding;
         var original = joint.AcquisitionInput;
         var sources = joint.ReadEffectSourceRoots();
-        return EffectAcceptedTurnInputComposer.Compose(binding.SessionId, binding.SnapshotToken, binding.Turn,
+        var effectInput = EffectAcceptedTurnInputComposer.Compose(binding.SessionId, binding.SnapshotToken, binding.Turn,
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot(), original.PreTurnEffectCarriers!,
             original.PreTurnEffectCarriers!, original.PreTurnEffectIdentityIndex, sources,
             currentWorldTime: joint.Accepted.CurrentGameMinute, publicationCarrierBaselines: original.PreTurnEffectCarriers,
             realm: binding.Realm, preparedWoundPlan: prepared);
+        // Reproduce the real producer's immutable diagnostic coordinates before
+        // ANY effect-input fingerprint/cache use; do not patch only the caller.
+        var issues = WoundResponseInputComposer.ValidateSkillScopes(binding,
+            joint.ReadAcquisitionCommands(), original.Transitions, effectInput.SkillScopeAuthority, out var locations);
+        if (issues.Count != 0 || locations is null)
+            throw new InvalidDataException("The private joint acquisition diagnostic provenance was refused: " +
+                string.Join("; ", issues.Select(issue => issue.Code + "@" + issue.FilePath + ": " + issue.Message)));
+        return effectInput with { WoundApplicationLocations = locations.BindPreparedSources(prepared) };
     }
 
     internal static bool JointRepairEffectInputAgrees(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input) =>

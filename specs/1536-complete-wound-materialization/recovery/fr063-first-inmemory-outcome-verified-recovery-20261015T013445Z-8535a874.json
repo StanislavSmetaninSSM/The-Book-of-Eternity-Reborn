@@ -1,0 +1,32 @@
+{
+  "checkpoint": "d5ab24c7e2d7d00759611371cf7aead625de2b44",
+  "publicationNative": {
+    "launch": "404b81",
+    "session": 69529,
+    "completion": "6d64df",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "1df618",
+    "session": 58918,
+    "completion": "c2bc72",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "d5ab24c7e2d7d00759611371cf7aead625de2b44",
+    "remoteSha": "d5ab24c7e2d7d00759611371cf7aead625de2b44",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2721,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2192,
+    "consumerProduction": "Late2firstdiagnostic0PASS2FAIL34.0093501scomplete/noTimeout;49artifactfreeze/source155binary11/2cleanuprootsabsent;CorrectionReadytrue/PublicationUncertain/2effectlocationissues;source-supportedjointmapomission/EVIDENCEpending;productionfixrunslater12HELD/checkpoint5norepeat",
+    "verifiedUtc": "2026-10-15T01:34:32.920110+00:00"
+  },
+  "testedAndCompileSource": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "sourceAfterActual": "codeunchanged;2ROOTfactualMD2fronts only",
+  "actual": "2executed0PASS2FAIL34.0093501s;2retainedissuesnoTruncation;locationmapguardobserved",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same independent EVIDENCE/casualsourceclassification;no fixorfurtherrunreleased",
+  "allFurtherProjectOperations": "HELD"
+}

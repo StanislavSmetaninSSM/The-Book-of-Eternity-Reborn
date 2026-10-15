@@ -1,0 +1,48 @@
+# FR063 first in-memory Late2 outcome — independent evidence and causal review
+
+**EVIDENCE ACCEPTED. One confirmed Important production handoff omission.** Current factual plan/tasks status is accurate. This is a bounded causal failure of the joint CREATE effect-input handoff; no completed joint turn is qualified. A bounded production correction is justified for separate explicit authoring release and subsequent SOURCE/FIXTURE/SELECTION review. This evidence gate releases no project rerun or later stage.
+
+Reviewed carrier `d5ab24c7e2d7d00759611371cf7aead625de2b44`; tested/compiled source `76b7d5ffd997d018690494faef5740c5dfcc2c84`; diagnostic-only source gate e59e65ed retained. Historical requested reviewer: retained Astra XHigh. Actual backend/model/effort telemetry **UNAVAILABLE**. No new agent/override, project execution, repository edit or Git mutation. Systematic-debugging guidance applied through immutable evidence/source inspection only.
+
+## Evidence and status
+
+Independently verified all **49** compressed/uncompressed size+SHA256 chains, matching raw scratch/native files, tracked mirrors and carrier Git blobs. Manifest SHA256 `5ef3d53518ff80d49b220c219f7c1f11f245e7d31858a3213cec6f6fc9343d41`. Full raw logs/TRX remain intact; no large private images were printed. All **155 tested-source pins** match immutable tested Git objects; **153 current nonmetadata pins** remain byte-exact, with only plan/tasks fronts changed. All **11 selected physical binary pins** still match. These prove the selected files, not every loaded dependency. Frozen ROOT PRE/POST receipts precede metadata; reviewer checks corroborate immutable/current pins, not a new runtime PRE/POST sequence.
+
+Fresh BOTH `134.8964081s`, exact PlanOnly `4.5818031s`, catalog `5.4483279s`: native0, zero test executions, official **32 methods / 58 cases / 18 descriptors**, catalog **VALID 746 / 11588**, no unmapped/stale selectors. Integration130/unit35 warnings and zero errors are retained native preparation evidence. PlanOnly has no completed runtime descriptors by design.
+
+Only actual run `20261015-012449-310-552689-77aa61fc8eee4f6584c42cc04fc9a840-categories`: **2 executed, 0 PASS, 2 FAIL**, complete1/1 descriptor and2/2 cases, native1, `34.0093501s`, no timeout/skips/duplicates. TRX contains both expected zero/nonzero-progression methods, failing the unchanged missing turn43 energy Spend assertion at `JointCompletion.cs:676`. Later completion/progression/story/second-idle assertions are unreached.
+
+Reparsed **60 Boundary observations** directly from per-test TRX stdout and matched the frozen observations. Both new snapshots show checkpoint present, correctionReady=true, canonical refresh present, `PublicationUncertain`, exactly two issues with no row/field truncation. Field lengths/full UTF8 hashes and complete public projection SHA independently agree. Both cases reach genuine prior QTE42, natural signed43, confirmed held request (energy2/health5), actual owner entry, one repair milestone, corrected resubmission and retained refresh. Actual caller is `ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync`, handled=true, turn42, Failure=null, ObserverFailure=null. This is the staged/Late contour; test names containing Live do not prove the live-wait contour.
+
+Both native strict cleanup receipts report removal=true/failure=null and both named owned roots are independently absent. Runner process/runtime cleanup is separate; no child-process or blanket fixture cleanup qualification follows. Carrier delta is60 paths: two identical2534-byte MD2 fronts and58 recovery paths. Old MD2 bodies/checkmarks are byte-exact. Source inference versus native observation and lack of completion are honestly distinguished. Frozen failures and checkpoint5 PASS remain separate; checkpoint5 was not repeated; later12 stages remain UNRUN/HELD.
+
+## Important — joint CREATE omits required proposal coordinates
+
+**Location:** `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs:278–289`; called by `Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs:55–58`.
+
+After the authorized severity correction for the genuine43 joint request, CREATE requires ordinary effect planning. `ComposeJointRepairEffectInput` invokes the common composer without `WoundApplicationLocations`. `EffectAcceptedTurnInputComposer.cs:274–289` supplies nonnull `SkillScopeAuthority`; the location map defaults to null (`EffectAcceptedTurnPlan.cs:7–22`). The strict CREATE guard at `EffectAcceptedTurnPlanner.cs:3610–3627` therefore cannot resolve an immutable proposal component coordinate. This is a production-owned handoff omission, not a missing GM field or fixture authority prerequisite.
+
+Both actual captures report the unique guard's `wound_plan_effect_diagnostic_location_invalid` at `prepared.effectOperationBatches[0].rootApplications[0]`, then `wound_plan_effect_stage_failed` at `acceptedTurn.wounds`. The wrapper at `WoundAcceptedTurnPlanner.cs:114–126` preserves the first issue and adds the second when no effect plan exists. The canonical owner returns `Refused(effects.Issues)` before final/common/preflight/take/publication. Refused aborts the reservation and retains `PublicationUncertain` (`GameEngine.MortalJointRepairCanonicalPublication.cs:110–122`). **Here that enum is a retained stage refusal, not evidence of partially committed mechanics or native storage-publication uncertainty.**
+
+This causal classification combines actual diagnostics with matching immutable source; the private input object itself was not serialized. It establishes this concrete blocker, not validity of every downstream input or sufficiency of an unimplemented fix. No broader production regression is claimed.
+
+## Minimum source correction boundary
+
+The ordinary producer already supplies the pattern: `WoundResponseInputComposer.ValidateSkillScopes` (`:103–199`) derives exact command/transition-local wound+definition coordinates and validates skill scope; `EffectApplicationDiagnosticLocations.BindPreparedSources` (`EffectAcceptedTurnPlan.cs:69–79`) binds actual prepared source IDs. Ordinary validation passes the bound map before effect planning (`ValidationService.WoundMaterialization.cs:449–455,616–622`; `ValidationService.EffectMaterialization.cs:425–429`).
+
+Reuse those APIs from the **fresh actual corrected acquisition** returned by `MortalJointRepairCheckpoint.RevalidateCorrectionAsync` (`:233–258`) under the existing participating lease. Its genuine returned command root can use the existing closed command parser. Neither the physical homogeneous treatment command nor caller-provided coordinates/hash may substitute. Retain/recompute sufficient detached command/map evidence in the private handoff with the same guarded draft/scene/source roots and seal. Existing continuation before-image/current-generation/original/confirmed-claim checks remain strict.
+
+Place the bound map in the SAME effect input before fingerprint/cache acceptance. `JointRepairEffectInputAgrees` (`:292–294`) and final validation recompose that input: a one-off map assignment at the caller would fail this agreement. `WoundAcceptedTurnPlan.cs:2440–2441` already fingerprints skill scope and map. Any retained map/command addition must be privately derived and sealed or equivalently reproducibly authenticated; parsed public hashes cannot issue authority. Preserve the full CREATE+TREAT union, independent event vectors, actual prepared identities and one effect stage. Missing/ambiguous coordinates and scope errors still refuse.
+
+No new owning architecture or gameplay decision is required by this omission. Do not null scope authority, invent display paths, classify CREATE as treatment continuation, inject fixture authority, alter originals, relax TryResolve, add a second stage, or weaken completion oracles. Concrete implementation, seal/freshness handling and finite affected controls require focused SOURCE review. No further diagnostic-only actual is necessary merely to observe this already captured cause. Existing Late2 failures supply bounded red evidence; passing checkpoint repetition is not justified solely by this diagnosis.
+
+## Release and limits
+
+Evidence supports **bounded production source authoring after ROOT's explicit release**, then publication/recovery and focused SOURCE/FIXTURE/SELECTION review. It authorizes no corrected build/run now. Fresh matching prerequisites/pins and the failed Late2 first outcome require that corrected-source gate. Later12 remain held; no passing cohort is automatically repeated. Full FR063/T070, live/cold/new-root and previously open contours remain OPEN.
+
+No evidence/status defect was found. Immutable author locator failures d99635/e1297d are retained. Reviewer guessed Services/Wounds/Effects locators (d6d700/32db13, exit2) were corrected with rg --files; source display345e9a was truncated and reread boundedly. Pure evidence parser235066 initially rejected a BOM in the retained repair-request string; only the parsing view was corrected, without changing raw data or prior artifacts. Exact failed statements/stderr are in the companion. None is project, policy or security refusal.
+
+Companion: `/workspace/boe-cloud-tools-20261014/fr063-first-inmemory-independent-evidence-readback-d5ab24c7-20261015T013729Z-55f43e71.json`
+SHA256 `f00fd2c71d014a2cf0662705f60cad966de489995087fd0c5ddbf05fb536a958`. It carries all49 artifact chains,155 source and11 binary pins,13 focused source pins, raw-test/observation/cleanup and MD2 checks. Focused source pins match both tested Git and current files.
+
+**FINAL STOPPED. No pending tools or writes.**
