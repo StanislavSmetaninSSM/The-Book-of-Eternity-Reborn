@@ -1,3 +1,9 @@
+## US5-RO1 fixture-only correction independently accepted for fresh verification — 2026-10-15
+
+- Independent204900 accepts60574090d862e54ca576748b9ff8d84a01200f4c: all4 failures were3 strict fixture prerequisites before projection assertions; production afterlife owner guard is correct. Exact MD7901944b467483abc8d9e8b65573351c1daf0a92b6c61bbb3ec4ed79fa6bba2d / JSON93bdf98f59da067b9772743be1c2e3f8fd971660d9a712aecb289e8bf8a92020 retained, FINALSTOP/no pending writes.21raw chains/2551Git pins/eight original binaries and32fullTRXcases independently rechecked; old4FAIL remains immutable.
+- Only fresh selected BOTH/official zero-exec Plan/catalog, then exact25methods32cases projection +8methods33cases reader(two descriptors65cases), same3min protective budgets. Fresh source/output pins required; prior binaries predate fixture correction and prove no corrected behavior. First discrepancy freezes before another correction. Runtime GREEN/reader33 UNRUN; RO2 actual status consumers follow qualification; full FR063/T070/#1536/lawful ACTIVE remain OPEN.
+- Current evidence carrier changes only review copies/fronts; code/test inputs identical to reviewed605. GitHub-only recovery605 verified18changedpaths exact bytes/clean/noalternates, main unchanged.
+
 ## US5-RO1 strict effect fixture corrections WIP — 2026-10-15
 
 - After the immutable native failure was published at1a57b86971f297c206c4ec12a0720c0a67a96c0f, primary traced all4 failures to3 fixture prerequisite mismatches: strict NPC carrier requires NPCId; identity registry requires globally unique transition/event IDs with canonical chronology agreement; identity-owner kind uses target kind player for afterlife profiles, while accepted snapshot OwnerKind deliberately uses carrier coordinate afterlife_profile. Existing projection ownership guard is consistent with that model.
