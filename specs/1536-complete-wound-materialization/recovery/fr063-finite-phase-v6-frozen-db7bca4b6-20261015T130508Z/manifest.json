@@ -1,0 +1,766 @@
+{
+  "source": "db7bca4b612132ffd46505058aac8e75f9335cb1",
+  "classification": "first finite stage outcome; frozen before diagnosis; independent EVIDENCE pending",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-all-json-observations-raw.json.gz",
+      "uncompressedBytes": 88159636,
+      "uncompressedSha256": "bb83858294cda6415d9a6aa6160bd5c5fbbb08e6f767fb79f144d9ce166b09a6",
+      "compressedBytes": 29790810,
+      "compressedSha256": "1e3c0a0f0c06ccca2332d353e5a966fb65dff8723e3eed34dd1601b89e3f57c0"
+    },
+    {
+      "name": "actual-all-trx-results-raw.json.gz",
+      "uncompressedBytes": 98061,
+      "uncompressedSha256": "ea9a34fd1cd717001b1259a63f59f6c5dfefaa3803d11e7bee0d01f9cb08ceee",
+      "compressedBytes": 15429,
+      "compressedSha256": "8793ddb0ce832338a27165a0669822bd77a7f4a8d43f4524db71d63b758a9204"
+    },
+    {
+      "name": "actual-child-evidence-containers-raw.json.gz",
+      "uncompressedBytes": 2753197,
+      "uncompressedSha256": "dae88cdd6773063b5c77c42bf9eb1f2567c11f89a3b1102a681807f57ccc5195",
+      "compressedBytes": 322088,
+      "compressedSha256": "efe60c25f841cc8b43cd2fa29db51470e77efdbdf35d51adc0ecacf8404b4cf1"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 7538332,
+      "uncompressedSha256": "e640c3e2ed86f986a4f5cbf065e587b0b05e8b26d024b688843c4647f733e5a5",
+      "compressedBytes": 2520197,
+      "compressedSha256": "08dca49f2231eb97b4745b6c058994adb8a02f05ad91ec06ae7f4f57c47ea3eb"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 88786717,
+      "uncompressedSha256": "3f65966fd1bf7b6e210350abe55095102666144ea1532f6112d4419d25f54ab9",
+      "compressedBytes": 29946036,
+      "compressedSha256": "620a51d0f9642e3492e035b571c65a4a7c9522b0ddbcdc3ba06481ba20851eb2"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 521,
+      "uncompressedSha256": "e2020bfeb76b1ddc49bad181257b0ae494c47c5b763deab6d2ec9dcb35943e9c",
+      "compressedBytes": 341,
+      "compressedSha256": "df5a0d6c550cf40676c45d4f647a839a847e4505f68e3fc922fa124c98350bbe"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 88157260,
+      "uncompressedSha256": "68374c9d2320e10ddd900d2bf02535a74962ca17ca81c502e4ebb630712eff28",
+      "compressedBytes": 29790407,
+      "compressedSha256": "35b3cda13244e2ee35891a19ce11381706504bd2db3167ce2e9a3a07739dc4c7"
+    },
+    {
+      "name": "actual-native-process-result.json.gz",
+      "uncompressedBytes": 372,
+      "uncompressedSha256": "138e378777e02f4e3ceb6a815e23810476d37fb7975beabf55741240af7c07a8",
+      "compressedBytes": 289,
+      "compressedSha256": "936cd770932c9075dbf31ab6fd8ac9f3da36bf76058b24951714caef9f054f81"
+    },
+    {
+      "name": "actual-pre-assertion-root-observations.json.gz",
+      "uncompressedBytes": 110026,
+      "uncompressedSha256": "ba9f5505b9464f5323fa4fd4b0fd49dd1c35c43f8e072a4618cf95b8e97004c0",
+      "compressedBytes": 17475,
+      "compressedSha256": "3d825e31ffacf972487aa97b8aff13c2e2b1b71f61933eb7746ed149a28f8b6b"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 110026,
+      "uncompressedSha256": "ba9f5505b9464f5323fa4fd4b0fd49dd1c35c43f8e072a4618cf95b8e97004c0",
+      "compressedBytes": 17475,
+      "compressedSha256": "3d825e31ffacf972487aa97b8aff13c2e2b1b71f61933eb7746ed149a28f8b6b"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 431,
+      "uncompressedSha256": "058b16a2113ba13c8fe98cc2b927d6ce9b110a0a60169f9d030843bfc4b0297b",
+      "compressedBytes": 279,
+      "compressedSha256": "448d2a971361c936cae063a652fcfab5e857e4622063090ea44c3b233cccb075"
+    },
+    {
+      "name": "actual-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2550,
+      "uncompressedSha256": "2ce3016bf63e42ceb40493a62f2c07510a1824d6354b27cd9927685d17d5d5d8",
+      "compressedBytes": 1038,
+      "compressedSha256": "305222a33381156c92b61d8eed8c0e6e1c9436258a13535649c66b5948e07c47"
+    },
+    {
+      "name": "actual-strict-cleanup-origins-raw.json.gz",
+      "uncompressedBytes": 3737,
+      "uncompressedSha256": "dc017f1f1c852f9e4e41035388d39ae8353a397dcd76223c15caf058a43d8444",
+      "compressedBytes": 550,
+      "compressedSha256": "a30750ab6a55987b87c489496313e11f34c8b7fa5db83ccc8fb030d25905878e"
+    },
+    {
+      "name": "actual-strict-cleanup-receipts-raw.json.gz",
+      "uncompressedBytes": 4755,
+      "uncompressedSha256": "122282b8e59ccb9b184490e9ffff2084d6e840bc47ed0c806f2769941674c133",
+      "compressedBytes": 686,
+      "compressedSha256": "8e865933fde20e3f626ec2a68506b1cc8a8007d6bc2e367cc361279a85dd9daa"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 104886,
+      "uncompressedSha256": "71fce5f9b4d6939186364062256263d79b6c1b697fd9a391771de697f50cfcf1",
+      "compressedBytes": 23536,
+      "compressedSha256": "bf3fa27b8282b01c7d729593abf3c1ede66c62da39d6e4e8a8513c1bb1e3a6d5"
+    },
+    {
+      "name": "exact-independent-gate-proof.json.gz",
+      "uncompressedBytes": 111908,
+      "uncompressedSha256": "df80f15fce1077f71a0686d9d1b37a4caf4d4608b0228ec87fed0fc0418c582b",
+      "compressedBytes": 24796,
+      "compressedSha256": "f6d48dd24791d1afd5e4a6b764e72ef4360aeac71b51a674ff9d2fe83f98add2"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1335,
+      "uncompressedSha256": "d861460498f6fd26a6fb2f5d9d459a44a9a268a5708c4cf687e9aa581f94e398",
+      "compressedBytes": 619,
+      "compressedSha256": "1de54c037588a1997edcaf119e5d2f7374cc48f304de8ffa8702760989991790"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 538,
+      "uncompressedSha256": "299dbe2693ef18a9026c6826f8632271814bfaa9fa901f47e52daa07aae022d2",
+      "compressedBytes": 349,
+      "compressedSha256": "85bd3ce1f5c0a665f22f229ce208171341c9a54c305761f673ae7a0dc5ace394"
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "uncompressedBytes": 372,
+      "uncompressedSha256": "17736aea8fe70ac19bccde95689ba71bcb77fa4d7f43eced48a84cdce8c77262",
+      "compressedBytes": 288,
+      "compressedSha256": "b9876743ad8f44ac0cdc64811be3af9504f5b437ddf524dde10a36d92ca11e66"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1276,
+      "uncompressedSha256": "e64fa0a1db7913b80065cdbc1ab5a6f8dc664aef14fbab17e3e54734b079a18b",
+      "compressedBytes": 641,
+      "compressedSha256": "a97ce52947f4fe27bedca65738158fbde1a178fbad0a77ad50b11b58d9937c6a"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 431,
+      "uncompressedSha256": "fb866cb6352c2156213d9d8e498cfec8d39cdffbe330ed405af45eed20597606",
+      "compressedBytes": 277,
+      "compressedSha256": "165354549f4dfc15adbefc83f9e215a29521b57c89bb93714f7c81280393c0d6"
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2555,
+      "uncompressedSha256": "103e8843878d11bd7aca77f30a2e5a8cb3ae9acaa487bd1b5d20b631a0173f89",
+      "compressedBytes": 1048,
+      "compressedSha256": "4c53f6119d7cee3794430fab98d51c0fbe16921773bac3606cf0a3a8732ea19f"
+    },
+    {
+      "name": "exact-used-finite-stage-controller.py.txt.gz",
+      "uncompressedBytes": 10299,
+      "uncompressedSha256": "69a0419a793cd64ccbfa117746e6e363041193d00a5d5791115407257a5c9b9d",
+      "compressedBytes": 3583,
+      "compressedSha256": "40e32cade3104e979dbc5690685fb0dfcad1e0866d71c992cb45ff7262699737"
+    },
+    {
+      "name": "exact-used-finite-stage-inventory.json.gz",
+      "uncompressedBytes": 7411,
+      "uncompressedSha256": "4dc5298fc93ca5b8a6a119b9b6c25bffdb29e840c134d082b2912ae4c986adad",
+      "compressedBytes": 1059,
+      "compressedSha256": "ca13a7b37eddfb1d2391eb17117d0c8e19e5d062c98a44206bd802032704f637"
+    },
+    {
+      "name": "exact-used-root-runner-v6.py.txt.gz",
+      "uncompressedBytes": 17019,
+      "uncompressedSha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+      "compressedBytes": 5438,
+      "compressedSha256": "f449cc5e9662556ba8aba859c241c52840a106ff11a01924604e6169740744f9"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2718,
+      "uncompressedSha256": "7870ca0d7850caf7d1ef6030f4472ed2ff0611ced2daa3774d28a32b3437486b",
+      "compressedBytes": 726,
+      "compressedSha256": "eb5a3c974676f8e0efa294394105483e523b2b279250e6dbc97bb10b439afc7b"
+    },
+    {
+      "name": "inherited-both-build-provenance.json.gz",
+      "uncompressedBytes": 25605,
+      "uncompressedSha256": "ec90f68264a78ebd8c595dd12a5c59f64d60f3caee416778449cf804bb7bab1c",
+      "compressedBytes": 1959,
+      "compressedSha256": "50a63683127d45f339ca9bd315d3119690efa952d956dd60a66dd81f5d999126"
+    },
+    {
+      "name": "orchestration-stdout.log.gz",
+      "uncompressedBytes": 5633,
+      "uncompressedSha256": "b601b3ef49e8c8dcbef110f8f3cbe6b80e5e473a437ce4b42a58ab3a52207059",
+      "compressedBytes": 1163,
+      "compressedSha256": "2983b2ca63f37c0c3e9472eecc4a4dc24cad2aac6ca03bc875289db2c7e1399d"
+    },
+    {
+      "name": "required-owned-root-cleanup-readback.json.gz",
+      "uncompressedBytes": 3777,
+      "uncompressedSha256": "6b67ec41dcfde6c28607b41c36e3ddb4a5ef5eec87ef2e3e8d1058ea372993a6",
+      "compressedBytes": 851,
+      "compressedSha256": "d9cf7e8428bc248cb4eab5f9b17d84f296619a8f9a102d6cbb952e2c18d0b597"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 9210318,
+      "uncompressedSha256": "a5acf2d116029e22c6444660d6bda104c2b26233173f7488839fb89fac86d580",
+      "compressedBytes": 2704840,
+      "compressedSha256": "31a9e3e7fec5f72e6f8437562bc78a121ee64ed4ff7e3db7fc8b5a278ffb40d4"
+    },
+    {
+      "name": "actual-fr063-joint-phase-refusal-integration-001.trx.gz",
+      "uncompressedBytes": 96474709,
+      "uncompressedSha256": "0bdb96dbaccbeb77db589da1e79f60156829c5d39c694ca76ceb36324428ad6a",
+      "compressedBytes": 32484959,
+      "compressedSha256": "2a65221e061b9be52e7dcf793f179777cc8ef05eece600c2de08b4e979864aa5"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2334,
+      "uncompressedSha256": "83fc84e9eedf16ae7b0ec813c2634c4279b7cfe4fd6b784c4f2bc2a8cc877ca5",
+      "compressedBytes": 967,
+      "compressedSha256": "b51f8aa5a9960be0f9f675a50377d39448c9dc59f8d094f7928cadade2a4c1a6"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2550,
+      "uncompressedSha256": "2ce3016bf63e42ceb40493a62f2c07510a1824d6354b27cd9927685d17d5d5d8",
+      "compressedBytes": 1038,
+      "compressedSha256": "305222a33381156c92b61d8eed8c0e6e1c9436258a13535649c66b5948e07c47"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1672931,
+      "uncompressedSha256": "4331a53a465eadb94d906439113de97d2ef35d2d5b02da4cd1c7d3021e5db52e",
+      "compressedBytes": 185922,
+      "compressedSha256": "fe7cc73967bbba1d1cb3595f26244ce970113f0b66b2cbfe154cfb7fa1cffb78"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 2335,
+      "uncompressedSha256": "b88311e9664c202161293725da7838e1654f0c25ae78490e0146f5dd0f719993",
+      "compressedBytes": 968,
+      "compressedSha256": "e812bd27b850cdd8b978c1cdb16394e018a50a400cadaf633098559a7b1e2865"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 2555,
+      "uncompressedSha256": "103e8843878d11bd7aca77f30a2e5a8cb3ae9acaa487bd1b5d20b631a0173f89",
+      "compressedBytes": 1048,
+      "compressedSha256": "4c53f6119d7cee3794430fab98d51c0fbe16921773bac3606cf0a3a8732ea19f"
+    }
+  ],
+  "frozenUtc": "2026-10-15T13:17:51.923461+00:00",
+  "exact-plan": {
+    "source": "db7bca4b612132ffd46505058aac8e75f9335cb1",
+    "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+    "run": "20261015-130510-142-56720-0580c795d0ed40c5baec1cb45f0fe056-categories",
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261015-130510-142-56720-0580c795d0ed40c5baec1cb45f0fe056-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T13:05:12.929941+00:00",
+    "classification": "exact released selection; zero execution; inherited unchanged 2aeedaa2f BOTH",
+    "wallTime": "00:00:02.7506964",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 12,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-phase-refusal-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 414,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T13:05:13.196878+00:00",
+    "methods": 1,
+    "cases": 12,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "db7bca4b612132ffd46505058aac8e75f9335cb1",
+    "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+    "run": "20261015-130514-010-56860-710549e3729643cf840cdb4a49dd3ce2-categories",
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261015-130514-010-56860-710549e3729643cf840cdb4a49dd3ce2-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-15T13:17:41.321867+00:00",
+    "classification": "actual finite stage; inherited unchanged 2aeedaa2f BOTH; independent EVIDENCE pending",
+    "wallTime": "00:12:27.2632163",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 12,
+      "Executed": 12,
+      "Passed": 11,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 12,
+      "CompletedCases": 12,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 414,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T13:17:41.617394+00:00",
+    "methods": 1,
+    "cases": 12,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "25cbbed4-6bf3-41cf-9c1f-7c231b4120c8",
+        "testId": "fc45fc5c-3c36-62cf-df31-0cf51903dec4",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_missing\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:00.1447501",
+        "startTime": "2026-10-15T13:17:39.5330481+00:00",
+        "endTime": "2026-10-15T13:17:39.5330483+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "25cbbed4-6bf3-41cf-9c1f-7c231b4120c8",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "4cf840f1-5ea6-41cb-9d1e-8f35fe795b4c",
+        "testId": "af069e07-5d9b-be11-5783-28c97337ecd3",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_malformed\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:57.7230294",
+        "startTime": "2026-10-15T13:16:39.6160692+00:00",
+        "endTime": "2026-10-15T13:16:39.6160694+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4cf840f1-5ea6-41cb-9d1e-8f35fe795b4c",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   Xunit.Sdk.TrueException: /workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d/joint-applied-cold-result.json.log\n{\"Boundary\":\"fr063_joint_applied_child_entry\",\"Observation\":{\"ProcessId\":58109,\"ParentProcessId\":56979,\"BorrowedRoot\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d\",\"AuxiliaryFactoryRoot\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b69a2a39262c4f349b8a2b03617ac22e\",\"Arguments\":[\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"engine-mortal-joint-applied-cold\",\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d\",\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d/joint-applied-cold-result.json\",\"2\",\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d/joint-applied-cold-context.json\"],\"DependencyContext\":{\"paths\":{\"integration\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"support\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"runtimeconfig\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json\",\"depsfile\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json\",\"immutable\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\"},\"sha256\":{\"integration\":\"922D935BDBCEEC661B4CC005696DE0EBC36C2B67870AF87339EA9229F070E42E\",\"support\":\"19787AE35ECE770761F3538E25FB175A873DF88E4C4697A5B9D784CA55BA4B57\",\"runtimeconfig\":\"8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD\",\"depsfile\":\"2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247\",\"immutable\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\"},\"immutableAssemblyIdentity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\"},\"LoadedDependencies\":[{\"Identity\":\"BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"Sha256\":\"922D935BDBCEEC661B4CC005696DE0EBC36C2B67870AF87339EA9229F070E42E\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"Sha256\":\"19787AE35ECE770761F3538E25FB175A873DF88E4C4697A5B9D784CA55BA4B57\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\",\"Path\":\"/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\",\"Sha256\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true}]}}\n{\"Boundary\":\"fr063_joint_refusal_targeted_tamper\",\"Observation\":{\"Corruption\":\"manifest_malformed\",\"Target\":\"game_state/control/pending_turn_snapshot.json\",\"BeforeSha256\":\"C1FD7ABDA8C4BE0958C17C42C43A6DF1D93E90310ACE50C4E1DD0749A65DED1A\",\"AfterSha256\":\"021FB596DB81E6D02BF3D2586EE3981FE519F275C0AC9CA76BBCF2EBB4097D96\"}}\n{\"Boundary\":\"fr063_joint_applied_child_before_actual_owner\",\"Observation\":{\"ProcessId\":58109,\"SessionId\":\"session_qte_story_append\",\"RequestId\":\"bef1b93a67c740aaaa18186420cd3798\",\"SnapshotToken\":\"E46074A89E74BBA5907E69C3872497C8078DF54A918188696A6D03F7DC6A5433\",\"TurnNumber\":43,\"FreshCommonCacheEmpty\":true,\"OriginalFromOfficialReader\":true,\"RefusalScenario\":\"manifest_malformed\",\"SourceExpectedFrameClassification\":\"null: source loader cannot read the manifest; actual classification not measured\",\"IntactBeforeTamper\":{\"game_state/afterlife/afterlife_active_threats.json\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/afterlife/afterlife_active_threats.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/afterlife/afterlife_chronicles.json\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/afterlife/afterlife_chronicles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/afterlife/afterlife_global_flags.json\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/afterlife/afterlife_global_flags.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/afterlife/afterlife_story_outline.json\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/afterlife/afterlife_story_outline.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/afterlife/entity_profiles/guardian_mirror.json\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/afterlife/entity_profiles/guardian_mirror.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/afterlife/entity_profiles/shining_senator_mirel.json\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/afterlife/entity_profiles/shining_senator_mirel.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/chaos_sea/guardian_politics.json\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/chaos_sea/guardian_politics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/combat/allies.json\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/combat/allies.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/combat/enemies.json\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/combat/enemies.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/control/gm_trajectory_ledger.jsonl\":{\"Exists\":true,\"Length\":1410,\"Sha256\":\"4F336793D712704E6A80DB09B4ED22760FBB170FE32A01969E21F895D232E386\"},\"game_state/control/pending_dice_state.json\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_dice_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_ink_actions.json\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_ink_actions.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":48,\"Sha256\":\"D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9\"},\"game_state/control/pending_mortal_wound_occurrences.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2127,\"Sha256\":\"6C01CD332322AE1A892DC1FA619E686D3CF1EB7C5A97DB848B4E0FD5D584752E\"},\"game_state/control/pending_turn_snapshot.authority.json\":{\"Exists\":true,\"Length\":44331,\"Sha256\":\"47B56520F968E71C58DF4518BD36FB0ECAD832DA2A363C856BCB51DD2E84ACF9\"},\"game_state/control/pending_turn_snapshot.json\":{\"Exists\":true,\"Length\":31011,\"Sha256\":\"C1FD7ABDA8C4BE0958C17C42C43A6DF1D93E90310ACE50C4E1DD0749A65DED1A\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_active_threats.json\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_chronicles.json\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_global_flags.json\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_story_outline.json\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/guardian_mirror.json\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/shining_senator_mirel.json\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/control/pending_turn_snapshot/game_state/chaos_sea/guardian_politics.json\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/control/pending_turn_snapshot/game_state/combat/allies.json\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/control/pending_turn_snapshot/game_state/combat/enemies.json\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":2127,\"Sha256\":\"6C01CD332322AE1A892DC1FA619E686D3CF1EB7C5A97DB848B4E0FD5D584752E\"},\"game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"AECD0D64EA5A72121430514BBE0A4764B9E36660100810D31C33EC8E61EF2DA1\"},\"game_state/control/pending_turn_snapshot/game_state/control/qte_deferred_effect_continuation.json\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/pending_turn_snapshot/game_state/control/qte_runtime.json\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/pending_turn_snapshot/game_state/core/game_settings.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/control/pending_turn_snapshot/game_state/core/player_status.json\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/control/pending_turn_snapshot/game_state/core/system_mods.json\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/control/pending_turn_snapshot/game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":35,\"Sha256\":\"F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E\"},\"game_state/control/pending_turn_snapshot/game_state/history/qte_history.json\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/control/pending_turn_snapshot/game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/control/pending_turn_snapshot/game_state/meta/achievements.json\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/control/pending_turn_snapshot/game_state/meta/guardians.json\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/control/pending_turn_snapshot/game_state/misc/characteristics.json\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/item_journals.json\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_journals.json\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_wounds.json\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/control/pending_turn_snapshot/game_state/player/computed_characteristics.json\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"DA375D1BD1525D3FD7E85B031B931F35958BBD2E06C142BFB2A7785AAE30CD7A\"},\"game_state/control/pending_turn_snapshot/game_state/player/effects.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"57CFA98CFF82EB4821E37B1296A354D34213B9136C7C90C7E475103A5CA6CC7B\"},\"game_state/control/pending_turn_snapshot/game_state/player/experience.json\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/control/pending_turn_snapshot/game_state/player/player_status.json\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/control/pending_turn_snapshot/game_state/player/skills_active.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/control/pending_turn_snapshot/game_state/player/skills_passive.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/control/pending_turn_snapshot/game_state/player/stat_points.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/control/pending_turn_snapshot/game_state/player/transformation.json\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/control/pending_turn_snapshot/game_state/player/wounds.json\":{\"Exists\":true,\"Length\":4872,\"Sha256\":\"9833D7546AE55E930CA5E7909474BB6878BB6061D3682517D6C233C34B3194A7\"},\"game_state/control/pending_turn_snapshot/game_state/quests/quest_history.json\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":6885,\"Sha256\":\"6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":4914,\"Sha256\":\"0265F8D377E13EF980E5EE24F6D9EF9F74DFA294BF68B9743D787ED6F1BB1883\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":689,\"Sha256\":\"A3E542EA0A6202980CDE14ACB80884909A1CF8F110611386915E2168CC43B777\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":1125,\"Sha256\":\"D6F251D99C8ADC07831DDE26273C186A35AFEB22AA9F305DEC9680D9527CE184\"},\"game_state/control/pending_turn_snapshot/game_state/shining_abode/faction_chronicles.json\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/control/pending_turn_snapshot/game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/control/pending_turn_snapshot/game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/control/pending_turn_snapshot/game_state/world/world_time.json\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json\":{\"Exists\":true,\"Length\":1062,\"Sha256\":\"14767592F1D844969BB7EE8C5BA5B6E3C738FFB2E2A7B18BE97D997E7CED759F\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json\":{\"Exists\":true,\"Length\":552,\"Sha256\":\"594FB1982927597100EF470DC47F57470108EE57835FE2909711E71AFD80DF81\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":65,\"Sha256\":\"562C3EE724700BE4D8274A73DF6F84D9C6FF32816868A5C2B600D0FDB5920AA1\"},\"game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"game_state/control/pending_turn_snapshot/lore/codex_entries.json\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"game_state/control/pending_turn_snapshot/lore/current_world/cultures.json\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"game_state/control/pending_turn_snapshot/lore/current_world/geography.json\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"game_state/control/pending_turn_snapshot/lore/current_world/history.json\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"game_state/control/pending_turn_snapshot/lore/current_world/threats.json\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"game_state/control/pending_turn_snapshot/lore/current_world/world_directives_draft_example.md\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"game_state/control/pending_turn_snapshot/lore/current_world/world_setting.json\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"game_state/control/pending_turn_snapshot/output/debug_logs.json\":{\"Exists\":true,\"Length\":379,\"Sha256\":\"6F61EC68D2387F11D120EF9265DB17301CF450464ADF61AAEF62A779FF1C8780\"},\"game_state/control/pending_turn_snapshot/output/interface_updates.json\":{\"Exists\":true,\"Length\":77,\"Sha256\":\"C4C0A49148558881025EE5751FB37B525FF6A57802E22897FED0F86B1CB433CB\"},\"game_state/control/pending_turn_snapshot/output/narrative_response.json\":{\"Exists\":true,\"Length\":111,\"Sha256\":\"74CE12D021FECEF59DE6DF065BEB6C8330BB4BEC2C62919AEA28F3067A6472AF\"},\"game_state/control/progression_schedule.json\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"98586BDC633CB93C772392850DDE1E4C0531DCEF16E9729F6BE3C8DA54A68CCE\"},\"game_state/control/progression_schedule.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"AECD0D64EA5A72121430514BBE0A4764B9E36660100810D31C33EC8E61EF2DA1\"},\"game_state/control/qte_deferred_effect_continuation.json\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/qte_deferred_effect_continuation.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/qte_runtime.json\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/qte_runtime.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/validation_repair_request.json\":{\"Exists\":true,\"Length\":12585,\"Sha256\":\"41B1FB7355B82EF803D975EFBAE7386737D74617C435E71AD47B8F3ECC09DA8B\"},\"game_state/core/game_settings.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/core/game_settings.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/core/player_status.json\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/core/player_status.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/core/system_mods.json\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/core/system_mods.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":2426,\"Sha256\":\"7F842FBB3CE9F84841B167D53D2A4438AB07DC25127A89B4410185ABFB43E4A5\"},\"game_state/effects/effect_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":35,\"Sha256\":\"F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E\"},\"game_state/history/chat_log.json\":{\"Exists\":true,\"Length\":56,\"Sha256\":\"7007F8BA969AA63363159DD685BA017B2CDA36A6EEC1428EA522DA17132534EA\"},\"game_state/history/qte_history.json\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/history/qte_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/inventory/item_identity_index.json\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/inventory/item_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/inventory/items.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/meta/achievements.json\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/meta/achievements.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/meta/afterlife_entity_profiles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/meta/character_chronicle.json\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/meta/character_chronicle.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/meta/guardians.json\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/meta/guardians.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/meta/soul_state.json\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/meta/soul_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/misc/characteristics.json\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/misc/characteristics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/npcs/item_journals.json\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/npcs/item_journals.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/npcs/npc_core.json\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/npcs/npc_core.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/npcs/npc_journals.json\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/npcs/npc_journals.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/npcs/npc_wounds.json\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/npcs/npc_wounds.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/player/computed_characteristics.json\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"5A1558C22EA03AB6CCB50105A56604B439164C5E88C5ABF7AAAF92BE0A9F4DF6\"},\"game_state/player/computed_characteristics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"DA375D1BD1525D3FD7E85B031B931F35958BBD2E06C142BFB2A7785AAE30CD7A\"},\"game_state/player/effects.json\":{\"Exists\":true,\"Length\":2547,\"Sha256\":\"B0F90440F09A1BD106901A4CFC85C8288BAA9D9463F3BC664C6A1B6A5DF71770\"},\"game_state/player/effects.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"57CFA98CFF82EB4821E37B1296A354D34213B9136C7C90C7E475103A5CA6CC7B\"},\"game_state/player/experience.json\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/player/experience.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/player/player_status.json\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/player/player_status.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/player/skill_mastery.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/player/skill_mastery.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/player/skills_active.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/player/skills_active.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/player/skills_passive.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/player/skills_passive.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/player/stat_points.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/player/stat_points.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/player/transformation.json\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/player/transformation.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/player/wounds.json\":{\"Exists\":true,\"Length\":13724,\"Sha256\":\"76D9C787457A5BEEC34CE6CEF570426D5209A882441D87AC41BFF6835F78C3C2\"},\"game_state/player/wounds.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4872,\"Sha256\":\"9833D7546AE55E930CA5E7909474BB6878BB6061D3682517D6C233C34B3194A7\"},\"game_state/quests/quest_history.json\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/quests/quest_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":9231,\"Sha256\":\"B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A\"},\"game_state/resources/resource_definitions.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":6885,\"Sha256\":\"6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603\"},\"game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":10320,\"Sha256\":\"B03B99A0D933FE0D54902CCF86DA643660F0E90C3A8104E658BC3605E0844661\"},\"game_state/resources/resource_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4914,\"Sha256\":\"0265F8D377E13EF980E5EE24F6D9EF9F74DFA294BF68B9743D787ED6F1BB1883\"},\"game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":895,\"Sha256\":\"4A1E769C9BB0F7B99C6D57F6854EE5F5F86A794FE4C00DF79E1085CBCAE467D7\"},\"game_state/resources/resource_owner_authority.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":689,\"Sha256\":\"A3E542EA0A6202980CDE14ACB80884909A1CF8F110611386915E2168CC43B777\"},\"game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":1603,\"Sha256\":\"42672E830C8E0A68417026ABB37085524ABA06C9D62332FF670DE038DF357554\"},\"game_state/resources/resource_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1125,\"Sha256\":\"D6F251D99C8ADC07831DDE26273C186A35AFEB22AA9F305DEC9680D9527CE184\"},\"game_state/shining_abode/faction_chronicles.json\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/shining_abode/faction_chronicles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/world/current_location.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/world/location_identity_index.json\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/world/location_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/world/world_map.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/world/world_time.json\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/world/world_time.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/wounds/mortal_qte_decision_publication.json\":{\"Exists\":true,\"Length\":226235,\"Sha256\":\"E4AF185822E1A27F73C6824A5C480880D7D2C7226A5D43E8454BC1DF36656B5A\"},\"game_state/wounds/wound_history.json\":{\"Exists\":true,\"Length\":22117,\"Sha256\":\"5251C8CD950AB213AAA0D30E45E5D9E53F5EDF7F15B36B1D243766909CA190AE\"},\"game_state/wounds/wound_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1062,\"Sha256\":\"14767592F1D844969BB7EE8C5BA5B6E3C738FFB2E2A7B18BE97D997E7CED759F\"},\"game_state/wounds/wound_identity_index.json\":{\"Exists\":true,\"Length\":1121,\"Sha256\":\"57C9A57AE998E598E7606C1196729254B13494AD242C0FB81FC41C2ED6C1ED2B\"},\"game_state/wounds/wound_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":552,\"Sha256\":\"594FB1982927597100EF470DC47F57470108EE57835FE2909711E71AFD80DF81\"},\"game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":2480,\"Sha256\":\"9FE0AFCA723D06E8BB712C97F0F34383CA2002F40FA7FFA92515792E34C1C0EA\"},\"game_state/wounds/wound_opportunity_receipts.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":65,\"Sha256\":\"562C3EE724700BE4D8274A73DF6F84D9C6FF32816868A5C2B600D0FDB5920AA1\"},\"input/turn_request.json\":{\"Exists\":true,\"Length\":65263,\"Sha256\":\"088EE726562F79FD09F314DD87D646B5717C3F45339E81FE9D66FE39F476C331\"},\"lore/chaos_sea/cosmology.json\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"lore/chaos_sea/cosmology.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"lore/codex_entries.json\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"lore/codex_entries.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"lore/current_world/cultures.json\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"lore/current_world/cultures.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"lore/current_world/geography.json\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"lore/current_world/geography.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"lore/current_world/history.json\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"lore/current_world/history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"lore/current_world/threats.json\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"lore/current_world/threats.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"lore/current_world/world_directives_draft_example.md\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"lore/current_world/world_directives_draft_example.md.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"lore/current_world/world_setting.json\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"lore/current_world/world_setting.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"mods/example_system_mod.json\":{\"Exists\":true,\"Length\":503,\"Sha256\":\"CB66A9BDC29EA9EA529C1934119E9C03EC9CA1EA08387C50E42005340015C369\"},\"mods/example_system_mod.md\":{\"Exists\":true,\"Length\":548,\"Sha256\":\"CD7E840FA6775E965A3EAB204E40141A740800ED551F72173ABE0E17CE885A9E\"},\"mods/example_system_mod.txt\":{\"Exists\":true,\"Length\":807,\"Sha256\":\"4D73B86EB51EB6EE198383F79FDC2452F5DE421403C232E5AEB4954FC2E7E6CA\"},\"output/debug_logs.json\":{\"Exists\":true,\"Length\":1064,\"Sha256\":\"6984540998B87866A509AD20149CEA5D43FF7408769FE8457ACE0345BC490AFA\"},\"output/debug_logs.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":379,\"Sha256\":\"6F61EC68D2387F11D120EF9265DB17301CF450464ADF61AAEF62A779FF1C8780\"},\"output/interface_updates.json\":{\"Exists\":true,\"Length\":68,\"Sha256\":\"E1E35C314AC29A2D6CF934E6DA761789B6F3A560DA012FB004A05A4ABE43E217\"},\"output/interface_updates.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":77,\"Sha256\":\"C4C0A49148558881025EE5751FB37B525FF6A57802E22897FED0F86B1CB433CB\"},\"output/narrative_response.json\":{\"Exists\":true,\"Length\":395,\"Sha256\":\"880A726BDB365DC22A1D3670C81E22A002061E31050AF78C71F89803A5CB71BC\"},\"output/narrative_response.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":111,\"Sha256\":\"74CE12D021FECEF59DE6DF065BEB6C8330BB4BEC2C62919AEA28F3067A6472AF\"},\"ready/turn_complete.json\":{\"Exists\":true,\"Length\":411,\"Sha256\":\"2C5FE8C4B2167A945CC6A818907DCB88909D0191155ADFC651DDAB3ABED1C4B1\"},\"saves/manual_saves/chaos_sea_command_display_fixture.zip\":{\"Exists\":true,\"Length\":81508,\"Sha256\":\"D88967A7837EB579EF21A7383F42BB669E79500B8C17568ACF15588AF3FFD751\"},\"saves/manual_saves/chaos_sea_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":3700,\"Sha256\":\"9B4E138D22D12229B3A756138AE75D34D104031B0AB90145F7B1E7A577CFD415\"},\"saves/manual_saves/first_character_save_metadata.json\":{\"Exists\":true,\"Length\":869,\"Sha256\":\"6412EEDB4029B53FD56122FE393C55D641B4B4267E81FCE83D56EBAC2575A63A\"},\"saves/manual_saves/mortal_world_command_display_fixture.zip\":{\"Exists\":true,\"Length\":103744,\"Sha256\":\"22D7DCAB87EE3A2452B801E8F49E4BE7CE9187C4B6F2A4C148F360BC3FD2A55D\"},\"saves/manual_saves/mortal_world_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":1672,\"Sha256\":\"5EDA2758A5A8E6ED892DBDD91CB5ED605650851ADAAF7EA0C81ACCB20027E45F\"},\"saves/manual_saves/shining_abode_command_display_fixture.zip\":{\"Exists\":true,\"Length\":35684,\"Sha256\":\"822FD3E81578F7CFDFEBA7D924A3D454BD9687EFB90FA866C48DC49173ADB735\"},\"saves/manual_saves/shining_abode_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":1540,\"Sha256\":\"78FB89B27751E6F23BD893AB6ED62413DA61BD33DDFB001D2BF1EB338CDE1AE1\"},\"stories/mortal_life_2.jsonl\":{\"Exists\":true,\"Length\":255,\"Sha256\":\"3CAF18EA9B24C471C554997A1EBC0EED6A37108FCA52A29AA1FEBF463FFB4E8A\"},\"world_profiles/example_world_profile.json\":{\"Exists\":true,\"Length\":2603,\"Sha256\":\"F62C409D898819DE756C2B48A989D5B980511D626F29F2D8FBFFAE03602547F6\"},\"world_profiles/example_world_profile.md\":{\"Exists\":true,\"Length\":674,\"Sha256\":\"C54E577A6264219D2713ED964C47EB89D7D3CAD1C775A2C20667AB0CBF6353C4\"},\"world_profiles/example_world_profile.txt\":{\"Exists\":true,\"Length\":1455,\"Sha256\":\"9E0EA1FDAA81C94235E0A6FEDAF60F99974CE83EBE3BB26EFBBD20A2916A64F7\"},\"$sessionGeneration\":{\"Exists\":true,\"Length\":69,\"Sha256\":\"F180A337F052E5EC2025F1DB31B257F81DA30A177AFDE24FFEBCB65DAB3CDA18\"}},\"Before\":{\"game_state/afterlife/afterlife_active_threats.json\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/afterlife/afterlife_active_threats.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/afterlife/afterlife_chronicles.json\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/afterlife/afterlife_chronicles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/afterlife/afterlife_global_flags.json\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/afterlife/afterlife_global_flags.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/afterlife/afterlife_story_outline.json\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/afterlife/afterlife_story_outline.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/afterlife/entity_profiles/guardian_mirror.json\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/afterlife/entity_profiles/guardian_mirror.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/afterlife/entity_profiles/shining_senator_mirel.json\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/afterlife/entity_profiles/shining_senator_mirel.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/chaos_sea/guardian_politics.json\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/chaos_sea/guardian_politics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/combat/allies.json\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/combat/allies.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/combat/enemies.json\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/combat/enemies.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/control/gm_trajectory_ledger.jsonl\":{\"Exists\":true,\"Length\":1410,\"Sha256\":\"4F336793D712704E6A80DB09B4ED22760FBB170FE32A01969E21F895D232E386\"},\"game_state/control/pending_dice_state.json\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_dice_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_ink_actions.json\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_ink_actions.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":48,\"Sha256\":\"D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9\"},\"game_state/control/pending_mortal_wound_occurrences.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2127,\"Sha256\":\"6C01CD332322AE1A892DC1FA619E686D3CF1EB7C5A97DB848B4E0FD5D584752E\"},\"game_state/control/pending_turn_snapshot.authority.json\":{\"Exists\":true,\"Length\":44331,\"Sha256\":\"47B56520F968E71C58DF4518BD36FB0ECAD832DA2A363C856BCB51DD2E84ACF9\"},\"game_state/control/pending_turn_snapshot.json\":{\"Exists\":true,\"Length\":1,\"Sha256\":\"021FB596DB81E6D02BF3D2586EE3981FE519F275C0AC9CA76BBCF2EBB4097D96\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_active_threats.json\":{\"Exists\":true,\"Length\":4057,\"Sha256\":\"0586D0057DD387F86C0302CDD9B47F2435504F2F6AB8CE3476F8C6F89B81BC0F\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_chronicles.json\":{\"Exists\":true,\"Length\":2653,\"Sha256\":\"0E2CB441A5F87166CCC3F49284591E9F17BBC10E299F19EDD74C79EBDC0A373F\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_global_flags.json\":{\"Exists\":true,\"Length\":1900,\"Sha256\":\"51D177338A159FDED29D414CDBA07EF95A1F292DBFE2FFA5799952548CAC594B\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_story_outline.json\":{\"Exists\":true,\"Length\":3462,\"Sha256\":\"B68DEF0ACB1EE92E5BDF67F0FA7271B218E1F8FE6A700EA861ACD68CEA4594B8\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/guardian_mirror.json\":{\"Exists\":true,\"Length\":9864,\"Sha256\":\"A295046EF610C13096BDB30D9BCB7A0BC343AB162415F3E6B0D57558316FA4A1\"},\"game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/shining_senator_mirel.json\":{\"Exists\":true,\"Length\":8851,\"Sha256\":\"15DEF35F254D5505186A3B51EDB4D75458FB1A6A310CC2F1E61DF739E2C7D66F\"},\"game_state/control/pending_turn_snapshot/game_state/chaos_sea/guardian_politics.json\":{\"Exists\":true,\"Length\":4822,\"Sha256\":\"31151310B4B08AB7BB046D491F5E6B5CF203ED6DE88318600B5E2E901CD5B1A7\"},\"game_state/control/pending_turn_snapshot/game_state/combat/allies.json\":{\"Exists\":true,\"Length\":25,\"Sha256\":\"81AF7CC4287CDEB3B839E1523DB45CF33FCEB9DFC3F0776C58406EEAF89A0801\"},\"game_state/control/pending_turn_snapshot/game_state/combat/enemies.json\":{\"Exists\":true,\"Length\":26,\"Sha256\":\"49913CD73BE6D76B86D424CE984105F6F8E3C1FD3F193BA36FE72E9C9E2AD33F\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json\":{\"Exists\":true,\"Length\":471,\"Sha256\":\"C86724622A2548EC05DCAA3AA0AB77E4F8FD71B51F8CE50FA6191EE68C03C32F\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json\":{\"Exists\":true,\"Length\":27,\"Sha256\":\"17C3A0FB8E35969D6287033DE69890790DB70BCC977EA3C759046528540B21E3\"},\"game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":2127,\"Sha256\":\"6C01CD332322AE1A892DC1FA619E686D3CF1EB7C5A97DB848B4E0FD5D584752E\"},\"game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"AECD0D64EA5A72121430514BBE0A4764B9E36660100810D31C33EC8E61EF2DA1\"},\"game_state/control/pending_turn_snapshot/game_state/control/qte_deferred_effect_continuation.json\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/pending_turn_snapshot/game_state/control/qte_runtime.json\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/pending_turn_snapshot/game_state/core/game_settings.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/control/pending_turn_snapshot/game_state/core/player_status.json\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/control/pending_turn_snapshot/game_state/core/system_mods.json\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/control/pending_turn_snapshot/game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":35,\"Sha256\":\"F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E\"},\"game_state/control/pending_turn_snapshot/game_state/history/qte_history.json\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/control/pending_turn_snapshot/game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/control/pending_turn_snapshot/game_state/meta/achievements.json\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/control/pending_turn_snapshot/game_state/meta/guardians.json\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/control/pending_turn_snapshot/game_state/misc/characteristics.json\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/item_journals.json\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_journals.json\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/control/pending_turn_snapshot/game_state/npcs/npc_wounds.json\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/control/pending_turn_snapshot/game_state/player/computed_characteristics.json\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"DA375D1BD1525D3FD7E85B031B931F35958BBD2E06C142BFB2A7785AAE30CD7A\"},\"game_state/control/pending_turn_snapshot/game_state/player/effects.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"57CFA98CFF82EB4821E37B1296A354D34213B9136C7C90C7E475103A5CA6CC7B\"},\"game_state/control/pending_turn_snapshot/game_state/player/experience.json\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/control/pending_turn_snapshot/game_state/player/player_status.json\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/control/pending_turn_snapshot/game_state/player/skills_active.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/control/pending_turn_snapshot/game_state/player/skills_passive.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/control/pending_turn_snapshot/game_state/player/stat_points.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/control/pending_turn_snapshot/game_state/player/transformation.json\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/control/pending_turn_snapshot/game_state/player/wounds.json\":{\"Exists\":true,\"Length\":4872,\"Sha256\":\"9833D7546AE55E930CA5E7909474BB6878BB6061D3682517D6C233C34B3194A7\"},\"game_state/control/pending_turn_snapshot/game_state/quests/quest_history.json\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":6885,\"Sha256\":\"6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":4914,\"Sha256\":\"0265F8D377E13EF980E5EE24F6D9EF9F74DFA294BF68B9743D787ED6F1BB1883\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":689,\"Sha256\":\"A3E542EA0A6202980CDE14ACB80884909A1CF8F110611386915E2168CC43B777\"},\"game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":1125,\"Sha256\":\"D6F251D99C8ADC07831DDE26273C186A35AFEB22AA9F305DEC9680D9527CE184\"},\"game_state/control/pending_turn_snapshot/game_state/shining_abode/faction_chronicles.json\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/control/pending_turn_snapshot/game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/control/pending_turn_snapshot/game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/control/pending_turn_snapshot/game_state/world/world_time.json\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json\":{\"Exists\":true,\"Length\":1062,\"Sha256\":\"14767592F1D844969BB7EE8C5BA5B6E3C738FFB2E2A7B18BE97D997E7CED759F\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json\":{\"Exists\":true,\"Length\":552,\"Sha256\":\"594FB1982927597100EF470DC47F57470108EE57835FE2909711E71AFD80DF81\"},\"game_state/control/pending_turn_snapshot/game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":65,\"Sha256\":\"562C3EE724700BE4D8274A73DF6F84D9C6FF32816868A5C2B600D0FDB5920AA1\"},\"game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"game_state/control/pending_turn_snapshot/lore/codex_entries.json\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"game_state/control/pending_turn_snapshot/lore/current_world/cultures.json\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"game_state/control/pending_turn_snapshot/lore/current_world/geography.json\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"game_state/control/pending_turn_snapshot/lore/current_world/history.json\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"game_state/control/pending_turn_snapshot/lore/current_world/threats.json\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"game_state/control/pending_turn_snapshot/lore/current_world/world_directives_draft_example.md\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"game_state/control/pending_turn_snapshot/lore/current_world/world_setting.json\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"game_state/control/pending_turn_snapshot/output/debug_logs.json\":{\"Exists\":true,\"Length\":379,\"Sha256\":\"6F61EC68D2387F11D120EF9265DB17301CF450464ADF61AAEF62A779FF1C8780\"},\"game_state/control/pending_turn_snapshot/output/interface_updates.json\":{\"Exists\":true,\"Length\":77,\"Sha256\":\"C4C0A49148558881025EE5751FB37B525FF6A57802E22897FED0F86B1CB433CB\"},\"game_state/control/pending_turn_snapshot/output/narrative_response.json\":{\"Exists\":true,\"Length\":111,\"Sha256\":\"74CE12D021FECEF59DE6DF065BEB6C8330BB4BEC2C62919AEA28F3067A6472AF\"},\"game_state/control/progression_schedule.json\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"98586BDC633CB93C772392850DDE1E4C0531DCEF16E9729F6BE3C8DA54A68CCE\"},\"game_state/control/progression_schedule.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1036,\"Sha256\":\"AECD0D64EA5A72121430514BBE0A4764B9E36660100810D31C33EC8E61EF2DA1\"},\"game_state/control/qte_deferred_effect_continuation.json\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/qte_deferred_effect_continuation.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":164853,\"Sha256\":\"28BDCFE46F3526445CBCABFB741321F6EA65CA71CB44BA3B891A6F21ED74D40B\"},\"game_state/control/qte_runtime.json\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/qte_runtime.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":185,\"Sha256\":\"910801C06E73C5A5B6FA164D7E4935B494C418B811D49E542A6BD73A259D0F69\"},\"game_state/control/validation_repair_request.json\":{\"Exists\":true,\"Length\":12585,\"Sha256\":\"41B1FB7355B82EF803D975EFBAE7386737D74617C435E71AD47B8F3ECC09DA8B\"},\"game_state/core/game_settings.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/core/game_settings.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"48B1B58D015EA9AC89F445068C8340137C421E2C50C87B8560CAF52BBC45F7BD\"},\"game_state/core/player_status.json\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/core/player_status.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":83,\"Sha256\":\"8C9CDAF126F0B97A757327F12FE86D66EA4C0C51FB852EBEBCB1FFCC21DFF2E3\"},\"game_state/core/system_mods.json\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/core/system_mods.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1279,\"Sha256\":\"9AF2C8C736DBEC620FB63683408AA84BECF21FAB82ABC70BE48C7ACA1D2BAD18\"},\"game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":2426,\"Sha256\":\"7F842FBB3CE9F84841B167D53D2A4438AB07DC25127A89B4410185ABFB43E4A5\"},\"game_state/effects/effect_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":35,\"Sha256\":\"F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E\"},\"game_state/history/chat_log.json\":{\"Exists\":true,\"Length\":56,\"Sha256\":\"7007F8BA969AA63363159DD685BA017B2CDA36A6EEC1428EA522DA17132534EA\"},\"game_state/history/qte_history.json\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/history/qte_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":287,\"Sha256\":\"2F0C95499CAECC52A4D405F1C234DEFD98F794EFE744DD5F912016028D86B829\"},\"game_state/inventory/item_identity_index.json\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/inventory/item_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1073,\"Sha256\":\"7C42F694E39218087D2791F0A6D05ADD6DFB889927500824C6A0FD65A0E1F5B9\"},\"game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/inventory/items.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/meta/achievements.json\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/meta/achievements.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":400,\"Sha256\":\"A10E5E2470F988D4511C9F254EB15B1DA514646DFE22E398B659919666064818\"},\"game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/meta/afterlife_entity_profiles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":45,\"Sha256\":\"478CB55932547C1412679E7F2436CAEC9B7C1A37CC8BCE24BA16E1F1EF45C0FA\"},\"game_state/meta/character_chronicle.json\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/meta/character_chronicle.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":733,\"Sha256\":\"8057BDA6F53F16CD7618648AA6945654163349A88ABA67C629981B6518913A49\"},\"game_state/meta/guardians.json\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/meta/guardians.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":106,\"Sha256\":\"AB1A9BE59B0E8657EBAC266D47080384EB3FD7E1BDD546037B5317E791DD3D6C\"},\"game_state/meta/soul_state.json\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/meta/soul_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":415,\"Sha256\":\"19E66A7A2059C8F569862E55FE728B6A6A3BA62C93FDBE42265E821B7DE68430\"},\"game_state/misc/characteristics.json\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/misc/characteristics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":225,\"Sha256\":\"A29FBEE3856171241586B449B0A785BCF60A12D7D802ABAE346A1DE70A3D1EC5\"},\"game_state/npcs/item_journals.json\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/npcs/item_journals.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":987,\"Sha256\":\"DCB005342FFB229F59580356A55C755BD8D9937D96CBDF69DE77437041AF435D\"},\"game_state/npcs/npc_core.json\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/npcs/npc_core.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3994,\"Sha256\":\"A4C67CBFAB01E901D126C1F0D1386F07A0369E410C6A951768F9EC491034D8E1\"},\"game_state/npcs/npc_journals.json\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/npcs/npc_journals.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":21,\"Sha256\":\"96E628A14882456158DB02B16A3AB7BF3EBE40C2AFA3DB8D64CB1C839FD97A53\"},\"game_state/npcs/npc_wounds.json\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/npcs/npc_wounds.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/player/computed_characteristics.json\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"5A1558C22EA03AB6CCB50105A56604B439164C5E88C5ABF7AAAF92BE0A9F4DF6\"},\"game_state/player/computed_characteristics.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1431,\"Sha256\":\"DA375D1BD1525D3FD7E85B031B931F35958BBD2E06C142BFB2A7785AAE30CD7A\"},\"game_state/player/effects.json\":{\"Exists\":true,\"Length\":2547,\"Sha256\":\"B0F90440F09A1BD106901A4CFC85C8288BAA9D9463F3BC664C6A1B6A5DF71770\"},\"game_state/player/effects.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"57CFA98CFF82EB4821E37B1296A354D34213B9136C7C90C7E475103A5CA6CC7B\"},\"game_state/player/experience.json\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/player/experience.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":170,\"Sha256\":\"23603A0A092B871C3D349B38ADFE0666B20DA722A66064CF030EA368A84A4A40\"},\"game_state/player/player_status.json\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/player/player_status.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1202,\"Sha256\":\"3CAE75F26E400F642BDEC76D974D3E56EFE7B79B5212E329449CA97241F39B17\"},\"game_state/player/skill_mastery.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/player/skill_mastery.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"AB368372158B5AFB30E3C1F7E7DDD189B01F0CF985B6B85BA8DEA0A4E1A8A049\"},\"game_state/player/skills_active.json\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/player/skills_active.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":28,\"Sha256\":\"615EA9DAE3BE242FB738D57742295C5419909709A3984BBA13458748028D30DB\"},\"game_state/player/skills_passive.json\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/player/skills_passive.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":29,\"Sha256\":\"062046836AB471CC0E7A6C7E3328F974EE4AE89BE8839E012D2461CD74A600F0\"},\"game_state/player/stat_points.json\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/player/stat_points.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":50,\"Sha256\":\"0AD75B0EBB81096D7964434DD8EB4519DE2A6E9AF833BB820B3CFE070E9891B4\"},\"game_state/player/transformation.json\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/player/transformation.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":242,\"Sha256\":\"53BB9C81BDA4AB38BCB888639BD639822F77731FCC1FE7B5C3C2F8D5546D08FC\"},\"game_state/player/wounds.json\":{\"Exists\":true,\"Length\":13724,\"Sha256\":\"76D9C787457A5BEEC34CE6CEF570426D5209A882441D87AC41BFF6835F78C3C2\"},\"game_state/player/wounds.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4872,\"Sha256\":\"9833D7546AE55E930CA5E7909474BB6878BB6061D3682517D6C233C34B3194A7\"},\"game_state/quests/quest_history.json\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/quests/quest_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2056,\"Sha256\":\"BABCC397CCDC70661F844094DEE691C3C2EF08AD2FE408ABA614CDAAA1327CAE\"},\"game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":9231,\"Sha256\":\"B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A\"},\"game_state/resources/resource_definitions.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":6885,\"Sha256\":\"6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603\"},\"game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":10320,\"Sha256\":\"B03B99A0D933FE0D54902CCF86DA643660F0E90C3A8104E658BC3605E0844661\"},\"game_state/resources/resource_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4914,\"Sha256\":\"0265F8D377E13EF980E5EE24F6D9EF9F74DFA294BF68B9743D787ED6F1BB1883\"},\"game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":895,\"Sha256\":\"4A1E769C9BB0F7B99C6D57F6854EE5F5F86A794FE4C00DF79E1085CBCAE467D7\"},\"game_state/resources/resource_owner_authority.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":689,\"Sha256\":\"A3E542EA0A6202980CDE14ACB80884909A1CF8F110611386915E2168CC43B777\"},\"game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":1603,\"Sha256\":\"42672E830C8E0A68417026ABB37085524ABA06C9D62332FF670DE038DF357554\"},\"game_state/resources/resource_state.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1125,\"Sha256\":\"D6F251D99C8ADC07831DDE26273C186A35AFEB22AA9F305DEC9680D9527CE184\"},\"game_state/shining_abode/faction_chronicles.json\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/shining_abode/faction_chronicles.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":3669,\"Sha256\":\"C43C647883DF9CD5402DD60D8416070BB53CC674EEB8DE517FAA588977664CFF\"},\"game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/world/current_location.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":5783,\"Sha256\":\"AED6FE35F610FEB93EA29DB2B46086EDC1DEEC59D96B7E8C8620C851C04C919C\"},\"game_state/world/location_identity_index.json\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/world/location_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":481,\"Sha256\":\"99F60FEBA92B2D72943227979BAC4D165E265DDD4013FD07E397F35C0FEBA09C\"},\"game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/world/world_map.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":5687,\"Sha256\":\"D1D42D1B7EEF7679EC6B4A5B8B953C7F3020E5A5AA1C7001694E8878D2D42A31\"},\"game_state/world/world_time.json\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/world/world_time.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":133,\"Sha256\":\"7D7190AE4C68766859A637F9BA209929E9742A88256EBCE72AEA72972592E67F\"},\"game_state/wounds/mortal_qte_decision_publication.json\":{\"Exists\":true,\"Length\":226235,\"Sha256\":\"E4AF185822E1A27F73C6824A5C480880D7D2C7226A5D43E8454BC1DF36656B5A\"},\"game_state/wounds/wound_history.json\":{\"Exists\":true,\"Length\":22117,\"Sha256\":\"5251C8CD950AB213AAA0D30E45E5D9E53F5EDF7F15B36B1D243766909CA190AE\"},\"game_state/wounds/wound_history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1062,\"Sha256\":\"14767592F1D844969BB7EE8C5BA5B6E3C738FFB2E2A7B18BE97D997E7CED759F\"},\"game_state/wounds/wound_identity_index.json\":{\"Exists\":true,\"Length\":1121,\"Sha256\":\"57C9A57AE998E598E7606C1196729254B13494AD242C0FB81FC41C2ED6C1ED2B\"},\"game_state/wounds/wound_identity_index.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":552,\"Sha256\":\"594FB1982927597100EF470DC47F57470108EE57835FE2909711E71AFD80DF81\"},\"game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":2480,\"Sha256\":\"9FE0AFCA723D06E8BB712C97F0F34383CA2002F40FA7FFA92515792E34C1C0EA\"},\"game_state/wounds/wound_opportunity_receipts.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":65,\"Sha256\":\"562C3EE724700BE4D8274A73DF6F84D9C6FF32816868A5C2B600D0FDB5920AA1\"},\"input/turn_request.json\":{\"Exists\":true,\"Length\":65263,\"Sha256\":\"088EE726562F79FD09F314DD87D646B5717C3F45339E81FE9D66FE39F476C331\"},\"lore/chaos_sea/cosmology.json\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"lore/chaos_sea/cosmology.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":2047,\"Sha256\":\"FEC13C4F2430D3E7318F3EBB6F186883BFBEEDE0BB417F2CE5CED13405A104CD\"},\"lore/codex_entries.json\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"lore/codex_entries.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":4112,\"Sha256\":\"937670566EF62459066FE5A994FE2C5F23A2A837B508855897E58913EF3F204C\"},\"lore/current_world/cultures.json\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"lore/current_world/cultures.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1006,\"Sha256\":\"56F3ACB7A5909210DA08827D10AE089C4CFEF5740600D2FA31CB1949FBBA0C5D\"},\"lore/current_world/geography.json\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"lore/current_world/geography.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":995,\"Sha256\":\"4C80352D019ABC2153C70C860B8FECD08C13618E7D1C9F2DE677B8A2D050285C\"},\"lore/current_world/history.json\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"lore/current_world/history.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":950,\"Sha256\":\"901A86D97B1F4A2601DC6C6D6CD7DD2D7F7E0E99DAE6483B3B7A633A662C8B21\"},\"lore/current_world/threats.json\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"lore/current_world/threats.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":764,\"Sha256\":\"A9A941FDC517262B29090B8CD782B2E3E6F779A45EF1DB176D328B94B20B70C6\"},\"lore/current_world/world_directives_draft_example.md\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"lore/current_world/world_directives_draft_example.md.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1040,\"Sha256\":\"4FA097FA95C8AF22EBA1901FDBEE3D8DE544089038DE4888A6521ADD23FF1547\"},\"lore/current_world/world_setting.json\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"lore/current_world/world_setting.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":1095,\"Sha256\":\"72792CB8026EF61118B9EBDC294272CF371717680DD7287BB36103C24CA3CEFB\"},\"mods/example_system_mod.json\":{\"Exists\":true,\"Length\":503,\"Sha256\":\"CB66A9BDC29EA9EA529C1934119E9C03EC9CA1EA08387C50E42005340015C369\"},\"mods/example_system_mod.md\":{\"Exists\":true,\"Length\":548,\"Sha256\":\"CD7E840FA6775E965A3EAB204E40141A740800ED551F72173ABE0E17CE885A9E\"},\"mods/example_system_mod.txt\":{\"Exists\":true,\"Length\":807,\"Sha256\":\"4D73B86EB51EB6EE198383F79FDC2452F5DE421403C232E5AEB4954FC2E7E6CA\"},\"output/debug_logs.json\":{\"Exists\":true,\"Length\":1064,\"Sha256\":\"6984540998B87866A509AD20149CEA5D43FF7408769FE8457ACE0345BC490AFA\"},\"output/debug_logs.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":379,\"Sha256\":\"6F61EC68D2387F11D120EF9265DB17301CF450464ADF61AAEF62A779FF1C8780\"},\"output/interface_updates.json\":{\"Exists\":true,\"Length\":68,\"Sha256\":\"E1E35C314AC29A2D6CF934E6DA761789B6F3A560DA012FB004A05A4ABE43E217\"},\"output/interface_updates.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":77,\"Sha256\":\"C4C0A49148558881025EE5751FB37B525FF6A57802E22897FED0F86B1CB433CB\"},\"output/narrative_response.json\":{\"Exists\":true,\"Length\":395,\"Sha256\":\"880A726BDB365DC22A1D3670C81E22A002061E31050AF78C71F89803A5CB71BC\"},\"output/narrative_response.json.rollback.639276669505686985\":{\"Exists\":true,\"Length\":111,\"Sha256\":\"74CE12D021FECEF59DE6DF065BEB6C8330BB4BEC2C62919AEA28F3067A6472AF\"},\"ready/turn_complete.json\":{\"Exists\":true,\"Length\":411,\"Sha256\":\"2C5FE8C4B2167A945CC6A818907DCB88909D0191155ADFC651DDAB3ABED1C4B1\"},\"saves/manual_saves/chaos_sea_command_display_fixture.zip\":{\"Exists\":true,\"Length\":81508,\"Sha256\":\"D88967A7837EB579EF21A7383F42BB669E79500B8C17568ACF15588AF3FFD751\"},\"saves/manual_saves/chaos_sea_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":3700,\"Sha256\":\"9B4E138D22D12229B3A756138AE75D34D104031B0AB90145F7B1E7A577CFD415\"},\"saves/manual_saves/first_character_save_metadata.json\":{\"Exists\":true,\"Length\":869,\"Sha256\":\"6412EEDB4029B53FD56122FE393C55D641B4B4267E81FCE83D56EBAC2575A63A\"},\"saves/manual_saves/mortal_world_command_display_fixture.zip\":{\"Exists\":true,\"Length\":103744,\"Sha256\":\"22D7DCAB87EE3A2452B801E8F49E4BE7CE9187C4B6F2A4C148F360BC3FD2A55D\"},\"saves/manual_saves/mortal_world_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":1672,\"Sha256\":\"5EDA2758A5A8E6ED892DBDD91CB5ED605650851ADAAF7EA0C81ACCB20027E45F\"},\"saves/manual_saves/shining_abode_command_display_fixture.zip\":{\"Exists\":true,\"Length\":35684,\"Sha256\":\"822FD3E81578F7CFDFEBA7D924A3D454BD9687EFB90FA866C48DC49173ADB735\"},\"saves/manual_saves/shining_abode_command_display_fixture_metadata.json\":{\"Exists\":true,\"Length\":1540,\"Sha256\":\"78FB89B27751E6F23BD893AB6ED62413DA61BD33DDFB001D2BF1EB338CDE1AE1\"},\"stories/mortal_life_2.jsonl\":{\"Exists\":true,\"Length\":255,\"Sha256\":\"3CAF18EA9B24C471C554997A1EBC0EED6A37108FCA52A29AA1FEBF463FFB4E8A\"},\"world_profiles/example_world_profile.json\":{\"Exists\":true,\"Length\":2603,\"Sha256\":\"F62C409D898819DE756C2B48A989D5B980511D626F29F2D8FBFFAE03602547F6\"},\"world_profiles/example_world_profile.md\":{\"Exists\":true,\"Length\":674,\"Sha256\":\"C54E577A6264219D2713ED964C47EB89D7D3CAD1C775A2C20667AB0CBF6353C4\"},\"world_profiles/example_world_profile.txt\":{\"Exists\":true,\"Length\":1455,\"Sha256\":\"9E0EA1FDAA81C94235E0A6FEDAF60F99974CE83EBE3BB26EFBBD20A2916A64F7\"},\"$sessionGeneration\":{\"Exists\":true,\"Length\":69,\"Sha256\":\"F180A337F052E5EC2025F1DB31B257F81DA30A177AFDE24FFEBCB65DAB3CDA18\"}}}}\n{\"CleanupOwnedRoot\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b69a2a39262c4f349b8a2b03617ac22e\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}\nUnhandled exception. System.Text.Json.JsonReaderException: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 124\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalJointAppliedColdProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 573\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalJointAppliedColdProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 740\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.Main(String[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:line 53\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.<Main>(String[] args)\n\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 123\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 238\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original, String requestFingerprint, IReadOnlyDictionary`2 originalBefore, String scene, String expectedPhase, String refusalScenario, Boolean newPhysicalRoot, Boolean recoverRetainedStoryRow) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 176\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 375\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "55c75789-c665-410e-9eb8-c73d363ffdbd",
+        "testId": "87a0b998-557a-1428-2d40-6345f56feecd",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_schedule\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:58.5548303",
+        "startTime": "2026-10-15T13:11:42.5273744+00:00",
+        "endTime": "2026-10-15T13:11:42.5273746+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "55c75789-c665-410e-9eb8-c73d363ffdbd",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "98120b55-3116-4b02-93f4-472f29566eb6",
+        "testId": "1508ba94-4e99-1411-0d61-ae4254ab8f6c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"basis_fingerprint\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:02.2120530",
+        "startTime": "2026-10-15T13:09:46.5950518+00:00",
+        "endTime": "2026-10-15T13:09:46.5950520+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "98120b55-3116-4b02-93f4-472f29566eb6",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "819cda7c-1b94-455e-b05d-f38c67044f4d",
+        "testId": "ad9ca65a-d5bd-f285-4299-ac14e331309f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"world_time\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:01.5001084",
+        "startTime": "2026-10-15T13:08:44.3796194+00:00",
+        "endTime": "2026-10-15T13:08:44.3796196+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "819cda7c-1b94-455e-b05d-f38c67044f4d",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "ffb8752f-3284-4636-89fb-1edf8d4dd25a",
+        "testId": "cebfa736-f81a-89d8-abaa-414f79903a2a",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_control\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:56.9239739",
+        "startTime": "2026-10-15T13:13:42.1879779+00:00",
+        "endTime": "2026-10-15T13:13:42.1879781+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ffb8752f-3284-4636-89fb-1edf8d4dd25a",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "7ffbcc4a-7235-4457-a56c-f8a9206433cc",
+        "testId": "63629cb8-1c59-85c5-f9c1-47af7babf62d",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"authority_payload_digest\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:00.1171918",
+        "startTime": "2026-10-15T13:07:42.8722575+00:00",
+        "endTime": "2026-10-15T13:07:42.8722578+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7ffbcc4a-7235-4457-a56c-f8a9206433cc",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "b69ee647-bb80-4836-b312-cb0fbaf05d12",
+        "testId": "d9405da3-d317-d4d6-2cc3-58b1d09e6554",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_missing\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:58.2867251",
+        "startTime": "2026-10-15T13:14:40.4779157+00:00",
+        "endTime": "2026-10-15T13:14:40.4779159+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b69ee647-bb80-4836-b312-cb0fbaf05d12",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "38a56ebd-35b9-4725-93cf-b7bed80f5378",
+        "testId": "0d0ebf57-513b-c141-d9a5-fe2e79045f3b",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mutation_fingerprint\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:01.1664821",
+        "startTime": "2026-10-15T13:15:41.6480470+00:00",
+        "endTime": "2026-10-15T13:15:41.6480472+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "38a56ebd-35b9-4725-93cf-b7bed80f5378",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "d211082f-1db6-4ed7-a086-34f0e8edebb4",
+        "testId": "2ea55d4d-df4a-f338-ec47-f2a881a8f54d",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_malformed\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:02.7279183",
+        "startTime": "2026-10-15T13:12:45.2609296+00:00",
+        "endTime": "2026-10-15T13:12:45.2609298+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d211082f-1db6-4ed7-a086-34f0e8edebb4",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "f345301f-84fa-4d43-af84-8446b5de1c33",
+        "testId": "9b5c54c4-1724-797a-16d9-7485d55b2a12",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_report\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:57.3664704",
+        "startTime": "2026-10-15T13:10:43.9689692+00:00",
+        "endTime": "2026-10-15T13:10:43.9689695+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f345301f-84fa-4d43-af84-8446b5de1c33",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "2aea6c60-f089-4f59-8a31-ffde0fa7d571",
+        "testId": "325a51ec-1e85-8bc1-8398-b13f71453f36",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"missing_marker\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:24.2738657",
+        "startTime": "2026-10-15T13:06:42.7536913+00:00",
+        "endTime": "2026-10-15T13:06:42.7537082+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2aea6c60-f089-4f59-8a31-ffde0fa7d571",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 420,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 12,
+      "qte_story_actual_client_append": 12,
+      "qte_story_actual_engine_result": 12,
+      "qte_physical_actual_occurrence": 12,
+      "fr063_joint_actual_prior42_inactive_tail": 12,
+      "fr063_joint_original_progression_reader_before_owner": 12,
+      "fr063_joint_signed_original_schedule_before_owner": 12,
+      "fr063_joint_natural_stage43_image_before_assert": 228,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 24,
+      "fr063_confirmed_claim_inspection": 12,
+      "fr063_joint_completion_actual_prerequisites": 12,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 12,
+      "fr063_joint_completion_actual_owner_outcome": 12,
+      "fr063_joint_progression_phase_report_arithmetic": 12,
+      "qte_mortal_child_dependency_launch": 12,
+      "fr063_joint_applied_cold_parent_outcome": 12
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f87aa4a26a7d41d4b769982ef9613838",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4fe0ad807a504a6eb7bd739e3fe30956",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b69a2a39262c4f349b8a2b03617ac22e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fe2965dea12f4779a831bf656382b07d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-457cfefb96154aa3aa8a2a7c8e896261",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7eba2f3c9f8543aea4280c852063467f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0235d36668564462a4d5a1ee00c608f5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-af23f6f1650f40278519d9c425682018",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9bbf52f89f034f86a19cfee4fcb417ca",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3b00945f639f4245807cd56fbe3639b6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ea336f047212473da6d3633fa6797901",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0a67722210f343c9acbfffd436928bef",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-dc02bdeab2244300959c10c92bf91cd1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ecb82f4c6ee24fffb34cb7ff7b7cf6e3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-689b50a2529c46f2bbe248e421bd27aa",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3242fc04f456481ba5824dce5944f796",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a93edc246d634ecd9f120b2df1416078",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5a8e8fd725c844fdbd3fb9721acd7c06",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f65fe9333ebf49339f1223a3cdf34615",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f6d4eee514154dac96d4ac4581a7c797",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5f563a85d4604be78dd677afa56c6d6c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3233019fcd3d4314880eeeee251eb2e1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-526837869a7b482dbd73a2bf20e691f6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f78571913fe84909aafaa7e9b6010b98",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "strictCleanupObservation": "OBSERVED_PARSED_RECEIPTS_ONLY",
+    "childEvidenceCoverage": "PARSED_NAMED_CONTAINERS_ONLY",
+    "strictCleanupReceiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=36"
+      },
+      {
+        "receiptIndex": 2,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 3,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=36"
+      },
+      {
+        "receiptIndex": 4,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 5,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=36"
+      },
+      {
+        "receiptIndex": 6,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 7,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=36"
+      },
+      {
+        "receiptIndex": 8,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 9,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=36"
+      },
+      {
+        "receiptIndex": 10,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 11,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=36"
+      },
+      {
+        "receiptIndex": 12,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 13,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=36"
+      },
+      {
+        "receiptIndex": 14,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 15,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=36"
+      },
+      {
+        "receiptIndex": 16,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 17,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=36"
+      },
+      {
+        "receiptIndex": 18,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 19,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=36"
+      },
+      {
+        "receiptIndex": 20,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 21,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=36"
+      },
+      {
+        "receiptIndex": 22,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 23,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=36"
+      }
+    ],
+    "childEvidenceContainerCount": 24,
+    "binaryProvenanceScope": "selected10artifacts+declaredchildImmutable; actualchildloadedbindings need separate evidence inspection",
+    "allJsonObservationCount": 432,
+    "evidenceReview": "PENDING"
+  }
+}

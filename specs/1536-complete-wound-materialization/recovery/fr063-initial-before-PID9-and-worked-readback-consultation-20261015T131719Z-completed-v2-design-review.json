@@ -1,0 +1,459 @@
+{
+  "kind": "independent bounded source/dependency consultation with separate conditional manual worked readback disposition",
+  "createdUtc": "2026-10-15T13:17:19.584113+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configuration": {
+    "requested": "Astra XHigh",
+    "inheritedExplicitRequest": true,
+    "actualBackendTelemetry": "UNAVAILABLE"
+  },
+  "reviewedSource": "db7bca4b612132ffd46505058aac8e75f9335cb1",
+  "observedHeadAtReport": "db7bca4b612132ffd46505058aac8e75f9335cb1",
+  "observedClean": true,
+  "compiledHistorical": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "initial9": {
+    "verdict": "ACCEPTED_AS_BOUNDED_COVERAGE_PLAN_WITH_CONDITIONS",
+    "actualRelease": [],
+    "implementationGrant": false,
+    "runtime": "UNRUN",
+    "newArchitectureRequired": false,
+    "rows": [
+      {
+        "row": "initial_manifest_missing",
+        "damage": "delete exact existing leaf",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_manifest_malformed",
+        "damage": "replace exact existing leaf with nonempty malformed JSON {",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_input_missing",
+        "damage": "delete exact existing leaf",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_input_malformed",
+        "damage": "replace exact existing leaf with nonempty malformed JSON {",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_authority_missing",
+        "damage": "delete exact existing leaf",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_authority_malformed",
+        "damage": "replace exact existing leaf with nonempty malformed JSON {",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": true,
+        "expectedHandled": true,
+        "expectedOwnerException": null,
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_generation_missing",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": false,
+        "expectedHandled": null,
+        "expectedOwnerException": "InvalidDataException",
+        "expectedMessageUnderQuiescentProducer": "Active joint continuation generation is missing; evidence retained.",
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_generation_malformed",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": false,
+        "expectedHandled": null,
+        "expectedOwnerException": "InvalidDataException",
+        "expectedMessageUnderQuiescentProducer": "Session generation authority is invalid.",
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      },
+      {
+        "row": "initial_generation_foreign",
+        "expectedOuterInvoked": true,
+        "expectedInnerEntered": false,
+        "expectedHandled": null,
+        "expectedOwnerException": "InvalidDataException",
+        "expectedMessageUnderQuiescentProducer": "Active joint continuation generation is invalid or differs; evidence retained.",
+        "expectedTurn": 42,
+        "expectedCompleted": false,
+        "runtime": "UNRUN"
+      }
+    ],
+    "proposedMethods": [
+      "GuaranteedTreatment_InitiallyDamagedOriginalPreservesFirstOwnerNamespace",
+      "GuaranteedTreatment_InitiallyDamagedGenerationRefusesFirstOwnerWithoutBootstrap"
+    ],
+    "proposedCategories": [
+      "fr063-joint-initial-original-admission",
+      "fr063-joint-initial-generation-admission"
+    ],
+    "provisionalInventory": {
+      "methods": 51,
+      "cases": 132,
+      "descriptors": 26,
+      "finiteSelectionFiles": 22,
+      "discovered": false
+    },
+    "requiredOracles": [
+      "Genuine same-generation QTE42 -> signed original43 -> applied/pre-story pause; leases closed before single parent corruption and before PID",
+      "One exact leaf differs from genuine paused namespace; no reseal, fake original, recreated draft or repaired authority",
+      "Exact raw keyset/presence/null/length/hash equals parent after damage, before first owner; unchanged full bytes after owner, target and donor",
+      "No successful target canonical/original/G/phase/inspection/cache preflight; constructors must not bootstrap target; auxiliary factory root explicitly separate",
+      "Actual native PID/parent, entry AND final 3 Default assemblies and 5 context pins, native integer zero, no timeout, both drains complete, complete selected counts",
+      "Missing physical G stays absent; malformed remains byte-exact; foreign equals genuine parent-created donor bytes and complete donor namespace unchanged",
+      "Actual owner outcomes distinct from source prediction; no claim all six headers cause null frame; first unexpected result frozen before diagnosis",
+      "Real per-parent/child-auxiliary/donor cleanup receipts and absent roots; expected 19 roots if existing ownership topology retained, not observed"
+    ],
+    "fixtureChanges": [
+      "new JointInitialAdmission partial with two closed theories (6+3)",
+      "isolated new child branches/modes before ordinary preflight; preserve existing mode9 and child-after-preflight G2",
+      "parent post-lease corruption/raw capture and finally raw diagnostics for new modes",
+      "nullable assertion-only generation digest when absent; explicit key membership distinct from null",
+      "parent-owned real donor initialized and all donor leases closed before PID; no donor authority/complete bytes in child context",
+      "closed catalog/preparation/global selections plus two finite selections and separately reviewed exact runner/controller inventory adaptation"
+    ],
+    "dependencyDisposition": "Historical qualified basis19/checkpoint5/newA17/live1/cold3/retained1/newroot1/helper29/G2 remain exact historical executions. Any future transfer requires authored diff proves old branches/defaults unchanged; no automatic current-source PASS. Fresh BOTH/discovery/catalog/exact Late2 required after test/harness authoring; new9 and controller release require subsequent gates/evidence.",
+    "open": [
+      "initial9 runtime",
+      "ACTIVE direction",
+      "FR063/T070/#1536"
+    ]
+  },
+  "worked": {
+    "sourceRisk": "CONFIRMED_CONDITIONAL_CAPTURE_GAP_NOT_RUNTIME_FAILURE",
+    "nativeExecution": "NOT_RUN_BY_REVIEWER",
+    "existingA6CollectorSummaryScope": "UNOBSERVED if no per-test receipt; never relabel",
+    "conditionalManualPath": "ACCEPTED_AS_NARROW_ORCHESTRATION_ADAPTATION",
+    "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 2,
+    "predecessors": [
+      "phase12",
+      "settlement2",
+      "active3 refusal-only",
+      "story5",
+      "legacy2"
+    ],
+    "conditions": [
+      "All five predecessors actual PASS with complete independent ROOT scenario/cleanup proof and immutable freeze; stop first failure or missing evidence",
+      "Current clean singleton gate exact worked selection; current source closure; unchanged compiled 2aeed build inputs and all original 11 binary bytes pre/post; exact approved A6 SHA",
+      "Exact NoBuild Plan 2/2/2 then same finite worked2 actual, existing per-descriptor budgets, native0 and exact 2 PASS/no timeout/skips/duplicates",
+      "Read full integration TRX: exactly one actual result, correct expected integration method/testId/descriptor; distinguish unit pure guard result with no owned fixture",
+      "Parse genuine prefixed Summary stdout receipt with raw TRX hash/XPath/line and receipt hash; exactly one distinct integration owned-root receipt, true removed, explicit null failure, absolute root actually absent; reject ambiguity/extra/unattributed roots; identical duplicate textual appearances may only be deduplicated with all origins recorded",
+      "Tie full issued-packet witness/source42/original43/G/canonicalFilesUnchanged to same one-result integration TRX; preserve original scalar/native assertions and packet semantics",
+      "If receipt is per-test, preserve truthful per-test provenance; if Summary-only, original A6 zero receipts stays UNOBSERVED, supplementary one receipt explicitly Summary-attributed through single-result TRX",
+      "Freeze exact gate/A6/manual invocations/stdout/raw native/TRX/readbacks/supplement before advancement; any native, readback, origin or cleanup gap stops",
+      "Do not invoke/claim passing v6 for worked manual stage; C1 returns unchanged v6 last after qualified worked result"
+    ],
+    "newBuildRequiredForManualReadbackOnly": false,
+    "newToolImplementationAuthorized": false,
+    "earlyWorkedRelease": false
+  },
+  "unchangedRelease": "Existing 130327 seven-stage singleton conditional release remains; only worked evidence collection may use the explicitly conditioned manual A6 path. No new initial9 actual release.",
+  "metadataTransfer": "Exact byte-identical copies of this MD/JSON and accurate identical plan/tasks front notes may be added as recovery-only metadata. Preserve compiledSource and unchanged build-input proof; no product/test/config/build/tool behavior alteration by metadata transfer.",
+  "verification": {
+    "sourceFilesPinned": 36,
+    "pins": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "bytes": 11662,
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "bytes": 66432,
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "docs/testing.md",
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+        "bytes": 18979,
+        "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": ".specify/memory/constitution.md",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "bytes": 14081,
+        "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "sha256": "588bda424d36d77b207d198b0ed4aaa2a417fd3cd13997cf8572970113c685ee",
+        "bytes": 79825,
+        "gitBlob": "053e576e1824341f2b8a99bf45a72706fee76ce6",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+        "sha256": "f6356ed57135956d2a0cea6bf1be60972268a26a43dfcd243f509c73d0661f29",
+        "bytes": 55858,
+        "gitBlob": "4346cdeadce70bca8a01fc1d50e907fe32dfe063",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+        "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34",
+        "bytes": 4379,
+        "gitBlob": "0f8636b557d4330c82e84a3994e78512bcac4678",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+        "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+        "bytes": 7553,
+        "gitBlob": "4a54c38ab0fadd2caf16fd58f004b8eecf46aca0",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+        "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8",
+        "bytes": 7463,
+        "gitBlob": "0b6bc17626d8727dcf06223a3b220c4b2b26bbc3",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5",
+        "bytes": 584397,
+        "gitBlob": "9235e00574267be794045b8c32eb2c34c3121f78",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine.cs",
+        "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+        "bytes": 10951,
+        "gitBlob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+        "bytes": 28110,
+        "gitBlob": "e61846fee2b796d41dd70048cd5de295bfc88acc",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+        "bytes": 23072,
+        "gitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+        "bytes": 241343,
+        "gitBlob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+        "bytes": 3337,
+        "gitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+        "bytes": 19220,
+        "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+        "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+        "bytes": 5364,
+        "gitBlob": "23a1188abe10f636c0133417f38984c0838a8daf",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+        "sha256": "0acf6bfd68a8dd1d92cf722b9169be1c44f999e83041446f0d6246c88fb135c0",
+        "bytes": 6934,
+        "gitBlob": "604642bac80b1c4bccece831c198c5dbf26302fa",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+        "bytes": 294934,
+        "gitBlob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+        "bytes": 112701,
+        "gitBlob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+        "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+        "bytes": 10353,
+        "gitBlob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+        "sha256": "e5e209c5f2e95580f467cb0159bde339d01710ad7239cd8f9690f4e03f1cc7ac",
+        "bytes": 17023,
+        "gitBlob": "0bf87e6dd5d4e90daa386df5e05d86d07d6ac45f",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+        "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b",
+        "bytes": 17501,
+        "gitBlob": "12d1e3bd14f978e9259dd12ff3933bdd4ce85acb",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0",
+        "bytes": 15753,
+        "gitBlob": "d22609c657bbaf4c4e1674216809d5887ce04f98",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+        "sha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2",
+        "bytes": 30297,
+        "gitBlob": "662e6b31599728ffd0a563e26e5620435bcc49ef",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+        "sha256": "6f75f8a014c4092653e1928d56830fcd1eda676f6cddc76c00c260bf6dafec9a",
+        "bytes": 11712,
+        "gitBlob": "700cd666802993af59bd875e548c94cc6c33c0f3",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+        "sha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0",
+        "bytes": 47350,
+        "gitBlob": "5ff4b945a274b367fa7f305414779c0a0b9c48be",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "aee45897e8f7abd2493f983e8d5ce283b17fcaa63d397ae5afe47a36cdb0b3c9",
+        "bytes": 1921981,
+        "gitBlob": "b0143daa69498c99faabc05be97f8f58aadb2135",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "bcf2dd269c6b0809349529bb081c92280f14e29af39fb6e7bfddb0412fcd179c",
+        "bytes": 2461,
+        "gitBlob": "792043994bd75d687a682474fe5697a6f560ed85",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+        "sha256": "97e66d2e73325b9545ebde73f2184ddc8eed2cd1fde0fccc2d0159c62683bf31",
+        "bytes": 1141,
+        "gitBlob": "5421e94aba185c64b11a7a421dfd40dfe8f31531",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md",
+        "sha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+        "bytes": 8903,
+        "gitBlob": "adad80ad447467b4b66712456f021ac65cc9579e",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json",
+        "sha256": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51",
+        "bytes": 2665,
+        "gitBlob": "9e172e9e0d307d9df2bd97b27f4ad37e81fe9d59",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-null-frame-authority-readonly-disposition-20261014.md",
+        "sha256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3",
+        "bytes": 17835,
+        "gitBlob": "4b5cfc38209c7bbe967186de4c1b649a4452153c",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-null-frame-authority-root-disposition-readback-20261014.json",
+        "sha256": "06d2bef842717155d34779fd2bfdb1a11c6853e9a08bb37065ffc0ae3be1d442",
+        "bytes": 3166,
+        "gitBlob": "61415e2e09eec51f65279db986e37142a3e5fa5c",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v6-20261015.py.txt",
+        "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+        "bytes": 17019,
+        "gitBlob": "55756b88bd72a840dab187ee2573dc2401a235d7",
+        "currentBytesMatchReviewedGit": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v6-20261015.py.txt",
+        "sha256": "69a0419a793cd64ccbfa117746e6e363041193d00a5d5791115407257a5c9b9d",
+        "bytes": 10299,
+        "gitBlob": "260423f3319ebfc769b6ad265cfd3d5c5a6c7226",
+        "currentBytesMatchReviewedGit": true
+      }
+    ],
+    "reviewerExecutedTestsBuildsDiscoveryPlanControllersOrReaders": false,
+    "primaryMutated": false,
+    "externalReportsOnly": true
+  },
+  "reviewerStopped": true,
+  "reportMarkdown": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-initial-before-PID9-and-worked-readback-consultation-20261015T131719Z-completed-v2-design-review.md",
+    "sha256": "31d4ed5cf4eed5c967bff04ecbf16b98e86fd4043e466ac1b86f6565f215417c"
+  }
+}
