@@ -1,0 +1,699 @@
+{
+  "kind": "INDEPENDENT_C1_FIXTURE_LATE2_EVIDENCE_AND_SEPARATE_MANUAL_C1_RELEASE",
+  "createdUtc": "2026-10-15T17:31:06.049475+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configuration": {
+    "requestedModel": "Astra",
+    "requestedReasoning": "XHigh",
+    "configurationInherited": true,
+    "actualBackendModelTelemetry": "UNAVAILABLE",
+    "actualBackendEffortTelemetry": "UNAVAILABLE"
+  },
+  "reviewedSource": "954260e6cebe6d1456e401b52ff631d86782e5fa",
+  "testedSource": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+  "compiledSource": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+  "observedCleanHead": "5f9294810715a561992425cb12b4a6d4455d633a",
+  "remoteVerification": "Full remote SHA verification reported by sole writer. Reviewer independently checked local exact clean HEAD and Git blobs; no network/Git mutation.",
+  "verdicts": {
+    "Late2EVIDENCE": "ACCEPTED_BOUNDED_2_PASS",
+    "CurrentCompiledProvenance": "ACCEPTED_METADATA_ONLY_GUARDED_REUSE",
+    "C1FreshDiscoveryOwnershipMapping": "ACCEPTED_EXACT_13_17_4",
+    "NextManualActual": "RELEASED_C1_ONLY_WITH_CONDITIONS"
+  },
+  "findings": [
+    {
+      "severity": "INFO",
+      "finding": "Frozen 1007 source pins equal exact tested dbdb Git. At current 5f929, 1005 payloads still match; only plan/tasks differ by declared identical evidence fronts. ROOT current1007 equality was before publishing those fronts.",
+      "disposition": "Expected metadata transfer, not a build-input defect. Remint current pins; do not rewrite frozen evidence."
+    },
+    {
+      "severity": "INFO",
+      "finding": "Frozen gate retains historical v8/20cf5 finiteControllerSha256 and finiteInventorySha256 fields. A6 does not read them; all nine actual commands invoke manual A6 only.",
+      "disposition": "No controller execution or current authority inferred. Preserve old gate; new C1 gate must omit/null unused historical controller fields and explicitly bind A6/dbdb manifest/fresh inventory."
+    }
+  ],
+  "evidence": {
+    "packet": "specs/1536-complete-wound-materialization/recovery/fr063-c1-fixture-corrected-Late2-frozen-dbdb20747-20261015T171505Z",
+    "manifestSha256": "0cbf8eda4d61527ba416382f8a4d94a755b0032c92fef3447b4ae55417febc52",
+    "compressedAndRawChainsRehashed": 63,
+    "externalPacketByteEqual": true,
+    "chainVectorSha256": "a00cb8fd73bf490b877c8633acba45208c78586b355489daa57380181da1eb66",
+    "frozenSourcePinCount": 1007,
+    "sourcePinManifestSha256": "558cf42323b07463182139bdaf46eca178036ebbff87f2d54814babf4a6ce97f",
+    "allTestedGitBlobsExact": true,
+    "currentPayloadMatches": 1005,
+    "currentPermittedMetadataDifferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "testedSha256": "7e2856b2c2ed894499c5698f2cdd538889fadcc2a7dbbd24dcd8a14b0a4de1e6",
+        "currentSha256": "cdb0eb3ca1e5ff8813115cb24f6aa8e46482be3a1e191f16992d2554e161794e",
+        "currentBytes": 1770976
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "testedSha256": "1aab2637164cd059bd0423b41f8125cd6d9300f0c07e08257c3ab6a9aac1fbce",
+        "currentSha256": "b1bf12bcb45e2d26ebb8c09baa9bb62f8312e2c2425931a7da8c0b600a565cf0",
+        "currentBytes": 1271592
+      }
+    ],
+    "freshBinaryManifestSha256": "7d0a9f52a9acb6761f079f02e34578bea3b0900c107fbb1bc9b50bf47cafe842",
+    "freshBinaryPins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "bytes": 29777,
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 28947456,
+        "sha256": "ca6dcd6b33e5f272238afb7677b15faf9c295d8e93627dff3f603c68cb446774"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "0484cf7091ac987ddc1ef29c341c771d409cb273adf1632e775985bb7598cb29"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "080e020984878276df0b00d74dadc7c759cbfef3fe9f26adfb895af02ffbfbdb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "bytes": 251160,
+        "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "0484cf7091ac987ddc1ef29c341c771d409cb273adf1632e775985bb7598cb29"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "bytes": 24394,
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9321984,
+        "sha256": "10413b42892a404b39c253f49d88699cf16de04dc15a7b6b5b937616d241d164"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "080e020984878276df0b00d74dadc7c759cbfef3fe9f26adfb895af02ffbfbdb"
+      }
+    ],
+    "freshCurrentPayloadsVerified": 11,
+    "recordedSourceAndBinaryPrePostMatches": [
+      1007,
+      11
+    ],
+    "exactUsedGateSha256": "ebf43d9e7a7bdf02af9bd3bfa4aba6348c68b51e93888710e4f5e74d9b0d4c59",
+    "exactUsedA6Sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+    "gateSourceVectorEqualsCandidate": true,
+    "gateEvidenceFilesVerified": 16,
+    "nativeManualCommandsVerified": 9,
+    "externalBatchOrControllerUsed": false,
+    "rootSupplementSha256": "7b59f00958ca41da786582b832873d1fd4c2d71695b0f6c700bfc3ab163865dc",
+    "rootSupplementWasNotSoleEvidence": true
+  },
+  "preparation": {
+    "freshBOTH": true,
+    "native": 0,
+    "wallTime": "00:02:48.1610647",
+    "warnings": {
+      "unit": {
+        "count": 35,
+        "errors": 0,
+        "changedHelperDiagnostics": []
+      },
+      "integration": {
+        "count": 131,
+        "errors": 0,
+        "changedHelperDiagnostics": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs(198,26): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs(201,21): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+        ]
+      }
+    },
+    "errors": 0,
+    "zeroActualExecution": true,
+    "officialMethodsCasesDescriptors": [
+      49,
+      123,
+      24
+    ],
+    "officialCatalog": {
+      "valid": true,
+      "categories": 752,
+      "methods": 11605,
+      "unmapped": 0,
+      "stale": 0
+    },
+    "exactLate2Plan": [
+      2,
+      2,
+      1
+    ],
+    "exactLate2PlanWallTime": "00:00:02.6489772",
+    "catalogWallTime": "00:00:05.5046310",
+    "freshInventorySha256": "60b4a8a3217b636493f5e127f57e8cd1b902bfd56be0b2996846087ef90ea1bc",
+    "finiteStageCount": 20,
+    "freshC1DescriptorMapping": [
+      {
+        "Name": "fr063-joint-c1-common-mixed-guard-unit-003",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-joint-c1-common-mixed-guard",
+        "Categories": [
+          "fr063-joint-c1-common-mixed-guard"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+        "Adapter": "unit",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 2,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-joint-c1-original-rollback-integration-004",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-c1-original-rollback",
+        "Categories": [
+          "fr063-joint-c1-original-rollback"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 3,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-joint-c1-qte-default-publication-integration-005",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-c1-qte-default-publication",
+        "Categories": [
+          "fr063-joint-c1-qte-default-publication"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 8,
+        "EstimatedCases": 9,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+            "Cases": 3
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+            "Cases": 2
+          }
+        ]
+      },
+      {
+        "Name": "fr063-joint-c1-treatment-defaults-integration-006",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-c1-treatment-defaults",
+        "Categories": [
+          "fr063-joint-c1-treatment-defaults"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer|FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies|FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce|FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle|FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 4,
+        "EstimatedCases": 5,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "actualLate2": {
+    "native": 0,
+    "wallTime": "00:02:38.0028858",
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "complete": true,
+    "timeout": false,
+    "skips": 0,
+    "duplicateIDs": 0,
+    "rawTrxSha256": "69ea002c537250998b435cb84733ecde245c95775ca2ea6ce429247ea6315f67",
+    "fullTrxCounters": {
+      "total": "2",
+      "executed": "2",
+      "passed": "2",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "actualTestDefinitionIdentities": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "codeBase": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "adapter": "executor://xunit/VsTestRunner2/netcoreapp"
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "codeBase": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "adapter": "executor://xunit/VsTestRunner2/netcoreapp"
+      }
+    ],
+    "fullRawJsonRows": 72,
+    "casesProof": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "outcome": "Passed",
+        "sourceTurn": 42,
+        "actualTurn": 43,
+        "fullCanonicalOwnerValidationNative": true,
+        "createTreatDistinctWoundsAndOrdered": true,
+        "exactCreateReceiptMarkerTuple": true,
+        "outputBindingClosed6Fields": true,
+        "fullNarrativeBytesIncludesBOMSha256": "ea027ba2529f46d42f0a74911bac763471f27a9390ace8b84e922b08c4324785",
+        "physicalUnappliedAppliedMilestonesBindSameFullNarrative": true,
+        "storyCorrelationAndNarrativeVerified": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "progressionPairEqualExceptPhase": true,
+        "all4ImageDigestsVerified": true,
+        "signedScheduleIndependentBeforeOwner": true,
+        "entireScheduleIndependentArithmetic": true,
+        "nonzero": true,
+        "worldCycles": 1,
+        "lastWorld": [
+          1260,
+          1500
+        ],
+        "reportConsumed": true,
+        "transactions": [
+          {
+            "id": "3b8918c51d30423c9ad8bc462e2129a4",
+            "role": "original_baseline_restore",
+            "exactMembers": [
+              "game_state/control/pending_wound_resolutions.json",
+              "game_state/control/progression_report.json",
+              "game_state/control/progression_schedule.json",
+              "game_state/control/qte_runtime.json",
+              "output/debug_logs.json",
+              "output/interface_updates.json",
+              "output/mortal_wound_decisions.json",
+              "output/narrative_response.json"
+            ],
+            "allImageHashesVerified": true
+          },
+          {
+            "id": "1fbbe931e6c74667af734e24fb71b2ac",
+            "role": "progression_consumption",
+            "exactMembers": [
+              "game_state/control/progression_report.json",
+              "game_state/control/progression_schedule.json",
+              "game_state/wounds/mortal_qte_decision_publication.json"
+            ],
+            "allImageHashesVerified": true
+          }
+        ],
+        "entire84PathInertRepeatDigestMapsEqual": true,
+        "fullRepeatBytesEqualNativeAssertion": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-22b1b1f0368a4550bf3174ea18c664b4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "outcome": "Passed",
+        "sourceTurn": 42,
+        "actualTurn": 43,
+        "fullCanonicalOwnerValidationNative": true,
+        "createTreatDistinctWoundsAndOrdered": true,
+        "exactCreateReceiptMarkerTuple": true,
+        "outputBindingClosed6Fields": true,
+        "fullNarrativeBytesIncludesBOMSha256": "16ddb60b53c5b3d4de6573c9b418e357f477a1170e5bd5fa159b71f9668f777b",
+        "physicalUnappliedAppliedMilestonesBindSameFullNarrative": true,
+        "storyCorrelationAndNarrativeVerified": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "progressionPairEqualExceptPhase": true,
+        "all4ImageDigestsVerified": true,
+        "signedScheduleIndependentBeforeOwner": true,
+        "entireScheduleIndependentArithmetic": true,
+        "nonzero": false,
+        "worldCycles": 0,
+        "lastWorld": [
+          1260,
+          1260
+        ],
+        "reportConsumed": true,
+        "transactions": [],
+        "entire84PathInertRepeatDigestMapsEqual": true,
+        "fullRepeatBytesEqualNativeAssertion": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d5f2e1af7bb44048abe4bfbe48b97999",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "cleanupOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      }
+    ],
+    "allStdOutCleanupMarkerCount": 2,
+    "allStdOutCleanupRows": [
+      {
+        "stdoutIndex": 0,
+        "line": 36,
+        "lineSha256": "302c18862cdf173ae1143295c3fb620ced4b6513d2d5c596073fd51dd3c7ca65",
+        "receipt": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-22b1b1f0368a4550bf3174ea18c664b4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "stdoutIndex": 1,
+        "line": 36,
+        "lineSha256": "6f717b2dc5879c74bf18cfa611f45fd3abdfc091e08ba6b8d9a678583347f69c",
+        "receipt": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d5f2e1af7bb44048abe4bfbe48b97999",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "actualColdChildren": 0
+  },
+  "proofLimits": [
+    "This qualifies only the two executed Late2 controls on compiled dbdb, not C1 execution/cleanup.",
+    "Full canonical owner validation, terminal cleanup and exact repeat bytes are passed native fixture assertions. Reviewer independently recomputed emitted full scene hashes, progression schedule arithmetic/all four image digests/physical milestones/transaction images and compared both complete 84-path repeat digest maps.",
+    "Eleven fresh pinned payloads are the declared set, not every possible process dependency. No cold process ran.",
+    "No new lawful ACTIVE, initial-before-PID9, general storage or authority/membership acceptance."
+  ],
+  "metadataTransfer": {
+    "reviewedToCompiledPaths": [
+      [
+        "M",
+        "specs/1536-complete-wound-materialization/plan.md"
+      ],
+      [
+        "A",
+        "specs/1536-complete-wound-materialization/recovery/fr063-c1-cleanup-corrected-independent-source-fixture-selection-20261015T171150Z-completed-v2-design-review.json"
+      ],
+      [
+        "A",
+        "specs/1536-complete-wound-materialization/recovery/fr063-c1-cleanup-corrected-independent-source-fixture-selection-20261015T171150Z-completed-v2-design-review.md"
+      ],
+      [
+        "M",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ]
+    ],
+    "reviewedToCompiledExactReportFrontOnly": true,
+    "compiledToObservedChangedPathCount": 67,
+    "compiledToObservedAllowedOnly": "M plan/tasks plus A exact frozen63-chain packet/manifest and ROOT evidence supplement",
+    "allBuildInputsUnchangedAfterCompiled": true,
+    "frontsIdentical": true,
+    "sourceTestsConfigToolChangesAfterCompile": false,
+    "historicalResultsRetainOriginalProvenance": true,
+    "newBuildAfterDbdbClaim": false
+  },
+  "manualC1Release": {
+    "actualRelease": [
+      "tests/selections/1536-fr063-joint-connected-c1-compatibility.json"
+    ],
+    "mode": "MANUAL_UNCHANGED_A6_ONLY",
+    "compiledSource": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+    "a6Sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+    "originalFreshPacketManifestSha256": "0cbf8eda4d61527ba416382f8a4d94a755b0032c92fef3447b4ae55417febc52",
+    "originalFreshBinaryManifestSha256": "7d0a9f52a9acb6761f079f02e34578bea3b0900c107fbb1bc9b50bf47cafe842",
+    "freshInventorySha256": "60b4a8a3217b636493f5e127f57e8cd1b902bfd56be0b2996846087ef90ea1bc",
+    "ownershipPlanPath": "specs/1536-complete-wound-materialization/recovery/fr063-c1-owned-case-readback-plan-20261015T170425Z.json",
+    "ownershipPlanSha256": "a5f7e2020dd87b9ef3fb27d42584ab0d2ab39b2d5c3369a877dfd2d6b9c72961",
+    "expected": [
+      13,
+      17,
+      4
+    ],
+    "budgetsMinutes": {
+      "fr063-joint-c1-common-mixed-guard": 2,
+      "fr063-joint-c1-original-rollback": 3,
+      "fr063-joint-c1-qte-default-publication": 8,
+      "fr063-joint-c1-treatment-defaults": 4
+    },
+    "ownedCases": 16,
+    "distinctOwnedRoots": 16,
+    "rootFreeCases": 1,
+    "methodCases": [
+      {
+        "method": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+        "project": "unit",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": true,
+        "leaseInactiveRequired": true
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+        "project": "integration",
+        "cases": 2,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+        "project": "integration",
+        "cases": 3,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+        "project": "integration",
+        "cases": 2,
+        "owned": true,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      },
+      {
+        "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": true,
+        "leaseInactiveRequired": true
+      },
+      {
+        "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": true,
+        "leaseInactiveRequired": true
+      },
+      {
+        "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": true,
+        "leaseInactiveRequired": true
+      },
+      {
+        "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+        "project": "integration",
+        "cases": 1,
+        "owned": true,
+        "newTelemetry": true,
+        "leaseInactiveRequired": true
+      },
+      {
+        "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+        "project": "integration",
+        "cases": 1,
+        "owned": false,
+        "newTelemetry": false,
+        "leaseInactiveRequired": false
+      }
+    ],
+    "conditions": [
+      "After FINALSTOP, construct a new clean current-HEAD singleton gate with actualRelease exactly the C1 selector. Remint the complete current source closure, including current fronts and added evidence; verify exact compiled dbdb-to-current diff remains metadata only. Omit/null unused historical controller fields.",
+      "Verify pinned original dbdb63-chain manifest, fresh binary manifest and all 11 actual payload bytes before and after; preserve compiledSource=dbdb and never claim a rebuild after metadata. A6 bytes must retain the approved hash.",
+      "Run exact C1 NoBuild Plan13 methods/17 cases/4 descriptors, budgets2/3/8/4 unchanged; then only that manual A6 NoBuild actual selector. No finite controller, external batch or aggregate/full-suite actual.",
+      "Require native0, all17Passed, exact per-method case multiplicities, complete four descriptors, no timeout/skips/duplicate IDs. Resolve every actual testId from actual TRX TestDefinitions/TestMethod and exact expected membership, not display-name substring guesses.",
+      "Require one real per-test cleanup receipt for each of 16 owned actual cases, zero for the pure reflection case. Map every parsed receipt index/origin to exactly its native testId/method/descriptor and 16 distinct absolute roots; reject extra, malformed, repeated, ambiguous, unattributed or cross-case receipts/roots.",
+      "All receipts require removal=true, explicit failure=null and observed root absence. The four newly wrapped Resolver cases and selected unit case additionally require LeaseInactive=true. Native PASS or global nonzero receipts alone do not qualify cleanup.",
+      "Freeze exact gate/A6/manual arguments/native results/stdout/Plan/all full TRXs/source+binary pins/strict ownership readback before advancing. First native failure or missing/ambiguous/extra evidence STOP; freeze/push before causal diagnosis and independent failed EVIDENCE before correction/retry.",
+      "Independent C1 EVIDENCE is required before initial-before-PID9 source/actual. All other new work remains outside this runtime release."
+    ],
+    "C1CurrentRuntimeStatus": "UNRUN",
+    "C1TelemetryQualifiedByLate2": false
+  },
+  "futureMetadataCarrierPermission": {
+    "allowed": true,
+    "immediateScope": "Two byte-identical copies of these reports under recovery plus accurate identical plan/tasks front notes only. Verify exact carrier delta and report hashes; preserve reviewed954/compiled dbdb/current carrier distinction.",
+    "guardedReuse": "Original dbdb fresh11 may be reused only after exact proof all product/test/config/build inputs and A6 unchanged and current source pins/gate reminted. Later immutable C1 evidence/accurate metadata may be preserved; its presence does not itself grant a successor or qualify C1.",
+    "invalidation": "Any product/test/config/build-input or execution-tool change invalidates this reuse/release and requires appropriate corrected review and fresh preparation."
+  },
+  "historicalAndOpen": {
+    "historicalQualifiedControls": "Retain exact original tested/compiled provenance; no blanket reruns or relabeling.",
+    "stillOpen": [
+      "C1 actual/16-owned-case evidence",
+      "initial-before-PID9",
+      "lawful ACTIVE",
+      "full FR063/T070/#1536"
+    ]
+  },
+  "independentVerification": [
+    {
+      "script": "/tmp/fr063-c1-fixture-Late2-independent-integrity.py",
+      "scriptSha256": "6afbb04c3c182050203e25ae4ba6b5810c27976c65ec9020777e56a24355c7cb",
+      "resultSha256": "0fc61cc90beee483f4d55f7a78b1f1326fd7cc64140bab85f8dfc0e4ec3bb47c"
+    },
+    {
+      "script": "/tmp/fr063-c1-fixture-Late2-independent-oracles.py",
+      "scriptSha256": "3f28975a4f4d120562ad319ab67dff081739edaacdcd89519e29147bbfb498ed",
+      "resultSha256": "45325c57a8991a548191ec0120be40ec86e54364cd54caf6704bdb6e8a79eb65"
+    },
+    {
+      "script": "/tmp/fr063-c1-fixture-Late2-independent-qualification.py",
+      "scriptSha256": "f20783483f6bc1669b02778c58477eb13440457b9f26a1f2137ffa0c4d8eecde",
+      "resultSha256": "f411c41e5ff07f2816adeb53d76ab6826c464a4c211a4e58d7a2cff46e6b9af9"
+    }
+  ],
+  "primaryReadOnly": true,
+  "noReviewerBuildTestPlanDiscoveryControllerOptionalReaderProviderExecution": true,
+  "reviewerStopped": true,
+  "pendingWrites": false
+}
