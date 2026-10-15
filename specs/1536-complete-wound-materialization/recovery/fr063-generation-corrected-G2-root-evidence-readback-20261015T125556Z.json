@@ -1,0 +1,142 @@
+{
+  "createdUtc": "2026-10-15T12:55:56.337797+00:00",
+  "kind": "ROOT_G2_NATIVE_RAW_BINDING_AND_CLEANUP_QUALIFICATION",
+  "testedSource": "4f670386972b21ca691bdca30a41ff18b2c94fad",
+  "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "packet": "fr063-finite-generation-corrected-v6-frozen-4f6703869-20261015T125003Z",
+  "manifestSha256": "c3ae1b109a9df274fb7349b4e44d6b5cc70e5038d2815d74e6b7b98c675bf038",
+  "chainsVerified": 36,
+  "gitSourcePinsVerified": 374,
+  "currentBinaryPayloadsVerified": 11,
+  "native": {
+    "exitCode": 0,
+    "timedOut": false,
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "wallTime": "00:02:32.3401846",
+    "complete": true
+  },
+  "actualColdOwners": [
+    {
+      "scenario": "generation_missing",
+      "pid": 53749,
+      "parentPid": 53559,
+      "native": {
+        "ChildProcessId": 53749,
+        "ParentProcessId": 53559,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinalThreeDefaultAssembliesAndFiveContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": false,
+      "handled": null,
+      "finalNullFieldsOmittedBySerializer": "handled/failure omitted in final JSON; native outcome explicitly records handled:null and oracle asserts null",
+      "refusalMessage": "Active joint continuation generation is missing; evidence retained.",
+      "refusalVerified": true,
+      "turn": 42,
+      "targetRawImages": 224,
+      "targetBeforeAfterExact": true,
+      "targetPhysicalAfterMatchesAllDigests": true,
+      "missingGenerationRemainsAbsent": true,
+      "donor": null,
+      "namespaceScope": "Complete session/runtime filenames, directories and bytes except contents of three inert lock streams; lock names retained"
+    },
+    {
+      "scenario": "generation_foreign",
+      "pid": 53694,
+      "parentPid": 53559,
+      "native": {
+        "ChildProcessId": 53694,
+        "ParentProcessId": 53559,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinalThreeDefaultAssembliesAndFiveContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": false,
+      "handled": null,
+      "finalNullFieldsOmittedBySerializer": "handled/failure omitted in final JSON; native outcome explicitly records handled:null and oracle asserts null",
+      "refusalMessage": "Active joint continuation generation is invalid or differs; evidence retained.",
+      "refusalVerified": true,
+      "turn": 42,
+      "targetRawImages": 225,
+      "targetBeforeAfterExact": true,
+      "targetPhysicalAfterMatchesAllDigests": true,
+      "missingGenerationRemainsAbsent": false,
+      "donor": {
+        "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-g-donor-c92bd25188c54d5fa7d31ceabecfd4e3",
+        "generation": "f6c551ac431e46778e85e82c1167b2ba",
+        "fullRawImages": 5,
+        "beforeAfterExact": true,
+        "rootActuallyAbsent": true
+      },
+      "namespaceScope": "Complete session/runtime filenames, directories and bytes except contents of three inert lock streams; lock names retained"
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-77e9f34213bc42e6af214775688b96af",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-48b5c22dc4d047eb8e7aaaef8f1d3974",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-g-donor-c92bd25188c54d5fa7d31ceabecfd4e3",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0b382752a6fe4418855003e774283a14",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-91fa527fc37647cf831093a94ef63533",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strictCleanupOrigins": [
+    {
+      "receiptIndex": 0,
+      "origin": "fr063-joint-generation-refusal-integration-001.trx/aefdc6a4-77ec-8f1c-6b34-92ebc35c5fba#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 1,
+      "origin": "fr063-joint-generation-refusal-integration-001.trx/aefdc6a4-77ec-8f1c-6b34-92ebc35c5fba#line=36"
+    },
+    {
+      "receiptIndex": 2,
+      "origin": "fr063-joint-generation-refusal-integration-001.trx/c9090cdb-0dc1-93e2-b05f-2e88eb71b73a#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 3,
+      "origin": "fr063-joint-generation-refusal-integration-001.trx/c9090cdb-0dc1-93e2-b05f-2e88eb71b73a#line=35/Observation/FullChildLog#line=6"
+    },
+    {
+      "receiptIndex": 4,
+      "origin": "fr063-joint-generation-refusal-integration-001.trx/c9090cdb-0dc1-93e2-b05f-2e88eb71b73a#line=36"
+    }
+  ],
+  "allFiveRootsActuallyAbsent": true,
+  "optionalColdReaderExecuted": false,
+  "manualReadbackCorrection": "Before emitting this report, initial ad-hoc comparison treated digest projection objects as scalar hashes; corrected to exact Exists/Length/Sha256 model and casing/null-omission normalization. Frozen data/source/tests unchanged; no runtime retry.",
+  "independentEvidence": "PENDING; seven successors HELD"
+}
