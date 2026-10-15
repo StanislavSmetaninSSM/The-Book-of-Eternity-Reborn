@@ -36,6 +36,20 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         Assert.Equal(before, fixture.Snapshot());
     }
 
+    [Fact]
+    public async Task Load_UsesOneExistingPublicationReadLeaseAndNoCanonicalMutation()
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output);
+        var before = fixture.Snapshot();
+        var locks = fixture.LockOpens;
+        var writes = fixture.MutationCalls;
+        var result = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(result.IsAvailable);
+        Assert.Equal(1, fixture.LockOpens - locks);
+        Assert.Equal(writes, fixture.MutationCalls);
+        Assert.Equal(before, fixture.Snapshot());
+    }
+
     [Theory]
     [InlineData("missing_player")]
     [InlineData("missing_npc")]
@@ -46,6 +60,14 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
     [InlineData("stale_identity")]
     [InlineData("legacy_shape")]
     [InlineData("invalid_utf8")]
+    [InlineData("missing_identity")]
+    [InlineData("missing_history")]
+    [InlineData("missing_soul")]
+    [InlineData("missing_resources")]
+    [InlineData("foreign_owner")]
+    [InlineData("stale_history")]
+    [InlineData("duplicate_identity")]
+    [InlineData("invalid_effect_utf8")]
     public async Task Load_IncompleteOrMalformedAuthorityIsUnavailableAndPreserved(string fault)
     {
         await using var fixture = await WoundPlayerReadFixture.CreateAsync(output);
@@ -58,23 +80,79 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         Assert.Empty(projection.History);
         Assert.Equal(before, fixture.Snapshot());
     }
+    [Theory]
+    [InlineData("chaos_sea")]
+    [InlineData("shining_abode")]
+    public async Task Load_PositiveAfterlifeUsesCanonicalSoulAndExactCurrentSelf(string realm)
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: realm);
+        var before = fixture.Snapshot();
+        var result = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(result.IsAvailable);
+        Assert.Equal("Известная рана души", Assert.Single(result.Active).Name);
+        Assert.Equal(before, fixture.Snapshot());
+    }
+
+    [Fact]
+    public async Task Load_HiddenSoulProfileRestrictsOtherwiseKnownWound()
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea", hiddenSelf: true);
+        var before = fixture.Snapshot();
+        var result = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(result.IsAvailable);
+        Assert.Empty(result.Active);
+        Assert.Empty(result.History);
+        Assert.Equal(before, fixture.Snapshot());
+    }
+
+    [Fact]
+    public async Task Load_StoredOldProfileIsLegalInMortalAndCanonicalRealmSwitchChangesOnlyReadScope()
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, includeOldSoul: true);
+        var before = fixture.Snapshot();
+        var mortal = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(mortal.IsAvailable);
+        Assert.Equal("Рваная рана левого бока", Assert.Single(mortal.Active).Name);
+        Assert.Equal(before, fixture.Snapshot());
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
+        var changed = fixture.Snapshot();
+        var soul = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(soul.IsAvailable);
+        Assert.Equal("Известная рана души", Assert.Single(soul.Active).Name);
+        Assert.Equal(changed, fixture.Snapshot());
+    }
+
 }
 
 internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncDisposable
 {
     internal string Root { get; } = Path.Combine(Path.GetTempPath(), "boe-wound-read-" + Guid.NewGuid().ToString("N"));
     internal FileSystemManager Files { get; private set; } = null!;
+    internal int LockOpens { get; private set; }
+    internal int MutationCalls { get; private set; }
 
-    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false)
+    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false)
     {
         var fixture = new WoundPlayerReadFixture(output);
         try
         {
             Directory.CreateDirectory(fixture.Root);
-            fixture.Files = new(fixture.Root, NullLogger<FileSystemManager>.Instance);
+            fixture.Files = new(fixture.Root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalWriteLockOpenAsync = () => { fixture.LockOpens++; return Task.CompletedTask; },
+                    BeforeCanonicalMutationBoundaryAsync = _ => { fixture.MutationCalls++; return Task.CompletedTask; }
+                });
             fixture.Files.EnsureDirectoryStructure();
-            var input = empty ? WoundPlayerProjectionTestData.Input() :
-                WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
+            var soulWound = WoundContractTestData.CreateSpiritualActiveWound("wound_soul", realm == "mortal_world" ? "chaos_sea" : realm,
+                ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+            soulWound["display"]!["name"] = "Известная рана души";
+            var input = empty ? WoundPlayerProjectionTestData.Input() : realm != "mortal_world"
+                ? WoundPlayerProjectionTestData.InputInRealm(realm, soulWound)
+                : includeOldSoul ? WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound(), soulWound)
+                : WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
+            if (hiddenSelf) input.Carriers.AfterlifeProfiles!["profiles"]![0]!["visibility"] = "hidden";
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             foreach (var (path, root) in new (string, JsonObject)[]
             {
@@ -83,7 +161,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
                 (WoundCarrierCatalog.EnemiesPath, input.Carriers.EnemyCombatants!),
                 (WoundCarrierCatalog.AlliesPath, input.Carriers.AllyCombatants!),
                 (WoundCarrierCatalog.AfterlifeProfilesPath, input.Carriers.AfterlifeProfiles!),
-                ("game_state/meta/soul_state.json", new() { ["currentRealm"] = "Mortal", ["soulName"] = "Путник" }),
+                ("game_state/meta/soul_state.json", new() { ["currentRealm"] = realm == "mortal_world" ? "Mortal" : realm == "chaos_sea" ? "Chaos Sea" : "Shining Abode", ["soulName"] = "Путник" }),
                 (ResourceMaterializationContract.DefinitionsPath, input.Resources.ToCanonicalRoot())
             })
                 await fixture.Files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
@@ -105,24 +183,44 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
         {
             "missing_player" => WoundCarrierCatalog.PlayerPath, "missing_npc" => WoundCarrierCatalog.NpcPath,
             "missing_enemy" => WoundCarrierCatalog.EnemiesPath, "missing_ally" => WoundCarrierCatalog.AlliesPath,
-            "missing_profiles" => WoundCarrierCatalog.AfterlifeProfilesPath, _ => null
+            "missing_profiles" => WoundCarrierCatalog.AfterlifeProfilesPath,
+            "missing_identity" => WoundIdentityState.StatePath, "missing_history" => WoundHistoryState.HistoryPath,
+            "missing_soul" => "game_state/meta/soul_state.json", "missing_resources" => ResourceMaterializationContract.DefinitionsPath,
+            _ => null
         };
         if (missing is not null) { Files.DeleteFile(lease, missing); return; }
         if (fault == "invalid_utf8")
         {
             await Files.WriteFileAtomicBytesAsync(lease, WoundCarrierCatalog.PlayerPath, [0xff]); return;
         }
-        var path = fault == "stale_identity" ? WoundIdentityState.StatePath : WoundCarrierCatalog.PlayerPath;
+        if (fault == "invalid_effect_utf8")
+        {
+            await Files.WriteFileAtomicBytesAsync(lease, EffectCarrierCatalog.PlayerPath,
+                Encoding.UTF8.GetBytes("{\"schemaVersion\":1,\"activeEffects\":[],\"ignored\":\"").Concat(new byte[] { 0xff }).Concat(Encoding.UTF8.GetBytes("\"}")).ToArray());
+            return;
+        }
+        var path = fault is "stale_identity" or "foreign_owner" or "duplicate_identity" ? WoundIdentityState.StatePath :
+            fault == "stale_history" ? WoundHistoryState.HistoryPath : WoundCarrierCatalog.PlayerPath;
         var raw = (await Files.ReadFileAsync(lease, path))!;
         var changed = fault switch
         {
             "duplicate" => raw.Replace("\"schemaVersion\":1", "\"schemaVersion\":1,\"schemaVersion\":1", StringComparison.Ordinal),
+            "duplicate_identity" => raw.Replace("\"schemaVersion\":1", "\"schemaVersion\":1,\"schemaVersion\":1", StringComparison.Ordinal),
+            "foreign_owner" => raw.Replace("\"ownerId\":\"player_current\"", "\"ownerId\":\"player_other\"", StringComparison.Ordinal),
+            "stale_history" => WithStaleHistoryFingerprint(raw),
             "stale_identity" => raw.Replace("\"lastTransitionOrdinal\":1", "\"lastTransitionOrdinal\":2", StringComparison.Ordinal),
             "legacy_shape" => "{\"wounds\":[{\"woundName\":\"Нельзя читать старую форму\",\"severity\":\"moderate\"}]}",
             _ => throw new ArgumentOutOfRangeException(nameof(fault))
         };
         Assert.NotEqual(raw, changed);
         await Files.WriteFileAtomicAsync(lease, path, changed);
+    }
+
+    private static string WithStaleHistoryFingerprint(string raw)
+    {
+        var root = JsonNode.Parse(raw)!.AsObject();
+        root["transitions"]![0]!["afterFingerprint"] = "sha256:" + new string('f', 64);
+        return root.ToJsonString();
     }
 
     internal string[] Snapshot() => Directory.EnumerateFileSystemEntries(Root, "*", SearchOption.AllDirectories)

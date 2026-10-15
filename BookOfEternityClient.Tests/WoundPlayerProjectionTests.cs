@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class WoundPlayerProjectionTests
+public sealed partial class WoundPlayerProjectionTests
 {
     [Fact]
     public void Build_VisibleWoundAndKnownMethodAppearWithoutDiagnosis()

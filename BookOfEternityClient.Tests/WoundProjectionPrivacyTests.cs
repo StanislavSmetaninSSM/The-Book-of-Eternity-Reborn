@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class WoundProjectionPrivacyTests
+public sealed partial class WoundProjectionPrivacyTests
 {
     private static string Text(WoundPlayerProjectionResult result) => JsonSerializer.Serialize(result,
         new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
