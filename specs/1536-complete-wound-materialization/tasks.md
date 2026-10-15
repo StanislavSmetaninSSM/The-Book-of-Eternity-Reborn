@@ -1,5 +1,49 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First owned-QTE-contribution Late2 outcome: composite lineage refusal — 2026-10-15
+
+Tested/compile source `edc0ee622e5b47ae45decde56e21e3bb71a35661` passed
+corrected SOURCE/FIXTURE/SELECTION static gates. Fresh BOTH 145.8461890s,
+exact PlanOnly 4.8343158s and catalog 5.3551328s each exited 0 and executed
+zero tests; official 32 methods/58 cases/18 descriptors, Valid catalog
+746 categories/11588 methods, no unmapped/stale. Actual Late2 only: native 1,
+122.2433851s, 2 executed/0 PASS/2 FAIL, complete 1/1 descriptor and 2/2 cases,
+no timeout/skips/duplicates. All 161 source pins (including the new helper)
+and 11 selected binaries matched pre/post; this is not every loaded dependency.
+Two actual cleanup receipts report removed=true/failure=null, roots absent.
+All 49 raw chains plus manifest were frozen before diagnosis or metadata edits.
+
+Both in-memory captures show checkpoint/correction-ready and RetryableHeld,
+with one complete `mortal_joint_repair_publication_refused`: joint publication
+lost its exclusive complete effect/wound/item lineage. Prior member/before-image/
+context/map messages are absent. Both actual Late callers entered/handled, with
+Failure/ObserverFailure null, remain turn42 and fail missing Spend43 at fixture676.
+The six-condition composite guard names no failed predicate. Native exact
+reduction/capture branch and compared private fingerprints remain UNKNOWN;
+no successful publication or corrected completion is claimed.
+
+Read-only diagnosis checked the full producer/capture/cache/take/owner trace.
+Source shows completed common effects compared directly with the initial wound
+stage, alongside an existing authenticated base-to-final boundary relation.
+Completion metadata is excluded from the payload hash: completion/cloning or
+resource Spend alone does not prove semantic payload inequality in this run.
+Earlier construction/preflight/probe constraints are source facts, not recorded
+boolean samples of the later six conditions. The exact failed predicate remains
+UNRESOLVED. No lineage fix or diagnostic source was authored or released.
+A proposed smallest next observation names the existing failed predicate and,
+only on payload mismatch, bounded initial/current/stored base/final hashes and
+boundary-complete flag in the existing exception; independent EVIDENCE must first
+assess its necessity and preservation of rejection/evaluation/authority semantics.
+
+No project source, fixture, selector, guard, ownership or task checkbox changed
+in this ROOT metadata block. All 161 tested source pins matched before these
+additive fronts; writer FINAL STOPPED with no pending tools/writes. All fixes,
+diagnostic changes/runtime and later12 actual stages remain HELD. Checkpoint5
+component PASS is retained without repetition. Full FR063/T070 and all prior
+active/initially-bad/cold/new-root/partial-cleanup/erased-trace contours remain OPEN.
+Historical retained Sol requested; actual backend/model/effort telemetry UNAVAILABLE.
+All previous metadata tails, checkmarks and failed evidence remain byte-exact.
+
 ## Complete approved-owned QTE contribution SOURCE WIP — 2026-10-15
 
 Owning base `64ebd96dc2a710659606e8027bac445373021cb8`. Independent EVIDENCE

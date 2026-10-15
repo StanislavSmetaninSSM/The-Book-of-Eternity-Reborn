@@ -1,0 +1,178 @@
+{
+  "source": "edc0ee622e5b47ae45decde56e21e3bb71a35661",
+  "compileSource": "edc0ee622e5b47ae45decde56e21e3bb71a35661",
+  "native": {
+    "run": "20261015-041544-880-636912-b38667b71b0d45598fe1570601bc8e1e-categories",
+    "wallTime": "00:02:02.2433851",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 161,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-56837a1993b644cea4a6a9c601650312",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-61cd73728da64c348e53521babf4187c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true
+  },
+  "diagnosticSnapshots": [
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "RetryableHeld",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 1,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 1,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "CE3F739A962C0109BBB82AEB04C3D69CE847A8E64C71A1D4DF22106D415D04C5",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "mortal_joint_repair_publication_refused",
+              "OriginalLength": 39,
+              "Truncated": false,
+              "FullUtf8Sha256": "2D259655272CFE50B4AACCAF912F344875DE01D3D08508163FFC7BE522DBDEC2"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "Joint publication lost its exclusive complete effect/wound/item lineage.",
+              "OriginalLength": 72,
+              "Truncated": false,
+              "FullUtf8Sha256": "AD713E60FB2C979E5935FBEF6F7692CBA1C05FF8488ABDB975284777E1C3B632"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    },
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "RetryableHeld",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 1,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 1,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "CE3F739A962C0109BBB82AEB04C3D69CE847A8E64C71A1D4DF22106D415D04C5",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "mortal_joint_repair_publication_refused",
+              "OriginalLength": 39,
+              "Truncated": false,
+              "FullUtf8Sha256": "2D259655272CFE50B4AACCAF912F344875DE01D3D08508163FFC7BE522DBDEC2"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "Joint publication lost its exclusive complete effect/wound/item lineage.",
+              "OriginalLength": 72,
+              "Truncated": false,
+              "FullUtf8Sha256": "AD713E60FB2C979E5935FBEF6F7692CBA1C05FF8488ABDB975284777E1C3B632"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    }
+  ],
+  "boundedTestErrors": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    }
+  ],
+  "ownerScalars": [
+    {
+      "nonzeroProgression": false,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 42,
+      "InputKeyAvailable": false,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors"
+    },
+    {
+      "nonzeroProgression": true,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 42,
+      "InputKeyAvailable": false,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors"
+    }
+  ],
+  "rawFrozenBeforeThisRead": true,
+  "furtherRunsOrSourceFix": "HELD",
+  "later12": "UNRUN"
+}
