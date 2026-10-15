@@ -1,3 +1,9 @@
+## A explicit pre-intake normalization ordering — 2026-10-15
+
+- Causal source tracing corrected a design commentary assumption: ordinary narrative validation at ValidationAndRepair245 belongs to the later materialized-state validator; raw intake572 can run first. Added explicit bounded ordinary normalization before resource/joint intake for a real homogeneous held TREAT plus public draft/current frame, outside its canonical lease.
+- A read-only precheck requires NotCommitted actual publication before normalizing; completed/conflicted outputs cannot enter it. The later capture/correction re-reads and requires fixed point under its own lease. Default v1/absent-command/acquisition-only paths return without normalization here. No new path/issuer/member. First-checkpoint normalized positive and existing changed default consumers remain selected.
+- This implements the already accepted normalization-before-FIRST-capture obligation; frozen accepted design artifact stays exact. Corrected independent gates pending, build/runtime UNRUN.
+
 ## A existing terminal consumer alignment — 2026-10-15
 
 - Static causal review found terminal cleanup already includes DecisionPath but incorrectly requires its presence after common consumption. Allow its proven absence after existing full phase/output/story/original validation; exact present payload still required by that proof. The SAME null-to-null cleanup member remains in the cohort. No membership/write/delete/rollback expansion, no recreated draft.

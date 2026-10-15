@@ -38,6 +38,11 @@ public partial class GameEngine
     private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionCoreAsync(
         bool ordinaryUpstreamAccepted, ValidatedPendingTurnSnapshotContext? activeSnapshotContext, int? expectedTurn)
     {
+        if (ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null)
+        {
+            var narrative = await NormalizeMortalJointNarrativeBeforeIntakeAsync(activeSnapshotContext, expectedTurn.Value);
+            if (narrative.Any(issue => issue.Severity == IssueSeverity.Error)) return narrative;
+        }
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _mortalQteRejectedRepairInput = null;
         if (_mortalJointRepairCheckpoint is not null && activeSnapshotContext is not null && expectedTurn is not null &&

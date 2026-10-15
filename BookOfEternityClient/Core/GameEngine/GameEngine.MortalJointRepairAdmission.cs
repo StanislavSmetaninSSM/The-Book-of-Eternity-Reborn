@@ -67,6 +67,37 @@ public partial class GameEngine
         }
     }
 
+    // Ordinary narrative normalization owns its existing separately leased write.
+    // Do it before FIRST capture (and every correction), outside the intake lease.
+    // This read-only candidate check grants no treatment or publication authority.
+    private async Task<IReadOnlyList<ValidationIssue>> NormalizeMortalJointNarrativeBeforeIntakeAsync(
+        ValidatedPendingTurnSnapshotContext frame, int turn)
+    {
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var command = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+            if (command is null || await _fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath) is null)
+                return Array.Empty<ValidationIssue>();
+            try
+            {
+                var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(
+                    ReadOrdinaryTreatmentRoot(command, "potential joint pre-intake command")));
+                if (!parsed.Success || parsed.TreatmentCommands.Count != 1 || parsed.Commands.Count != 0 || parsed.AcceptedTransitionCommands.Count != 0)
+                    return Array.Empty<ValidationIssue>(); // ordinary strict intake owns its refusal
+            }
+            catch (Exception error) when (error is InvalidDataException or InvalidOperationException or JsonException or ArgumentException)
+            { return Array.Empty<ValidationIssue>(); }
+            var publication = await MortalQteDecisionPublication.InspectCurrentAsync(_fs, lease,
+                frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, turn);
+            if (publication.State != MortalQteDecisionPublication.CurrentPublicationState.NotCommitted)
+                return JointRepairAdmissionIssue("A completed or conflicted publication cannot normalize its public output.");
+            lease.EnsureNoPendingLocalDecision();
+        }
+        // The first ordinary capture and subsequent correction re-read the actual
+        // normalized bytes under their own lease and require a projector fixed point.
+        return await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+    }
+
     private async Task<MortalJointRepairRawAdmission> InspectOrdinaryMortalJointRepairAsync(
         FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame, int expectedTurn)
     {
