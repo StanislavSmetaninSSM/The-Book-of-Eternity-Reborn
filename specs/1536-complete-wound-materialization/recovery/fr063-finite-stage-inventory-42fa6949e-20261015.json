@@ -1,0 +1,181 @@
+{
+  "compileSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+  "officialPreparation": "20261015-082312-776-20297-6ac3736322344a64b05499caab1a52f8-categories",
+  "actualRelease": "PENDING, not granted by this derived inventory",
+  "stages": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "categories": [
+        "fr063-guaranteed-joint-checkpoint-provenance"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "categories": [
+        "fr063-joint-cold-progression"
+      ],
+      "methods": 3,
+      "cases": 3,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "categories": [
+        "fr063-joint-generation-refusal"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "categories": [
+        "fr063-joint-late-completion"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "categories": [
+        "fr063-joint-live-completion"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "categories": [
+        "fr063-joint-new-root"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "categories": [
+        "fr063-joint-retained-story"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+      "categories": [
+        "fr063-joint-output-basis"
+      ],
+      "methods": 3,
+      "cases": 19,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "categories": [
+        "fr063-joint-output-binding-refusal"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "categories": [
+        "fr063-joint-output-draft-refusal"
+      ],
+      "methods": 1,
+      "cases": 4,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+      "categories": [
+        "fr063-joint-output-positive"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "categories": [
+        "fr063-joint-output-scene-refusal"
+      ],
+      "methods": 1,
+      "cases": 6,
+      "descriptors": 1
+    }
+  ]
+}
