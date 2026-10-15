@@ -1,0 +1,739 @@
+{
+  "kind": "GITHUB_ONLY_RECOVERY_UPDATE_FROM_FULL_VERIFIED_BASELINE",
+  "source": "54a2873f54572d272573acc2fa425d611e35feed",
+  "fullBaseline": "b59bf2e6787a926cef2344fb87c4e17db2dba892",
+  "fullBaselineFiles": 51950,
+  "fullBaselineBytes": 2635928392,
+  "fullBaselineSummary": "fr063-fresh-GitHub-recovery-b59-20261015T161320Z.json",
+  "fullBaselineSummarySha256": "52f47b20e1b93a401b5777105d18b0844a026f9c297edfe4527e7d28f0a682d1",
+  "updateFetchNativeExit": 0,
+  "checkoutNativeExit": 0,
+  "clean": true,
+  "ignoredOrUntrackedDryRunEmpty": true,
+  "allChangedPathsEqualExactGit": 120,
+  "codeTestConfigBuildInputsUnchangedFromFullBaseline": true,
+  "records": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1750783,
+      "sha256": "0e2b14f13f14af136a0cf1bc17032c6aa0271a3a93caa2d2dfac1b2843d7cf35",
+      "change": "M"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-active3-corrected-independent-evidence-successor-review-20261015T154557Z-completed-v2-design-review.json",
+      "bytes": 25151,
+      "sha256": "bf0a6c2d0f765f5b0c5b11cf3e1266447ba27b8a0c4192db51476283dc71f816",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-active3-corrected-independent-evidence-successor-review-20261015T154557Z-completed-v2-design-review.md",
+      "bytes": 8276,
+      "sha256": "548d93a9ea4e6a1825c477a2c770db40fb3814a175a157715f74afb194e48853",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-all-json-observations-raw.json.gz",
+      "bytes": 2260638,
+      "sha256": "4bb1cfbc6617b2cf7766b3ddc65bc8f5543dcff0b86e51494cb16455ce725685",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-all-trx-results-raw.json.gz",
+      "bytes": 542,
+      "sha256": "901d7adecad6b009dea1614d0247bd45443c154424f41046e28491b61c2364ea",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-child-evidence-containers-raw.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-console.log.gz",
+      "bytes": 773,
+      "sha256": "10eea58b41db5b1ff9c878c5baf72b2aa7ee3ba1f33613e39e8db8798ac504ca",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-dotnet-test.log.gz",
+      "bytes": 186203,
+      "sha256": "f371069a0482cede4eb04cf986fe785faca24cfc1f485e1211a5ebdf0a9303da",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-fr063-joint-legacy-exclusion-integration-001.trx.gz",
+      "bytes": 2262304,
+      "sha256": "a46721775b0295b38557eacdd8c302b433b22189a9e6adc3a153c7c7c5771abb",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-full-trx-stdout.txt.gz",
+      "bytes": 2259990,
+      "sha256": "09498d69d28d71b632ca34b154ec57ccc9bb6bb69bd6c2acb815b5760db8a896",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-invocation-prewritten.json.gz",
+      "bytes": 344,
+      "sha256": "16700812290e8b2f0598c6e01448b5a0b6c51a3e07800c49f7bddc95904b3aca",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-native-observations.json.gz",
+      "bytes": 2260430,
+      "sha256": "8f9d02793efce7a6cce04703d775e1e3216de029e0f63f62b8f4ffc5427b1bc0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-native-process-result.json.gz",
+      "bytes": 288,
+      "sha256": "197cd8869ab9a2a731bbcb68f47c1cd74513746612137915cf86fad2d0832d5f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-plan.json.gz",
+      "bytes": 881,
+      "sha256": "7453ffde196b9cf8e6eb9a8724b79647f41506e71c5edece4318f1f022c2e740",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-pre-assertion-root-observations.json.gz",
+      "bytes": 1656,
+      "sha256": "584d05a18977331612dac856ff063a0b9f74a101009c3db1ba2e0e13f730615f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-root-readback.json.gz",
+      "bytes": 1656,
+      "sha256": "584d05a18977331612dac856ff063a0b9f74a101009c3db1ba2e0e13f730615f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-run-location.json.gz",
+      "bytes": 277,
+      "sha256": "35484caf7371cb6b0d5d49ac3d9e729992a6a2c20845a319558b95901e0010eb",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-runner-summary-raw.json.gz",
+      "bytes": 961,
+      "sha256": "c30aa068cba1d52bffd76c0674544988c6b387305d950b85bd7409c0d2abac91",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-strict-cleanup-origins-raw.json.gz",
+      "bytes": 184,
+      "sha256": "6cc8bd367201c42439e4c39ce05df3b150363dde41db8d70dd2ad1fb5f3f15c5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-strict-cleanup-receipts-raw.json.gz",
+      "bytes": 211,
+      "sha256": "e1223e9d90023d7a4fd0759d328397750284b0ba3756d2a52711c8cce2660e9d",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/actual-summary.json.gz",
+      "bytes": 961,
+      "sha256": "c30aa068cba1d52bffd76c0674544988c6b387305d950b85bd7409c0d2abac91",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/candidate-source-pins.json.gz",
+      "bytes": 40753,
+      "sha256": "7db37274985a47fd3c097c33c18da1ebe6a47f6fadbb42b49f921de177b99560",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-independent-gate-proof.json.gz",
+      "bytes": 43009,
+      "sha256": "a32eed95ba8106d333f01901ebc385e5c1532e9655e9d106dbf6a74b4c67f058",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-console.log.gz",
+      "bytes": 624,
+      "sha256": "3eb050ba0f7e2ffc4e3d9dc12abc53d5bfb0b021a5256aa0991ff268ed4d85b2",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-dotnet-test.log.gz",
+      "bytes": 185924,
+      "sha256": "9ede2fafabbe0ef1616949741aa277b33530c939a0cf6497c855e8b6a6bf43e7",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-invocation-prewritten.json.gz",
+      "bytes": 351,
+      "sha256": "a33e4f0ea1b3e1f75d60b8b34a94012eb45e6dce4d424e93c1919bf4efcd950c",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-native-process-result.json.gz",
+      "bytes": 289,
+      "sha256": "73f479a5806703d9fceb4a4cad98e3f824f3cb413b8cb6a5e084293b0c561068",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-plan.json.gz",
+      "bytes": 881,
+      "sha256": "79f0df7c40ec6e8486fb0f5c84d554c7779f7bf07231e6cacfafd62b1e9a3587",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-root-readback.json.gz",
+      "bytes": 646,
+      "sha256": "853ca066f0437fc063ac9bd3a606487e4e2dd58deeafbd9c5be08e0d0277f40d",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-run-location.json.gz",
+      "bytes": 278,
+      "sha256": "c9144d2072b90db2c5d43edf214fc1fb47aef27f6ce169712803a344135fffc0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-runner-summary-raw.json.gz",
+      "bytes": 960,
+      "sha256": "73b68700e3e8841f61bb5f252d9310b0ab26328815e2a73b838dda45d86ebbd3",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-plan-summary.json.gz",
+      "bytes": 960,
+      "sha256": "73b68700e3e8841f61bb5f252d9310b0ab26328815e2a73b838dda45d86ebbd3",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-used-finite-stage-controller.py.txt.gz",
+      "bytes": 3583,
+      "sha256": "b63b9266e74d3babebd80ab70c0c3dad33da961825ace726a07d5b6dc9a758dd",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-used-finite-stage-inventory.json.gz",
+      "bytes": 1055,
+      "sha256": "ca3e222276b2fc26deadcb5393f7f48529f6a8ea90425a1e42f4def97f7896c5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/exact-used-root-runner-v6.py.txt.gz",
+      "bytes": 5438,
+      "sha256": "f449cc5e9662556ba8aba859c241c52840a106ff11a01924604e6169740744f9",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/fresh-binary-pins.json.gz",
+      "bytes": 724,
+      "sha256": "a347011b72ccbae9e3d3743b9deda24a9d75c81540c3d09e79b11d90af881995",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/inherited-both-build-provenance.json.gz",
+      "bytes": 2597,
+      "sha256": "ba3be70178c14f5b1d291b52a983b4b8bc36affb590b37ca253e808791f7d754",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/manifest.json",
+      "bytes": 17646,
+      "sha256": "0adb8f2a6799a3d502b46f671615ea58e8def36563a1f4c05dcb52fe44f487b0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/orchestration-stdout.log.gz",
+      "bytes": 642,
+      "sha256": "9bc527d91deb9c47720edbe00aadf031e692034cc0584dbe6a74548d4da097e4",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z/required-owned-root-cleanup-readback.json.gz",
+      "bytes": 467,
+      "sha256": "a1e641b7e377c7cdfeb7e5ddd51882cb38b22e648cdfcc0a36815b2554dfe524",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-all-json-observations-raw.json.gz",
+      "bytes": 26898292,
+      "sha256": "5a57d495e2a2df71993aa3778cd26d29817b5995e8b8dfac5818acacf483633a",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-all-trx-results-raw.json.gz",
+      "bytes": 820,
+      "sha256": "2b42884a54938da07af821cc375f67574f5952cdeb0964351330b404ccc853d5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-child-evidence-containers-raw.json.gz",
+      "bytes": 14593174,
+      "sha256": "93463d087d7677c527791039e9191416a725268b9c39b24bdd5ba51d3c2f1580",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-console.log.gz",
+      "bytes": 768,
+      "sha256": "edfb25dba9d8ab408542abdea704c4c2200ef3c241ef3091110bc3d436427966",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-dotnet-test.log.gz",
+      "bytes": 186213,
+      "sha256": "eca914bed7bd0c8d2a76fea036ee672c65594fd131a8aec559d8f8ea5897d551",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-fr063-joint-story-owner-integration-001.trx.gz",
+      "bytes": 27035630,
+      "sha256": "12322ae0d91afbfe848e2a78cdaf25083e8587cce62f4f6304d96eea98ad94d5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-full-trx-stdout.txt.gz",
+      "bytes": 27030247,
+      "sha256": "a04d083a48bf5a308f60a49c2b53017011149d8544ce2d7bda69f85e6439e1e5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-invocation-prewritten.json.gz",
+      "bytes": 339,
+      "sha256": "48b1b76233ed4a1863c3815d296a278e509d3162906374dc20b78eeea30ec1fe",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-native-observations.json.gz",
+      "bytes": 26897723,
+      "sha256": "76db808615a68c3154d8f3de9d9cb002f5e48eb218a3ecb1c1e1d5b083922cef",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-native-process-result.json.gz",
+      "bytes": 289,
+      "sha256": "e5c8e5ac616ef32c715b189f34dbd9971fff3474d8e8e1511449a328fe99c0eb",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-plan.json.gz",
+      "bytes": 915,
+      "sha256": "cc5f0ce4116d944fc6986be339d3d3421f8aae4267c4f379e910c3e328c3e5d8",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-pre-assertion-root-observations.json.gz",
+      "bytes": 2407,
+      "sha256": "c255fd6f22427cbacfd6205e08e79190a9418ba62ca6322b0f267e52f12303cf",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-root-readback.json.gz",
+      "bytes": 2407,
+      "sha256": "c255fd6f22427cbacfd6205e08e79190a9418ba62ca6322b0f267e52f12303cf",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-run-location.json.gz",
+      "bytes": 277,
+      "sha256": "3d1160ed5285d2971871c66474a18e390c89d0a255bfb2a35e4c615bc2172c70",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-runner-summary-raw.json.gz",
+      "bytes": 998,
+      "sha256": "2afa82a98bb3bcb8a1221c621455fd690e1eb0320936958d50e6588a2f02fe36",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-strict-cleanup-origins-raw.json.gz",
+      "bytes": 318,
+      "sha256": "4eb5b4bdd9ed0845131f2c4bca877b5d1fcd742de37d6134248555a88a2409e9",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-strict-cleanup-receipts-raw.json.gz",
+      "bytes": 387,
+      "sha256": "9d6e0076f80c1baf752f79e5000293cfb57192e9b12e445a0bb00cb8037c0da3",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/actual-summary.json.gz",
+      "bytes": 998,
+      "sha256": "2afa82a98bb3bcb8a1221c621455fd690e1eb0320936958d50e6588a2f02fe36",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/candidate-source-pins.json.gz",
+      "bytes": 39025,
+      "sha256": "0ec9298e523169198824fa27612076f6c022fbe397fd46b86cd7fc8d180fbc63",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-independent-gate-proof.json.gz",
+      "bytes": 41072,
+      "sha256": "64bcbdd0f72174fa1098e9735af7d79de3648cf1d1ecc7534b9442dd601315df",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-console.log.gz",
+      "bytes": 617,
+      "sha256": "c9a32e7ad7d156bd038cd1d7c403d71171a54bef803f502876a9c480c3967f5d",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-dotnet-test.log.gz",
+      "bytes": 185931,
+      "sha256": "d66f9ebc5810fbba6d5bd8dd908024c7a360a1c14fc2d3b511dc5dd8cb1cddc0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-invocation-prewritten.json.gz",
+      "bytes": 347,
+      "sha256": "5f0e5e6c5bbac466b75f6ec651aadf66971183a6c4c390eaa562bdc8a59ad8c0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-native-process-result.json.gz",
+      "bytes": 289,
+      "sha256": "227ca4a7eed5e6dec262c5adabf274f84aaa0e82bbba0d1ada1fc104f23d068f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-plan.json.gz",
+      "bytes": 915,
+      "sha256": "bc5b15c6812491b29826c88b421a31433d9d546066f0896af0607e32c60b1816",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-root-readback.json.gz",
+      "bytes": 640,
+      "sha256": "403937456dda0510b1f6a21cf21a480a7ecfb47f1001319aa977427b35a01bad",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-run-location.json.gz",
+      "bytes": 278,
+      "sha256": "66c55a3fe4daa3f6cfe696ff925e85a3c0f13e8e6d2400d0090adceb50af2ff0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-runner-summary-raw.json.gz",
+      "bytes": 995,
+      "sha256": "5e21ed11d451f2d23800a07b3031a89c48c9f2abf6408acb90563b99435d0e1d",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-plan-summary.json.gz",
+      "bytes": 995,
+      "sha256": "5e21ed11d451f2d23800a07b3031a89c48c9f2abf6408acb90563b99435d0e1d",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-used-finite-stage-controller.py.txt.gz",
+      "bytes": 3583,
+      "sha256": "b63b9266e74d3babebd80ab70c0c3dad33da961825ace726a07d5b6dc9a758dd",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-used-finite-stage-inventory.json.gz",
+      "bytes": 1055,
+      "sha256": "ca3e222276b2fc26deadcb5393f7f48529f6a8ea90425a1e42f4def97f7896c5",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/exact-used-root-runner-v6.py.txt.gz",
+      "bytes": 5438,
+      "sha256": "f449cc5e9662556ba8aba859c241c52840a106ff11a01924604e6169740744f9",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/fresh-binary-pins.json.gz",
+      "bytes": 724,
+      "sha256": "a347011b72ccbae9e3d3743b9deda24a9d75c81540c3d09e79b11d90af881995",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/inherited-both-build-provenance.json.gz",
+      "bytes": 2240,
+      "sha256": "723603f57922fbb6d4b06704a31b68324738713c54b29aab507eac1bbb52cb11",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/manifest.json",
+      "bytes": 23826,
+      "sha256": "50d6fa8c5f0b4fbfadf11a60b09483b47d00ef8bb855ab97c50c21f88f8a9c09",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/orchestration-stdout.log.gz",
+      "bytes": 832,
+      "sha256": "2d0677e4c14ed21ebdb945e09a112899d3e146523eca8384317cec2c28c1aa9a",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z/required-owned-root-cleanup-readback.json.gz",
+      "bytes": 582,
+      "sha256": "09b67ed744a9b1b0d4be67a63c551bac1095b1d57530a518212e5bdb48b97f4f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-legacy2-root-evidence-readback-20261015T160358Z.json",
+      "bytes": 3219,
+      "sha256": "24d79d3675afd11918c46ac06d38078b3d822cea150c90a41547828f4b561c16",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-story5-root-evidence-readback-20261015T155748Z.json",
+      "bytes": 13123,
+      "sha256": "00bb4df3075f27a99d75d5bbffa289ac61c31a54e5007da4ae3aff1e8889d193",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-first-failure-root-pin-cleanup-20261015T160847Z.json",
+      "bytes": 3034,
+      "sha256": "92c7dfbe7a7df11bd23ea1367b06c1a702f476f5fda32eb65f9ad836ed12dd53",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-all-json-observations-raw.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-all-trx-results-raw.json.gz",
+      "bytes": 745,
+      "sha256": "5afcc95312f942c0415b03ea3f235c4a7c52f7d69bf7a5bf80c6efaf929a9cd7",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-child-evidence-containers-raw.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-console.log.gz",
+      "bytes": 1227,
+      "sha256": "9f4adcd37e9333ea9fd51d67a201537ede17e8001776dc5e7dc2231cb87f618f",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-dotnet-test.log.gz",
+      "bytes": 371152,
+      "sha256": "170485b0654c579feee449abad22e47f014283d53423a9dfe8342bbc2d6dce4a",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-fr063-joint-worked-example-integration-001.trx.gz",
+      "bytes": 2905,
+      "sha256": "2db527faffba9affce537e8deedf1407e9acff3939d63c74c7ef0d807d6a3b9b",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-full-trx-stdout.txt.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-invocation-prewritten.json.gz",
+      "bytes": 343,
+      "sha256": "d4e7ac65e2187633d9a160807cfdeb357692386db79c54ac1775ba871f65d44a",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-native-observations.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-native-process-result.json.gz",
+      "bytes": 289,
+      "sha256": "e2165a34beb6f18a4a65913c880ec332cc568146c2951fc2f7138a0e5a486386",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-plan.json.gz",
+      "bytes": 1044,
+      "sha256": "2e3c6d53357d39a09bd47950257bbe8b6bee3ce48afa3e535afb22f9b5b3069e",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-pre-assertion-root-observations.json.gz",
+      "bytes": 1553,
+      "sha256": "6620b2445454a8b7c403953c4452e44fd758b41d63d006838d21eb71aad1a4fb",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-root-readback.json.gz",
+      "bytes": 1553,
+      "sha256": "6620b2445454a8b7c403953c4452e44fd758b41d63d006838d21eb71aad1a4fb",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-run-location.json.gz",
+      "bytes": 278,
+      "sha256": "e70e272ec4cd5723ea09e2c58b3cc59b656f5c6f92b9e4c6946f7a896aa02b86",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-runner-summary-raw.json.gz",
+      "bytes": 1039,
+      "sha256": "5db2c8b5bf5e6dfac399a8bf31cc753627f80e4675d060345ef35dcbbef56bf0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-strict-cleanup-origins-raw.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-strict-cleanup-receipts-raw.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/actual-summary.json.gz",
+      "bytes": 1039,
+      "sha256": "5db2c8b5bf5e6dfac399a8bf31cc753627f80e4675d060345ef35dcbbef56bf0",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/candidate-source-pins.json.gz",
+      "bytes": 42423,
+      "sha256": "6fb79079ce7ddf334b733f372f2d06cfb830c67a6b3a429aa4c06dd16944f452",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-console.log.gz",
+      "bytes": 703,
+      "sha256": "bae7d02c905c66412388e3e2db90d1cee51138841ae43a95a0e4cb2fe9757fe2",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-dotnet-test.log.gz",
+      "bytes": 370433,
+      "sha256": "be9e287466b16465cef9808850227650c635cff0c44c5d6f212e61a4af126dad",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-invocation-prewritten.json.gz",
+      "bytes": 352,
+      "sha256": "33dd67c2ba2fbf0961e9ef333ac133a5df89d3a7f674184066867a4e572c8620",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-native-process-result.json.gz",
+      "bytes": 291,
+      "sha256": "14c3dcb6e9ac8568bee83820d833de68cd79dbb518a0c8b77f361dd39b68f575",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-plan.json.gz",
+      "bytes": 1043,
+      "sha256": "110fd3109dd9f0498b490bbfd442dde53436e8aa7b6da9c852ec4d6e3cf12583",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-root-readback.json.gz",
+      "bytes": 678,
+      "sha256": "8bf0c05fc87adcb987c3c32ce1c600ae8c2ad046539e0f07ed272f2e0ed5250a",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-run-location.json.gz",
+      "bytes": 279,
+      "sha256": "41a97e4b7213c6b9b9b1d53971739aa44df5857506637aedc8ac2a4025dd9d71",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-runner-summary-raw.json.gz",
+      "bytes": 1046,
+      "sha256": "d404cc35bef88eed682bd051ed2984bc4ae7dd8bb7f47c3b1ecc9b50ef246fe4",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-plan-summary.json.gz",
+      "bytes": 1046,
+      "sha256": "d404cc35bef88eed682bd051ed2984bc4ae7dd8bb7f47c3b1ecc9b50ef246fe4",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-used-gate.json.gz",
+      "bytes": 45029,
+      "sha256": "da181eca17eaebd1be0ffa02d1f25f542ca8f277b5782ca08210d7c18dd3ab45",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/exact-used-root-runner-v6.py.txt.gz",
+      "bytes": 5438,
+      "sha256": "f449cc5e9662556ba8aba859c241c52840a106ff11a01924604e6169740744f9",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/fresh-binary-pins.json.gz",
+      "bytes": 724,
+      "sha256": "a347011b72ccbae9e3d3743b9deda24a9d75c81540c3d09e79b11d90af881995",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/inherited-both-build-provenance.json.gz",
+      "bytes": 401,
+      "sha256": "a6fbcfd0cc472bd64169602d6d3490816a44052e0046a0a1828550dd0e7bca71",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manifest.json",
+      "bytes": 17902,
+      "sha256": "2237d86e6e45c14047bbaa1a9c23b3a5d747d7a81df4d9f59cbb6b3e1273e71b",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-actual-readback-stdout.log.gz",
+      "bytes": 337,
+      "sha256": "361d25269dfd93e5077f72ff09bf22c1f6e57956c4392642dad1b24e8babc3e1",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-actual-run-stdout.log.gz",
+      "bytes": 115,
+      "sha256": "d3c66c055cdce38b7caa3664a2e6578a5af04779e2632ec9409614f5dcf0e1e8",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-completed-commands-before-freeze.json.gz",
+      "bytes": 850,
+      "sha256": "ce11ebea217fd5815ea3e83142703fc1340bb8dce21047800f4a7c96306ff091",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-exact-plan-readback-stdout.log.gz",
+      "bytes": 350,
+      "sha256": "eb05a4f686c81e5dad8bc4c41d9de9a406496a0ddbd3a74190d51cddc5fbba7c",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-exact-plan-run-stdout.log.gz",
+      "bytes": 119,
+      "sha256": "fa8bbd4d772a6c94c1fed1fc575662758f38ac02a220eff1cb9433ca408cf255",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z/manual-pin-stdout.log.gz",
+      "bytes": 70,
+      "sha256": "8eaa4aa742168db9858e336aebc3d6936cfbdd096d900e79ae17f2e3eaa4814b",
+      "change": "A"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1251399,
+      "sha256": "bab2bc128858ef4e6a3e0163cdd323597c6e50b54d0522a341fc2813940baa36",
+      "change": "M"
+    }
+  ],
+  "scope": "All baseline tracked bytes were directly compared with Git blobs; this later update compares every changed path. No claim of a second new-empty clone at this SHA. No local object sharing or source copying.",
+  "utc": "2026-10-15T16:17:42.473906+00:00"
+}

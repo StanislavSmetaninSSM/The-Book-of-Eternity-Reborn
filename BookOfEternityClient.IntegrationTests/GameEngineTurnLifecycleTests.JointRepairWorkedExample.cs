@@ -111,8 +111,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(rejectedResult!.Success);
             Assert.Null(rejectedReplay);
             Assert.NotNull(opportunity);
-            Assert.Single(rejectedResult.Issues);
-            Assert.Equal("wound_severity_above_opportunity", rejectedResult.Issues[0].Code);
+            AssertJointWorkedSeverityIssuePair("first rejected III", rejectedResult.Issues);
             var packet = Assert.Single(WoundRepairPacketBuilder.Build(rejectedResult.Issues));
             var fullPacket = packet.ToJsonObject();
             Console.WriteLine("CompleteActualRepairPacketBeforeDocumentOracles=" + fullPacket.ToJsonString());
@@ -152,7 +151,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 fixture._fs, lease, rejectedDecision.ToJsonString(), scene, out _);
             Assert.NotNull(stillRejected);
             Assert.False(stillRejected!.Success);
-            Assert.Equal("wound_severity_above_opportunity", Assert.Single(stillRejected.Issues).Code);
+            AssertJointWorkedSeverityIssuePair("rejected III after corrected composition", stillRejected.Issues);
             foreach (var image in before)
                 Assert.Equal(image.Value, await fixture._fs.ReadFileBytesAsync(lease, image.Key));
             var generationAfter = fixture._fs.ReadLocalGenerationSnapshot(lease);
@@ -166,6 +165,40 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Single(cleanup);
         witness["ownedCleanupDiagnostic"] = JsonNode.Parse(cleanup[0]);
         return witness;
+    }
+
+    private static void AssertJointWorkedSeverityIssuePair(string stage, IReadOnlyList<ValidationIssue> issues)
+    {
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            ExampleSeverityIssuePairStage = stage,
+            Issues = issues.Select(issue => new
+            {
+                issue.Code, issue.FilePath, issue.Section, issue.Severity, issue.Message,
+                issue.Expected, issue.Actual, issue.Category,
+                Repairable = WoundRepairPacketBuilder.IsRepairableIssue(issue),
+                HasRepairContext = issue.WoundRepairContext is not null
+            }).ToArray()
+        }));
+        // The composer retains the original opportunity diagnostic and adds its
+        // repair projection. Both must remain exact; only the latter can enter
+        // the existing one-packet public repair contract.
+        Assert.Equal(new[] { "wound_materialization", "wound_opportunity_decision" },
+            issues.Select(issue => issue.Section).OrderBy(section => section, StringComparer.Ordinal));
+        Assert.All(issues, issue =>
+        {
+            Assert.Equal("wound_severity_above_opportunity", issue.Code);
+            Assert.Equal("woundDecisions[0].proposal.severity", issue.FilePath);
+            Assert.Equal(IssueSeverity.Error, issue.Severity);
+            Assert.Equal(IssueCategory.StateConsistency, issue.Category);
+            Assert.Equal("Wound decision violates its sealed opportunity.", issue.Message);
+            Assert.Equal("I-II", issue.Expected);
+            Assert.Equal("III", issue.Actual);
+        });
+        var projection = Assert.Single(issues.Where(WoundRepairPacketBuilder.IsRepairableIssue));
+        Assert.Equal("wound_materialization", projection.Section);
+        Assert.NotNull(projection.WoundRepairContext);
+        Assert.Null(Assert.Single(issues.Where(issue => issue.Section == "wound_opportunity_decision")).WoundRepairContext);
     }
 
     private static void BindExampleOpportunity(JsonObject response, string reference)
