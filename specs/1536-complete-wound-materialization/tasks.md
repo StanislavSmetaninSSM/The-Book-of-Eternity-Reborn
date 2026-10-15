@@ -1,3 +1,8 @@
+## US5-RO1 shell exit discrepancy isolated without test/build retry — 2026-10-15
+
+- Four harmless direct exec probes preserve exact commands/native tool results in us5-ro1-wrapper-errexit-probes-20261015T2054Z.json. Plain explicit exit0→outer0; set-e plus explicit exit0→outer1; activation without errexit→outer0; activated guarded setup with set+e restored before explicit captured exit0→outer0. Initial controlled true probe also printed0 with outer1. No C# native work was repeated. Evidence isolates an environment wrapper interaction with shell errexit at explicit exit, independent of application/build behavior; underlying harness implementation is not claimed diagnosed.
+- Original193 preparation summary/child exit0, both build0errors, outer1 discrepancy packet remains immutable. Proposed invocation precision: keep guarded setup, disable errexit for child execution/status capture, preserve its exact native code and leave errexit disabled at explicit exit. This changes shell exit reporting only, not command arguments, test selection, budgets or failure checks. Independent qualification/release pending before catalog/runtime. No GREEN, runtime still UNRUN.
+
 ## US5-RO1 corrected preparation wrapper/runner exit discrepancy frozen — 2026-10-15
 
 - Tested193dc5890d4582d68ece897f64189af65e73d81b, reviewed605. Both selected builds show0errors(integration131warnings/117.26s,unit35warnings/34.49s); official Plan25/32+8/33two descriptors, summaryExit0/156.6964535s/no timeout/cleanupcomplete/zeroexecution, captured pwsh NATIVE_EXIT=0. Yet completion tool chunk06a9bc/session90681 reports outerExecExit1. Preserve both observations; no categorical native-success or runtime acceptance from contradictory wrapper evidence.
