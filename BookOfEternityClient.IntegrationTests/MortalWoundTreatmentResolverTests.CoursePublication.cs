@@ -71,13 +71,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     [Fact]
     public void CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer() =>
-        AssertSingletonScalarCoursePublication(alreadyCompleted: false);
+        AssertSingletonScalarCoursePublication(alreadyCompleted: false, writeCleanup: output.WriteLine);
 
     [Fact]
     public void CourseScalarPublication_FinalAlreadyCompletedRouteDoesNotAppendAgain() =>
         AssertSingletonScalarCoursePublication(alreadyCompleted: true);
 
-    private static void AssertSingletonScalarCoursePublication(bool alreadyCompleted)
+    private static void AssertSingletonScalarCoursePublication(bool alreadyCompleted, Action<string>? writeCleanup = null)
     {
         var scenario = CreateScalarCoursePublicationScenario();
         var route = scenario.Before["treatment"]!["routes"]![0]!;
@@ -87,7 +87,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         if (alreadyCompleted)
             scenario.Before["treatment"]!["completedRouteIds"] = new JsonArray(scenario.RouteId);
         scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before) };
-        using var fixture = AcceptedStateFixture.Create(scenario);
+        var fixture = AcceptedStateFixture.Create(scenario);
+        using IDisposable ownedCleanup = writeCleanup is null
+            ? fixture
+            : new TreatmentFixtureCleanup(fixture, writeCleanup);
         var flow = ResolveCurrentTreatment(fixture, "course", scenario.OperationKey, scenario.RouteId);
         var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
         Assert.Equal(alreadyCompleted ? "None" : "AppendOnce", resolution.RouteCompletion);

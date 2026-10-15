@@ -3,17 +3,41 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536 worked-fixture assertion correction: mandatory first singleton actual after independent corrected gates and fresh BOTH/discovery/catalog. Preserve real completed-v2 union, output binding, progression/story/repeat and two genuine per-case cleanup roots; independent new Late2 EVIDENCE before separately released manual worked2 retry.",
+      "reason": "Mandatory first actual after C1 fixture-only cleanup correction and independent corrected gates/fresh BOTH/discovery/catalog. Preserve completed-v2 union/output/progression/story/repeat and both genuine cleanup roots; new independent Late2 EVIDENCE before separately released C1.",
       "contracts": [
-        "FR012/FR063 accepted DESIGNv2; current fresh source/binary binding and full Late2 controls"
+        "T070/FR063 accepted DESIGNv2; new source/fresh11 binding; existing full Late2 controls"
       ]
     },
     {
-      "category": "fr063-joint-worked-example",
-      "reason": "Exact corrected helper and documentation consumers; later manual unchanged A6 stage only after fresh Late2 and independent release. Two focused Facts: genuine QTE42/original43, real composer exact opportunity/materialization typed diagnostic pair and one repairable projection, real builder single closed actual packet, exact III-to-II correction and seven guidance surfaces/both daemon definitions. Five correlation fields omitted only from document view; six remaining semantics compared. Preserve all negative controls and canonical/G/real owned cleanup.",
+      "category": "fr063-joint-c1-treatment-defaults",
+      "reason": "Later singleton manual unchanged A6 C1 only after corrected SOURCE/FIXTURE/SELECTION, fresh BOTH/discovery/catalog, first Late2 and independent new Late2 EVIDENCE/release. Exact13methods17cases4descriptors/budgets unchanged. Require fullnativeTRX method/case identities and exact16-owned-case/16-distinct-root receipt bijection; one pure reflection case0. Firstfailure/missing/extra/ambiguousproof STOP/freeze/push. Five exact treatment Facts preserve six-argument replay/probe surface, procedure/course singleton history, mixed-family refusal and co-tampered carrier/lifecycle rejection. Four actual owned fixtures emit strict per-test root/lease cleanup receipts through existing TreatmentFixtureCleanup; reflection-only surface Fact owns no root.",
       "contracts": [
-        "FR012/FR063 existing public repair contract; fixture-only correction, unchanged authority/membership/storage",
-        "Two focused Facts: genuine QTE42/original43, real composer exact opportunity/materialization typed diagnostic pair and one repairable projection, real builder single closed actual packet, exact III-to-II correction and seven guidance surfaces/both daemon definitions. Five correlation fields omitted only from document view; six remaining semantics compared. Preserve all negative controls and canonical/G/real owned cleanup."
+        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+        "Five exact treatment Facts preserve six-argument replay/probe surface, procedure/course singleton history, mixed-family refusal and co-tampered carrier/lifecycle rejection. Four actual owned fixtures emit strict per-test root/lease cleanup receipts through existing TreatmentFixtureCleanup; reflection-only surface Fact owns no root."
+      ]
+    },
+    {
+      "category": "fr063-joint-c1-common-mixed-guard",
+      "reason": "Later singleton manual unchanged A6 C1 only after corrected SOURCE/FIXTURE/SELECTION, fresh BOTH/discovery/catalog, first Late2 and independent new Late2 EVIDENCE/release. Exact13methods17cases4descriptors/budgets unchanged. Require fullnativeTRX method/case identities and exact16-owned-case/16-distinct-root receipt bijection; one pure reflection case0. Firstfailure/missing/extra/ambiguousproof STOP/freeze/push. One exact existing unit Fact preserves strict generic mixed CREATE/WORSEN refusal. Selected actual DirectWoundCommonFixture is disposed once through local per-test output wrapper; require real absolute root removed, lease inactive and explicit null cleanup failure. Other cache Facts gain output injection only.",
+      "contracts": [
+        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+        "One exact existing unit Fact preserves strict generic mixed CREATE/WORSEN refusal. Selected actual DirectWoundCommonFixture is disposed once through local per-test output wrapper; require real absolute root removed, lease inactive and explicit null cleanup failure. Other cache Facts gain output injection only."
+      ]
+    },
+    {
+      "category": "fr063-joint-c1-qte-default-publication",
+      "reason": "Later singleton manual unchanged A6 C1 only after corrected SOURCE/FIXTURE/SELECTION, fresh BOTH/discovery/catalog, first Late2 and independent new Late2 EVIDENCE/release. Exact13methods17cases4descriptors/budgets unchanged. Require fullnativeTRX method/case identities and exact16-owned-case/16-distinct-root receipt bijection; one pure reflection case0. Firstfailure/missing/extra/ambiguousproof STOP/freeze/push. Existing GameEngine owned cleanup and all behavior assertions unchanged; retain exact selected default-QTE/rollback controls.",
+      "contracts": [
+        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+        "SOURCE-only/provisional: Five changed-dependency old consumers: no-offer/single-draft singleton, changed completed-v1 replay, real uncommitted rollback, CREATE-owned periodic effect plus independent ordinary resource work/replay, and isolated v1/default whole-batch compensation. Protect old adapter partition/shared single scheduler/catches. CREATE replay has two historical owners but executes once."
+      ]
+    },
+    {
+      "category": "fr063-joint-c1-original-rollback",
+      "reason": "Later singleton manual unchanged A6 C1 only after corrected SOURCE/FIXTURE/SELECTION, fresh BOTH/discovery/catalog, first Late2 and independent new Late2 EVIDENCE/release. Exact13methods17cases4descriptors/budgets unchanged. Require fullnativeTRX method/case identities and exact16-owned-case/16-distinct-root receipt bijection; one pure reflection case0. Firstfailure/missing/extra/ambiguousproof STOP/freeze/push. Existing GameEngine owned cleanup and all behavior assertions unchanged; retain exact selected default-QTE/rollback controls.",
+      "contracts": [
+        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+        "SOURCE-only/provisional: Two exact existing hash-refusal Facts protect shared strict original/backup hash validation consumed by joint coordinated restore/install; their ordinary-file fixtures do not justify the broad historical afterlife owner."
       ]
     }
   ]

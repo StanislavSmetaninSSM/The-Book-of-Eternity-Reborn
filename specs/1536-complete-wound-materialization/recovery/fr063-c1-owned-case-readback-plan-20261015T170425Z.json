@@ -1,0 +1,255 @@
+{
+  "kind": "C1_SOURCE_ONLY_PROPOSED_MANUAL_READBACK_PLAN",
+  "implementationBase": "b1337a50230569d025b9f882a6ce72c1d9121290",
+  "basisFreshDiscoveryCompiled": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+  "basisOfficialPreparation": "20261015-163542-466-90899-23f9ff80c55a4744a64e75f38889b73a-categories",
+  "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+  "newCompilation": "UNRUN; old277 reuse invalid",
+  "newRuntime": "UNRUN; no release from this data",
+  "expectedMethods": 13,
+  "expectedCases": 17,
+  "expectedDescriptors": 4,
+  "expectedOwnedCases": 16,
+  "expectedDistinctOwnedRoots": 16,
+  "rootFreeCases": 1,
+  "descriptorBudgetsMinutes": {
+    "fr063-joint-c1-common-mixed-guard": 2,
+    "fr063-joint-c1-original-rollback": 3,
+    "fr063-joint-c1-qte-default-publication": 8,
+    "fr063-joint-c1-treatment-defaults": 4
+  },
+  "methods": [
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "cases": 1,
+      "project": "unit",
+      "categories": [
+        "fr063-joint-c1-common-mixed-guard"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure",
+        "LeaseInactive"
+      ],
+      "leaseInactiveRequired": true,
+      "newTelemetry": true
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-original-rollback"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-original-rollback"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-qte-default-publication"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-qte-default-publication"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+      "cases": 2,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-qte-default-publication"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+      "cases": 3,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-qte-default-publication"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+      "cases": 2,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-qte-default-publication"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure"
+      ],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    },
+    {
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure",
+        "LeaseInactive"
+      ],
+      "leaseInactiveRequired": true,
+      "newTelemetry": true
+    },
+    {
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure",
+        "LeaseInactive"
+      ],
+      "leaseInactiveRequired": true,
+      "newTelemetry": true
+    },
+    {
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure",
+        "LeaseInactive"
+      ],
+      "leaseInactiveRequired": true,
+      "newTelemetry": true
+    },
+    {
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults"
+      ],
+      "owned": true,
+      "rootsPerActualCase": 1,
+      "receiptFields": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "CleanupFailure",
+        "LeaseInactive"
+      ],
+      "leaseInactiveRequired": true,
+      "newTelemetry": true
+    },
+    {
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+      "cases": 1,
+      "project": "integration",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults"
+      ],
+      "owned": false,
+      "rootsPerActualCase": 0,
+      "receiptFields": [],
+      "leaseInactiveRequired": false,
+      "newTelemetry": false
+    }
+  ],
+  "manualProtocol": [
+    "Corrected static gates, fresh BOTH/discovery/catalog/exact Late2 Plan; first actual ONLY Late2 with fresh pins/freeze. New independent Late2 EVIDENCE before separately granted C1 singleton actual.",
+    "Manual unchanged A6: reminted clean current singleton gate/source closure; original fresh11 from current C1 compiled-source frozen Late2 manifest; exact C1 NoBuild Plan13/17/4 then NoBuild actual; no external batch/controller.",
+    "Collect complete native/TRX outcomes; native0/all17PASS/complete/no timeout/skips/duplicateIDs and exact per-method actual case multiplicities. Resolve each actual testId via its TRX TestDefinitions/TestMethod and exact method membership; reject unknown or ambiguous cases.",
+    "Require exactly one real standard per-test receipt for each of16 owned native cases and zero for pure reflection case. Attribute by actual TRX/testId/method/descriptor/XPath/line/hash. Exact16distinct absolute roots; cover all parsedreceipt indices/origins, no extra/unattributed/cross-case/repeated receipt or root. Reject malformed receipt markers as well as invalid JSON fields.",
+    "All16 receipts require OwnedFixtureRemoved=true, explicit CleanupFailure=null and actual root absence. Five new telemetry cases also require LeaseInactive=true. No fabricated receipts or inference from overall counts; rootfree case claims no filesystem cleanup.",
+    "Freeze exact gates/A6/arguments/native/toolresults/Plan/fullTRXs/readback/current source and11payload pins/real cleanup before advancement. First failure/missing/extra/ambiguous proof stops and is frozen/pushed before causal analysis; independent failed EVIDENCE before correction/retry.",
+    "Independent C1 EVIDENCE required before later initial-before-PID9; historical controls retain true source/compiled provenance. No full FR063/T070/ACTIVE acceptance."
+  ],
+  "toolAuthority": "Data/readback plan only. Recovery placement does not approve a new executable tool. No new finite controller authored."
+}

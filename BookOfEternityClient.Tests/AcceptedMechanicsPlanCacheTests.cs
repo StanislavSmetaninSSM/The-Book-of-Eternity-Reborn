@@ -1,11 +1,16 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class AcceptedMechanicsPlanCacheTests
 {
+    private readonly ITestOutputHelper _fixtureOutput;
+
+    public AcceptedMechanicsPlanCacheTests(ITestOutputHelper output) => _fixtureOutput = output;
+
     [Fact]
     public void GetOrBuildValidated_IdenticalCompleteInputReusesOnePlanAndIdentityAllocation()
     {

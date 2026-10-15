@@ -45,7 +45,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = CreateScenario(
             "procedure_normal_uses_lowest_free_die",
             "procedure");
-        using var fixture = AcceptedStateFixture.Create(scenario);
+        var fixture = AcceptedStateFixture.Create(scenario);
+        using var ownedCleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         const string scene = "One accepted response cannot mix wound command families.";
         var flow = ResolveCurrentTreatment(
             fixture,

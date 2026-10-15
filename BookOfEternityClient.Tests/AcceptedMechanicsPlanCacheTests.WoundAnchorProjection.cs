@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -356,9 +357,10 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
     public void WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase()
     {
         var seed = WoundEffectBatchPlannerTests.CreateInputForAcceptedCache(2);
-        using var canonical = DirectWoundCommonFixture.Create(
+        var canonical = DirectWoundCommonFixture.Create(
             seed.Binding,
             1260L);
+        using var ownedCleanup = new DirectWoundFixtureCleanup(canonical, _fixtureOutput.WriteLine);
         var stages = CreateMixedMortalCreateAndWorsenStages(
             canonical.SnapshotToken);
         var beforeComposition = canonical.CaptureTreeBytes();
@@ -650,6 +652,29 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             Directory.Delete(Root, recursive: true);
+        }
+    }
+
+    private sealed class DirectWoundFixtureCleanup(DirectWoundCommonFixture fixture, Action<string> output) : IDisposable
+    {
+        public void Dispose()
+        {
+            var root = fixture.FileSystem.BasePath;
+            Exception? failure = null;
+            try { fixture.Dispose(); }
+            catch (Exception error) { failure = error; }
+            // Observe the actual existing lease close and root disposal once.
+            // A failed close must not trigger a second deletion under that lease.
+            output(JsonSerializer.Serialize(new
+            {
+                CleanupOwnedRoot = root,
+                OwnedFixtureRemoved = !Directory.Exists(root),
+                LeaseInactive = !fixture.Lease.IsActive,
+                CleanupFailure = failure?.ToString()
+            }));
+            Assert.Null(failure);
+            Assert.False(fixture.Lease.IsActive);
+            Assert.False(Directory.Exists(root));
         }
     }
 
