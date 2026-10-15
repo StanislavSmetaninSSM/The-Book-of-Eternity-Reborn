@@ -1,0 +1,22 @@
+{
+  "readerSha256": "04dcb8d43829b97b88760c70657f97e3b5f8e3cc4c2b813b6507c802496c03c8",
+  "scope": "Pure recorded-data parser negative boundary probes; no build/test/owner/admission invocation",
+  "checks": [
+    {
+      "negative": "top-level duplicate",
+      "rejectedWithoutSkipSuppression": true
+    },
+    {
+      "negative": "nested-object duplicate",
+      "rejectedWithoutSkipSuppression": true
+    },
+    {
+      "negative": "entry mixed/extra schema",
+      "rejectedBeforePinChecks": true
+    },
+    {
+      "negative": "final mixed/extra schema",
+      "rejectedBeforePinChecks": true
+    }
+  ]
+}

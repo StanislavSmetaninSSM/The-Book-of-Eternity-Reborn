@@ -1,0 +1,1 @@
+{"cases": 6, "strictCleanupCount": 12, "jsonRows": 216, "kind": "header"}

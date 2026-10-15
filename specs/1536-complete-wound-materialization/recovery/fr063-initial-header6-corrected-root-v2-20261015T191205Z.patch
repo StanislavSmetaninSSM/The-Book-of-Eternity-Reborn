@@ -1,0 +1,115 @@
+--- fr063-initial9-recorded-case-reader-20261015.py
++++ fr063-initial9-recorded-case-reader-v2-20261015T191205Z.py
+@@ -1,14 +1,25 @@
+ """Pure recorded evidence reader: no build, test, owner, admission or recovery call."""
+ from pathlib import Path
+ import base64, collections, gzip, hashlib, json, sys, xml.etree.ElementTree as ET
++
++def unique_object(pairs):
++    result = {}
++    for key, value in pairs:
++        assert key not in result, 'Duplicate JSON key: ' + key
++        result[key] = value
++    return result
++
++def loads(value):
++    # AssertionError deliberately escapes ValueError/TypeError skip handlers.
++    return json.loads(value, object_pairs_hook=unique_object)
+ 
+ packet, kind, output = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
+ assert kind in ('header', 'generation')
+ H = lambda b: hashlib.sha256(b).hexdigest()
+ D = lambda s: base64.b64decode(s, validate=True)
+ raw = lambda n: gzip.decompress((packet / (n + '.gz')).read_bytes())
+-J = lambda n: json.loads(raw(n))
+-manifest = json.loads((packet / 'manifest.json').read_bytes())
++J = lambda n: loads(raw(n))
++manifest = loads((packet / 'manifest.json').read_bytes())
+ for art in manifest['artifacts']:
+     compressed = (packet / art['name']).read_bytes()
+     uncompressed = gzip.decompress(compressed)
+@@ -38,10 +49,10 @@
+         for key, child in value.items():
+             where = origin + '/' + key
+             if key == 'Child' and isinstance(child, str):
+-                collect(json.loads(child), where + '#decoded', case_receipts)
++                collect(loads(child), where + '#decoded', case_receipts)
+             elif key == 'FullChildLog' and isinstance(child, str):
+                 for number, line in enumerate(child.splitlines(), 1):
+-                    try: decoded = json.loads(line.strip())
++                    try: decoded = loads(line.strip())
+                     except (ValueError, TypeError):
+                         assert 'CleanupOwnedRoot' not in line, 'Malformed receipt line'
+                         continue
+@@ -64,7 +75,14 @@
+     return {key: {'Exists': image is not None, 'Length': None if image is None else len(D(image)),
+         'Sha256': None if image is None else H(D(image)).upper()} for key, image in images.items()}
+ 
+-def check_dependencies(context, bindings, expected_hashes):
++def check_dependencies(context, bindings, expected_hashes, origin):
++    assert origin in ('entry', 'final')
++    fields = {'Identity': 'identity', 'Path': 'path', 'Sha256': 'sha256',
++        'LoadContext': 'loadContext', 'IsDefaultContext': 'isDefaultContext'}
++    expected_fields = set(fields) if origin == 'entry' else set(fields.values())
++    assert all(set(binding) == expected_fields for binding in bindings)
++    if origin == 'entry':
++        bindings = [{fields[key]: value for key, value in binding.items()} for binding in bindings]
+     assert set(context['paths']) == set(context['sha256']) == {'integration', 'support', 'runtimeconfig', 'depsfile', 'immutable'}
+     assert context['sha256'] == expected_hashes
+     for key, path in context['paths'].items():
+@@ -87,7 +105,7 @@
+     assert definition.attrib['codeBase'] in fresh_by_path
+     rows, case_receipts = [], []
+     for number, line in enumerate((test.findtext('./{*}Output/{*}StdOut') or '').splitlines(), 1):
+-        try: row = json.loads(line)
++        try: row = loads(line)
+         except ValueError:
+             assert 'CleanupOwnedRoot' not in line, 'Unparsed per-test receipt'
+             continue
+@@ -97,9 +115,9 @@
+     parent = one(rows, 'fr063_joint_applied_cold_parent_outcome'); context = parent['Context']
+     scenario = context['refusalScenario']; assert scenario in expected_scenarios and scenario not in scenarios; scenarios.add(scenario)
+     assert parent['Failure'] is None and parent['Transport'] is None and parent['NewRootAfter'] is None
+-    child = json.loads(parent['Child']); child_rows = []
++    child = loads(parent['Child']); child_rows = []
+     for line in parent['FullChildLog'].splitlines():
+-        try: row = json.loads(line)
++        try: row = loads(line)
+         except ValueError: continue
+         if isinstance(row, dict): child_rows.append(row)
+     native = one(child_rows, 'cold_child_native_result'); entry = one(child_rows, 'fr063_joint_applied_child_entry')
+@@ -116,9 +134,8 @@
+     assert len(args[index:]) == 6 and args[index+1] == entry['DependencyContext']['paths']['integration']
+     assert args[index+2] == child['root'] and args[index+4] == '10'
+     assert entry['AuxiliaryFactoryRoot'] == child['auxiliaryFactoryRoot'] != child['root']
+-    for dependency_context, bindings in [(entry['DependencyContext'], entry['LoadedDependencies']),
+-            (child['dependencyContext'], child['loadedDependencies'])]:
+-        check_dependencies(dependency_context, bindings, context['binaryPins'])
++    check_dependencies(entry['DependencyContext'], entry['LoadedDependencies'], context['binaryPins'], 'entry')
++    check_dependencies(child['dependencyContext'], child['loadedDependencies'], context['binaryPins'], 'final')
+     assert child['binaryPins'] == context['binaryPins']
+     damage = parent['InitialAuthority']; before, after = damage['RawBeforeDamage'], damage['RawAfterDamage']
+     physical = {'manifest': 'game_state/control/pending_turn_snapshot.json', 'input': 'input/turn_request.json',
+@@ -132,9 +149,9 @@
+         expected['$sessionGeneration'] = replacement
+         if replacement is None:
+             names = D(before['$runtimeFiles']); token = b'"session-generation/current.json"'
+-            assert json.loads(names).count('session-generation/current.json') == 1
++            assert loads(names).count('session-generation/current.json') == 1
+             changed = names.replace(token+b',', b'', 1) if token+b',' in names else names.replace(b','+token,b'',1) if b','+token in names else b'[]'
+-            assert json.loads(changed) == [x for x in json.loads(names) if x != 'session-generation/current.json']
++            assert loads(changed) == [x for x in loads(names) if x != 'session-generation/current.json']
+             expected['$runtimeFiles'] = base64.b64encode(changed).decode()
+     assert expected == after, 'Exactly the selected leaf and explicit physical-G aliases may change'
+     for images in [damage['RawAfterChild'], constructor['RawBefore'], constructor['RawAfter'], owner['RawBefore'], owner['RawAfter'],
+@@ -150,8 +167,8 @@
+     assert child['before'] == child['after'] == managed_digests
+     story = D(before['stories/mortal_life_2.jsonl'])
+     assert H(story).upper() == context['originalStorySha256'] and len(story) == context['originalStoryLength']
+-    assert json.loads(story.splitlines()[-1])['turn'] == 42
+-    marker = json.loads(D(before['game_state/wounds/mortal_qte_decision_publication.json']).decode('utf-8-sig'))
++    assert loads(story.splitlines()[-1])['turn'] == 42
++    marker = loads(D(before['game_state/wounds/mortal_qte_decision_publication.json']).decode('utf-8-sig'))
+     assert marker['schemaVersion'] == 2 and marker['progression']['phase'] == context['expectedPhase'] == 'applied'
+     for key in ('sessionId', 'requestId', 'snapshotToken'): assert marker[key] == context[key]
+     assert marker['turn'] == 43 and context['expectedWorldCycles'] == 1

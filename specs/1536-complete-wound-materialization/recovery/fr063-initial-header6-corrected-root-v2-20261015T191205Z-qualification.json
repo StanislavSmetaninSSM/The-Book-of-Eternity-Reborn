@@ -1,0 +1,83 @@
+{
+  "kind": "Corrected pure recorded ROOT qualification of SAME immutable header6 packet; no native/build/source rerun",
+  "currentHeadBeforeSupplement": "1281d8f3fc2888dfb193f98b59213d2ac1d87778",
+  "reviewedSource": "bf9988d96adc0b00c41abe518cb84bf83632a153",
+  "testedSource": "4cc13d9c83b8b1f90b807934f618cc518af8bbf7",
+  "compiledSource": "b27eb6051a3ab6527a1b9c484af9d1a172084042",
+  "packet": "fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+  "manifestSha256": "2e4b250c23473d94e0569259f1f13d17c32bb1d61bd0ee0f0ab72138505b7d9b",
+  "rawChainsVerified": 40,
+  "oldReaderSha256": "89e77c11914ac9477cc5be1c638f801672c2841746eb10510b7d211d399bca2e",
+  "oldFailurePreserved": "fr063-initial-header6-root-reader-failure-20261015T185940Z.json",
+  "v2ReaderSha256": "04dcb8d43829b97b88760c70657f97e3b5f8e3cc4c2b813b6507c802496c03c8",
+  "approvedCorrectionEvidence": {
+    "fr063-initial-header6-independent-evidence-reader-causal-20261015T190940Z-review.md": "2700cf1e39f3bc1fc9f60a4919e91a97623c81fe441c7ef42e0dbc1abecdc198",
+    "fr063-initial-header6-independent-evidence-reader-causal-20261015T190940Z-review.json": "6a50ac12183654ab288ebb3cc90c31519e4d12a4f7859e2ff3f0353e86216dd9"
+  },
+  "invocation": {
+    "commandArguments": [
+      "python3",
+      "-E",
+      "/tmp/fr063-initial9-recorded-case-reader-v2-20261015T191205Z.py",
+      "/workspace/boe-fr063-tools-20261015/fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+      "header",
+      "/workspace/boe-fr063-tools-20261015/initial-header6-v2-recorded-oracles-20261015T191205Z.json"
+    ],
+    "stdout": "/workspace/boe-fr063-tools-20261015/initial-header6-v2-recorded-oracles-20261015T191205Z.stdout.log",
+    "toolResult": {
+      "chunk_id": "f217b1",
+      "wall_time_seconds": 1.001127538,
+      "session_id": 49838,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "completionToolResult": {
+      "chunk_id": "270a51",
+      "wall_time_seconds": 3.2297e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "nativeRecordedReaderExit": 0,
+  "exactSixCasesAndPidsMatchIndependentEvidence": true,
+  "jsonRows": 216,
+  "strictCleanupCount": 12,
+  "fourStrictNegativeParserBoundariesPassed": true,
+  "sourcePinsExactTestedGit": 1150,
+  "currentSourcePinsStillExact": 1148,
+  "declaredMetadataFrontDifferences": [
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "originalFreshB27PayloadsCurrentExact": 11,
+  "artifacts": [
+    {
+      "path": "fr063-initial-header6-corrected-root-v2-20261015T191205Z.py.txt",
+      "bytes": 15948,
+      "sha256": "04dcb8d43829b97b88760c70657f97e3b5f8e3cc4c2b813b6507c802496c03c8"
+    },
+    {
+      "path": "fr063-initial-header6-corrected-root-v2-20261015T191205Z.patch",
+      "bytes": 7284,
+      "sha256": "03ccd0e0e3e93a04dbadac7d2dc2625d5bf837681f211eb0cccca895aa3ddeb1"
+    },
+    {
+      "path": "fr063-initial-header6-corrected-root-v2-20261015T191205Z-negative-boundaries.json",
+      "bytes": 610,
+      "sha256": "d9093f9566ce4a91a1efc61bdff9ae6d1066a0971ae5ec8854c7434751efb274"
+    },
+    {
+      "path": "fr063-initial-header6-corrected-root-v2-20261015T191205Z-oracles.json",
+      "bytes": 13751,
+      "sha256": "edee0d9d9f8f41ea1e0074c0764daf18d19a155df7099b4ead9eea7ffe0c7474"
+    },
+    {
+      "path": "fr063-initial-header6-corrected-root-v2-20261015T191205Z-stdout.txt",
+      "bytes": 74,
+      "sha256": "47681a2927b0267c0f72dbd9e4d98091eb89196e67df5e34355f0a6ce062c957"
+    }
+  ],
+  "status": "ROOT_CORRECTED_QUALIFICATION_COMPLETE; G3conditionalrelease requires this supplement published/newgate/exactNoBuildPlan",
+  "utc": "2026-10-15T19:14:38.453121+00:00"
+}

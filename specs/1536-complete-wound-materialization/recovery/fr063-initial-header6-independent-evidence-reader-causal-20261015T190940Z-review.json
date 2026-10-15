@@ -1,0 +1,906 @@
+{
+  "kind": "independent-header6-evidence-and-recorded-reader-causal-review",
+  "task": "#1536 T070/FR063-INITIAL9",
+  "reviewerTask": "/root/initial9_independent_review",
+  "model": {
+    "requested": "gpt-6-astra",
+    "reasoningEffortRequested": "xhigh",
+    "explicitlyPassedByParent": true,
+    "actualBackendTelemetry": "unavailable"
+  },
+  "reviewedSource": "bf9988d96adc0b00c41abe518cb84bf83632a153",
+  "testedSource": "4cc13d9c83b8b1f90b807934f618cc518af8bbf7",
+  "compiledSource": "b27eb6051a3ab6527a1b9c484af9d1a172084042",
+  "observedCleanHead": "1281d8f3fc2888dfb193f98b59213d2ac1d87778",
+  "remoteStatus": "Parent reports exact pushed/GitHub-only recovery. Reviewer independently checked local Git/content.",
+  "verdicts": {
+    "nativeHeader6Evidence": "ACCEPTED",
+    "originalRootReaderFailure": "CONFIRMED_RECORDED_READER_SCHEMA_DEFECT",
+    "productionOrNativeFixtureDefect": "NONE_FOUND",
+    "correctedRecordedReaderScope": "APPROVED_NARROW_CORRECTION",
+    "G3": "CONDITIONAL_RELEASE_AFTER_SAME_PACKET_ROOT_READBACK"
+  },
+  "materialFindings": [
+    {
+      "location": "root-recorded-case-reader.py.txt:76, called from:121",
+      "scenario": "check_dependencies receives the actual default-serializer entry bindings but expects lowercase identity.",
+      "consequence": "KeyError before ROOT output is written; does not invalidate actual six native passes or missing child binding data.",
+      "cause": "MortalArchiveLoadedDependencyBindings declares PascalCase anonymous properties; child entry serializes with defaults, final result uses PrettyCamelCaseUnsafeRelaxed.",
+      "status": "Confirmed in all six actual entry/final pairs and unchanged source; original failure/reader remain immutable."
+    }
+  ],
+  "packet": "specs/1536-complete-wound-materialization/recovery/fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+  "manifestSha256": "2e4b250c23473d94e0569259f1f13d17c32bb1d61bd0ee0f0ab72138505b7d9b",
+  "metadataVerification": {
+    "chains": 40,
+    "chainVectorSha256": "8823036f3359e4350f9f2852ce68cd8e0a1eabb0f7a676115cf0cf89d6a69ae2",
+    "externalPacketExact": true,
+    "scratchRawMatches": 33,
+    "testedGitSourcePins": 1150,
+    "currentExactPins": 1148,
+    "currentMetadataChanges": [
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "testedSha256": "ee0586957d766c1d55126bdc7d02f4b161a1c0c0442524df1f6a2d4670c67a6a",
+        "currentSha256": "3bb93aaaba4c4f9401443886042686b5a0e0d75f76108022355905d9e380c125"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "testedSha256": "eac566aba0c9926c1dabd25d5e90e44f71ee9423d905b3db479101d6a54561d8",
+        "currentSha256": "8ab373ea127828c083dfa2fc92e605daab1fa6eaf9d08c0e0879806ab54d8194"
+      }
+    ],
+    "fresh11Exact": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "bytes": 29777,
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 28971520,
+        "sha256": "968d7fcf3b3350dc77b936cc648bc00018065b7054cebfa719a69a04acd9ca08"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "fff9ee7af95cc44787e57ff5e8dcbf90715787261d0d10930c5b75e9e1ce928d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "cb43e2c214a8cbb3125381041231f45b27871f28c1566e340c3f27b1de8d849c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "bytes": 251160,
+        "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "fff9ee7af95cc44787e57ff5e8dcbf90715787261d0d10930c5b75e9e1ce928d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "bytes": 24394,
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9321984,
+        "sha256": "ac3984d98a2e8e663e794f726e0f8322495358e51ac19863d8d43e22c7bda64d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "cb43e2c214a8cbb3125381041231f45b27871f28c1566e340c3f27b1de8d849c"
+      }
+    ],
+    "originalFresh64ManifestExact": true,
+    "originalFreshBinaryAndInventoryBytesExact": true,
+    "gateSha256": "f388a62143cbe2f60e615fa4e408a2942992643b462a184f12e71671acf66062",
+    "gateEvidenceChecked": 4,
+    "manualCommands": 5,
+    "compiledToTestedAndTestedToCurrentDeltaCounts": [
+      70,
+      45
+    ],
+    "metadataOnly": true,
+    "plan": [
+      1,
+      6,
+      1
+    ],
+    "budgetMinutes": 8,
+    "actualWallTime": "00:06:29.0638163",
+    "nativeActual": {
+      "Total": 6,
+      "Executed": 6,
+      "Passed": 6,
+      "Failed": 0
+    },
+    "failureArtifactSha256": "5af93230aeb893037ad2d76cfd328c5574005cb368c79f2a627a4a235b41e8a9",
+    "failureStdoutSha256": "b9b1c6aeaa7d0fd8b77f725d8f35a497117d71ef7a440f75c777598d9f545c3e",
+    "failureStdout": "Traceback (most recent call last):\n  File \"/tmp/fr063-initial9-recorded-case-reader-20261015.py\", line 121, in <module>\n    check_dependencies(dependency_context, bindings, context['binaryPins'])\n  File \"/tmp/fr063-initial9-recorded-case-reader-20261015.py\", line 76, in check_dependencies\n    assert {x['identity'].split(',')[0] for x in bindings} == set(mapped)\n            ~^^^^^^^^^^^^\nKeyError: 'identity'\n",
+    "originalReaderSha256": "89e77c11914ac9477cc5be1c638f801672c2841746eb10510b7d211d399bca2e",
+    "failedOutputAbsent": true,
+    "frontsIdentical": true
+  },
+  "nativeEvidence": {
+    "trxSha256": "7d230c49c58711353957c1b6abea826fd1f7c2f6e8de9b112ca87f6d5b7a06ff",
+    "nativeCounters": {
+      "total": "6",
+      "executed": "6",
+      "passed": "6",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "cases": [
+      {
+        "testId": "e7253cb0-f082-80a6-e295-7d38bb9937c0",
+        "executionId": "77f6df6b-be7b-4e88-8e53-28e8f132f39f",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_manifest_malformed\")",
+        "scenario": "initial_manifest_malformed",
+        "childPid": 115236,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115236,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 225,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "game_state/control/pending_turn_snapshot.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": false,
+        "handled": null,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": "System.Text.Json.JsonReaderException: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 124\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass1011_0.<<WriteMortalJointAppliedColdProbeAsync>b__3>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 390\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2ba8b310f83642be91d6f17703d697d2",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c5349a03a3d34f1f93fafe01158b65e1"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2ba8b310f83642be91d6f17703d697d2",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c5349a03a3d34f1f93fafe01158b65e1",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "54e84a721f6094fdf8d4845e8eaec754f085db771a7e52c6556c7d681672ef2a",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      },
+      {
+        "testId": "f275c7c8-7c84-a30f-213b-65ef136cf3df",
+        "executionId": "f931ff16-251d-43f1-9ecc-c6805ed1c5a7",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_input_malformed\")",
+        "scenario": "initial_input_malformed",
+        "childPid": 115190,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115190,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 225,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "input/turn_request.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": true,
+        "handled": true,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": null,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4e42846a56c14031aa5e1bc0aff3bd7e",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ea107d9214b247daa0f5e6753899f4c2"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ea107d9214b247daa0f5e6753899f4c2",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4e42846a56c14031aa5e1bc0aff3bd7e",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "49839d713a41458db4c7778b0a199171a5d5ed469f3c87acd8fe4986b4e899cc",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      },
+      {
+        "testId": "718ea398-539f-7241-bf4d-bb3556684198",
+        "executionId": "e996824a-fbb7-4931-98b6-dedef253de99",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_authority_malformed\")",
+        "scenario": "initial_authority_malformed",
+        "childPid": 115391,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115391,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 225,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "game_state/control/pending_turn_snapshot.authority.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": true,
+        "handled": true,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": null,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-61739e239e8b435094080b8a3bb300f4",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d2cde2b7414a4b94ab84203ba881bfdd"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d2cde2b7414a4b94ab84203ba881bfdd",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-61739e239e8b435094080b8a3bb300f4",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "d9325f3382427d527d2b58ed537e7c33449631843f8b15d35b72318763a0a4d8",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      },
+      {
+        "testId": "93ba11c5-3364-b86b-ad63-70c3b734b453",
+        "executionId": "852f9dd3-493f-4fcf-afa8-ecb97ea158ea",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_input_missing\")",
+        "scenario": "initial_input_missing",
+        "childPid": 115103,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115103,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 224,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "input/turn_request.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": true,
+        "handled": true,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": null,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-46db86f48e49403cab9dc539ff2c9f22",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e7fd617fe46d4e1eba5c6f59b9abd4d9"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-46db86f48e49403cab9dc539ff2c9f22",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e7fd617fe46d4e1eba5c6f59b9abd4d9",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "e22fd530e5db0f51c2fc9868e19b4c65729c48a198758643f7c41f5f9bd8d547",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      },
+      {
+        "testId": "1a192d15-ffe3-9fa4-116c-3b9d175d403f",
+        "executionId": "587465ed-0f51-47c8-bec3-085ecbc433b0",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_authority_missing\")",
+        "scenario": "initial_authority_missing",
+        "childPid": 115343,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115343,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 224,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "game_state/control/pending_turn_snapshot.authority.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": true,
+        "handled": true,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": null,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3bbb53b2e22f40e9b54b4c5c4957b445",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-abf8323229a34890b7d209574476bfb3"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3bbb53b2e22f40e9b54b4c5c4957b445",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-abf8323229a34890b7d209574476bfb3",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "73f08a0c72931bc397e3c66ef5fe3d6b57a2a9644a56fc5cf3228a361dc8bff8",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      },
+      {
+        "testId": "9e519fe4-46ea-b510-5d89-91bbce7b838b",
+        "executionId": "f2c9b092-bfd1-4c02-912e-fe01dda2fe1d",
+        "displayIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace(corruption: \"initial_manifest_missing\")",
+        "scenario": "initial_manifest_missing",
+        "childPid": 115271,
+        "parentPid": 114999,
+        "native": {
+          "ChildProcessId": 115271,
+          "ParentProcessId": 114999,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawBeforeEntries": 225,
+        "rawAfterEntries": 224,
+        "runtimeFiles": [
+          "locks/canonical-write.lock",
+          "locks/gm-main-owner.lock",
+          "session-generation/current.json"
+        ],
+        "runtimeDirectories": [
+          "",
+          "locks",
+          "session-generation",
+          "trusted-local-publication-v1"
+        ],
+        "sessionDirectoryCount": 60,
+        "singleFixedLeafDamage": "game_state/control/pending_turn_snapshot.json",
+        "constructorFirstOwnerParentRawByteEquality": true,
+        "completeInventoryKeyNullLengthHash": true,
+        "parentAuthenticSource42Original43NonzeroApplied": true,
+        "actualBeforeDamageUnionRecorded": true,
+        "innerEntered": true,
+        "handled": true,
+        "turn": 42,
+        "inGameBeforeAfter": false,
+        "ownerFailure": null,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2736f3d94f1648b58604ddde51ac4006",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c15feb13192b45a9ad2a3564f3eb9309"
+        ],
+        "cleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c15feb13192b45a9ad2a3564f3eb9309",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2736f3d94f1648b58604ddde51ac4006",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "jsonRows": 36,
+        "rawAfterMapDigest": "ebeec069f320cd823a021f576f2d9e01f00e773196ccb8cd38298998e58ef4aa",
+        "entryAndFinalMatchSharedVerifiedBindings": true
+      }
+    ],
+    "bindingSchemas": [
+      {
+        "scenario": "initial_manifest_malformed",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      },
+      {
+        "scenario": "initial_input_malformed",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      },
+      {
+        "scenario": "initial_authority_malformed",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      },
+      {
+        "scenario": "initial_input_missing",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      },
+      {
+        "scenario": "initial_authority_missing",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      },
+      {
+        "scenario": "initial_manifest_missing",
+        "entryKeys": [
+          "Identity",
+          "IsDefaultContext",
+          "LoadContext",
+          "Path",
+          "Sha256"
+        ],
+        "finalKeys": [
+          "identity",
+          "isDefaultContext",
+          "loadContext",
+          "path",
+          "sha256"
+        ],
+        "normalizedEqual": true
+      }
+    ],
+    "jsonRows": 216,
+    "nativeObservationRows": 210,
+    "recordedJsonAndResultsReproduced": true,
+    "fullStdoutExact": true,
+    "parsedChildContainers": 12,
+    "perCaseCleanupReceipts": 12,
+    "allReceiptOriginsExactlyOnce": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/e7253cb0-f082-80a6-e295-7d38bb9937c0#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/e7253cb0-f082-80a6-e295-7d38bb9937c0#line=36"
+      },
+      {
+        "receiptIndex": 2,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/f275c7c8-7c84-a30f-213b-65ef136cf3df#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 3,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/f275c7c8-7c84-a30f-213b-65ef136cf3df#line=36"
+      },
+      {
+        "receiptIndex": 4,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/718ea398-539f-7241-bf4d-bb3556684198#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 5,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/718ea398-539f-7241-bf4d-bb3556684198#line=36"
+      },
+      {
+        "receiptIndex": 6,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/93ba11c5-3364-b86b-ad63-70c3b734b453#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 7,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/93ba11c5-3364-b86b-ad63-70c3b734b453#line=36"
+      },
+      {
+        "receiptIndex": 8,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/1a192d15-ffe3-9fa4-116c-3b9d175d403f#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 9,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/1a192d15-ffe3-9fa4-116c-3b9d175d403f#line=36"
+      },
+      {
+        "receiptIndex": 10,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/9e519fe4-46ea-b510-5d89-91bbce7b838b#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 11,
+        "origin": "fr063-joint-initial-header-refusal-integration-001.trx/9e519fe4-46ea-b510-5d89-91bbce7b838b#line=36"
+      }
+    ],
+    "summaryFallback": false,
+    "strictDuplicateJsonKeysRejected": true,
+    "firstReaderFailureCausedByKnownEntryPascalSchema": true,
+    "rawProofScope": "Entire game_session/runtime bytes/names/empty directories; only contents of3named inert lock streams excluded; actual raw equality verified.",
+    "sharedVerifiedBindings": [
+      {
+        "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "968D7FCF3B3350DC77B936CC648BC00018065B7054CEBFA719A69A04ACD9CA08",
+        "loadContext": "Default",
+        "isDefaultContext": true
+      },
+      {
+        "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "FFF9EE7AF95CC44787E57FF5E8DCBF90715787261D0D10930C5B75E9E1CE928D",
+        "loadContext": "Default",
+        "isDefaultContext": true
+      },
+      {
+        "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+        "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+        "loadContext": "Default",
+        "isDefaultContext": true
+      }
+    ],
+    "sharedVerifiedDependencyContext": {
+      "paths": {
+        "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+      },
+      "sha256": {
+        "integration": "968D7FCF3B3350DC77B936CC648BC00018065B7054CEBFA719A69A04ACD9CA08",
+        "support": "FFF9EE7AF95CC44787E57FF5E8DCBF90715787261D0D10930C5B75E9E1CE928D",
+        "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+        "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+        "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+      },
+      "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  },
+  "actual": {
+    "methods": 1,
+    "cases": 6,
+    "descriptors": 1,
+    "nativeExitCode": 0,
+    "passed": 6,
+    "failed": 0,
+    "wallTimeSeconds": 389.0638163,
+    "complete": true,
+    "noTimeoutSkipsDuplicates": true,
+    "budgetMinutes": 8
+  },
+  "approvedRecordedReaderCorrection": {
+    "version": "Create a new uniquely named v2 file and new output; preserve original89e reader, failure, and40-chain packet byte-for-byte.",
+    "scope": "Pure recorded-data parser only; no C#/test/source/authority/runner/controller/build changes or native execution.",
+    "entrySchema": [
+      "Identity",
+      "Path",
+      "Sha256",
+      "LoadContext",
+      "IsDefaultContext"
+    ],
+    "finalSchema": [
+      "identity",
+      "path",
+      "sha256",
+      "loadContext",
+      "isDefaultContext"
+    ],
+    "rules": [
+      "Pass explicit origin (entry/final) to check_dependencies; require each binding's exact five-key set for that origin before normalization.",
+      "Normalize only the verified entry keys through the exact one-to-one mapping to the final schema; final uses its exact camelCase schema.",
+      "Retain exact3 distinct identities, paths/hashes/fresh11 membership, Default context, immutable identity and5 context-file comparisons. Reject extra/missing/mixed-case fields; no case-insensitive/get fallback.",
+      "Use a duplicate-rejecting object_pairs_hook for observation-line and nested Child/FullChildLog JSON decoding (and shared JSON loads). Duplicate failure must propagate outside existing ValueError/TypeError skip handlers, e.g. AssertionError.",
+      "Keep every original scenario, raw-damage/inventory, constructor/owner/parent comparison, outcome, donor, receipt/origin, count and artifact hash assertion unchanged. No broad exception suppression.",
+      "Keep path mapping/binary comparison semantics anchored to the same repository; if any unrelated required change is discovered, stop and review it."
+    ],
+    "qualification": "Run only the new pure recorded reader against the SAME immutable header packet in header mode, to a new output. Require exit0, all6 exact identities/PIDs,216JSONrows,12receipt/origin bijection and equal raw/binding outcomes matching this independent review.",
+    "publication": "Retain exact v1→v2 diff, v2 source hash, invocation/native exit/stdout/new output hashes and current source/original binary pins; freeze/push them as an additional metadata supplement. Do not modify or replace the original failed artifacts.",
+    "nativeRerunOrBuildRequired": false
+  },
+  "release": {
+    "actualReleaseNow": [],
+    "conditionalActualRelease": [
+      "tests/selections/1536-fr063-joint-initial-generation-refusal.json"
+    ],
+    "conditions": [
+      "Complete and freeze/publish the approved v2 same-packet ROOT qualification with exit0 and results matching this independent six-case evidence. Until then G3 remains HELD.",
+      "Verify clean current source, only metadata changes from tested4cc/originalcompiledb27, unchanged approved A7, original fresh11 payloads and fresh22 inventory; mint new current-source pins/gate retaining original compile provenance.",
+      "Execute exact NoBuild Plan1method/3cases/1descriptor, unchanged5-minute budget and zero execution, then manual unchanged A7 G3 singleton only."
+    ],
+    "futureG3Evidence": [
+      "Three exact missing/malformed/real-foreign G cases, complete native3/3PASS without skipped/duplicate/timed-out cases; actual new child PID/nativeinteger0/bothEOF and entry+final3Default+5context-file pins.",
+      "Genuine authenticated parent original43/nonzero/common-applied pause; every parent/donor lease closed; exactly one physical G leaf damaged before child PID. Distinguish physical key, $sessionGeneration alias and missing-G $runtimeFiles consequence exactly.",
+      "No target ensure/bootstrap/refresh/original/frame/G/output/phase preflight before first actual outer Late. Constructor failures are setup failures. All three outcomes outer=true/inner=false/handled=null with their distinct exact InvalidDataException messages.",
+      "Complete raw target names/bytes/empty directories and turn42/inGame/story/original/full union/Ready/output/marker/schedule/report retention; only three inert lock-stream-content exclusions.",
+      "Foreign G is actual independently issued parent donor bytes; no target authority grant or child donor issuance; full donor before/after damage and after child equality.",
+      "Exactly7 genuine per-case roots:3 targets+3 child auxiliaries+1 parent donor, strict attribution/true removal/explicit null failure/actual absence; disjoint from accepted header12 for19 total across initial9.",
+      "Freeze/push native/TRX/raw/source/binary/gate/commands/receipts and recorded reader before independent G3 EVIDENCE; no automatic successor or full closure."
+    ],
+    "onFirstFailureOrMissingProof": "STOP/freeze/push before causal review; independent failed EVIDENCE before any correction/native retry.",
+    "noNewFiniteController": true,
+    "noAggregate": true,
+    "noBlanketHistoricalRerun": true,
+    "newUserApprovalRequired": false
+  },
+  "limits": [
+    "Only recorded-data/source checks were executed by reviewer; no build/test/Plan/discovery/runner/controller/native owner.",
+    "Original ROOT reader remains exit1 with no output; this independent review qualifies actual6 separately. Corrected ROOT completion is still pending.",
+    "Actual runtime inventory has canonical-write and gm-main-owner lock files; session-lifecycle lock is absent before/after. The helper excludes contents of three fixed potential lock names, not a requirement that all three exist.",
+    "Three observed Default bindings and five context files do not claim every transitive assembly.",
+    "Negative admission preservation only; no completed continuation with damaged authority, lawful ACTIVE, UI delivery or full FR063/T070/#1536 acceptance.",
+    "Historical C1/Late2/other evidence retain original tested/compiled provenance; G3 remains unrun at review time."
+  ],
+  "metadataCarrierPermission": "Publish exact review pair and accurate identical plan/tasks fronts; preserve reviewed code/tool/build and immutable failure bytes.",
+  "primaryReadOnly": true,
+  "reviewerStopped": true,
+  "pendingWrites": false,
+  "scopePins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1788193,
+      "sha256": "3bb93aaaba4c4f9401443886042686b5a0e0d75f76108022355905d9e380c125"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1288809,
+      "sha256": "8ab373ea127828c083dfa2fc92e605daab1fa6eaf9d08c0e0879806ab54d8194"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 81750,
+      "sha256": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 64714,
+      "sha256": "05e89b15d84208e3034351448353b123aa5c7928b274864233e0a0406ab4f584"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointInitialAdmission.cs",
+      "bytes": 9181,
+      "sha256": "02efb052fc79419737c143f4b94661153298dcc44580fc1a6bdb422357085b7e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "bytes": 61445,
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "bytes": 31771,
+      "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "bytes": 607,
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1926331,
+      "sha256": "fe5d8842f3e13a13c88a0c8cdfd16462c4f5f428d53ca879e5afa2310bd6038a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-initial-header-refusal.json",
+      "bytes": 1229,
+      "sha256": "89ee4bae806dd68e9699d50cd36928fdee8b0d02f6357a3d965aa28459605700"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-initial-generation-refusal.json",
+      "bytes": 1202,
+      "sha256": "558d7e7978fcd145441c9ea0b4d55e0f61f0e46f48bd569cc87037976ecde421"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-initial-header6-root-reader-failure-20261015T185940Z.json",
+      "bytes": 2079,
+      "sha256": "5af93230aeb893037ad2d76cfd328c5574005cb368c79f2a627a4a235b41e8a9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-initial-header6-root-reader-failure-20261015T185940Z.stdout.txt",
+      "bytes": 411,
+      "sha256": "b9b1c6aeaa7d0fd8b77f725d8f35a497117d71ef7a440f75c777598d9f545c3e"
+    }
+  ],
+  "createdUtc": "20261015T190940Z"
+}

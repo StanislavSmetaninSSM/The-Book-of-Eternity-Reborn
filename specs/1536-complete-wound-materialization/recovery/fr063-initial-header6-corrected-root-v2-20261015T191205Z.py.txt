@@ -1,0 +1,219 @@
+"""Pure recorded evidence reader: no build, test, owner, admission or recovery call."""
+from pathlib import Path
+import base64, collections, gzip, hashlib, json, sys, xml.etree.ElementTree as ET
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        assert key not in result, 'Duplicate JSON key: ' + key
+        result[key] = value
+    return result
+
+def loads(value):
+    # AssertionError deliberately escapes ValueError/TypeError skip handlers.
+    return json.loads(value, object_pairs_hook=unique_object)
+
+packet, kind, output = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
+assert kind in ('header', 'generation')
+H = lambda b: hashlib.sha256(b).hexdigest()
+D = lambda s: base64.b64decode(s, validate=True)
+raw = lambda n: gzip.decompress((packet / (n + '.gz')).read_bytes())
+J = lambda n: loads(raw(n))
+manifest = loads((packet / 'manifest.json').read_bytes())
+for art in manifest['artifacts']:
+    compressed = (packet / art['name']).read_bytes()
+    uncompressed = gzip.decompress(compressed)
+    assert len(compressed) == art['compressedBytes'] and H(compressed) == art['compressedSha256']
+    assert len(uncompressed) == art['uncompressedBytes'] and H(uncompressed) == art['uncompressedSha256']
+expected_scenarios = ({'initial_' + leaf + '_' + damage for leaf in ('manifest', 'input', 'authority')
+    for damage in ('missing', 'malformed')} if kind == 'header' else
+    {'initial_generation_missing', 'initial_generation_malformed', 'initial_generation_foreign'})
+method = 'BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBad' + (
+    'Header' if kind == 'header' else 'Generation') + 'BeforeChildPidPreservesFirstOwnerNamespace'
+plan = J('actual-plan.json'); descriptors = plan['Descriptors']; assert len(descriptors) == 1
+assert descriptors[0]['ExpectedMethodCounts'] == [{'Name': method, 'Cases': len(expected_scenarios)}]
+trx_name = 'actual-' + descriptors[0]['Name'] + '.trx'
+tree = ET.fromstring(raw(trx_name)); tests = tree.findall('.//{*}UnitTestResult')
+definitions = {t.attrib['id']: t.find('./{*}TestMethod') for t in tree.findall('.//{*}UnitTest')}
+assert len(tests) == len(expected_scenarios) == len({t.attrib['testId'] for t in tests})
+fresh = J('fresh-binary-pins.json'); fresh_by_path = {str(Path(row['path']).absolute()): row for row in fresh['files']}
+assert len(fresh_by_path) == 11
+all_rows, receipts, origins, cases, pids, scenarios = [], [], [], [], set(), set()
+
+def collect(value, origin, case_receipts):
+    if isinstance(value, dict):
+        if 'CleanupOwnedRoot' in value:
+            assert value not in receipts, 'Repeated cleanup receipt is not a second qualified root'
+            origins.append({'receiptIndex': len(receipts), 'origin': origin})
+            receipts.append(value); case_receipts.append(value)
+        for key, child in value.items():
+            where = origin + '/' + key
+            if key == 'Child' and isinstance(child, str):
+                collect(loads(child), where + '#decoded', case_receipts)
+            elif key == 'FullChildLog' and isinstance(child, str):
+                for number, line in enumerate(child.splitlines(), 1):
+                    try: decoded = loads(line.strip())
+                    except (ValueError, TypeError):
+                        assert 'CleanupOwnedRoot' not in line, 'Malformed receipt line'
+                        continue
+                    if isinstance(decoded, (dict, list)):
+                        collect(decoded, where + '#line=' + str(number), case_receipts)
+            else: collect(child, where, case_receipts)
+    elif isinstance(value, list):
+        for index, child in enumerate(value): collect(child, origin + '/' + str(index), case_receipts)
+
+def one(rows, name):
+    selected = [x['Observation'] for x in rows if x.get('Boundary') == name]
+    assert len(selected) == 1, (name, len(selected))
+    return selected[0]
+
+def inventory(images):
+    return {key: None if image is None else {'length': len(D(image)), 'sha256': H(D(image)).upper()}
+        for key, image in images.items()}
+
+def digests(images):
+    return {key: {'Exists': image is not None, 'Length': None if image is None else len(D(image)),
+        'Sha256': None if image is None else H(D(image)).upper()} for key, image in images.items()}
+
+def check_dependencies(context, bindings, expected_hashes, origin):
+    assert origin in ('entry', 'final')
+    fields = {'Identity': 'identity', 'Path': 'path', 'Sha256': 'sha256',
+        'LoadContext': 'loadContext', 'IsDefaultContext': 'isDefaultContext'}
+    expected_fields = set(fields) if origin == 'entry' else set(fields.values())
+    assert all(set(binding) == expected_fields for binding in bindings)
+    if origin == 'entry':
+        bindings = [{fields[key]: value for key, value in binding.items()} for binding in bindings]
+    assert set(context['paths']) == set(context['sha256']) == {'integration', 'support', 'runtimeconfig', 'depsfile', 'immutable'}
+    assert context['sha256'] == expected_hashes
+    for key, path in context['paths'].items():
+        assert Path(path).is_absolute() and path in fresh_by_path
+        assert fresh_by_path[path]['sha256'].upper() == context['sha256'][key]
+    assert len(bindings) == 3
+    mapped = {'BookOfEternityClient.IntegrationTests': 'integration', 'BookOfEternityClient.TestSupport': 'support',
+        'System.Collections.Immutable': 'immutable'}
+    assert {x['identity'].split(',')[0] for x in bindings} == set(mapped)
+    for binding in bindings:
+        key = mapped[binding['identity'].split(',')[0]]
+        assert binding['path'] == context['paths'][key] and binding['sha256'] == expected_hashes[key]
+        assert binding['isDefaultContext'] is True and binding['loadContext'] == 'Default'
+    assert next(x['identity'] for x in bindings if x['identity'].startswith('System.Collections.Immutable,')) == context['immutableAssemblyIdentity']
+
+for test in tests:
+    assert test.attrib['outcome'] == 'Passed' and test.find('./{*}Output/{*}ErrorInfo') is None
+    definition = definitions[test.attrib['testId']]
+    assert definition is not None and definition.attrib['className'] + '.' + definition.attrib['name'] == method
+    assert definition.attrib['codeBase'] in fresh_by_path
+    rows, case_receipts = [], []
+    for number, line in enumerate((test.findtext('./{*}Output/{*}StdOut') or '').splitlines(), 1):
+        try: row = loads(line)
+        except ValueError:
+            assert 'CleanupOwnedRoot' not in line, 'Unparsed per-test receipt'
+            continue
+        if isinstance(row, dict):
+            rows.append(row); all_rows.append(row)
+            collect(row, trx_name.removeprefix('actual-') + '/' + test.attrib['testId'] + '#line=' + str(number), case_receipts)
+    parent = one(rows, 'fr063_joint_applied_cold_parent_outcome'); context = parent['Context']
+    scenario = context['refusalScenario']; assert scenario in expected_scenarios and scenario not in scenarios; scenarios.add(scenario)
+    assert parent['Failure'] is None and parent['Transport'] is None and parent['NewRootAfter'] is None
+    child = loads(parent['Child']); child_rows = []
+    for line in parent['FullChildLog'].splitlines():
+        try: row = loads(line)
+        except ValueError: continue
+        if isinstance(row, dict): child_rows.append(row)
+    native = one(child_rows, 'cold_child_native_result'); entry = one(child_rows, 'fr063_joint_applied_child_entry')
+    constructor = one(child_rows, 'fr063_joint_initial_authority_constructor')
+    owner = one(child_rows, 'fr063_joint_initial_authority_first_owner')
+    pid = native['ChildProcessId']; assert type(pid) is int and pid > 0 and pid not in pids; pids.add(pid)
+    assert native['ParentProcessId'] == parent['ParentProcessId'] == context['parentProcessId'] != pid
+    assert native['HasExited'] is True and type(native['ExitCode']) is int and native['ExitCode'] == 0
+    assert native['TimedOut'] is False and native['Failure'] is None
+    assert native['StdoutEofObserved'] is True and native['StderrEofObserved'] is True
+    assert entry['ProcessId'] == constructor['ProcessId'] == owner['ProcessId'] == child['processId'] == pid
+    assert entry['ParentProcessId'] == context['parentProcessId'] and entry['BorrowedRoot'] == child['root'] == context['expectedRoot'] == context['sourceRoot']
+    args = entry['Arguments']; index = args.index('engine-mortal-joint-applied-cold')
+    assert len(args[index:]) == 6 and args[index+1] == entry['DependencyContext']['paths']['integration']
+    assert args[index+2] == child['root'] and args[index+4] == '10'
+    assert entry['AuxiliaryFactoryRoot'] == child['auxiliaryFactoryRoot'] != child['root']
+    check_dependencies(entry['DependencyContext'], entry['LoadedDependencies'], context['binaryPins'], 'entry')
+    check_dependencies(child['dependencyContext'], child['loadedDependencies'], context['binaryPins'], 'final')
+    assert child['binaryPins'] == context['binaryPins']
+    damage = parent['InitialAuthority']; before, after = damage['RawBeforeDamage'], damage['RawAfterDamage']
+    physical = {'manifest': 'game_state/control/pending_turn_snapshot.json', 'input': 'input/turn_request.json',
+        'authority': 'game_state/control/pending_turn_snapshot.authority.json', 'generation': '$runtime/session-generation/current.json'}[scenario.split('_')[1]]
+    assert damage['PhysicalLeaf'] == physical and before[physical] is not None
+    expected = dict(before); replacement = None if scenario.endswith('_missing') else (
+        damage['Donor']['Bytes'] if scenario.endswith('_foreign') else base64.b64encode(b'{').decode())
+    if replacement is None: expected.pop(physical)
+    else: expected[physical] = replacement
+    if kind == 'generation':
+        expected['$sessionGeneration'] = replacement
+        if replacement is None:
+            names = D(before['$runtimeFiles']); token = b'"session-generation/current.json"'
+            assert loads(names).count('session-generation/current.json') == 1
+            changed = names.replace(token+b',', b'', 1) if token+b',' in names else names.replace(b','+token,b'',1) if b','+token in names else b'[]'
+            assert loads(changed) == [x for x in loads(names) if x != 'session-generation/current.json']
+            expected['$runtimeFiles'] = base64.b64encode(changed).decode()
+    assert expected == after, 'Exactly the selected leaf and explicit physical-G aliases may change'
+    for images in [damage['RawAfterChild'], constructor['RawBefore'], constructor['RawAfter'], owner['RawBefore'], owner['RawAfter'],
+            child['initiallyBadAuthorityRawBefore'], child['initiallyBadAuthorityRawAfter']]:
+        assert images == after
+    assert context['initialRawInventory'] == inventory(after)
+    expected_digests = digests(after)
+    assert parent['PhysicalAfter'] == expected_digests
+    # Managed output uses camelCase/WhenWritingNull; the raw parent uses the
+    # default serializer. Compare the same closed model with each real encoding.
+    managed_digests = {key: {field[0].lower()+field[1:]: value for field, value in image.items() if value is not None}
+        for key, image in expected_digests.items()}
+    assert child['before'] == child['after'] == managed_digests
+    story = D(before['stories/mortal_life_2.jsonl'])
+    assert H(story).upper() == context['originalStorySha256'] and len(story) == context['originalStoryLength']
+    assert loads(story.splitlines()[-1])['turn'] == 42
+    marker = loads(D(before['game_state/wounds/mortal_qte_decision_publication.json']).decode('utf-8-sig'))
+    assert marker['schemaVersion'] == 2 and marker['progression']['phase'] == context['expectedPhase'] == 'applied'
+    for key in ('sessionId', 'requestId', 'snapshotToken'): assert marker[key] == context[key]
+    assert marker['turn'] == 43 and context['expectedWorldCycles'] == 1
+    early = scenario == 'initial_manifest_malformed' or kind == 'generation'
+    assert child['actualOuterCallerInvoked'] is owner['actualOuterCallerInvoked'] is True
+    assert child['actualCallerEntered'] is owner['actualCallerEntered'] is (not early)
+    assert child.get('handled') is owner['handled'] is (None if early else True)
+    assert child['completed'] is False and child['refusalVerified'] is True and child.get('failure') is None and child.get('original') is None
+    assert child['actualTurn'] == 42 and owner['inGameBefore'] is owner['InGameAfter'] is False
+    failure = owner['Failure']; assert child.get('initialAuthorityOwnerFailure') == failure
+    if scenario == 'initial_manifest_malformed':
+        assert failure.startswith(('System.Text.Json.JsonReaderException:', 'System.Text.Json.JsonException:'))
+        assert 'FileSystemManager.PreflightBrowserOriginalAdmission' in failure
+    elif kind == 'generation':
+        message = {'initial_generation_missing': 'Active joint continuation generation is missing; evidence retained.',
+            'initial_generation_malformed': 'Session generation authority is invalid.',
+            'initial_generation_foreign': 'Active joint continuation generation is invalid or differs; evidence retained.'}[scenario]
+        assert failure.startswith('System.IO.InvalidDataException: ' + message + '\n')
+    else: assert failure is None
+    expected_roots = {child['root'], child['auxiliaryFactoryRoot']}
+    donor = damage['Donor']
+    if scenario.endswith('_foreign'):
+        assert donor['Before'] == donor['After'] and donor['Bytes'] == donor['Before']['$sessionGeneration'] != before['$sessionGeneration']
+        expected_roots.add(donor['Root']); assert donor['Root'] not in {child['root'], child['auxiliaryFactoryRoot']}
+    else: assert donor is None
+    assert {x['CleanupOwnedRoot'] for x in case_receipts} == expected_roots and len(case_receipts) == len(expected_roots)
+    for receipt in case_receipts:
+        root = Path(receipt['CleanupOwnedRoot']); assert root.is_absolute() and not root.exists() and not root.is_symlink()
+        assert receipt['OwnedFixtureRemoved'] is True and 'CleanupFailure' in receipt and receipt['CleanupFailure'] is None
+    cases.append({'testId': test.attrib['testId'], 'executionId': test.attrib['executionId'], 'method': method,
+        'scenario': scenario, 'childPid': pid, 'parentPid': native['ParentProcessId'], 'native': native,
+        'rawEntries': len(after), 'singlePhysicalLeafDamageAndExplicitAliasesVerified': True,
+        'completeConstructorParentChildRawEquality': True, 'turn': 42, 'innerEntered': not early,
+        'handled': owner['handled'], 'ownerFailure': failure, 'entryAndFinalThreeDefaultAndFiveContextPins': True,
+        'cleanupRoots': sorted(expected_roots), 'donorPreserved': donor is not None})
+assert scenarios == expected_scenarios and len(pids) == len(expected_scenarios)
+assert all_rows == J('actual-all-json-observations-raw.json')
+assert receipts == J('actual-strict-cleanup-receipts-raw.json') and origins == J('actual-strict-cleanup-origins-raw.json')
+assert len({x['CleanupOwnedRoot'] for x in receipts}) == len(receipts) == (12 if kind == 'header' else 7)
+result = {'packet': packet.name, 'manifestSha256': H((packet/'manifest.json').read_bytes()),
+    'rawChainsVerified': len(manifest['artifacts']), 'trxSha256': H(raw(trx_name)), 'kind': kind,
+    'cases': cases, 'allJsonRows': len(all_rows), 'strictCleanupCount': len(receipts), 'receiptOrigins': origins,
+    'limits': ['Pure recorded-data qualification only; no new owner/build/test/admission invocation',
+        'Full game_session/runtime bytes, names and empty dirs; only contents of3inertlockstreams excluded',
+        'Three Default bindings and five dependency-context pins do not claim every process dependency',
+        'Negative initial admission only; no lawful ACTIVE or full FR063 acceptance']}
+output.write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n')
+print(json.dumps({'cases': len(cases), 'strictCleanupCount': len(receipts), 'jsonRows': len(all_rows), 'kind': kind}))

@@ -1,0 +1,253 @@
+{
+  "packet": "fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+  "manifestSha256": "2e4b250c23473d94e0569259f1f13d17c32bb1d61bd0ee0f0ab72138505b7d9b",
+  "rawChainsVerified": 40,
+  "trxSha256": "7d230c49c58711353957c1b6abea826fd1f7c2f6e8de9b112ca87f6d5b7a06ff",
+  "kind": "header",
+  "cases": [
+    {
+      "testId": "e7253cb0-f082-80a6-e295-7d38bb9937c0",
+      "executionId": "77f6df6b-be7b-4e88-8e53-28e8f132f39f",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_manifest_malformed",
+      "childPid": 115236,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115236,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 225,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": false,
+      "handled": null,
+      "ownerFailure": "System.Text.Json.JsonReaderException: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 124\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass1011_0.<<WriteMortalJointAppliedColdProbeAsync>b__3>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 390\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2ba8b310f83642be91d6f17703d697d2",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c5349a03a3d34f1f93fafe01158b65e1"
+      ],
+      "donorPreserved": false
+    },
+    {
+      "testId": "f275c7c8-7c84-a30f-213b-65ef136cf3df",
+      "executionId": "f931ff16-251d-43f1-9ecc-c6805ed1c5a7",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_input_malformed",
+      "childPid": 115190,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115190,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 225,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": true,
+      "handled": true,
+      "ownerFailure": null,
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4e42846a56c14031aa5e1bc0aff3bd7e",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ea107d9214b247daa0f5e6753899f4c2"
+      ],
+      "donorPreserved": false
+    },
+    {
+      "testId": "718ea398-539f-7241-bf4d-bb3556684198",
+      "executionId": "e996824a-fbb7-4931-98b6-dedef253de99",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_authority_malformed",
+      "childPid": 115391,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115391,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 225,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": true,
+      "handled": true,
+      "ownerFailure": null,
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-61739e239e8b435094080b8a3bb300f4",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d2cde2b7414a4b94ab84203ba881bfdd"
+      ],
+      "donorPreserved": false
+    },
+    {
+      "testId": "93ba11c5-3364-b86b-ad63-70c3b734b453",
+      "executionId": "852f9dd3-493f-4fcf-afa8-ecb97ea158ea",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_input_missing",
+      "childPid": 115103,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115103,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 224,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": true,
+      "handled": true,
+      "ownerFailure": null,
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-46db86f48e49403cab9dc539ff2c9f22",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e7fd617fe46d4e1eba5c6f59b9abd4d9"
+      ],
+      "donorPreserved": false
+    },
+    {
+      "testId": "1a192d15-ffe3-9fa4-116c-3b9d175d403f",
+      "executionId": "587465ed-0f51-47c8-bec3-085ecbc433b0",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_authority_missing",
+      "childPid": 115343,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115343,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 224,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": true,
+      "handled": true,
+      "ownerFailure": null,
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3bbb53b2e22f40e9b54b4c5c4957b445",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-abf8323229a34890b7d209574476bfb3"
+      ],
+      "donorPreserved": false
+    },
+    {
+      "testId": "9e519fe4-46ea-b510-5d89-91bbce7b838b",
+      "executionId": "f2c9b092-bfd1-4c02-912e-fe01dda2fe1d",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace",
+      "scenario": "initial_manifest_missing",
+      "childPid": 115271,
+      "parentPid": 114999,
+      "native": {
+        "ChildProcessId": 115271,
+        "ParentProcessId": 114999,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "rawEntries": 224,
+      "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+      "completeConstructorParentChildRawEquality": true,
+      "turn": 42,
+      "innerEntered": true,
+      "handled": true,
+      "ownerFailure": null,
+      "entryAndFinalThreeDefaultAndFiveContextPins": true,
+      "cleanupRoots": [
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2736f3d94f1648b58604ddde51ac4006",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c15feb13192b45a9ad2a3564f3eb9309"
+      ],
+      "donorPreserved": false
+    }
+  ],
+  "allJsonRows": 216,
+  "strictCleanupCount": 12,
+  "receiptOrigins": [
+    {
+      "receiptIndex": 0,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/e7253cb0-f082-80a6-e295-7d38bb9937c0#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 1,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/e7253cb0-f082-80a6-e295-7d38bb9937c0#line=36"
+    },
+    {
+      "receiptIndex": 2,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/f275c7c8-7c84-a30f-213b-65ef136cf3df#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 3,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/f275c7c8-7c84-a30f-213b-65ef136cf3df#line=36"
+    },
+    {
+      "receiptIndex": 4,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/718ea398-539f-7241-bf4d-bb3556684198#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 5,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/718ea398-539f-7241-bf4d-bb3556684198#line=36"
+    },
+    {
+      "receiptIndex": 6,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/93ba11c5-3364-b86b-ad63-70c3b734b453#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 7,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/93ba11c5-3364-b86b-ad63-70c3b734b453#line=36"
+    },
+    {
+      "receiptIndex": 8,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/1a192d15-ffe3-9fa4-116c-3b9d175d403f#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 9,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/1a192d15-ffe3-9fa4-116c-3b9d175d403f#line=36"
+    },
+    {
+      "receiptIndex": 10,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/9e519fe4-46ea-b510-5d89-91bbce7b838b#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 11,
+      "origin": "fr063-joint-initial-header-refusal-integration-001.trx/9e519fe4-46ea-b510-5d89-91bbce7b838b#line=36"
+    }
+  ],
+  "limits": [
+    "Pure recorded-data qualification only; no new owner/build/test/admission invocation",
+    "Full game_session/runtime bytes, names and empty dirs; only contents of3inertlockstreams excluded",
+    "Three Default bindings and five dependency-context pins do not claim every process dependency",
+    "Negative initial admission only; no lawful ACTIVE or full FR063 acceptance"
+  ]
+}
