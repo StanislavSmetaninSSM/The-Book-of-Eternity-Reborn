@@ -71,6 +71,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
         var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
         var generationRefusal = refusalScenario is "generation_missing" or "generation_foreign";
+        var initialAuthorityRefusal = IsInitialJointAuthorityRefusal(refusalScenario);
         var malformedManifestAdmissionRefusal = refusalScenario == "manifest_malformed";
         var phaseFaultControl = refusalScenario is "phase_known_compensation" or "phase_uncertain_debt";
         var storyControl = refusalScenario?.StartsWith("story_", StringComparison.Ordinal) == true;
@@ -130,6 +131,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             await DamageJointOutputBeforeChildLaunchAsync(_fs, refusalScenario!, acceptedPublicDraft);
             paused = await CaptureJointGenerationRefusalRawImagesAsync(_fs);
         }
+        var initialDonorRoot = refusalScenario == "initial_generation_foreign"
+            ? Path.Combine(Path.GetTempPath(), "boe-fr063-initial-g-donor-" + Guid.NewGuid().ToString("N")) : null;
+        using var initialDonorOwned = initialDonorRoot is null ? null :
+            new CleanupOwnedFixture(initialDonorRoot, line => _directGachaOutput?.WriteLine(line));
+        JointInitialAuthorityDamage? initialDamage = null;
+        if (initialAuthorityRefusal)
+        {
+            initialDamage = await DamageJointInitialAuthorityBeforeChildLaunchAsync(_fs, refusalScenario!, initialDonorRoot);
+            paused = initialDamage.After;
+        }
         var context = new JsonObject
         {
             ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
@@ -137,7 +148,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase, ["expectedWorldCycles"] = expectedWorldCycles,
             ["refusalScenario"] = refusalScenario,
             ["newPhysicalRoot"] = newPhysicalRoot, ["sourceRoot"] = _fs.BasePath, ["expectedRoot"] = childRoot,
-            ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
+            ["generationSha256"] = initialAuthorityRefusal && paused["$sessionGeneration"] is null
+                ? null : MortalArchiveHash(paused["$sessionGeneration"]!),
+            ["initialRawInventory"] = initialAuthorityRefusal ? JointInitialRawInventory(paused) : null,
             ["originalStorySha256"] = MortalArchiveHash(Assert.IsType<byte[]>(originalBefore[QteStoryPath])),
             ["originalStoryLength"] = originalBefore[QteStoryPath]!.Length,
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
@@ -150,24 +163,40 @@ public sealed partial class GameEngineTurnLifecycleTests
         var output = Path.Combine(_rootPath, "joint-applied-cold-result.json");
         await File.WriteAllTextAsync(contextPath, context.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         Exception? failure = null;
+        Dictionary<string, byte[]?>? initialRawAfter = null, initialDonorAfter = null;
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", childRoot, output, initialOutputRefusal ? 9 : storyControl ? 7 : refusalScenario == "phase_known_compensation" ? 5
+                "engine-mortal-joint-applied-cold", childRoot, output, initialAuthorityRefusal ? 10 : initialOutputRefusal ? 9 : storyControl ? 7 : refusalScenario == "phase_known_compensation" ? 5
                     : refusalScenario == "phase_uncertain_debt" ? 6 : refusalScenario == "generation_foreign" ? 4
                     : generationRefusal ? 3 : refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
+            if (initialAuthorityRefusal)
+            {
+                initialRawAfter = await CaptureJointGenerationRefusalRawImagesAsync(_fs);
+                if (initialDamage!.Donor is { } initialDonor)
+                    initialDonorAfter = await CaptureJointGenerationRefusalRawImagesAsync(
+                        new FileSystemManager(initialDonor.Root, NullLogger<FileSystemManager>.Instance));
+            }
             // Retain all available managed output/full drained log before the
             // parent SOURCE root's ordinary owned cleanup, including timeout.
             WritePhysicalInjuryDiagnostic("fr063_joint_applied_cold_parent_outcome", new
             {
                 ParentProcessId = Environment.ProcessId, Context = context, Failure = failure?.ToString(),
                 Transport = transport,
+                InitialAuthority = initialDamage is null ? null : new
+                {
+                    initialDamage.PhysicalLeaf, RawBeforeDamage = initialDamage.Before, RawAfterDamage = initialDamage.After,
+                    RawAfterChild = initialRawAfter,
+                    Donor = initialDamage.Donor is null ? null : new
+                    { initialDamage.Donor.Root, initialDamage.Donor.Generation, initialDamage.Donor.Bytes,
+                        Before = initialDamage.Donor.Before, After = initialDonorAfter }
+                },
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
-                PhysicalAfter = MortalArchiveDigests(generationRefusal || malformedManifestAdmissionRefusal || phaseFaultControl || storyControl || initialOutputRefusal
+                PhysicalAfter = MortalArchiveDigests(generationRefusal || initialAuthorityRefusal || malformedManifestAdmissionRefusal || phaseFaultControl || storyControl || initialOutputRefusal
                     ? await CaptureJointGenerationRefusalRawImagesAsync(_fs)
                     : await CaptureMortalArchiveImagesAsync(_fs, paused.Keys.Where(path => path != "$sessionGeneration"))),
                 NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
@@ -175,10 +204,17 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
         }
         Assert.Null(failure);
+        if (initialAuthorityRefusal)
+        {
+            AssertJointGenerationRefusalRawImagesEqual(initialDamage!.After, Assert.IsType<Dictionary<string, byte[]?>>(initialRawAfter));
+            if (initialDamage.Donor is { } initialDonor)
+                AssertJointGenerationRefusalRawImagesEqual(initialDonor.Before, Assert.IsType<Dictionary<string, byte[]?>>(initialDonorAfter));
+        }
         var child = ParseJsonObjectBytes(await File.ReadAllBytesAsync(output));
         Assert.NotEqual(Environment.ProcessId, child["processId"]!.GetValue<int>());
         Assert.True(child["actualOuterCallerInvoked"]!.GetValue<bool>());
-        Assert.Equal(!generationRefusal && !malformedManifestAdmissionRefusal, child["actualCallerEntered"]!.GetValue<bool>());
+        Assert.Equal(!generationRefusal && !malformedManifestAdmissionRefusal && !IsInitialJointEarlyAdmissionRefusal(refusalScenario),
+            child["actualCallerEntered"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is null, child["completed"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is not null, child["refusalVerified"]!.GetValue<bool>());
         Assert.Null(child["failure"]);
@@ -246,7 +282,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.InRange(scenario, 0, 9);
+        Assert.InRange(scenario, 0, 10);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -274,6 +310,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 phaseProbe?.Hooks ?? storyProbe?.Hooks ?? retainedStoryHooks!);
         phaseProbe?.Attach(files);
         storyProbe?.Attach(files);
+        Dictionary<string, byte[]?>? initialBeforeConstructor = null;
+        if (scenario == 10)
+        {
+            Assert.True(IsInitialJointAuthorityRefusal(context["refusalScenario"]?.GetValue<string>()));
+            initialBeforeConstructor = await CaptureJointGenerationRefusalRawImagesAsync(files);
+            AssertJointInitialRawInventory(context["initialRawInventory"]!.AsObject(), initialBeforeConstructor);
+        }
         var storyLogger = scenario == 7 ? new SpiritualLifecycleTestLogger() : null;
         var input = new QueuedConsoleInputSource([]);
         var actualCallerEntered = false;
@@ -286,6 +329,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return Task.CompletedTask;
                 }
             }, logger: storyLogger);
+        if (scenario == 10)
+        {
+            var initialAfterConstructor = await CaptureJointGenerationRefusalRawImagesAsync(files);
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_initial_authority_constructor", Observation = new
+            { Environment.ProcessId, RawBefore = initialBeforeConstructor, RawAfter = initialAfterConstructor } }));
+            AssertJointGenerationRefusalRawImagesEqual(initialBeforeConstructor!, initialAfterConstructor);
+        }
         Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_entry", Observation = new
         { ProcessId = Environment.ProcessId, ParentProcessId = context["parentProcessId"]!.GetValue<int>(),
             BorrowedRoot = root, AuxiliaryFactoryRoot = factory._rootPath, Arguments = Environment.GetCommandLineArgs(),
@@ -299,6 +349,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Exception? manifestAdmissionFailure = null;
         Exception? phaseOwningFailure = null;
         Exception? storyOwningFailure = null;
+        Exception? initialAuthorityOwnerFailure = null;
         string? actualGeneration = null;
         var refusalScenario = context["refusalScenario"]?.GetValue<string>();
         var sourceExpectedFrameClassification = refusalScenario switch
@@ -325,6 +376,28 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.NotSame(factory._fs.CanonicalRootAuthorityIdentity, files.CanonicalRootAuthorityIdentity);
             }
             AssertMortalArchiveChildBinaries(context);
+            if (scenario == 10)
+            {
+                // Damage predates this PID. No target bootstrap, authority reader,
+                // lease, state refresh, original/output/phase admission or recovery.
+                before = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                AssertJointInitialRawInventory(context["initialRawInventory"]!.AsObject(), before);
+                AssertJointGenerationRefusalRawImagesEqual(initialBeforeConstructor!, before);
+                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(context["sessionId"]!.GetValue<string>(), 42);
+                var inGameBefore = GetPrivateFieldValue<bool>(engine, "_inGame");
+                actualOuterCallerInvoked = true;
+                initialAuthorityOwnerFailure = await Record.ExceptionAsync(async () =>
+                    handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+                after = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_initial_authority_first_owner", Observation = new
+                { Environment.ProcessId, actualOuterCallerInvoked, actualCallerEntered, handled, inGameBefore,
+                    InGameAfter = GetPrivateFieldValue<bool>(engine, "_inGame"),
+                    Failure = initialAuthorityOwnerFailure?.ToString(), RawBefore = before, RawAfter = after } }));
+                AssertJointInitialFirstOwnerOutcome(refusalScenario!, initialAuthorityOwnerFailure,
+                    actualCallerEntered, handled, inGameBefore, engine, before, after);
+                refusalVerified = true;
+                return;
+            }
             if (scenario == 9)
             {
                 // Namespace was damaged in the PARENT before this process existed.
@@ -770,6 +843,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 RetainedStoryAppendAttempts = retainedStoryAppendAttempts,
                 RetainedStoryRawBefore = retainedRawBefore, RetainedStoryRawAfter = retainedRawAfter,
                 InitiallyBadOutputRawBefore = scenario == 9 ? before : null, InitiallyBadOutputRawAfter = scenario == 9 ? after : null,
+                InitiallyBadAuthorityRawBefore = scenario == 10 ? before : null, InitiallyBadAuthorityRawAfter = scenario == 10 ? after : null,
+                InitialAuthorityOwnerFailure = initialAuthorityOwnerFailure?.ToString(),
                 GenerationRefusalRawBefore = scenario is 3 or 4 ? before : null, GenerationRefusalRawAfter = scenario is 3 or 4 ? after : null,
                 GenerationDonor = donor is null ? null : new { donor.Root, donor.Generation,
                     Bytes = donor.Bytes, Before = donor.Before, After = donorAfter },

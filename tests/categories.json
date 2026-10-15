@@ -2,6 +2,66 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-initial-header-refusal",
+      "responsibility": "Six real applied/nonzero producers damaged in parent before child PID: manifest/input/authority missing or exact nonempty malformed bytes. First owner has no prior child authority/original/G/phase/output admission. Five handled holds; malformed manifest has genuine early BrowserOriginalAdmission JsonException. Full raw namespace and directory/file names, story/turn42/inGame preserved; actual PID/bindings/drains and per-case target plus auxiliary cleanup.",
+      "excludes": "Client-owned negative fixture coverage of existing accepted contract. No production behavior, authority/member/storage change, original reseal/repair or child donor issuance; no lawful ACTIVE, positive completion or full FR063 acceptance. SOURCE WIP/UNRUN pending corrected independent gates, fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE; later exact singleton release required.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointInitialAdmission.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Mandatory first actual after new source/fresh preparation; independent new Late2 EVIDENCE before this separately released singleton."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadHeaderBeforeChildPidPreservesFirstOwnerNamespace"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-initial-generation-refusal",
+      "responsibility": "Three real applied/nonzero producers damaged in parent before child PID: physical G missing, exact nonempty malformed bytes or actual independently issued parent donor G. First outer owner rejects with distinct typed refusal before inner entry, no bootstrap or good-authority preflight. Exact full raw target and donor namespace/story/turn42/inGame preservation; genuine per-case target/auxiliary and foreign-row donor cleanup.",
+      "excludes": "Client-owned negative fixture coverage of existing accepted contract. No production behavior, authority/member/storage change, original reseal/repair or child donor issuance; no lawful ACTIVE, positive completion or full FR063 acceptance. SOURCE WIP/UNRUN pending corrected independent gates, fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE; later exact singleton release required.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointInitialAdmission.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Mandatory first actual after new source/fresh preparation; independent new Late2 EVIDENCE before this separately released singleton."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadGenerationBeforeChildPidPreservesFirstOwnerNamespace"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-generation-admission",
       "responsibility": "Finite real-filesystem negative-only early joint generation veto: fixed v2/header applicability, missing/malformed physical G, invalid/different marker G, read refusal, default/bootstrap and equal-G no-grant path, bound/expected fences and original close/escaped writer. Raw claims issue no completion authority.",
       "excludes": "No signed-original/phase/story completion claim, no replacement of genuine cold G2 or Late2. No new storage policy, authority or durable members. Exact counts provisional until independent gates and official discovery; whole FR063 remains open.",
