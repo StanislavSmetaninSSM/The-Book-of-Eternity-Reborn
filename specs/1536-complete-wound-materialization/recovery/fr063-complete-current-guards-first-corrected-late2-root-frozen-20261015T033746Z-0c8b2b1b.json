@@ -1,0 +1,55 @@
+{
+  "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+  "compileSource": "9a57b34c2de70a42217b58b318b91f556b03826c",
+  "packet": "/workspace/boe-cloud-tools-20261014/fr063-complete-current-guards-first-corrected-late2-outcome-frozen-9a57b34c-20261015T033719Z-52256208",
+  "manifestSha256": "f4814773a2fe6d97bccb2dfc1dc81a0d14a882b07f35d8e1184512f026651d5b",
+  "artifacts": 49,
+  "actualNative": {
+    "launch": "57e94c",
+    "session": 75368,
+    "completion": "c5b953",
+    "exitCode": 1
+  },
+  "freezeNative": "aee906 session70264/76469c exit0",
+  "actual": {
+    "run": "20261015-033529-448-618361-1440c9bd07d44638abad229c62dcf4e8-categories",
+    "wallTime": "00:01:34.3916783",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-85f378a2562d40ca954734a588a9a147",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-dbba67bf48ee4e4e9037ca384b2f0e38",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true
+  },
+  "freshPrerequisites": "BOTH126.0056663s/Plan4.6621692s/catalog5.1519939s allnative0/0exec/Valid746-11588",
+  "rawFrozenBeforeDiagnosisOrMetadata": true,
+  "boundedReadback": "/workspace/boe-cloud-tools-20261014/fr063-complete-current-guards-first-corrected-bounded-readback-20261015T033746Z-0c8b2b1b.json",
+  "boundedReadbackSHA256": "2fce989b790e45f0b1fe442857f90c4c01e9ba1030e67b5895c1eb862ef8bc5a",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "sourceFixRuntime": "HELD",
+  "later12": "UNRUN"
+}

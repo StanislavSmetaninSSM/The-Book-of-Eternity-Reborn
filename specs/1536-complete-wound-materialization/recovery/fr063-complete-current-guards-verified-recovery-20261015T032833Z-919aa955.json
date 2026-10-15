@@ -1,0 +1,19 @@
+{
+  "checkpoint": "9a57b34c2de70a42217b58b318b91f556b03826c",
+  "publicationNative": "f1de4d session84419/6f9652 exit0",
+  "recoveryNative": "bbe401 session17857/979ce3 exit0",
+  "readbackSHA256": "f02f66f4de6ebaa1e12575b43df03f2f0461ffa504868b13ffaf5e93753f7f74",
+  "verification": {
+    "checkpoint": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "remoteSha": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2875,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2346,
+    "consumerProduction": "Complete current joint guard capture SOURCE WIP preserved; corrected gates pending; runtime HELD",
+    "verifiedUtc": "2026-10-15T03:28:24.028513+00:00"
+  },
+  "projectExecution": "UNRUN current source; gates pending",
+  "utc": "2026-10-15T03:28:33.494826+00:00"
+}

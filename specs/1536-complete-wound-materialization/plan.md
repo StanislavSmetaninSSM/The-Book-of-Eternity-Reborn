@@ -1,5 +1,48 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## First complete-current-guard Late2 outcome: sealed member refusal — 2026-10-15
+
+Tested/compile source `9a57b34c2de70a42217b58b318b91f556b03826c` passed
+corrected SOURCE/FIXTURE/SELECTION static gates. Fresh BOTH 126.0056663s,
+exact PlanOnly 4.6621692s and catalog 5.1519939s each exited 0 and executed
+zero tests; official inventory 32 methods/58 cases/18 descriptors, catalog
+Valid 746 categories/11588 methods, no unmapped/stale. Actual Late2 only:
+native 1, 94.3916783s, 2 executed/0 PASS/2 FAIL, complete descriptor/case
+selection, no timeout/skips/duplicates. All 160 source and 11 selected binary
+pins matched pre/post; selected binaries do not prove every loaded dependency.
+Two real cleanup receipts reported removal without failure and roots were absent.
+All 49 raw chains plus manifest were frozen before diagnosis or metadata edits.
+
+Both in-memory captures show checkpoint/correction-ready, PublicationUncertain,
+and one untruncated `mortal_joint_repair_admission_refused` issue: joint publication
+lacks sealed complete member coverage for the Mortal QTE marker StatePath
+`game_state/wounds/mortal_qte_decision_publication.json`. The prior missing
+before-image/context/map diagnostics are absent. Both remain turn42 without
+Spend43 and fail the unchanged fixture assertion at JointCompletion.cs:676.
+No successful publication, precise dynamic reduction/capture branch or full
+joint completion is inferred. Generic critical output describes initial severity
+rejection, not the later member refusal.
+
+Read-only source diagnosis distinguishes marker BeforeImages coverage (present)
+from TouchedPaths (missing). For the current declared member algebra, marker is
+the sole source-inferred missing touched member and no before member is missing.
+The approved semantic contribution is also incomplete: QTE occurrence/receipt
+successors and exact public-draft consumption never reach the joint plan. Those
+are source-inferred omissions, not additional native diagnostics. A marker-only
+touch would leave later strict receipt/draft guards unsatisfied. Existing pure
+receipt planning and approved DESIGNv2 support an already-owned contribution seam;
+independent EVIDENCE must assess it before any fresh bounded source release.
+
+No project source, fixture, selection, publication ownership or task checkmark
+changed in this ROOT metadata block. All 160 tested source pins matched before
+the additive fronts; writer FINAL STOPPED with no pending tools/writes. Prior
+read-guard capture release does not authorize write/delete/member expansion.
+All further fixes/runtime/later12 actual stages HELD; checkpoint5 not repeated.
+Full FR063/T070 and lawful active, fresh-PID initially bad authority, cold/new-root,
+arbitrary partial-cleanup/erased-ownership contours remain OPEN/UNQUALIFIED.
+Historical retained Sol requested; actual backend/model/effort telemetry UNAVAILABLE.
+All historical metadata tails, raw failures and task checkmarks remain exact.
+
 ## Complete current joint before-image guards SOURCE WIP — 2026-10-15
 
 Owning base `a4c0d1ef0988c9d900f0da86734b1250a7059c96`. Independent EVIDENCE
