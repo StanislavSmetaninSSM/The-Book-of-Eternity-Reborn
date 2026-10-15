@@ -1,0 +1,54 @@
+{
+  "source": "4cc13d9c83b8b1f90b807934f618cc518af8bbf7",
+  "compiledSource": "b27eb6051a3ab6527a1b9c484af9d1a172084042",
+  "reviewedSource": "bf9988d96adc0b00c41abe518cb84bf83632a153",
+  "packet": "fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+  "manifestSha256": "2e4b250c23473d94e0569259f1f13d17c32bb1d61bd0ee0f0ab72138505b7d9b",
+  "chains": 40,
+  "actualNativeExit": 0,
+  "actualTests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 6,
+    "Failed": 0
+  },
+  "actualWallTime": "00:06:29.0638163",
+  "actualComplete": true,
+  "sourcePinsPrePost": 1150,
+  "freshBinaryPinsPrePost": 11,
+  "standardParsedReceipts": 12,
+  "rootRecordedReader": {
+    "commandArguments": [
+      "python3",
+      "-E",
+      "/tmp/fr063-initial9-recorded-case-reader-20261015.py",
+      "/workspace/boe-fr063-tools-20261015/fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+      "header",
+      "/workspace/boe-fr063-tools-20261015/initial-header6-recorded-oracles-20261015T185021Z.json"
+    ],
+    "stdout": "/workspace/boe-fr063-tools-20261015/initial-header6-recorded-oracles-20261015T185021Z.stdout.log",
+    "toolResult": {
+      "chunk_id": "5c243a",
+      "wall_time_seconds": 1.001679723,
+      "session_id": 28664,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "completionToolResult": {
+      "chunk_id": "3b546f",
+      "wall_time_seconds": 2.7749e-05,
+      "exit_code": 1,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "rootReaderSha256": "89e77c11914ac9477cc5be1c638f801672c2841746eb10510b7d211d399bca2e",
+  "rootReaderFrozenArtifact": "root-recorded-case-reader.py.txt.gz",
+  "failureStdoutFile": "fr063-initial-header6-root-reader-failure-20261015T185940Z.stdout.txt",
+  "failureStdoutSha256": "b9b1c6aeaa7d0fd8b77f725d8f35a497117d71ef7a440f75c777598d9f545c3e",
+  "status": "ROOT_RECORDED_READER_EXIT1_EVIDENCE_QUALIFICATION_HELD",
+  "cause": "NOT_DIAGNOSED; freeze/push precedes independent causal review",
+  "G3": "HELD/UNRUN",
+  "nativeRetry": false,
+  "utc": "2026-10-15T18:59:40.060504+00:00"
+}
