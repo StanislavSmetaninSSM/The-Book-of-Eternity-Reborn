@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-15T00:08:50.491475+00:00",
+  "host": "28b8447448e8",
+  "kernel": "6.18.44",
+  "machine": "x86_64",
+  "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "boot": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+  "dotnetSDK": "10.0.401",
+  "dotnetRuntimes": "Microsoft.AspNetCore.App 8.0.31 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.NETCore.App]",
+  "pwsh": "7.6.6",
+  "node": "v24.19.0",
+  "python": "Python 3.12.14",
+  "git": "git version 2.52.0"
+}

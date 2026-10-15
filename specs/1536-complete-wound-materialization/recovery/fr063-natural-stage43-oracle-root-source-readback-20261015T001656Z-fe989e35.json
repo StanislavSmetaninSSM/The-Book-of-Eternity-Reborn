@@ -1,0 +1,18 @@
+{
+  "base": "5408aa459d6eec5244ecb20d8404ed338c077251",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPaths": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "authoredHashesExact": true,
+  "protectedSourcePins": 151,
+  "protectedHashesExact": true,
+  "wholeFixtureInverseExact": true,
+  "MD2oldTailsCheckboxesExact": true,
+  "gitDiffCheckNativeExitCode": 0,
+  "rootSourceRead": "679d24; exact diff read; productionunchanged; no API/compiler/fixture success inferred",
+  "runtime": "HELD; firstfailureimmutable;5componentPASS/2fixtureFAIL;12laterUNRUN",
+  "independentCorrectionReview": "UNRUN"
+}

@@ -1,0 +1,31 @@
+{
+  "checkpoint": "5408aa459d6eec5244ecb20d8404ed338c077251",
+  "publicationNative": {
+    "launch": "62ccdd",
+    "session": 23348,
+    "completion": "bb7c09",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "b981dd",
+    "session": 27497,
+    "completion": "fba306",
+    "exitCode": 0
+  },
+  "publicationReadbackSHA256": "adeb980b7f94370971b600adb391f80eeb109a6b84e8ec65558f119915256866",
+  "selectedRecovery": {
+    "checkpoint": "5408aa459d6eec5244ecb20d8404ed338c077251",
+    "remoteSha": "5408aa459d6eec5244ecb20d8404ed338c077251",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2558,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2029,
+    "consumerProduction": "FirstactualEVIDENCEaccepted5componentPASS2fixtureFAIL;naturalStage43oracleSOURCEauthoringonly;preconsumeNOTequivalent;no sourcecorrectionyet;runtimeHELD;later12UNRUN",
+    "verifiedUtc": "2026-10-15T00:11:57.937578+00:00"
+  },
+  "sourceAuthoringRelease": "same sole writer only; naturalStage43oracle correction; no projectexecution",
+  "rootMetadata": "intermediate factual checkpoint; accepted priorrecords+backupclarification; connected correction review pending",
+  "allRuntime": "HELD",
+  "sourceDecision": "fr063-natural-stage43-oracle-source-only-decision-20261015T000820Z-ad99a17e.json"
+}

@@ -43,6 +43,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);
         var jointOriginalTail = activeTailScenario is null ? priorLifecycleTail :
             await AuthorJointActiveTailBeforeOriginalAsync(activeTailScenario, priorLifecycleTail);
+        // Detached expectations only: the real owner must consume the reminder
+        // INSIDE Stage43, after backup. Never pre-consume or recapture expected bytes.
+        var (jointCurrentTail, priorQteReminder) = BuildJointNaturalStage43CurrentExpectation(jointOriginalTail);
 
         if (nonzeroProgression)
         {
@@ -128,8 +131,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
                 original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
-                foreach (var image in jointOriginalTail)
-                    Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
+                foreach (var image in jointCurrentTail)
+                    AssertJointNaturalStage43Image("current", image.Key, image.Value,
+                        await _fs.ReadFileBytesAsync(lease, image.Key));
+                await AssertJointNaturalStage43OriginalAndRollbackAsync(lease, original, jointOriginalTail, priorQteReminder);
                 Assert.Equal(43, original.TurnNumber);
                 Assert.Equal(source.Source.SessionId, original.SessionId);
                 Assert.NotEqual(source.Source.RequestId, original.RequestId);
@@ -449,6 +454,97 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
     }
 
+
+    private static (Dictionary<string, byte[]?> Current, string Reminder)
+        BuildJointNaturalStage43CurrentExpectation(IReadOnlyDictionary<string, byte[]?> originalImages)
+    {
+        Assert.Equal(GameEngine.MortalJointInactiveTailPaths.Count, originalImages.Count);
+        var current = originalImages.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
+        var before = Assert.IsType<byte[]>(originalImages[QteSceneService.QteRuntimePath]);
+        // The same typed load/serializer/BOM encoder used by the actual QTE owner.
+        // Roundtrip first prevents an unrepresented field from silently disappearing.
+        var runtime = StrictJsonAuthority.Deserialize<QteSceneService.QteRuntimeState>(
+            CanonicalJsonUtf8.DecodeOneOptionalBom(before), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+            "genuine prior42 QTE runtime expectation");
+        Assert.NotNull(runtime);
+        Assert.Equal(before, FileSystemManager.EncodeUtf8WithPreamble(
+            JsonSerializer.Serialize(runtime, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)));
+        var reminder = Assert.IsType<string>(runtime!.LastResolvedQteSummaryPendingReminder);
+        Assert.False(string.IsNullOrWhiteSpace(reminder));
+        runtime.LastResolvedQteSummaryPendingReminder = null;
+        current[QteSceneService.QteRuntimePath] = FileSystemManager.EncodeUtf8WithPreamble(
+            JsonSerializer.Serialize(runtime, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        Assert.False(before.SequenceEqual(current[QteSceneService.QteRuntimePath]!));
+        return (current, reminder);
+    }
+
+    private async Task AssertJointNaturalStage43OriginalAndRollbackAsync(FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority projectedOriginal, IReadOnlyDictionary<string, byte[]?> expectedOriginal,
+        string priorQteReminder)
+    {
+        // The official reader authenticates original bytes AND optional absence,
+        // including the signed rollback map. No current image becomes an expectation.
+        var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                ["game_state/meta/soul_state.json"], GameEngine.MortalJointInactiveTailPaths));
+        Assert.True(read.Success, DescribeValidationIssues(read.Issues));
+        var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+        Assert.Equal(projectedOriginal.SessionId, original.SessionId);
+        Assert.Equal(projectedOriginal.RequestId, original.RequestId);
+        Assert.Equal(projectedOriginal.SnapshotToken, original.SnapshotToken);
+        var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(
+            CanonicalJsonUtf8.DecodeOneOptionalBom(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath))),
+            LiveTurnPreparationService.ManifestHashJsonOptions, "actual validated natural Stage43 manifest");
+        Assert.NotNull(manifest);
+        Assert.Equal(original.SnapshotToken, manifest!.ManifestPayloadHash);
+        Assert.Equal(original.SessionId, manifest.SessionId);
+        Assert.Equal(original.RequestId, manifest.RequestId);
+        Assert.Equal(original.TurnNumber, manifest.TurnNumber);
+        foreach (var image in expectedOriginal)
+        {
+            if (image.Value is null)
+            {
+                AssertJointNaturalStage43Image("original", image.Key, null,
+                    original.CoveredLogicalPaths.Contains(image.Key, StringComparer.Ordinal)
+                        ? original.ReadRequiredBytes(image.Key) : null);
+                Assert.Contains(image.Key, original.AbsentLogicalPaths);
+                var hasBackup = manifest.RollbackBackups.TryGetValue(image.Key, out var absentBackupPath);
+                AssertJointNaturalStage43Image("rollback", image.Key, null,
+                    hasBackup ? await _fs.ReadFileBytesAsync(lease, absentBackupPath!) : null);
+                Assert.DoesNotContain(image.Key, manifest.RollbackBaselineFiles);
+                Assert.False(hasBackup);
+                continue;
+            }
+            AssertJointNaturalStage43Image("original", image.Key, image.Value, original.ReadRequiredBytes(image.Key));
+            Assert.Contains(image.Key, manifest.RollbackBaselineFiles);
+            Assert.True(manifest.RollbackBackups.TryGetValue(image.Key, out var backupPath), image.Key);
+            AssertJointNaturalStage43Image("rollback", image.Key, image.Value,
+                await _fs.ReadFileBytesAsync(lease, backupPath!));
+        }
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "input/turn_request.json"))),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual natural Stage43 request reminder");
+        Assert.NotNull(request);
+        Assert.Equal(original.SessionId, request!.SessionId);
+        Assert.Equal(original.RequestId, request.RequestId);
+        Assert.Equal(original.TurnNumber, request.TurnNumber);
+        Assert.NotNull(request.SystemReminder);
+        Assert.Contains("QTE SUMMARY FROM PREVIOUS LOCAL SCENE: " + priorQteReminder, request.SystemReminder);
+        Assert.Equal(1, request.SystemReminder!.Split(priorQteReminder, StringSplitOptions.None).Length - 1);
+    }
+
+    private void AssertJointNaturalStage43Image(string scope, string path, byte[]? expected, byte[]? actual)
+    {
+        WritePhysicalInjuryDiagnostic("fr063_joint_natural_stage43_image_before_assert", new
+        {
+            Scope = scope, Path = path, ExpectedPresent = expected is not null, ActualPresent = actual is not null,
+            ExpectedLength = expected?.LongLength, ActualLength = actual?.LongLength,
+            ExpectedSha256 = expected is null ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(expected)),
+            ActualSha256 = actual is null ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(actual))
+        });
+        Assert.Equal(expected, actual);
+    }
 
     private async Task ConfigureJointCompletionWorldBeforeOriginalAsync(FileSystemManager files)
     {

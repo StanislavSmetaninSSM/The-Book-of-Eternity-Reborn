@@ -1,5 +1,34 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Natural Stage43 reminder oracle correction SOURCE WIP STOP — 2026-10-15
+
+Owning base `5408aa459d6eec5244ecb20d8404ed338c077251`. Accepted first-actual
+EVIDENCE420cb764 and explicit source-only decisionad99a17e preserve natural preparation:
+pre-consume/extraSystemReminder substitution is NOT equivalent and is not implemented.
+Actual StagePlayerTurnAsync/ProcessPlayerTurn still captures backup, consumes the real
+pending QTE reminder, and signs the original using existing backup-preference rules.
+
+Only the shared unqualified JointCompletion fixture changes. Genuine immutable prior42
+images remain evidence; before staging, a detached typed owner-serializer/BOM expectation
+changes only the pending-reminder field for the seven current-path comparisons. Other six
+images remain byte-exact (named active-negative inputs retain their separate pre-original
+images). Authenticated reader/absence and signed-map rollback readback independently check
+all seven original/rollback images against the pre-stage unconsumed images. Bounded path,
+presence,length,SHA observations precede equality. Actual request reminder must equal the
+genuine prior summary exactly once with its existing public prefix. No manual file reset,
+fake acknowledgement, post-original expected recapture, seal/source rewrite or guard waiver.
+All existing projection/inactive/request/hold/restore/publication, zero/nonzero and live
+hooks remain; an authentic downstream restore failure must freeze at its native boundary.
+
+This is SOURCE WIP pending saved correction and focused independent SOURCE/FIXTURE/
+SELECTION closure, then ROOT-owned fresh preparation/pins before any failed-pair retry.
+No compiler/project/build/discovery/catalog/PlanOnly/test/runtime/fault/provider execution
+occurred. Current API/compilation/fixture/downstream behavior is UNCHECKED. Checkpoint5PASS
+is retained component evidence; staged/Late2FAIL and all prior raw/provenance remain exact;
+later12 stages are UNRUN/HELD. Counts/selection/budgets unchanged. FullFR063/T070, legal
+active combinations, initially damaged fresh-PID authority, erased traces and arbitrary
+partial cleanup remain OPEN. No qualification, GREEN or acceptance checkbox is claimed.
+
 ## First actual EVIDENCE accepted; natural Stage43 oracle authoring only — 2026-10-15
 
 Independent review at61ead7f8 accepted the41 first-actual and32 prerequisite
