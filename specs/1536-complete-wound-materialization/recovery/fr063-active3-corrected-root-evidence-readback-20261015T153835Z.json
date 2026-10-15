@@ -1,0 +1,165 @@
+{
+  "testedSource": "76e30d965b152524a56d7aedbc53403d358a686f",
+  "compiledSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "packet": "fr063-finite-active-corrected-v8-frozen-76e30d965-20261015T153505Z",
+  "manifestSha256": "2258aff2b576a5726929c934b3bb893ae5a462d398993d75b40cd1fbe5d4d7c4",
+  "scope": "ROOT recorded-data readback, actual refusal controls only; not lawful ACTIVE/fullFR063",
+  "compressedRawChainsVerified": 36,
+  "allExactGitCurrentSourcePinsVerified": 719,
+  "currentFreshBinaryPins": 11,
+  "rawTrxSha256": "97f2608aadd9c2332bc3767a4d3e170fc62333fc04b68f042f15611c37416c50",
+  "exactAllRawTrxJsonMatch": true,
+  "nativeTests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "actualWallTime": "00:00:58.4644413",
+  "perCase": [
+    {
+      "testId": "48e045ba-069d-12ae-0752-b09737ebc4cc",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"pending_stats\")",
+      "scenario": "pending_stats",
+      "requestId": "1820eeec82514d7d9b008074d2241243",
+      "exactTypedIssue": {
+        "FilePath": "acceptedTurn.wounds",
+        "Severity": 2,
+        "Message": "The first joint contour cannot own pending statsIncreased work.",
+        "Category": 1,
+        "Code": "mortal_joint_repair_admission_refused",
+        "Actor": "Client",
+        "Section": "mortal_qte_private_source",
+        "Expected": "one actual same-original source-bound joint repair wave and held request",
+        "Actual": "blocked",
+        "RepairHint": "Recompose the accepted wound turn from its sealed authority inputs."
+      },
+      "actualEnteredHandledRefusedAt42": true,
+      "confirmedHeldNoCommon": true,
+      "originalScheduleAndRuntimeRestoreExact": true,
+      "closedSingleDiagnosticLedger": {
+        "sha256": "ee57c192993118e3e3e1315e1fcca43252870f441d39bf0e8f29804b4b2353e5",
+        "recordId": "gmtraj_9b39c797992d4a9e911842e7489c87d7",
+        "createdAt": "2026-10-15T15:36:06.6740079Z",
+        "acceptanceScope": "correlated_repair_ready",
+        "fullCanonicalStateAccepted": false
+      },
+      "preservationKeyCountBefore": 223,
+      "preservationKeyCountAfter": 226,
+      "allOtherCapturedNonRepairPathsExact": true,
+      "changedPaths": [
+        "game_state/control/gm_trajectory_ledger.jsonl",
+        "game_state/control/pending_wound_resolutions.json",
+        "game_state/control/progression_schedule.json",
+        "game_state/control/qte_runtime.json",
+        "game_state/control/validation_repair_request.json",
+        "output/mortal_wound_decisions.json"
+      ],
+      "qteSequence": null,
+      "cleanup": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ac48b26d575942b9ac8bb1268a7b6f6c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "testId": "b451dc5b-a3de-d622-96a0-388d7b66c1a7",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"unprocessed_level\")",
+      "scenario": "unprocessed_level",
+      "requestId": "ed9251998f2c43eba1fe8b4e320c898a",
+      "exactTypedIssue": {
+        "FilePath": "acceptedTurn.wounds",
+        "Severity": 2,
+        "Message": "The first joint contour cannot own an unprocessed level-up or stat-point initialization/award.",
+        "Category": 1,
+        "Code": "mortal_joint_repair_admission_refused",
+        "Actor": "Client",
+        "Section": "mortal_qte_private_source",
+        "Expected": "one actual same-original source-bound joint repair wave and held request",
+        "Actual": "blocked",
+        "RepairHint": "Recompose the accepted wound turn from its sealed authority inputs."
+      },
+      "actualEnteredHandledRefusedAt42": true,
+      "confirmedHeldNoCommon": true,
+      "originalScheduleAndRuntimeRestoreExact": true,
+      "closedSingleDiagnosticLedger": {
+        "sha256": "c5d9b9a74b4c36cad2bf16bf8b00e6a8b35930a80f52496a79a33ee457231d38",
+        "recordId": "gmtraj_8248d288c8a94dc6b7c3992d60912a89",
+        "createdAt": "2026-10-15T15:35:32.9283487Z",
+        "acceptanceScope": "correlated_repair_ready",
+        "fullCanonicalStateAccepted": false
+      },
+      "preservationKeyCountBefore": 220,
+      "preservationKeyCountAfter": 223,
+      "allOtherCapturedNonRepairPathsExact": true,
+      "changedPaths": [
+        "game_state/control/gm_trajectory_ledger.jsonl",
+        "game_state/control/pending_wound_resolutions.json",
+        "game_state/control/progression_schedule.json",
+        "game_state/control/qte_runtime.json",
+        "game_state/control/validation_repair_request.json",
+        "output/mortal_wound_decisions.json"
+      ],
+      "qteSequence": null,
+      "cleanup": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c8e28b0614104ddebfa30ee6de843b88",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "testId": "a0a96194-62d5-1196-6135-561efa69b1e8",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"new_qte_offer\")",
+      "scenario": "new_qte_offer",
+      "requestId": "5544883ec14a41adb62659e5c5b58283",
+      "exactTypedIssue": {
+        "FilePath": "acceptedTurn.wounds",
+        "Severity": 2,
+        "Message": "The first joint contour cannot own a new QTE offer for its decision turn.",
+        "Category": 1,
+        "Code": "mortal_joint_repair_admission_refused",
+        "Actor": "Client",
+        "Section": "mortal_qte_private_source",
+        "Expected": "one actual same-original source-bound joint repair wave and held request",
+        "Actual": "blocked",
+        "RepairHint": "Recompose the accepted wound turn from its sealed authority inputs."
+      },
+      "actualEnteredHandledRefusedAt42": true,
+      "confirmedHeldNoCommon": true,
+      "originalScheduleAndRuntimeRestoreExact": true,
+      "closedSingleDiagnosticLedger": {
+        "sha256": "497805698ec03e4e99307ee6fbd550a4f4329ea2ece8d6f7e81ae07ed91ed7a7",
+        "recordId": "gmtraj_a2ffb3dbb3ff435d849877fd72dd01d6",
+        "createdAt": "2026-10-15T15:35:53.2699233Z",
+        "acceptanceScope": "correlated_repair_ready",
+        "fullCanonicalStateAccepted": false
+      },
+      "preservationKeyCountBefore": 223,
+      "preservationKeyCountAfter": 226,
+      "allOtherCapturedNonRepairPathsExact": true,
+      "changedPaths": [
+        "game_state/control/gm_trajectory_ledger.jsonl",
+        "game_state/control/pending_wound_resolutions.json",
+        "game_state/control/progression_schedule.json",
+        "game_state/control/qte_runtime.json",
+        "game_state/control/validation_repair_request.json",
+        "output/mortal_wound_decisions.json"
+      ],
+      "qteSequence": {
+        "signedOriginalRollbackPublicBeforeAfterSha256": "19603E07CDDC0BD0E645AC91F5A425DAF343C8C6DC08556E3C106AE2BC0EECD5",
+        "stageCurrentAbsent": true,
+        "honestReadyOfferCount": 1,
+        "originalBytes": 2878
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-356a39783ac440c9a3c38fe25681b879",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "realDistinctCleanupRoots": 3,
+  "adHocReadbackCorrection": "Initial guessed command path corrected to actual AcceptedMechanicsPlan.WoundCommandPath before report emission; no source/evidence/runtime mutation or test rerun",
+  "actualRelease": "NONE until independent corrected ACTIVE3 EVIDENCE; successors HELD",
+  "utc": "2026-10-15T15:38:35.821639+00:00"
+}
