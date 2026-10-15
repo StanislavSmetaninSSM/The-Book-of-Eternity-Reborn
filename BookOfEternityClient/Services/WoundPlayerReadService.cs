@@ -57,7 +57,7 @@ internal static class WoundPlayerReadService
             return WoundPlayerProjection.Build(new(carriers, identities.State!, history.State!, effects,
                 realm, resources.Catalog, names, selfVisible));
         }
-        catch (Exception failure) when (failure is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
+        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         {
             // Detailed authority errors belong in diagnostics, never a player/NPC privacy channel.
             return WoundPlayerProjection.Unavailable();

@@ -12,6 +12,7 @@ public sealed partial class WoundProjectionPrivacyTests
         var input = WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
         var owned = EffectMaterializationTestFixture.CreateCanonicalEffect();
         owned["effectId"] = "effect_wound_test_bleeding";
+        owned["source"]!["definitionKey"] = "definition_wound_test_bleeding";
         owned["display"]!["name"] = "Явное истощение от раны";
         var unrelated = EffectMaterializationTestFixture.CreateCanonicalEffect();
         unrelated["effectId"] = "effect_independent";
@@ -45,6 +46,7 @@ public sealed partial class WoundProjectionPrivacyTests
         var input = WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("npc");
         effect["effectId"] = "effect_wound_test_bleeding";
+        effect["source"]!["definitionKey"] = "definition_wound_test_bleeding";
         effect["display"]!["name"] = "Секрет чужого владельца";
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null,
             new JsonObject { ["schemaVersion"] = 1, ["entries"] = new JsonArray(new JsonObject
@@ -66,6 +68,7 @@ public sealed partial class WoundProjectionPrivacyTests
         var input = WoundPlayerProjectionTestData.Input(node);
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "action_control");
         effect["effectId"] = "effect_wound_test_pain";
+        effect["source"]!["definitionKey"] = "definition_wound_test_pain";
         effect["display"]!["name"] = "Следствие закрытого осложнения";
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(
             new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect) },
@@ -82,6 +85,7 @@ public sealed partial class WoundProjectionPrivacyTests
         var input = WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
         effect["effectId"] = "effect_wound_test_bleeding";
+        effect["source"]!["definitionKey"] = "definition_wound_test_bleeding";
         effect["source"]!["sourceId"] = "wound_other_source";
         effect["display"]!["name"] = "Чужой источник при совпавшем идентификаторе";
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(
@@ -133,6 +137,46 @@ public sealed partial class WoundProjectionPrivacyTests
             Assert.Equal(scenario == "visible", Text(result).Contains("Известная помеха душе"));
             Assert.DoesNotContain("effect_spiritual_roll", Text(result));
             Assert.DoesNotContain("wound_foreign", Text(result));
+        }
+    }
+
+    [Theory]
+    [InlineData("mortal_world", "definition_wound_test_bleeding")]
+    [InlineData("chaos_sea", "definition_spiritual_roll")]
+    [InlineData("shining_abode", "definition_spiritual_roll")]
+    public void Build_EffectRequiresExactOwnedDefinitionBinding(string realm, string expectedDefinition)
+    {
+        var wound = realm == "mortal_world" ? WoundContractTestData.CreateActiveWound() :
+            WoundContractTestData.CreateSpiritualActiveWound("wound_soul", realm,
+                ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+        var input = WoundPlayerProjectionTestData.InputInRealm(realm, wound);
+        var original = realm == "mortal_world" ? EffectMaterializationTestFixture.CreateCanonicalEffect() :
+            EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_roll_hindrance",
+                targetKind: "player", realm: realm, woundId: "wound_soul");
+        original["effectId"] = realm == "mortal_world" ? "effect_wound_test_bleeding" : "effect_spiritual_roll";
+        original["target"]!["targetId"] = realm == "mortal_world" ? "player_current" : "player_soul";
+        original["display"]!["name"] = "Видимое последствие раны";
+        foreach (var definition in new[] { expectedDefinition, "definition_foreign" })
+        {
+            var effect = original.DeepClone().AsObject();
+            effect["source"]!["definitionKey"] = definition;
+            var index = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
+            JsonObject? player = null;
+            JsonObject? profiles = null;
+            if (realm == "mortal_world")
+                player = new() { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect) };
+            else
+            {
+                profiles = input.Carriers.AfterlifeProfiles!.DeepClone().AsObject();
+                profiles["profiles"]![0]!["activeEffects"] = new JsonArray(effect);
+                index["entries"]![0]!["owner"]!["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
+            }
+            var accepted = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(player, null, null, null, profiles, null), index));
+            Assert.True(accepted.IsAccepted, definition + ":" + string.Join(";", accepted.Issues));
+            var result = WoundPlayerProjection.Build(input with { Effects = accepted });
+            Assert.True(result.IsAvailable);
+            Assert.Equal(definition == expectedDefinition, Text(result).Contains("Видимое последствие раны"));
+            Assert.DoesNotContain("definition_foreign", Text(result));
         }
     }
 
