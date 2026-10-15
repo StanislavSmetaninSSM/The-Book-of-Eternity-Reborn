@@ -1,3 +1,9 @@
+## US5-RO1 fresh BOTH and official inventory/catalog qualified locally — 2026-10-15
+
+- Reviewed2844/code-identical carrier/tested+compiled8e4ffcf05ba170806c7bce99d9b2e023346464db. Official fresh selected BOTH preparation native0/146.1301806s; integration131warnings0errors(111.95s),unit35warnings0errors(29.08s). Exact Plan25methods32cases projection +8methods33cases reader =33methods65cases2descriptors, zero execution. Catalog native0/5.9477566s,Valid756categories11640methods,no unmapped/stale selectors,zero execution.
+- Immutable fresh-both packet5639735e26f31ab6340de8940527e86c489a16fb5a5c49f119b628e5c4f48fe0 has8raw/compressed/originalchains; catalogf58c5bd02fbbe1dce6bf53056b18a9e0b66f0656a647966bbd91c85c88208455 has6chains. All2551sourcepins include shared TestSupport/scripts/frontend/config as applicable and match tested Git/current bytes by batch;8fresh selected payload pins identical across packets. Read-only evidence helper source is preserved in compressed raw chains; no runner/controller reuse. No test execution/no owned roots here, zero receipts not runtime PASS.
+- Next exact NoBuildPlan + bounded two owning category actual run at code-identical evidence carrier. Bind original compiled8e4/source2844, actual tested carrier and8payloads; require complete65cases and33actual reader cleanup roots. First unexpected failure freezes/publishes before causal review. Independent final EVIDENCE follows. RO2 next; full FR063/T070/#1536/lawful ACTIVE remain OPEN.
+
 ## US5-RO1 corrected SOURCE/FIXTURE/SELECTION accepted; bounded verification released — 2026-10-15
 
 - Independent203309 accepts F1/F2 through2844f5422f90ccbf9e22fa46f7d2d450bbbfe5ba including exact proposal replay. MDcfcb16ff2d9201f7ce9aefaa63a3436b2939e74ff28ef6c17378c099256b823f / JSON8682d7dfc8e3aa425697eeed01d7f501e306672be863cedc4dd62a4b70355dd5 exact copies retained; FINALSTOP/no pending writes. Requested Astra XHigh/backend telemetry unavailable.
