@@ -147,7 +147,7 @@ public sealed class MortalJointGenerationAdmissionTests : IDisposable
             case "marker_absent": marker.Remove("generation"); break;
             case "marker_object": marker["generation"] = new JsonObject(); break;
             case "marker_invalid": marker["generation"] = "not-a-generation"; break;
-            case "marker_noncanonical": marker["generation"] = "ABCDEF0123456789ABCDEF0123456789AB"; break;
+            case "marker_noncanonical": marker["generation"] = "ABCDEF0123456789ABCDEF0123456789"; break;
             case "marker_foreign": marker["generation"] = Guid.NewGuid().ToString("N"); break;
         }
         await WriteJsonAsync(MortalQteDecisionPublication.StatePath, marker);
