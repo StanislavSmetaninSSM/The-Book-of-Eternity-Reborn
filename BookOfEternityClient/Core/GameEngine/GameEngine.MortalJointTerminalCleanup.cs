@@ -72,7 +72,10 @@ public partial class GameEngine
             {
                 if (!_fs.UsesTrustedLocalWriter(lease, path)) throw new InvalidDataException("joint_cleanup_unsupported_storage_member: " + path);
                 var bytes = await _fs.ReadFileBytesAsync(lease, path);
-                if (bytes is null && path is not (ValidationRepairRequestPath or ValidationRepairReadyPath))
+                // The full joint phase/output proof above authenticates either a
+                // consumed absent draft or its exact accepted public payload.
+                // Retain the same cleanup member even when its beforeimage is absent.
+                if (bytes is null && path is not (ValidationRepairRequestPath or ValidationRepairReadyPath or MortalWoundOpportunityAdapter.DecisionPath))
                     throw new InvalidDataException("joint_cleanup_owned_member_missing: " + path);
                 if (bytes is not null && path is "input/turn_request.json" or ValidationRepairRequestPath or ValidationRepairReadyPath)
                     RequireMortalJointCleanupControl(bytes, frame, path);

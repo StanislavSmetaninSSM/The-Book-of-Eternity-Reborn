@@ -1,3 +1,8 @@
+## A existing terminal consumer alignment — 2026-10-15
+
+- Static causal review found terminal cleanup already includes DecisionPath but incorrectly requires its presence after common consumption. Allow its proven absence after existing full phase/output/story/original validation; exact present payload still required by that proof. The SAME null-to-null cleanup member remains in the cohort. No membership/write/delete/rollback expansion, no recreated draft.
+- Independent review notified; final corrected gates and runtime still pending. Late2 and real exact-present/absent cold positives cover this changed consumer; do not count static diagnosis as runtime success.
+
 ## A independent review corrections — 2026-10-15
 
 - Reviewer confirmed common draft API issue, independently found missing Core namespace in new cold-output fixture and mismatched raw-versus-normal paused image map for exact-present positive. Fixed actual namespace and recaptured positive with the SAME normal helper under a closed parent lease; initially bad scenario9 keeps raw whole-tree inventory.
