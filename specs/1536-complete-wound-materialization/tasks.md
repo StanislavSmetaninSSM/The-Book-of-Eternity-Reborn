@@ -1,5 +1,36 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First actual EVIDENCE accepted; natural Stage43 oracle authoring only — 2026-10-15
+
+Independent review at61ead7f8 accepted the41 first-actual and32 prerequisite
+artifact chains and factual ROOT records: checkpoint5PASS is component-only;
+staged/Late2FAIL is an executed fixture prerequisite failure before joint owner
+completion. Later12actual stages remainUNRUN. No joint causalRED or production
+defect is established. Raw first failures and all prior records are retained.
+
+Source clarification: original publication after reminder consumption does NOT
+mean its qte_runtime image is post-consumption. SessionAndSnapshots1018-1044
+prefers the pre-turn backup; ordinary validation exceptions1990-2003 include
+scenario manifest/pending dice only. Natural Stage43 therefore distinguishes
+pre-turn rollback/original from consumed current runtime. The previous timeline
+and writer diagnosis must be read with this explicit image-authority distinction.
+
+Pre-consume is NOT an equivalent correction. ROOT releases only same-writer
+source authoring of the natural-order oracle: preserve real owner consumption
+inside Stage43; derive the sole permitted current reminder transition from genuine
+prior42 bytes before staging; retain all other six exact images and independently
+check original/rollback images. Preserve exact-once request reminder, all seven
+paths, projection/inactive and downstream hold/restore/publication guards. No
+filesystem normalization, fake acknowledgement, sealed rewrite or post-original
+tautological expected-image recapture. An authentic downstream restore failure
+must be frozen at its own native boundary.
+
+Correction not implemented. Source publication, focused independent closure and
+fresh preparation/pins are required before retrying only the failed pair. Passing
+checkpoint cases are retained; later cohorts remainHELD. This intermediate ROOT
+status adds no task checkmarks and will be reviewed with the connected correction.
+FullFR063/T070 and previously recorded open contours remainOPEN.
+
 ## First staged/Late actual failure frozen — ROOT checkpoint 2026-10-14
 
 Actual source `cd06ecff0423a70e2f4c3d22576fe2142d8335c1`, compiled source

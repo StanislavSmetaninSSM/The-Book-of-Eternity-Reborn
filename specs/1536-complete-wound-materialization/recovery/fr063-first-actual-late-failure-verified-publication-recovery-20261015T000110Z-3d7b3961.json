@@ -1,0 +1,41 @@
+{
+  "checkpoint": "61ead7f8b923f58ee345f04852e95d3c1b12c913",
+  "publicationReadback": {
+    "path": "/workspace/boe-cloud-tools-20261014/fr063-first-actual-late-failure-evidence-with-diagnosis-publication-readback.json",
+    "sha256": "b712a1094a0fa0fe21dae470db7e0029f9384cb56babd1ec670dce723800af35"
+  },
+  "selectedRecoveryReadback": {
+    "path": "/workspace/boe-cloud-tools-20261012/1536-t070-story-wip-recovery-readback.json",
+    "sha256": "5535df6ce757047fe289cf4a7dc8c21633163c484e5a915e194dd0b2a9f862bb",
+    "data": {
+      "checkpoint": "61ead7f8b923f58ee345f04852e95d3c1b12c913",
+      "remoteSha": "61ead7f8b923f58ee345f04852e95d3c1b12c913",
+      "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+      "selectedRecoveryExecution": "UNRUN",
+      "materializedTrackedFiles": 2552,
+      "allMaterializedBytesAndGitBlobsMatch": true,
+      "fullConnectedChangedPathsRecovered": 2023,
+      "consumerProduction": "Actualcheckpoint5PASS/stagedLate2FAILcomplete1of1/noTimeout;41artifactfailurefrozen beforediagnosis+ROOTmetadata; imagepathunlogged/source-supportedreminderphase; backupsemanticsquestion/EVIDENCEpending; codefix/rerun/12laterstagesHELD",
+      "verifiedUtc": "2026-10-15T00:00:53.049659+00:00"
+    }
+  },
+  "publicationNative": {
+    "launch": "1cfaee",
+    "session": 32103,
+    "completion": "541d20",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "dce103",
+    "session": 36050,
+    "completion": "eccd89",
+    "exitCode": 0,
+    "log": "/workspace/boe-cloud-tools-20261014/fr063-first-actual-late-failure-selected-recovery-20261014T235736Z-6d8ae00d.log"
+  },
+  "primaryClean": true,
+  "projectSourceChanges": "NONE; ROOT factual MD2 front records only",
+  "actual": "checkpoint5PASS; late2FAIL; later12stagesUNRUN",
+  "next": "same independent reviewer FIRST ACTUAL LATE FAILURE EVIDENCE gate; backup-ordering question included",
+  "sourceCorrectionAndRerun": "HELD",
+  "writtenUtc": "2026-10-15T00:01:10.938252+00:00"
+}
