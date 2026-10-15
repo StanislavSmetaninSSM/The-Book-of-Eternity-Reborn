@@ -1,0 +1,260 @@
+{
+  "compileSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "officialPreparation": "20261015-151851-017-75015-e3b622a9c3d44330a6505643190831c1-categories",
+  "actualRelease": "NONE FROM THIS DATA; new independent Late2 EVIDENCE/compiled-controller review required",
+  "status": "PROPOSED_FRESH_DISCOVERY_DERIVED_ONLY",
+  "preparationTotals": [
+    49,
+    123,
+    24
+  ],
+  "stages": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-active-tail-integration-002": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+        "fr063-joint-c1-original-rollback-integration-004": 3,
+        "fr063-joint-c1-qte-default-publication-integration-005": 8,
+        "fr063-joint-c1-treatment-defaults-integration-006": 4
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "categories": [
+        "fr063-guaranteed-joint-checkpoint-provenance"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "categories": [
+        "fr063-joint-cold-progression"
+      ],
+      "methods": 3,
+      "cases": 3,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-cold-progression-integration-007": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "categories": [
+        "fr063-joint-generation-refusal"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-generation-refusal-integration-009": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "categories": [
+        "fr063-joint-late-completion"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-late-completion-integration-010": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-legacy-exclusion-integration-011": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "categories": [
+        "fr063-joint-live-completion"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-live-completion-integration-012": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "categories": [
+        "fr063-joint-new-root"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-new-root-integration-013": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-refusal-integration-019": 15
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-settlement-integration-020": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "categories": [
+        "fr063-joint-retained-story"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-retained-story-integration-021": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-story-owner-integration-022": 10
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-worked-example-integration-023": 3,
+        "fr063-joint-worked-example-unit-024": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+      "categories": [
+        "fr063-joint-output-basis"
+      ],
+      "methods": 3,
+      "cases": 19,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-basis-unit-014": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "categories": [
+        "fr063-joint-output-binding-refusal"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-binding-refusal-integration-015": 7
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "categories": [
+        "fr063-joint-output-draft-refusal"
+      ],
+      "methods": 1,
+      "cases": 4,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-draft-refusal-integration-016": 6
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+      "categories": [
+        "fr063-joint-output-positive"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-positive-integration-017": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "categories": [
+        "fr063-joint-output-scene-refusal"
+      ],
+      "methods": 1,
+      "cases": 6,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-scene-refusal-integration-018": 7
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-generation-admission.json",
+      "categories": [
+        "fr063-joint-generation-admission"
+      ],
+      "methods": 9,
+      "cases": 29,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-generation-admission-unit-008": 3
+      }
+    }
+  ]
+}
