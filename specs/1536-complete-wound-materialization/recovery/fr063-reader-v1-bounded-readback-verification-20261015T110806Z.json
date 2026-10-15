@@ -1,0 +1,56 @@
+{
+  "readerSha256": "e6593547c2c6c11d6b30153d6edaedef33928128ec41188b2f96a2b9bfed3320",
+  "pythonAssertionsEnabled": true,
+  "checks": [
+    {
+      "label": "known-cold3",
+      "command": [
+        "python3",
+        "-E",
+        "/workspace/boe-fr063-tools-20261015/read-joint-cold-evidence-v1.py",
+        "--scratch",
+        "/workspace/boe-fr063-tools-20261015/finite-cold-v4-20261015T103658Z",
+        "--packet",
+        "/workspace/boe-fr063-tools-20261015/fr063-finite-cold-v4-frozen-1da0469ea-20261015T103658Z",
+        "--recorded-repo",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "--expected-children",
+        "3",
+        "--out",
+        "/workspace/boe-fr063-tools-20261015/fr063-reader-v1-known-cold3-20261015T110806Z.json"
+      ],
+      "knownManifestSha256": "24db268411f5f9a066560bc623fdaff553d2f8578b1706b2536e88fe0ea9e6db",
+      "readerNative": 0,
+      "expectedNative": 0,
+      "outputPresent": true,
+      "outputSha256": "bde2b94b1c755bc0113037fb0d5b4abed4ebfa2b8886a2cd97dd1b61df232bc4",
+      "scope": "Recorded frozen evidence readback only; no category execution or PASS granted"
+    },
+    {
+      "label": "known-retained-native134",
+      "command": [
+        "python3",
+        "-E",
+        "/workspace/boe-fr063-tools-20261015/read-joint-cold-evidence-v1.py",
+        "--scratch",
+        "/workspace/boe-fr063-tools-20261015/finite-retained-v4-20261015T104208Z",
+        "--packet",
+        "/workspace/boe-fr063-tools-20261015/fr063-finite-retained-v4-frozen-d89e3fe4a-20261015T104208Z",
+        "--recorded-repo",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "--expected-children",
+        "2",
+        "--out",
+        "/workspace/boe-fr063-tools-20261015/fr063-reader-v1-known-retained-native134-20261015T110806Z.json"
+      ],
+      "knownManifestSha256": "674939d81a2a4099f5fe2b0620bec4a28fee0c544b044cd9aa468f77a4b8c70a",
+      "readerNative": 1,
+      "expectedNative": 1,
+      "outputPresent": false,
+      "outputSha256": null,
+      "scope": "Recorded frozen evidence readback only; no category execution or PASS granted"
+    }
+  ],
+  "testsExecuted": 0,
+  "sourceModified": false
+}

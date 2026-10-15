@@ -1,0 +1,111 @@
+{
+  "kind": "independent bounded static optional reader review",
+  "createdUtc": "2026-10-15T11:06:56.287354+00:00",
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), inherited explicit request",
+  "configurationActual": "Unavailable backend/model/effort telemetry",
+  "reviewerStopped": true,
+  "reviewedMetadataSource": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "reader": {
+    "trackedPath": "specs/1536-complete-wound-materialization/recovery/fr063-joint-cold-recorded-evidence-reader-v1-20261015.py.txt",
+    "externalPath": "/workspace/boe-fr063-tools-20261015/read-joint-cold-evidence-v1.py",
+    "sha256": "e6593547c2c6c11d6b30153d6edaedef33928128ec41188b2f96a2b9bfed3320",
+    "bytes": 7519,
+    "trackedExternalExact": true,
+    "astParsedOnly": true,
+    "executed": false
+  },
+  "verdict": "STATIC ACCEPTED for bounded frozen readback assistance only",
+  "blockingFindings": [],
+  "runtimeExecutionOrAuthorityGranted": false,
+  "existingActualReleaseChanged": false,
+  "sourcePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-cold-recorded-evidence-reader-v1-20261015.py.txt",
+      "revision": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+      "bytes": 7519,
+      "sha256": "e6593547c2c6c11d6b30153d6edaedef33928128ec41188b2f96a2b9bfed3320"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "revision": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+      "bytes": 55825,
+      "sha256": "c983d1822ff3161af45c95d8d801bc2e86606062bed2d92c00eccaae396fd65d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "revision": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+      "bytes": 31771,
+      "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "revision": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+      "bytes": 61445,
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v5-20261015.py.txt",
+      "revision": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+      "bytes": 17017,
+      "sha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1"
+    }
+  ],
+  "verifiedStaticChecks": {
+    "threeNamedCompressedRawChains": "exact unique manifest names, lengths, hashes and decompressed equality",
+    "sourceAndCompile": "manifest.source == actual.source; binary.source == binary.compileSource == actual.compileSource",
+    "binaryManifest": "11 recorded files,11 unique mapped paths",
+    "container": "exact expected FullChildLog count; exactly one Child/ManagedResult parsed whole",
+    "launchCount": "recorded nativeObservationBoundaries count equals exact expected children",
+    "entryNative": "exactly one each per child",
+    "native": "HasExited true, ExitCode0, TimedOut false, Failure null, both EOF true",
+    "pid": "child/entry/native match; same parent IDs; parent differs from child; unique child IDs",
+    "bindings": "three unique actual reported Default paths; entry/final identity and hash agreement; all hashes in frozen pins",
+    "context": "exact five keys integration/support/runtimeconfig/depsfile/immutable; entry/final equality; all five hashes in pins",
+    "scenario": "reported only, no outcome qualification",
+    "write": "single exclusive new out.open(x) after checks"
+  },
+  "limits": [
+    "Manifest hash is reported, not compared internally to an expected trusted hash; ROOT must pin it before use.",
+    "Only three chains verified, not whole packet or actual test/case result proof.",
+    "No cleanup or filesystem root-absence qualification.",
+    "No all-child-dependency or current binary payload claim.",
+    "Identity is compared between recorded entry/final; payload identity is not independently derived.",
+    "Maps preserve emitted representation, often digests; equality is not independent full raw-byte/tamper proof.",
+    "No runtime scenario PASS/authority/selection/advancement grant.",
+    "Output-path restriction is caller responsibility, not a filesystem sandbox."
+  ],
+  "invocationConditions": [
+    "Frozen immutable packet/scratch; ROOT verifies known manifest SHA and fresh binary anchor.",
+    "Exact expected child count comes from reviewed plan/scenarios.",
+    "Non-optimized Python with assertions enabled; recommended python3 -E and no -O/-OO.",
+    "Exact reviewed reader bytes; unique approved output under toolsroot.",
+    "ROOT checks successful process/result and separately qualifies scenario, whole packet/counts, cleanup, ordering, and original raw records before successor."
+  ],
+  "knownCompatibility": {
+    "coldPacket": "fr063-finite-cold-v4-frozen-1da0469ea-20261015T103658Z",
+    "recordedColdLaunches": 3,
+    "retainedPacket": "fr063-finite-retained-v4-frozen-d89e3fe4a-20261015T104208Z",
+    "recordedRetainedLaunches": 2,
+    "retainedSecondNative134": "must fail assertion at line78 before output; static prediction only, reader not executed"
+  },
+  "metadataCarrierPermission": {
+    "exactReviewCopies": [
+      "fr063-optional-cold-reader-v1-static-20261015T110656Z-completed-v2-design-review.md",
+      "fr063-optional-cold-reader-v1-static-20261015T110656Z-completed-v2-design-review.json"
+    ],
+    "exactApprovedReaderCopiesAndAccurateNotesAllowed": true,
+    "recoveryOrFrontMetadataOnly": true,
+    "noProductTestConfigBuildInputOrRunnerControllerBehaviorChange": true,
+    "publishAfterActivePinnedRunPostReadbackAndFreeze": true,
+    "remintSourcePinsIfCarrierChanges": true,
+    "purePostReaderRequiresFreshBuild": false,
+    "compiledSourceProvenanceUnchanged": true
+  },
+  "separatePending": "New Late2 EVIDENCE and next controller provenance review remain separate; no verdict here.",
+  "manualFallback": "ROOT manual raw cold proof remains accepted",
+  "fullScope": "FR063/T070/#1536 OPEN",
+  "markdown": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-optional-cold-reader-v1-static-20261015T110656Z-completed-v2-design-review.md",
+    "sha256": "3046e225eb57a5374f130cf0fb9ddde7b8a5bb293d6ba07866b88b571b33cc0b"
+  }
+}
