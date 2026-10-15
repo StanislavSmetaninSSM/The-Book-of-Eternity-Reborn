@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-15T20:06:41Z",
+  "disposition": "ACCEPT_EXACT_FIXTURE_API_CORRECTION_BOUNDED_READER_RED_RETRY",
+  "scope": "Preparation failure and four-call correction only; not final RO1 implementation review",
+  "requestedReviewerConfiguration": "Astra XHigh",
+  "actualBackendTelemetry": "unavailable",
+  "testedGit": "36f696c99cd3432af8159bb77e4612e4fcd67c2b",
+  "failureCarrierGit": "c7200fa99ba583ec9bb252b3a0714db044b42e62",
+  "correctedGit": "793136eb15d99c36f05e8434f17f47ab94ec3f83",
+  "freezeSha256": "cf778134110e02460458a973c088bc15bfe4f9e94577f9a5c00319c55667c537",
+  "verifiedFailure": {
+    "chains": 3,
+    "testedGitPins": 2085,
+    "phase": "Build-integration",
+    "nativeExit": 1,
+    "wallSeconds": 77.7850366,
+    "executedCases": 0,
+    "plannedDescriptors": 0,
+    "complete": false,
+    "timedOut": false,
+    "fixtureReceipts": 0,
+    "uniqueCs1061Sites": [
+      89,
+      90,
+      91,
+      125
+    ],
+    "behavioralRed": false,
+    "pass": false
+  },
+  "correction": {
+    "exactIdentifierReplacements": 4,
+    "from": "WriteFileAsync",
+    "to": "WriteFileAtomicAsync",
+    "api": "FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease,string,string)",
+    "existingApiAndAssemblyAccess": true,
+    "fixtureArgumentsAssertionsSemanticsUnchanged": true,
+    "readerStubUnchanged": true,
+    "categorySelectionHelperLinkUnchanged": true,
+    "otherChanges": "plan/tasks front metadata only",
+    "failedFixtureSha256": "5baf85eb6b1e7f68cf4060cccf7634113868f712286263d1237c8e80ead0b64f",
+    "correctedFixtureSha256": "9924fa65a89d20d9b658ce65c4e2ae11a88fad7b05d884bc687f8c5b1162b9a9",
+    "apiSha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+    "stubSha256": "e853eb886ed1141858fd34af6b91e36dd8c7f69eb72a8719ab73a4b56006812a"
+  },
+  "retry": {
+    "category": "wounds-player-read",
+    "requiresVerifiedOrdinaryPublication": true,
+    "freshOfficialPreparation": true,
+    "sourcePredictedMethods": 3,
+    "sourcePredictedCases": 11,
+    "officialSelectionYetUnverified": true,
+    "predictedPositiveFailures": 2,
+    "predictedVacuousUnavailablePasses": 9,
+    "predictedDistinctCleanupRoots": 11,
+    "actualRetryExecutedByReviewer": false,
+    "freezeActualEvidence": true
+  },
+  "limits": {
+    "finalImplementationAccepted": false,
+    "finalSelectionSufficiencyAccepted": false,
+    "greenAccepted": false,
+    "authorityStorageMembershipExpansion": false,
+    "aggregateOrHistoricalRerunAuthorized": false,
+    "oldFailureReclassified": false,
+    "repositoryWrites": false,
+    "buildTestPlanDiscoveryRunnerNativeCalls": false,
+    "remoteVerificationIndependentlyRepeated": false
+  },
+  "finalState": "FINALSTOP_NO_PENDING_REVIEWER_WRITES"
+}
+

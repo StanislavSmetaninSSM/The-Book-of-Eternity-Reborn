@@ -1,3 +1,7 @@
+## US5-RO1 reader four-call correction independently accepted for intentional RED only — 2026-10-15
+
+- Independent preparation/correction gate200641 verifies3frozen artifact chains/2085testedGit pins, exact four nonexistent-to-existing API replacements at793136eb1, same lease/path/content/assertions and unavailable-only reader stub. MD1420fb8a/JSON4977a6ad exact retained, FINALSTOP/no pending writes. Original build failure remains0executed/no behavioral RED/no cleanup PASS. Remote793 fullSHA verified. Only fresh `wounds-player-read` intentional RED retry is released after this metadata publication; expected11actual,2positive failures against stub plus9vacuous unavailable cases, all genuine per-case cleanup. No final RO1 implementation/selection/GREEN, A7/Late2 or aggregate grant.
+
 ## US5-RO1 reader fixture API correction (four call sites only) — 2026-10-15
 
 - Frozen c7200fa99 build failure cause is four calls to an API that does not exist. The actual existing lease-bound API is `FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease,string,string)` at FileSystemManager.cs:769; corrected only those four fixture writes. No writer API was added, no production/stub/assertion/selection change. Reader remains unavailable-only, so the next bounded reader run must reach intentional behavioral RED; previous0executed result stays FAILED, never reclassified as RED/PASS. Source/fixture/selection final review and fresh GREEN remain pending.
