@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "kind": "read-only-dependency-plan-consultation",
+  "reviewedSnapshot": "70dc075fb3c846b901c95ce8fde890cb0604894d",
+  "observedHeadAtArtifact": "4034bc042b66553df519c6066ca767138d212fed",
+  "compiledSource": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "model": {
+    "requested": "Astra",
+    "effortRequested": "XHigh",
+    "inheritedConfiguration": true,
+    "actualBackendTelemetry": "UNAVAILABLE"
+  },
+  "verdict": "ACCEPTED_FUNCTIONAL_READONLY_SLICE_EXISTS_WITH_EXPLICIT_SEQUENCING_GATE",
+  "implementationGrant": false,
+  "runtimeGrant": false,
+  "existingV5ReleaseChanged": false,
+  "existingGate": [
+    "tasks.md:11485 US5 after complete US2/US4; no earlier command exposure",
+    "tasks.md:11517 tests after fixed application semantics"
+  ],
+  "minimalNextTask": "Recorded sequencing refinement, then unwired self-only typed sanitized projection: T113 + applicable T115 + partial T119; no staging, quote, write, authority or canonical path expansion. Public status/read-only command exposure requires explicit inclusion and parity/privacy review.",
+  "independentOf": [
+    "ACTIVE joint progression implementation",
+    "T121 mutable treatment application",
+    "T122 command staging"
+  ],
+  "preserve": [
+    "genuine hidden-route discovery",
+    "NPC and effect privacy",
+    "current canonical read/agreement validation",
+    "separate History",
+    "fresh authority before claiming actionable availability or sealing quotes"
+  ],
+  "latestUserDirection": "No blanket diagnosis gate for visible self wounds or known/public methods and declared requirements. Does not silently disclose genuinely hidden routes or private NPC facts.",
+  "selection": "New finite owning projection/privacy and changed-consumer categories; exact counts discovered after authoring; current FR063 40/94/23 not transferred to UX scope. No tests executed.",
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "length": 11662
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "length": 66432
+    },
+    {
+      "path": "docs/testing.md",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "length": 18979
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "gitBlob": "764e728a967c0c9102deff408c3a16bd566db6d0",
+      "sha256": "1a7431a19eac3577f4814e1eb7bfc1a56b2b65e14dffb97cc2b5cc2b6b6d18f9",
+      "length": 224714
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "gitBlob": "bf9ca2899765c656f5b035e5c6529ed59c4c4b39",
+      "sha256": "2f5be354b5f0096a4ab4dd432a5f7c4c11810b92d4a5fd34f844a5c4fc9e5cb8",
+      "length": 1689396
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "gitBlob": "b6687815381c5af54afa1bb3060bdd4adbc9e3b5",
+      "sha256": "f44b4438a3f3e1635cf0fcb327d5e4258745733592a1db6405ca8b523d19e996",
+      "length": 1190012
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/wound-player-commands-and-projection.md",
+      "gitBlob": "256bcb1155e846f01c3a7ca99056478fbe3d64eb",
+      "sha256": "bf4e52575d77ad259b8bb809e82f9f990a260b0fda3fdfb91cbfdf99ce8f6513",
+      "length": 7431
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundMaterializationContract.cs",
+      "gitBlob": "dab2f930a313fa9e06d6bfefba8ab4640a4f99c0",
+      "sha256": "abbf2e11659d58985e156629b6ff77de86e93ec5f6c0e6962bea4b03db9487ef",
+      "length": 139987
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "gitBlob": "451a1de12612d2b26800e40057fcc3072834189e",
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d",
+      "length": 44369
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.cs",
+      "gitBlob": "44285fc44cc2e2ee39f28e51b23e809620a88d6f",
+      "sha256": "7b7083e040ea9fe2338531b6f12e5a54837a1fa186282ed87bd1ec5527f3bea9",
+      "length": 67254
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "gitBlob": "b072a9e3408abb45115a31d51560021c95828f17",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68",
+      "length": 192030
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "gitBlob": "54c6b9e912a676c39b48dd6b0a45e6a1546be8a4",
+      "sha256": "43aa44e0fbacd852fb40ad72c214c465785968e2d072aa5f73d905d2b59ea3f4",
+      "length": 93844
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+      "gitBlob": "85a9cf9e629f4905dec1633d495375ce22a4e4b0",
+      "sha256": "967a6dd67ccc81d4c96024c32805b732196990ef731a28f60f36a60507f609b3",
+      "length": 120229
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs",
+      "gitBlob": "4fb7de7e238abf8fe7bd78956e8e0242e7a5c522",
+      "sha256": "08e607f20171870ef9fbec5c9dff05d59d9a020ea3f84ffde6d4103536e1154c",
+      "length": 35193
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebCommandService.cs",
+      "gitBlob": "ab795e9d7bc7a3f2bf1fa90b7f8dae4f79f7ee6a",
+      "sha256": "ad96ca0240e6f11c04a19fa1f78e733687a7dd90897766cf18205e9f4cf385c4",
+      "length": 21255
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundReadView.cs",
+      "gitBlob": "3737bd7ab69c9f1db57031d9e5b00bf8a2d0234d",
+      "sha256": "dde9e100983f1703f8c0f9b26445eb44a0fdce3e103fc69f0befb544c71cf7e0",
+      "length": 7069
+    }
+  ],
+  "plannedServicesAbsentAtSnapshot": [
+    "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+    "BookOfEternityClient/Services/WoundTargetSelectionService.cs",
+    "BookOfEternityClient/Services/WoundApplicationService.cs",
+    "BookOfEternityClient/Services/WoundCommandState.cs"
+  ],
+  "reportMarkdown": "/workspace/boe-fr063-tools-20261015/fr063-phase8-readonly-dependency-consultation-20261015T112510Z-completed-v2-design-review.md",
+  "reportMarkdownSha256": "f8941fb34956a2ec621977d469d9a555ca1a913d55d58f3edc19749215cbc78f",
+  "remainingOpen": [
+    "ACTIVE decision",
+    "mutable UI flow",
+    "initial-authority breadth",
+    "FR063",
+    "T070",
+    "#1536"
+  ],
+  "issuesUntouched": [
+    "#1557",
+    "#1558",
+    "#1559"
+  ],
+  "reviewerStopped": true
+}

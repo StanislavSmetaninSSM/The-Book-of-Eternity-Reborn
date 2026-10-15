@@ -1,0 +1,38 @@
+{
+  "source": "4034bc042b66553df519c6066ca767138d212fed",
+  "compileSource": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "manifestSha256": "e8865db1f67c0f74a667f2cbf8317da70d33f5a5aff4bfb68b9233514b228df4",
+  "readerOutput": "fr063-newroot-v5-recorded-child-readback-20261015T112657Z.json",
+  "readerOutputSha256": "50c07fcafb23f0ccfad2de6f7161265d385dba1403dd121a0c06e54169c5a268",
+  "actualChildPid": 43698,
+  "actualNative": {
+    "ChildProcessId": 43698,
+    "ParentProcessId": 43623,
+    "HasExited": true,
+    "ExitCode": 0,
+    "TimedOut": false,
+    "Failure": null,
+    "StdoutEofObserved": true,
+    "StderrEofObserved": true
+  },
+  "sourceRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-1e866aa947044e86997f477064a84e5c",
+  "distinctTargetRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-cold-765c01a4731d4f65a7403224b3fe8714",
+  "entryFinalBindingsAndFiveContextMatch": true,
+  "transportedFiles": 221,
+  "sourceSessionDigestCountUnchanged": 220,
+  "sourceAndTargetInitialGenerationHash": "FEDC26AF2BF95E0BE8EFE42FD827588E386F89835BBEEA0CAFEE722A8355D990",
+  "sourceGenerationPreservationNativeOraclePassed": true,
+  "sourceGenerationPostChildDigestProjection": "UNOBSERVED; full source lease assertion includes G and passed in actual selected case",
+  "targetCompletedTurn43AndInertRepeatExactMaps": true,
+  "standardPerTestCleanupReceiptCount": 2,
+  "additionalRawFullTrxTargetReceipt": {
+    "origin": "fr063-joint-new-root-integration-001.trx/ResultSummary/Output/StdOut",
+    "receipt": {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-cold-765c01a4731d4f65a7403224b3fe8714",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  },
+  "allThreeOwnedRootsActuallyAbsent": true,
+  "scope": "ROOT distinct-root/transport/source-preservation scenario plus real full-TRX target cleanup; not full FR063 or all-child-dependency proof"
+}
