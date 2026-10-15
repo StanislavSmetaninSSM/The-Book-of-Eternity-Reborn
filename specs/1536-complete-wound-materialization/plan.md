@@ -1,3 +1,8 @@
+## US5-RO1 foundation accepted; RO2 fixture prerequisites corrected WIP — 2026-10-15
+
+- Independent212523 EVIDENCE accepts only RO1 foundation:68actualPASS,17strict-data refusals,3exactbinding realm pairs,33strict cleanup roots,28chains/2551Git+current pins/eightfreshbc9outputs/fullTRXidentity and native/officialselection qualified. Exact MD4a66b14838ae141a4adf8823059ee450f793c8b51f00bc1726f8ea827cc150ff / JSON13e015dff8756953ee0fd90262a7d3341496e2fa2c12dea712c8564265464e98 retained. FINALSTOP/no pending writes; requested Astra XHigh/backendtelemetry unavailable. Mark only three bounded US5-RO1 outline boxes complete, not T113/T119/fullUS5.
+- RO2 RED prereview found two fixture prerequisites before any preparation/runtime: Mortal unknown hidden route must have a reachable legal diagnosis graph, and base spiritual fixture deliberately has no routes. Add public diagnosis revealing exact declared route while keeping current knownRouteIds empty; add one structurally accepted known spiritual display route with opaque empty payload objects, no invented resolver/requirements/authority. Preserve validators, realentrypoints/assertions/budgets and6methods15cases1descriptor. Corrected independent gate pending; runtime still UNRUN.
+
 ## US5-RO2 real public-status RED WIP — 2026-10-15
 
 - RO1 native68PASS28chains/33strictroots is frozen/published681e49dd7 and independent EVIDENCE is completing; reviewer confirmed all current pins before these new source edits. GitHub-only clean recovery681 verifies40changedpaths/noalternates. RO2 follows already accepted TASK-ORDER-US5-READONLY, not a new architecture choice.

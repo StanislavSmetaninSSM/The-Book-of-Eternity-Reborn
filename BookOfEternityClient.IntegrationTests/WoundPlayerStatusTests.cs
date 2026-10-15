@@ -79,6 +79,15 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         visible["treatment"]!["knownRouteIds"] = new JsonArray();
         visible["treatment"]!["routes"]![0]!["visibility"] = "hidden";
         visible["treatment"]!["routes"]![0]!["displayName"] = "Секретный способ";
+        // Reachable in the legal discovery graph, still unknown in the current snapshot.
+        visible["treatment"]!["diagnosisPaths"] = new JsonArray(new JsonObject
+        {
+            ["diagnosisPathId"] = "status_examine", ["displayName"] = "Осмотр раны",
+            ["visibility"] = "public", ["requiresKnownFacts"] = new JsonArray(),
+            ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+            ["reveals"] = new JsonArray("route:" + visible["treatment"]!["routes"]![0]!["routeId"]!.GetValue<string>()),
+            ["failurePolicy"] = "no_reveal"
+        });
         var hidden = Wound(realm, "wound_status_hidden");
         hidden["display"]!["visibility"] = "hidden";
         hidden["display"]!["name"] = "Скрытая травма";
@@ -152,6 +161,18 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         var wound = realm == "mortal_world" ? WoundContractTestData.CreateActiveWound(id)
             : WoundContractTestData.CreateSpiritualActiveWound(id, realm, ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
         wound["display"]!["name"] = "Известная рана путника";
+        if (realm != "mortal_world")
+        {
+            // Common display envelope only; it grants no executable spiritual application codec.
+            wound["treatment"]!["routes"] = new JsonArray(new JsonObject
+            {
+                ["routeId"] = "spiritual_soothe", ["displayName"] = "Духовная помощь",
+                ["visibility"] = "known_to_player", ["mode"] = "procedure",
+                ["requirements"] = new JsonArray(), ["resourcePolicy"] = new JsonObject(),
+                ["resolution"] = new JsonObject(), ["outcomes"] = new JsonArray(), ["interruption"] = null
+            });
+            wound["treatment"]!["knownRouteIds"] = new JsonArray("spiritual_soothe");
+        }
         return wound;
     }
 
@@ -192,7 +213,7 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
     private static void AssertSafe(string text)
     {
-        foreach (var token in new[] { "game_state/", "wound_status_", "effect_wound_", "clean_and_suture", "spiritual_route", "sha256:", "authorityRef", "sourceFingerprint", "lastTransition" })
+        foreach (var token in new[] { "game_state/", "wound_status_", "effect_wound_", "clean_and_suture", "spiritual_soothe", "sha256:", "authorityRef", "sourceFingerprint", "lastTransition" })
             Assert.DoesNotContain(token, text);
     }
 }
