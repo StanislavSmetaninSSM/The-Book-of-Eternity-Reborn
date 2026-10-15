@@ -1,0 +1,316 @@
+{
+  "testedSource": "57579a99c8fe4586109ff3922fc30833c21ad800",
+  "compiledSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "packet": "fr063-finite-story-v8-frozen-57579a99c-20261015T154738Z",
+  "manifestSha256": "50d6fa8c5f0b4fbfadf11a60b09483b47d00ef8bb855ab97c50c21f88f8a9c09",
+  "chainsVerified": 36,
+  "exactGitCurrentSourcePinsVerified": 759,
+  "currentFreshBinaryPayloads": 11,
+  "native": {
+    "exitCode": 0,
+    "wallTime": "00:05:52.3007310",
+    "tests": {
+      "Total": 5,
+      "Executed": 5,
+      "Passed": 5,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 5,
+      "CompletedCases": 5,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "timedOut": false,
+    "methods": 1,
+    "cases": 5,
+    "descriptors": 1
+  },
+  "rawTrxSha256": "782234961ca787afa3295b31222d02b5b86c2fae1d22320f09c0ac5f49640ba4",
+  "fullTrxJsonReparsedExactly": true,
+  "coldCases": [
+    {
+      "testId": "ce842ed9-14bf-d2b1-bb4c-46d033c356f6",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal(scenario: \"story_prefix_changed\")",
+      "scenario": "story_prefix_changed",
+      "childPid": 82247,
+      "parentPid": 81937,
+      "native": {
+        "ChildProcessId": 82247,
+        "ParentProcessId": 81937,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultIdentitiesPathsHashesAnd5ContextPinsMatched": true,
+      "reportedDependenciesScope": "reported three assemblies/five context files; not every child dependency",
+      "actualEnteredHandledRefusalAt42": true,
+      "signedTextHistoryInventoryAndOriginalPrefixVerified": true,
+      "rawImagesBefore": 225,
+      "rawImagesAfter": 225,
+      "onlyExpectedStoryImageMayDiffer": true,
+      "allOtherCanonicalRuntimeGNamesDirectoriesExact": true,
+      "parentAllPhysicalAfterDigestsMatched": true,
+      "appendBoundaryCalls": 0,
+      "storyCommits": 0,
+      "readbackFaults": 0,
+      "journal": null,
+      "cleanupReceiptIndices": [
+        0,
+        1
+      ]
+    },
+    {
+      "testId": "f7b0a880-293d-da5d-a51b-2f9b15a2f6fe",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal(scenario: \"story_row_changed\")",
+      "scenario": "story_row_changed",
+      "childPid": 82098,
+      "parentPid": 81937,
+      "native": {
+        "ChildProcessId": 82098,
+        "ParentProcessId": 81937,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultIdentitiesPathsHashesAnd5ContextPinsMatched": true,
+      "reportedDependenciesScope": "reported three assemblies/five context files; not every child dependency",
+      "actualEnteredHandledRefusalAt42": true,
+      "signedTextHistoryInventoryAndOriginalPrefixVerified": true,
+      "rawImagesBefore": 225,
+      "rawImagesAfter": 225,
+      "onlyExpectedStoryImageMayDiffer": true,
+      "allOtherCanonicalRuntimeGNamesDirectoriesExact": true,
+      "parentAllPhysicalAfterDigestsMatched": true,
+      "appendBoundaryCalls": 1,
+      "storyCommits": 1,
+      "readbackFaults": 0,
+      "journal": {
+        "transactionId": "677a8adfbebe44bcb68b0e095c9502b7",
+        "actualCommittedJournalSha256": "ec27f6af361873f126301a7c239297d1950df32cf3aa6f9c0b9e009099c9003e",
+        "realOneMemberBeforeAfterImagesVerified": true,
+        "actualCommittedStorySha256": "94f983117fe3dc6d9ec6e2c9999467cddcc019fd060c46e6725f89628ab38004",
+        "exactEightFieldActualWriterRow": {
+          "requestId": "afbbfda4379a4cd4b2f6382b272987f1",
+          "sessionGeneration": "ab5b7a22c970476ca5e1658d4246c9b3",
+          "turn": 43,
+          "timestamp": "2026-10-15T15:49:30.8145885Z",
+          "realm": "Mortal World",
+          "player": "Осмотреть ушиб.",
+          "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+          "location": "T070-B.3 field clinic"
+        },
+        "foreignRowOnly": true
+      },
+      "cleanupReceiptIndices": [
+        2,
+        3
+      ]
+    },
+    {
+      "testId": "f6c4cad0-3e84-799d-18bd-bbb4d0102cf9",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal(scenario: \"story_row_generation\")",
+      "scenario": "story_row_generation",
+      "childPid": 82142,
+      "parentPid": 81937,
+      "native": {
+        "ChildProcessId": 82142,
+        "ParentProcessId": 81937,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultIdentitiesPathsHashesAnd5ContextPinsMatched": true,
+      "reportedDependenciesScope": "reported three assemblies/five context files; not every child dependency",
+      "actualEnteredHandledRefusalAt42": true,
+      "signedTextHistoryInventoryAndOriginalPrefixVerified": true,
+      "rawImagesBefore": 225,
+      "rawImagesAfter": 225,
+      "onlyExpectedStoryImageMayDiffer": true,
+      "allOtherCanonicalRuntimeGNamesDirectoriesExact": true,
+      "parentAllPhysicalAfterDigestsMatched": true,
+      "appendBoundaryCalls": 1,
+      "storyCommits": 1,
+      "readbackFaults": 0,
+      "journal": {
+        "transactionId": "ed1198b719c541808ec9841a02a292fd",
+        "actualCommittedJournalSha256": "c082768cb8ec2fad9ad3e275882e23cce3500c3bdb0388bbdfa8d5e6d983dc6a",
+        "realOneMemberBeforeAfterImagesVerified": true,
+        "actualCommittedStorySha256": "fa868bc20c302c59c609b82088bcf43ae7085c50ee6ad72a487970cea92be3d4",
+        "exactEightFieldActualWriterRow": {
+          "requestId": "1127bdd6837a4153ae8bee2fa44f0aa7",
+          "sessionGeneration": "acdd8124deed48b0bf70d7fe620f1b88",
+          "turn": 43,
+          "timestamp": "2026-10-15T15:50:39.2070014Z",
+          "realm": "Mortal World",
+          "player": "Осмотреть ушиб.",
+          "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+          "location": "T070-B.3 field clinic"
+        },
+        "foreignRowOnly": true
+      },
+      "cleanupReceiptIndices": [
+        4,
+        5
+      ]
+    },
+    {
+      "testId": "cb798f9b-7f01-5733-5342-731f2cb60d22",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal(scenario: \"story_append_failure\")",
+      "scenario": "story_append_failure",
+      "childPid": 82035,
+      "parentPid": 81937,
+      "native": {
+        "ChildProcessId": 82035,
+        "ParentProcessId": 81937,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultIdentitiesPathsHashesAnd5ContextPinsMatched": true,
+      "reportedDependenciesScope": "reported three assemblies/five context files; not every child dependency",
+      "actualEnteredHandledRefusalAt42": true,
+      "signedTextHistoryInventoryAndOriginalPrefixVerified": true,
+      "rawImagesBefore": 225,
+      "rawImagesAfter": 225,
+      "onlyExpectedStoryImageMayDiffer": true,
+      "allOtherCanonicalRuntimeGNamesDirectoriesExact": true,
+      "parentAllPhysicalAfterDigestsMatched": true,
+      "appendBoundaryCalls": 1,
+      "storyCommits": 0,
+      "readbackFaults": 0,
+      "journal": null,
+      "cleanupReceiptIndices": [
+        6,
+        7
+      ]
+    },
+    {
+      "testId": "c937908b-d54a-a59f-f3b8-6456dd0691c3",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal(scenario: \"story_readback_failure\")",
+      "scenario": "story_readback_failure",
+      "childPid": 82208,
+      "parentPid": 81937,
+      "native": {
+        "ChildProcessId": 82208,
+        "ParentProcessId": 81937,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultIdentitiesPathsHashesAnd5ContextPinsMatched": true,
+      "reportedDependenciesScope": "reported three assemblies/five context files; not every child dependency",
+      "actualEnteredHandledRefusalAt42": true,
+      "signedTextHistoryInventoryAndOriginalPrefixVerified": true,
+      "rawImagesBefore": 225,
+      "rawImagesAfter": 225,
+      "onlyExpectedStoryImageMayDiffer": true,
+      "allOtherCanonicalRuntimeGNamesDirectoriesExact": true,
+      "parentAllPhysicalAfterDigestsMatched": true,
+      "appendBoundaryCalls": 1,
+      "storyCommits": 1,
+      "readbackFaults": 1,
+      "journal": {
+        "transactionId": "f737b6d5a6314e12811725402ad02540",
+        "actualCommittedJournalSha256": "53e10c03764beb73694cf79a760fbc75f4e22254e942ebf1f4b5c9398d2c8dfa",
+        "realOneMemberBeforeAfterImagesVerified": true,
+        "actualCommittedStorySha256": "ea9444fb0a70bf7ef3193beee2de5f0a8073ea90f8d0dd4b8fab4991dcfcd40e",
+        "exactEightFieldActualWriterRow": {
+          "requestId": "9dabdcbb0fe94b05878be2ee917e42a8",
+          "sessionGeneration": "71d6e3a4a666439cb3b725bf12bdc2c6",
+          "turn": 43,
+          "timestamp": "2026-10-15T15:51:50.7118555Z",
+          "realm": "Mortal World",
+          "player": "Осмотреть ушиб.",
+          "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+          "location": "T070-B.3 field clinic"
+        },
+        "foreignRowOnly": false
+      },
+      "cleanupReceiptIndices": [
+        8,
+        9
+      ]
+    }
+  ],
+  "actualCommittedTransactions": [
+    "677a8adfbebe44bcb68b0e095c9502b7",
+    "ed1198b719c541808ec9841a02a292fd",
+    "f737b6d5a6314e12811725402ad02540"
+  ],
+  "actualCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-59e65115576f4580a50a590250c2e501",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2842676909fa407ca0d6d28ad0ef19af",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d3e40ecdc65f4e47af84cd2d59a3a2c8",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0e4936f8553c4d2a89d2164fc8c262d5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-aaeab1f93403430bae47ca1cff96ec85",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9b3adfaffa41416f96c336e6e9f6b96c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-aa4df3653d534d95bf9be63f533e2e38",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-8270542ad1c647e5b97a196b50c39ac9",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-181fc86abdaa4604b8fc77e233b1b6d5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7d8e5d8af6b245b9a635da4bc566941a",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "all10DistinctRootsAbsent": true,
+  "scope": "Actual story refusal/fault controls; no turn43 completion grant",
+  "optionalReaderExecuted": false,
+  "successor": "Conditional legacy2 only after this ROOTqualification/freeze/push and reminted clean current singleton gate",
+  "utc": "2026-10-15T15:57:48.376287+00:00",
+  "rawCaptureScope": "Entire game-session and runtime file-name/directory inventories and bytes, excluding only contents of three inert lock streams; physical G retained separately as an alias."
+}
