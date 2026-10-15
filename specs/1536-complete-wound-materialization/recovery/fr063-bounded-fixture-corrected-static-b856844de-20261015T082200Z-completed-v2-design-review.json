@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-15T08:22:20.018653+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), explicitly requested inherited configuration",
+  "configurationActual": "Unavailable backend/effort telemetry",
+  "base": "f7b8a99bb07c5f406ef54ba5b77a78ddbd5a0866",
+  "reviewedSource": "b856844dea2c2d598e3e166e7273cc1995390e5e",
+  "observedHead": "b856844dea2c2d598e3e166e7273cc1995390e5e",
+  "observedGitStatus": "",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "runtime": "UNRUN for corrected source",
+  "diff": [
+    "M\tBookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+    "M\tBookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.md",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md",
+    "M\ttests/selection.json"
+  ],
+  "filePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584397,
+      "sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+      "bytes": 6048,
+      "sha256": "e14b8da01113f98fd86137554c3d15a61e4309420aeeb5c5969a8fd09af54d15",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1653968,
+      "sha256": "bd4a354a0a331e64e08d260e2245dd2e20a2d76d188291d3c4890521ad764754",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.json",
+      "bytes": 60250,
+      "sha256": "cac45cdbee78d7ae2bf27a46efc8c0a77a90eac59cca9c338e4d731c9c6b9457",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.md",
+      "bytes": 6770,
+      "sha256": "35ed49762a5982c1a357fcbbd867b4582fa7086ccb51d59f229f07dfcc665523",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1154584,
+      "sha256": "b478e7d7927724fbf3f5aed3c03bc52cb78b9dad08f12e0ae5f3b403da6bcfe3",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 855,
+      "sha256": "5ef690504163edf76b176316e88d0b3d6732e903e7e0506b9e0b74586360ed42",
+      "role": "changed reviewed path"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs",
+      "bytes": 14368,
+      "sha256": "1e6e2dca9442a45ae2e1c8449c85c8c64b9839a94f4d59542e6cb5be9803946d",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 76470,
+      "sha256": "9885a64a234b5ec19250d9c4e61c07871faf7490ac9898de33df9bb16d8f8734",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "bytes": 35308,
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "bytes": 21516,
+      "sha256": "53b3bd3a975636808d0c1a7c099c784e2d155cf6d501a9db24cf1f8d73ad9c7a",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "bytes": 47040,
+      "sha256": "c32116bfe7912234187c07a9af483d51834b350735a54fe016d1ed683a7d6bf1",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1712,
+      "sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/CheckedRollbackHashFilterTests.cs",
+      "bytes": 17245,
+      "sha256": "8f15ca0affcd2b25f1ad6d2ce4cbd7aa8efcca7edf21d186fdba23fd35c03514",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-basis.json",
+      "bytes": 335,
+      "sha256": "a6b1e4b516fe095cd3ec1c52afe32de2d25f047cbd5e379b4f8144eb72a48312",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "bytes": 1401,
+      "sha256": "0e4931efd84018b4052236d0e0b092f843db5c9bb84a7192d131931ba7911004",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "bytes": 3370,
+      "sha256": "d1f01993f6b36012043cd4c29aadb926405d3a4fc5067fa2fa6c5833b83d64ff",
+      "role": "bounded unchanged dependency"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v5-20261015.py.txt",
+      "bytes": 17017,
+      "sha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+      "role": "bounded unchanged dependency"
+    }
+  ],
+  "unitInventory": {
+    "methods": 3,
+    "cases": 19,
+    "facts": 2,
+    "theories": 1,
+    "inlineData": 17
+  },
+  "intendedOfficialInventory": {
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23,
+    "catalogCategories": 751,
+    "catalogMethods": 11596,
+    "freshDiscoveryRequired": true
+  },
+  "apiReadback": {
+    "outputHelper": "Xunit.Abstractions.ITestOutputHelper primary constructor; same project precedent CheckedRollbackHashFilterTests:15; package xunit2.9.2",
+    "cleanupHelper": "CleanupPublicationCut.cs:131-140 CleanupOwnedFixture(string,Action<string>), IDisposable, actual deletion/receipt/assertions",
+    "identifier": "ResourceMaterializationContract.IsExactIdentifier:184-209 permits exact interior spaces; rejects edge whitespace",
+    "productionUnchanged": true,
+    "integrationMainExactlyPriorMinusTwoMethodLocalUsingLines": true,
+    "selectionCategoriesUnchanged": true,
+    "budgetsAndCategoryCatalogUnchanged": true,
+    "unitReadonlyOraclesPreserved": true,
+    "noTestMethodsOrCasesAdded": true
+  },
+  "checkpoint": {
+    "verdict": "PRESERVE_SCOPED_HISTORICAL_5_OF_5_PASS_NO_RERUN_CLAIM",
+    "testedMetadata": "540401302838de60e0db6feef9db09b267afe78f",
+    "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+    "sourceAndUsedDependenciesUnaffected": true,
+    "proof": "JointCheckpoint and production unchanged; integration main entire prior bytes recovered after removing exactly two unrelated method-local using declarations; shared constructor/helpers/Dispose/CleanupOwnedFixture unchanged; separate unit class."
+  },
+  "priorEvidenceCopiesVerified": {
+    "mdSha256": "35ed49762a5982c1a357fcbbd867b4582fa7086ccb51d59f229f07dfcc665523",
+    "jsonSha256": "cac45cdbee78d7ae2bf27a46efc8c0a77a90eac59cca9c338e4d731c9c6b9457"
+  },
+  "findings": [],
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "preparationSelection": "tests/selections/1536-fr063-joint-connected-preparation.json",
+  "requiredBeforeActual": [
+    "Fresh BOTH for actual corrected carrier, no d6 binary reuse",
+    "Strict official discovery expected40/94/23",
+    "Fresh exact Late2 PlanOnly2/2/1 zero execution",
+    "Valid catalog expected751/11596",
+    "Reminted complete source/binary pins and singleton gate, reviewerStopped only after FINALSTOP"
+  ],
+  "requiredAfterLate2": [
+    "Freeze actual outcome before diagnosis",
+    "Independent new Late2 EVIDENCE before basis retry or further actual",
+    "Corrected basis must emit actual per-test custom cleanup, standard0 remains UNOBSERVED",
+    "C1 runtime remains unqualified until exact17cases and genuine per-case cleanup receipts"
+  ],
+  "oldFiniteController": "d6-hardcoded controller cannot be reused unchanged with new binaries; later bounded adaptation/provenance review required",
+  "metadataCarrier": {
+    "allowed": true,
+    "paths": [
+      "recovery/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.md",
+      "recovery/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.json"
+    ],
+    "optionalAccurateMetadata": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "conditions": [
+      "Exact byte-identical report copies",
+      "Only specified metadata additions/notes",
+      "All code/test/config/selection/tool dependencies unchanged",
+      "reviewedSource remains b856; current gate.source/pins reminted",
+      "Fresh compileSource truthful to exact built carrier",
+      "No runtime claim from metadata publication"
+    ]
+  },
+  "frontsIdenticalAndAccurate": true,
+  "diffCheck": "PASS",
+  "repositoryWrites": false,
+  "reviewerBuildDiscoveryRuntimeExecutions": 0,
+  "FR063_T070": "OPEN",
+  "reportPath": "/workspace/boe-fr063-tools-20261015/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.md",
+  "reportSha256": "2f11eac3a1fb54751ad66fc7d555b73d91bbceb576aff24a8d36f8fb519aee3d",
+  "stop": "FINALSTOP; no pending writes"
+}
