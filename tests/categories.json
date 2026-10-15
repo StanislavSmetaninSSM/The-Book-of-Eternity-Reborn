@@ -362,8 +362,8 @@
     },
     {
       "id": "fr063-joint-phase-refusal",
-      "responsibility": "SOURCE-only/provisional: Twelve literal after-tamper controls: missing marker, phase fingerprint, mixed schedule/report, basis/current control/worldtime, admitted-child signed payload digest and four header counterparts. First actual owner holds and preserves exact captured after-tamper file inventory/G/Ready/original/output/backups/turn/story without authority preflight after tamper.",
-      "excludes": "One official method includes all12 rows. Admitted-child corruption is not freshPID initially bad authority; no-frame/all erased owner traces and runtime empty-directory coverage are not inferred. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "responsibility": "#1536 phase12 fixture correction for independently observed malformed-manifest early browser/main admission refusal. Preserve all12 literal cases: eleven existing held-inner outcomes unchanged, exact manifest_malformed expects JsonException from existing BrowserOriginalAdmission before inner entry/handled, full raw session/runtime/G/directory before-after equality without another lease, story/turn/inGame preserved and genuine cleanup. No production admission or authority change; no initially-bad-before-PID coverage.",
+      "excludes": "No original/G repair, main-admission bypass, completion authority, ACTIVE implementation or initially-bad-before-PID claim. Preserve the existing twelve literal after-good-child-preflight corruptions; real per-case target and auxiliary cleanup required. Compilation/runtime of the corrected fixture remain unqualified until corrected gates and fresh preparation.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs"
       ],

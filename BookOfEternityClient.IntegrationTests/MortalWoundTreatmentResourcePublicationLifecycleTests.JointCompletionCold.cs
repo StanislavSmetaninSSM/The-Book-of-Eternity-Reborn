@@ -71,6 +71,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
         var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
         var generationRefusal = refusalScenario is "generation_missing" or "generation_foreign";
+        var malformedManifestAdmissionRefusal = refusalScenario == "manifest_malformed";
         var phaseFaultControl = refusalScenario is "phase_known_compensation" or "phase_uncertain_debt";
         var storyControl = refusalScenario?.StartsWith("story_", StringComparison.Ordinal) == true;
         var childRoot = newPhysicalRoot ? Path.Combine(Path.GetTempPath(), "boe-fr063-joint-cold-" + Guid.NewGuid().ToString("N")) : _fs.BasePath;
@@ -166,7 +167,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Transport = transport,
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
-                PhysicalAfter = MortalArchiveDigests(generationRefusal || phaseFaultControl || storyControl || initialOutputRefusal
+                PhysicalAfter = MortalArchiveDigests(generationRefusal || malformedManifestAdmissionRefusal || phaseFaultControl || storyControl || initialOutputRefusal
                     ? await CaptureJointGenerationRefusalRawImagesAsync(_fs)
                     : await CaptureMortalArchiveImagesAsync(_fs, paused.Keys.Where(path => path != "$sessionGeneration"))),
                 NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
@@ -177,7 +178,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var child = ParseJsonObjectBytes(await File.ReadAllBytesAsync(output));
         Assert.NotEqual(Environment.ProcessId, child["processId"]!.GetValue<int>());
         Assert.True(child["actualOuterCallerInvoked"]!.GetValue<bool>());
-        Assert.Equal(!generationRefusal, child["actualCallerEntered"]!.GetValue<bool>());
+        Assert.Equal(!generationRefusal && !malformedManifestAdmissionRefusal, child["actualCallerEntered"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is null, child["completed"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is not null, child["refusalVerified"]!.GetValue<bool>());
         Assert.Null(child["failure"]);
@@ -295,6 +296,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var refusalVerified = false;
         var actualOuterCallerInvoked = false;
         Exception? generationAdmissionFailure = null;
+        Exception? manifestAdmissionFailure = null;
         Exception? phaseOwningFailure = null;
         Exception? storyOwningFailure = null;
         string? actualGeneration = null;
@@ -308,6 +310,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?>? intactBeforeTamper = null;
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
         Dictionary<string, byte[]?>? retainedRawBefore = null, retainedRawAfter = null;
+        Dictionary<string, byte[]?>? manifestAdmissionRawBefore = null, manifestAdmissionRawAfter = null;
         PendingTurnSnapshotReadAuthority? original = null;
         byte[]? storyBefore = null, originalStoryPrefix = null;
         try
@@ -486,6 +489,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(context["expectedRetainedStorySha256"]!.GetValue<string>(), MortalArchiveHash(storyBefore!));
                 retainedRawBefore = await CaptureJointGenerationRefusalRawImagesAsync(files);
             }
+            if (scenario == 2 && refusalScenario == "manifest_malformed")
+            {
+                // The genuine original/phase preflight and one-leaf corruption
+                // above have finished and their lease has closed. Browser main
+                // admission rejects this malformed manifest before inner entry.
+                manifestAdmissionRawBefore = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                before = manifestAdmissionRawBefore;
+            }
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
             { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
                 FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, RefusalScenario = refusalScenario,
@@ -495,6 +506,38 @@ public sealed partial class GameEngineTurnLifecycleTests
             // The first owning call is the real late lifecycle. No Restore,
             // Export, correction, reducer or Compose has run in this process.
             actualOuterCallerInvoked = true;
+            if (scenario == 2 && refusalScenario == "manifest_malformed")
+            {
+                var inGameBeforeAdmission = GetPrivateFieldValue<bool>(engine, "_inGame");
+                try
+                {
+                    manifestAdmissionFailure = await Record.ExceptionAsync(async () =>
+                    {
+                        handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+                    });
+                }
+                finally
+                {
+                    // No second admission or lease may repair the damaged
+                    // namespace before its complete outcome is retained.
+                    manifestAdmissionRawAfter = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                    after = manifestAdmissionRawAfter;
+                    Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_manifest_admission_actual_outcome", Observation = new
+                    { actualOuterCallerInvoked, actualCallerEntered, handled, Failure = manifestAdmissionFailure?.ToString(),
+                        InGameBefore = inGameBeforeAdmission, InGameAfter = GetPrivateFieldValue<bool>(engine, "_inGame"),
+                        RawBefore = manifestAdmissionRawBefore, RawAfter = manifestAdmissionRawAfter } }));
+                }
+                var refused = Assert.IsAssignableFrom<JsonException>(manifestAdmissionFailure);
+                Assert.Contains("FileSystemManager.PreflightBrowserOriginalAdmission", refused.StackTrace ?? string.Empty, StringComparison.Ordinal);
+                Assert.Equal(Encoding.UTF8.GetBytes("{"), manifestAdmissionRawBefore![LiveTurnPreparationService.PendingTurnSnapshotManifestPath]);
+                AssertJointGenerationRefusalRawImagesEqual(manifestAdmissionRawBefore!, manifestAdmissionRawAfter!);
+                Assert.Equal(storyBefore, manifestAdmissionRawAfter![QteStoryPath]);
+                Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                Assert.Equal(inGameBeforeAdmission, GetPrivateFieldValue<bool>(engine, "_inGame"));
+                Assert.False(actualCallerEntered); Assert.Null(handled);
+                refusalVerified = true;
+                return;
+            }
             if (scenario == 7)
             {
                 storyOwningFailure = await Record.ExceptionAsync(async () =>
@@ -717,6 +760,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 processId = Environment.ProcessId, actualOuterCallerInvoked, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
                 GenerationAdmissionFailure = generationAdmissionFailure?.ToString(),
+                ManifestAdmissionFailure = manifestAdmissionFailure?.ToString(),
+                ManifestAdmissionRawBefore = manifestAdmissionRawBefore, ManifestAdmissionRawAfter = manifestAdmissionRawAfter,
                 PhaseOwningFailure = phaseOwningFailure?.ToString(), PhaseFaultEvidence = phaseProbe?.Evidence(),
                 PhaseFaultRawBefore = scenario is 5 or 6 ? before : null, PhaseFaultRawAfter = scenario is 5 or 6 ? after : null,
                 StoryOwningFailure = storyOwningFailure?.ToString(), StoryFaultEvidence = storyProbe?.Evidence(),

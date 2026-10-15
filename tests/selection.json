@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536 accepted generation-veto DESIGN115849 closes actual missing-G bootstrap defect before the unbound Late operation. Only Late opts into a no-value veto; raw marker G can only refuse. Existing hold/owner/proofs/member sets unchanged. Fresh BOTH/discovery/catalog then first actual singleton Late2; new helper controls and corrected G2 require independent release after Late2 EVIDENCE. No blanket historical reruns or full FR063 closure.",
+      "reason": "#1536 isolated phase12 fixture correction changes integration build inputs. Corrected independent gates and fresh BOTH/discovery/catalog precede first actual singleton Late2, preserving genuine completed-v2 union/output/progression/story/repeat and per-case cleanup. Independent Late2 EVIDENCE required before phase12 retry. Qualified unchanged helper29/G2 and historical cases keep original provenance; no automatic rerun.",
       "contracts": [
         "FR-012",
         "FR-063",
@@ -11,20 +11,11 @@
       ]
     },
     {
-      "category": "fr063-joint-generation-admission",
-      "reason": "#1536 accepted generation-veto DESIGN115849: finite negative-only helper/wrapper/default/bound/expected/close controls with isolated roots and genuine cleanup. Actual singleton only after corrected fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE. Static source expectation9methods29cases1descriptor; UNRUN, not completion authority.",
+      "category": "fr063-joint-phase-refusal",
+      "reason": "#1536 phase12 fixture correction for independently observed malformed-manifest early browser/main admission refusal. Preserve all12 literal cases: eleven existing held-inner outcomes unchanged, exact manifest_malformed expects JsonException from existing BrowserOriginalAdmission before inner entry/handled, full raw session/runtime/G/directory before-after equality without another lease, story/turn/inGame preserved and genuine cleanup. No production admission or authority change; no initially-bad-before-PID coverage.",
       "contracts": [
-        "FR-012",
-        "FR-063",
-        "existing same-G/no-new-G contract; raw marker comparison can only refuse; no new members or authority"
-      ]
-    },
-    {
-      "category": "fr063-joint-generation-refusal",
-      "reason": "#1536 accepted G2 evidence114125 and generation-veto DESIGN115849: actual unbound Late refuses before inner checkpoint through the real joint veto, without assuming nonexistent console cohort. Preserve complete raw target/donor namespace, missing-G absence, story/turn/inGame, no handled result. Two existing methods/cases unchanged. Retry requires corrected gates/fresh BOTH/first Late2 EVIDENCE/finite helper controls; currently FAIL under old source, corrected runtime UNRUN.",
-      "contracts": [
-        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
-        "SOURCE-only/provisional: Actual first outer Late storage admission refuses missing physicalG or exact lawful independent donorG after intact prerequisites and leases close; raw after-damage images/Ready/original/output/backups/story/turn retained without newG or second admission. Outer attempt vs inner hook distinguished."
+        "FR012/FR063 accepted DESIGNv2; preservation does not bypass prior browser/main storage admission",
+        "Eleven unchanged held-inner controls plus one exact malformed-manifest early JsonException refusal with complete raw preservation; all twelve cases retained"
       ]
     }
   ]
