@@ -1,0 +1,157 @@
+{
+  "source": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+  "compiledSource": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+  "reviewedSource": "954260e6cebe6d1456e401b52ff631d86782e5fa",
+  "scope": "ROOT recorded-evidence qualification only; independent EVIDENCE pending. C1 telemetry/native13-17-4 still UNRUN. No lawful ACTIVE acceptance. No cold child in Late2. Fresh11 is the reported payload set, not every possible process dependency.",
+  "packet": "fr063-c1-fixture-corrected-Late2-frozen-dbdb20747-20261015T171505Z",
+  "manifestSha256": "0cbf8eda4d61527ba416382f8a4d94a755b0032c92fef3447b4ae55417febc52",
+  "allCompressedRawChainsVerified": 63,
+  "allSourcePinsEqualExactGitAndCurrent": 1007,
+  "freshBinaryPinsCurrentExact": 11,
+  "manualA6Only": true,
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "manualNativeZeroCommands": 9,
+  "freshBuildWarnings": {
+    "Build-unit.log": 35,
+    "Build-integration.log": 131
+  },
+  "freshBuildErrors": {
+    "Build-unit.log": 0,
+    "Build-integration.log": 0
+  },
+  "catalog": {
+    "Valid": true,
+    "Methods": 11605,
+    "Categories": 752,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "freshInventorySha256": "60b4a8a3217b636493f5e127f57e8cd1b902bfd56be0b2996846087ef90ea1bc",
+  "C1ownershipPlanExactFreshDiscovery13Methods17Cases4Descriptors": true,
+  "C1ownershipPlanSha256": "a5f7e2020dd87b9ef3fb27d42584ab0d2ab39b2d5c3369a877dfd2d6b9c72961",
+  "nativeExit": 0,
+  "wallTime": "00:02:38.0028858",
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "zeroExecutionPreparationPlanCatalog": true,
+  "rootReaderScript": "/tmp/fr063-c1-fixture-Late2-root-recorded-oracles-20261015T171505Z.py",
+  "rootReaderScriptSha256": "4c01af62c08b3e1e5a9b9d6176cd6fdf2d9d210f7ea894e33deb6c30de9265a0",
+  "oracles": {
+    "trxRawSha256": "69ea002c537250998b435cb84733ecde245c95775ca2ea6ce429247ea6315f67",
+    "allJsonRows": 72,
+    "perCaseRowsReparsedFromRawTrx": true,
+    "cases": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "outcome": "Passed",
+        "actualTurn": 43,
+        "sourceTurn": 42,
+        "fullUnionNativeValidationAndReportedFieldsVerified": true,
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "outputBindingFields": 6,
+        "exactNarrativeSha256": "ea027ba2529f46d42f0a74911bac763471f27a9390ace8b84e922b08c4324785",
+        "narrativeIncludesBom": true,
+        "sameCreateReceiptAndMarkerIds": true,
+        "exactStoryCorrelation": true,
+        "fullProgressionPairEqualExceptPhase": true,
+        "fourImageDigestsVerified": true,
+        "signedScheduleExactBeforeOwner": true,
+        "independentFullScheduleArithmetic": true,
+        "worldCycles": 1,
+        "lastWorld": [
+          1260,
+          1500
+        ],
+        "reportRemovalTransactions": [
+          "3b8918c51d30423c9ad8bc462e2129a4",
+          "1fbbe931e6c74667af734e24fb71b2ac"
+        ],
+        "inertRepeatEntireDigestMapsEqual": 84,
+        "nativeByteEqualityAsserted": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-22b1b1f0368a4550bf3174ea18c664b4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "outcome": "Passed",
+        "actualTurn": 43,
+        "sourceTurn": 42,
+        "fullUnionNativeValidationAndReportedFieldsVerified": true,
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "outputBindingFields": 6,
+        "exactNarrativeSha256": "16ddb60b53c5b3d4de6573c9b418e357f477a1170e5bd5fa159b71f9668f777b",
+        "narrativeIncludesBom": true,
+        "sameCreateReceiptAndMarkerIds": true,
+        "exactStoryCorrelation": true,
+        "fullProgressionPairEqualExceptPhase": true,
+        "fourImageDigestsVerified": true,
+        "signedScheduleExactBeforeOwner": true,
+        "independentFullScheduleArithmetic": true,
+        "worldCycles": 0,
+        "lastWorld": [
+          1260,
+          1260
+        ],
+        "reportRemovalTransactions": [],
+        "inertRepeatEntireDigestMapsEqual": 84,
+        "nativeByteEqualityAsserted": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d5f2e1af7bb44048abe4bfbe48b97999",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "receiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      }
+    ],
+    "strictCleanupCount": 2,
+    "coldChildEvidence": "NONE_IN_LATE2",
+    "limits": [
+      "native completed canonical validation and terminal cleanup assertions verified by passed-case path; no new independent canonical-owner execution",
+      "84-path recorded repeat digest maps compared in full; native fixture separately asserts byte equality",
+      "no C1 telemetry/native13-17-4, ACTIVE3 branch or lawful ACTIVE proof"
+    ]
+  },
+  "utc": "2026-10-15T17:24:16.205134+00:00"
+}
