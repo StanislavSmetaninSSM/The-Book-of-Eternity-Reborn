@@ -21,7 +21,8 @@
 
 The user authorized DESIGN-only preparation of [variant B](./design/lawful-active-joint-tail-b.md)
 after readonly checkpoint10611c69a. All additional schema/member/issuer grants are proposals
-awaiting discussion and independent DESIGN review. The accepted INACTIVE contour remains
+awaiting user discussion. Independent corrected DESIGN review on a8479c86d is ready for discussion;
+it does not accept the proposed grants. The accepted INACTIVE contour remains
 unchanged; no implementation or ACTIVE runtime acceptance follows from this link.
 
 ## Clarifications

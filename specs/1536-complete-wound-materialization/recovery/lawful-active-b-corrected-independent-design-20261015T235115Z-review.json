@@ -1,0 +1,110 @@
+{
+  "review_kind": "independent_affected_design_only",
+  "recommendation": "READY_FOR_USER_DISCUSSION",
+  "reviewed_sha": "a8479c86d8f021a57c356e5a84f59f1a080fbdc6",
+  "baseline_sha": "c5f8897949e8f484f1d9711806ef2cd2d7f04145",
+  "tree_clean": true,
+  "actual_diff_sha256": "3c69ddf28fe4211d15590fa72eada7f9b452079a0ab8ad6e6202173c188f22f2",
+  "changed_paths": {
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md": "f1a4de07dd45955ccd8583c3c8f33f8b025f5322077beaf82f122330dbd89b36",
+    "specs/1536-complete-wound-materialization/plan.md": "8f152790a934c4bdb4ac979c8c1bf4f9983b6b268a89e1730e5aff9ddcbd85c0",
+    "specs/1536-complete-wound-materialization/recovery/lawful-active-b-independent-design-20261015T234535Z-review.json": "39cb4cf7937afe23b2005c1e2dd37e68a8258f848c588f728c4d5798f08ef842",
+    "specs/1536-complete-wound-materialization/recovery/lawful-active-b-independent-design-20261015T234535Z-review.md": "140e363c0c37775d2c05f0b8798e7d3532d23e32b29674b909a3c97df5218736",
+    "specs/1536-complete-wound-materialization/tasks.md": "9b468ce8196077c277aec1af01699f2dc8f8a57b83b914c5715060cdeb1035d5"
+  },
+  "prior_report_exact_copy_sha256": {
+    "md": "140e363c0c37775d2c05f0b8798e7d3532d23e32b29674b909a3c97df5218736",
+    "json": "39cb4cf7937afe23b2005c1e2dd37e68a8258f848c588f728c4d5798f08ef842"
+  },
+  "reviewer_configuration": {
+    "requested_model": "Astra",
+    "requested_effort": "XHigh",
+    "backend_model_telemetry": "unavailable",
+    "backend_effort_telemetry": "unavailable"
+  },
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "D-F1",
+      "status": "addressed_for_design_discussion",
+      "design_lines": [
+        240,
+        242,
+        247,
+        256,
+        289,
+        299
+      ],
+      "basis": "Explicit durable decision receipt, exact accept/decline maps, null/state rules and terminal/release retention without self-reference."
+    },
+    {
+      "id": "D-F2",
+      "status": "addressed_for_design_discussion",
+      "design_lines": [
+        499,
+        521
+      ],
+      "basis": "Real direct responseFragment grammar and narrative precedence; exact existing damage-only restrictions; narrower null policy expressly proposed."
+    },
+    {
+      "id": "D-F3",
+      "status": "addressed_for_design_discussion",
+      "design_lines": [
+        120,
+        128,
+        212,
+        236,
+        543,
+        575,
+        681,
+        692
+      ],
+      "basis": "Complete affected guard capture and source roles; immutable storyPlan; named original-story reconstruction plus separate exact terminal narrative proof; Q14/R03."
+    }
+  ],
+  "source_pins_unchanged_from_prior_review": {
+    "AGENTS.md": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+    "docs/development-workflow.md": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+    ".specify/memory/constitution.md": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+    "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+    "BookOfEternityClient/Models/GameResponse.cs": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+    "BookOfEternityClient/Services/CharacteristicsService.cs": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+    "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Services/QteSceneService.cs": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+    "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs": "f2b9b47d454f3d8fc7811404de62e641063dc00f22df782fa735268d4b0cfd85",
+    "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+    "BookOfEternityClient/Services/QtePhysicalInjurySource.cs": "56115c27300bd945c068bed94307b2658b69fe143258f9d5f8101328a7d3be59",
+    "BookOfEternityClient/Services/QteTerminalResourceOutcome.cs": "1106c76793201320fc1d1a2647ce394ea8d9890228c47cadb765d280e4e13a6f",
+    "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900",
+    "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+    "BookOfEternityClient/Services/GuardianAbodeResidentState.cs": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42",
+    "BookOfEternityClient/Services/ShiningAbodeState.cs": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873"
+  },
+  "scope": "Three corrected design findings and affected schema/proof/source coherence only",
+  "authorization_accepted": false,
+  "implementation_release": false,
+  "runtime_release": false,
+  "new_runtime_evidence": "UNRUN",
+  "remaining_decisions": [
+    "User discussion and acceptance or rejection of D1-D8",
+    "D4 allocation timing and separate allocator safety",
+    "D5 decline product semantics",
+    "D8 supported terminal subset and selected-terminal/post-QTE atomic scope"
+  ],
+  "limitations": [
+    "No implementation proof",
+    "No native/build/test/discovery/runner execution",
+    "No full US5/FR063/lawful ACTIVE completion",
+    "Prior broader review retained without historical evidence reconstruction"
+  ],
+  "markdown_sha256": "ead87ef45cbe1b7571d074083bc99f8d59c6c819596c39e9519c737d44e66bf3",
+  "final_stop": true,
+  "pending_writes": false
+}
