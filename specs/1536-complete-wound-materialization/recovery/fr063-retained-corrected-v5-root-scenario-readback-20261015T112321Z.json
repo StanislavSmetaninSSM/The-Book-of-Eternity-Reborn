@@ -1,0 +1,92 @@
+{
+  "source": "70dc075fb3c846b901c95ce8fde890cb0604894d",
+  "compileSource": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "manifestSha256": "235457d6c1ab278415de523bbaa27d5bab16a73b3f66b2c04913322e4c6015b5",
+  "verifiedRawCompressedChains": 36,
+  "readerOutput": "fr063-retained-corrected-v5-recorded-child-readback-20261015T112021Z.json",
+  "readerOutputSha256": "9207895f3898e414590ae0fb1fea334d729d00f12cf575a32adc3e1ef4af357d",
+  "children": [
+    42786,
+    42805
+  ],
+  "actualNativeChildren": [
+    {
+      "ChildProcessId": 42786,
+      "ParentProcessId": 42670,
+      "HasExited": true,
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Failure": null,
+      "StdoutEofObserved": true,
+      "StderrEofObserved": true
+    },
+    {
+      "ChildProcessId": 42805,
+      "ParentProcessId": 42670,
+      "HasExited": true,
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Failure": null,
+      "StdoutEofObserved": true,
+      "StderrEofObserved": true
+    }
+  ],
+  "firstRealWriterCommitAppendReadbackFaultCounts": [
+    1,
+    1,
+    1
+  ],
+  "originalPrefixSha256": "BA4357C1B58069D84E4E69DD123B01D915D145150280A77127AEB4C17641B4D6",
+  "fullSignedHistoryInventoryVerified": true,
+  "signedHistoryPaths": [
+    "game_state/history/chat_log.json",
+    "stories/mortal_life_2.jsonl"
+  ],
+  "retainedWholeStorySha256": "D0431DC4040126E0CBA3ADC4D5085E21CB592E7E1EE54F80602CBCC9BEDAFC34",
+  "exactFullRow": {
+    "requestId": "224dd17bdea443278b979ead9646ca68",
+    "sessionGeneration": "a27b086b3bd4450a9eebdc965a4c5e54",
+    "turn": 43,
+    "timestamp": "2026-10-15T11:17:48.9028557Z",
+    "realm": "Mortal World",
+    "player": "Осмотреть ушиб.",
+    "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+    "location": "T070-B.3 field clinic"
+  },
+  "secondCompletedTurn43WithoutAppend": true,
+  "mechanicsPhaseProjectionGenerationPresenceAndRawEqualPaths": [
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_history.json",
+    "game_state/wounds/wound_history.json",
+    "game_state/wounds/wound_identity_index.json",
+    "game_state/player/wounds.json",
+    "game_state/effects/effect_identity_index.json",
+    "game_state/player/effects.json",
+    "game_state/control/pending_mortal_wound_occurrences.json",
+    "game_state/wounds/wound_opportunity_receipts.json",
+    "game_state/wounds/mortal_qte_decision_publication.json",
+    "game_state/control/progression_schedule.json",
+    "game_state/player/computed_characteristics.json",
+    "$sessionGeneration"
+  ],
+  "inertRepeatEntireAfterRepeatedMapsEqual": true,
+  "realStrictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4c34f7ffcfdb4a4cb6831e369b420248",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c71633dffbdf4f63bcf5246ede029e9e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2cd0e16a5931403fbfcc8c75bda50eeb",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allCleanupRootsActuallyAbsent": true,
+  "scope": "ROOT actual scenario qualification plus recorded child bindings/native; no whole FR063 or all-child-dependency claim"
+}
