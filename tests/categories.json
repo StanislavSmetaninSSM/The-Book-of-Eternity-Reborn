@@ -2,6 +2,152 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-output-basis",
+      "responsibility": "Closed six-field output basis, exact detached UTF8/BOM/hash/shape and projector fixed point. Pure parser tests grant no completion authority.",
+      "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "First corrected Late2 must be frozen and independently classified before this actual stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-output-positive",
+      "responsibility": "Actual normalized-before-initial-checkpoint severity correction and genuine applied cold exact-present public draft; single scene/story/turn and inert repeat.",
+      "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "First corrected Late2 must be frozen and independently classified before this actual stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ExactPresentDraftColdContinuationRetainsAcceptedScene",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NarrativeNormalizesBeforeFirstCheckpointAndTimestampCorrectionSealsExactImage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-output-scene-refusal",
+      "responsibility": "Five independent real common/applied seeds damaged in parent before child launch: full scene prefix, timestamp, formatting, missing scene and normalization-required scene. First fresh-PID owner performs no prior output/source preflight; exact raw cohort retained.",
+      "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "First corrected Late2 must be frozen and independently classified before this actual stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 7,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-output-binding-refusal",
+      "responsibility": "Five independent initially bad client markers: missing binding/old v2, unknown version, coherently marker-rehashed foreign localRef or CREATE wound/transition ID. Actual receipt/source binding must refuse.",
+      "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "First corrected Late2 must be frozen and independently classified before this actual stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 7,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-output-draft-refusal",
+      "responsibility": "Four initially bad fresh-PID admissions: changed severity, malformed or foreign present public draft, and signed original authority payload digest damaged before process launch. Raw whole-tree retention without child preflight.",
+      "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "First corrected Late2 must be frozen and independently classified before this actual stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-late-completion",
       "responsibility": "SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry.",
       "excludes": "Actual ProcessPlayerTurn, cold/new-root, refusals and active-tail support are separate. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",

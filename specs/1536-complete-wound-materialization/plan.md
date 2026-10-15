@@ -1,3 +1,9 @@
+## Approved A test-first WIP — 2026-10-15
+
+- Independent DESIGN A accepted revised hash68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364; separate scope2 EVIDENCE accepted only actual2FAIL/0PASS extent. Artifacts being retained.
+- Added behavioral controls before production: exact basis parser/normalization, real exact-present-draft and normalized checkpoint positives, initial damaged fresh-PID scene/binding/draft/original-authority controls. Five small category owners, strict discovery/inventory adapter update pending.
+- New tests intentionally reference the not-yet-implemented basis; compilation/runtime UNRUN. Existing native Late2 failure at85caae3c is retained regression evidence, not an execution of these new controls. Sole writer; no new authority/member paths. Next implement approved A, corrected independent gates, fresh preparation then first Late2 only.
+
 ## Completed-v2 A design refinement — 2026-10-15
 
 - Metadata carrier d7f88d8a7cdaed705cc747e0285b7720caf231a9 is remotely verified; main unchanged.

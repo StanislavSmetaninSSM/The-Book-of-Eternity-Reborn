@@ -70,6 +70,25 @@ public sealed partial class GameEngineTurnLifecycleTests
                 transport = await CopyQuiescentJointNamespaceAsync(_fs, lease, childRoot, paused);
             }
         } // No parent input/read/write lease or participating caller survives launch.
+        byte[]? acceptedPublicDraft = null;
+        if (refusalScenario?.StartsWith("draft_", StringComparison.Ordinal) == true)
+        {
+            var acceptedDraft = ParseJsonObjectBytes(originalBefore[MortalWoundOpportunityAdapter.DecisionPath]!);
+            acceptedDraft["proposal"]!["severity"] = "II";
+            acceptedPublicDraft = Encoding.UTF8.GetBytes(acceptedDraft.ToJsonString());
+        }
+        if (refusalScenario == "draft_exact")
+        {
+            await DamageJointOutputBeforeChildLaunchAsync(_fs, refusalScenario, acceptedPublicDraft);
+            refusalScenario = null;
+            paused = await CaptureJointGenerationRefusalRawImagesAsync(_fs);
+        }
+        var initialOutputRefusal = IsInitialJointOutputRefusal(refusalScenario);
+        if (initialOutputRefusal)
+        {
+            await DamageJointOutputBeforeChildLaunchAsync(_fs, refusalScenario!, acceptedPublicDraft);
+            paused = await CaptureJointGenerationRefusalRawImagesAsync(_fs);
+        }
         var context = new JsonObject
         {
             ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
@@ -91,7 +110,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", childRoot, output, storyControl ? 7 : refusalScenario == "phase_known_compensation" ? 5
+                "engine-mortal-joint-applied-cold", childRoot, output, initialOutputRefusal ? 9 : storyControl ? 7 : refusalScenario == "phase_known_compensation" ? 5
                     : refusalScenario == "phase_uncertain_debt" ? 6 : refusalScenario == "generation_foreign" ? 4
                     : generationRefusal ? 3 : refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
@@ -184,7 +203,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.InRange(scenario, 0, 8);
+        Assert.InRange(scenario, 0, 9);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -261,6 +280,29 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.NotSame(factory._fs.CanonicalRootAuthorityIdentity, files.CanonicalRootAuthorityIdentity);
             }
             AssertMortalArchiveChildBinaries(context);
+            if (scenario == 9)
+            {
+                // Namespace was damaged in the PARENT before this process existed.
+                // Only raw reads before the first owner: no successful authority,
+                // output-binding, original, phase or state preflight in this child.
+                before = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                foreach (var pair in context["pausedImages"]!.AsObject())
+                    Assert.Equal(pair.Value?.GetValue<string>(), before.TryGetValue(pair.Key, out var image) && image is not null ? MortalArchiveHash(image) : null);
+                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(context["sessionId"]!.GetValue<string>(), 42);
+                actualOuterCallerInvoked = true;
+                var ownerFailure = await Record.ExceptionAsync(async () =>
+                    handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+                after = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_output_initially_bad_first_owner", Observation = new
+                { Environment.ProcessId, actualOuterCallerInvoked, actualCallerEntered, handled, Failure = ownerFailure?.ToString(), RawBefore = before, RawAfter = after } }));
+                Assert.Null(ownerFailure);
+                AssertJointGenerationRefusalRawImagesEqual(before, after);
+                Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                Assert.True(actualCallerEntered); Assert.True(handled);
+                Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
+                refusalVerified = true;
+                return;
+            }
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
                 before = await CaptureConfirmedClaimReadImagesAsync(files, lease);

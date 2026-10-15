@@ -23,7 +23,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
-        bool useLiveCaller = false, bool recoverRetainedStoryRow = false)
+        bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -78,7 +78,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         }.ToJsonString(), "treatmentContext");
         Assert.True(contextResult.IsValid, DescribeValidationIssues(contextResult.Issues));
         var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(contextResult.Context);
-        var scene = HeldTreatmentPipelineContext.FinalSceneText + " " + MortalComponentAcquisition;
+        var scene = HeldTreatmentPipelineContext.FinalSceneText + " " + MortalComponentAcquisition +
+            (normalizeNarrativeBeforeCheckpoint ? "\nРассказ продолжается." : string.Empty);
         MortalWoundTreatmentAttemptRequest request = null!;
         MortalWoundTreatmentResourceFinalization finalization = null!;
         WoundResponseInputCompositionResult composition = null!;
@@ -200,7 +201,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), treatment.Request));
                 Assert.Equal(scene, treatment.FinalSceneText);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
-                await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision, scene);
+                await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision,
+                    normalizeNarrativeBeforeCheckpoint ? scene.Replace("\n", "`n", StringComparison.Ordinal) : scene);
                 if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
                 // Freeze actual authored43 public bytes before the real repair restores
                 // original baseline. This is a GM response, never private restore authority.

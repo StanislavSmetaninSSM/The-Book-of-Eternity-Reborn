@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-output-scene-refusal",
+      "reason": "Five independent real common/applied seeds damaged in parent before child launch: full scene prefix, timestamp, formatting, missing scene and normalization-required scene. First fresh-PID owner performs no prior output/source preflight; exact raw cohort retained.",
+      "contracts": [
+        "#1536 FR063 output binding A"
+      ]
+    }
+  ]
+}

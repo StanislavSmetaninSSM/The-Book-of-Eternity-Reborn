@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-output-binding-refusal",
+      "reason": "Five independent initially bad client markers: missing binding/old v2, unknown version, coherently marker-rehashed foreign localRef or CREATE wound/transition ID. Actual receipt/source binding must refuse.",
+      "contracts": [
+        "#1536 FR063 output binding A"
+      ]
+    }
+  ]
+}

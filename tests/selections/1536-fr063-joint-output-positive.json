@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-output-positive",
+      "reason": "Actual normalized-before-initial-checkpoint severity correction and genuine applied cold exact-present public draft; single scene/story/turn and inert repeat.",
+      "contracts": [
+        "#1536 FR063 output binding A"
+      ]
+    }
+  ]
+}
