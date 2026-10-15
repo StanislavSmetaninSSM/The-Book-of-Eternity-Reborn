@@ -1,0 +1,30 @@
+{
+  "checkpoint": "b8b4b5f5e5e1675aec6a1b4da3e0d1102acd27f8",
+  "publicationNative": {
+    "launch": "9f3f55",
+    "session": 36701,
+    "completion": "524f06",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "f047b5",
+    "session": 95246,
+    "completion": "9fdee6",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "b8b4b5f5e5e1675aec6a1b4da3e0d1102acd27f8",
+    "remoteSha": "b8b4b5f5e5e1675aec6a1b4da3e0d1102acd27f8",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2732,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2203,
+    "consumerProduction": "PrivatejointCREATEeffectmaphandoffSOURCEWIP;realcorrectedcommandrootsealed/reparseValidateSkillScopes/bindpreparedIDs/SAMEfingerprintcacheandrecompose;strictguardsfixturesselectorsunchanged;focusedgatesNEXT/compilerAPIbehaviorUNCHECKED;buildruntimeHELD/checkpoint5norepeat/later12UNRUN",
+    "verifiedUtc": "2026-10-15T01:52:43.317721+00:00"
+  },
+  "sourceWriterSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same independent focusedSOURCEFIXTURESELECTION productionhandoffcorrection",
+  "allProjectOperations": "HELD",
+  "actualCorrectionValidity": "UNRUN"
+}
