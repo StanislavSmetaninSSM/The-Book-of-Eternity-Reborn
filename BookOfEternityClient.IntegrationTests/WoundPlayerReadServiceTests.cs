@@ -74,6 +74,9 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
     public async Task StatusSnapshot_CapturesHeaderAndWoundsOnOneReadLeaseWithoutRepair()
     {
         await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea");
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json",
+                "{\"currentRealm\":\"Chaos Sea\",\"soulName\":\"Путник\",\"soulFormDescription\":\"Светлый узор\",\"currentIncarnation\":4}");
         var repairs = 0;
         var state = new StateManager(fixture.Files, new GameSettings(), NullLogger<StateManager>.Instance,
             new StateManagerHooks { AfterPlayerSoulProfileInputsReadAsync = () => { repairs++; return Task.CompletedTask; } });
@@ -82,6 +85,9 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         var mutations = fixture.MutationCalls;
         var snapshot = await WoundPlayerStatusReadService.LoadAsync(state, fixture.Files);
         Assert.Equal("Chaos Sea", snapshot.State.CurrentRealm);
+        Assert.Equal("Путник", snapshot.State.SoulName);
+        Assert.Equal("Светлый узор", snapshot.State.SoulFormDescription);
+        Assert.Equal(4, snapshot.State.Incarnation);
         Assert.Equal("Известная рана души", Assert.Single(snapshot.Wounds.Active).Name);
         Assert.Equal(locks + 1, fixture.LockOpens);
         Assert.Equal(mutations, fixture.MutationCalls);
@@ -90,14 +96,20 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         // A subsequent independent refresh must not replace the already-captured header.
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
-            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal\"}");
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal\",\"soulName\":\"Иной путник\",\"soulFormDescription\":\"Иная форма\",\"currentIncarnation\":5}");
             var changed = fixture.Snapshot();
             await state.RefreshGameStateReadOnlyAsync(lease);
             Assert.Equal(changed, fixture.Snapshot());
         }
         Assert.NotSame(snapshot.State, state.CurrentState);
         Assert.Equal("Mortal", state.CurrentState.CurrentRealm);
+        Assert.Equal("Иной путник", state.CurrentState.SoulName);
+        Assert.Equal("Иная форма", state.CurrentState.SoulFormDescription);
+        Assert.Equal(5, state.CurrentState.Incarnation);
         Assert.Equal("Chaos Sea", snapshot.State.CurrentRealm);
+        Assert.Equal("Путник", snapshot.State.SoulName);
+        Assert.Equal("Светлый узор", snapshot.State.SoulFormDescription);
+        Assert.Equal(4, snapshot.State.Incarnation);
         Assert.Equal(0, repairs);
     }
 

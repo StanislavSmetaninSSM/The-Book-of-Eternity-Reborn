@@ -30,6 +30,11 @@ public sealed class WoundPlayerStatusSourceGuardTests
         Assert.Contains("RenderWoundStatus(status.Wounds)", afterlife);
         Assert.DoesNotContain("RefreshGameStateAsync", afterlife);
         Assert.DoesNotContain("_stateManager.CurrentState", afterlife);
+        var header = Section(afterlife, "\"[bold]Область и душа:[/]\"", "\"[bold]Ресурсы души:[/]\"");
+        Assert.DoesNotContain("soulRoot", header);
+        Assert.Contains("state.SoulName", header);
+        Assert.Contains("state.SoulFormDescription", header);
+        Assert.Contains("state.Incarnation", header);
         var renderer = Read("BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs");
         Assert.DoesNotContain("AppendStatusWoundPreview", renderer);
         Assert.Contains("WoundPlayerStatusBlocks.Build(projection)", renderer);
