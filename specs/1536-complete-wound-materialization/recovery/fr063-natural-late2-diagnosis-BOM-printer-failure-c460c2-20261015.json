@@ -1,0 +1,12 @@
+{
+  "chunkId": "c460c2",
+  "exitCode": 1,
+  "sessionId": null,
+  "operation": "Read-only source excerpts plus external Python JSON inspection; json.loads(milestone[Raw]) omitted utf-8 BOM handling.",
+  "failedPythonExpression": "json.loads(m['Raw'])",
+  "fullReturnedTrace": "Traceback (most recent call last):\n  File \"<stdin>\", line 6, in <module>\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 335, in loads\n    raise JSONDecodeError(\"Unexpected UTF-8 BOM (decode using utf-8-sig)\",\njson.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)\n",
+  "sourceLocatorStderr": "rg: BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointCanonicalPublication.cs: No such file or directory (os error 2)\n",
+  "repositoryWrites": false,
+  "projectExecution": false,
+  "classification": "External diagnostic printer and source locator; not native fixture/runtime/security failure."
+}
