@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""Read frozen joint child evidence. No test execution, source mutation or authority."""
+import argparse
+import datetime
+import gzip
+import hashlib
+import json
+import pathlib
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def read(path):
+    return json.loads(path.read_text())
+
+p = argparse.ArgumentParser()
+p.add_argument('--scratch', type=pathlib.Path, required=True)
+p.add_argument('--packet', type=pathlib.Path, required=True)
+p.add_argument('--recorded-repo', required=True)
+p.add_argument('--expected-children', type=int, required=True)
+p.add_argument('--out', type=pathlib.Path, required=True)
+a = p.parse_args()
+assert a.expected_children >= 0
+manifest = read(a.packet / 'manifest.json')
+checked = []
+for name in ('actual-all-json-observations-raw.json', 'actual-root-readback.json', 'fresh-binary-pins.json'):
+    chains = [r for r in manifest['artifacts'] if r['name'] == name + '.gz']
+    assert len(chains) == 1, ('missing or ambiguous raw chain', name)
+    chain = chains[0]
+    packed = (a.packet / chain['name']).read_bytes()
+    raw = (a.scratch / name).read_bytes()
+    assert len(packed) == chain['compressedBytes']
+    assert hashlib.sha256(packed).hexdigest() == chain['compressedSha256']
+    assert len(raw) == chain['uncompressedBytes']
+    assert hashlib.sha256(raw).hexdigest() == chain['uncompressedSha256']
+    assert gzip.decompress(packed) == raw
+    checked.append({'name': name, 'sha256': chain['uncompressedSha256']})
+raw = read(a.scratch / 'actual-all-json-observations-raw.json')
+actual = read(a.scratch / 'actual-root-readback.json')
+binary = read(a.scratch / 'fresh-binary-pins.json')
+assert manifest['source'] == actual['source']
+assert binary['source'] == binary['compileSource'] == actual['compileSource']
+assert len(binary['files']) == 11
+pin_map = {str(pathlib.Path(a.recorded_repo) / row['path']): row['sha256'].upper() for row in binary['files']}
+assert len(pin_map) == 11
+
+def containers(value, location='$'):
+    if isinstance(value, dict):
+        if 'FullChildLog' in value:
+            yield location, value
+        for key, child in value.items():
+            yield from containers(child, location + '.' + key)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from containers(child, location + '[' + str(index) + ']')
+
+found = list(containers(raw))
+assert len(found) == a.expected_children, ('exact child count mismatch', len(found), a.expected_children)
+assert actual['nativeObservationBoundaries'].get('qte_mortal_child_dependency_launch', 0) == a.expected_children
+proofs = []
+seen = set()
+for location, parent in found:
+    keys = [key for key in ('Child', 'ManagedResult') if key in parent]
+    assert len(keys) == 1, ('unsupported/ambiguous joint child container', location)
+    child = json.loads(parent[keys[0]])  # Parse the WHOLE pretty-JSON final result.
+    lines = []
+    for line in parent['FullChildLog'].splitlines():
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(item, dict):
+            lines.append(item)
+    entries = [row['Observation'] for row in lines if row.get('Boundary') == 'fr063_joint_applied_child_entry']
+    natives = [row['Observation'] for row in lines if row.get('Boundary') == 'cold_child_native_result']
+    assert len(entries) == len(natives) == 1, ('entry/native witness missing or ambiguous', location)
+    entry, native = entries[0], natives[0]
+    assert native['HasExited'] is True and native['ExitCode'] == 0
+    assert native['TimedOut'] is False and native['Failure'] is None
+    assert native['StdoutEofObserved'] is True and native['StderrEofObserved'] is True
+    pid = child['processId']
+    assert pid == entry['ProcessId'] == native['ChildProcessId']
+    assert parent['ParentProcessId'] == entry['ParentProcessId'] == native['ParentProcessId'] != pid
+    assert pid not in seen, ('duplicate actual child PID', pid)
+    seen.add(pid)
+    assert len(entry['LoadedDependencies']) == len(child['loadedDependencies']) == 3
+    for reported in child['loadedDependencies']:
+        assert reported['isDefaultContext'] is True and reported['loadContext'] == 'Default'
+        assert reported['sha256'] == pin_map[reported['path']]
+        matches = [row for row in entry['LoadedDependencies'] if row['Path'] == reported['path']]
+        assert len(matches) == 1
+        before = matches[0]
+        assert before['Identity'] == reported['identity'] and before['Sha256'] == reported['sha256']
+        assert before['IsDefaultContext'] is True and before['LoadContext'] == 'Default'
+    context = child['dependencyContext']
+    assert context == entry['DependencyContext']
+    assert set(context['paths']) == set(context['sha256']) == {'integration', 'support', 'runtimeconfig', 'depsfile', 'immutable'}
+    loaded_paths = {context['paths'][key] for key in ('integration', 'support', 'immutable')}
+    assert len(loaded_paths) == 3
+    assert {row['Path'] for row in entry['LoadedDependencies']} == loaded_paths
+    assert {row['path'] for row in child['loadedDependencies']} == loaded_paths
+    for key, path in context['paths'].items():
+        assert context['sha256'][key] == pin_map[path]
+    caller_context = parent.get('Context', parent.get('ResumeContext', {}))
+    owner = {key: child.get(key) for key in (
+        'actualOuterCallerInvoked', 'actualCallerEntered', 'handled', 'secondIdle', 'completed',
+        'refusalVerified', 'failure', 'actualTurn', 'retainedStoryAppendAttempts', 'root')}
+    proofs.append({
+        'container': location, 'scenario': caller_context.get('refusalScenario'),
+        'entry': entry, 'finalReportedBindings': child['loadedDependencies'],
+        'finalDependencyContext': context, 'native': native, 'finalOwner': owner,
+        'beforeAfterMapsEqual': child['before'] == child['after'] if 'before' in child and 'after' in child else None,
+        'afterRepeatedMapsEqual': child['after'] == child['repeated'] if 'after' in child and 'repeated' in child else None,
+        'imageCounts': {key: len(child[key]) if isinstance(child.get(key), dict) else None for key in ('before', 'after', 'repeated')},
+        'entryFinalThreeAndFiveMatchFrozenFreshPins': True,
+    })
+
+result = {
+    'schema': 'fr063-joint-cold-recorded-evidence-reader-v1',
+    'source': actual['source'], 'compileSource': actual['compileSource'],
+    'packet': str(a.packet), 'manifestSha256': digest(a.packet / 'manifest.json'),
+    'checkedRawChainsOnly': checked, 'recordedRepo': a.recorded_repo,
+    'expectedChildren': a.expected_children, 'actualChildren': len(proofs), 'children': proofs,
+    'bindingAndNativeWitnessChecks': 'MATCHED_RECORDED_THREE_PLUS_FIVE_AND_REAL_NATIVE_ZERO' if proofs else 'NO_COLD_CHILD_CLAIM',
+    'scope': 'Only the named joint applied-cold family. ROOT separately checks scenario owner/refusal, all selected cases, cleanup and ordering before advancement.',
+    'currentBinaryPayloadBytesVerifiedByThisReader': False,
+    'binaryBindingScope': 'Recorded entry/final path/hash/context values against the frozen fresh11 pin manifest; no all-child-dependency claim.',
+    'runtimeExecutionOrAuthorityGranted': False,
+    'createdUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+}
+with a.out.open('x') as stream:
+    stream.write(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({'output': str(a.out), 'children': len(proofs), 'source': actual['source']}))
