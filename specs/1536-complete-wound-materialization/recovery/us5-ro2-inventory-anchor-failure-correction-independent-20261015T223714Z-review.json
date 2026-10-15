@@ -1,0 +1,280 @@
+{
+  "scope": "Affected-only three stale inventory literals and original partial-failure EVIDENCE",
+  "disposition": "ACCEPT_INVENTORY_CORRECTION_AND_RELEASE_FRESH_FIVE_OWNER_VERIFICATION",
+  "reviewerConfiguration": "Independent reviewer configured/requested as Astra XHigh; backend model/effort telemetry unavailable.",
+  "reviewed": {
+    "base": "cf5b9d77e4bf8d4369c418c576f6fe07231953f7",
+    "head": "3bd1a404dfc522a081ccea130e5543f89cd83666",
+    "localStatus": "clean",
+    "remote": "Parent verified actual remote/recovery; no reviewer remote reread.",
+    "delta": "One unit source-guard file plus plan/tasks fronts only."
+  },
+  "findings": [],
+  "cause": "Native inventory assertion requires the obsolete nonpartial AcceptedMechanicsPlanCache declaration. Existing production already declares the class partial. Complete bounded literal inspection finds two additional stale literals: MortalWoundOpportunityAdapter declaration and the direct raw resource-validation call. No new application defect is demonstrated.",
+  "correction": {
+    "path": "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+    "sha256": "e8a27da416e8eeabc9eca714c823a3cc223349cc1b171e279761ea6f2edd0c84",
+    "declarations": "Require exact existing sealed partial cache and static partial Mortal adapter declarations; names/method anchors remain.",
+    "resourcePath": "Replace retired direct call with actual upstream collection, RejectSpiritualBoundary guard, ValidateResourceAndMortalQteDecisionAsync handoff and explicit no-error predicate. All four occur together in CollectAcceptedTurnRawStateIssuesAsync. The existing core handoff still invokes ValidateAcceptedTurnRawResourceMaterializationAsync and its separate ownership entry remains.",
+    "counts": {
+      "entries": 38,
+      "oldAnchors": 151,
+      "oldMissing": 3,
+      "newAnchors": 154,
+      "newMissing": 0
+    },
+    "invariantChecks": "Independent literal parsing bounded to the first Inventory array terminator matches retained preflight-v2 rows. Entry IDs/paths are identical. Entire file tail after that terminator is byte-identical, preserving all DiscoveryTokens, DiscoveryAllowances, scanners and assertions. Selection/catalog/budgets are unchanged; diff-check passes.",
+    "preflightV2Sha256": "0a7adafdbba17233bd3e8c82c65131207660a50be8d63deb6451cf0d322a509a",
+    "exploratoryParserLimit": "Retained preflight metadata records an earlier exploratory parse wrongly appending twelve DiscoveryTokens to the last entry. Independent parsing excludes that region and reproduces exactly the three real missing anchors; no source correction is based on those false extras.",
+    "verdict": "Restores the inventory to the already-existing accepted implementation; no architecture/authority/storage/production behavior change. Static all-anchor presence is not a native PASS."
+  },
+  "evidence": {
+    "testedCompiledGit": "d565fe2120d9f3044a22504a1d30bf2fb258fc2c",
+    "packets": [
+      {
+        "stage": "fresh-both",
+        "file": "us5-ro2-final-fresh-both-d565fe212-20261015T222712Z-freeze.json",
+        "sha256": "d029ad199956fb25c5270865ba9111a4fa7f46e84a19258299674081fd1c2538",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:01:19.6671108",
+        "methods": 53,
+        "cases": 96,
+        "descriptors": 7,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 96,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "documentation-afterlife-entrypoints-coverage-unit-001",
+            "wounds-player-projection-unit-002",
+            "wounds-player-read-integration-003",
+            "wounds-player-status-integration-004",
+            "wounds-player-status-unit-005",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      },
+      {
+        "stage": "catalog",
+        "file": "us5-ro2-final-catalog-d565fe212-20261015T222858Z-freeze.json",
+        "sha256": "779c7686fca0424e7e8d895adecbd3135abea40ea140df306c24c14d3aa5d53d",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.5315931",
+        "methods": 0,
+        "cases": 0,
+        "descriptors": 0,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "catalog": {
+          "Valid": true,
+          "Methods": 11653,
+          "Categories": 758,
+          "Unmapped": [],
+          "StaleSelectors": []
+        }
+      },
+      {
+        "stage": "exact-plan",
+        "file": "us5-ro2-final-exact-plan-d565fe212-20261015T222911Z-freeze.json",
+        "sha256": "bb62b8baf344ee569e4d825f08121be75c3b2eccd466258019efbe3a48bd8e17",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:04.7105263",
+        "methods": 53,
+        "cases": 96,
+        "descriptors": 7,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 96,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "documentation-afterlife-entrypoints-coverage-unit-001",
+            "wounds-player-projection-unit-002",
+            "wounds-player-read-integration-003",
+            "wounds-player-status-integration-004",
+            "wounds-player-status-unit-005",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      },
+      {
+        "stage": "actual",
+        "file": "us5-ro2-final-actual-d565fe212-20261015T222925Z-freeze.json",
+        "sha256": "d369affef50e2213576bc2286ebbbafd856efaee276cc5e1c1441356a5d8fddc",
+        "chains": 10,
+        "nativeExit": 1,
+        "wallTime": "00:00:17.8352195",
+        "methods": 53,
+        "cases": 96,
+        "descriptors": 7,
+        "tests": {
+          "Total": 77,
+          "Executed": 77,
+          "Passed": 76,
+          "Failed": 1
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 4,
+          "PlannedCases": 96,
+          "CompletedCases": 77,
+          "UnderfilledDescriptors": [
+            "wounds-player-status-integration-004",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      }
+    ],
+    "verifiedChains": 30,
+    "sourcePins": 2644,
+    "sourceVerification": "One immutable d565 git cat-file batch verifies every source/document hash. Only current pinned divergence is the corrected unit inventory file.",
+    "originalFreshOutputPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "e1a38120c7c78450df34c467023c65b23f98e44484a46dedd84c93d0d398b67f"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "2c8b99f63e6fe1440c2cd69a93a078a81eaee485aa224da9fab0933a162d4663"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "dae708e5fb05a1ed923e8837bb6b81a84aedb590a953c8325b8ade819e137f27"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "e1a38120c7c78450df34c467023c65b23f98e44484a46dedd84c93d0d398b67f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "2c8b99f63e6fe1440c2cd69a93a078a81eaee485aa224da9fab0933a162d4663"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "2c9f012c538fa46eb867c45d319145ae40551da9c82546a4f23b538d7a80af0b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      }
+    ],
+    "preBinaryRecordSha256": "2fa620dfcdcef4dc33497040a13774116ce573a2e176b20213fba42907333585",
+    "preBinaryUtc": "2026-10-15T22:28:58.665812+00:00",
+    "outputVerification": "External and tracked ten-payload record identical; every packet and current post-run payload matches, including TestSupport in both projects.",
+    "actual": {
+      "nativeExit": 1,
+      "seconds": 17.8352195,
+      "executed": 77,
+      "passed": 76,
+      "failed": 1,
+      "completedDescriptors": 4,
+      "plannedDescriptors": 7,
+      "unrunCases": 19,
+      "complete": false,
+      "timeouts": 0,
+      "skips": 0,
+      "duplicateIdentities": 0
+    },
+    "identityVerification": "Reparsed all raw TRX definitions/results, test/execution IDs, TestEntries, storage/codeBase, exact class/method/name, outcomes and native failure. Seventy-seven names/testIDs/executionIDs are unique; per-method counts equal precisely the four executed descriptors.",
+    "identitySetSha256": "371d0f474f5c799ea4ecb19557a2704cdd59fb3a5b20716342c817e6d8ffb49b",
+    "breakdown": {
+      "afterlifeDocumentationPassed": 2,
+      "projectionPassed": 35,
+      "readerPassed": 35,
+      "otherStatusSourceGuardPassed": 4,
+      "inventoryGuardFailed": 1
+    },
+    "failure": {
+      "testName": "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+      "message": "AcceptedMechanicsIntegrationSeam 'accepted-mechanics-plan-cache' is missing semantic anchor 'internal sealed class AcceptedMechanicsPlanCache' in 'BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs'."
+    },
+    "strictDistinctAbsentReaderRoots": 35,
+    "cleanupVerification": "Exactly one closed true-removal/inactive/explicit-null receipt per reader case, each absolute root absent by lexists. Pure unit cases legitimately own none.",
+    "unrunDescriptors": [
+      "wounds-player-status-integration-004",
+      "wounds-player-status-guidance-integration-006",
+      "wounds-player-status-guidance-unit-007"
+    ],
+    "rootReportSha256": "417da0bf1eb3f7911d51c1751a8d3ff8be6abf06ec79f8c45f61ff409f105a52",
+    "limits": "Fifteen public status cases plus four guidance cases remain unrun. Corrected inventory native behavior is unrun. No public status GREEN or completed feature claim."
+  },
+  "selection": {
+    "categories": [
+      "wounds-player-projection",
+      "wounds-player-read",
+      "wounds-player-status",
+      "wounds-player-status-guidance",
+      "documentation-afterlife-entrypoints-coverage"
+    ],
+    "sufficiency": "Same five finite owners cover accepted connected RO2 scope and changed inventory literal guard. No new method/member/budget change; fresh selected builds required after unit-source edit.",
+    "provisional": {
+      "methods": 53,
+      "cases": 96,
+      "descriptors": 7,
+      "catalogCategories": 758,
+      "catalogMethods": 11653,
+      "realRoots": 50,
+      "pureRepositoryIntegrationCases": 2,
+      "pureUnitCases": 44
+    },
+    "release": [
+      "Fresh BOTH selected PlanOnly with Parallelism1",
+      "Standalone NoBuild catalog",
+      "Exact selected NoBuild Plan",
+      "Same five owners through tests/selection.json using NoBuild and existing budgets"
+    ],
+    "conditions": "Keep a clean same tested HEAD, v3 2644-source/10-output pins and external exact pre/post ten-payload records. Freeze/publish first unexpected discrepancy before correction. Final independent EVIDENCE remains mandatory."
+  },
+  "limits": "Connected source gates 215550/215922 and later bounded corrections retained. No aggregate/A7 grant. Original failures remain immutable; RO2/full US5/FR063/lawful ACTIVE remain open.",
+  "finalState": "FINALSTOP; no reviewer tracked edits or native build/test/discovery/runner work; no pending writes after this pair."
+}
+
