@@ -1,5 +1,34 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## P5 bounded phase EVIDENCE accepted — canonical extent only — 2026-10-15
+
+Independent first-corrected EVIDENCE690fe023/50603eb8 ACCEPTED the saved outcome.
+Both genuine Late rows crossed correctedP5, unchangedP6 and final canonical
+admission with actual common-marker transactions/Committed/zeroissues. Neither
+test passes: native1,2executed/0PASS2FAIL,121.7634587s,complete/no timeout.
+Story/turn remains42held; all strict assertions after the respective fixture
+failures and later lifecycle/fault/repeat/cold/new-root scopes remain unqualified.
+Preparation/inventory/catalog were zero-execution, not passing tests.
+
+Three distinct next scopes are confirmed: (1) observer conflates original-baseline
+report removal with later exact phase consumption; retain both distinct transaction
+histories and require ONE phase consumption, not blankettwo/deduplication;
+(2) severity assertion must follow established object contract, no scalarfallback;
+(3) completed-v2 applicability AND exact output-binding require a coherent strict
+consumed-draft continuation handoff. Authenticated narration/local-woundRef mapping
+is not yet established. A wrapper-only bypass/recreateddraft/parsedmarkerhash grant
+or v1/default/source/union/progression authority relaxation is unjustified. Changed
+owning proof/schema, if actually needed, requires a separate explicit decision.
+
+This finishes authorized P5 alignment/checks and preserves a concrete coordinated
+handoff. NO further production/fixture fix or runtime released. Same sole writer
+and independent reviewer FINAL STOPPED/no pending tools/writes; no new writer.
+Checkpoint5 not repeated; later12 UNRUN/HELD; fullFR063/T070/all prior contours OPEN.
+GitHub access recovered through the authorized existing-auth recheck; credentials
+unchanged, exact prior failures retained, no policy refusal observed. Relay scope
+is separate. Historical tails/checkmarks/raw outcomes remain exact. Actual backend/
+model/effort telemetry UNAVAILABLE. No source code or fixture changed in this carrier.
+
 ## P5 first corrected outcome: canonical committed, story held — 2026-10-15
 
 Tested/compile source `e34b04985650c614e9770428bb1c8da42363da47` passed

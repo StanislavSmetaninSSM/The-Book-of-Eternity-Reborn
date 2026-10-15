@@ -1,0 +1,60 @@
+{
+  "owningBase": "2756a79a84723f5613b4f4b8172b1d1e89d7eb14",
+  "testedCompileSource": "e34b04985650c614e9770428bb1c8da42363da47",
+  "phase": "Authorized P5 consumer alignment and first corrected outcome EVIDENCE complete; overall FR063 OPEN",
+  "finalCheckpointRule": "use actual publication-readback checkpoint and sequential selected-recovery native0/readback; do not treat owningBase as self-commit SHA",
+  "evidenceVerdict": "ACCEPTED canonical-publication regression extent in both rows; no complete test/lifecycle PASS",
+  "evidenceReport": "fr063-p5-first-corrected-independent-evidence-review-20261015T054321Z-a32100cb.md",
+  "evidenceReportSHA256": "690fe023afe75182c70dce062eb9d38131974bca5060df32d391e73122f892c0",
+  "evidenceReadback": "fr063-p5-first-corrected-independent-evidence-readback-20261015T054321Z-a32100cb.json",
+  "evidenceReadbackSHA256": "50603eb8a26e732858b01f5244b29b7b1276d2a9dad7e9a233145014c9552896",
+  "actual": {
+    "run": "20261015-052555-199-681066-14be9d6ec2764f3897bbb9634306cc25-categories",
+    "nativeExit": 1,
+    "wallSeconds": 121.7634587,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "complete": true,
+    "timeout": false,
+    "sourcePinsMatched": 161,
+    "selectedBinaryPinsMatched": 11,
+    "cleanupReceipts": 2,
+    "rootsAbsent": true
+  },
+  "preparation": "BOTH139.0235201s/Plan4.9212229s/catalog5.4486888s native0/zero tests; official32-58-18/Valid746-11588",
+  "frozenManifestSHA256": "35916eb635641a8afe783b19d27f9e38bd91ec835328b3343231e44e838d7ed9",
+  "observedExtent": "both canonical Committed/zeroissues; actual commonmarker+producer path crosses P5/P6/final admission/full canonical readback; story/turn remain42held",
+  "remainingScopes": [
+    {
+      "kind": "fixture",
+      "problem": "nonzero observer counts distinct original-baseline removal and later progression consumption together",
+      "strictNext": "preserve both real transaction histories/rematerialization; classify exact phase cohort and require ONE actual phase consumption; do not deduplicate IDs, allowtwo or suppress exception"
+    },
+    {
+      "kind": "fixture",
+      "problem": "zero GetValue<string> on established canonical severity OBJECT at JointCompletion711",
+      "strictNext": "assert existing severity object fields/valueII/rank2/maxII/eventRef; no production scalarfallback or weaker oracle"
+    },
+    {
+      "kind": "production owning consumer integration",
+      "problem": "verified completed-v2 consumed draft rejected by generic MayResubmit before joint branch; joint exact output binder also requires missing draft/woundRef",
+      "strictNext": "coherent joint-only completed-family applicability/outputbinding; prove authenticated narration/local-reference mapping from existing full receipt/CREATEhistory/original/canonical evidence; receipt has WoundId but no direct woundRef; no recreateddraft/parsedmarkerhash grant/v1default bypass; explicit separate decision if owning proof/schema must change"
+    }
+  ],
+  "release": "NO further source/fixture correction or runtime released; fresh coordinated scope/design assessment then same sole writer and independent gates required",
+  "agents": {
+    "writer": "same retained /root/t070_sol_implementation FINAL STOPPED; no pendingtools/writes",
+    "reviewer": "same retained /root/t070_exact_design_review FINAL STOPPED; no pendingtools/writes",
+    "actualBackendModelEffortTelemetry": "UNAVAILABLE"
+  },
+  "later12": "UNRUN/HELD",
+  "checkpoint5": "retained componentPASS not repeated",
+  "open": "fullFR063T070, strictrepeat/fault/active/freshPIDinitialbad/cold/newroot/partialcleanup/erasedtraces unqualified",
+  "auth": "transient observed authfailure retained; coordinator-authorized shortpause single existing-auth read restored access; credentials unchanged; later publication/recovery succeeded; underlyingcauseUNKNOWN; no policyrefusal observed",
+  "environmentReceipt": "fr063-p5-phase-final-environment-20261015T054542Z-3f8aaaeb.json",
+  "environmentReceiptSHA256": "7a3878b239cd03ea7b733cd48e27c0c036ff9365f0f2e13371f496856e6d3482",
+  "scopeLimits": "no main/merge/CI/issues/PR/secrets/forcepush/branchdelete/paidprovider/C5/journal/B2-B5/GM/#1558; relay issue separate; samecloud/Linux before user-providedWindows",
+  "rootProjectOperations": "none pending; only metadata publication and final recovery remain before final-checkpoint claim",
+  "utc": "2026-10-15T05:46:47.598307+00:00"
+}
