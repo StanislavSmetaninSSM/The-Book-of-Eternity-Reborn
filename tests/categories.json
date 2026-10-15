@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wounds-player-read",
+      "responsibility": "US5-RO1 coherent read-only canonical self projection: complete roots/identity/history/current realm and strict missing/malformed refusal with unchanged full owned tree and real per-case cleanup.",
+      "excludes": "No mutable treatment, target/provider selection, quote, command staging, storage recovery design or full FR063/US5 qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/WoundPlayerReadService.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-player-projection",
+          "when": "Reader feeds typed projection; select both for connected changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundPlayerReadServiceTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-player-projection",
       "responsibility": "US5-RO1 pure typed self/current-realm visible wounds, care/recovery, known method requirements and recursive privacy; no blanket diagnosis gate.",
       "excludes": "No target/provider discovery, quotes, staging, healing or time writes; filesystem reader/status consumers have separate owning controls. No full FR063/US5 acceptance.",

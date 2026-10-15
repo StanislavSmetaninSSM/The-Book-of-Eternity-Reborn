@@ -7,6 +7,13 @@
       "contracts": [
         "#1536 T113/T115 partial T119; FR067-076; TASK-ORDER-US5-READONLY"
       ]
+    },
+    {
+      "category": "wounds-player-read",
+      "reason": "US5-RO1 coherent canonical reader and isolated full-tree unchanged-state/malformed-authority controls; expected RED stub first, final GREEN requires independent review and fresh selected preparation.",
+      "contracts": [
+        "#1536 T113/T115 partialT119; one shared read lease; strict current canonical authority; genuine cleanup"
+      ]
     }
   ]
 }

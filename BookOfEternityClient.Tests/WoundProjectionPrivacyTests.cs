@@ -24,15 +24,13 @@ public sealed class WoundProjectionPrivacyTests
     }
 
     [Fact]
-    public void Build_DiscoveredHiddenRouteIsKnownButGmOnlyNeverProjects()
+    public void Build_DiscoveredHiddenRouteIsKnownWithoutChangingVisibility()
     {
         var node = WoundContractTestData.CreateActiveWound();
         node["treatment"]!["routes"]![0]!["visibility"] = "hidden";
         var known = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
         Assert.Single(Assert.Single(known.Active).Methods);
-        node["treatment"]!["routes"]![0]!["visibility"] = "gm_only";
-        var restricted = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
-        Assert.Empty(Assert.Single(restricted.Active).Methods);
+        Assert.Equal("hidden", node["treatment"]!["routes"]![0]!["visibility"]!.GetValue<string>());
     }
 
     [Fact]
@@ -41,10 +39,47 @@ public sealed class WoundProjectionPrivacyTests
         var node = WoundContractTestData.CreateActiveWound();
         node["treatment"]!["routes"]![0]!["visibility"] = "hidden";
         node["treatment"]!["knownRouteIds"] = new System.Text.Json.Nodes.JsonArray();
+        node["treatment"]!["diagnosisPaths"] = new System.Text.Json.Nodes.JsonArray(Diagnosis("public", "Осмотр раны"));
         var result = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
         Assert.Empty(Assert.Single(result.Active).Methods);
         Assert.DoesNotContain("clean_and_suture", Text(result));
+        Assert.DoesNotContain("Очистить и наложить швы", Text(result));
+        Assert.Equal("Осмотр раны", Assert.Single(Assert.Single(result.Active).Diagnosis));
     }
+
+    [Fact]
+    public void Build_GmOnlyDiagnosisIsNeverReachable()
+    {
+        var node = WoundContractTestData.CreateActiveWound();
+        node["treatment"]!["diagnosisPaths"] = new System.Text.Json.Nodes.JsonArray(Diagnosis("gm_only", "Закрытое знание"));
+        var result = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
+        Assert.Empty(Assert.Single(result.Active).Diagnosis);
+        Assert.DoesNotContain("Закрытое знание", Text(result));
+    }
+
+    [Fact]
+    public void Build_FutureDiagnosisFactsDoNotGrantHiddenPathNow()
+    {
+        var node = WoundContractTestData.CreateActiveWound();
+        node["treatment"]!["routes"]![0]!["visibility"] = "hidden";
+        node["treatment"]!["knownRouteIds"] = new System.Text.Json.Nodes.JsonArray();
+        var later = Diagnosis("hidden", "Будущий тайный осмотр");
+        later["diagnosisPathId"] = "later";
+        later["requiresKnownFacts"] = new System.Text.Json.Nodes.JsonArray("route:clean_and_suture");
+        node["treatment"]!["diagnosisPaths"] = new System.Text.Json.Nodes.JsonArray(Diagnosis("public", "Первичный осмотр"), later);
+        var result = WoundPlayerProjection.Build(WoundPlayerProjectionTestData.Input(node));
+        Assert.Equal("Первичный осмотр", Assert.Single(Assert.Single(result.Active).Diagnosis));
+        Assert.Empty(result.Active[0].Methods);
+        Assert.DoesNotContain("Будущий тайный осмотр", Text(result));
+    }
+
+    private static System.Text.Json.Nodes.JsonObject Diagnosis(string visibility, string name) => new()
+    {
+        ["diagnosisPathId"] = "examine", ["displayName"] = name, ["visibility"] = visibility,
+        ["requiresKnownFacts"] = new System.Text.Json.Nodes.JsonArray(),
+        ["requirements"] = new System.Text.Json.Nodes.JsonArray(), ["check"] = new System.Text.Json.Nodes.JsonObject(),
+        ["reveals"] = new System.Text.Json.Nodes.JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
+    };
 
     [Fact]
     public void Build_RecursiveOutputContainsNoCanonicalEnvelopeOrReferences()
