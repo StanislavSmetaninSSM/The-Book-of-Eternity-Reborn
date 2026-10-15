@@ -1,0 +1,218 @@
+{
+  "scope": "US5-RO2 connected SOURCE/FIXTURE/SELECTION and original intentional RED EVIDENCE",
+  "disposition": "RED_EVIDENCE_ACCEPTED; SOURCE_HOLD_F1; NO_FRESH_RUNTIME_RELEASE_AT_FAA",
+  "reviewerConfiguration": "Requested/configured independent Astra XHigh retained; backend telemetry unavailable.",
+  "reviewed": {
+    "base": "0468cc303712f22257d0b492fef438285ba45a30",
+    "head": "faa886e86e6f69714298d4e1ab94de7b0920bd12",
+    "changedPaths": 26,
+    "status": "Clean at source-pin capture. Parent subsequently announced only F1 correction work; that later work is excluded.",
+    "remote": "Parent verified actual remote; reviewer did not repeat remote read."
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "material",
+      "location": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.StatusAudit.cs:109",
+      "title": "Afterlife identity header is read after the coherent snapshot lease ends",
+      "scenario": "Capture realm/turn/wounds on publication read lease A; a later publication replaces soul identity before ShowAfterlifeDetailedStatusAsync re-reads soul_state.json. Lines 109-111 then display new soul name/form/incarnation beside the old captured realm/turn/wounds. Browser overview consistently uses captured State.",
+      "evidence": [
+        "WoundPlayerStatusReadService.cs:14-19 captures State/Wounds and releases lease before rendering",
+        "ExplorerMode.Afterlife.StatusAudit.cs:63,109-111 re-reads and prefers soulRoot",
+        "StateManager.cs:254-258 already captures SoulName/SoulFormDescription/Incarnation",
+        "ExplorerUniversalMetaCommandResultBuilder.cs:203-206 uses those captured fields"
+      ],
+      "minimalCorrection": "Use captured state.SoulName, state.SoulFormDescription and state.Incarnation for these three header fields, preserving escaped literal text and sensible existing fallback. Strengthen existing captured-snapshot/source assertions for these fields. No redesign of independent supplementary panels is required.",
+      "status": "Open at reviewed faa; parent will publish a bounded correction for affected-only review."
+    }
+  ],
+  "acceptedStatic": [
+    "One existing PublicationReadQuiescence lease covers read-only StateManager aggregation and typed wound load. Borrowed reader validates the active lease/session, does not acquire or dispose it, and retains strict data refusal.",
+    "Both status entrypoints skip normal mirror refresh only for status; the afterlife redundant refresh and three loose wound consumers/translator are removed. Existing non-status refresh and session guards remain.",
+    "Shared established dossier/card blocks project sanitized wound values, known requirements, care/recovery/location and separate confirmed terminal History; no actions, raw JSON, hidden bindings or application authority are added. Console uses existing escaped text rendering; React remains unchanged.",
+    "All original fifteen status tests remain; three fact assertions are added. Two real reader cases cover borrowed-lease ownership/no nested lock and captured header retention after later refresh.",
+    "Six guidance files and paired unnumbered display examples are synchronized. Manifest is exactly 41 entries versus previous 40; the previously omitted joint-severity-repair entry is existing. No authoring/response schema is introduced.",
+    "Three affected UI inventory methods move to status ownership, two mechanics methods remain with the old owner. Eight retired allowances are removed while the global scanner/token set and other scopes remain.",
+    "No additional compile/API defect was identified statically. C# compilation and current behavioral checks remain unrun."
+  ],
+  "selection": {
+    "categories": [
+      "wounds-player-projection",
+      "wounds-player-read",
+      "wounds-player-status",
+      "wounds-player-status-guidance",
+      "documentation-afterlife-entrypoints-coverage"
+    ],
+    "provisional": {
+      "methods": 52,
+      "cases": 95,
+      "descriptors": 7,
+      "catalogCategories": 758,
+      "catalogMethods": 11652
+    },
+    "expectedOwnership": {
+      "readerRoots": 35,
+      "statusRoots": 15,
+      "pureRepositoryIntegrationCases": 2,
+      "pureUnitCases": 43
+    },
+    "rationale": "Five finite owners cover changed projection/helper consumption, reader lease overload, actual status consumers/source guards, focused documentation/manifest/parseability and mandatory afterlife entrypoint/example mappings. Existing budgets remain. No frontend component/CSS change; no DOM or visual runtime acceptance.",
+    "hold": "Selection is sufficient, but fresh preparation/runtime remains held at faa for F1. After affected-only correction acceptance, use fresh BOTH selected PlanOnly, standalone NoBuild catalog, exact selected Plan and only the five selected categories. Old f9 outputs are evidence only, not current-source outputs."
+  },
+  "collector": {
+    "rawSha256": "69d0eb12db4bab471d00b27c724cb65bd7d36a4b0a62720fa763ef4609b5f908",
+    "compressedSha256": "38aa5671a6193ded1e985c7ac7bc80fabc18f0d308c9d2a76027409a576f25c2",
+    "verdict": "Accepted bounded data collector delta; not a native controller or independent runtime proof.",
+    "exactExceptions": [
+      "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted",
+      "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+    ],
+    "analysis": "Both methods are repository-only readers. Compared decompressed v1/v2: only docstring, exact ordinal class/method whitelist, rootOwnership classification and rejection of unexpected receipts for those two methods are added. All other integration cases retain required strict receipts; duplicate root check and closed receipt fields/true flags/explicit null/absolute absent path checks remain."
+  },
+  "redEvidence": {
+    "reviewedSource": "4b3dffdc4d0815dcda74769bbe26b7cc558ab849",
+    "originalTestedAndCompiled": "f9cda6b8c232f160b72e560a2d13a9a7fb0cdf30",
+    "packets": [
+      {
+        "file": "us5-ro2-red-fresh-both-f9cda6b8c-20261015T213538Z-freeze.json",
+        "sha256": "5f8628a0b1d47d67bc54909ed8d4e435943ede8880be9f54eea3cc8996912491",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:02:11.2417968",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "methods": 32,
+        "cases": 50,
+        "descriptors": 2
+      },
+      {
+        "file": "us5-ro2-red-catalog-f9cda6b8c-20261015T213807Z-freeze.json",
+        "sha256": "e45a714d855f9db1ea3606dd1feb66aebaa4a3e3d91fe5e26fa39a347b4a7edf",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.6606167",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "methods": 0,
+        "cases": 0,
+        "descriptors": 0
+      },
+      {
+        "file": "us5-ro2-red-exact-plan-f9cda6b8c-20261015T213822Z-freeze.json",
+        "sha256": "74e412ec6a9da821ceba5e3743d38fce291545468e5cc3ae73d3c00f6d0cab5a",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:02.7599066",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "methods": 6,
+        "cases": 15,
+        "descriptors": 1
+      },
+      {
+        "file": "us5-ro2-intentional-red-f9cda6b8c-20261015T213845Z-freeze.json",
+        "sha256": "1be243342feeaf51c4bfc4ec28e9024339d77e172d3920e8a8ac6a1120c6a63b",
+        "chains": 7,
+        "nativeExit": 1,
+        "wallTime": "00:00:07.6670266",
+        "tests": {
+          "Total": 15,
+          "Executed": 15,
+          "Passed": 0,
+          "Failed": 15
+        },
+        "methods": 6,
+        "cases": 15,
+        "descriptors": 1
+      }
+    ],
+    "verifiedChainCount": 27,
+    "chainScope": "All tracked gzip hashes, decompressed raw hashes and exact original bytes verified independently.",
+    "sourcePins": 2553,
+    "sourceVerification": "One git cat-file --batch against immutable f9; every byte hash matched. Four packets have identical source and binary pin sets.",
+    "currentDivergentPinnedPaths": [
+      "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs",
+      "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs",
+      "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+      "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+      "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.StatusAudit.cs",
+      "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+      "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "BookOfEternityClient/WebUi/ExplorerWebCommandService.cs",
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "currentSourceVerification": "Exactly twelve later modified pinned paths, all declared in connected delta; new code files separately inspected. All twenty-six changed files matched immutable faa Git bytes at clean capture. No claim that current implementation equals RED source.",
+    "originalFreshOutputPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "b8564932b33c1279632f57136e49321e600395412faec17cdd01ec00a6414b8c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "3c1c85eb78f41ae72c1820b7600d7cf51e056f1528705c4de6b6d3b8bf07be26"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "b8564932b33c1279632f57136e49321e600395412faec17cdd01ec00a6414b8c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "40ba095bafb33259b8c0ff95eebb86bc075bb3fce597c76c5422bb452414e856"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      }
+    ],
+    "actual": {
+      "nativeExit": 1,
+      "seconds": 7.6670266,
+      "executed": 15,
+      "passed": 0,
+      "failed": 15,
+      "complete": true,
+      "timeouts": 0,
+      "skips": 0,
+      "duplicateIdentities": 0,
+      "strictDistinctAbsentRoots": 15,
+      "failureGroups": {
+        "afterlife_profile_tree_difference": 10,
+        "repair_count_0_vs_3": 5
+      }
+    },
+    "identityVerification": "Reparsed full raw TRX results, definitions, execution/test IDs, TestMethod/class/codeBase/storage, TestEntries, literal cases and per-method counts; matched frozen cases and exact plan.",
+    "assertionReachability": "Both real console and browser entrypoints completed before failure. Ten afterlife cases fail the first full-tree comparison at line197 (profile row); five Mortal/history cases fail repair count at line200, expected0/actual3. Subsequent payload/privacy/history and actual Spectre render assertions are unreached. Cleanup is independently proven, not behavioral PASS.",
+    "rootReportSha256": "607ac26f7dd09e8cf5acc387de846578eea6fece3fb9265fd0b4fd20b84e5e41",
+    "verdict": "Accept complete intentional RED for the normal-refresh read-only defect only. No GREEN or later display assertion qualification."
+  },
+  "finalConstraints": "First unexpected build/setup/runtime discrepancy must freeze/publish before correction. Fresh final independent EVIDENCE remains required. RO2/full US5/full FR063/lawful ACTIVE are not closed.",
+  "finalState": "FINALSTOP; no reviewer tracked edits or native build/test/discovery/runner execution; no pending reviewer writes after this report pair."
+}
+
