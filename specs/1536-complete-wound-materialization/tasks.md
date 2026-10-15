@@ -1,3 +1,9 @@
+## Independent retained/new-root/generation EVIDENCE accepted; admission design pending — 2026-10-15
+
+- Independent Astra XHigh114125 accepted the factual extent: retained1/new-root1 PASS, generation2 FAIL, total108 frozen chains/744 exact Git source-pin records/five actual children/eleven real cleanup receipts with owned roots absent. Compiled5c66 and historical tested metadata stay explicit. Exact report pair retained byte-identically. All seven successors remain HELD; actualRelease NONE.
+- Missing-G actual proves a newly created physical G before the joint hold. Foreign-G full target/donor namespace is preserved but fixture predicts an absent console-cohort exception. Both are FAIL; changing expectations alone is insufficient. Existing no-new-G contract permits a narrow no-bootstrap admission-order correction; concrete placement/lease/race/typed refusal design must receive independent review before source changes. No new authority, durable members, G repair/seed/reseal or generic storage architecture is authorized.
+- Next bounded design review, then SOURCE/FIXTURE/SELECTION, fresh BOTH/discovery/catalog and first Late2; new independent EVIDENCE/controller gate before G2 retry. No correction/retry/runtime release here. Initially damaged admission9 and ACTIVE architecture direction remain separate/open; full FR063/T070/#1536 is OPEN.
+
 ## Generation-refusal2 actual FAIL frozen; all successors HELD — 2026-10-15
 
 - Tested metadata5b74b8ed3c80dc3d99193d1b68676b7d077df654, compiled5c66 unchanged: exact2methods/2cases/1descriptor, native1,147.6448266s,2executed/0PASS/2FAIL, complete/no timeout/skips/duplicates;249source/11freshbinarypins matched pre/post. Actual selected missing-generation and foreign-donor-generation cases both fail with full child output/logs retained. Two real child launches observed. Five genuine strictcleanup receipts true/null/all roots absent, including foreign donor. Readback-native0 means collection only, not PASS.
