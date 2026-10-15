@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
 

@@ -81,7 +81,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             await DamageJointOutputBeforeChildLaunchAsync(_fs, refusalScenario, acceptedPublicDraft);
             refusalScenario = null;
-            paused = await CaptureJointGenerationRefusalRawImagesAsync(_fs);
+            await using var exactDraftLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            paused = await CaptureConfirmedClaimReadImagesAsync(_fs, exactDraftLease);
+            exactDraftLease.EnsureNoPendingLocalDecision();
         }
         var initialOutputRefusal = IsInitialJointOutputRefusal(refusalScenario);
         if (initialOutputRefusal)

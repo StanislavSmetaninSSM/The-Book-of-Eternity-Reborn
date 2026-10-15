@@ -1,3 +1,8 @@
+## A independent review corrections — 2026-10-15
+
+- Reviewer confirmed common draft API issue, independently found missing Core namespace in new cold-output fixture and mismatched raw-versus-normal paused image map for exact-present positive. Fixed actual namespace and recaptured positive with the SAME normal helper under a closed parent lease; initially bad scenario9 keeps raw whole-tree inventory.
+- Corrected SOURCE/FIXTURE/SELECTION verdict pending. No runtime/build has run on A; no frozen test evidence replaced, no new authority/member.
+
 ## A common input API correction — 2026-10-15
 
 - Before build/runtime, writer self-review found nonexistent OperationKey/LocalWoundRef properties on WoundResponseCommandDraft. Corrected to actual sealed Opportunity/Decision APIs: exact allocated CREATE source coordinates, actual prepared severity and pure existing decision fingerprint verify the CREATE operation; local ref comes only from strict adapter-issued Decision.woundRef.
