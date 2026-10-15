@@ -225,6 +225,24 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
                 await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision,
                     normalizeNarrativeBeforeCheckpoint ? scene.Replace("\n", "`n", StringComparison.Ordinal) : scene);
+                if (activeTailScenario == "new_qte_offer")
+                {
+                    // Stage43 signed this independent input, then correctly cleared
+                    // transient output. The GM now submits the same public offer.
+                    var offerBytes = Assert.IsType<byte[]>(jointOriginalTail[QteSceneService.QteOfferPath]);
+                    Assert.Null(await _fs.ReadFileBytesAsync(lease, QteSceneService.QteOfferPath));
+                    await _fs.WriteFileAtomicBytesAsync(lease, QteSceneService.QteOfferPath, offerBytes);
+                    Assert.Equal(offerBytes, await _fs.ReadFileBytesAsync(lease, QteSceneService.QteOfferPath));
+                    var ready = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "ready/turn_complete.json")));
+                    var modified = ready["filesModified"]!.AsArray();
+                    Assert.DoesNotContain(modified, path => path!.GetValue<string>() == QteSceneService.QteOfferPath);
+                    modified.Add(QteSceneService.QteOfferPath);
+                    // Honest initial Ready remains last; all correlation fields
+                    // and the original response timestamp are retained.
+                    await _fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json",
+                        ready.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                    authoredPublicOutputs.Add(QteSceneService.QteOfferPath, offerBytes.ToArray());
+                }
                 if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
                 // Freeze actual authored43 public bytes before the real repair restores
                 // original baseline. This is a GM response, never private restore authority.
@@ -235,6 +253,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     authoredProgressionReport = Assert.IsType<byte[]>(
                         await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath)).ToArray();
                 before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
+                if (activeTailScenario is not null)
+                    Assert.False(before.ContainsKey("game_state/control/gm_trajectory_ledger.jsonl"));
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
                     CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
                     SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual joint original43 request");
@@ -301,7 +321,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (activeTailScenario is not null)
         {
             await AssertJointActiveTailRefusalAsync(activeTailScenario, engine, original, request, finalization,
-                before, heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure);
+                before, signedOriginalSchedule, Assert.IsType<byte[]>(jointOriginalTail[QteSceneService.QteRuntimePath]),
+                heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure);
             return;
         }
         Assert.Null(observerFailure);
@@ -648,6 +669,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         Assert.Equal(GameEngine.MortalJointInactiveTailPaths.Count, originalImages.Count);
         var current = originalImages.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
+        // Ordinary Stage43 clears transient public outputs AFTER signing original.
+        current[QteSceneService.QteOfferPath] = null;
         var before = Assert.IsType<byte[]>(originalImages[QteSceneService.QteRuntimePath]);
         // The same typed load/serializer/BOM encoder used by the actual QTE owner.
         // Roundtrip first prevents an unrepresented field from silently disappearing.

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -71,6 +72,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task AssertJointActiveTailRefusalAsync(string scenario, GameEngine engine,
         PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResourceFinalization finalization, IReadOnlyDictionary<string, byte[]?> before,
+        byte[] signedOriginalSchedule, byte[] signedOriginalQteRuntime,
         JsonObject heldCommand, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones,
         int repairReplies, bool entered, bool handled, Exception? failure, Exception? observerFailure)
     {
@@ -91,7 +93,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), disposition, Issues = issues,
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, hasCommon, repairReplies,
             ConfirmedValid = confirmed.IsValid, ConfirmedState = confirmed.State, ConfirmedIssues = confirmed.Issues,
-            Before = before, After = after, Milestones = milestones.Select(row => new { row.Path, row.Raw, row.Images })
+            Before = before, After = after, SignedOriginalSchedule = signedOriginalSchedule,
+            SignedOriginalQteRuntime = signedOriginalQteRuntime,
+            Milestones = milestones.Select(row => new { row.Path, row.Raw, row.Images })
         });
         Assert.Null(observerFailure); Assert.Null(failure); Assert.True(entered); Assert.True(handled);
         Assert.Equal("PublicationUncertain", disposition);
@@ -103,7 +107,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             "new_qte_offer" => "The first joint contour cannot own a new QTE offer for its decision turn.",
             _ => throw new InvalidDataException("Unknown bounded active-tail assertion.")
         };
-        Assert.Contains(expected, DescribeValidationIssues(issues!), StringComparison.Ordinal);
+        var refusal = Assert.Single(issues!);
+        Assert.Equal("mortal_joint_repair_admission_refused", refusal.Code);
+        Assert.Equal("acceptedTurn.wounds", refusal.FilePath);
+        Assert.Equal(IssueSeverity.Error, refusal.Severity);
+        Assert.Equal(expected, refusal.Message);
         Assert.False(hasCommon);
         Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
         Assert.True(confirmed.IsValid, DescribeValidationIssues(confirmed.Issues));
@@ -124,20 +132,75 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), submitted["request"]));
         Assert.True(JsonNode.DeepEquals(heldCommand, ParseJsonObjectBytes(Assert.IsType<byte[]>(after[AcceptedMechanicsPlan.WoundCommandPath]))));
         Assert.Equal("II", ParseJsonObjectBytes(Assert.IsType<byte[]>(after[MortalWoundOpportunityAdapter.DecisionPath]))["proposal"]!["severity"]!.GetValue<string>());
-        // Only actual repair transport and the authorized severity correction
-        // differ from the complete original-bound pre-entry namespace.
+        // Repair restores these two canonical images to the genuine signed
+        // original, not the post-Stage43/pre-owner current images. Both detached
+        // expectations were checked against original/rollback before this owner.
+        var expectedAfter = before.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
+        expectedAfter[ProgressionScheduleService.SchedulePath] = signedOriginalSchedule;
+        expectedAfter[QteSceneService.QteRuntimePath] = signedOriginalQteRuntime;
+        const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
+        Assert.False(before.ContainsKey(ledgerPath)); // Known absent BEFORE owner.
+        AssertJointActiveTailRepairLedger(original, Assert.IsType<byte[]>(after[ledgerPath]));
+        // The one strictly qualified client diagnostic append is separate from
+        // canonical preservation; it is not a blanket ledger exclusion.
+        var canonicalAfter = after.Where(row => row.Key != ledgerPath)
+            .ToDictionary(row => row.Key, row => row.Value, StringComparer.Ordinal);
         var repairOwned = new HashSet<string>(StringComparer.Ordinal)
         {
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath, MortalWoundOpportunityAdapter.DecisionPath,
             "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json",
             "game_state/control/validation_diagnostic_failure_report.json"
         };
-        Assert.Equal(before.Keys.Where(path => !repairOwned.Contains(path)).OrderBy(path => path, StringComparer.Ordinal),
-            after.Keys.Where(path => !repairOwned.Contains(path)).OrderBy(path => path, StringComparer.Ordinal));
-        foreach (var image in before.Where(row => !repairOwned.Contains(row.Key)))
-            Assert.Equal(image.Value, after[image.Key]);
+        Assert.Equal(expectedAfter.Keys.Where(path => !repairOwned.Contains(path)).OrderBy(path => path, StringComparer.Ordinal),
+            canonicalAfter.Keys.Where(path => !repairOwned.Contains(path)).OrderBy(path => path, StringComparer.Ordinal));
+        foreach (var image in expectedAfter.Where(row => !repairOwned.Contains(row.Key)))
+            Assert.Equal(image.Value, canonicalAfter[image.Key]);
         Assert.False(milestones.Any(row => row.Path == MortalQteDecisionPublication.StatePath));
         Assert.Equal("untreated", ReadCurrentTreatmentWound(_fs).Care.State);
         Assert.Single(ReadCurrentTreatmentHistory(_fs).State!.Transitions);
+    }
+
+    private static void AssertJointActiveTailRepairLedger(PendingTurnSnapshotReadAuthority original, byte[] bytes)
+    {
+        var text = CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
+        var lines = text.Split(Environment.NewLine, StringSplitOptions.None);
+        Assert.Equal(2, lines.Length);
+        Assert.Equal(string.Empty, lines[1]);
+        var row = StrictJsonAuthority.Deserialize<JsonObject>(lines[0],
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual client repair trajectory append");
+        Assert.NotNull(row);
+        var recordId = row!["recordId"]!.GetValue<string>();
+        Assert.StartsWith("gmtraj_", recordId, StringComparison.Ordinal);
+        Assert.True(Guid.TryParseExact(recordId["gmtraj_".Length..], "N", out var generatedId));
+        Assert.Equal("gmtraj_" + generatedId.ToString("N"), recordId);
+        var createdAt = row["createdAt"]!.GetValue<string>();
+        Assert.True(DateTime.TryParseExact(createdAt, "o", CultureInfo.InvariantCulture,
+            DateTimeStyles.RoundtripKind, out var timestamp));
+        Assert.Equal(DateTimeKind.Utc, timestamp.Kind);
+        Assert.Equal(timestamp.ToString("o", CultureInfo.InvariantCulture), createdAt);
+        var expected = JsonSerializer.SerializeToNode(new
+        {
+            recordId, kind = "repair", sessionId = original.SessionId,
+            turnId = original.RequestId, requestId = original.RequestId, turnNumber = original.TurnNumber,
+            realm = "MortalWorld",
+            realmResolution = new { realm = "MortalWorld", source = "pending_turn_snapshot.progressionControl.currentRealm",
+                rawValue = "Mortal World", reason = "" },
+            mode = "validation_repair", actionSummary = "Осмотреть ушиб.", contextPackPath = "game_state/control/gm_context_pack",
+            templateVersions = new { turnOutput = "v1", validationRepair = "v1", progressionReport = "v1", actorReasoning = "v1", tempoAdvantage = "v1" },
+            outputFiles = Array.Empty<string>(),
+            dispatch = new { attempts = 0, busyRetries = 0, timeout = false, status = "client_observed_terminal" },
+            validation = new { status = "accepted", source = "late response GM", acceptanceScope = "correlated_repair_ready",
+                fullCanonicalStateAccepted = false, issueKinds = new[] { "wound_severity_above_opportunity" },
+                repairPacketRefs = new[] { "wound_materialization_repair" } },
+            repair = new { attempts = 1, status = "accepted" }, workerEvents = Array.Empty<object>(), rollbackEvents = Array.Empty<object>(),
+            terminal = new { kind = "validation_repair_ready", signalPath = "game_state/control/validation_repair_ready.json" },
+            rubric = new { validTurn = true, playerFacingOutputPresent = true, implementationSourceRead = false,
+                rawWrongRealmWrite = false, manualReasoningNeeded = false },
+            createdAt, observedBy = "client"
+        });
+        // Deep equality closes every nested key set and value, except only the
+        // independently validated generated ID/time copied above. This accepted
+        // repair Ready explicitly does not accept the full canonical turn.
+        Assert.True(JsonNode.DeepEquals(expected, row), row.ToJsonString());
     }
 }
