@@ -1,0 +1,480 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-15T09:31:08.894017+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configurationRequested": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "inheritedExplicitRequest": true
+  },
+  "configurationActual": "Backend/model/effort telemetry unavailable",
+  "reviewedFixtureSource": "4e2f028bf2bd84a6ee24ad6af01caeb42777e378",
+  "testedSource": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+  "compileSource": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+  "evidenceCarrier": "73684f40fda23f12f95bf3d89ad04e363f759b36",
+  "observedHead": "73684f40fda23f12f95bf3d89ad04e363f759b36",
+  "observedStatus": "clean",
+  "remoteVerification": "ROOT-reported",
+  "verdicts": {
+    "EVIDENCE": "ACCEPTED_SCOPED_LATE2_2_OF_2_PASS",
+    "V3_PROVENANCE": "ACCEPTED_STATIC_ONLY",
+    "NEXT_SELECTION": "ACCEPTED_CONDITIONAL_SINGLETON_ORDER"
+  },
+  "blockingFindings": [],
+  "packet": {
+    "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z",
+    "manifestSha256": "2929a7401ada70b4d688d60dac47e90c3283ce0500b61a5a17527a542d9ba406",
+    "compressedRawChainsVerified": 51,
+    "sourcePinsVerifiedAgainstTestedGitBlobs": 208,
+    "binaryPinsVerifiedCurrent": 11,
+    "prePostMatchRecordedAllFourStages": true
+  },
+  "artifactPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/manifest.json",
+      "bytes": 26983,
+      "sha256": "2929a7401ada70b4d688d60dac47e90c3283ce0500b61a5a17527a542d9ba406"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/candidate-source-pins.json.gz",
+      "bytes": 13092,
+      "sha256": "b1903d0cd2c1b201b4c2c614dc7d15698976d9fbd1f804543d31b8fd165543bd",
+      "rawSha256": "81478a5e820b683514b8d4c090ff5dd389a04ba180bb49e8ef2c3013e4fddeba"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/fresh-binary-pins.json.gz",
+      "bytes": 726,
+      "sha256": "1be301fd5075079a236391b5cd702e52eecb61f47af87e11a06b66c0c28b1e93",
+      "rawSha256": "134cee5bb5599e3b6bf5174bce636f8c90755ba12c598134fb048aeddaa9e3eb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/exact-independent-gate-proof.json.gz",
+      "bytes": 21491,
+      "sha256": "8ff81a407771d2fa91305ed435e4505b72133ea3a36033684cc6bd0aa1bc90fc",
+      "rawSha256": "cb94df2e87107484dda5ebf4943fd4f874aeaba7e622c50407b1ea3716967940"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/exact-used-root-runner-v5.py.txt.gz",
+      "bytes": 5438,
+      "sha256": "42b53b5087317edd0781e4293fede19016d5d93aa62c7d69e2e54119288765a8",
+      "rawSha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/actual-fr063-joint-late-completion-integration-001.trx.gz",
+      "bytes": 4828240,
+      "sha256": "f42cb99f7c01cd7c810ce17d4fa2b986e23cb5dbc84f449b979aa88bf6bbd90f",
+      "rawSha256": "1f8d9ccc45c715612d5bf06cca7ceb9093d358700d4c6d97ec84f50daae9e3d9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-corrected-Late2-frozen-5adbd55ad-20261015T091856Z/actual-all-json-observations-raw.json.gz",
+      "bytes": 4809497,
+      "sha256": "0c470acba06d64caa6c606611fd8e4abd428c613daa8fc29472d2817580df78e",
+      "rawSha256": "d8249e84eed85dc5281407317ea07216259db66511f9c4a7b7a999d4846efdf7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v3-20261015.py.txt",
+      "bytes": 8772,
+      "sha256": "f1fec37769e8a6c2245b87e6811a1becca0c95026f3eba87449eb768d05cf23a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-5adbd55ad-20261015.json",
+      "bytes": 4735,
+      "sha256": "77b7f2f9dd96c9547cb4fc57f512762a8c043ec41b32e46d5f7dbc4546316db1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1664701,
+      "sha256": "22cdcd35caf70f06c6539186101a56887cd45c3e5381de73f183ee2db4822605"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1165317,
+      "sha256": "ad2ddc82e6cab10db5270564a9a88cb78d74f51bfbf599d2625f31e935c67323"
+    }
+  ],
+  "preparation": {
+    "native": 0,
+    "seconds": 133.153061,
+    "executed": 0,
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23,
+    "unitWarnings": 35,
+    "integrationWarnings": 129,
+    "errors": 0,
+    "warningClean": false
+  },
+  "exactPlan": {
+    "native": 0,
+    "seconds": 2.5170269,
+    "executed": 0,
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1
+  },
+  "catalog": {
+    "native": 0,
+    "seconds": 5.549421,
+    "executed": 0,
+    "valid": true,
+    "categories": 751,
+    "methods": 11596
+  },
+  "actual": {
+    "native": 0,
+    "seconds": 154.1036593,
+    "methods": 2,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "descriptors": 1,
+    "complete": true,
+    "timeout": false,
+    "skips": 0,
+    "duplicateIds": 0,
+    "rawTrxRowsVerified": 2,
+    "cleanup": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-32d34798f536405da4438d3fd08728f7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b66579206fc94668bdb686687e101412",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "cleanupPerCaseOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      }
+    ],
+    "rootsActuallyAbsentAtReview": true,
+    "ownerTurn43NullFailures": 2,
+    "fullUnionCanonicalStoryObservations": 2,
+    "exactPhaseBasisAndArithmetic": 2,
+    "inertRepeatExactDigestMaps": 2,
+    "coldChildCount": 0
+  },
+  "v3": {
+    "externalPath": "/workspace/boe-fr063-tools-20261015/run-approved-finite-stage-v3.py",
+    "sha256": "f1fec37769e8a6c2245b87e6811a1becca0c95026f3eba87449eb768d05cf23a",
+    "inventorySha256": "77b7f2f9dd96c9547cb4fc57f512762a8c043ec41b32e46d5f7dbc4546316db1",
+    "runnerSha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+    "constantOnlyDiffVerified": true,
+    "astParse": true,
+    "execution": "UNRUN",
+    "externalTrackedCopiesIdentical": true,
+    "official19StageRowsVerified": true,
+    "allGuardsUnchanged": true,
+    "orderingAndColdAcceptanceEnforcedBy": "ROOT singleton-gate remint and actual evidence readback"
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-output-positive.json"
+  ],
+  "conditionalSequentialOrder": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+      "categories": [
+        "fr063-joint-output-positive"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-positive-integration-016": 5
+      },
+      "order": 1,
+      "status": "RELEASED_NEXT_ONLY"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "categories": [
+        "fr063-joint-output-scene-refusal"
+      ],
+      "methods": 1,
+      "cases": 6,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-scene-refusal-integration-017": 7
+      },
+      "order": 2,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "categories": [
+        "fr063-joint-output-binding-refusal"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-binding-refusal-integration-014": 7
+      },
+      "order": 3,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "categories": [
+        "fr063-joint-output-draft-refusal"
+      ],
+      "methods": 1,
+      "cases": 4,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-draft-refusal-integration-015": 6
+      },
+      "order": 4,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "categories": [
+        "fr063-joint-live-completion"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-live-completion-integration-011": 5
+      },
+      "order": 5,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "categories": [
+        "fr063-joint-cold-progression"
+      ],
+      "methods": 3,
+      "cases": 3,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-cold-progression-integration-007": 5
+      },
+      "order": 6,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "categories": [
+        "fr063-joint-retained-story"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-retained-story-integration-020": 5
+      },
+      "order": 7,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "categories": [
+        "fr063-joint-new-root"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-new-root-integration-012": 5
+      },
+      "order": 8,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "categories": [
+        "fr063-joint-generation-refusal"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-generation-refusal-integration-008": 5
+      },
+      "order": 9,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-refusal-integration-018": 15
+      },
+      "order": 10,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-settlement-integration-019": 5
+      },
+      "order": 11,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-active-tail-integration-002": 5
+      },
+      "order": 12,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-story-owner-integration-021": 10
+      },
+      "order": 13,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-legacy-exclusion-integration-010": 3
+      },
+      "order": 14,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-worked-example-integration-022": 3,
+        "fr063-joint-worked-example-unit-023": 3
+      },
+      "order": 15,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+        "fr063-joint-c1-original-rollback-integration-004": 3,
+        "fr063-joint-c1-qte-default-publication-integration-005": 8,
+        "fr063-joint-c1-treatment-defaults-integration-006": 4
+      },
+      "order": 16,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE_AND_COLD_READBACK"
+    }
+  ],
+  "remainingTotals": {
+    "selections": 16,
+    "methods": 34,
+    "cases": 68,
+    "descriptors": 20
+  },
+  "conditions": [
+    "exact singleton actualRelease and current clean metadata HEAD",
+    "preserve original compiled5ad and all11 fresh binary pins",
+    "remint full current source/gate pins including BrowserInputRecovery and exact controller/inventory",
+    "exact NoBuild Plan per stage, unchanged budget",
+    "ROOT independently qualifies full native count/PASS, no timeout/skips/duplicates, per-case real cleanup and absent roots",
+    "freeze raw/compressed artifacts before diagnosis; stop first failure or unobserved required witness",
+    "before advancing cold cases: actual entry/final three loaded-assembly bindings plus five context pins; actual native exit/timeout/drain witness; PID separation and scenario-appropriate owner result",
+    "C1 last:17 actual rows and per-GameEngine-case cleanup receipts"
+  ],
+  "historicalPasses": [
+    {
+      "selection": "fr063-joint-output-basis",
+      "cases": 19,
+      "testedSource": "65d3aebece5a5cb90d1af34295f25751a0a0caf9",
+      "compileSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+      "dependencyUnaffected": true,
+      "rerunClaim": false
+    },
+    {
+      "selection": "fr063-guaranteed-joint-checkpoint-provenance",
+      "cases": 5,
+      "testedSource": "540401302838de60e0db6feef9db09b267afe78f",
+      "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+      "dependencyUnaffected": true,
+      "rerunClaim": false
+    }
+  ],
+  "metadataReuse": {
+    "allowed": true,
+    "compileSource": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+    "allowedGitDiff": [
+      "M specs/1536-complete-wound-materialization/plan.md",
+      "M specs/1536-complete-wound-materialization/tasks.md",
+      "A specs/1536-complete-wound-materialization/recovery/*"
+    ],
+    "semantics": "accurate notes and append-only immutable evidence/reports; exact approved tool/inventory only",
+    "noNewReviewOnlyForPassingRuntimeLogs": true,
+    "invalidateOnProductTestConfigBuildInputToolBehaviorOrBudgetChange": true,
+    "originalChainsAndBinaryPinsRequired": true,
+    "noRecompileClaimAfterMetadata": true
+  },
+  "metadataCopyPermission": {
+    "exactCopies": [
+      "fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.md",
+      "fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.json"
+    ],
+    "destination": "specs/1536-complete-wound-materialization/recovery/",
+    "optionalNotes": [
+      "plan.md",
+      "tasks.md"
+    ],
+    "requireByteIdenticalShaAndExactCarrierDiff": true
+  },
+  "fullFR063T0701536": "OPEN",
+  "repositoryWrites": 0,
+  "reviewerBuildDiscoveryRuntimeExecutions": 0,
+  "reportPath": "/workspace/boe-fr063-tools-20261015/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.md",
+  "reportSha256": "5f39498dc1769353b80b1edff9d85823e9b515e6f98f81a9ec09c1ba72a72828",
+  "stop": "FINALSTOP; no pending writes"
+}
