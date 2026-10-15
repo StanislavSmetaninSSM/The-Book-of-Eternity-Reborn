@@ -1,5 +1,32 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Severity object first actual outcome; option A approved — 2026-10-15
+
+Tested/compiled source `85caae3c388aaeb615c89593e1ad3e7f3e48adc8` passed
+independent SOURCE/FIXTURE/SELECTION. Fresh BOTH138.3835822s, exactPlan4.9387988s,
+catalog5.6485606s exited0/zero tests;32/58/18 and Valid746/11588. Build warnings
+unit35/integration130, errors0. Actual Late2: native1,132.2628509s,
+2executed/0PASS/2FAIL,complete1descriptor/2cases,no timeout/skips/duplicates.
+All162 source/11 selected binary pins match; two actual fixture cleanup receipts
+removed their roots with failureNULL, rootsabsent. All49 raw chains frozen before
+diagnosis in recovery/fr063-new-cloud-severity-first-late2-frozen-85caae3c-20261015T064600Z.
+
+Both rows cross exact severity object/key/value/rank/maximum/event assertions,
+receipt/occurrence/canonical validation and observed unapplied/applied marker checks.
+Both now fail at fixture823: the new story suffix is empty. Canonical captures remain
+Committed/zeroissues, ObserverFailureNULL, turn42held. Later turn/repeat/terminal cleanup
+and separate progression-arithmetic helper oracles are NOT inferred passed.
+Independent EVIDENCE2 is PENDING. Scope1 EVIDENCE accepted; source2 reports preserved.
+
+Coordinator explicitly conveyed user approval A from proposal62bd: retain authenticated
+localRef and exact full accepted narrative bytes in the existing marker/commonseal;
+normalization BEFOREseal, closed version, oldjointv2withoutbinding failclosed/no fallback,
+v1unchanged, postcommon formatting refused. Bnotselected. Final written narrow design
+A is in recovery/fr063-completed-v2-output-binding-final-design-A-20261015T064200Z.md;
+independent DESIGN is PENDING before implementation. No new paths or write/delete/
+rollback members/storage redesign. No production correction has been authored yet.
+Checkpoint5 not repeated; later12 HELD; fullFR063/T070/#1536/prior open contours OPEN.
+
 ## Severity object assertion correction WIP — 2026-10-15
 
 Scope1 first-outcome EVIDENCE was independently ACCEPTED before this edit:

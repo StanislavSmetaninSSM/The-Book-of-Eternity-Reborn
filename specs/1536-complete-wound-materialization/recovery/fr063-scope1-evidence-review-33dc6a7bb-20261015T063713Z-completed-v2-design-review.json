@@ -1,0 +1,116 @@
+{
+  "reviewerTask": "/root/completed_v2_design_review",
+  "createdUtc": "2026-10-15T06:37:13.508835+00:00",
+  "configurationRequested": "gpt-6-astra/xhigh (Astra XHigh)",
+  "configurationActual": "Tool launch configuration recorded; backend model/effort telemetry unavailable",
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "projectExecution": false,
+  "runtimePassClaim": false,
+  "headAtArtifactReadback": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "statusAtArtifactReadback": "clean",
+  "reviewerStopped": true,
+  "reviewType": "bounded scope1 EVIDENCE",
+  "testedSource": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "compiledSource": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "metadataCarrier": "62bd24834723b46c284a874d508df0d191433c19",
+  "verdict": "ACCEPTED_FACTUAL_EXTENT_ONLY",
+  "scope2FixtureAuthoringMayProceed": true,
+  "manifest": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-new-cloud-observer-first-late2-frozen-33dc6a7bb-20261015T062505Z/manifest.json",
+    "sha256": "685d8b84507cce30b775b6a82342c47167c1aaede7a024e15299c636ce5d979f",
+    "compressedRawChainsVerified": 49
+  },
+  "sourcePins": {
+    "count": 162,
+    "rawSha256": "48f5910e3edabddbafd4621d78198892bc8eb49e30925d792d5757b31e534df2",
+    "gitObjectsMatched": true,
+    "historicalPrePostAttestation": true
+  },
+  "binaryPins": {
+    "count": 11,
+    "rawSha256": "59b8119c4929fb3415db37cec3af1eb296e7ea30dd78cb39e81e7713babb245f",
+    "currentBytesMatched": true,
+    "historicalPrePostAttestation": true,
+    "exhaustiveLoadedBindings": false
+  },
+  "native": {
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "invocations": 1,
+    "seconds": 140.0131528,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "complete": true,
+    "timedOut": false,
+    "skips": 0,
+    "duplicates": 0,
+    "derivedJsonRowsMatchedTrx": 62,
+    "failure": "JsonValue scalar assertion JointCompletion.cs:793"
+  },
+  "phase": {
+    "baselineId": "f5c8af5ff1984eebac2ea6f0ed4c0db1",
+    "baselineMembers": 8,
+    "phaseId": "19146af9ab31480b912862d5feebcb8f",
+    "phaseMembers": 3,
+    "phaseCount": 1,
+    "zeroHistoryCount": 0,
+    "exactImagesVerified": true,
+    "bothObserverFailure": null,
+    "bothCanonical": "Committed/0issues",
+    "bothTurn": 42,
+    "bothSeveritySnapshotsExact": true
+  },
+  "cleanup": {
+    "receipts": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-679a44ac79fe4218add71babea2f073a",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4c8a929b33d3486f9ff426d6510f9566",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "rootsAbsent": true,
+    "namedChildContainers": 0
+  },
+  "preparation": {
+    "seconds": 160.1515975,
+    "exactPlanSeconds": 5.5074435,
+    "catalogSeconds": 5.4644432,
+    "zeroTestExecution": true,
+    "inventory": [
+      32,
+      58,
+      18
+    ],
+    "catalog": [
+      746,
+      11588
+    ],
+    "warnings": {
+      "unit": 35,
+      "integration": 130
+    },
+    "errors": 0,
+    "warningCleanClaim": false
+  },
+  "residual": {
+    "wholeLate2": "FAIL",
+    "laterAssertions": "UNQUALIFIED",
+    "later12": "HELD",
+    "checkpoint5": "NOT_REPEATED",
+    "scope3": "separate DESIGN review pending after parent-reported coordinator A approval"
+  },
+  "findingsCritical": [],
+  "findingsImportant": [],
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-evidence-review-33dc6a7bb-20261015T063713Z-completed-v2-design-review.md",
+    "sha256": "aa238a49bb2603fa2622d28281b2f6b666e22ecf6dc5a2124e3f67b9d8a1c4ad"
+  }
+}

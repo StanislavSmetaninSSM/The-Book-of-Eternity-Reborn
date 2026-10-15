@@ -1,0 +1,9 @@
+{
+  "sourceThread": "01a118b2-51cc-732e-9138-6474686600eb",
+  "receivedUTC": "2026-10-15T06:33:00Z (coordinator transcript minute; exact transport timestamp unavailable)",
+  "proposalCarrier": "62bd24834723b46c284a874d508df0d191433c19",
+  "userQuote": "хорошо",
+  "approvedOption": "A",
+  "instructions": "Prepare final narrow design with normalization before seal, closed version basis, compatibility and negative/cold tests; independent DESIGN verdict then same sole writer implementation through corrected gates. Existing marker/common seal, authenticated localRef and exact complete accepted narrative bytes. Old joint-v2 without binding fail closed, no fallback. v1 unchanged. Post-common formatting changes refuse. No paths/write/delete/rollback/storage expansion. B not selected.",
+  "productionImplementation": "UNRUN; independent DESIGN pending"
+}

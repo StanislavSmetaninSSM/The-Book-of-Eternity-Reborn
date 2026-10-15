@@ -1,0 +1,92 @@
+{
+  "reviewerTask": "/root/completed_v2_design_review",
+  "createdUtc": "2026-10-15T06:37:13.508835+00:00",
+  "configurationRequested": "gpt-6-astra/xhigh (Astra XHigh)",
+  "configurationActual": "Tool launch configuration recorded; backend model/effort telemetry unavailable",
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "projectExecution": false,
+  "runtimePassClaim": false,
+  "headAtArtifactReadback": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "statusAtArtifactReadback": "clean",
+  "reviewerStopped": true,
+  "reviewType": "scope2 SOURCE/FIXTURE/SELECTION static",
+  "base": "62bd24834723b46c284a874d508df0d191433c19",
+  "source": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "findingsCritical": [],
+  "findingsImportant": [],
+  "gitDiffCheck": "clean",
+  "diffSha256": "99c78fe13b82ab5f65851c506ae4565a20d1259bc9e08133409bb3ce7a47c3b2",
+  "changedPaths": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md",
+    "tests/selection.json"
+  ],
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 73743,
+      "sha256": "e704eb582e4bbb1dea6fe6e208e2b00bf339c7865e887032d7374db880fc269c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1633414,
+      "sha256": "c578687af39f02a4e5612000115321da48191e4d3a479449455b8074ceafbc27"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1134030,
+      "sha256": "43c1ed490e212326571c1a7a81a3627f51af0ef8818e1edf34f08c4f64f8ce0c"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 734,
+      "sha256": "e2cef26b2dec00931cf15dd28ace4714c1fced5c5afe179283b07119aa0e8c1e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundMaterializationContract.cs",
+      "bytes": 139987,
+      "sha256": "abbf2e11659d58985e156629b6ff77de86e93ec5f6c0e6962bea4b03db9487ef"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 14527,
+      "sha256": "facdac733d226122cc8336c8d59ecdf88db5a3a77835350edcc36673684822fc"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    }
+  ],
+  "exactFieldNames": [
+    "lastChangeEventRef",
+    "maximumAtCreation",
+    "rank",
+    "value"
+  ],
+  "expectedSeverity": {
+    "value": "II",
+    "rank": 2,
+    "maximumAtCreation": "II",
+    "lastChangeEventRef": "union[0].EventRef (new CREATE)"
+  },
+  "productionChanges": false,
+  "newTests": false,
+  "budgetChanges": false,
+  "actualRelease": "first Late2 only after fresh gates",
+  "later12": "HELD",
+  "checkpoint5": "NOT_REPEATED",
+  "scope3": "separate DESIGN review pending after parent-reported coordinator A approval",
+  "runtime": "UNRUN",
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-scope2-source-review-85caae3c-20261015T063713Z-completed-v2-design-review.md",
+    "sha256": "9549f5d874daeeae7f8c450c819e87273787d1663a1453df8fd7ca58d5f504f0"
+  }
+}
