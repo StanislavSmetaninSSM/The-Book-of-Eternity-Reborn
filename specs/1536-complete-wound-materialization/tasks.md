@@ -1,5 +1,34 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint assembly capture outcome preservation SOURCE WIP — 2026-10-15
+
+Owning base `456fd0e853a981e1c30485669f0c14ebafd0bda0`. Independent EVIDENCE
+`e23e69ee` ACCEPTED the confirmed capture-contract defect after the corrected-map
+Late2 first outcome (2 executed, 0 PASS/2 FAIL). All frozen evidence remains unchanged.
+CaptureAssemblyInput now retains the SAME already validated registered outcome
+references only when its private JointRepairCommonAuthority exists; the nonjoint
+empty branch and both discarded identity factories remain exact. Full context
+agreement, original/private input fingerprints, current source/G/frame/beforeimages,
+claim/reservation and single reduction/Take/readback/settlement guards are unchanged.
+Lazy completion still consumes already computed results/projections; no second
+Reduce/Project/Apply, new replay/pending support, authority issuer or guard waiver.
+Native Completed versus Awaiting capture remains UNKNOWN. This closes only the
+necessary capture mismatch; other agreement predicates and completion remain unproved.
+
+Only one production file and these additive plan/tasks fronts are authored. Existing
+fixtures, assertion order, once-Spend/history/full-union/story/turn/repeat-idle oracles,
+catalog/selectors, public grammar and GM guidance are unchanged. No GM update is needed:
+this is client-owned private completion provenance, with no GM-authored contract change.
+Existing Late2 RED is the regression basis; no mirror test or broader selection added.
+Compilation/APIs/runtime are UNVERIFIED for this source WIP; no project execution by
+the author. Focused SOURCE/FIXTURE/SELECTION and fresh matching prerequisites remain
+required before ROOT may release only the failed Late2 first corrected outcome.
+Checkpoint5 PASS is retained without repetition; later12 remain UNRUN/HELD.
+Full FR063/T070 and lawful active combinations, fresh-PID initially bad authority,
+no-frame/all-traces-erased and arbitrary partial-cleanup contours remain OPEN.
+Historical requested retained Sol; actual backend/model/effort telemetry UNAVAILABLE.
+All prior metadata tails and task checkmarks are preserved byte-exact.
+
 ## First corrected-map Late2 outcome frozen: common-context refusal — 2026-10-15
 
 Source/compile39be635be4cbeb4c080ab05e3b09ed6d40c984e6; corrected private map

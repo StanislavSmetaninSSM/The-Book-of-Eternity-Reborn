@@ -4156,7 +4156,9 @@ internal static partial class AcceptedMechanicsPlanner
             context.Owners, context.Sources, context.Commands, context.EffectIdentityRoot,
             context.EffectPlan, context.CapacityTransitions, context.OwnerCapacityDrafts,
             context.TerminalOwners, context.OwnerCompanionAfterImages, context.OwnerTransitions,
-            registeredSystemOutcomes: Array.Empty<IResourceRegisteredSystemOutcomeDraft>(),
+            registeredSystemOutcomes: context.JointRepairCommonAuthority is null
+                ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>()
+                : context.RegisteredSystemOutcomes,
             pendingResolutionState: context.PendingResolutionState,
             resourceIdentityFactory: null,
             effectIdentityFactory: null,
