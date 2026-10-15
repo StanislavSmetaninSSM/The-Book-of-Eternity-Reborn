@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "task": "#1536 US5-RO1 narrow corrected preparation and shell exit-reporting qualification",
+  "reviewedAt": "2026-10-15 20:58:26 UTC",
+  "configuration": {
+    "requested": "Astra XHigh retained explicit independent reviewer configuration",
+    "actualBackendTelemetry": "unavailable"
+  },
+  "disposition": "PREPARATION_QUALIFIED_NOBUILD_CONTINUATION_RELEASED",
+  "reviewedSource": "60574090d862e54ca576748b9ff8d84a01200f4c",
+  "actualCompiledAndPrepared": "193dc5890d4582d68ece897f64189af65e73d81b",
+  "evidenceCarrier": "1074c330089cdbca240b5d09e5fa5ed921eab42f",
+  "repositoryStatus": "clean",
+  "remoteQualification": "Parent reports actual remote1074 verified; reviewer checked local HEAD and metadata-only equivalence, not a new remote read.",
+  "scope": {
+    "sourceChanges": 0,
+    "buildCalls": 0,
+    "discoveryCalls": 0,
+    "nativeTests": 0,
+    "runnerOrControllerCalls": 0,
+    "harmlessProbeExecutionsByReviewer": 0,
+    "reviewWrites": "Only this external MD/JSON pair"
+  },
+  "evidence": {
+    "freeze": {
+      "path": "specs/1536-complete-wound-materialization/recovery/us5-ro1-corrected-preparation-193dc5890-20261015T204839Z-freeze.json",
+      "sha256": "d2361412a681dd316a87f341b5b7e09687e5a924bc56bcff2f24d003c478043c",
+      "outerNativeExitFieldRetained": 1
+    },
+    "strictJsonDuplicateKeysRejected": true,
+    "chains": [
+      {
+        "origin": "TestResults/test-categories/20261015-204840-095-178513-a840bfc27c774d6c85bac6f664f8f1dd-categories/Build-integration.log",
+        "rawSha256": "17d1f097dd8c6fb079d2a0ef60073f6fbd4c4ea8948a75ba7e76bb04d60ed029",
+        "compressedSha256": "0b89db68a2bc3773be0230bcd750a45632ad7943ce1827595d532b56086fd1fc",
+        "bytes": 117815
+      },
+      {
+        "origin": "TestResults/test-categories/20261015-204840-095-178513-a840bfc27c774d6c85bac6f664f8f1dd-categories/Build-unit.log",
+        "rawSha256": "c36331098f0b646122197c08a1a67caa8ab5a012108c82fcb743fab627fd42cc",
+        "compressedSha256": "e1749a205031782f26f1021234f685eb53d5c86ba9d290b31cf1fece46446b40",
+        "bytes": 26198
+      },
+      {
+        "origin": "TestResults/test-categories/20261015-204840-095-178513-a840bfc27c774d6c85bac6f664f8f1dd-categories/dotnet-test.log",
+        "rawSha256": "564f9307f344053e6f2d3562b91f7d9aa0fb324072aa19336c290f669887262b",
+        "compressedSha256": "b2a633435f54860611bd884f121843f675bc4e30eec7e5d692ec3ffe523ce483",
+        "bytes": 3502207
+      },
+      {
+        "origin": "TestResults/test-categories/20261015-204840-095-178513-a840bfc27c774d6c85bac6f664f8f1dd-categories/plan.json",
+        "rawSha256": "a005d59e889b06a536f1954874bf8836e5c346447b28912d3db9e6a913c6522a",
+        "compressedSha256": "e858a95e78dbf2dba7bb9cc4bf9ebd21e2d61c91552cc490da04b4d3fef30172",
+        "bytes": 12289
+      },
+      {
+        "origin": "TestResults/test-categories/20261015-204840-095-178513-a840bfc27c774d6c85bac6f664f8f1dd-categories/summary.json",
+        "rawSha256": "4f5d024198095948fa0a617ba8ad64d54346bcd62db922661413a2ba047e8776",
+        "compressedSha256": "d10a5bf29fcabd7b2aff09fe887e600176468d9df61657f7fb9c5f9fc9943139",
+        "bytes": 2420
+      },
+      {
+        "origin": "/workspace/boe-fr063-tools-20261015/us5-ro1-corrected-fresh-both-193dc5890-20261015T204839Z.stdout.log",
+        "rawSha256": "050bd76fed69cb4971815038f9b4045184bb33c58bd607bf8b44c87354608014",
+        "compressedSha256": "e91809bdb27391a57856dc7ba7db530fc1b51149a6837918b48954177c35b8ca",
+        "bytes": 10230
+      },
+      {
+        "origin": "/workspace/boe-fr063-tools-20261015/us5-ro1-193dc5890-corrected-pins.json",
+        "rawSha256": "6d39907a2fbd60f4cbbe696ed019bbe4fba5b04ed477f7c39011f083493eacf9",
+        "compressedSha256": "2d038c9cfa78983dbf4d898dc845e8bf0884694eb12563176dc21693250812e8",
+        "bytes": 469997
+      },
+      {
+        "origin": "/workspace/boe-fr063-tools-20261015/us5-freeze-evidence-v1.py",
+        "rawSha256": "6913b9adf38beed49177bfc79b9fad61cdae83e9c39446c4ee453cd97d049199",
+        "compressedSha256": "70c8b537e49c8e01261dc113fe5fed822d03416099d2a082a32840111b7b7d97",
+        "bytes": 5004
+      }
+    ],
+    "sourcePins": {
+      "count": 2551,
+      "immutableGitBytesMatched": true,
+      "currentBytesMatched": true,
+      "method": "git cat-file --batch; exact bytes plus SHA256"
+    },
+    "outputPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "dc983651ad2d514ecbabad708b86eddaf355ccb16a3e53c15ce195b950db7505"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "0fa1d70d2890ec077f1ef0911f19d3fe61def829de1b9eec15dd0c6019376f7a"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "dc983651ad2d514ecbabad708b86eddaf355ccb16a3e53c15ce195b950db7505"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "b222731638f8876ed40d60f5da7e8a70985e7f65d3204a0d0c5f63c331868ca6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      }
+    ],
+    "codeEquivalence": {
+      "from": "60574090d862e54ca576748b9ff8d84a01200f4c",
+      "to": "1074c330089cdbca240b5d09e5fa5ed921eab42f",
+      "changedPaths": 15,
+      "only": "recovery evidence and plan/tasks fronts; no code/test/category/selection/runner change"
+    },
+    "builds": [
+      {
+        "project": "integration",
+        "completed": true,
+        "rawBuildSucceeded": true,
+        "warnings": 131,
+        "errors": 0,
+        "rawElapsedSeconds": 117.26,
+        "officialPhaseSeconds": 117.3825319
+      },
+      {
+        "project": "unit",
+        "completed": true,
+        "rawBuildSucceeded": true,
+        "warnings": 35,
+        "errors": 0,
+        "rawElapsedSeconds": 34.49,
+        "officialPhaseSeconds": 34.6048316
+      }
+    ],
+    "officialSummary": {
+      "exit": 0,
+      "wallTime": "00:02:36.6964535",
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "phases": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0348919,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0339741,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0976053,
+          "Completed": true
+        },
+        {
+          "Name": "Build-integration",
+          "Seconds": 117.3825319,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 34.6048316,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0034802,
+          "Completed": true
+        }
+      ],
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 65,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "wounds-player-projection-unit-001",
+          "wounds-player-read-integration-002"
+        ],
+        "Complete": false
+      }
+    },
+    "exactPlan": [
+      {
+        "name": "wounds-player-projection-unit-001",
+        "methods": 25,
+        "cases": 32,
+        "budgetMinutes": 3
+      },
+      {
+        "name": "wounds-player-read-integration-002",
+        "methods": 8,
+        "cases": 33,
+        "budgetMinutes": 3
+      }
+    ],
+    "capturedStdout": {
+      "nativeExit": 0,
+      "occurrences": 1,
+      "rawSha256": "050bd76fed69cb4971815038f9b4045184bb33c58bd607bf8b44c87354608014"
+    },
+    "originalDiscrepancy": {
+      "testedGit": "193dc5890d4582d68ece897f64189af65e73d81b",
+      "execSession": 90681,
+      "completionChunk": "06a9bc",
+      "outerExecExit": 1,
+      "completionWallSeconds": 0.000036309,
+      "capturedPwshNativeExit": 0,
+      "officialSummaryExit": 0,
+      "officialSummaryWallSeconds": 156.6964535,
+      "testsExecuted": 0,
+      "classification": "Preserve both conflicting observed exit values; no runtime PASS. Investigate wrapper with harmless diagnostics, no test/build retry.",
+      "path": "specs/1536-complete-wound-materialization/recovery/us5-ro1-corrected-preparation-193dc5890-20261015T204839Z-wrapper-discrepancy.json",
+      "sha256": "7250f436edfffbe9eaed751779db4b9cb37eb93e2f239ddc16b920b27fa13e96"
+    },
+    "probes": {
+      "path": "specs/1536-complete-wound-materialization/recovery/us5-ro1-wrapper-errexit-probes-20261015T2054Z.json",
+      "sha256": "fbaa1d311788f86f64b37f119dd60ecc0feef63aab77a4e7b12e745d9b0c4e63",
+      "exactStructuredReceipts": [
+        {
+          "status": "fulfilled",
+          "value": {
+            "name": "plain",
+            "cmd": "printf 'PROBE=plain\\n'\nexit 0",
+            "result": {
+              "chunk_id": "71baa6",
+              "wall_time_seconds": 0.000044228,
+              "exit_code": 0,
+              "original_token_count": 3,
+              "output": "PROBE=plain\n"
+            }
+          }
+        },
+        {
+          "status": "fulfilled",
+          "value": {
+            "name": "errexit",
+            "cmd": "set -e\nprintf 'PROBE=errexit\\n'\nexit 0",
+            "result": {
+              "chunk_id": "a8f3b4",
+              "wall_time_seconds": 0.000039852,
+              "exit_code": 1,
+              "original_token_count": 4,
+              "output": "PROBE=errexit\n"
+            }
+          }
+        },
+        {
+          "status": "fulfilled",
+          "value": {
+            "name": "activate_no_errexit",
+            "cmd": "source /workspace/boe-fr063-tools-20261015/activate.sh\nprintf 'PROBE=activate_no_errexit\\n'\nexit 0",
+            "result": {
+              "chunk_id": "d3bffc",
+              "wall_time_seconds": 0.000109285,
+              "exit_code": 0,
+              "original_token_count": 7,
+              "output": "PROBE=activate_no_errexit\n"
+            }
+          }
+        },
+        {
+          "status": "fulfilled",
+          "value": {
+            "name": "errexit_restored",
+            "cmd": "set -e\nsource /workspace/boe-fr063-tools-20261015/activate.sh\ntrue\nprobe_exit=$?\nprintf 'PROBE=errexit_restored CHILD_EXIT=%s\\n' \"$probe_exit\"\nset +e\nexit \"$probe_exit\"",
+            "result": {
+              "chunk_id": "d09e62",
+              "wall_time_seconds": 0.000039576,
+              "exit_code": 0,
+              "original_token_count": 9,
+              "output": "PROBE=errexit_restored CHILD_EXIT=0\n"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "conclusions": [
+    "Actual corrected selected-project builds succeeded and produced the currently pinned outputs; official Plan preparation succeeded with child/summary exit0 and no timeout, while the outer tool reported exit1. These are separate observations.",
+    "All four harmless recorded commands complete without C# work. Their outputs and outer exit sequence 0/1/0/0 isolate an errexit-sensitive reporting interaction: explicit exit0 alone becomes outer1 when set-e remains enabled. Activation alone does not reproduce it; disabling errexit before final exit restores outer0.",
+    "Underlying harness implementation is not diagnosed. No claim is made that probes establish general nonzero-exit propagation or justify ignoring future nonzero results.",
+    "Original conflicting receipt and freeze.nativeExit1 remain immutable; preparation qualification does not relabel outer exit or imply runtime PASS.",
+    "Fresh successful BOTH outputs are sufficient for NoBuild. A rebuild solely to repair this reporting discrepancy is not justified."
+  ],
+  "acceptedInvocation": {
+    "setup": "Keep setup explicitly guarded; stop on setup failure.",
+    "child": "Disable errexit for the pwsh child invocation, capture its exact exit immediately, retain stdout/stderr/native/timeout artifacts, and keep errexit disabled through explicit exit of that captured code.",
+    "constraints": [
+      "Do not replace the child status with a logging/pipeline command status.",
+      "Keep existing timeout, selection, failure and evidence checks; logging/setup failures require explicit handling.",
+      "No source or runner modification, no budget increase, no child-code coercion.",
+      "Future unexpected native/summary/outer conflicts freeze before dependent work."
+    ]
+  },
+  "release": {
+    "noBuildCatalog": true,
+    "exactNoBuildPlan": true,
+    "runtimeConditional": true,
+    "requiredOrder": [
+      "Use unchanged current source and eight pinned outputs from193dc5890 for official NoBuild catalog (discovery only, zero test execution).",
+      "Confirm official exact NoBuild Plan is the two existing owning descriptors, 25 methods/32 cases plus8 methods/33 cases, 3-minute category budgets, zero execution.",
+      "Only after catalog/Plan and evidence checks succeed, execute exactly wounds-player-projection and wounds-player-read with NoBuild on those outputs; retain source/output/native/TRX/cleanup evidence."
+    ],
+    "bounds": {
+      "categories": [
+        "wounds-player-projection",
+        "wounds-player-read"
+      ],
+      "methods": 33,
+      "cases": 65,
+      "descriptors": 2,
+      "categoryBudgetMinutes": 3,
+      "aggregateGrant": false
+    },
+    "finalEvidenceRequirements": "All65 actual cases complete, exact identities/counts, native outcomes and full33 genuine reader root cleanup receipts; independent evidence acceptance still required.",
+    "existingSourceGatesRetained": true
+  },
+  "limits": [
+    "Corrected runtime GREEN remains UNRUN; no behavioral acceptance from build/discovery.",
+    "Zero preparation executions/receipts do not prove reader behavior or cleanup.",
+    "No broad source rereview or historical A7/Late2/header/G3 rerun authorized.",
+    "RO2 existing status consumers and fullUS5/fullFR063/T070/#1536/lawfulACTIVE remain outside this qualification."
+  ],
+  "finalStop": {
+    "status": "FINALSTOP",
+    "pendingReviewerWrites": 0
+  }
+}
