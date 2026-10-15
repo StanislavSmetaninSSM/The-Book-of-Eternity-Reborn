@@ -1,3 +1,9 @@
+## New Late2 EVIDENCE and v2 accepted; corrected basis release — 2026-10-15
+
+- Independent EVIDENCE accepts compiled42fa6949e Late2 scoped2/2PASS,52chains/193source/11binarypins/two real cleanup rootsabsent; exact final083500MD/JSON retained. V2 bounded provenance adaptation accepted, not independently executed. No product/test/config change after compiled42fa; truthful metadata-only binary reuse permitted under exact pins.
+- First release is corrected output-basis19 only; conditional next positive/scene/binding/draft and existing12 stages remain ordered, singleton, exact PlanOnly, full counts/cleanup/raw freeze, STOP on first failure. C1 is last and still needs actual17 plus per-case receipts. Every cold case additionally requires actual child entry/final three reported assembly/context/hash bindings inspected before advancement; no all-child-dependency claim. Checkpoint retains qualified original540/d6 5/5, no rerun claim.
+- FullFR063/T070/#1536 and legal active combinations/initially-bad authority breadth/partialcleanup/erasedowner remain OPEN. These releases qualify only the specified first contour; no task checkbox changed.
+
 ## Fixture-corrected fresh Late2 PASS; new EVIDENCE/controller review pending — 2026-10-15
 
 - Reviewed fixture b856844dea2c2d598e3e166e7273cc1995390e5e passed corrected SOURCE/FIXTURE/SELECTION. Tested/compiled carrier42fa6949e3bd783df9bc2243823c615e5e21550e fresh BOTH165.2660147s/native0/unit35+integration130warnings/0errors; official40methods/94cases/23descriptors. ExactPlan2.7582347s/catalog5.5355016s native0/zeroexecution,Valid751/11596.
