@@ -1,3 +1,10 @@
+## Completed-v2 A design refinement — 2026-10-15
+
+- Metadata carrier d7f88d8a7cdaed705cc747e0285b7720caf231a9 is remotely verified; main unchanged.
+- Final A now states existing trusted-local boundary explicitly: output drift against client-issued marker is covered; coherent same-user rewriting of all authority is excluded by the already accepted contract. Receipt-bound localRef checks remain mandatory.
+- Narrative normalization precedes FIRST rejected checkpoint capture, outside canonical write lease; capture/correction/common seal require a read-only fixed point. Retained scene comparison remains timestamp-only; no later normalization of retained checkpoint.
+- Independent DESIGN and scope2 EVIDENCE verdicts pending. Production scope3 implementation, all runtime A controls and remaining FR063 stages UNRUN. No authority/member expansion.
+
 # Implementation Plan: Complete Wound Materialization and Healing
 
 ## Severity object first actual outcome; option A approved — 2026-10-15

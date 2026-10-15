@@ -24,7 +24,13 @@ representation. Decode strict UTF-8 with the established optional single-BOM rul
 the decoded JSON must be an object with the ordinary valid response/timestamp shape.
 The narrative must already be a fixed point of AcceptedTurnOutputProjector.ProjectNarrative.
 The full byte image includes timestamp, formatting and BOM. The existing marker's
-whole-root joint fingerprint includes this object. A domain-separated immutable
+whole-root joint fingerprint includes this object. Authentication uses the existing
+trusted-local boundary (accepted design-v2:112 and PendingTurnSnapshotAuthority:981–987):
+it detects changed GM/public output against the retained client-issued marker. A
+same-user coherent rewrite of narrative plus client binding plus marker fingerprint
+is outside that existing boundary; no durable signing key or new authority is added.
+A coherent localRef/marker rehash with the actual receipt unchanged MUST still refuse.
+A domain-separated immutable
 basis fingerprint is also included in the private common authority/input seal.
 The pure parsed value/fingerprint is never a publication or continuation capability.
 
@@ -42,12 +48,22 @@ and the same complete prepared/final bundle's exact acquisition CREATE/receipt.
 Do not reread mutable output to invent a later basis, reallocate IDs, re-evaluate a
 treatment result or create a second mechanics plan/claim/Take.
 
-Run the existing ordinary narrative validation/normalization BEFORE constructing the
-joint continuation/common basis. Its permitted correction timestamp exception remains:
-MortalJointRepairCheckpoint.ValidateCorrectedResponse may accept a fresh timestamp
-before sealing. Capture only the final normalized, validated current image. The basis
-factory independently requires the projector's fixed point; unnormalized input cannot
-be sealed. The existing continuation/current-source guards bracket all boundary awaits.
+Normalize and validate through the existing ordinary narrative validator BEFORE the
+FIRST rejected checkpoint capture, then require its fixed point before every correction
+intake and continuation/common basis. The normalizing write occurs only in the ordinary
+pre-intake phase OUTSIDE an acquired canonical write lease. Under the intake/capture
+lease, perform read-only fixed-point checks and repeat existing physical guards; never
+call the normalizer's separately leased WriteFileAtomicAsync inside that lease. The
+existing outer ordinary narrative validation already precedes resource/joint intake;
+make the first-capture fixed-point refusal explicit so a direct/alternate caller cannot
+capture unnormalized narrative. Do not normalize retained checkpoint bytes later.
+
+Keep RevalidateCorrectionAsync's retained scene comparison unchanged: only timestamp
+may differ, every other JSON field and response text must equal the initially normalized
+checkpoint. An arbitrary rewrite cannot become acceptable by later normalization. The
+allowed fresh correction timestamp is captured in the final exact basis. The basis
+factory independently requires a projector fixed point; unnormalized input cannot be
+sealed. Existing continuation/current-source guards bracket all boundary awaits.
 
 The common authority's private issuer owns basis construction. It includes the immutable
 basis fingerprint in ComputeFingerprint/HasValidSeal and validates current narrative
