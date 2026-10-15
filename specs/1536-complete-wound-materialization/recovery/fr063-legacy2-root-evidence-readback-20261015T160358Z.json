@@ -1,0 +1,76 @@
+{
+  "testedSource": "e082ace4b71b66a3c3f71bc13fced63a3da2f3ef",
+  "compiledSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "packet": "fr063-finite-legacy-v8-frozen-e082ace4b-20261015T160136Z",
+  "manifestSha256": "0adb8f2a6799a3d502b46f671615ea58e8def36563a1f4c05dcb52fe44f487b0",
+  "chainsVerified": 36,
+  "exactGitCurrentSourcePinsVerified": 797,
+  "currentFreshBinaryPayloads": 11,
+  "native": {
+    "exitCode": 0,
+    "wallTime": "00:00:30.2480610",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "timedOut": false,
+    "methods": 1,
+    "cases": 2,
+    "descriptors": 1
+  },
+  "rawTrxSha256": "66e4287caee31bd49ab321f7c091c9a2e7eb621e5c3d3cfc5bedd62bd7ea956f",
+  "fullTrxJsonReparsedExactly": true,
+  "perCase": [
+    {
+      "testId": "e917979b-9b16-d99a-6ed4-adac2e1e6063",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointNullFrameHold_ComponentAbsentAndGenuineV1RemainUnclaimedAndByteExact(scenario: \"absent\")",
+      "scenario": "absent",
+      "componentOnly": true,
+      "actualMethod": "TryHoldMortalJointWithoutValidatedOriginalAsync",
+      "held": false,
+      "capturedFileAndPhysicalGKeyBytesExact": true,
+      "capturedImages": 173,
+      "turnBeforeAfter": 42,
+      "inGameBeforeAfter": false,
+      "markerScope": "absent",
+      "cleanup": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e616788b13e94411baf5ec7aaa7c29aa",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "testId": "a687a5d2-a165-9393-f342-88e7aae7dabf",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointNullFrameHold_ComponentAbsentAndGenuineV1RemainUnclaimedAndByteExact(scenario: \"private_v1\")",
+      "scenario": "private_v1",
+      "componentOnly": true,
+      "actualMethod": "TryHoldMortalJointWithoutValidatedOriginalAsync",
+      "held": false,
+      "capturedFileAndPhysicalGKeyBytesExact": true,
+      "capturedImages": 179,
+      "turnBeforeAfter": 42,
+      "inGameBeforeAfter": false,
+      "markerScope": "genuine verified private-v1, no jointTreatment/progression; native fixture proves producer/completion before component",
+      "cleanup": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-82742140faa342808e016b1f7a78852c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "realDistinctCleanupRoots": 2,
+  "captureScope": "Entire game-session file inventory and physical G only; no external runtime file/empty-directory capture; loop turn/inGame checked separately",
+  "claimScope": "Private preservation guard component non-claim only, not fresh-process or completed-turn proof",
+  "successor": "Conditional worked2 manual unchanged A6 with exact per-test Summary receipt and witness qualification, after freeze/push/reminted singleton gate",
+  "utc": "2026-10-15T16:03:58.357091+00:00"
+}
