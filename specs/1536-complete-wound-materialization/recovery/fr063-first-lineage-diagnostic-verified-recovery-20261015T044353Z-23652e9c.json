@@ -1,0 +1,20 @@
+{
+  "checkpoint": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+  "publicationNative": "d6feab session97337/dc0fb6 exit0",
+  "recoveryNative": "1028e2 session14099/6d72b1 exit0",
+  "readbackSHA256": "1f43bb1441420b6b373144008a527dc591ab68d2aa999b93f8cce896da4d91a6",
+  "verification": {
+    "checkpoint": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+    "remoteSha": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 3013,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2484,
+    "consumerProduction": "First-lineage-predicate diagnostic SOURCE WIP preserved; corrected gates pending; consumer fix/runtime HELD",
+    "verifiedUtc": "2026-10-15T04:43:43.729172+00:00"
+  },
+  "sourceGates": "UNRUN diagnostic WIP",
+  "consumerFixRuntime": "HELD",
+  "utc": "2026-10-15T04:43:53.319801+00:00"
+}

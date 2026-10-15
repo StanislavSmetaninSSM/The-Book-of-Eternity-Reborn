@@ -1,5 +1,46 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First lineage diagnostic outcome: predicate5 observed — 2026-10-15
+
+Tested/compile source `e666887b30acde3d68f360b4d3158682e5cdd9db` passed
+diagnostic-only SOURCE/FIXTURE/SELECTION gates. Fresh BOTH 127.9590702s,
+exact PlanOnly 4.9942733s and catalog 5.3063234s each exited 0 and executed
+zero tests; official32 methods/58 cases/18 descriptors, catalog Valid746/11588,
+no unmapped/stale. Both existing failed Late2 rows then executed: native1,
+124.3600557s,2 executed/0 PASS/2 FAIL, complete1/1 descriptor and2/2 cases,
+no timeout/skips/duplicates. All161 source/11 selected binary pins matched
+pre/post; selected binaries are not every loaded dependency. Two actual strict
+cleanup receipts report removal without failure and roots are absent. All49 raw
+chains plus manifest were frozen before diagnosis or metadata changes.
+
+Both complete490-character public issue messages identify first failed predicate
+5:effect_payload_mismatch in the existing taken-publication lineage guard.
+Native currentPayload differs from initialPayload; storedBase equals initial,
+storedFinal equals current, boundaryComplete=True in BOTH rows. Earlier checks
+1–4 did not reject in that ordered invocation; predicate6 was NOT evaluated and
+remains UNKNOWN. Both remain RetryableHeld/turn42 without Spend43, with actual
+Late caller entered/handled and Failure/ObserverFailure null. This is diagnostic
+observation, not corrected publication or completion. Full messages and hashes
+are retained; no changed semantic payload field or dynamic reduction branch is guessed.
+
+Read-only causal update confirms raw initial/completed equality conflicts here
+with the existing authenticated complete-boundary base(initial)/final(current)
+contract already enforced during assembly. The proposed narrow P5 alignment uses
+the existing private proof API plus exact full stored base/final payload hashes.
+P1–4, P6, final ValidateJoint and all original/source/lease/G/frame/claim/reservation,
+inventory/Take/full-union/readback/compensation/settlement checks must stay strict.
+Independent EVIDENCE must assess this proposal before any source correction release;
+no guard deletion, weaker five-field comparison, parsed-hash grant or fallback.
+
+No project source, fixture, selector or checkbox changed in this ROOT metadata
+block. All161 tested pins matched before additive fronts; writer FINAL STOPPED,
+no pending tools/writes. One external whitespace-sensitive literal-check failure
+is preserved and corrected read-only, not treated as a project/security failure.
+All source fixes/runtime/later12 actual stages HELD; checkpoint5 not repeated.
+Full FR063/T070 and previous active/initially-bad/cold/new-root/partial-cleanup/
+erased-trace contours remain OPEN/UNQUALIFIED. Actual model/effort telemetry UNAVAILABLE.
+All historical tails, task checkmarks and raw failed outcomes remain byte-exact.
+
 ## First-lineage-predicate diagnostic SOURCE WIP — 2026-10-15
 
 Owning base `7c79c3116c1159cc629f5541e9a84a47776dc13d`. EVIDENCE report
