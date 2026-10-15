@@ -1830,7 +1830,7 @@ J7 owner controls and the entire independent gate.
 
 After the client's publication consumes this corrected public draft, leave the exact
 accepted narrative_response.json bytes, timestamp and formatting intact. The client
-retains its binding and can finish the same scene without recreating wound_decision.json.
+retains its binding and can finish the same scene without recreating the consumed public draft.
 For example, adding a prefix while retaining acquisitionNarration, refreshing only the
 timestamp or reformatting the JSON after publication causes a recovery hold. The client
 normalizes escaped line breaks before the first checkpoint; it cannot silently rewrite
