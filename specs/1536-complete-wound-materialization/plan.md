@@ -1,3 +1,8 @@
+## US5-RO1 corrected preparation wrapper/runner exit discrepancy frozen — 2026-10-15
+
+- Tested193dc5890d4582d68ece897f64189af65e73d81b, reviewed605. Both selected builds show0errors(integration131warnings/117.26s,unit35warnings/34.49s); official Plan25/32+8/33two descriptors, summaryExit0/156.6964535s/no timeout/cleanupcomplete/zeroexecution, captured pwsh NATIVE_EXIT=0. Yet completion tool chunk06a9bc/session90681 reports outerExecExit1. Preserve both observations; no categorical native-success or runtime acceptance from contradictory wrapper evidence.
+- Immutable corrected-preparation packet and exact wrapper-discrepancy JSON retain raw stdout/summary/builds/Plan/source/output pins before any dependent catalog/runtime. All tests remain UNRUN on this correction. No automatic test/build retry; harmless shell/tool diagnostics and independent qualification next. Original fourFAIL packet unchanged; full FR063/T070/#1536/lawful ACTIVE and RO2 remain OPEN.
+
 ## US5-RO1 fixture-only correction independently accepted for fresh verification — 2026-10-15
 
 - Independent204900 accepts60574090d862e54ca576748b9ff8d84a01200f4c: all4 failures were3 strict fixture prerequisites before projection assertions; production afterlife owner guard is correct. Exact MD7901944b467483abc8d9e8b65573351c1daf0a92b6c61bbb3ec4ed79fa6bba2d / JSON93bdf98f59da067b9772743be1c2e3f8fd971660d9a712aecb289e8bf8a92020 retained, FINALSTOP/no pending writes.21raw chains/2551Git pins/eight original binaries and32fullTRXcases independently rechecked; old4FAIL remains immutable.
