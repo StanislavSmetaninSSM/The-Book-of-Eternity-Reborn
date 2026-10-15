@@ -1,0 +1,96 @@
+{
+  "source": "65d3aebece5a5cb90d1af34295f25751a0a0caf9",
+  "compileSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+  "packetManifestSha256": "baa9d2ea2212a5db02b54ac577633a70cfb5399f9e384ae234ffc3b50bedaf2d",
+  "entry": {
+    "Boundary": "fr063_joint_applied_child_entry",
+    "Observation": {
+      "ProcessId": 22863,
+      "ParentProcessId": 22756,
+      "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-af06766d9f404f3bb0b1908ab6297ac9",
+      "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-37be12cedef640dab0dd467e3e5e661e",
+      "Arguments": [
+        "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "engine-mortal-joint-applied-cold",
+        "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-af06766d9f404f3bb0b1908ab6297ac9",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-af06766d9f404f3bb0b1908ab6297ac9/joint-applied-cold-result.json",
+        "0",
+        "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-af06766d9f404f3bb0b1908ab6297ac9/joint-applied-cold-context.json"
+      ],
+      "DependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "A73553FE7F0D3CC45A29A08E8350D43CA8A9252B6BBEFA1773491FDFDDC12431",
+          "support": "151DA073847A93A490ADCB1C4E3BD27710E0C4890697DAB920A8F199FB595A0F",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "LoadedDependencies": [
+        {
+          "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "Sha256": "A73553FE7F0D3CC45A29A08E8350D43CA8A9252B6BBEFA1773491FDFDDC12431",
+          "LoadContext": "Default",
+          "IsDefaultContext": true
+        },
+        {
+          "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "Sha256": "151DA073847A93A490ADCB1C4E3BD27710E0C4890697DAB920A8F199FB595A0F",
+          "LoadContext": "Default",
+          "IsDefaultContext": true
+        },
+        {
+          "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "LoadContext": "Default",
+          "IsDefaultContext": true
+        }
+      ]
+    }
+  },
+  "entryOrigins": [
+    "actual-all-json-observations-raw.json/67/Observation/Failure#line=2",
+    "actual-all-json-observations-raw.json/67/Observation/FullChildLog#line=1"
+  ],
+  "entryReportedThreeBindings": [
+    {
+      "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "A73553FE7F0D3CC45A29A08E8350D43CA8A9252B6BBEFA1773491FDFDDC12431",
+      "freshPinMatched": true,
+      "defaultLoadContext": true
+    },
+    {
+      "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "151DA073847A93A490ADCB1C4E3BD27710E0C4890697DAB920A8F199FB595A0F",
+      "freshPinMatched": true,
+      "defaultLoadContext": true
+    },
+    {
+      "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+      "freshPinMatched": true,
+      "defaultLoadContext": true
+    }
+  ],
+  "contextFiveFilePinsMatched": true,
+  "childFinalBindings": "UNOBSERVED: preflight fails before actual child owner",
+  "childNativeInteger": "UNOBSERVED in original helper output",
+  "coldCompletion": "UNQUALIFIED, category2FAIL",
+  "allChildDependencies": "NOT_CLAIMED",
+  "utc": "20261015T085441Z"
+}
