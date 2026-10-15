@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wounds-player-projection",
+      "responsibility": "US5-RO1 pure typed self/current-realm visible wounds, care/recovery, known method requirements and recursive privacy; no blanket diagnosis gate.",
+      "excludes": "No target/provider discovery, quotes, staging, healing or time writes; filesystem reader/status consumers have separate owning controls. No full FR063/US5 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/WoundPlayerProjection*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundPlayerProjectionTests.*",
+            "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-initial-header-refusal",
       "responsibility": "Six real applied/nonzero producers damaged in parent before child PID: manifest/input/authority missing or exact nonempty malformed bytes. First owner has no prior child authority/original/G/phase/output admission. Five handled holds; malformed manifest has genuine early BrowserOriginalAdmission JsonException. Full raw namespace and directory/file names, story/turn42/inGame preserved; actual PID/bindings/drains and per-case target plus auxiliary cleanup.",
       "excludes": "Client-owned negative fixture coverage of existing accepted contract. No production behavior, authority/member/storage change, original reseal/repair or child donor issuance; no lawful ACTIVE, positive completion or full FR063 acceptance. SOURCE WIP/UNRUN pending corrected independent gates, fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE; later exact singleton release required.",
