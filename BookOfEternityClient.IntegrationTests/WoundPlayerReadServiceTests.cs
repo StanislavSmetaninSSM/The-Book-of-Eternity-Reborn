@@ -93,6 +93,48 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         Assert.Equal(before, fixture.Snapshot());
     }
 
+    [Theory]
+    [InlineData("accepted", true)]
+    [InlineData("proposal", false)]
+    [InlineData("bare", false)]
+    [InlineData("contained", false)]
+    [InlineData("hidden", false)]
+    [InlineData("gm_only", false)]
+    [InlineData("invalid_visibility", false)]
+    [InlineData("duplicate", false)]
+    [InlineData("unaccepted_duplicate", false)]
+    public async Task Load_ItemLabelsRequireUniqueAcceptedVisibleTopLevelCurrentItems(string state, bool readable)
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, targetMaterials: true);
+        var item = MortalItemTestFixture.CreateCanonicalRoot("sterile_thread");
+        item["name"] = "Известная хирургическая нить";
+        if (state == "contained") item["contentsPath"] = new JsonArray("private_container");
+        if (state is "hidden" or "gm_only" or "invalid_visibility") item["visibility"] = state == "invalid_visibility" ? "unknown" : state;
+        MortalItemTestFixture.ResealCanonical(item);
+        Assert.True(MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _));
+        var inventory = new JsonObject { ["items"] = new JsonArray(item) };
+        if (state == "proposal")
+        {
+            item["creationRef"] = "proposal_secret";
+            inventory["items"] = new JsonArray();
+            inventory["UpdateInventory"] = new JsonArray(item.DeepClone());
+        }
+        if (state == "bare") inventory["items"] = new JsonArray(new JsonObject
+            { ["itemId"] = "sterile_thread", ["name"] = "Известная хирургическая нить" });
+        if (state is "duplicate" or "unaccepted_duplicate") inventory["items"]!.AsArray().Add(state == "duplicate" ? item.DeepClone() :
+            new JsonObject { ["itemId"] = "sterile_thread", ["name"] = "Непринятый дубль" });
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/inventory/items.json", inventory.ToJsonString());
+        var before = fixture.Snapshot();
+        var result = await WoundPlayerReadService.LoadAsync(fixture.Files);
+        Assert.True(result.IsAvailable);
+        var requirements = Assert.Single(Assert.Single(result.Active).Methods).Requirements;
+        Assert.Equal(readable, requirements.Any(q => q.Contains("Известная хирургическая нить")));
+        Assert.Equal(!readable, requirements.Any(q => q.StartsWith("Лечебные материалы")));
+        Assert.DoesNotContain(requirements, q => q.Contains("proposal_secret") || q.Contains("sterile_thread") || q.Contains("Непринятый дубль"));
+        Assert.Equal(before, fixture.Snapshot());
+    }
+
     [Fact]
     public async Task Load_HiddenSoulProfileRestrictsOtherwiseKnownWound()
     {
@@ -132,7 +174,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
     internal int LockOpens { get; private set; }
     internal int MutationCalls { get; private set; }
 
-    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false)
+    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false)
     {
         var fixture = new WoundPlayerReadFixture(output);
         try
@@ -148,10 +190,12 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
             var soulWound = WoundContractTestData.CreateSpiritualActiveWound("wound_soul", realm == "mortal_world" ? "chaos_sea" : realm,
                 ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
             soulWound["display"]!["name"] = "Известная рана души";
+            var mortalWound = WoundContractTestData.CreateActiveWound();
+            if (targetMaterials) mortalWound["treatment"]!["routes"]![0]!["requirements"]![0]!["ownerRole"] = "target";
             var input = empty ? WoundPlayerProjectionTestData.Input() : realm != "mortal_world"
                 ? WoundPlayerProjectionTestData.InputInRealm(realm, soulWound)
-                : includeOldSoul ? WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound(), soulWound)
-                : WoundPlayerProjectionTestData.Input(WoundContractTestData.CreateActiveWound());
+                : includeOldSoul ? WoundPlayerProjectionTestData.Input(mortalWound, soulWound)
+                : WoundPlayerProjectionTestData.Input(mortalWound);
             if (hiddenSelf) input.Carriers.AfterlifeProfiles!["profiles"]![0]!["visibility"] = "hidden";
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             foreach (var (path, root) in new (string, JsonObject)[]

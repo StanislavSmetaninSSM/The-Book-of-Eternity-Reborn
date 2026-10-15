@@ -86,4 +86,49 @@ public sealed partial class WoundProjectionPrivacyTests
         Assert.DoesNotContain("Чужой источник при совпавшем идентификаторе", Text(WoundPlayerProjection.Build(input with { Effects = snapshot })));
     }
 
+    [Theory]
+    [InlineData("chaos_sea")]
+    [InlineData("shining_abode")]
+    public void Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(string realm)
+    {
+        var wound = WoundContractTestData.CreateSpiritualActiveWound("wound_soul", realm,
+            ownerId: "player_soul", carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
+        var input = WoundPlayerProjectionTestData.InputInRealm(realm, wound);
+        var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect(
+            "spiritual_roll_hindrance", targetKind: "player", realm: realm, woundId: "wound_soul");
+        effect["effectId"] = "effect_spiritual_roll";
+        effect["source"]!["definitionKey"] = "definition_spiritual_roll";
+        effect["target"]!["targetId"] = "player_soul";
+        effect["display"]!["name"] = "Известная помеха душе";
+        foreach (var scenario in new[] { "visible", "wrong_source", "wrong_realm", "hidden_effect", "hidden_profile" })
+        {
+            var current = effect.DeepClone().AsObject();
+            var profiles = input.Carriers.AfterlifeProfiles!.DeepClone().AsObject();
+            var profile = profiles["profiles"]![0]!;
+            if (scenario == "wrong_source") current["source"]!["sourceId"] = "wound_foreign";
+            if (scenario == "wrong_realm")
+            {
+                current["realm"] = realm == "chaos_sea" ? "shining_abode" : "chaos_sea";
+                profile["realm"] = realm == "chaos_sea" ? "Shining Abode" : "Chaos Sea";
+            }
+            if (scenario == "hidden_effect") current["display"]!["visibility"] = "hidden";
+            if (scenario == "hidden_profile") profile["visibility"] = "hidden";
+            profile["activeEffects"] = new JsonArray(current.DeepClone());
+            var index = EffectMaterializationTestFixture.CreateIdentityIndex(current);
+            index["entries"]![0]!["owner"] = new JsonObject
+            {
+                ["kind"] = "afterlife_profile", ["ownerId"] = "player_soul",
+                ["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath, ["collection"] = "activeEffects"
+            };
+            var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null, null, null, null, profiles, null), index));
+            Assert.True(snapshot.IsAccepted, scenario + ":" + string.Join(";", snapshot.Issues));
+            var result = WoundPlayerProjection.Build(input with { Effects = snapshot,
+                SelfVisible = scenario != "hidden_profile" });
+            Assert.True(result.IsAvailable);
+            Assert.Equal(scenario == "visible", Text(result).Contains("Известная помеха душе"));
+            Assert.DoesNotContain("effect_spiritual_roll", Text(result));
+            Assert.DoesNotContain("wound_foreign", Text(result));
+        }
+    }
+
 }

@@ -86,15 +86,17 @@ internal static class WoundPlayerReadService
 
     private static IReadOnlyDictionary<string, string> KnownItems(JsonObject? inventory)
     {
-        if (inventory is null) return new Dictionary<string, string>();
-        var catalog = MortalItemCarrierCatalog.Build(new(inventory, null, null, null, null,
-            new Dictionary<string, JsonObject>()));
-        if (catalog.Issues.Count != 0) return new Dictionary<string, string>();
-        return catalog.Occurrences.Where(o => o.ItemId is not null && o.Carrier.Kind == "player_inventory" &&
-                o.Carrier.OwnerId == "player" && ExactString(o.Item["visibility"]) is not ("hidden" or "gm_only"))
-            .GroupBy(o => o.ItemId!, StringComparer.Ordinal).Where(g => g.Count() == 1)
-            .Select(g => (Id: g.Key, Name: ExactString(g.Single().Item["name"])))
-            .Where(p => p.Name is not null).ToDictionary(p => p.Id, p => p.Name!, StringComparer.Ordinal);
+        if (inventory?["items"] is not JsonArray items) return new Dictionary<string, string>();
+        return items.OfType<JsonObject>()
+            .GroupBy(item => ExactString(item["itemId"]), StringComparer.Ordinal)
+            .Where(group => group.Key is not null && group.Count() == 1)
+            .Select(group => group.Single())
+            .Where(item => (item["contentsPath"] is null || item["contentsPath"] is JsonArray { Count: 0 }) &&
+                (item["visibility"] is null || ExactString(item["visibility"]) is "public" or "known_to_player" or "owner_visible") &&
+                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+            .Select(item => (Id: ExactString(item["itemId"])!, Name: ExactString(item["name"])))
+            .Where(pair => pair.Name is not null)
+            .ToDictionary(pair => pair.Id, pair => pair.Name!, StringComparer.Ordinal);
     }
 
     private static string? ExactString(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) &&

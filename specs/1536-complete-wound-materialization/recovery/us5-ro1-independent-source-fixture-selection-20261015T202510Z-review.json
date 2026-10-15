@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "review": "US5-RO1 independent SOURCE/FIXTURE/SELECTION",
+  "reviewedAtUtc": "2026-10-15T20:25:10Z",
+  "disposition": "CHANGES_REQUIRED_GREEN_HELD",
+  "reviewedGit": "4fb82ae6b740a9333712a3d4e451a4ddf46dfb28",
+  "baseGit": "b5dcd37b8def8de6a117e2b76530264d84d31a0e",
+  "requestedReviewerConfiguration": "Astra XHigh",
+  "actualBackendTelemetry": "unavailable",
+  "sourcePins": {
+    "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj": "9c88193de8b468cc74b3f57d0258db32656a6f29e31301b6ad738d31eaaf48d7",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs": "453cb16f30c2eef621bc21265ddda399fc134edb3afa8088627b018c63a0eafd",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTestData.cs": "80ae1205b055c9bb8b116909185cfa8d697b65e2da46dc2b6f6047212f4b997e",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTests.History.cs": "3dce0e48533d96dcf866497652c4c67b666a80e0c3205d02d229a2d69da90dbb",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTests.RealmsAndRequirements.cs": "8b75da08b6f6680184db932da1acd24d29d4e224904f99479f2b53d22f4d642a",
+    "BookOfEternityClient.Tests/WoundPlayerProjectionTests.cs": "68e984b58ca2fbbd9f86701df71cc1e77bf8aa9c681205643adbed57fadfdaba",
+    "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs": "10c4dd4ce8ef8843c05a3ad6d9d0f7b255aeebea6b9e961729dfe67856faeb95",
+    "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.cs": "ed8925bf47867a4fb541c12a7fc4be35926475d2d8433def370170cef3bd713c",
+    "BookOfEternityClient/Services/WoundPlayerProjection.History.cs": "e99dd1c464186398b8bd43a1aa8ae64043cad60944b8daefe60d539c8c01ef7f",
+    "BookOfEternityClient/Services/WoundPlayerProjection.Knowledge.cs": "dfdb131e184fda97700bc0331ddb4c2db449a9b0203f060f8200a91b9d15e7a2",
+    "BookOfEternityClient/Services/WoundPlayerProjection.cs": "351f8a0c259efb8b8040460a8923f24f6336ee393989051b7f56e7769a7d03b2",
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs": "f7bf2f014adf2b6470266a99f7f6769d38e45254971a20e2854b5994b0043e0a",
+    "tests/categories.json": "16627a769fddfd296c78a6d617b6f34e23d03e38b1151650a3e1c307da25eb49",
+    "tests/selection.json": "f64e21c6abd16f739d875d28538c870a2bbb14b0d8ced904a74597db58e9eca9"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P1",
+      "kind": "source_privacy_authority_defect",
+      "path": "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+      "line": 87,
+      "title": "Unaccepted proposal/contained inventory occurrences become known requirement labels",
+      "evidence": [
+        "KnownItems93-98 selects catalog occurrences without accepted identity or top-level path restriction",
+        "MortalItemCarrierCatalog223-239 scans items and UpdateInventory",
+        "ScanCreationCommandItemArray625-650 admits creationRef proposals",
+        "AddItem675-712 indexes bare itemId without receipt validation"
+      ],
+      "scenario": {
+        "knownRouteRequirement": {
+          "kind": "item_quantity",
+          "itemRef": "sterile_thread",
+          "quantity": 1,
+          "ownerRole": "target"
+        },
+        "inventory": {
+          "items": [],
+          "UpdateInventory": [
+            {
+              "itemId": "sterile_thread",
+              "creationRef": "proposal_secret",
+              "name": "UNACCEPTED SECRET LABEL"
+            }
+          ]
+        }
+      },
+      "requiredCorrection": "Only exact current top-level visible accepted items with existing TryReadAcceptedIdentity and unique IDs may supply labels; generic fallback otherwise. Add real-reader accepted positive and proposal/unaccepted/contained/hidden/duplicate negatives."
+    },
+    {
+      "id": "F2",
+      "priority": "P2",
+      "kind": "fixture_coverage_gap",
+      "path": "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs",
+      "line": 10,
+      "title": "Afterlife nonempty owned-effect branch has no positive test",
+      "evidence": "All nonempty accepted effect fixtures are Mortal; both realm positives and reader afterlife fixtures have empty effects.",
+      "requiredCorrection": "Add accepted nonempty current-self afterlife effect positives and wrong-realm/source/hidden exclusion controls, preferably both afterlife realms."
+    }
+  ],
+  "recordedRed": {
+    "testedGit": "8c6164188c7186e10087c2665e565c98c70974c9",
+    "freezeSha256": "0200fff03e3a34e9771d51cdb0c0e363ff2f4b1eed5a23468a46dd0a1b414457",
+    "chains": 6,
+    "testedGitSourcePins": 2085,
+    "originalBinaryPins": 4,
+    "methods": 3,
+    "cases": 11,
+    "descriptors": 1,
+    "nativeExit": 1,
+    "wallSeconds": 67.8429414,
+    "passed": 9,
+    "failed": 2,
+    "complete": true,
+    "distinctClosedUniqueKeyPerCaseReceipts": 11,
+    "distinctAbsoluteAbsentRoots": 11,
+    "classification": "9 vacuous unavailable passes; 2 expected positive availability failures; no GREEN"
+  },
+  "selection": {
+    "owners": [
+      "wounds-player-projection",
+      "wounds-player-read"
+    ],
+    "categoryBudgetsMinutes": 3,
+    "ownersAppropriate": true,
+    "sufficiencyAccepted": false,
+    "sourcePredictionsNotDiscovery": {
+      "projectionMethods": 24,
+      "projectionCases": 30,
+      "readerMethods": 7,
+      "readerCases": 24
+    },
+    "nativeGreenRelease": false,
+    "nextAfterFixReview": "Fresh selected BOTH builds; official zero-execution Plan/catalog; exact two-category GREEN with current pins/actual counts/strict reader cleanup."
+  },
+  "limits": {
+    "noAdditionalConcreteStaticCompileFinding": true,
+    "currentBuildProven": false,
+    "currentGreenProven": false,
+    "historyScope": "strict complete reconstructed recovery terminal evidence only; other unproved/treatment-only history omitted",
+    "publicConsumersChanged": false,
+    "ro2MustFollow": true,
+    "authorityStorageMembershipExpansion": false,
+    "reviewerRepositoryWrites": false,
+    "reviewerBuildTestsDiscoveryPlanNativeCalls": false,
+    "fullFeatureClosure": false,
+    "independentRemoteVerificationRepeated": false
+  },
+  "finalState": "FINALSTOP_NO_PENDING_REVIEWER_WRITES"
+}
+
