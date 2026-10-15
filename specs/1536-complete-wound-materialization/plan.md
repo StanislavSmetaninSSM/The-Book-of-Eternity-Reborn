@@ -1,3 +1,9 @@
+## A first preparation failure frozen; namespace correction WIP — 2026-10-15
+
+- Tested metadata carrier895de4e4351584947a990a2efb4a6b93ff63e781 (reviewed source7375; codefa2) passed independent corrected static gates, but first official fresh preparation FAILED: native1,52.9607535s,no timeout,zero tests/zero discovery descriptors. Build-integration stopped at product compile CS0103, new MortalJointAcceptedOutputBasis.cs:53 lacks Core namespace for existing StrictJsonAuthority. BOTH was not successful; unit build/discovery/catalog/actualLate2 UNRUN. Static acceptance did not prove compilation.
+- All7 raw/compressed chains/native result/184 source pins/runner summary and dotnet-test.log frozen BEFORE diagnosis in recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z. Runner owned/runtime cleanup flags true; no actual case cleanup receipts exist because zero cases ran, not runtime PASS. No fresh binary pins granted.
+- Narrow correction adds only the existing Core namespace import. No contract/shape/member/authority/budget/inventory change; intended40/94/23 remains subject to authoritative discovery. Independent EVIDENCE and corrected SOURCE/FIXTURE/SELECTION pending; then restart fresh BOTH/PlanOnly/catalog and first actualLate2 only. Earlier failure packets and prior PASS remain exact; fullFR063/T070/#1536 open.
+
 ## A explicit pre-intake normalization ordering — 2026-10-15
 
 - Causal source tracing corrected a design commentary assumption: ordinary narrative validation at ValidationAndRepair245 belongs to the later materialized-state validator; raw intake572 can run first. Added explicit bounded ordinary normalization before resource/joint intake for a real homogeneous held TREAT plus public draft/current frame, outside its canonical lease.

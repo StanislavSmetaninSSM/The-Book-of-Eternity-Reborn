@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 

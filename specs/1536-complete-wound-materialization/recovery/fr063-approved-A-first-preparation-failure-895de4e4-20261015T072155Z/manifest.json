@@ -1,0 +1,59 @@
+{
+  "source": "895de4e4351584947a990a2efb4a6b93ff63e781",
+  "classification": "FIRST_PREPARATION_NATIVE_FAILURE; actual_UNRUN; raw_frozen_before_diagnosis",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 41980,
+      "uncompressedSha256": "c43da48a8da7d102f23ea880325ff8f912fe96ce1f4070b33615eb6776fc6b9e",
+      "compressedBytes": 11673,
+      "compressedSha256": "36380c95cd7bad311546ad29a76ba79b0b6d108596ba0bf85463f2c6381fac8a"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 1379,
+      "uncompressedSha256": "66e6a21ec02fc973dbd7c724cc09dbf81b362eb97f0cfd75f49c8c0542b1adfa",
+      "compressedBytes": 607,
+      "compressedSha256": "55b815fac44dfc3a9ebfe1e6d975a04ecee367d01a7d5fa54c347ea847f1ecc5"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 522,
+      "uncompressedSha256": "7aad175e510878ed88e22cac8a69ed872a582cc5e3ed0bb812d96d17f05a0720",
+      "compressedBytes": 317,
+      "compressedSha256": "920a5b96aa8142f09256ed112f0550c2b2b15c113a2f78cc09713540ee2d8c27"
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "uncompressedBytes": 372,
+      "uncompressedSha256": "c22651f6c6ab055a1d35b22e1bccb3796a86853977f17fa1e0372c936b056f34",
+      "compressedBytes": 263,
+      "compressedSha256": "da3c2b186291788680ecde7babf0937f4cbcefae764cee59c4129b279e42bab7"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 431,
+      "uncompressedSha256": "4892899a2e29f0a2369efea543c2cd472744fd52fdd775da5a6d6efccfba5aef",
+      "compressedBytes": 252,
+      "compressedSha256": "b72ceec6113ad3aea18974df82ecf1f18dcbb2b1de9b2dca55ae2b8eb4317c20"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 10804,
+      "uncompressedSha256": "134491ab6954108abd23818efd67355ece8104c0dd1b173590f1d8fcfa0f8f4f",
+      "compressedBytes": 2026,
+      "compressedSha256": "831f99e433bb28190feb036b77fac5be9a9eedb8efbd2aaf2bf4f87de0a4303e"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 18421,
+      "uncompressedSha256": "358dcd2e6cb70e3b071ccdad1f1e3c0245b59c130aa979d5124b12a88f170da5",
+      "compressedBytes": 3670,
+      "compressedSha256": "52c68cdc1b957aac3e32664fcec5b2a294f16ba9136e4890cc7716967012bb80"
+    }
+  ],
+  "frozenUtc": "2026-10-15T07:21:56.009441+00:00"
+}
