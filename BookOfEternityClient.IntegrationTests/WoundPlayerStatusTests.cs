@@ -135,6 +135,13 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         var healed = Assert.Single(history.Cards);
         Assert.Equal("Известная зажившая рана", healed.Title);
         Assert.Equal("Рана зажила", healed.Summary);
+        var name = Assert.Single(healed.Facts, fact => fact.Label == "Название");
+        Assert.Equal(healed.Title, name.Value);
+        output.WriteLine(JsonSerializer.Serialize(new
+        {
+            WoundHistoryRenderedConsole = result.Console,
+            WoundHistoryBrowserCard = healed
+        }));
         Assert.Contains("История ран", result.Console);
         Assert.Contains(healed.Title, result.Console);
         Assert.DoesNotContain("retained for replay", result.Console + Text(history));

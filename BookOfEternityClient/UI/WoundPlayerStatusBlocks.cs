@@ -23,7 +23,8 @@ internal static class WoundPlayerStatusBlocks
                 EntityType = "wound-history", Title = "История ран",
                 Cards = projection.History.Select(wound => new UiEntityCard
                 {
-                    Title = wound.Name, Subtitle = "Последняя тяжесть: " + wound.Severity, Summary = wound.Summary
+                    Title = wound.Name, Subtitle = "Последняя тяжесть: " + wound.Severity, Summary = wound.Summary,
+                    Facts = [new UiEntityFact { Label = "Название", Value = wound.Name }]
                 }).ToList()
             });
         return blocks;
