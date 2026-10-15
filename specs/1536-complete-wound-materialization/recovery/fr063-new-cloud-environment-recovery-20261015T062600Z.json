@@ -1,0 +1,29 @@
+{
+  "base": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+  "source": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "clean": true,
+  "environment": {
+    "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "kernel": "6.18.44",
+    "machine": "x86_64",
+    "python": "3.12.14",
+    "SDK": "10.0.401",
+    "PowerShell": "7.6.6"
+  },
+  "officialPowerShellReleaseArchiveSHA256": "ddbc4a2d113bbd46d283cfedcbcd117a70caefd7673f41f2b4e0000badf103bc",
+  "runnerOriginalSHA256": "d94fa4c79ecb523b3cca5e52921fd1a0801cacab70825eaeebc7a7191e4888e8",
+  "runnerPathOnlySHA256": "206e12c10c20e063bdf2b9924c000d12fa2d02005024ff3076c873d73a17e78a",
+  "initialCleanRecovery": {
+    "source": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+    "method": "fresh shallow single-branch clone directly from GitHub, no local object/source reuse",
+    "clean": true,
+    "trackedFilesVerified": 50413,
+    "bytesVerified": 1279688476,
+    "audit": "raw Git blob SHA1 for every tracked file, including symlink target when applicable",
+    "utc": "2026-10-15T06:12:53.050006+00:00"
+  },
+  "specKitPrerequisites": "native0 with explicit SPECIFY_FEATURE_DIRECTORY resolves active1536; persisted feature.json points1553 and was not changed",
+  "actualRelease": "Late2 only, later12HELD/checkpoint5notrepeated",
+  "utc": "2026-10-15T06:16:06.981137+00:00"
+}

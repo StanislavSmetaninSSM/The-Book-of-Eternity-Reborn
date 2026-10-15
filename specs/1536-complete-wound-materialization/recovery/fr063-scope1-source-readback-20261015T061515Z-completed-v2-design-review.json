@@ -1,0 +1,110 @@
+{
+  "repository": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "reviewerTask": "/root/completed_v2_design_review",
+  "configurationRequested": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh"
+  },
+  "configurationActual": "UNAVAILABLE: no independent backend model/effort telemetry; no self-switch or substitution claimed",
+  "reviewType": "READ_ONLY_STATIC",
+  "projectExecution": [],
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "runtimePassClaim": false,
+  "createdUtc": "2026-10-15T06:18:28.322101+00:00",
+  "reviewerStopped": true,
+  "base": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+  "source": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "findingsCritical": [],
+  "findingsImportant": [],
+  "actualRelease": "EXACT_LATE2_ONLY_AFTER_FRESH_PREPARATION_AND_GATES",
+  "later12": "HELD",
+  "checkpoint5": "NOT_REPEATED",
+  "scope3": "NOT_RELEASED",
+  "severityAssertion": "KNOWN_SEPARATE_UNFIXED",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 73257,
+      "sha256": "eccd14356cd2f15e643953cee4c7fcf6df3ea1af4b0c79c042860e004f86f91b",
+      "gitBlob": "9cdf1f5e58a7d7b7f2e25aeea61980ac5531d36f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 1630593,
+      "sha256": "3e344fdd72829380d6649647d7957a4743db9f286861332da940cc7538fe65a8",
+      "gitBlob": "9beb9867292fb421f6c2556ec0f10279ba75751b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 1131209,
+      "sha256": "43ff6049a8288de55984269665339414db8a61e5c168c5264358112aeb4e3ec6",
+      "gitBlob": "099a3e5b636972d3a1ec6ccec4669ce1b449d439"
+    },
+    {
+      "path": "tests/selection.json",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 666,
+      "sha256": "a385fbe2859348c37e417d524f1289c3e1ecfcb22d7b494a3ad36dca81d4c62e",
+      "gitBlob": "bbb1fd03fdcf6a9fa593271fe24dfd5cdfdbe0cc"
+    },
+    {
+      "path": "tests/categories.json",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 1914072,
+      "sha256": "aaf7101f791a58b9a9ceb7f94532f4af7cd7641d7550edc5146fea3d7a2ed32a",
+      "gitBlob": "cf847249d8953907f9518986fe8e2916324aab11"
+    },
+    {
+      "path": "docs/testing.md",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 10789,
+      "sha256": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09",
+      "gitBlob": "5a1f378af1ec739d8fe5f9b1116000b93327ed62"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "ref": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-source-review-20261015T061515Z-completed-v2-design-review.md",
+      "bytes": 4676,
+      "sha256": "84327a416bda0e75546af54f2e87793e5512d73817565f23b9c404cc4c9a30b8"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py.txt",
+      "bytes": 16938,
+      "sha256": "d94fa4c79ecb523b3cca5e52921fd1a0801cacab70825eaeebc7a7191e4888e8"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-root-runner.py",
+      "bytes": 16911,
+      "sha256": "206e12c10c20e063bdf2b9924c000d12fa2d02005024ff3076c873d73a17e78a"
+    }
+  ],
+  "runnerAdaptation": "EXACT_REPO_PATH_ONLY; HISTORICAL_14_SELECTION_INVENTORY_IS_NOT_RUNTIME_RELEASE",
+  "gitDiffCheck": "PASS",
+  "headAtArtifactReadback": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "statusAtArtifactReadback": ""
+}

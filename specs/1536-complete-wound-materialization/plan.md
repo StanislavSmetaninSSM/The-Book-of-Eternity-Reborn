@@ -1,5 +1,32 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## New-cloud observer first actual outcome frozen — 2026-10-15
+
+Compiled/tested source `33dc6a7bb5755f1d390fbf0a283c9e778584eea8` passed
+independent SOURCE/FIXTURE/SELECTION review. Fresh BOTH160.1515975s,
+exactPlan5.5074435s and catalog5.4644432s exited0 with zero tests; inventory
+32/58/18 and Valid746/11588. Fresh builds report unit35/integration130 warnings,
+zero errors; raw logs are retained. Actual Late2: native1,140.0131528s,
+2executed/0PASS/2FAIL, complete1descriptor/2cases, no timeout/skips/duplicates.
+All162 source and11 selected binary pins match pre/post. Two real cleanup
+receipts removed their owned roots with no failure; roots are absent.
+
+Both canonical captures are Committed/zeroissues; observer failures are NULL.
+Nonzero preserved distinct actual baseline restore f5c8af5f (8members) and
+progression consumption19146af9 (exact3members), with one phase consumption.
+Both tests now fail only at the separate severity scalar read, fixture793.
+Story/turn remain42held; later strict oracles are not qualified. All49 raw
+chains are frozen before diagnosis in recovery/fr063-new-cloud-observer-first-
+late2-frozen-33dc6a7bb-20261015T062505Z. Independent EVIDENCE is PENDING.
+
+Independent scope3 review found no authenticated durable full scene after
+consumption: a strict completed-v2 fix requires an explicit owner-output proof/
+schema decision. The concrete A/B proposal is saved in recovery and submitted to
+the coordinator; no scope3 implementation. Scope2 fixture correction follows
+accepted EVIDENCE, then its own gates/fresh preparation/Late2. Checkpoint5 is not
+repeated; later12 remain HELD; fullFR063/T070/#1536 and prior open contours OPEN.
+GM/public contracts are unchanged by scope1. No task checkbox was changed.
+
 ## New-cloud observer correction WIP — 2026-10-15
 
 User delegation resumes the existing accepted plan from verified remote

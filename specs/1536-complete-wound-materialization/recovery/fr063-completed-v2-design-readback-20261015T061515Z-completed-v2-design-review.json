@@ -1,0 +1,245 @@
+{
+  "repository": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "reviewerTask": "/root/completed_v2_design_review",
+  "configurationRequested": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh"
+  },
+  "configurationActual": "UNAVAILABLE: no independent backend model/effort telemetry; no self-switch or substitution claimed",
+  "reviewType": "READ_ONLY_STATIC",
+  "projectExecution": [],
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "runtimePassClaim": false,
+  "createdUtc": "2026-10-15T06:18:28.322101+00:00",
+  "reviewerStopped": true,
+  "source": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+  "verdict": "CONSUMED_DRAFT_CONTRACT_RESTORATION_CONFIRMED; STRICT_FULL_OUTPUT_PROOF_REQUIRES_EXPLICIT_BOUNDED_OWNER_SCHEMA_DECISION",
+  "implementationReleased": false,
+  "proposalAssessment": "OPTIONS_CONSISTENT_WITH_FINDING; COORDINATOR_DECISION_REQUIRED; NOT_DESIGN_ACCEPTED",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 224226,
+      "sha256": "406f9c5e00390bdd39b98b09f7643e961a88028d4754eda5ea4a096f3d2bf75b",
+      "gitBlob": "2a2de532e98ec8c4a0b9b426b985d4dcf329dfce"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 1629378,
+      "sha256": "92724bcae850afc511ffd737611d51a4736bee1f63c5e44d58d8fa2b0a9c1379",
+      "gitBlob": "47e24140730d13b31fb22a630336f07faebf1e46"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 1129994,
+      "sha256": "151acd5a6e79c8ca1f7c2914a6a54b96f9649ee5550e368593e0f371615cc29c",
+      "gitBlob": "6e0a3e243c76d20a47add77a76ae971ce74d2135"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 121506,
+      "sha256": "80f0bc0ef0f5268c3d66c0e7dba635c15e731adba604f2839aeb4ca699dc437f",
+      "gitBlob": "f0a903fd2ca45698bfa33c506fc1d03a5d4d3b6a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 23678,
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895",
+      "gitBlob": "dad4aaad59c5af53dae7584b03c1da5e5443a352"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 31056,
+      "sha256": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923",
+      "gitBlob": "728e0f1d3b5799800fc844b1057aa54d59ff3756"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 19147,
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "gitBlob": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "gitBlob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 10811,
+      "sha256": "4e4609a8d79690b42804849a3e556e954eed53fe14fa88af8ad53d8eecac0235",
+      "gitBlob": "3c359f7976c34e851cfb508b23c41b579c41d975"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+      "gitBlob": "e1f92d693ab9e066d53c2ef17b2806ded3551a31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 61576,
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "gitBlob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 63869,
+      "sha256": "73ee8c2837d461b5abcece31db0bac03a34f20a6c025140bb279a39a14ba2fa1",
+      "gitBlob": "fbceff41e523c9dd9bb5206d6b4f2cc9159139dc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 67254,
+      "sha256": "7b7083e040ea9fe2338531b6f12e5a54837a1fa186282ed87bd1ec5527f3bea9",
+      "gitBlob": "44285fc44cc2e2ee39f28e51b23e809620a88d6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 46812,
+      "sha256": "93009268a67da6c6a5bb244b87eeceb3f7b4294885dfa5aee7f7b4654681189f",
+      "gitBlob": "6b79759cea4a9f21512820ae2f8319728b5a5f0d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "gitBlob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 44141,
+      "sha256": "4d4b0eb287207011edf9596ae6af2afd4ff7e8f7ee3d7a2889b95f6315c77fdd",
+      "gitBlob": "4c7229fd05047dda51ef9511678f47f95da3d7ee"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 27780,
+      "sha256": "27fa10c64ebe04cb78926274079b1e5b7412a7b248eb2571d6faa22bae493d6b",
+      "gitBlob": "1d88accce16214cce575d39bb1f19cb3f13f0402"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.TreatmentReplay.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 9315,
+      "sha256": "591908ad96c529ff2ebe9f885806d1667328d358b327b0bca259cf9d2dec7c20",
+      "gitBlob": "91c2c2a53efd96a46d527bde6e340bce06daa62f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 116877,
+      "sha256": "10845ce0b0f87af45d0e9597bd4c92500718b245168c10d8ed23a9201afd3e69",
+      "gitBlob": "57c5ca2cae769bc954aa9383f7935c4364fcefe0"
+    },
+    {
+      "path": "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 21571,
+      "sha256": "70d39bc5b67af261123659b44a077148607f3c363d9862a1f2fcced92f5d4f68",
+      "gitBlob": "571006edf419fd536b4c88a6b3bd73efd0409fd7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 454117,
+      "sha256": "2747ab5e07b0823105855ff6a80d0f172ab98cfddcb5b51d678d68fd8c62ffcc",
+      "gitBlob": "6a624bcf9c3cf418c1be37bfe22c826c401a65d2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 52388,
+      "sha256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3",
+      "gitBlob": "da5efd6b005daba3a47fc9823b4e8fc3995a7cf0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 2455,
+      "sha256": "a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45",
+      "gitBlob": "a2d2d04f4e0f3f9019b03610fe925b81c039db63"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 8903,
+      "sha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+      "gitBlob": "adad80ad447467b4b66712456f021ac65cc9579e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-independent-review-20261014.md",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 9900,
+      "sha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf",
+      "gitBlob": "54f8901aeb8414bc8e722fcd438d5a83a7ea1a71"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-p5-bounded-phase-coordinator-handoff-20261015T054647Z-3668797d.json",
+      "ref": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+      "bytes": 4427,
+      "sha256": "e76c548cc67821dac314ae123f7210b018e5e242e2ed9e2e98dd10dba1a3dc9f",
+      "gitBlob": "ab8c4e6691013b2bf8be6d39bb7c9c0f1ce50303"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-completed-v2-design-review-20261015T061515Z-completed-v2-design-review.md",
+      "bytes": 9357,
+      "sha256": "8d1d2e845b27efa09c2d71a56bf6d19d190e51eef46a1ad040a13e1594ea0b96"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/completed-v2-output-binding-decision-proposal.md",
+      "bytes": 4259,
+      "sha256": "b2de5793237030b6e41e39b1d6bcb97ec4b18079eb3fb5e3f7bc4cdaa5187b7d"
+    }
+  ]
+}

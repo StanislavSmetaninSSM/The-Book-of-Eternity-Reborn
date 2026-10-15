@@ -1,0 +1,23 @@
+{
+  "source": "33dc6a7bb5755f1d390fbf0a283c9e778584eea8",
+  "clean": true,
+  "remoteOnlyRecoveryDirectory": "/workspace/boe-fr063-recovery-20261015",
+  "method": "initial empty remote-only clone, then remote depth1 fetch of exact WIP; no working checkout object/source reuse",
+  "initialFullBlobAudit": {
+    "source": "79e6c7a4e2d35910212f1005a240eb799a6973f7",
+    "method": "fresh shallow single-branch clone directly from GitHub, no local object/source reuse",
+    "clean": true,
+    "trackedFilesVerified": 50413,
+    "bytesVerified": 1279688476,
+    "audit": "raw Git blob SHA1 for every tracked file, including symlink target when applicable",
+    "utc": "2026-10-15T06:12:53.050006+00:00"
+  },
+  "currentDeltaFilesVerified": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md",
+    "tests/selection.json"
+  ],
+  "connectivity": "git fsck --connectivity-only --no-dangling exit0",
+  "utc": "2026-10-15T06:21:14.588218+00:00"
+}
