@@ -111,7 +111,8 @@ public sealed class ExplorerWebCommandService
         ExplorerCommandDescriptor descriptor,
         ExplorerWebCommandRequest request)
     {
-        await _stateManager.RefreshGameStateAsync();
+        if (descriptor.Id != "status")
+            await _stateManager.RefreshGameStateAsync();
         var command = parsed.BuilderCommand;
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var builderCommand = parsed.Subcommand == null ? commandToken : parsed.CanonicalCommand;

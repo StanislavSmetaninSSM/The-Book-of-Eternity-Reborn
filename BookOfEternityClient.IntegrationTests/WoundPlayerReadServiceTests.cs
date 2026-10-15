@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -48,6 +49,56 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         Assert.Equal(1, fixture.LockOpens - locks);
         Assert.Equal(writes, fixture.MutationCalls);
         Assert.Equal(before, fixture.Snapshot());
+    }
+
+    [Fact]
+    public async Task Load_BorrowedLeaseRemainsActiveWithoutNestedLockOrMutation()
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output);
+        var before = fixture.Snapshot();
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence))
+        {
+            var locks = fixture.LockOpens;
+            var mutations = fixture.MutationCalls;
+            var projection = await WoundPlayerReadService.LoadAsync(fixture.Files, lease);
+            Assert.True(projection.IsAvailable);
+            Assert.Single(projection.Active);
+            Assert.True(lease.IsActive);
+            Assert.Equal(locks, fixture.LockOpens);
+            Assert.Equal(mutations, fixture.MutationCalls);
+            Assert.Equal(before, fixture.Snapshot());
+        }
+    }
+
+    [Fact]
+    public async Task StatusSnapshot_CapturesHeaderAndWoundsOnOneReadLeaseWithoutRepair()
+    {
+        await using var fixture = await WoundPlayerReadFixture.CreateAsync(output, realm: "chaos_sea");
+        var repairs = 0;
+        var state = new StateManager(fixture.Files, new GameSettings(), NullLogger<StateManager>.Instance,
+            new StateManagerHooks { AfterPlayerSoulProfileInputsReadAsync = () => { repairs++; return Task.CompletedTask; } });
+        var before = fixture.Snapshot();
+        var locks = fixture.LockOpens;
+        var mutations = fixture.MutationCalls;
+        var snapshot = await WoundPlayerStatusReadService.LoadAsync(state, fixture.Files);
+        Assert.Equal("Chaos Sea", snapshot.State.CurrentRealm);
+        Assert.Equal("Известная рана души", Assert.Single(snapshot.Wounds.Active).Name);
+        Assert.Equal(locks + 1, fixture.LockOpens);
+        Assert.Equal(mutations, fixture.MutationCalls);
+        Assert.Equal(0, repairs);
+        Assert.Equal(before, fixture.Snapshot());
+        // A subsequent independent refresh must not replace the already-captured header.
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal\"}");
+            var changed = fixture.Snapshot();
+            await state.RefreshGameStateReadOnlyAsync(lease);
+            Assert.Equal(changed, fixture.Snapshot());
+        }
+        Assert.NotSame(snapshot.State, state.CurrentState);
+        Assert.Equal("Mortal", state.CurrentState.CurrentRealm);
+        Assert.Equal("Chaos Sea", snapshot.State.CurrentRealm);
+        Assert.Equal(0, repairs);
     }
 
     [Theory]

@@ -2,15 +2,69 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wounds-player-status-guidance",
+      "responsibility": "US5-RO2 current client-owned status guidance in Mortal and afterlife, paired display examples/manifest and exact affected parseability/complete-coverage inventory controls. This is the wound-status portion of afterlife documentation coverage.",
+      "excludes": "No execution of broad documentation scenarios, mutation/publication/provider/quote/staging, full afterlife matrix or full FR063/US5. Two integration methods are pure read-only repository validation and own no mutable roots; real status/reader fixtures have strict roots in their separate owners.",
+      "changeHints": [
+        "Rules/Block_CLI_Operations.txt",
+        "CLI_API_Specification.md",
+        "OtherGuides/Wound_Materialization_Contract.md",
+        "OtherGuides/Afterlife_Contract_Matrix.md",
+        "Examples/E_CLI_Wound_Materialization.txt",
+        "Examples/E_CLI_Afterlife_Turns.txt",
+        "Examples/example_validation_manifest.json"
+      ],
+      "related": [
+        {
+          "id": "documentation-afterlife-entrypoints-coverage",
+          "when": "Afterlife matrix or worked example coverage changes; preserve mandatory entrypoints and numbered example mapping."
+        },
+        {
+          "id": "wounds-player-status",
+          "when": "Guidance describes actual existing status entrypoints."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-player-status",
       "responsibility": "US5-RO2 actual public console/browser status entrypoints: immediate current-self wound and known-method visibility, requirements, separate confirmed history, privacy, literal text and full-tree read-only behavior.",
-      "excludes": "No guided targeting/provider/quote/staging, mutable healing, full FR063 or full US5 qualification. Native RED first; source guards and shared blocks will be added in the same connected slice.",
+      "excludes": "No guided targeting/provider/quote/staging, mutable healing, full FR063 or full US5 qualification. Owns the three retired legacy UI inventory/distribution/discovery controls split from mortal-wounds-materialization; accepted-mechanics controls stay there.",
       "changeHints": ["BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs", "BookOfEternityClient/Services/WoundPlayerStatusReadService.cs", "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs"],
       "related": [{ "id": "wounds-player-read", "when": "Status borrows the coherent reader lease." }, { "id": "wounds-player-projection", "when": "Shared projection fixture/history helpers or visible semantics change." }],
       "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.WoundPlayerStatusTests.*"] }]
+      "selectors": [
+        { "project": "integration", "tests": ["BookOfEternityClient.Tests.WoundPlayerStatusTests.*"] },
+        { "project": "unit", "tests": [
+          "BookOfEternityClient.Tests.WoundPlayerStatusSourceGuardTests.*",
+          "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor",
+          "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.DirectLooseWoundDistribution_IsRetiredBehindTypedCommandConsumption",
+          "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ProductionLegacyWoundOccurrences_AreConfinedToInventoriedSemanticScopes"
+        ] }
+      ]
     },
     {
       "id": "wounds-player-read",
@@ -15560,7 +15614,8 @@
                     "project": "unit",
                     "tests": [
                         "BookOfEternityClient.Tests.WoundMaterializationContractTests.*",
-                        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.*"
+                        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.AcceptedTransitionCommands_ColdReplayAndRepairReaderFailClosed",
+                        "BookOfEternityClient.Tests.WoundMaterializationSourceGuardTests.ActiveWoundRollModifierFixturesUseExplicitClosedScope"
                     ]
                 }
             ]

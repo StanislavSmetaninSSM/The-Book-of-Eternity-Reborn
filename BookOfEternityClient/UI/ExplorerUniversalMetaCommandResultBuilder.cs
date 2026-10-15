@@ -142,7 +142,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             return null;
         }
 
-        await stateManager.RefreshGameStateAsync();
+        if (kind != CommandKind.Status)
+            await stateManager.RefreshGameStateAsync();
 
         return kind switch
         {
@@ -181,11 +182,13 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         StateManager stateManager,
         FileSystemManager fs)
     {
-        var state = stateManager.CurrentState;
+        var status = await WoundPlayerStatusReadService.LoadAsync(stateManager, fs);
+        var state = status.State;
         var blocks = new List<UiBlock>
         {
             BuildStatusOverviewDossier(state)
         };
+        blocks.AddRange(WoundPlayerStatusBlocks.Build(status.Wounds));
 
         var actions = Enumerable.Empty<UiAction>();
         if (!state.IsInAfterlifeRealm)
@@ -249,7 +252,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             Realm: "mortal_world",
             TargetKind: "player",
             TargetId: "player_current"));
-        var woundsRead = await ReadJson(fs, "game_state/player/wounds.json");
         var customStatesRead = await ReadJson(fs, "game_state/player/custom_states.json");
 
         var status = UnwrapObject(statusRead.Node, "playerStatus");
@@ -302,7 +304,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 changeRows);
 
         AddMortalStatusEffectBlocks(blocks, effectProjection);
-        AddMortalStatusWoundBlocks(blocks, woundsRead.Node);
         AddMortalStatusCustomStateBlocks(blocks, customStatesRead.Node);
 
         return ExplorerMortalEffectDetailActions.Build("/эффекты", effectProjection);
@@ -546,42 +547,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                 }
             ]
         });
-    }
-
-    private static void AddMortalStatusWoundBlocks(List<UiBlock> blocks, JsonNode? woundsRoot)
-    {
-        var rows = EnumerateStatusObjects(woundsRoot)
-            .Select(wound =>
-            {
-                var healing = wound["healingState"] is JsonObject healingState
-                    ? JoinKnownParts(
-                        " ",
-                        GetOptionalString(healingState, "currentState"),
-                        BuildProgressText(
-                            GetOptionalString(healingState, "treatmentProgress"),
-                            GetOptionalString(healingState, "progressNeeded")))
-                    : string.Empty;
-                return Row(
-                    FirstKnown(GetString(wound, "woundName", string.Empty), GetString(wound, "name", string.Empty), "Рана"),
-                    TranslateWoundSeverity(GetOptionalString(wound, "severity")),
-                    FirstNonEmpty(GetOptionalString(wound, "descriptionOfEffects"), GetOptionalString(wound, "description")),
-                    healing);
-            })
-            .Where(static row => row.Cells.Any(static cell => !IsUnknownValue(cell)))
-            .ToList();
-
-        if (rows.Count == 0)
-            return;
-
-        AddStatusRowsDossier(
-            blocks,
-            "Раны",
-            "status-wounds",
-            "status-wound",
-            "Повреждения и их текущее лечение.",
-            "effect",
-            ["Рана", "Тяжесть", "Влияние", "Лечение"],
-            rows);
     }
 
     private static void AddMortalStatusCustomStateBlocks(List<UiBlock> blocks, JsonNode? statesRoot)
@@ -872,16 +837,6 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             ? translated
             : normalized;
     }
-
-    private static string TranslateWoundSeverity(string? severity) =>
-        (severity ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "light" => "лёгкая",
-            "moderate" => "средняя",
-            "serious" => "серьёзная",
-            "critical" => "критическая",
-            _ => EmptyFallback(severity)
-        };
 
     private static string BuildProgressText(string current, string max)
     {

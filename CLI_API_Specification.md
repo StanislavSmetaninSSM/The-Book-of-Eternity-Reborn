@@ -268,7 +268,6 @@ CLI Agent automatically loads current game state from:
   "moneyChange": "integer (can be negative)",
   "experienceGained": "integer",
   "playerEffortTrackerChange": "object with lastUsedCharacteristic + consecutivePartialSuccesses",
-  "playerWoundChanges": "array of wound_change_objects",
   "customStateChanges": "array of custom_state_objects",
   "playerStealthStateChange": "object with stealth updates",
   "playerAppearanceChange": "string (new appearance description)",
@@ -320,7 +319,6 @@ CLI Agent automatically loads current game state from:
   "NPCPassiveSkillChanges": "array of npc_skill_change_objects",
   "NPCSkillMasteryChanges": "array of npc_mastery_change_objects",
   "NPCPassiveSkillMasteryChanges": "array of npc_mastery_change_objects",
-  "NPCWoundChanges": "array of npc_wound_change_objects",
   "interNPCRelationshipChanges": "array of inter_npc_relationship_objects",
   "NPCRelationshipChanges": "array of npc_relationship_change_objects",
   "NPCRelationshipLockUpdates": "array of relationship_lock_objects",
@@ -524,7 +522,8 @@ game_session/
 - `game_state/player/weight_calc.json` ← `calculatedWeightData`
 - `game_state/player/status_changes.json` ← `statsIncreased`, `statsDecreased`, `moneyChange`; bounded gauges use only common resource commands
 - `game_state/player/experience.json` ← `experienceGained`, `playerEffortTrackerChange`
-- `game_state/player/wounds.json` ← `playerWoundChanges`
+- `game_state/wounds/wound_commands.json` ← transient strict `woundDecisions`; the client consumes accepted commands.
+- `game_state/player/wounds.json`, `game_state/npcs/npc_wounds.json`, owner combatant/afterlife wound carriers and common wound identity/history are client-materialized canonical state, never direct GM output.
 - `game_state/player/custom_states.json` ← `customStateChanges`
 - `game_state/player/stealth.json` ← `playerStealthStateChange`
 - `game_state/player/transformation.json` ← `playerAppearanceChange`, `playerImagePromptChange`, `playerRaceChange`, etc.
@@ -651,7 +650,7 @@ Quest state contract notes:
 #### **NPC SYSTEM (14 FILES)**
 - `game_state/npcs/npc_core.json` ← `UpdateNPCs`, `NPCsRenameData`, `NPCsInScene`
 - `game_state/npcs/npc_skills.json` ← `NPCActiveSkillChanges`, `NPCPassiveSkillChanges`, etc.
-- `game_state/npcs/npc_effects.json` ← `NPCWoundChanges` plus client-owned canonical NPC active-effect entries; lifecycle requests use only top-level `effectChanges[]`
+- `game_state/npcs/npc_effects.json` contains client-owned canonical NPC active-effect entries; lifecycle requests use only top-level `effectChanges[]`. NPC wounds use their separate client-owned `game_state/npcs/npc_wounds.json` carrier and the common strict wound-command path.
 - `game_state/npcs/npc_relationships.json` ← `NPCRelationshipChanges`, `interNPCRelationshipChanges`, etc.
 - `game_state/npcs/npc_goals.json` ← `NPCGoalUpdates`, `NPCQuestUpdates`
 - `game_state/npcs/npc_inventory.json` ← `NPCInventoryAdds/Updates/Removals`, `NPCEquipmentChanges`, etc.
@@ -2433,3 +2432,29 @@ progress.
 The strict envelope parser alone does not enable live dispatch; GameEngine authenticates and resumes C2; no player command is added.
 
 *This document provides comprehensive guidance for CLI agents working with The Book of Eternity Reborn game system. For implementation questions, refer to the detailed rule blocks and examples in the Rules/ and Examples/ directories.*
+
+## wound_player_status_readonly_v1 — current read-only player status
+
+`/статус` and `/status` immediately show the current player's visible active wounds
+in Mortal World, Chaos Sea, or Shining Abode. A known wound and its already-known
+methods do not require a diagnosis reveal gate. Hidden wounds, unknown routes,
+private complications/effects and other owners remain private; future discoverability
+is not current knowledge. Mortal wounds do not follow the soul into afterlife status.
+
+This is a client-owned read-only view. The GM sends no response for opening it and
+must not repair, rewrite, heal, charge resources, advance time, or stage commands just
+because status was inspected. Canonical wound identity/history and accepted effects
+remain client-owned. Dynamic names and descriptions are displayed as literal text.
+Declared requirements describe a known method; they do not confirm resource
+availability, an available helper, affordability or an exact price. Current accepted
+Mortal requirement references become readable authorized labels. Known spiritual
+methods currently show generic conditions; opaque route payloads are not a treatment
+resolver or an Ink Feather quote.
+
+Validated healed snapshots appear separately under `История ран`, never in the active
+list. Missing or incoherent wound authority gives `Сейчас невозможно надёжно определить
+состояние ран.` rather than claiming the player is healthy. No `/раны`/`/wounds`,
+`/лечить`/`/treat`, target/provider selection, quote or staging is enabled by this
+read-only slice; full guided behavior remains a separate accepted-plan task. See the
+`wound_player_status_readonly_v1` display examples in
+`Examples/E_CLI_Wound_Materialization.txt` and `Examples/E_CLI_Afterlife_Turns.txt`.

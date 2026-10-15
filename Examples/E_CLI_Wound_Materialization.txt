@@ -2607,3 +2607,34 @@ Complete response for the SAME original and opportunity; exactly one severity le
   ]
 }
 ```
+
+
+WOUND PLAYER STATUS DISPLAY — wound_player_status_readonly_v1
+This is a client-owned read-only display example, NOT a GM response envelope and
+NOT instructions to write canonical state. Existing accepted wound/history/effect
+and current-realm authority must already agree. Opening /статус or /status creates
+no response, command, repair, charge, roll or time advance.
+
+Mortal World: a visible II wound named «Известная рана путника» has the already-known
+method «Очистить и наложить швы», an authorized declared requirement of 7 energy,
+and no diagnosis discoveries. Both console and browser immediately show the wound,
+Roman II, known location/symptoms, care/recovery and the known method/requirements.
+«Указанные требования не подтверждают наличие ресурсов, доступность помощника или точную цену.»
+There is no diagnosis reveal gate for these already-known facts. A hidden method
+which a later public examination could discover stays unnamed now.
+
+Chaos Sea / Shining Abode: the visible current soul's II wound and already-known
+«Духовная помощь» appear immediately. Conditions remain generic: «Условия известного
+способа следует уточнить у специалиста.» Do not invent a spiritual resource decoder,
+public provider, exact Ink Feather price or executable healing form. A hidden soul
+profile, hidden wound and foreign soul's wound reveal no name, symptom or hidden count.
+The old Mortal incarnation's wound does not become a soul wound.
+
+A validated healed snapshot named «Известная зажившая рана» appears only in separate
+«История ран» with «Рана зажила». Missing/incoherent wound authority instead shows
+«Сейчас невозможно надёжно определить состояние ран.»; it does not mean no wounds.
+All names and descriptions are literal text, including markup/HTML-looking text.
+This example proves the display contract only. Full guided /раны /wounds /лечить
+/treat, targeting, providers, quotes, staging and full treatment-only History remain
+outside this slice. Native consumers are covered by WoundPlayerStatusTests; focused
+source/documentation guards bind this example marker and its limitations.

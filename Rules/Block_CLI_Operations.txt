@@ -10,6 +10,9 @@
  <instructiontext>
   <![CDATA[
 
+            wound_player_status_readonly_v1: /статус and /status are client-owned read-only inspection in Mortal World, Chaos Sea and Shining Abode. Show visible current-self wounds and already-known methods immediately, without a diagnosis reveal gate; preserve hidden/private/foreign facts. Declared requirements do not prove resource availability, a helper or an exact price. Healed snapshots belong only to separate История ран; unavailable authority is not a healthy-empty assertion. The GM writes no response, repair, healing, charge or time advance for this view. No guided /раны, /wounds, /лечить, /treat or staging is enabled by this slice. Follow OtherGuides/Wound_Materialization_Contract.md and the same marker in both wound and afterlife examples. Known spiritual methods have generic conditions until an accepted application codec exists.
+
+
             The CLI Agent operates as a Game Master in a file-based environment. Instead of receiving a single JSON request and returning a single JSON response, 
             the CLI Agent monitors file system changes, reads distributed game state, processes turns using existing rule blocks, 
             and writes results back to distributed JSON files.

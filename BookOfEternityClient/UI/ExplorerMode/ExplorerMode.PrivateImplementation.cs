@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BookOfEternityClient.CommandProtocol;
 using System.Text.Json.Nodes;
 using System.Security.Cryptography;
 using System.Text;
@@ -1679,43 +1680,9 @@ public partial class ExplorerMode
             lines.Add("  [dim]Нет активных эффектов[/]");
     }
 
-    private static void AppendStatusWoundPreview(List<string> lines, JsonElement root)
-    {
-        lines.Add("[bold red]🩸 Раны:[/]");
-        var hasWounds = false;
-        EnumerateJsonItems(root, item =>
-        {
-            if (item.ValueKind != JsonValueKind.Object) return;
-            hasWounds = true;
-            var woundName = GetStr(item, "woundName", "Рана");
-            var severity = GetStr(item, "severity", "?");
-            var description = GetStr(item, "descriptionOfEffects", GetStr(item, "description", ""));
-            var severityColor = severity.ToLowerInvariant() switch
-            {
-                "light" => "yellow",
-                "moderate" => "orange1",
-                "serious" => "red",
-                "critical" => "red bold",
-                _ => "white"
-            };
-
-            lines.Add($"  [{severityColor}]• {Markup.Escape(woundName)} ({Markup.Escape(severity)})[/]");
-            if (!string.IsNullOrEmpty(description))
-                lines.Add($"    [dim]{Markup.Escape(description)}[/]");
-
-            if (item.TryGetProperty("healingState", out var healingState) && healingState.ValueKind == JsonValueKind.Object)
-            {
-                var state = GetStr(healingState, "currentState", "");
-                var progress = GetStr(healingState, "treatmentProgress", "0");
-                var needed = GetStr(healingState, "progressNeeded", "?");
-                if (!string.IsNullOrEmpty(state))
-                    lines.Add($"    [cyan]Лечение:[/] {Markup.Escape(state)} ({Markup.Escape(progress)}/{Markup.Escape(needed)})");
-            }
-        });
-
-        if (!hasWounds)
-            lines.Add("  [dim green]Ран нет[/]");
-    }
+    private void RenderWoundStatus(WoundPlayerProjectionResult projection) =>
+        ExplorerCommandResultConsoleRenderer.Render(_console,
+            new ExplorerCommandResult { Blocks = WoundPlayerStatusBlocks.Build(projection) });
 
     private static void AppendStatusCustomStatePreview(List<string> lines, JsonElement root)
     {

@@ -881,11 +881,11 @@ public partial class ExplorerMode
 
     private async Task ShowDetailedStatus()
     {
-        await _stateManager.RefreshGameStateAsync();
-        var state = _stateManager.CurrentState;
+        var status = await WoundPlayerStatusReadService.LoadAsync(_stateManager, _fs);
+        var state = status.State;
         if (state.IsInAfterlifeRealm)
         {
-            await ShowAfterlifeDetailedStatusAsync(IsAfterlifeStatusAuditRequested(_currentCommandRemainder));
+            await ShowAfterlifeDetailedStatusAsync(IsAfterlifeStatusAuditRequested(_currentCommandRemainder), status);
             return;
         }
 
@@ -908,7 +908,6 @@ public partial class ExplorerMode
             Realm: "mortal_world",
             TargetKind: "player",
             TargetId: "player_current"));
-        var wndDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/wounds.json");
         var customStatesDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/custom_states.json");
 
         // ── Extract level and XP ──
@@ -1329,19 +1328,13 @@ public partial class ExplorerMode
             AppendStatusEffectPreview(extraText, effectProjection);
         }
 
-        if (wndDoc != null)
-        {
-            if (extraText.Count > 0) extraText.Add("");
-            AppendStatusWoundPreview(extraText, wndDoc.RootElement);
-        }
-
         if (customStatesDoc != null)
         {
             if (extraText.Count > 0) extraText.Add("");
             AppendStatusCustomStatePreview(extraText, customStatesDoc.RootElement);
         }
 
-        var shiningBlessingLines = await ShiningBlessingEffectState.BuildStatusLinesAsync(_fs, _stateManager.CurrentState.TurnNumber);
+        var shiningBlessingLines = await ShiningBlessingEffectState.BuildStatusLinesAsync(_fs, state.TurnNumber);
         if (shiningBlessingLines.Count > 0)
         {
             if (extraText.Count > 0) extraText.Add("");
@@ -1363,12 +1356,14 @@ public partial class ExplorerMode
             });
         }
 
+        RenderWoundStatus(status.Wounds);
+
         // Player portrait
         var playerImgPrompt = "";
         if (transDoc != null)
             playerImgPrompt = GetStr(transDoc.RootElement, "playerImagePromptChange",
                 GetStr(transDoc.RootElement, "image_prompt", ""));
-        await WaitForKeyWithImage("player", _stateManager.CurrentState.CharacterName ?? "player", playerImgPrompt, "player_portrait");
+        await WaitForKeyWithImage("player", state.CharacterName ?? "player", playerImgPrompt, "player_portrait");
     }
 
     private async Task ShowSkills()

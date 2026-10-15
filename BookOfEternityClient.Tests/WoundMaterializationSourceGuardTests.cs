@@ -45,7 +45,8 @@ public sealed class WoundMaterializationSourceGuardTests
     private enum InventoryCategory
     {
         LegacyLooseWoundSurface,
-        AcceptedMechanicsIntegrationSeam
+        AcceptedMechanicsIntegrationSeam,
+        PlayerReadOnlyProjection
     }
 
     private sealed record InventoryEntry(
@@ -170,30 +171,41 @@ public sealed class WoundMaterializationSourceGuardTests
             "Set(\"schemaVersion\", \"entries\", \"NPCWoundChanges\")",
             "adjacent-only NPCWoundChanges command surface"),
         new(
-            "universal-status-raw-wound-reader",
-            InventoryCategory.LegacyLooseWoundSurface,
-            "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
-            "private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(",
-            "await ReadJson(fs, \"game_state/player/wounds.json\")",
-            "private static void AddMortalStatusWoundBlocks(",
-            "wound[\"healingState\"]",
-            "GetString(wound, \"woundName\"",
-            "GetOptionalString(wound, \"descriptionOfEffects\")"),
+            "player-wound-readonly-status-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Services/WoundPlayerStatusReadService.cs",
+            "CanonicalWritePurpose.PublicationReadQuiescence",
+            "stateManager.RefreshGameStateReadOnlyAsync(lease)",
+            "WoundPlayerReadService.LoadAsync(fs, lease)",
+            "return new(state, wounds)"),
         new(
-            "explorer-status-raw-wound-reader",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "player-wound-shared-status-blocks",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs",
+            "internal static class WoundPlayerStatusBlocks",
+            "EntityType = \"wound-status\"",
+            "EntityType = \"wound-history\""),
+        new(
+            "universal-status-typed-wound-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+            "if (kind != CommandKind.Status)",
+            "WoundPlayerStatusReadService.LoadAsync(stateManager, fs)",
+            "WoundPlayerStatusBlocks.Build(status.Wounds)"),
+        new(
+            "explorer-status-typed-wound-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
             "private async Task ShowDetailedStatus()",
-            "LoadGameStateFileAsync(\"game_state/player/wounds.json\")",
-            "AppendStatusWoundPreview(extraText, wndDoc.RootElement)"),
+            "WoundPlayerStatusReadService.LoadAsync(_stateManager, _fs)",
+            "RenderWoundStatus(status.Wounds)"),
         new(
-            "explorer-status-wound-preview-renderer",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "explorer-status-shared-wound-renderer",
+            InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
-            "private static void AppendStatusWoundPreview(",
-            "GetStr(item, \"woundName\", \"Рана\")",
-            "GetStr(item, \"descriptionOfEffects\"",
-            "item.TryGetProperty(\"healingState\""),
+            "private void RenderWoundStatus(",
+            "ExplorerCommandResultConsoleRenderer.Render(_console,",
+            "WoundPlayerStatusBlocks.Build(projection)"),
         new(
             "accepted-turn-authority-registry",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -399,14 +411,6 @@ public sealed class WoundMaterializationSourceGuardTests
         Scope("planner-npc-wound-fallback", "npc-effect-planner-wound-command-fallback", "NPCWoundChanges", "internal bool TryLocate(", "internal EffectCarrierCatalogInput ToInput("),
         Scope("effect-contract-npc-wound-command", "npc-effect-contract-wound-command-acceptance", "NPCWoundChanges", "private static void ValidateNpcCarrier(", "private static void ValidateEmbeddedCarrier("),
 
-        Scope("universal-reader-path", "universal-status-raw-wound-reader", "game_state/player/wounds.json", "private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(", "private static UiEntityDossierBlock BuildStatusFactDossier("),
-        Scope("universal-reader-name", "universal-status-raw-wound-reader", "woundName", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("universal-reader-description", "universal-status-raw-wound-reader", "descriptionOfEffects", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("universal-reader-healing", "universal-status-raw-wound-reader", "healingState", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("explorer-reader-path", "explorer-status-raw-wound-reader", "game_state/player/wounds.json", "private async Task ShowDetailedStatus()", "private async Task ShowSkills()"),
-        Scope("explorer-preview-name", "explorer-status-wound-preview-renderer", "woundName", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
-        Scope("explorer-preview-description", "explorer-status-wound-preview-renderer", "descriptionOfEffects", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
-        Scope("explorer-preview-healing", "explorer-status-wound-preview-renderer", "healingState", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
         Scope("accepted-player-wound-carrier-path", "accepted-wound-carrier-catalog", "game_state/player/wounds.json", "internal const string PlayerPath", "internal const string NpcPath"),
@@ -423,6 +427,7 @@ public sealed class WoundMaterializationSourceGuardTests
         Assert.Equal(Inventory.Length, Inventory.Select(static entry => entry.Id).Distinct(StringComparer.Ordinal).Count());
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.LegacyLooseWoundSurface);
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.AcceptedMechanicsIntegrationSeam);
+        Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.PlayerReadOnlyProjection);
 
         var entriesById = Inventory.ToDictionary(static entry => entry.Id, StringComparer.Ordinal);
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))

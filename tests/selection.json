@@ -1,8 +1,40 @@
 {
   "schemaVersion": 1,
-  "selections": [{
-    "category": "wounds-player-status",
-    "reason": "US5-RO2 intentional RED on actual existing console/browser status; 6 methods/15 cases provisionally. No new production implementation; helper-only extraction and supplied immutable input allow genuine terminal/visibility fixtures. Existing accepted RO1 foundation is not requalified by this RED.",
-    "contracts": ["#1536 US5-RO2 T127/applicableT128/T129; FR075/076; existing readonly sequencing refinement"]
-  }]
+  "selections": [
+    {
+      "category": "wounds-player-projection",
+      "reason": "RO2 extracts terminal history fixture unchanged and consumes the existing typed projection; recheck actual unit compile/fixture semantics after connected consumer wiring. Historical FR063/initial9 grants do not apply.",
+      "contracts": [
+        "#1536 T113/T115 partialT119; known versus hidden facts, realms and exact owned binding"
+      ]
+    },
+    {
+      "category": "wounds-player-read",
+      "reason": "RO2 adds caller-owned lease overload and a coherent captured header+wound snapshot; preserve all strict reader refusals, unchanged-tree checks and genuine per-case cleanup.",
+      "contracts": [
+        "#1536 US5-RO2; one PublicationReadQuiescence boundary; no normal mirror repair"
+      ]
+    },
+    {
+      "category": "wounds-player-status",
+      "reason": "Actual public console/browser current-self status in all3 realms; 15 intentionalRED cases and retired UI source inventory scopes, literal text/history/known requirements, no canonical changes. Uses established frontend blocks with no component/CSS change; frontend DOM/visual runtime is not claimed.",
+      "contracts": [
+        "#1536 T127/applicableT128/T129; FR075/076; TASK-ORDER-US5-READONLY"
+      ]
+    },
+    {
+      "category": "wounds-player-status-guidance",
+      "reason": "GM must not read implementation; current status behavior, paired worked display fragments, exact manifest inventory and example syntax controls after guidance synchronization. Two integration controls are pure repository readers with no owned fixture root. Existing broad ExampleDocumentationValidationTests wildcard also owns them; this exact task owner permits bounded selection.",
+      "contracts": [
+        "#1536 US5-RO2 GM synchronization; current-only readonly behavior; declared conditions are not availability or quote"
+      ]
+    },
+    {
+      "category": "documentation-afterlife-entrypoints-coverage",
+      "reason": "Afterlife matrix/examples/manifest edited; preserve existing mandatory prompt links and all28 numbered example coverage mappings without broad afterlife scenario execution.",
+      "contracts": [
+        "AGENTS afterlife documentation guardrail; nonnumbered status display appendix keeps existing28 examples"
+      ]
+    }
+  ]
 }

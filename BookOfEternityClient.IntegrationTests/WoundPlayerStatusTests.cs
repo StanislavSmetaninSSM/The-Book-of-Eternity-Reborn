@@ -34,6 +34,9 @@ public sealed class WoundPlayerStatusTests(ITestOutputHelper output)
         var card = Assert.Single(Status(result.Browser).Cards);
         Assert.Equal("Известная рана путника", card.Title);
         Assert.Contains("II", card.Subtitle);
+        Assert.Contains(card.Facts, fact => fact.Label == "Уход");
+        Assert.Contains(card.Facts, fact => fact.Label == "Восстановление");
+        Assert.Contains(card.Facts, fact => fact.Value.Contains(realm == "mortal_world" ? "левый бок" : "воля и духовное равновесие"));
         var method = Assert.Single(card.Cards);
         Assert.Contains(wound["treatment"]!["routes"]![0]!["displayName"]!.GetValue<string>(), method.Title);
         Assert.Contains("не подтверждают наличие ресурсов", method.Summary);

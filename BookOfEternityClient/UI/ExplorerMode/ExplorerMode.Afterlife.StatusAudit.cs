@@ -57,9 +57,9 @@ public partial class ExplorerMode
         new(SarefMainStoryState.PendingWingsInfiltrationPath, "Поиск Крыльев Ангелов", "sarefMainStoryUpdate.mode=reveal_wings/refuse_wings/block_wings + wingsInfiltration.status", ShiningOnly: true)
     };
 
-    private async Task ShowAfterlifeDetailedStatusAsync(bool includeAuditPayloads)
+    private async Task ShowAfterlifeDetailedStatusAsync(bool includeAuditPayloads, WoundPlayerStatusSnapshot status)
     {
-        await _stateManager.RefreshGameStateAsync();
+        var state = status.State;
         var soulStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/soul_state.json");
         var guardiansStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/guardians.json");
         var residentsStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(GuardianAbodeResidentState.StatePath);
@@ -93,7 +93,7 @@ public partial class ExplorerMode
         var effectProjection = includeAuditPayloads
             ? EffectPlayerProjection.Build(new EffectPlayerProjectionInput(
                 await EffectMechanicsSnapshot.LoadAsync(_fs),
-                Realm: _stateManager.CurrentState.IsInShiningAbode ? "shining_abode" : "chaos_sea",
+                Realm: state.IsInShiningAbode ? "shining_abode" : "chaos_sea",
                 TargetKind: "spiritual_conflict_side"))
             : null;
 
@@ -104,9 +104,9 @@ public partial class ExplorerMode
                 : "[bold cyan]Статус посмертия[/]",
             "",
             "[bold]Область и душа:[/]",
-            $"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmForPlayer(_stateManager.CurrentState.CurrentRealm))}[/]",
-            $"  • Ход: [white]{_stateManager.CurrentState.TurnNumber}[/]",
-            $"  • Душа: [white]{Markup.Escape(GetNodeString(soulRoot?["soulName"]) ?? _stateManager.CurrentState.CharacterName ?? "не указана")}[/]",
+            $"  • Область: [white]{Markup.Escape(FormatAfterlifeRealmForPlayer(state.CurrentRealm))}[/]",
+            $"  • Ход: [white]{state.TurnNumber}[/]",
+            $"  • Душа: [white]{Markup.Escape(GetNodeString(soulRoot?["soulName"]) ?? state.CharacterName ?? "не указана")}[/]",
             $"  • Форма души: [white]{Markup.Escape(GetNodeString(soulRoot?["soulFormDescription"]) ?? "не описана")}[/]",
             $"  • Инкарнация: [white]{GetNodeInt(soulRoot?["currentIncarnation"])}[/]",
             "",
@@ -157,10 +157,11 @@ public partial class ExplorerMode
         {
             Header = new PanelHeader(" 📊 Статус посмертия ", Justify.Center),
             Border = BoxBorder.Double,
-            BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
+            BorderStyle = new Style(state.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
             Padding = new Padding(2, 1),
             Expand = true
         });
+        RenderWoundStatus(status.Wounds);
         if (includeAuditPayloads)
         {
             WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", soulRoot, Color.Cyan1);

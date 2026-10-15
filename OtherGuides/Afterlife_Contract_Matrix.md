@@ -935,3 +935,29 @@ and Ready are required for each response. No new public field or GM authority
 is added. Preserve the saved wound choice. Read the wound guide and worked
 afterlife example; the client alone uses a detached echo for intermediate
 validation and validates the full actual draft after B.
+
+## wound_player_status_readonly_v1 — current read-only player status
+
+`/статус` and `/status` immediately show the current player's visible active wounds
+in Mortal World, Chaos Sea, or Shining Abode. A known wound and its already-known
+methods do not require a diagnosis reveal gate. Hidden wounds, unknown routes,
+private complications/effects and other owners remain private; future discoverability
+is not current knowledge. Mortal wounds do not follow the soul into afterlife status.
+
+This is a client-owned read-only view. The GM sends no response for opening it and
+must not repair, rewrite, heal, charge resources, advance time, or stage commands just
+because status was inspected. Canonical wound identity/history and accepted effects
+remain client-owned. Dynamic names and descriptions are displayed as literal text.
+Declared requirements describe a known method; they do not confirm resource
+availability, an available helper, affordability or an exact price. Current accepted
+Mortal requirement references become readable authorized labels. Known spiritual
+methods currently show generic conditions; opaque route payloads are not a treatment
+resolver or an Ink Feather quote.
+
+Validated healed snapshots appear separately under `История ран`, never in the active
+list. Missing or incoherent wound authority gives `Сейчас невозможно надёжно определить
+состояние ран.` rather than claiming the player is healthy. No `/раны`/`/wounds`,
+`/лечить`/`/treat`, target/provider selection, quote or staging is enabled by this
+read-only slice; full guided behavior remains a separate accepted-plan task. See the
+`wound_player_status_readonly_v1` display examples in
+`Examples/E_CLI_Wound_Materialization.txt` and `Examples/E_CLI_Afterlife_Turns.txt`.

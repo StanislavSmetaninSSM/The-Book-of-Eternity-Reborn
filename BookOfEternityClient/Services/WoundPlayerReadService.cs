@@ -16,6 +16,24 @@ internal static class WoundPlayerReadService
         try
         {
             await using var lease = await fs.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
+            return await LoadAsync(fs, lease);
+        }
+        catch (Exception failure) when (failure is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or InvalidOperationException)
+        {
+            return WoundPlayerProjection.Unavailable();
+        }
+    }
+
+    /// <summary>Reads under a caller-owned lease; never reacquires or disposes it.</summary>
+    internal static async Task<WoundPlayerProjectionResult> LoadAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(lease);
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        fs.VerifyCurrentSessionOperation(lease);
+        try
+        {
             var carriers = new WoundCarrierCatalogInput(
                 await Root(fs, lease, WoundCarrierCatalog.PlayerPath),
                 await Root(fs, lease, WoundCarrierCatalog.NpcPath),
