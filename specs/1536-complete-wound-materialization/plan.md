@@ -1,3 +1,7 @@
+## US5-RO1 reader fixture API correction (four call sites only) — 2026-10-15
+
+- Frozen c7200fa99 build failure cause is four calls to an API that does not exist. The actual existing lease-bound API is `FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease,string,string)` at FileSystemManager.cs:769; corrected only those four fixture writes. No writer API was added, no production/stub/assertion/selection change. Reader remains unavailable-only, so the next bounded reader run must reach intentional behavioral RED; previous0executed result stays FAILED, never reclassified as RED/PASS. Source/fixture/selection final review and fresh GREEN remain pending.
+
 ## US5-RO1 reader preparation FAILED before tests; frozen before correction — 2026-10-15
 
 - Tested36f696c99cd3432af8159bb77e4612e4fcd67c2b; official reader RED attempt native1/77.7850366s, Build-integration failed with four CS1061 calls to nonexistent fixture-only FileSystemManager.WriteFileAsync. Actual0cases/0descriptors,complete=false/no timeout; no test/behavioral RED or PASS, zero fixture receipts is not PASS. `us5-ro1-reader-build-failure-36f696c99-20261015T200222Z-freeze.json` retains 3 compressed/raw original artifact chains and 2085 exact tested-Git source pins. Original projection RED unchanged. Stop/freeze/publish before causal fixture correction or any retry; no production/read-service result inferred.

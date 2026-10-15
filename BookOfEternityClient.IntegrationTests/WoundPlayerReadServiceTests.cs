@@ -86,9 +86,9 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
                 ("game_state/meta/soul_state.json", new() { ["currentRealm"] = "Mortal", ["soulName"] = "Путник" }),
                 (ResourceMaterializationContract.DefinitionsPath, input.Resources.ToCanonicalRoot())
             })
-                await fixture.Files.WriteFileAsync(lease, path, root.ToJsonString());
-            await fixture.Files.WriteFileAsync(lease, WoundIdentityState.StatePath, WoundIdentityState.SerializeCanonical(input.Identities));
-            await fixture.Files.WriteFileAsync(lease, WoundHistoryState.HistoryPath, WoundHistoryState.SerializeCanonical(input.History));
+                await fixture.Files.WriteFileAtomicAsync(lease, path, root.ToJsonString());
+            await fixture.Files.WriteFileAtomicAsync(lease, WoundIdentityState.StatePath, WoundIdentityState.SerializeCanonical(input.Identities));
+            await fixture.Files.WriteFileAtomicAsync(lease, WoundHistoryState.HistoryPath, WoundHistoryState.SerializeCanonical(input.History));
             return fixture;
         }
         catch
@@ -122,7 +122,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
             _ => throw new ArgumentOutOfRangeException(nameof(fault))
         };
         Assert.NotEqual(raw, changed);
-        await Files.WriteFileAsync(lease, path, changed);
+        await Files.WriteFileAtomicAsync(lease, path, changed);
     }
 
     internal string[] Snapshot() => Directory.EnumerateFileSystemEntries(Root, "*", SearchOption.AllDirectories)
