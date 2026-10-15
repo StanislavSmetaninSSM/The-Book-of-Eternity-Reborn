@@ -27,6 +27,31 @@ public sealed class MortalJointAcceptedOutputBasisTests
             "local_impact", "wound_1", "transition_1", Scene()).Fingerprint);
     }
 
+    [Fact]
+    public async Task JointReadOnlyNarrativeValidationRefusesNormalizationWithoutWriting()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-joint-readonly-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var files = new BookOfEternityClient.Core.FileSystemManager(root,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
+            files.EnsureDirectoryStructure();
+            await files.WriteFileAtomicAsync("output/narrative_response.json", Encoding.UTF8.GetString(Scene("Первая`nВторая")));
+            var before = await files.ReadFileBytesAsync("output/narrative_response.json");
+            var validator = new ValidationService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+            var issues = await validator.ValidateMortalJointAcceptedNarrativeReadOnlyAsync();
+            Assert.Contains(issues, issue => issue.Code == "mortal_joint_sealed_narrative_requires_normalization");
+            Assert.Equal(before, await files.ReadFileBytesAsync("output/narrative_response.json"));
+            await validator.ValidateAcceptedTurnNarrativePayloadAsync();
+            Assert.Equal("Первая\nВторая", JsonNode.Parse((await files.ReadFileAsync("output/narrative_response.json"))!)!["response"]!.GetValue<string>());
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Boundary = "joint_readonly_owned_cleanup", Root = root, Removed = !Directory.Exists(root) }));
+        }
+    }
+
     [Theory]
     [InlineData("missing")]
     [InlineData("extra")]
@@ -76,6 +101,6 @@ public sealed class MortalJointAcceptedOutputBasisTests
                 root["narrativeHash"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
                 break;
         }
-        Assert.ThrowsAny<Exception>(() => MortalJointAcceptedOutputBasis.Read(root));
+        Assert.Throws<InvalidDataException>(() => MortalJointAcceptedOutputBasis.Read(root));
     }
 }

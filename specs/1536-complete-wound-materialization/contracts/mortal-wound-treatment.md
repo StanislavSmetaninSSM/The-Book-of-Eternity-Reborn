@@ -1058,6 +1058,30 @@ The old six-argument, singleton, disjoint and public mixed-family restrictions r
 mandatory. J1 causal evidence and component codec/catalog qualification alone do not
 establish connected completion, cold/new-root reconstruction or full FR-063 acceptance.
 
+Completed joint-v2 additionally requires the closed outputBinding version1 (localWoundRef,
+exact CREATE woundId/transitionId, narrativeBase64 and uppercase SHA256 narrativeHash).
+The private common owner derives this basis from the sealed corrected adapter command,
+already guarded narrative and same prepared CREATE allocation BEFORE common Take; its
+fingerprint is included in the common input seal and complete marker. Initial narrative
+normalization precedes FIRST checkpoint outside the canonical lease. Checkpoint/correction
+and common capture require a read-only projector fixed point; retained scene comparison
+still permits only the existing pre-seal correction timestamp exception. No narrative
+write/delete/rollback member or authority path is added.
+
+Fresh completed proof validates original/G, full receipt/occurrence/mechanical/progression
+cohort before comparing this binding to actual CREATE IDs and recomputing the existing
+materialized decision fingerprint from the original-derived opportunity, canonical severity
+and local ref. Hash comparison issues no authority. It then requires current narrative
+bytes exactly equal the accepted complete image, including timestamp/format/BOM. A consumed
+absent draft is valid only for this fully verified family; a present draft must match its
+complete accepted payload fingerprint. Old v2 without binding and every stale/changed/foreign
+output refuse without destructive fallback; v1 stays unchanged. Joint post-common narrative
+validation is read-only and reports normalization-required instead of writing. Full physical
+proof brackets presentation and story. This retains the existing trusted-local boundary:
+GM-output drift against a client-issued marker is covered; same-user coherent rewriting of
+all client authority and matching hashes is excluded, as in the accepted original contract.
+Coherently marker-rehashed foreign localRef MUST still conflict with the actual receipt.
+
 The immutable joint common input must freeze the complete actual progression calculation
 basis before common take: authenticated original schedule/control, separately validated
 current submitted report and world-time, every present/absent source guard, request/realm

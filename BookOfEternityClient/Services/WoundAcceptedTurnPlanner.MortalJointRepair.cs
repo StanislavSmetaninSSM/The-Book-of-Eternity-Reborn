@@ -51,6 +51,8 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentRematerializationAuthority? Rematerialization { get; }
         internal WoundAcceptedTurnInput AcquisitionInput => WoundAcceptedTurnData.CloneInput(_acquisitionInput)!;
         internal JsonObject AcquisitionCommandRoot => _acquisitionCommandRoot.DeepClone().AsObject();
+        internal byte[] ReadAcceptedNarrative() => _before["output/narrative_response.json"]?.ToArray()
+            ?? throw new InvalidDataException("The sealed joint continuation has no accepted narrative.");
         internal WoundAcceptedTurnInput TreatmentInput => WoundAcceptedTurnData.CloneInput(_treatmentInput)!;
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);

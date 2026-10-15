@@ -52,6 +52,9 @@ public partial class ValidationService
     public Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadAsync()
         => ValidateAcceptedTurnNarrativePayloadInternalAsync();
 
+    internal Task<List<ValidationIssue>> ValidateMortalJointAcceptedNarrativeReadOnlyAsync()
+        => ValidateAcceptedTurnNarrativePayloadInternalAsync(readOnly: true);
+
     public Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadAsync()
         => ValidateAcceptedTurnInterfacePayloadInternalAsync();
 

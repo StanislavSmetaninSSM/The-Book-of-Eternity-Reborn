@@ -1828,6 +1828,14 @@ source/adapter/builder and exact public repair transport, not connected joint pu
 resource charge, story, cold/new-root or runtime qualification; those belong to the genuine
 J7 owner controls and the entire independent gate.
 
+After the client's publication consumes this corrected public draft, leave the exact
+accepted narrative_response.json bytes, timestamp and formatting intact. The client
+retains its binding and can finish the same scene without recreating wound_decision.json.
+For example, adding a prefix while retaining acquisitionNarration, refreshing only the
+timestamp or reformatting the JSON after publication causes a recovery hold. The client
+normalizes escaped line breaks before the first checkpoint; it cannot silently rewrite
+the sealed scene during completion. This adds no GM-authored receipt or acknowledgement.
+
 ### wound_mortal_joint_severity_repair_source_v1
 
 Complete QTE offer authored BEFORE the actual harmful terminal source:

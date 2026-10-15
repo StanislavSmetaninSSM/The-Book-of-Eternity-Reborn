@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""Local-only ROOT orchestration/readback. Does not modify project sources."""
+import argparse, collections, datetime, gzip, hashlib, json, pathlib, subprocess, sys, xml.etree.ElementTree as ET
+
+REPO = pathlib.Path('/workspace/The-Book-of-Eternity-Reborn')
+NS = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+def utc(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def read(p): return json.loads(pathlib.Path(p).read_text())
+def write(p,d):
+    with pathlib.Path(p).open('x') as stream: stream.write(json.dumps(d, ensure_ascii=False, indent=2)+'\n')
+def sha(b): return hashlib.sha256(b).hexdigest()
+def head(): return subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+def clean(): assert not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(), 'Primary tree dirty'
+def pins(paths):
+    out=[]
+    for p in sorted(set(paths)):
+        b=(REPO/p).read_bytes();out.append({'path':p,'bytes':len(b),'sha256':sha(b)})
+    return out
+def verify(d):
+    for row in d['files']:
+        b=(REPO/row['path']).read_bytes()
+        assert len(b)==row['bytes'] and sha(b)==row['sha256'], 'Pin drift: '+row['path']
+    return len(d['files'])
+def binary_paths():
+    out=[]
+    for p in ['BookOfEternityClient.IntegrationTests','BookOfEternityClient.Tests']:
+        out += [f'{p}/bin/Debug/net8.0/{n}' for n in [p+'.dll',p+'.deps.json',p+'.runtimeconfig.json','BookOfEternityClient.dll','BookOfEternityClient.TestSupport.dll']]
+    out.append('BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll')
+    return out
+def counts(plan):
+    desc=plan['Descriptors']; return (sum(len(r['ExpectedMethodCounts']) for r in desc),sum(r['EstimatedCases'] for r in desc),len(desc))
+
+p=argparse.ArgumentParser();p.add_argument('action',choices=['pin','run','readback','freeze']);p.add_argument('--scratch',required=True);p.add_argument('--seed');p.add_argument('--gates');p.add_argument('--add',action='append',default=[]);p.add_argument('--stage');p.add_argument('--selection');p.add_argument('--catalog',action='store_true');p.add_argument('--no-build',action='store_true');p.add_argument('--plan-only',action='store_true');p.add_argument('--expected',nargs=3,type=int);p.add_argument('--expected-catalog',nargs=2,type=int);p.add_argument('--compile-source');p.add_argument('--classification');p.add_argument('--packet');p.add_argument('--require-pass',action='store_true');a=p.parse_args()
+s=pathlib.Path(a.scratch);s.mkdir(parents=True,exist_ok=True)
+if a.action=='pin':
+    clean();assert a.gates, 'Actual whole/focused gate proof required';gate=read(a.gates)
+    assert gate['source']==head() and gate['reviewerStopped'] is True
+    assert gate['gates']=={'SOURCE':'ACCEPTED','FIXTURE':'ACCEPTED','SELECTION':'ACCEPTED'}
+    assert gate['evidence'] and gate['files'] and len(gate['permittedActualSelections'])==19
+    for row in gate['evidence']: assert sha(pathlib.Path(row['path']).read_bytes())==row['sha256'], row['path']
+    paths=[r['path'] for r in gate['files']]+a.add
+    for row in gate['files']:
+        data=(REPO/row['path']).read_bytes();assert sha(data)==row['sha256'] and len(data)==row['bytes'],row['path']
+    d={'source':head(),'sourceReview':gate['gates'],'gateProof':str(pathlib.Path(a.gates).resolve()),'gateProofSha256':sha(pathlib.Path(a.gates).read_bytes()),'configurationRequested':gate['configurationRequested'],'configurationActual':gate['configurationActual'],'preparationSelection':gate['preparationSelection'],'permittedActualSelections':gate['permittedActualSelections'],'actual':'UNRUN','files':pins(paths),'createdUtc':utc()}
+    write(s/'candidate-source-pins.json',d);print('PINNED',len(d['files']),d['source']);sys.exit(0)
+if a.action=='run':
+    clean();src=read(s/'candidate-source-pins.json');assert head()==src['source'];verify(src)
+    assert sha(pathlib.Path(src['gateProof']).read_bytes())==src['gateProofSha256']
+    gate=read(src['gateProof']);assert gate['source']==head() and gate['gates']=={'SOURCE':'ACCEPTED','FIXTURE':'ACCEPTED','SELECTION':'ACCEPTED'}
+    if a.no_build: verify(read(s/'fresh-binary-pins.json'))
+    assert a.stage and a.stage.replace('-','').replace('_','').isalnum()
+    assert a.catalog or a.selection==src['preparationSelection'] or a.selection in src['permittedActualSelections']
+    if a.selection==src['preparationSelection']: assert a.plan_only, 'Preparation aggregate is zero execution only'
+    if not a.plan_only and not a.catalog:
+        assert a.no_build, 'Actual stages require fresh pinned binaries'
+        assert a.selection in gate['actualRelease'], 'Actual stage is not independently released'
+    cmd=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']
+    if a.catalog: cmd+=['-ValidateCatalog']
+    else: assert a.selection;cmd+=['-SelectionFile',a.selection]
+    if a.no_build:cmd+=['-NoBuild']
+    if a.plan_only:cmd+=['-PlanOnly']
+    parent=REPO/'TestResults/test-categories';old=set(parent.iterdir()) if parent.exists() else set()
+    inv={'source':head(),'compileSource':a.compile_source or head(),'commandArguments':cmd,'expected':a.expected,'status':'STARTING','startedUtc':utc(),'sourcePins':len(src['files']),'preexistingRunDirectories':len(old)}
+    write(s/(a.stage+'-invocation-prewritten.json'),inv)
+    with open(s/(a.stage+'-console.log'),'x') as f:
+        r=subprocess.run(cmd,cwd=REPO,stdout=f,stderr=subprocess.STDOUT)
+    new=set(parent.iterdir())-old
+    write(s/(a.stage+'-native-process-result.json'),{
+        'source':inv['source'],'compileSource':inv['compileSource'],
+        'processExitCode':r.returncode,'newRunDirectories':sorted(str(path) for path in new),
+        'finishedUtc':utc()})
+    assert len(new)==1, ('Expected one run directory',new)
+    run=next(iter(new));write(s/(a.stage+'-run-location.json'),{'source':head(),'compileSource':inv['compileSource'],'run':run.name,'path':str(run),'processExitCode':r.returncode,'finishedUtc':utc()})
+    print('RUN_FINISHED',a.stage,run.name,'exit',r.returncode);sys.exit(r.returncode)
+if a.action=='readback':
+    loc=read(s/(a.stage+'-run-location.json'));run=pathlib.Path(loc['path']);summary=read(run/'summary.json')
+    write(s/(a.stage+'-runner-summary-raw.json'),summary)
+    clean();assert head()==loc['source'];sc=verify(read(s/'candidate-source-pins.json'))
+    if a.stage=='preparation' and not a.no_build:
+        assert loc['processExitCode']==0 and summary['ExitCode']==0 and not summary['TimedOut']
+        assert summary['Tests']['Executed']==0
+        invocation=read(s/(a.stage+'-invocation-prewritten.json'))
+        args=invocation['commandArguments'];assert '-PlanOnly' in args and '-NoBuild' not in args
+        assert args[args.index('-SelectionFile')+1]==read(s/'candidate-source-pins.json')['preparationSelection']
+        assert a.expected==[40,94,23] and counts(read(run/'plan.json'))==(40,94,23)
+        phases={row['Name']:row for row in summary['PhaseResults']}
+        assert all(phases.get(name,{}).get('Completed') is True for name in ('Build-unit','Build-integration'))
+        assert all((run/(name+'.log')).is_file() for name in ('Build-unit','Build-integration'))
+        bd={'source':head(),'compileSource':head(),'freshSelectedBothProjectPreparation':loc['run'],'files':pins(binary_paths())};write(s/'fresh-binary-pins.json',bd)
+    bc=verify(read(s/'fresh-binary-pins.json'))
+    out={**loc,'classification':a.classification,'wallTime':summary['WallTime'],'exitCode':summary['ExitCode'],'timedOut':summary['TimedOut'],'tests':summary['Tests'],'selection':summary['Selection'],'sourcePinsPrePostMatched':sc,'freshBinaryPinsPrePostMatched':bc,'metadataEditedBeforeRootPostReadback':False,'runnerOwnedTreeCleanupSucceeded':summary['OwnedTreeCleanupSucceeded'],'runnerRuntimeCleanupSucceeded':summary['RuntimeCleanupSucceeded'],'verifiedUtc':utc()}
+    if (run/'plan.json').exists():
+        plan=read(run/'plan.json');out['methods'],out['cases'],out['descriptors']=counts(plan)
+        if a.expected: assert counts(plan)==tuple(a.expected),(counts(plan),a.expected)
+    if a.catalog:
+        out['catalogAudit']=summary['CatalogAudit'];assert summary['ExitCode']==0
+        audit=summary['CatalogAudit'];assert audit['Valid'] and not audit['Unmapped'] and not audit['StaleSelectors']
+        if a.expected_catalog: assert (audit['Categories'],audit['Methods'])==tuple(a.expected_catalog)
+    if a.plan_only or a.catalog:
+        assert summary['Tests']['Executed']==0
+        out['warnings']={};out['errors']={}
+        for log in run.glob('Build-*.log'):
+            lines=log.read_text().splitlines();w=[l for l in lines if l.rstrip().endswith('Warning(s)')];e=[l for l in lines if l.rstrip().endswith('Error(s)')]
+            if w:out['warnings'][log.name]=int(w[-1].strip().split()[0])
+            if e:out['errors'][log.name]=int(e[-1].strip().split()[0]);assert out['errors'][log.name]==0
+        assert summary['ExitCode']==0
+    else:
+        results=[];stdout=[];obs=[];receipts=[];jsonRows=[];childContainers=[];receiptOrigins=[]
+        def collect_receipts(value, origin):
+            if isinstance(value,dict):
+                if 'CleanupOwnedRoot' in value:
+                    if value not in receipts: receipts.append(value)
+                    receiptOrigins.append({'receiptIndex':receipts.index(value),'origin':origin})
+                for key,child in value.items():
+                    where=origin+'/'+key
+                    if key not in ('Child','FullChildLog'):
+                        collect_receipts(child,where);continue
+                    record={'origin':where,'container':key,'originalText':child,'status':'UNOBSERVED','parsedJsonLines':[],'unparseableReceiptLines':[]}
+                    childContainers.append(record)
+                    if not isinstance(child,str) or not child.strip(): continue
+                    if key=='Child':
+                        try:decoded=json.loads(child)
+                        except (ValueError,TypeError) as error:
+                            record.update(status='UNPARSEABLE',parseFailure=str(error));continue
+                        if not isinstance(decoded,(dict,list)):
+                            record['status']='UNPARSEABLE_STRUCTURED_VALUE';continue
+                        record['status']='PARSED_STRUCTURED_JSON';collect_receipts(decoded,where+'#decoded')
+                    else:
+                        for number,line in enumerate(child.splitlines(),1):
+                            candidate=line.strip()
+                            if candidate.startswith('JointWorkedExampleActualCleanup='):candidate=candidate.partition('=')[2]
+                            try:decoded=json.loads(candidate)
+                            except (ValueError,TypeError) as error:
+                                if 'CleanupOwnedRoot' in candidate or candidate.startswith('JointWorkedExampleActualCleanup='):
+                                    record['unparseableReceiptLines'].append({'line':number,'text':line,'parseFailure':str(error)})
+                                continue
+                            if isinstance(decoded,(dict,list)):
+                                record['parsedJsonLines'].append(number);collect_receipts(decoded,where+'#line='+str(number))
+                        record['status']=('PARTIAL_UNPARSEABLE_RECEIPT_LINE' if record['unparseableReceiptLines'] else 'PARSED_JSON_LINES' if record['parsedJsonLines'] else 'UNOBSERVED_NO_STRUCTURED_LINES')
+            elif isinstance(value,list):
+                for index,child in enumerate(value): collect_receipts(child,origin+'/'+str(index))
+        for trx in sorted(run.glob('*.trx')):
+            tree=ET.parse(trx)
+            for row in tree.findall('.//t:UnitTestResult',NS):
+                item=dict(row.attrib);item['errorMessage']=row.findtext('.//t:Message','',NS);item['stackTrace']=row.findtext('.//t:StackTrace','',NS);results.append(item)
+                for o in row.findall('.//t:StdOut',NS):
+                    val=o.text or '';stdout.append(val)
+                    for lineNumber,line in enumerate(val.splitlines(),1):
+                        if line.startswith("JointWorkedExampleActualCleanup="):
+                            line=line.partition("=")[2]
+                        try:d=json.loads(line)
+                        except (ValueError,TypeError):continue
+                        if isinstance(d,dict):
+                            jsonRows.append(d);collect_receipts(d,trx.name+'/'+row.attrib.get('testId','UNKNOWN')+'#line='+str(lineNumber))
+                            if 'Boundary' in d:obs.append(d)
+        write(s/(a.stage+'-all-trx-results-raw.json'),results)
+        write(s/(a.stage+'-all-json-observations-raw.json'),jsonRows)
+        write(s/(a.stage+'-strict-cleanup-receipts-raw.json'),receipts)
+        write(s/(a.stage+'-strict-cleanup-origins-raw.json'),receiptOrigins)
+        write(s/(a.stage+'-child-evidence-containers-raw.json'),childContainers)
+        with (s/(a.stage+'-full-trx-stdout.txt')).open('x') as stream: stream.write('\n'.join(stdout))
+        assert len(results)==summary['Tests']['Executed']
+        ids=[r['testId'] for r in results];assert len(ids)==len(set(ids));assert not summary['DuplicateTests']
+        assert sum(r['outcome']=='Passed' for r in results)==summary['Tests']['Passed']
+        assert sum(r['outcome']=='Failed' for r in results)==summary['Tests']['Failed']
+        out.update(allNativeResults=results,skipCount=sum(r['outcome'] not in ('Passed','Failed') for r in results),duplicateTestIDs=0,nativeObservationCount=len(obs),nativeObservationBoundaries=dict(collections.Counter(r['Boundary'] for r in obs)),strictCleanupReceipts=receipts,allParsedStrictRootsActuallyAbsent=(all(not pathlib.Path(r['CleanupOwnedRoot']).exists() for r in receipts) if receipts else None),strictCleanupObservation=('OBSERVED_PARSED_RECEIPTS_ONLY' if receipts else 'UNOBSERVED'),childEvidenceCoverage=('PARTIAL_OR_UNOBSERVED' if any(not r['status'].startswith('PARSED_') for r in childContainers) else 'PARSED_NAMED_CONTAINERS_ONLY' if childContainers else 'NO_NAMED_CHILD_CONTAINERS_OBSERVED'),strictCleanupReceiptOrigins=receiptOrigins,childEvidenceContainerCount=len(childContainers),binaryProvenanceScope='selected10artifacts+declaredchildImmutable; actualchildloadedbindings need separate evidence inspection',allJsonObservationCount=len(jsonRows),evidenceReview='PENDING')
+        for receipt in receipts:
+            assert isinstance(receipt.get('CleanupOwnedRoot'),str) and pathlib.Path(receipt['CleanupOwnedRoot']).is_absolute()
+            assert receipt.get('OwnedFixtureRemoved') is True and 'CleanupFailure' in receipt and receipt['CleanupFailure'] is None
+            assert not pathlib.Path(receipt['CleanupOwnedRoot']).exists()
+        write(s/(a.stage+'-native-observations.json'),obs)
+        write(s/(a.stage+'-pre-assertion-root-observations.json'),out)
+        if a.require_pass:
+            assert loc['processExitCode']==0 and not summary['TimedOut'] and out['skipCount']==0
+            assert summary['OwnedTreeCleanupSucceeded'] and summary['RuntimeCleanupSucceeded']
+            assert summary['Tests']['Failed']==0 and summary['Tests']['Executed']==out['cases'] and summary['Selection']['Complete'] and summary['ExitCode']==0
+    write(s/(a.stage+'-root-readback.json'),out);print(json.dumps({k:out.get(k) for k in ['run','methods','cases','descriptors','tests','selection','wallTime','exitCode','catalogAudit','nativeObservationCount','strictCleanupReceipts','warnings','errors']},ensure_ascii=False));sys.exit(0)
+if a.action=='freeze':
+    assert a.packet;dest=pathlib.Path(a.packet);assert not dest.exists();dest.mkdir(parents=True)
+    arts=[]
+    def add(path,name):
+        b=path.read_bytes();gz=gzip.compress(b,compresslevel=9,mtime=0);(dest/(name+'.gz')).write_bytes(gz)
+        arts.append({'name':name+'.gz','uncompressedBytes':len(b),'uncompressedSha256':sha(b),'compressedBytes':len(gz),'compressedSha256':sha(gz)})
+    for path in sorted(s.iterdir()):
+        if path.is_file():add(path,path.name)
+    for path in sorted(s.glob('*-run-location.json')):
+        stage=path.name.removesuffix('-run-location.json');run=pathlib.Path(read(path)['path'])
+        for original in sorted(run.iterdir()):
+            if original.is_file() and (original.suffix in ['.json','.trx','.log']): add(original,stage+'-'+original.name)
+    manifest={'source':head(),'classification':a.classification,'branch':'1536-wound-b2-cloud-20261012','issue':1536,'evidenceReview':'PENDING','artifacts':arts,'frozenUtc':utc()}
+    for stage in ['preparation','exact-plan','catalog','actual']:
+        path=s/(stage+'-root-readback.json')
+        if path.exists():manifest[stage]=read(path)
+    write(dest/'manifest.json',manifest)
+    for art in arts:
+        b=(dest/art['name']).read_bytes();assert sha(b)==art['compressedSha256'];assert sha(gzip.decompress(b))==art['uncompressedSha256']
+    print('FROZEN',len(arts),str(dest))

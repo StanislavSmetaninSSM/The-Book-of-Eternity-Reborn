@@ -75,7 +75,7 @@ public partial class ValidationService
         }
     }
 
-    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync()
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false)
     {
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
@@ -100,9 +100,15 @@ public partial class ValidationService
             return issues;
         }
 
-        json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
-            "output/narrative_response.json",
-            json);
+        if (readOnly)
+        {
+            if (AcceptedTurnOutputProjector.ProjectNarrative(json).Changed)
+                issues.Add(new ValidationIssue("output/narrative_response.json", IssueSeverity.Error,
+                    "The sealed joint narrative requires normalization; exact accepted bytes must be retained.",
+                    code: "mortal_joint_sealed_narrative_requires_normalization"));
+        }
+        else
+            json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync("output/narrative_response.json", json);
 
         try
         {

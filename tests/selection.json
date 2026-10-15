@@ -3,11 +3,11 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536/T070 scope2 fixture correction: existing native Late2 rows fail scalar severity read after independently accepted scope1 observer extent. Assert the exact canonical severity object fields/types and CREATE event binding. Fresh BOTH/PlanOnly/catalog remain zero-execution prerequisites; only the first Late2 outcome is released after corrected gates. Scope3 decision and later stages remain held; checkpoint5 unchanged.",
+      "reason": "#1536 T070 scope3 approved A: same sealed scene and receipt-bound localRef survive consumed public draft. First corrected Late2 only after SOURCE/FIXTURE/SELECTION and fresh BOTH/discovery; freeze native failure before correction. Five new bounded output groups and prior finite stages remain held pending this outcome and independent EVIDENCE.",
       "contracts": [
         "FR-012",
         "FR-063",
-        "canonical WoundSeverity object and source CREATE provenance; preserve once-only report/union/story oracles"
+        "approved A completed-v2 exact output binding; v1 unchanged; no new authority or transaction members"
       ]
     }
   ]

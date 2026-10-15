@@ -21,6 +21,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("output_timestamp")]
     [InlineData("output_formatting")]
     [InlineData("output_missing")]
+    [InlineData("output_stale")]
     [InlineData("output_normalization")]
     public Task GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(string corruption) =>
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true, refusalScenario: corruption);
@@ -98,6 +99,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             switch (corruption)
             {
                 case "output_scene_prefix": scene["response"] = "Изменённая сцена. " + scene["response"]!.GetValue<string>(); break;
+                case "output_stale": scene["response"] = "Предыдущая сцена."; scene["timestamp"] = "2020-01-01T00:00:00Z"; break;
                 case "output_timestamp": scene["timestamp"] = "2026-10-15T23:59:59Z"; break;
                 case "output_normalization": scene["response"] = scene["response"]!.GetValue<string>() + "`nДобавлено."; break;
                 case "output_missing": break;

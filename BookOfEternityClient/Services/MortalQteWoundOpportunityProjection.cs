@@ -37,8 +37,26 @@ internal static class MortalQteWoundOpportunityProjection
         throw new InvalidDataException("mortal_qte_projection_uncovered_root: " + path);
     }
 
-    internal static JsonArray Project(PendingTurnSnapshotReadAuthority snapshot)
+    internal static JsonArray Project(PendingTurnSnapshotReadAuthority snapshot) => ProjectCore(snapshot, out _);
+
+    private sealed record DecisionComparisonSource(string Fingerprint, string Id, string EventRef, WoundOwnerCoordinate Owner, int Maximum);
+    internal static bool MatchesMaterializedOutputReference(PendingTurnSnapshotReadAuthority original,
+        MortalWoundOpportunityReceipt receipt, WoundMaterializationEnvelope wound, string localRef)
     {
+        _ = ProjectCore(original, out var source);
+        if (source is null || !ResourceMaterializationContract.IsExactIdentifier(localRef) || wound.Severity.Rank is < 1 or > 4 ||
+            wound.Severity.Rank > source.Maximum || source.Fingerprint != receipt.OpportunityAuthorityFingerprint ||
+            source.Id != receipt.OpportunityId || source.EventRef != receipt.EventRef || source.Owner != wound.Owner ||
+            wound.Origin.EventRef != source.EventRef || wound.Origin.OpportunityId != source.Id || receipt.Decision != "materialize")
+            return false;
+        var fingerprint = WoundOpportunityDecisionAuthority.ComputeDecisionFingerprint(source.Fingerprint, source.Id,
+            source.EventRef, source.Owner, null, "materialize", wound.Severity.Rank, localRef);
+        return fingerprint == receipt.DecisionFingerprint && "wound_operation_" + fingerprint["sha256:".Length..] == receipt.OperationKey;
+    }
+
+    private static JsonArray ProjectCore(PendingTurnSnapshotReadAuthority snapshot, out DecisionComparisonSource? comparison)
+    {
+        comparison = null;
         ArgumentNullException.ThrowIfNull(snapshot);
         if (snapshot.Realm != "mortal_world") return new JsonArray();
         string? Read(string path) => ReadObservedRoot(snapshot, path);
@@ -96,6 +114,7 @@ internal static class MortalQteWoundOpportunityProjection
             null, WoundOpportunityAuthority.CloneSafeContext(selected.SafeContext)));
         if (!composed.Success || composed.Opportunity is null) throw Failure(composed.Issues);
         var authority = composed.Opportunity;
+        comparison = new(authority.AuthorityFingerprint, authority.OpportunityId, authority.EventRef, authority.Owner with { }, authority.MaximumSeverityRank);
         var severity = authority.MaximumSeverityRank switch
         { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => throw new InvalidDataException("mortal_qte_projection_maximum_invalid") };
         return new JsonArray(new JsonObject

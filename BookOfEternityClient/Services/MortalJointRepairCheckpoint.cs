@@ -126,6 +126,7 @@ internal sealed class MortalJointRepairCheckpoint
             }
             if (commandBytes is null || draftBytes is null || sceneBytes is null)
                 return Refuse("input_missing", "Actual homogeneous command and retained rejected draft/scene are required.");
+            MortalJointAcceptedOutputBasis.RequireNormalizedNarrative(sceneBytes);
             var command = Root(commandBytes, "joint treatment command");
             var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(command));
             if (!parsed.Success) return new(null, parsed.Issues);
@@ -241,6 +242,7 @@ internal sealed class MortalJointRepairCheckpoint
         if (currentCommand is null || !currentCommand.AsSpan().SequenceEqual(capture.CommandBytes) || currentPending is null ||
             !JsonNode.DeepEquals(Root(currentPending, "joint current pending"), capture.Pending) || draftBytes is null || sceneBytes is null)
             throw new InvalidDataException("The actual joint command/pending/public resubmission must retain the complete owned graph.");
+        MortalJointAcceptedOutputBasis.RequireNormalizedNarrative(sceneBytes);
         var draft = Root(draftBytes, "joint corrected public draft"); var scene = Root(sceneBytes, "joint corrected scene");
         var expectedScene = Root(Convert.FromBase64String(capture.Checkpoint._root["narrativeBase64"]!.GetValue<string>()), "retained rejected scene");
         var actualScene = scene.DeepClone().AsObject(); actualScene.Remove("timestamp"); expectedScene.Remove("timestamp");

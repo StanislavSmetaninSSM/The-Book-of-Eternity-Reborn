@@ -32,9 +32,20 @@ internal static partial class WoundAcceptedTurnPlanner
                     throw new InvalidDataException("Joint progression/common before-image disagreement: " + row.Key);
                 _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
             }
+            var joint = ReadJoint();
+            var command = joint.ReadAcquisitionCommands().Single();
+            var history = WoundHistoryState.Parse(Bundle.FinalPlan.HistoryAfterImage?.ToJsonString(), WoundHistoryState.HistoryPath);
+            var creates = history.State?.Transitions.Where(row => row.Kind == "create" && row.OperationKey == command.OperationKey).ToArray();
+            if (!history.IsValid || creates is not { Length: 1 } ||
+                !Bundle.PreparedPlan.AllocatedWoundIds.Contains(creates[0].WoundId, StringComparer.Ordinal) ||
+                !Bundle.PreparedPlan.AllocatedTransitionIds.Contains(creates[0].TransitionId, StringComparer.Ordinal))
+                throw new InvalidDataException("Joint output basis requires the SAME prepared acquisition CREATE identities.");
+            OutputBasis = MortalJointAcceptedOutputBasis.Capture(command.LocalWoundRef, creates[0].WoundId,
+                creates[0].TransitionId, joint.ReadAcceptedNarrative());
             Fingerprint = ComputeFingerprint();
         }
         internal GameEngine.MortalJointProgressionSource Progression { get; }
+        internal MortalJointAcceptedOutputBasis OutputBasis { get; }
         private JointCommonBaselineAuthority Baseline => _resources.Baseline;
         internal MortalItemAcceptedTurnNormalizationSnapshot ItemsForRegistry => Baseline.Items;
         internal object Continuation => Baseline.Continuation;
@@ -62,7 +73,7 @@ internal static partial class WoundAcceptedTurnPlanner
         private string ComputeFingerprint() => WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
             "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
             Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
-            Progression.Fingerprint });
+            Progression.Fingerprint, OutputBasis.Fingerprint });
         internal bool HasValidSeal => _resources.HasValidSeal() && Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
         internal bool AgreesWith(AcceptedMechanicsWoundStageBundle? bundle, MortalWoundCanonicalAnchorPlan? anchors,
             ResourceOwnerAuthority owners) => HasValidSeal && bundle is not null && anchors is not null &&

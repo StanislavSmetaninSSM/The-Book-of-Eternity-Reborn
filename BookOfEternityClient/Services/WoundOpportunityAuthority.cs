@@ -1040,6 +1040,13 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
     private const string DecisionDomain =
         "book_of_eternity.wound.opportunity_decision";
 
+    // Pure comparison data only; callers receive no decision or command authority.
+    internal static string ComputeDecisionFingerprint(string opportunityFingerprint, string opportunityId, string eventRef,
+        WoundOwnerCoordinate owner, string? expectedBefore, string decision, int? severity, string? localRef) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[] { DecisionDomain, "1", opportunityFingerprint, opportunityId,
+            eventRef, owner.Realm, owner.OwnerKind, owner.OwnerId, owner.CarrierPath, expectedBefore,
+            decision, severity?.ToString(CultureInfo.InvariantCulture), localRef });
+
     internal static WoundOpportunityDecisionResult Evaluate(
         WoundOpportunityAuthority opportunity,
         WoundOpportunityDecisionRequest request,
@@ -1154,23 +1161,9 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
         if (issues.Count != 0)
             return new WoundOpportunityDecisionResult(null, false, issues);
 
-        var decisionFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[]
-            {
-                DecisionDomain,
-                "1",
-                opportunity.AuthorityFingerprint,
-                opportunity.OpportunityId,
-                opportunity.EventRef,
-                opportunity.Owner.Realm,
-                opportunity.Owner.OwnerKind,
-                opportunity.Owner.OwnerId,
-                opportunity.Owner.CarrierPath,
-                opportunity.WorseningTarget?.ExpectedBeforeFingerprint,
-                request.Decision,
-                selectedSeverity?.ToString(CultureInfo.InvariantCulture),
-                localWoundRef
-            });
+        var decisionFingerprint = ComputeDecisionFingerprint(opportunity.AuthorityFingerprint, opportunity.OpportunityId,
+            opportunity.EventRef, opportunity.Owner, opportunity.WorseningTarget?.ExpectedBeforeFingerprint,
+            request.Decision!, selectedSeverity, localWoundRef);
         var operationKey = "wound_operation_" +
             decisionFingerprint["sha256:".Length..];
         var accepted = new WoundOpportunityDecisionAuthority(

@@ -25,7 +25,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests"
+            "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.*"
           ]
         }
       ]
@@ -62,7 +62,7 @@
     },
     {
       "id": "fr063-joint-output-scene-refusal",
-      "responsibility": "Five independent real common/applied seeds damaged in parent before child launch: full scene prefix, timestamp, formatting, missing scene and normalization-required scene. First fresh-PID owner performs no prior output/source preflight; exact raw cohort retained.",
+      "responsibility": "Six independent real common/applied seeds damaged in parent before child launch: full scene prefix, timestamp, formatting, missing/stale scene and normalization-required scene. First fresh-PID owner performs no prior output/source preflight; exact raw cohort retained.",
       "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs"

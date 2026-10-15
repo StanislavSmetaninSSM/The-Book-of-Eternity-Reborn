@@ -1,3 +1,11 @@
+## Approved A implementation SOURCE WIP — 2026-10-15
+
+- Test-first checkpoint d3c9156ca756d35a1a2b3f53ab8717249e0d9515 remotely verified. Same sole writer implements DESIGN A accepted at revised hash68d7870e...; source/runtime are not accepted by that verdict.
+- Private common seal now derives closed outputBinding v1 from sealed narrative/corrected acquisition command and SAME prepared/final CREATE IDs. Existing marker v2 carries full exact scene bytes; cold proof recomputes receipt-bound localRef via the unchanged decision hash formula and full original/source/mechanical/progression checks. Consumed absent draft is permitted only there; present draft must match. Old unbound v2 refuses; v1 unchanged.
+- Initial checkpoint/correction/basis require normalized narrative; existing ordinary pre-intake normalizer remains outside canonical lease. Joint post-common validator now read-only. No new path/member/write/delete/rollback/storage authority.
+- Added parser/read-only unit tests and genuine normalized/present-draft positives; cold scene/binding/draft/original-authority negatives damage parent namespace BEFORE fresh PID and its first owner, without child proof preflight. Static intended inventory40methods/94cases/23descriptors (must be freshly discovered, not claimed runtime). Versioned v5 adapter retains exact counts and strengthens explicit actualRelease enforcement; first release remains Late2 only.
+- Seven GM guidance surfaces and both daemon definitions plus worked example, normative FR063/treatment and existing source guard updated: retain exact accepted scene after consumed draft, no new GM field, diagnosis gate absent. Afterlife public contracts unchanged; current default/v1 C1 consumers retained. Compilation, fresh BOTH/PlanOnly/catalog, corrected SOURCE/FIXTURE/SELECTION and ALL A runtime controls remain UNRUN. Full FR063/T070/#1536 open; remaining12 held, prior checkpoint5 not repeated.
+
 ## Approved A test-first WIP — 2026-10-15
 
 - Independent DESIGN A accepted revised hash68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364; separate scope2 EVIDENCE accepted only actual2FAIL/0PASS extent. Artifacts being retained.

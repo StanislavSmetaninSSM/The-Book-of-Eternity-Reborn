@@ -124,7 +124,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Transport = transport,
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
-                PhysicalAfter = MortalArchiveDigests(generationRefusal || phaseFaultControl || storyControl
+                PhysicalAfter = MortalArchiveDigests(generationRefusal || phaseFaultControl || storyControl || initialOutputRefusal
                     ? await CaptureJointGenerationRefusalRawImagesAsync(_fs)
                     : await CaptureMortalArchiveImagesAsync(_fs, paused.Keys.Where(path => path != "$sessionGeneration"))),
                 NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
@@ -669,6 +669,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 StoryEngineDiagnostics = storyLogger?.Describe(),
                 RetainedStoryAppendAttempts = retainedStoryAppendAttempts,
                 RetainedStoryRawBefore = retainedRawBefore, RetainedStoryRawAfter = retainedRawAfter,
+                InitiallyBadOutputRawBefore = scenario == 9 ? before : null, InitiallyBadOutputRawAfter = scenario == 9 ? after : null,
                 GenerationRefusalRawBefore = scenario is 3 or 4 ? before : null, GenerationRefusalRawAfter = scenario is 3 or 4 ? after : null,
                 GenerationDonor = donor is null ? null : new { donor.Root, donor.Generation,
                     Bytes = donor.Bytes, Before = donor.Before, After = donorAfter },

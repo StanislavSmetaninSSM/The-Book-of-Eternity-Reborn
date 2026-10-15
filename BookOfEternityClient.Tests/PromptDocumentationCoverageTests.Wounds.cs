@@ -19,7 +19,8 @@ public sealed partial class PromptDocumentationCoverageTests
         {
             var text = ReadRepoFile(file.Split('/'));
             foreach (var required in new[] { "Same-scene Mortal joint severity repair:",
-                         "current client-issued construct_wound packet", "correct only the permitted severity leaf",
+                         "current client-issued construct_wound packet", "do not recreate the consumed draft",
+                         "including timestamp and formatting", "not silently normalized or reaccepted", "correct only the permitted severity leaf",
                          "do not recreate it on a retry", "no replacement command, claim, receipt, seal or lifecycle acknowledgement",
                          "active training, level-up or new-QTE task cannot be cleared or skipped",
                          "requiredResponseShape.woundDecisions[0].proposal.correctOnly" })

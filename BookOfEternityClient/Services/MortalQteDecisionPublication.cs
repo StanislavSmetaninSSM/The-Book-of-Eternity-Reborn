@@ -147,10 +147,10 @@ internal static partial class MortalQteDecisionPublication
                 if (await fs.ReadFileBytesAsync(lease, path) is not null)
                     return new(CurrentPublicationState.VerifiedCompleted, false, "foreign_mechanical_command");
             var decision = await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
-            var exact = false;
-            try { exact = decision is not null && Text(proof.Root, "decisionPayloadFingerprint") == ComputeDecisionPayloadFingerprint(decision); }
+            var exact = decision is null && proof.Root["schemaVersion"]?.GetValue<int>() == 2;
+            try { exact |= decision is not null && Text(proof.Root, "decisionPayloadFingerprint") == ComputeDecisionPayloadFingerprint(decision); }
             catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or DecoderFallbackException) { }
-            return new(CurrentPublicationState.VerifiedCompleted, exact, exact ? "exact_public_decision" : "changed_or_malformed_public_decision");
+            return new(CurrentPublicationState.VerifiedCompleted, exact, exact ? decision is null ? "verified_joint_consumed_public_decision" : "exact_public_decision" : "changed_or_malformed_public_decision");
         }
         catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
                                       error is (System.Text.Json.JsonException or InvalidDataException or DecoderFallbackException or
