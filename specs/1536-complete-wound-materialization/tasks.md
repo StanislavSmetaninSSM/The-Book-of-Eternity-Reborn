@@ -1,5 +1,34 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## N1 natural Stage43 structural-absence correction SOURCE WIP STOP — 2026-10-15
+
+Owning base `405e684c6d6a176f6cc42f2c93c23f04acd00de8`. Focused reviewcee734a6
+retained unchanged bounded SOURCE and SELECTION definitions, but FIXTURE was BLOCKED
+by N1: the closed signed-presence set cannot attest absent QTE-offer/tail paths.
+This is a confirmed source-level fixture blocker, not a new executed failure.
+
+The one fixture correction uses existing optional COVERAGE under the same lease.
+Present originals and rollback bytes remain exact official-reader-authenticated.
+Each genuine pre-stage absent path must be uncovered and absent (including case aliases)
+from validated manifest Files, SnapshotFileHashes, RollbackBackups and RollbackBaselineFiles;
+bounded structural observations precede assertions. These are validated signed-inventory/
+rollback STRUCTURAL absence plus retained physical pre/current observations, never
+AbsentLogicalPaths or a new signed presence row/accept/restore/materialize authority.
+The prior status's authenticated-optional-absence mechanism is superseded only by this
+factual correction; its complete historical bytes and all checkboxes remain unchanged.
+
+Detached owner-serializer expectations, all seven current comparisons, all six unchanged
+images, exact-once genuine reminder, tuple/payload/map safety and present-byte spelling,
+projection/inactive/hold/restore/publication and zero/nonzero/live controls remain exact.
+No production closed-set/reader/guard, fake root, original/seal, category/selection,
+example/GM/public/gameplay behavior changes. SOURCE WIP awaits saved/recovered focused
+N1 closure; all current compilation/API/fixture behavior is UNCHECKED. No project/compiler/
+build/discovery/catalog/PlanOnly/test/runtime/fault/provider execution occurred. Checkpoint5
+component PASS and Late2 prerequisite FAIL remain immutable; later12 stages UNRUN/HELD.
+Future fresh BOTH/inventory precedes ONLY failed Late2 first outcome/EVIDENCE, no automatic
+checkpoint replay. FullFR063/T070 and legal-active/initial-bad-authority/erased-trace/partial-
+cleanup limits remain OPEN; no GREEN/qualification/acceptance checkbox is claimed.
+
 ## Natural Stage43 reminder oracle correction SOURCE WIP STOP — 2026-10-15
 
 Owning base `5408aa459d6eec5244ecb20d8404ed338c077251`. Accepted first-actual
