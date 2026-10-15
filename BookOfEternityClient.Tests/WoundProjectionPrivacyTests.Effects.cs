@@ -17,9 +17,14 @@ public sealed partial class WoundProjectionPrivacyTests
         unrelated["effectId"] = "effect_independent";
         unrelated["display"]!["name"] = "Независимый секретный эффект";
         unrelated["source"]!["sourceId"] = "wound_unrelated";
+        unrelated["chronology"]!["lastTransitionId"] = "transition_independent_effect";
+        unrelated["chronology"]!["createdEventRef"] = "turn_42:independent_effect";
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(owned, unrelated);
+        index["entries"]![1]!["transitions"]![0]!["transitionId"] = "transition_independent_effect";
+        index["entries"]![1]!["transitions"]![0]!["eventRef"] = "turn_42:independent_effect";
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(
             new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(owned.DeepClone(), unrelated.DeepClone()) },
-            null, null, null, null, null), EffectMaterializationTestFixture.CreateIdentityIndex(owned, unrelated)));
+            null, null, null, null, null), index));
         Assert.True(snapshot.IsAccepted, string.Join(";", snapshot.Issues));
         var result = WoundPlayerProjection.Build(input with { Effects = snapshot });
         Assert.Contains(Assert.Single(result.Active).Facts, f => f.Value == "Явное истощение от раны");
@@ -43,7 +48,7 @@ public sealed partial class WoundProjectionPrivacyTests
         effect["display"]!["name"] = "Секрет чужого владельца";
         var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null,
             new JsonObject { ["schemaVersion"] = 1, ["entries"] = new JsonArray(new JsonObject
-            { ["npcId"] = "npc_test_healer", ["activeEffects"] = new JsonArray(effect) }) },
+            { ["NPCId"] = "npc_test_healer", ["activeEffects"] = new JsonArray(effect) }) },
             null, null, null, null), EffectMaterializationTestFixture.CreateIdentityIndex(effect)));
         Assert.True(snapshot.IsAccepted, string.Join(";", snapshot.Issues));
         Assert.DoesNotContain("Секрет чужого владельца", Text(WoundPlayerProjection.Build(input with { Effects = snapshot })));
@@ -117,7 +122,7 @@ public sealed partial class WoundProjectionPrivacyTests
             var index = EffectMaterializationTestFixture.CreateIdentityIndex(current);
             index["entries"]![0]!["owner"] = new JsonObject
             {
-                ["kind"] = "afterlife_profile", ["ownerId"] = "player_soul",
+                ["kind"] = "player", ["ownerId"] = "player_soul",
                 ["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath, ["collection"] = "activeEffects"
             };
             var snapshot = EffectMechanicsSnapshot.Build(new(new EffectCarrierCatalogInput(null, null, null, null, profiles, null), index));

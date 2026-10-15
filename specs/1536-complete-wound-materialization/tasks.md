@@ -1,3 +1,8 @@
+## US5-RO1 strict effect fixture corrections WIP — 2026-10-15
+
+- After the immutable native failure was published at1a57b86971f297c206c4ec12a0720c0a67a96c0f, primary traced all4 failures to3 fixture prerequisite mismatches: strict NPC carrier requires NPCId; identity registry requires globally unique transition/event IDs with canonical chronology agreement; identity-owner kind uses target kind player for afterlife profiles, while accepted snapshot OwnerKind deliberately uses carrier coordinate afterlife_profile. Existing projection ownership guard is consistent with that model.
+- Change only WoundProjectionPrivacyTests.Effects.cs: exact NPCId field; give unrelated effect a unique transition/event in both canonical chronology and index; retain player in afterlife identity owner and exact afterlife carrierPath/collection. Positive/nonempty/accepted assertions and all privacy guards, production, selection and budgets unchanged. Independent causal/corrected fixture gate required before fresh preparation/runtime. No retry or GREEN claim; reader33cases UNRUN. Original4FAIL evidence immutable.
+
 ## US5-RO1 first GREEN attempt FAILED and frozen before correction — 2026-10-15
 
 - Testedb469b3d679acba40a1b205b0492d57e470331eb4, original compiled8e4ffcf05, reviewed2844. ExactNoBuildPlan native0/4.9253621s33methods65cases2descriptors; freeze cf5523369d7335438e230e6fc67557b13b44e669cb7c5fafcc181c68b923d048,6chains. Actual native1/7.1836684s, first descriptor32executed28PASS4FAIL,complete=false/no timeout/no duplicate IDs; reader33cases UNRUN. Pure fixtures own no filesystem roots; zero receipts is not reader PASS. No automatic retry.
