@@ -1,0 +1,883 @@
+{
+  "schemaVersion": 1,
+  "reviewType": "independent bounded corrected SOURCE/FIXTURE/SELECTION; static only",
+  "base": "9c33df9c41235431c78dcbfbf0099798eae96bb3",
+  "reviewedSource": "7375c24a41430b9d578e817d07d847c1ef68cbe4",
+  "codeSource": "fa2ce2396e82665b48297999bd9fe65b14c720e2",
+  "observedHeadAtArtifactWrite": "7375c24a41430b9d578e817d07d847c1ef68cbe4",
+  "observedStatusAtArtifactWrite": "",
+  "remoteVerifiedSource": "7375c24a41430b9d578e817d07d847c1ef68cbe4",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "openBlockingFindings": [],
+  "resolvedFindings": [
+    "common command nonexistent APIs",
+    "missing Core namespace",
+    "positive raw/normal snapshot map mismatch",
+    "first checkpoint normalization ordering",
+    "existing terminal cleanup requires consumed draft",
+    "worked example filename typo"
+  ],
+  "modelRequested": "gpt-6-astra",
+  "reasoningEffortRequested": "xhigh",
+  "modelActual": "not independently observable; no backend telemetry",
+  "reasoningEffortActual": "not independently observable",
+  "execution": {
+    "build": "UNRUN",
+    "discovery": "UNRUN",
+    "runtime": "UNRUN",
+    "provider": "NOT_USED",
+    "repositoryWrites": false,
+    "gitWrites": false
+  },
+  "reviewerStatusAtWrite": "FINALIZING; coordinator must observe actual FINALSTOP before reviewerStopped=true",
+  "sourceInventory": {
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23,
+    "basis": "static source declarations/selectors, not official discovery",
+    "duplicates": [],
+    "unresolved": [],
+    "descriptorsDetail": [
+      {
+        "category": "fr063-guaranteed-joint-checkpoint-provenance",
+        "project": "integration",
+        "methods": 1,
+        "cases": 5,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentJointCheckpointRetainsGenuineProvenanceOrRefusesTampering",
+            "cases": 5,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs",
+            "line": 15
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "project": "integration",
+        "methods": 2,
+        "cases": 2,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+            "line": 15
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-live-completion",
+        "project": "integration",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualLivePlayerTurnCompletesNonzeroJointRepairExactlyOnce",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-cold-progression",
+        "project": "integration",
+        "methods": 3,
+        "cases": 3,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedBeforeStoryFreshProcessCompletesOnceAndRepeatsInertly",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+            "line": 14
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NonzeroReportConsumedBeforeAppliedColdCompletesWithoutRecreation",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+            "line": 21
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_UnappliedCommonFreshProcessAppliesPhaseAndCompletesExactlyOnce",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+            "line": 17
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-story",
+        "project": "integration",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_RealAppendedRowAfterReadbackFailureFreshProcessCompletesWithoutAppend",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-new-root",
+        "project": "integration",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NonzeroAppliedNewRootFreshProcessAuthenticatesAndCompletesOnce",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-generation-refusal",
+        "project": "integration",
+        "methods": 2,
+        "cases": 2,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ForeignDonorGenerationRefusesActualOuterAdmissionAndRetainsEvidence",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+            "line": 13
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_MissingGenerationRefusesActualOuterAdmissionWithoutCreatingGeneration",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-phase-refusal",
+        "project": "integration",
+        "methods": 1,
+        "cases": 12,
+        "timeoutMinutes": 15,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree",
+            "cases": 12,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-phase-settlement",
+        "project": "integration",
+        "methods": 2,
+        "cases": 2,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PhaseForeignMemberUncertaintyRetainsDebtAndCompleteMechanicalUnion",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs",
+            "line": 12
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PhaseKnownReadbackFailureCompensatesOnlyThreeMembersAndRetainsMechanics",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-active-tail",
+        "project": "integration",
+        "methods": 1,
+        "cases": 3,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+            "cases": 3,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-story-owner",
+        "project": "integration",
+        "methods": 1,
+        "cases": 5,
+        "timeoutMinutes": 10,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal",
+            "cases": 5,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-legacy-exclusion",
+        "project": "integration",
+        "methods": 1,
+        "cases": 2,
+        "timeoutMinutes": 3,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointNullFrameHold_ComponentAbsentAndGenuineV1RemainUnclaimedAndByteExact",
+            "cases": 2,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompatibility.cs",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-worked-example",
+        "project": "integration",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 3,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-worked-example",
+        "project": "unit",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 3,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+            "cases": 1,
+            "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-treatment-defaults",
+        "project": "integration",
+        "methods": 5,
+        "cases": 5,
+        "timeoutMinutes": 4,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.CoursePublication.cs",
+            "line": 70
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PersistenceHardening.cs",
+            "line": 40
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+            "line": 1541
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+            "line": 1227
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Replay.cs",
+            "line": 200
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-common-mixed-guard",
+        "project": "unit",
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 2,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+            "cases": 1,
+            "path": "BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.WoundAnchorProjection.cs",
+            "line": 353
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-qte-default-publication",
+        "project": "integration",
+        "methods": 5,
+        "cases": 9,
+        "timeoutMinutes": 8,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+            "line": 191
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+            "line": 15
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+            "cases": 2,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+            "line": 170
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+            "cases": 3,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+            "line": 313
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+            "cases": 2,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+            "line": 14
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-original-rollback",
+        "project": "integration",
+        "methods": 2,
+        "cases": 2,
+        "timeoutMinutes": 3,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+            "line": 10287
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+            "line": 10499
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-output-basis",
+        "project": "unit",
+        "methods": 3,
+        "cases": 19,
+        "timeoutMinutes": 3,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.ClosedBasisRejectsMalformedOrUnnormalizedImages",
+            "cases": 17,
+            "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+            "line": 53
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.ExactImageRetainsFormattingTimestampBomAndDetachedBytes",
+            "cases": 1,
+            "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+            "line": 11
+          },
+          {
+            "name": "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.JointReadOnlyNarrativeValidationRefusesNormalizationWithoutWriting",
+            "cases": 1,
+            "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+            "line": 28
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-output-positive",
+        "project": "integration",
+        "methods": 2,
+        "cases": 2,
+        "timeoutMinutes": 5,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ExactPresentDraftColdContinuationRetainsAcceptedScene",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+            "line": 11
+          },
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NarrativeNormalizesBeforeFirstCheckpointAndTimestampCorrectionSealsExactImage",
+            "cases": 1,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+            "line": 14
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-output-scene-refusal",
+        "project": "integration",
+        "methods": 1,
+        "cases": 6,
+        "timeoutMinutes": 7,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation",
+            "cases": 6,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-output-binding-refusal",
+        "project": "integration",
+        "methods": 1,
+        "cases": 5,
+        "timeoutMinutes": 7,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation",
+            "cases": 5,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+            "line": 28
+          }
+        ]
+      },
+      {
+        "category": "fr063-joint-output-draft-refusal",
+        "project": "integration",
+        "methods": 1,
+        "cases": 4,
+        "timeoutMinutes": 6,
+        "members": [
+          {
+            "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation",
+            "cases": 4,
+            "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+            "line": 37
+          }
+        ]
+      }
+    ]
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-late-completion.json"
+  ],
+  "laterActuals": "HELD pending first Late2 frozen outcome/evidence and explicit per-stage release; checkpoint5 fresh later because Capture changed",
+  "guidanceReadback": [
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "allReviewedPhrasesPresent": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "allReviewedPhrasesPresent": true
+    }
+  ],
+  "daemonMatchingDefinitions": 2,
+  "readbackCaveats": [
+    "Readonly unit cleanup has custom Root/Removed raw row, not strict CleanupOwnedRoot; separately validate/freeze root absence.",
+    "All A runtime and whole feature acceptance remain UNRUN."
+  ],
+  "metadataCarrierTransfer": {
+    "allowed": true,
+    "exactAddedArtifacts": 2,
+    "condition": "Only byte-identical copies of this MD and JSON, diff exactly those two new recovery paths; prior source/config/contract bytes unchanged; independently verified remote carrier; record reviewed source separately; gate requires actual agent FINALSTOP."
+  },
+  "reviewReport": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.md",
+    "sha256": "5ec4f26020aac8ad48afe40ca87849a61626c63055ce0318fa3eeb2eb800821b"
+  },
+  "changedFilePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 74016,
+      "sha256": "6d8504490b25470a33b2e01a2ea43c545d1110a41ca894642b8ce22dc315666b",
+      "gitBlob": "25f721713c4617b7c0a4de11a5851fdbdc9dc0c8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 51942,
+      "sha256": "b1f1020f54b2ea9b032ec9915b8520890d61261814803eb63541b9fef08ad322",
+      "gitBlob": "ca3fa87e57bdc024559f69c2182b287df025ddd9"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8",
+      "gitBlob": "0b6bc17626d8727dcf06223a3b220c4b2b26bbc3"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+      "bytes": 5791,
+      "sha256": "ae01324852544436932cdf5a8c9b6cb7892d784537729ab345e137d605377337",
+      "gitBlob": "5bcd83afbe9524720181e496960e82726b6b6777"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47350,
+      "sha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0",
+      "gitBlob": "5ff4b945a274b367fa7f305414779c0a0b9c48be"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed",
+      "gitBlob": "2667120919343a1040863b25efc9e5bfec219269"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "bytes": 17372,
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "gitBlob": "04aacf85244601da516466216ff565dfefb868ae"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
+      "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 4463,
+      "sha256": "006caeeab3ff79b920e4bee84d6da837458cb2bdce18a0e1fac1b32106c19afb",
+      "gitBlob": "150299bca0c8b42636fdbdbbc653ca590b867072"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 27942,
+      "sha256": "cf6a351f61729898e03481bd2dd25252bfcc634ea9c5444382728b0037730d96",
+      "gitBlob": "05abc48e2622ba1871eb08b8ba75749cece16ac4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "gitBlob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "bytes": 23806,
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "bytes": 9693,
+      "sha256": "33f859765ca5623afe999f646218f4999c9d080bbfec27c4a37cf11e96296174",
+      "gitBlob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 454547,
+      "sha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "gitBlob": "3a817e031d8cc5e4c3122c5ac3437e8665f2dd33"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 30865,
+      "sha256": "36cf6b2817774250daba5d79ea73e769de929b33ba30bf1bfc9eb0f6d93c35c4",
+      "gitBlob": "6d10b3a30efdf62b0d2de026dca2a6b58d9354de"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 20941,
+      "sha256": "226fd4843afec175f4101373b70de20e00524d3d402c92a88018a17010105c50",
+      "gitBlob": "5c12e4b8c893a3cbda7495ad4bbdf6a8c2668de7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "bytes": 47040,
+      "sha256": "c32116bfe7912234187c07a9af483d51834b350735a54fe016d1ed683a7d6bf1",
+      "gitBlob": "ef1e7a977f7f1b0fe538c40d9824f4e50d725784"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 401224,
+      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "gitBlob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 248948,
+      "sha256": "9d1619b22d1eb99fefc24c61e05d4579c64457556e0f3670bbdb650138952ce9",
+      "gitBlob": "18310183272857fee970c096bc940faa18fadbaf"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 161568,
+      "sha256": "50bc7e73ae74801398a20d32b1effd2503dd773efad871ada7192764182ade89",
+      "gitBlob": "eb79710237b6ee715df837a6b43c103de93b5c5a"
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "bytes": 108929,
+      "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3",
+      "gitBlob": "7dbe71d7402481de99ffa6f79172ed6eccea7bde"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "bytes": 98738,
+      "sha256": "f8136d26a73d676d7167e603fb2624dd5d69dd7fa5453f87170de6febc6c5bbc",
+      "gitBlob": "575a58680d5cdc092f473b994ccd6af3233b46f1"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "bytes": 87800,
+      "sha256": "e3a064d47a73f381c6c315302697f4ea60c0c6dec8ec6bdf51f7ba6d740403a5",
+      "gitBlob": "03791876a3108dea1ea9f35651d3ff7aa828ac87"
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "bytes": 108566,
+      "sha256": "0f13b58a03edad9607e68677a4d8ef8dd8b28c855a862d883c4ece32e155abd1",
+      "gitBlob": "4f6b946bff7ebc2d2e36247f1ecbe2d7ab70d6d9"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 189671,
+      "sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
+      "gitBlob": "90363c67192cac05f8aedcbeddf459b29fb1bc08"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "bytes": 123449,
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+      "gitBlob": "26ec745d69c89724b5477fe4169041470f6a5d00"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1641987,
+      "sha256": "787bcb6946edfc939c44b2c758104db5f505bd94b9ff3cf1dfd562c7aaac9029",
+      "gitBlob": "77d652f770aa691f9a73e2b1509dfe57712675b9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v5-20261015.py.txt",
+      "bytes": 17017,
+      "sha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+      "gitBlob": "7af0f598bdfeaa0d279736ef0ff30579b2076db2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.json",
+      "bytes": 4637,
+      "sha256": "15b0a5ad927284833f188998a7c7e0771ede6541eced86d9123cbbc7cc15d5d0",
+      "gitBlob": "68649fe97a7352c239aeba5a28a9f37cd102e1e6"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.md",
+      "bytes": 5673,
+      "sha256": "7636da4bea5ecfd78cffb2757fceac14267d3627e9a207f8d59880ed78af1081",
+      "gitBlob": "2557b1f7524090181ffed626022b820cab01eb29"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.json",
+      "bytes": 4159,
+      "sha256": "98d28100f880749e8f4b049179ec5f53d4498aed866fc90f6b2e0de53b523446",
+      "gitBlob": "1183103f79bca1e09c0cc0c799f53eba6c1a62c2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.md",
+      "bytes": 3420,
+      "sha256": "c6b0615c5c46ae00cdedc70c77b385d63b2d96bcc8d3f7136855171b50562a31",
+      "gitBlob": "a6744b7fe0a70299ef4af0151d74a6f122120b40"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 224714,
+      "sha256": "1a7431a19eac3577f4814e1eb7bfc1a56b2b65e14dffb97cc2b5cc2b6b6d18f9",
+      "gitBlob": "764e728a967c0c9102deff408c3a16bd566db6d0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1142603,
+      "sha256": "df377990fb8d7e92fef53c0b4005325823c25887b9f0807170216eac758d6445",
+      "gitBlob": "8be77168290a07aeacc17e7c4a0abd2747bdf96f"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a",
+      "gitBlob": "3b7cd08c49daa22d2b31acbf4c5599ad9fe4f8f8"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 648,
+      "sha256": "6ec3a6411bd215de0c552615c1630e98429ea05f2bdb2d45eaf8111ecdf8c0ff",
+      "gitBlob": "14891af910d5c89115144b3016c0a6b2ebbe944b"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507",
+      "gitBlob": "90538d7723d4272e2378a11952b088ec015c5e5c"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-basis.json",
+      "bytes": 335,
+      "sha256": "a6b1e4b516fe095cd3ec1c52afe32de2d25f047cbd5e379b4f8144eb72a48312",
+      "gitBlob": "71e9bbe226e8fc88af936a3d7c045242d53bb3c4"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "bytes": 409,
+      "sha256": "4dd4298fd1c3290e152ab77474bfc007b1f2ebc089ad8374084827488b459c69",
+      "gitBlob": "5505a0603af9e96f196b12776ea84ebcd7285064"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "bytes": 429,
+      "sha256": "a7ad4ab73e30504d6d5bc9d62ed2ee126800e86ca464c8a1e7638eac32c54371",
+      "gitBlob": "929201446a07b9d86442394b416fb658820d35c0"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-positive.json",
+      "bytes": 355,
+      "sha256": "2896c5f161b5cd7b21a953abdbf19a86fca2da7517cb6398d6b0f164c02d2b46",
+      "gitBlob": "86f2ff9085166e39ea7a8b9b73bddfa8d1972288"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "bytes": 465,
+      "sha256": "a1f064ceb8b1bfc2ba5e045d8493151c968193ed7ec6fc434e641294a84ed96b",
+      "gitBlob": "52b0bbd915b8dcdb3661a26326ea0b061e3e5027"
+    }
+  ],
+  "additionalReadDependencyPins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-output-binding-final-design-A-20261015T064200Z.md",
+      "bytes": 11175,
+      "sha256": "68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364",
+      "gitBlob": "a5cf336f8070fff918535eeca62d6085b0d63c4b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1712,
+      "sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "gitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "gitBlob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+      "bytes": 29706,
+      "sha256": "2fa12b0b7b2103ba149b8c081cd656770dd55b2fa4daf1a3986d602fcee7cb6e",
+      "gitBlob": "50f291778b63954af1e1a452cf20d341e3aa939c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+      "bytes": 16911,
+      "sha256": "12b075112e69dea09d9dc34b1744a282983e672238149241588034f538a56b41",
+      "gitBlob": "e3de88ec737f02546f2c579ccadfe2a2f0786f82"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584183,
+      "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+      "gitBlob": "eec1511922976db651e6f1ce26c208c44ce77e44"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34",
+      "gitBlob": "0f8636b557d4330c82e84a3994e78512bcac4678"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.cs",
+      "bytes": 44863,
+      "sha256": "f86ee1add354c00e16ab4a41f3a68b3ae843afa3dce6c27755b952cae56b6aaf",
+      "gitBlob": "5b00f81338b68b607b23f36237c1d417a8d5e38a"
+    }
+  ],
+  "createdUtc": "2026-10-15T07:16:33.714085+00:00"
+}
