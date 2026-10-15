@@ -1,5 +1,32 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Late2 retained in-memory diagnostic capture SOURCE WIP STOP — 2026-10-15
+
+Owning base `d20ff57c9269fb2f1dd73256df9e9153823e81c0`. Independent EVIDENCE
+c0e4e827 ACCEPTED executed connected noncompletion: both real joint waves installed/
+dispatched, actual owner held42, missingSpend43; exact subsequent refusing cause remains
+unobserved. No specific production causalRED/fix or successful joint turn is inferred.
+
+One fixture-only diagnostic now snapshots EXISTING in-memory checkpoint presence,
+correction-ready flag, nullable retained canonical disposition and public issue
+Code/FilePath/Message immediately after actual owner return and before any subsequent
+filesystem capture/admission/assertions. Null/property/collection presence is explicit;
+32-row and256/512/1024-character limits report truncation/original lengths/full UTF8
+hashes plus a complete public-issue projection hash. Original full outcome emission and
+underlying retained result remain intact. No private capability serialization/authority,
+second owner/probe/validation/recovery/publication, debt settlement or behavior change.
+
+All inputs/naturalStage43/callbackReady/source/Spend43 and strict resource/history/hold/
+progression/story/once/cleanup oracles retain exact order/bytes outside this added capture.
+Production/hooks/contracts/GM/examples/catalog/selections/budgets unchanged. SOURCE WIP
+awaits saved/recovered focused SOURCE closure and fresh matching preparation/pins before
+ONLY failed Late2 diagnostic first outcome/freeze. Checkpoint5 is not repeated; later12
+stages remain UNRUN/HELD. No compiler/project/build/discovery/catalog/PlanOnly/test/runtime/
+fault/provider execution occurred; current API/compilation/fixture reach is UNCHECKED.
+All prior raw evidence, unknown publication lifecycle IDs/actors, historical tails and
+checkboxes remain exact. FullFR063 and legal-active/initial-bad-authority/partial-cleanup/
+erased-trace contours remain OPEN; no GREEN or qualification is claimed.
+
 ## Natural Stage43 Late2 first outcome frozen — ROOT checkpoint 2026-10-15
 
 Source/compile7c87c130e9e24fd7aad36d4809b5e800b652722b. N1 was independently

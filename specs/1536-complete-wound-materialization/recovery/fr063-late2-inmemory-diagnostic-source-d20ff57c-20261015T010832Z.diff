@@ -1,0 +1,60 @@
+--- base/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs
++++ current/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs
+@@ -257,6 +257,7 @@
+             });
+         }
+         finally { _consolePublicationObserver = null; }
++        WriteJointInMemoryOwnerSnapshot(engine);
+         var after = await CaptureMortalArchiveImagesAsync(_fs, before.Keys.Where(path => path != "$sessionGeneration"));
+         WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_owner_outcome", new
+         {
+@@ -455,6 +456,49 @@
+     }
+ 
+ 
++    private void WriteJointInMemoryOwnerSnapshot(GameEngine engine)
++    {
++        // Diagnostic reflection over EXISTING retained state only. Never serialize
++        // the checkpoint, plan, frame, receipt or capability, and never call an owner.
++        var checkpointPresent = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCheckpoint") is not null;
++        var correctionReady = GetPrivateFieldValue<bool>(engine, "_mortalJointRepairCorrectionReady");
++        var refresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCanonicalRefresh");
++        var dispositionProperty = refresh?.GetType().GetProperty("Disposition");
++        var issuesProperty = refresh?.GetType().GetProperty("Issues");
++        var disposition = dispositionProperty?.GetValue(refresh)?.ToString();
++        var issues = issuesProperty?.GetValue(refresh) as IReadOnlyList<ValidationIssue>;
++        const int maximumIssues = 32;
++        object BoundedField(string? value, int limit) => new
++        {
++            Value = value is null || value.Length <= limit ? value : value[..limit],
++            OriginalLength = value?.Length, Truncated = value is not null && value.Length > limit,
++            FullUtf8Sha256 = value is null ? null : Convert.ToHexString(
++                System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(value)))
++        };
++        // Only public diagnostic strings enter this complete projection/digest;
++        // the underlying result and original full owner-outcome emission stay intact.
++        var fullIssueProjection = issues?.Select(issue => new { issue.Code, issue.FilePath, issue.Message }).ToArray();
++        WritePhysicalInjuryDiagnostic("fr063_joint_in_memory_owner_snapshot_before_filesystem", new
++        {
++            CheckpointPresent = checkpointPresent, CorrectionReady = correctionReady,
++            CanonicalRefreshPresent = refresh is not null,
++            CanonicalDispositionPropertyPresent = dispositionProperty is not null,
++            CanonicalDisposition = disposition,
++            IssuePropertyPresent = issuesProperty is not null, IssueCollectionPresent = issues is not null,
++            IssueCount = issues?.Count, MaximumReportedIssues = maximumIssues,
++            ReportedIssueCount = issues is null ? (int?)null : Math.Min(issues.Count, maximumIssues),
++            IssueRowsTruncated = issues is not null && issues.Count > maximumIssues,
++            CompletePublicIssueProjectionSha256 = fullIssueProjection is null ? null : Convert.ToHexString(
++                System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(fullIssueProjection))),
++            Issues = issues?.Take(maximumIssues).Select((issue, index) => new
++            {
++                Index = index, Code = BoundedField(issue.Code, 256),
++                FilePath = BoundedField(issue.FilePath, 512), Message = BoundedField(issue.Message, 1024)
++            }).ToArray(),
++            Scope = "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
++        });
++    }
++
+     private static (Dictionary<string, byte[]?> Current, string Reminder)
+         BuildJointNaturalStage43CurrentExpectation(IReadOnlyDictionary<string, byte[]?> originalImages)
+     {
