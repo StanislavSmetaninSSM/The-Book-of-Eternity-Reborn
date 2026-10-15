@@ -1,0 +1,321 @@
+{
+  "createdUtc": "2026-10-15T12:49:25.291127+00:00",
+  "kind": "ROOT_NATIVE_TRX_CLEANUP_AND_PIN_QUALIFICATION",
+  "testedSource": "737de5b93958b79862fc52847998258d5b55e5a1",
+  "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "packet": "fr063-finite-generation-helper-v6-frozen-737de5b93-20261015T124814Z",
+  "manifestSha256": "10a8974d985caec27ae61dfd82004b2e126f8280d77f423bf2f9f1f7c2018589",
+  "chainsVerified": 36,
+  "gitSourcePinsVerified": 336,
+  "currentBinaryPayloadsVerified": 11,
+  "native": {
+    "exitCode": 0,
+    "timedOut": false,
+    "methods": 9,
+    "cases": 29,
+    "descriptors": 1,
+    "executed": 29,
+    "passed": 29,
+    "failed": 0,
+    "wallTime": "00:00:05.4502231",
+    "complete": true,
+    "skipCount": 0,
+    "duplicateTestIDs": 0
+  },
+  "actualPerCaseRemovedRootBijection": [
+    {
+      "testId": "d880f00b-c5ca-1a97-f351-6d3d5b4c52c1",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.DefaultBootstrapAndSuccessfulVetoRetainPhysicalGeneration",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-16488e44d0a743308defeb8f5d7e5d59",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "de8908b8-725f-5b82-5b78-fa826ffa0987",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"v1\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-195c9caaf9aa42bbb19dc7382fd82bc8",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "ebf2213d-315b-8b57-ce20-e81eac64137f",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_match_input_foreign\", applicable: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-0c46f177d94848619565c263893cb9fb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "0916ca80-2cda-8628-83b7-6e85e63a5f24",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_foreign\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-d659dd6682c64796a7b1adc3ced87ea4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "a7d2415d-4cf5-2fba-67bc-b7070a1e915e",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"same\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-6d88deddf1834830bd3801276844629f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "0fa69179-35eb-9b28-be13-3d9c5d592338",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"missing\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e8b5d16ff340481f87b152d9fa94b669",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "fc4827fc-111f-fb2d-fbb4-f3696c533f17",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingReplacementRetainsEstablishedResultWithoutReplay",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b7f9cb2c747d440f83224e160e0c5dc2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "fd4aa5af-8dec-abe0-af7e-79626155c4bb",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"physical_missing\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e1ce62cc2db2470c86d16f35e2c4ded7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "6b4158b4-7581-2b8e-d7ad-bd318c42506d",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.CandidateReadFailureCannotBecomeBootstrap",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e7d32ca6276f4fc28bcda436c02876e4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "bae8c2c3-a094-3a3f-1db0-c72822a53cd0",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"invalid_tuple\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-f585de9ea00844888e940b45aa265d91",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "d8f52b6b-7536-addb-7f7c-659345c2b4da",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"no_headers\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-dcde3c2d100b4f3e9c0976375fe1214f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "67a00bf5-8654-d0a7-4949-ad9cfe91f71f",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"no_marker\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-04125c5fea6f48eea9051bb34e399ec9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "f746a3ed-545f-b9e6-9837-f1a11a57b41f",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"physical_malformed\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-24428228ef994366ba248db72d67c9ef",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "045d2efd-aabe-c8c2-e4ae-aa1e9f1f4b81",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_only\", applicable: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-9cb00bdbf97045fd8d0e6b6477dcf803",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "f605ea84-6923-c9a4-37d7-1360d3a900b6",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"equal\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-247b4596773647d492e1fac0d966bcbb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "5c8439b1-89cb-23b3-d7c9-d904bbe0b73f",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission(existing: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a7de4e6c663142869c2c49fd5719c0aa",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "5fe484ff-c5a7-a236-c08a-ca91b195c99c",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission(existing: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-4e8aae3600ef44908f06e3f372c88c40",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "b0e94ba3-ad0f-d9c3-617d-2f019791929d",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"invalid_family\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-7a5bbaa210714655a0e25363c5d17a85",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "f7bb3325-a872-3115-d086-62a58eeb6bb6",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"foreign\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b823e4cde35c43408144b4d23b64b5e4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "98c7aff3-b929-9f24-e462-a6f1d1d490a0",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_object\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-43319a7a5e294d48a1b59cb0780d585c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "f028abff-3c1c-e368-834c-cd48f072d0da",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_invalid\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a11d901dacdd436797bec3871b642767",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "b4f1458e-42f3-4de9-e5c1-cb56582921d7",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.BoundCurrentPathSkipsVetoAndFencesReplacedGeneration(foreign: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-35682d31d003445aa8b437e91c99c57c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "114c198d-9510-b447-5df5-ffde4e585621",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_absent\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-5d5899a79a064540a06bb6b72e935453",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "39114db0-c44e-5383-51bb-dda45082496e",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"input_only\", applicable: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e784b70ea7584cf8a0fd02670bf05bdb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "041c1efb-8f22-506c-2865-cbf156e47ac8",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_noncanonical\")",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e9cba8c530944e32937a805fdfea4b80",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "21e0b5b3-2f42-a396-9d21-6d4a780e3ce9",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingScopeRejectsEscapedWriter",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-3acba9836b1144a3a783f56954965b71",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "91da4427-6713-f49b-c059-39639d7b13bd",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.BoundCurrentPathSkipsVetoAndFencesReplacedGeneration(foreign: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-2dbd160430ca42c3b5f50bf918ad72f6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "eee5b8dd-21c4-43d2-7ee7-dadad7b7eadc",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_foreign_input_match\", applicable: True)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-1855f1db4d7d4e769ba1ad4be74ed082",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "36987244-0892-5685-039f-1b939b42805e",
+      "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"foreign_headers\", applicable: False)",
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a9a5287c6b1c417889add632469c5328",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    }
+  ],
+  "distinctRoots": 29,
+  "allRootsActuallyAbsent": true,
+  "exactUsedGateSha256": "35a0df0b6af2aa4f6b298c98e2ddc652db7c1bd3f7a5dcfcf56673e0cd8c0c7e",
+  "fullIndependentEvidence": "PENDING; conditional G2 released by124259 after this qualified frozen helper outcome"
+}
