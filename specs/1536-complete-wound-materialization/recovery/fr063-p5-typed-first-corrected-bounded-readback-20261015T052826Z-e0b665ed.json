@@ -1,0 +1,132 @@
+{
+  "source": "e34b04985650c614e9770428bb1c8da42363da47",
+  "compileSource": "e34b04985650c614e9770428bb1c8da42363da47",
+  "native": {
+    "run": "20261015-052555-199-681066-14be9d6ec2764f3897bbb9634306cc25-categories",
+    "wallTime": "00:02:01.7634587",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 161,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-66cd1e4a15a34cffa9118a557a80813c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a9e10f4d604243f2b8a7c40adabe26a7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true
+  },
+  "diagnosticSnapshots": [
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "Committed",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 0,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 0,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+        "Issues": [],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    },
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "Committed",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 0,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 0,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+        "Issues": [],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    }
+  ],
+  "boundedTestErrors": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Null() Failure: Value is not null",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 279",
+        "--- End of stack trace from previous location ---"
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "outcome": "Failed",
+      "errorFirstLine": "System.InvalidOperationException : The node must be of type 'JsonValue'.",
+      "stack": [
+        "   at System.Text.Json.Nodes.JsonNode.GetValue[T]()",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 711",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337"
+      ]
+    }
+  ],
+  "ownerScalars": [
+    {
+      "nonzeroProgression": true,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": "Xunit.Sdk.EqualException: Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   1\n   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 154\n   at Xunit.Assert.Equal[T](T expected, T actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 89\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass991_1.<RunJointCompletionControlAsync>g__ObserveActualRepair|9(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 385",
+      "ActualTurn": 42,
+      "InputKeyAvailable": true,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors\nMortal completed publication retained before validation: changed_or_malformed_public_decision\nJoint story/turn completion held: The complete joint canonical/narrative/phase/projection pass did not authorize its completion owner.; original, ready, outputs, backups and committed union retained."
+    },
+    {
+      "nonzeroProgression": false,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": true,
+      "liveCallerReturned": false,
+      "liveWaitEntered": false,
+      "jointOriginalAuthored": true,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 42,
+      "InputKeyAvailable": false,
+      "EngineDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors\nMortal completed publication retained before validation: changed_or_malformed_public_decision\nJoint story/turn completion held: The complete joint canonical/narrative/phase/projection pass did not authorize its completion owner.; original, ready, outputs, backups and committed union retained."
+    }
+  ],
+  "rawFrozenBeforeThisRead": true,
+  "furtherChangesRuntime": "HELD",
+  "later12": "UNRUN"
+}

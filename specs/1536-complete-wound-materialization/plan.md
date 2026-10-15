@@ -1,5 +1,54 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## P5 first corrected outcome: canonical committed, story held — 2026-10-15
+
+Tested/compile source `e34b04985650c614e9770428bb1c8da42363da47` passed
+corrected SOURCE/FIXTURE/SELECTION static gates. Fresh BOTH139.0235201s,
+exact PlanOnly4.9212229s and catalog5.4486888s each exited0/zero tests;
+official32methods/58cases/18descriptors, Valid746categories/11588methods,
+no unmapped/stale. Only both existing Late2 rows executed: native1,
+121.7634587s,2executed/0PASS/2FAIL,complete1/1descriptor and2/2cases,
+no timeout/skips/duplicates. All161 source/11 selected binary pins matched
+pre/post, not an exhaustive loaded-dependency proof. Two actual cleanup receipts
+report removed=true/failure=null; roots absent. All49 raw chains plus manifest
+were frozen BEFORE diagnosis and these ROOT metadata additions.
+
+BOTH in-memory captures now show CanonicalDisposition=Committed/IssueCount0;
+actual common-marker transactions are recorded. Producer/control-flow and marker
+evidence support crossing P5, P6 and final canonical admission for that publication.
+The old P5/lineage refusal is absent. This is canonical extent, not successful
+story/turn, full strict-oracle, replay/fault or full FR063 qualification. Both
+remain turn42 with changed_or_malformed_public_decision and completion-owner hold.
+Zero reaches fixture711 after earlier resource/history union assertions; none
+of its later receipt/phase/story/turn/repeat assertions is inferred passed.
+
+Nonzero fails fixture279 on captured observer failure at385: expected0/actual1.
+Read-only raw/source classification finds two DISTINCT report deletion transactions:
+original-baseline restoration before repair, and later progression phase consumption
+after exact report resubmission/common marker. They are not duplicate notification
+of one transaction. The fixture counter conflates the two roles; strict next scope
+must retain both histories and count ONE real phase consumption, not suppress,
+deduplicate or merely permit two. Zero separately fails GetValue<string> at711
+because established canonical severity is an object with value/rank/creation/event
+fields. No production scalar fallback or weakened severity oracle is justified.
+
+Shared story hold is independent of nonzero observer failure: both public drafts
+are consumed/absent under the genuine completed v2 footprint. Generic MayResubmit
+still requires a present matching draft before the joint continuation branch.
+The exact joint output binder also reads current draft/woundRef, so skipping one
+wrapper guard is insufficient. A coherent joint-only completed-family continuation
+must prove an authenticated output/narration/local-reference source using existing
+full receipt/CREATE-history/original/canonical proof; never recreate the draft,
+trust parsed marker/hash or relax old v1/default/source/union/progression authority.
+This is a concrete next handoff question; no further source/fixture fix is released.
+
+All161 tested pins matched before these additive fronts. Writer FINAL STOPPED,
+no pending tools/writes. No project source/fixture/selector/task checkbox changed
+in this ROOT metadata block. Independent first-corrected EVIDENCE remains PENDING.
+All further fixes/runtime/later12 HELD; checkpoint5 not repeated. FullFR063/T070
+and prior active/initially-bad/cold/new-root/partial-cleanup/erased-trace scopes OPEN.
+Actual model/effort telemetry UNAVAILABLE. All old tails/checkmarks/raw failures exact.
+
 ## P5 authenticated completion consumer alignment SOURCE WIP — 2026-10-15
 
 Owning base `8be39c6fd298248d224fee3414d341575e51653b`. Independent EVIDENCE

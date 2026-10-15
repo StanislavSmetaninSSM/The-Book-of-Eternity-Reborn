@@ -1,0 +1,15 @@
+{
+  "tool": "exec_command",
+  "chunkId": "74018f",
+  "exitCode": 2,
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "failedCommand": "rg -n LocalPublicationObserver|TrustedLocalPublicationPhase.Committed|TrustedLocalPublicationPhase BookOfEternityClient/Services/TrustedLocalStorage.cs BookOfEternityClient/Services/FileSystemManager* BookOfEternityClient/Services/*LocalPublication*",
+  "exactErrorLines": [
+    "rg: BookOfEternityClient/Services/TrustedLocalStorage.cs: No such file or directory (os error 2)",
+    "rg: BookOfEternityClient/Services/FileSystemManager*: No such file or directory (os error 2)",
+    "rg: BookOfEternityClient/Services/*LocalPublication*: No such file or directory (os error 2)"
+  ],
+  "precedingSourceReadOutput": "Returned together with successful sed source reads; output truncated by tool. Full partial source output not separately retained.",
+  "classification": "External source locator error; no project/compiler/runtime/security failure",
+  "sourceWrites": "NONE"
+}
