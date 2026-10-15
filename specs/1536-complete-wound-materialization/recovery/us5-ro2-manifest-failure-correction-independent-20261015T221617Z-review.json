@@ -1,0 +1,284 @@
+{
+  "scope": "Affected causal/SOURCE/FIXTURE/SELECTION/tool/evidence gate for strict shared manifest metadata correction",
+  "disposition": "ACCEPT_CORRECTION_AND_RELEASE_FRESH_FIVE_OWNER_VERIFICATION",
+  "reviewerConfiguration": "Independent reviewer configured/requested as Astra XHigh; actual backend model/effort telemetry unavailable.",
+  "reviewed": {
+    "base": "6c847795c5c25ec0d2adbdc02478a1768757c742",
+    "head": "740db0edbbf6fd3583dd9d175381784aea808d58",
+    "localStatus": "clean",
+    "remote": "Actual remote verified by parent; no repeated reviewer remote read.",
+    "delta": "Two source/test files, evidence-v3 gzip and plan/tasks fronts only. No app/manifest-data/selection/budget change."
+  },
+  "findings": [],
+  "cause": "The strict shared ExampleValidationManifest type lacked the already-present qtePhysicalOpportunityProjectionCoverage property. The original JsonException occurs in Load before numbered-example mapping assertions. Existing qtePhysicalDecisionDraftCoverage was also unmodeled. This is documentation test metadata drift, not wound status runtime behavior.",
+  "correction": {
+    "rootFields": 18,
+    "newShapeFieldCounts": {
+      "QtePhysicalOpportunityProjectionExampleCoverage": 5,
+      "QtePhysicalDecisionDraftExampleCoverage": 6
+    },
+    "verdict": "Explicit typed properties/classes exactly match the existing accepted JSON field sets. Root and both new nested classes retain JsonUnmappedMemberHandling.Disallow. No Skip, extension-data dictionary, removed metadata or application contract change.",
+    "coverage": "One new owning unit Fact loads both genuine metadata blocks, checks accepted IDs/input/output/three example IDs, and asserts JsonException for unknown root, unknown opportunity field and unknown draft field. TestSupport is referenced by both test projects with existing friend-assembly access; APIs/types are consistent statically.",
+    "sourcePins": {
+      "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs": "4248033b7a485f8c1993dea1fcf94df9367c7938ee37b0676dcedf512c60fb94",
+      "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs": "71cf8079a0985c92b39909e9500454367ec9a7ca40f46fb5db4b176676ee3d85"
+    },
+    "checks": "Current source matches immutable 740 Git bytes; diff-check passed; manifest/categories/selection byte-identical to frozen predecessor. Static review only; new Fact unrun."
+  },
+  "evidence": {
+    "testedCompiledGit": "29f5bd6a4dec63e027fbe378a99d6f03c139c173",
+    "packets": [
+      {
+        "stage": "fresh-both",
+        "file": "us5-ro2-green-fresh-both-29f5bd6a4-20261015T220105Z-freeze.json",
+        "sha256": "14c4f7ae380ee4d887bc0181b52fdbf8a132a45978bd2b082218de60c4d510a3",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:02:30.1483310",
+        "methods": 52,
+        "cases": 95,
+        "descriptors": 7,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 95,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "documentation-afterlife-entrypoints-coverage-unit-001",
+            "wounds-player-projection-unit-002",
+            "wounds-player-read-integration-003",
+            "wounds-player-status-integration-004",
+            "wounds-player-status-unit-005",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      },
+      {
+        "stage": "catalog",
+        "file": "us5-ro2-green-catalog-29f5bd6a4-20261015T220413Z-freeze.json",
+        "sha256": "fb67af59c89592eb5f0fe18ed1e65e319cbc1cfc4e8ba44ece122aa164bed00e",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.2324972",
+        "methods": 0,
+        "cases": 0,
+        "descriptors": 0,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "catalog": {
+          "Valid": true,
+          "Methods": 11652,
+          "Categories": 758,
+          "Unmapped": [],
+          "StaleSelectors": []
+        }
+      },
+      {
+        "stage": "exact-plan",
+        "file": "us5-ro2-green-exact-plan-29f5bd6a4-20261015T220445Z-freeze.json",
+        "sha256": "a713ad6750aefde5890126298fe822b3cf79a6c6023bf0467da10e0ae60c527d",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:04.7058481",
+        "methods": 52,
+        "cases": 95,
+        "descriptors": 7,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 95,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "documentation-afterlife-entrypoints-coverage-unit-001",
+            "wounds-player-projection-unit-002",
+            "wounds-player-read-integration-003",
+            "wounds-player-status-integration-004",
+            "wounds-player-status-unit-005",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      },
+      {
+        "stage": "actual",
+        "file": "us5-ro2-green-actual-29f5bd6a4-20261015T220510Z-freeze.json",
+        "sha256": "eacb87dcd66b156957c4b9ae182a745ab08065c1642dfb74edf90d61902d1a9a",
+        "chains": 7,
+        "nativeExit": 1,
+        "wallTime": "00:00:06.7274468",
+        "methods": 52,
+        "cases": 95,
+        "descriptors": 7,
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 1,
+          "Failed": 1
+        },
+        "selection": {
+          "PlannedDescriptors": 7,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 95,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [
+            "wounds-player-projection-unit-002",
+            "wounds-player-read-integration-003",
+            "wounds-player-status-integration-004",
+            "wounds-player-status-unit-005",
+            "wounds-player-status-guidance-integration-006",
+            "wounds-player-status-guidance-unit-007"
+          ],
+          "Complete": false
+        },
+        "catalog": null
+      }
+    ],
+    "verifiedChains": 27,
+    "codePins": 2557,
+    "additionalDocumentPins": 87,
+    "gitBatchVerifiedPins": 2644,
+    "sourceVerification": "One git cat-file --batch for immutable 29f; all code and document hashes matched. Exactly two current source pins differ, the declared corrected helper/test. All 87 document inputs remain identical.",
+    "documentPinSha256": "d23a74b8cdb4a5abc0568cb8e6f9401df5b674fe3f20b7f0268c1d78bc83015e",
+    "documentRecordedUtc": "2026-10-15T22:03:38.801156+00:00",
+    "externalDocumentCopyExact": true,
+    "examplesEnumeration": 80,
+    "documentProvenance": "Original external record and tracked copy agree exactly; recorded time precedes catalog/Plan/runtime. Exact 80 top-level Examples .txt/.md enumeration and seven additional document inputs match Git/current bytes.",
+    "originalOutputPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "b56f71524691f7298a1b05e4b43358df24f832bd4a415400a2ce7253bf160dcc"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "a9ff65268cda2402af8cea674b457e8cdf41f261370f2a3f0da98c0a6bee3f7a"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "b56f71524691f7298a1b05e4b43358df24f832bd4a415400a2ce7253bf160dcc"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "c98c88b161c8a2f1cde5c475ce80a9e330caf3cd1b75cf17098987b92cc6c74b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      }
+    ],
+    "binaryLimit": "Original eight pins are the originally recorded payloads. TestSupport.dll was not among those eight; no retrospective ten-payload provenance is claimed. Fresh v3 must record both TestSupport copies.",
+    "actual": {
+      "nativeExit": 1,
+      "wallTime": "00:00:06.7274468",
+      "executed": 2,
+      "passed": 1,
+      "failed": 1,
+      "unrun": 93,
+      "complete": false,
+      "completedDescriptors": 1,
+      "plannedDescriptors": 7,
+      "ownedRoots": 0
+    },
+    "identities": [
+      {
+        "testId": "bd2abb9f-020b-1a60-b4eb-7003ba96a45d",
+        "executionId": "6828b045-9b70-402e-979e-846e178945db",
+        "testName": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+        "outcome": "Passed",
+        "error": ""
+      },
+      {
+        "testId": "121280ab-ce07-7582-b92c-2149ed40bd12",
+        "executionId": "48be5d90-6505-4b2c-858e-81633eb541ff",
+        "testName": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+        "outcome": "Failed",
+        "error": "System.Text.Json.JsonException : The JSON property 'qtePhysicalOpportunityProjectionCoverage' could not be mapped to any .NET member contained in type 'BookOfEternityClient.Tests.ExampleValidationManifest'."
+      }
+    ],
+    "identityVerification": "Reparsed full TRX definitions, test/execution IDs, TestEntries, exact class/method/codeBase/storage, outcomes and failure stack. Both are genuine pure unit repository controls; zero roots is expected and does not qualify the unrun filesystem fixtures.",
+    "rootReportSha256": "1fafd4616696ff3cae47a2f4698237b102c1d19858bc1d5157d59ce52325c3f7",
+    "limits": "Mapping assertions are unreached in the failed case. No status/reader GREEN, fixture cleanup PASS, or broader acceptance."
+  },
+  "collectorV3": {
+    "sourceSha256": "408f8d026ee6cf7e869f45136f738a74bc545bb52e114e24c83a2090188bc641",
+    "gzipSha256": "a7b792790842375fb820fd35c78756a81ecec21acdb084592ddef35f620b0e42",
+    "externalSourceExact": true,
+    "pythonAstValid": true,
+    "delta": "Only docstring, exact document-input predicate, and TestSupport.dll in both output lists differ from v2. Pre/post source equality, clean-source guard, original/raw/gzip artifact chains, duplicate JSON keys, strict receipts, duplicate-root check and the exact two pure integration exceptions remain unchanged.",
+    "expectedFreshPins": {
+      "source": 2644,
+      "binary": 10
+    },
+    "limits": "Data-only evidence collector; not a native runner/controller. Fresh packet qualification must verify the expected ten binaries, not assume their presence."
+  },
+  "selection": {
+    "categories": [
+      "wounds-player-projection",
+      "wounds-player-read",
+      "wounds-player-status",
+      "wounds-player-status-guidance",
+      "documentation-afterlife-entrypoints-coverage"
+    ],
+    "sufficiency": "Retain accepted connected RO2 selection. The changed shared helper is compiled by both projects; existing failing afterlife mapping control, positive/negative owning unit manifest Fact and the two pure integration documentation controls cover parsing without unrelated QTE mechanics execution.",
+    "provisional": {
+      "methods": 53,
+      "cases": 96,
+      "descriptors": 7,
+      "catalogCategories": 758,
+      "catalogMethods": 11653,
+      "realRoots": 50,
+      "pureIntegration": 2,
+      "pureUnit": 44
+    },
+    "release": [
+      "Fresh BOTH: ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -PlanOnly",
+      "Standalone catalog: ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+      "Exact selected plan: ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild -PlanOnly",
+      "Only five selected owners: ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild"
+    ],
+    "conditions": "Official discovery must confirm counts. Use newly built outputs after TestSupport correction; no old29f reuse. Freeze/publish first unexpected discrepancy before correction. Final independent EVIDENCE remains required."
+  },
+  "limits": "No current GREEN claimed. Prior source gates 215550/215922 retained; full US5/FR063/lawful ACTIVE remain open.",
+  "finalState": "FINALSTOP; no reviewer tracked edits, native builds/tests/discovery/runners, or pending reviewer writes."
+}
+
