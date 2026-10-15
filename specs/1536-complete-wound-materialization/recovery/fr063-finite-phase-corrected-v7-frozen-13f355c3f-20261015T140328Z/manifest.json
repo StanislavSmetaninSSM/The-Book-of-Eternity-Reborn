@@ -1,0 +1,766 @@
+{
+  "source": "13f355c3f509c91bb1e63b750dcd8966578612d3",
+  "classification": "first finite stage outcome; frozen before diagnosis; independent EVIDENCE pending",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-all-json-observations-raw.json.gz",
+      "uncompressedBytes": 95927074,
+      "uncompressedSha256": "5fbb007f88702d051f737904ce1be17dbb146e1b08378d378209a5d8c8e2e83b",
+      "compressedBytes": 32662801,
+      "compressedSha256": "bd6d5be4859db559ddbf1e4154185d95ada822db7407a9015fe2d01f4c2ef5d4"
+    },
+    {
+      "name": "actual-all-trx-results-raw.json.gz",
+      "uncompressedBytes": 8817,
+      "uncompressedSha256": "131aabdb130a14324248debd7fca82c3bd2bd48e0fa3b55de517d748204bbc37",
+      "compressedBytes": 1452,
+      "compressedSha256": "d730d04e0c3a1a2aded09e0106e5d999cb134cb8256b26a2daa34d5544d9734a"
+    },
+    {
+      "name": "actual-child-evidence-containers-raw.json.gz",
+      "uncompressedBytes": 10607743,
+      "uncompressedSha256": "76b6b1c6188d0765aa81d44b5c36dab0ffd9778440fb381e27991686aaad4738",
+      "compressedBytes": 3187561,
+      "compressedSha256": "5b9d2cad8bd918da23c6cd0a3dcdc19e115698a948f792dfbe59ebd7c0762c54"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 1911,
+      "uncompressedSha256": "abd2175a0703376c5b5d0aa00cf7af541c552acbfb196023627e09199ac84eb8",
+      "compressedBytes": 778,
+      "compressedSha256": "8e7ad69fcf52239bed1d72d0568b704bd140bbef17b4143e7452611d4b842cd8"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 96661023,
+      "uncompressedSha256": "268a6e8852b5bbc0133d4f5f9006459cb088a9843deab9c996f7b074a1e3dc34",
+      "compressedBytes": 32825126,
+      "compressedSha256": "2aef9c6c8bbd4720a4db59c665f5c5ff653546696ef80ea49ea15cb25bc88a5a"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 521,
+      "uncompressedSha256": "1c9cd5d298ce87fc7c688f8b96ec9bb6f81696dd2481418732a3c1f0f7a7fe93",
+      "compressedBytes": 341,
+      "compressedSha256": "f3ee9f3a6a38878f685f4e1940705b1a9446000fa82e3cb37b136009b1c89889"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 95924698,
+      "uncompressedSha256": "72e33a2acc802f92dc35f3f7a223eee14cc2779305bad8926cbb6d374c6683ea",
+      "compressedBytes": 32662366,
+      "compressedSha256": "fe499cac88355f2750b387101a46976a886c495932fd3286c2da64fa4e71f60a"
+    },
+    {
+      "name": "actual-native-process-result.json.gz",
+      "uncompressedBytes": 372,
+      "uncompressedSha256": "08826c8096915704a5d306a5be39fbf7c3174eeaf867d6cfec98b86e28c90403",
+      "compressedBytes": 290,
+      "compressedSha256": "73658efde445b8c207f5259a8c15548202411f52a76e234b4e4014bdddd63e42"
+    },
+    {
+      "name": "actual-pre-assertion-root-observations.json.gz",
+      "uncompressedBytes": 20782,
+      "uncompressedSha256": "1f41f243c0aad54e07eff6fbac4fc82a796801c0fff366035e70bed46adaa486",
+      "compressedBytes": 3537,
+      "compressedSha256": "c0f407e3396eb2cff145a026d01ec54227d77bfcdaf7e90312757764a9e35990"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 20782,
+      "uncompressedSha256": "1f41f243c0aad54e07eff6fbac4fc82a796801c0fff366035e70bed46adaa486",
+      "compressedBytes": 3537,
+      "compressedSha256": "c0f407e3396eb2cff145a026d01ec54227d77bfcdaf7e90312757764a9e35990"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 431,
+      "uncompressedSha256": "aea0b7ca2d9fb4a06aad9257c0a953f027a3af50c58b598e858252e4910f5c0c",
+      "compressedBytes": 279,
+      "compressedSha256": "7238dcb48858702ed56ab82dd90bb0ec4eba0a8f2c8c8e627ffd15775f9b9d7b"
+    },
+    {
+      "name": "actual-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2372,
+      "uncompressedSha256": "7fe6c6cf3aa0bb6c203558f03d86eba302f87463828e513146f0a53d2765e6fc",
+      "compressedBytes": 1045,
+      "compressedSha256": "774539433768ef0c1aeb7290ad25855161e581994bfdcc65a903aa7c09b21c68"
+    },
+    {
+      "name": "actual-strict-cleanup-origins-raw.json.gz",
+      "uncompressedBytes": 3737,
+      "uncompressedSha256": "1cecbefd542bb481b83725e0c8838b70913a1619d9bfd411f64a6b3dd5a3a809",
+      "compressedBytes": 552,
+      "compressedSha256": "a2b0de8bcbb6c3ef3155f3452245ccc3089df82fa0fe4d15c5c24cc94ff50bbb"
+    },
+    {
+      "name": "actual-strict-cleanup-receipts-raw.json.gz",
+      "uncompressedBytes": 4755,
+      "uncompressedSha256": "6e1596b703bfba5aeb57d4f8364f6ffe85b8e79533f7f7e66222ee9b0dd2d835",
+      "compressedBytes": 687,
+      "compressedSha256": "06754f59d9a69d01272aa7e2bdf63820c18e5b2ea3ac60577b58daa434d7c3ff"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 137892,
+      "uncompressedSha256": "c92e344ccf09a50737372a72199073ec1f112f434259bd7f59d472c1a3b48375",
+      "compressedBytes": 28788,
+      "compressedSha256": "6597c792d08a9b2c3eff4caae6e977b0a6100b7c707bb611192ec5621a8b0749"
+    },
+    {
+      "name": "exact-independent-gate-proof.json.gz",
+      "uncompressedBytes": 152384,
+      "uncompressedSha256": "ade5d00b5825774650c7a7cb1275cc2d46666036a3c68183bb50f794d05cd344",
+      "compressedBytes": 30267,
+      "compressedSha256": "2a9f782ca3e6b81b2740e226999fd42028c0bc74f8860e19477d7b91b4a5bd40"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1335,
+      "uncompressedSha256": "cbf00c9671f5e551d69dd45da98c7686db5763e5717eb1dfce75cc34572ce908",
+      "compressedBytes": 622,
+      "compressedSha256": "aae6f427d04e34a5bd8ed7095c12c719da2002486e8774f2707c67a0feb226ac"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 538,
+      "uncompressedSha256": "ccac039bba13051199d09231c950efd6e38b7faea93cd3cfb03199a1b1e7488a",
+      "compressedBytes": 351,
+      "compressedSha256": "18db9ad82fb5e99e79fddb49072fdc1bfa384e0da8740acaa3a0d2fd664d1cc8"
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "uncompressedBytes": 372,
+      "uncompressedSha256": "c8554283a1091ebbfd40221578eefbfa77891a23ca3faabc24653870d1c3758a",
+      "compressedBytes": 291,
+      "compressedSha256": "da8f709af2c969ada98efc3c900e90926d31a1704968d17e9561bc1e12b3397d"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1276,
+      "uncompressedSha256": "c755721d140d83ca1d3b5835e4f8f7435bd7721741e9dab3d55abae26e423d98",
+      "compressedBytes": 647,
+      "compressedSha256": "020bd4a15bab95caf673f8e2d5077a92f467ddd021f428f107067cab8575ec03"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 431,
+      "uncompressedSha256": "e26ef7282b051726f96c5d7180164a70b217edb186ae5a7105696f80a9b7ae2f",
+      "compressedBytes": 279,
+      "compressedSha256": "acdc986ef9a48afe2044bec22d0fa0975bf7d396e829cde44ca0c72870e4db94"
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2281,
+      "uncompressedSha256": "54e70d30f0969fa11b53b1c28d9fc5e06bf0b370b4da36f3533e513018c8df80",
+      "compressedBytes": 1042,
+      "compressedSha256": "20ddbf17035829fcc260910ef705ecbee0cada7d9be37b9e6849efb34395b917"
+    },
+    {
+      "name": "exact-used-finite-stage-controller.py.txt.gz",
+      "uncompressedBytes": 10305,
+      "uncompressedSha256": "9fe544f18ab235570f764097bbe94c71de9cd631edba88991d5de84512a33d81",
+      "compressedBytes": 3580,
+      "compressedSha256": "beb8e4fd92029b93419625f6b632f720d64a6ffbf22cd323308b98447b6e44e2"
+    },
+    {
+      "name": "exact-used-finite-stage-inventory.json.gz",
+      "uncompressedBytes": 7411,
+      "uncompressedSha256": "0255cc89d93b5d1a96f3516186157cdd0ab94ab326553bf147b31cc59dcf5abb",
+      "compressedBytes": 1059,
+      "compressedSha256": "d3064ff37340d4efe7a5ea913aea01d536ccdf70308252da4a899b799eec612e"
+    },
+    {
+      "name": "exact-used-root-runner-v6.py.txt.gz",
+      "uncompressedBytes": 17019,
+      "uncompressedSha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+      "compressedBytes": 5438,
+      "compressedSha256": "f449cc5e9662556ba8aba859c241c52840a106ff11a01924604e6169740744f9"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2718,
+      "uncompressedSha256": "f7b0a2923604723c29b935a95f31c0fc33522ae7439c91c2cba83eff46683fad",
+      "compressedBytes": 722,
+      "compressedSha256": "edbaa009e112a5bceefc4171c2f9aaf7779e102f0d0af5bf5c41d3367b5e45eb"
+    },
+    {
+      "name": "inherited-both-build-provenance.json.gz",
+      "uncompressedBytes": 25396,
+      "uncompressedSha256": "765d75d16a6a6dd0077cd60100e124ad7d4658862d89004098e5f584ab9be394",
+      "compressedBytes": 1611,
+      "compressedSha256": "e955abc60157d9fb52b030d042edda1536af0fef00ac433a26ee699cd3676407"
+    },
+    {
+      "name": "orchestration-stdout.log.gz",
+      "uncompressedBytes": 5633,
+      "uncompressedSha256": "1cc6786eb02ebff8e08c69ec9fe5e09c5c06f4414a37d0f4320d290cecc6f4a2",
+      "compressedBytes": 1152,
+      "compressedSha256": "fe9286c7172a3f0bac113c2da5b5b251c9217fd377c15df29e4c03d34c2ea61b"
+    },
+    {
+      "name": "required-owned-root-cleanup-readback.json.gz",
+      "uncompressedBytes": 3777,
+      "uncompressedSha256": "5abe3286d4d68393321bf0e2f428be82b3f5bdf960018b648eb7ff6759d3be47",
+      "compressedBytes": 848,
+      "compressedSha256": "7bb4acfe52513a31980bb2b62f98ac0c371bcc0f9f80ca737d1340891347d0c8"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1673897,
+      "uncompressedSha256": "f0ed947b30d5cdfd80ef2ddf556ca9f3408db092cb9fa26ea47dc26914bd7e88",
+      "compressedBytes": 186217,
+      "compressedSha256": "d3df2b4dcdae54b0785b21f9d12258134b41daa2832813a61910e7713195216a"
+    },
+    {
+      "name": "actual-fr063-joint-phase-refusal-integration-001.trx.gz",
+      "uncompressedBytes": 96725847,
+      "uncompressedSha256": "ce800a7f8c5c03bec2cfb77add9056d6a7f10f81bc44cc2401a09f5b1306b0a8",
+      "compressedBytes": 32832669,
+      "compressedSha256": "727b9a8a61bd157da5050a4a6618a878f5fba420c030fa5c62c1afa339bb7162"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2061,
+      "uncompressedSha256": "2c2a32677e8a5fd98a2ceb62984757e8be19cb3f849a388aac1dba44fa999db7",
+      "compressedBytes": 971,
+      "compressedSha256": "d7b1de68e855e8f2799488e8cff36b4ebfdb9d3a457246e45ed8042de12608ef"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2372,
+      "uncompressedSha256": "7fe6c6cf3aa0bb6c203558f03d86eba302f87463828e513146f0a53d2765e6fc",
+      "compressedBytes": 1045,
+      "compressedSha256": "774539433768ef0c1aeb7290ad25855161e581994bfdcc65a903aa7c09b21c68"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1672931,
+      "uncompressedSha256": "9cac356dceaa00cf77b151e29ce7fcbb0e77a2bad4176b7784794f7e492280e1",
+      "compressedBytes": 185929,
+      "compressedSha256": "584c18310e7ce39fd719c8dc0a9137e401890dcaf88ad1658f582bc3453a2b0f"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 2061,
+      "uncompressedSha256": "a715e05f001344b619fdd594dbc94c5f54a8ed9a87e9871b0f3da0c08ad3c66f",
+      "compressedBytes": 971,
+      "compressedSha256": "14d9861dea55c79d5f3bf78c44f1cae9898b3d8cba9a88160c767c4b4ba6fda9"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 2281,
+      "uncompressedSha256": "54e70d30f0969fa11b53b1c28d9fc5e06bf0b370b4da36f3533e513018c8df80",
+      "compressedBytes": 1042,
+      "compressedSha256": "20ddbf17035829fcc260910ef705ecbee0cada7d9be37b9e6849efb34395b917"
+    }
+  ],
+  "frozenUtc": "2026-10-15T14:16:16.146250+00:00",
+  "exact-plan": {
+    "source": "13f355c3f509c91bb1e63b750dcd8966578612d3",
+    "compileSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+    "run": "20261015-140330-219-63622-e5a59b959c43490a98f43e23790d7b00-categories",
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261015-140330-219-63622-e5a59b959c43490a98f43e23790d7b00-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T14:03:32.784922+00:00",
+    "classification": "exact released selection; zero execution; inherited unchanged 9161fbd60 BOTH",
+    "wallTime": "00:00:02.5255268",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 12,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-phase-refusal-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 530,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T14:03:33.146573+00:00",
+    "methods": 1,
+    "cases": 12,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "13f355c3f509c91bb1e63b750dcd8966578612d3",
+    "compileSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+    "run": "20261015-140334-082-63762-b26b82bd71114a519b6a7d4901c850da-categories",
+    "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261015-140334-082-63762-b26b82bd71114a519b6a7d4901c850da-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T14:16:04.702211+00:00",
+    "classification": "actual finite stage; inherited unchanged 9161fbd60 BOTH; independent EVIDENCE pending",
+    "wallTime": "00:12:30.5533888",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 12,
+      "Executed": 12,
+      "Passed": 12,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 12,
+      "CompletedCases": 12,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 530,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T14:16:05.192235+00:00",
+    "methods": 1,
+    "cases": 12,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "d14117c4-9bbb-41a4-ad4f-371ee63b70ce",
+        "testId": "63629cb8-1c59-85c5-f9c1-47af7babf62d",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"authority_payload_digest\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:59.3282202",
+        "startTime": "2026-10-15T14:05:57.0463070+00:00",
+        "endTime": "2026-10-15T14:05:57.0463074+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d14117c4-9bbb-41a4-ad4f-371ee63b70ce",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "08b677f8-005e-4503-b54d-fabbbc1e219b",
+        "testId": "0d0ebf57-513b-c141-d9a5-fe2e79045f3b",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mutation_fingerprint\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:59.0694613",
+        "startTime": "2026-10-15T14:14:10.6963714+00:00",
+        "endTime": "2026-10-15T14:14:10.6963717+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "08b677f8-005e-4503-b54d-fabbbc1e219b",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "7878a0b2-fa44-4c3f-b668-7acc714b6408",
+        "testId": "ad9ca65a-d5bd-f285-4299-ac14e331309f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"world_time\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:01.9167529",
+        "startTime": "2026-10-15T14:06:58.9646086+00:00",
+        "endTime": "2026-10-15T14:06:58.9646089+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7878a0b2-fa44-4c3f-b668-7acc714b6408",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "f7befd47-8cd7-4645-9757-c58197bd7f61",
+        "testId": "325a51ec-1e85-8bc1-8398-b13f71453f36",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"missing_marker\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:19.0366610",
+        "startTime": "2026-10-15T14:04:57.7155929+00:00",
+        "endTime": "2026-10-15T14:04:57.7156030+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f7befd47-8cd7-4645-9757-c58197bd7f61",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "241ebfc6-41e1-4b54-bbf5-dc8b57ff1fbd",
+        "testId": "9b5c54c4-1724-797a-16d9-7485d55b2a12",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_report\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:01.6462664",
+        "startTime": "2026-10-15T14:09:01.0775666+00:00",
+        "endTime": "2026-10-15T14:09:01.0775670+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "241ebfc6-41e1-4b54-bbf5-dc8b57ff1fbd",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "2b2b2901-130f-4203-90fc-61c222427f47",
+        "testId": "2ea55d4d-df4a-f338-ec47-f2a881a8f54d",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_malformed\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:58.3801704",
+        "startTime": "2026-10-15T14:11:00.8919945+00:00",
+        "endTime": "2026-10-15T14:11:00.8919947+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2b2b2901-130f-4203-90fc-61c222427f47",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "e73d4566-caee-40fa-9246-5072db73baaa",
+        "testId": "1508ba94-4e99-1411-0d61-ae4254ab8f6c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"basis_fingerprint\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:00.4599498",
+        "startTime": "2026-10-15T14:07:59.4279856+00:00",
+        "endTime": "2026-10-15T14:07:59.4279860+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "e73d4566-caee-40fa-9246-5072db73baaa",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "dbcd9697-093d-40f8-87c3-ed9bee031ea2",
+        "testId": "d9405da3-d317-d4d6-2cc3-58b1d09e6554",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_missing\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:07.5258485",
+        "startTime": "2026-10-15T14:13:11.6252575+00:00",
+        "endTime": "2026-10-15T14:13:11.6252578+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "dbcd9697-093d-40f8-87c3-ed9bee031ea2",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "e401fb50-c93d-430a-a66e-4e3e8abfd7dc",
+        "testId": "cebfa736-f81a-89d8-abaa-414f79903a2a",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_control\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:03.1998997",
+        "startTime": "2026-10-15T14:12:04.0955739+00:00",
+        "endTime": "2026-10-15T14:12:04.0955741+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "e401fb50-c93d-430a-a66e-4e3e8abfd7dc",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "0aa29932-f66d-457e-b691-89cdbbf05468",
+        "testId": "af069e07-5d9b-be11-5783-28c97337ecd3",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_malformed\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:55.4534195",
+        "startTime": "2026-10-15T14:15:06.1557425+00:00",
+        "endTime": "2026-10-15T14:15:06.1557429+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "0aa29932-f66d-457e-b691-89cdbbf05468",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "c5e543d5-7350-4285-aaa2-25205264a2a3",
+        "testId": "87a0b998-557a-1428-2d40-6345f56feecd",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_schedule\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:01.4267470",
+        "startTime": "2026-10-15T14:10:02.5080931+00:00",
+        "endTime": "2026-10-15T14:10:02.5080934+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c5e543d5-7350-4285-aaa2-25205264a2a3",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "ff2a073c-9399-4f1f-b089-eaa6a78184a1",
+        "testId": "fc45fc5c-3c36-62cf-df31-0cf51903dec4",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_missing\")",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:00:55.9266582",
+        "startTime": "2026-10-15T14:16:02.0837339+00:00",
+        "endTime": "2026-10-15T14:16:02.0837343+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ff2a073c-9399-4f1f-b089-eaa6a78184a1",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 420,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 12,
+      "qte_story_actual_client_append": 12,
+      "qte_story_actual_engine_result": 12,
+      "qte_physical_actual_occurrence": 12,
+      "fr063_joint_actual_prior42_inactive_tail": 12,
+      "fr063_joint_original_progression_reader_before_owner": 12,
+      "fr063_joint_signed_original_schedule_before_owner": 12,
+      "fr063_joint_natural_stage43_image_before_assert": 228,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 24,
+      "fr063_confirmed_claim_inspection": 12,
+      "fr063_joint_completion_actual_prerequisites": 12,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 12,
+      "fr063_joint_completion_actual_owner_outcome": 12,
+      "fr063_joint_progression_phase_report_arithmetic": 12,
+      "qte_mortal_child_dependency_launch": 12,
+      "fr063_joint_applied_cold_parent_outcome": 12
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-1dd4363722d742d0a863eeba993680b1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f643883cabc1473fa07888397b96725c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3c938a2cf1814f558cd79aabcc0badc0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4744626774014e789695b3d1d3fbb225",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c720d37d61124684a51b450fb39634ab",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0ecd2e3493fc463fb6b1194d01407a4d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-585e67748b8f42b292132523559ab28e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ee27485843b84359b11a074bcb653418",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-dfdd20b5c9e84af2bbf5590af62449a8",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d95f15d76d924f0c9bc3cab2c097cfe6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9db71be748b543269a514ab979d3c2f7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-884fb2ef3bba4380b066362692d1d0c4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ddf267487812487a9431d4299bc0c337",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-726d4aa4c681425c95ef59e88444ae51",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-24ee3591caee415189e8b99a6011be2d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cbffc1d9cae4430e8d3b91cdba85b49c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-70ff73d886e345228dd26d69501dc606",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-8f586f4691a045e1a570191afc7f39bd",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e22cdd399bff41fb9ccc5cec348162f7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-854f27df53be422aa7714e03685e50f1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e6eac0b9ebff4e4a8e1b240d1b0021ec",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2ed6c2d95ff84fed9440a6f7f7d1e495",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-257600de63034b24b2cffa18db61f262",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cf6e430c13014f40a43d4e2064ff810c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "strictCleanupObservation": "OBSERVED_PARSED_RECEIPTS_ONLY",
+    "childEvidenceCoverage": "PARSED_NAMED_CONTAINERS_ONLY",
+    "strictCleanupReceiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=36"
+      },
+      {
+        "receiptIndex": 2,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 3,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=36"
+      },
+      {
+        "receiptIndex": 4,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 5,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=36"
+      },
+      {
+        "receiptIndex": 6,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 7,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=36"
+      },
+      {
+        "receiptIndex": 8,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 9,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=36"
+      },
+      {
+        "receiptIndex": 10,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 11,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=36"
+      },
+      {
+        "receiptIndex": 12,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 13,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=36"
+      },
+      {
+        "receiptIndex": 14,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 15,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=36"
+      },
+      {
+        "receiptIndex": 16,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 17,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=36"
+      },
+      {
+        "receiptIndex": 18,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=35/Observation/FullChildLog#line=6"
+      },
+      {
+        "receiptIndex": 19,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=36"
+      },
+      {
+        "receiptIndex": 20,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 21,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=36"
+      },
+      {
+        "receiptIndex": 22,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 23,
+        "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=36"
+      }
+    ],
+    "childEvidenceContainerCount": 24,
+    "binaryProvenanceScope": "selected10artifacts+declaredchildImmutable; actualchildloadedbindings need separate evidence inspection",
+    "allJsonObservationCount": 432,
+    "evidenceReview": "PENDING"
+  }
+}
