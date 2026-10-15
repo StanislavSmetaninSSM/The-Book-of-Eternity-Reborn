@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wounds-player-status",
+      "responsibility": "US5-RO2 actual public console/browser status entrypoints: immediate current-self wound and known-method visibility, requirements, separate confirmed history, privacy, literal text and full-tree read-only behavior.",
+      "excludes": "No guided targeting/provider/quote/staging, mutable healing, full FR063 or full US5 qualification. Native RED first; source guards and shared blocks will be added in the same connected slice.",
+      "changeHints": ["BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs", "BookOfEternityClient/Services/WoundPlayerStatusReadService.cs", "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs"],
+      "related": [{ "id": "wounds-player-read", "when": "Status borrows the coherent reader lease." }, { "id": "wounds-player-projection", "when": "Shared projection fixture/history helpers or visible semantics change." }],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.WoundPlayerStatusTests.*"] }]
+    },
+    {
       "id": "wounds-player-read",
       "responsibility": "US5-RO1 coherent read-only canonical self projection: complete roots/identity/history/current realm and strict missing/malformed refusal with unchanged full owned tree and real per-case cleanup.",
       "excludes": "No mutable treatment, target/provider selection, quote, command staging, storage recovery design or full FR063/US5 qualification.",

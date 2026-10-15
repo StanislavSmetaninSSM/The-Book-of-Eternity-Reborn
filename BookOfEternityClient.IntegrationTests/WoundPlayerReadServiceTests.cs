@@ -177,7 +177,7 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
     internal int LockOpens { get; private set; }
     internal int MutationCalls { get; private set; }
 
-    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false)
+    internal static async Task<WoundPlayerReadFixture> CreateAsync(ITestOutputHelper output, bool empty = false, string realm = "mortal_world", bool hiddenSelf = false, bool includeOldSoul = false, bool targetMaterials = false, WoundPlayerProjectionInput? suppliedInput = null)
     {
         var fixture = new WoundPlayerReadFixture(output);
         try
@@ -195,10 +195,10 @@ internal sealed class WoundPlayerReadFixture(ITestOutputHelper output) : IAsyncD
             soulWound["display"]!["name"] = "Известная рана души";
             var mortalWound = WoundContractTestData.CreateActiveWound();
             if (targetMaterials) mortalWound["treatment"]!["routes"]![0]!["requirements"]![0]!["ownerRole"] = "target";
-            var input = empty ? WoundPlayerProjectionTestData.Input() : realm != "mortal_world"
+            var input = suppliedInput ?? (empty ? WoundPlayerProjectionTestData.Input() : realm != "mortal_world"
                 ? WoundPlayerProjectionTestData.InputInRealm(realm, soulWound)
                 : includeOldSoul ? WoundPlayerProjectionTestData.Input(mortalWound, soulWound)
-                : WoundPlayerProjectionTestData.Input(mortalWound);
+                : WoundPlayerProjectionTestData.Input(mortalWound));
             if (hiddenSelf) input.Carriers.AfterlifeProfiles!["profiles"]![0]!["visibility"] = "hidden";
             await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
             foreach (var (path, root) in new (string, JsonObject)[]

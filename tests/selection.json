@@ -1,19 +1,8 @@
 {
   "schemaVersion": 1,
-  "selections": [
-    {
-      "category": "wounds-player-projection",
-      "reason": "US5-RO1 new pure projection and visibility-safe known declared requirements. Initial9 historical accepted evidence remains unchanged; A7 connected grant does not apply to this new UI scope.",
-      "contracts": [
-        "#1536 T113/T115 partial T119; FR067-076; TASK-ORDER-US5-READONLY"
-      ]
-    },
-    {
-      "category": "wounds-player-read",
-      "reason": "US5-RO1 coherent canonical reader and isolated full-tree unchanged-state/malformed-authority controls; expected RED stub first, final GREEN requires independent review and fresh selected preparation.",
-      "contracts": [
-        "#1536 T113/T115 partialT119; one shared read lease; strict current canonical authority; genuine cleanup"
-      ]
-    }
-  ]
+  "selections": [{
+    "category": "wounds-player-status",
+    "reason": "US5-RO2 intentional RED on actual existing console/browser status; 6 methods/15 cases provisionally. No new production implementation; helper-only extraction and supplied immutable input allow genuine terminal/visibility fixtures. Existing accepted RO1 foundation is not requalified by this RED.",
+    "contracts": ["#1536 US5-RO2 T127/applicableT128/T129; FR075/076; existing readonly sequencing refinement"]
+  }]
 }

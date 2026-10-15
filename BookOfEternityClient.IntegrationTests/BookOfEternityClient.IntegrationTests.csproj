@@ -34,6 +34,8 @@
     <!-- Helper-only fixture bases: no Fact, Theory, or InlineData declarations. -->
     <Compile Include="..\BookOfEternityClient.Tests\WoundPlayerProjectionTestData.cs"
              Link="WoundPlayerProjectionTestData.cs" />
+    <Compile Include="..\BookOfEternityClient.Tests\WoundPlayerHistoryTestData.cs"
+             Link="WoundPlayerHistoryTestData.cs" />
     <Compile Include="..\BookOfEternityClient.Tests\MortalItemConsumptionPlannerTests.Helpers.cs"
              Link="MortalItemConsumptionPlannerTests.Helpers.cs" />
   </ItemGroup>
