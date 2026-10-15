@@ -1,0 +1,72 @@
+{
+  "source": "23e89b1b5e84e350b627d58bb39c1d61fdcae63e",
+  "previousVerifiedRecovery": "54a2873f54572d272573acc2fa425d611e35feed",
+  "allChangedPathsEqualExactGit": 12,
+  "clean": true,
+  "dryRunEmpty": true,
+  "objectAlternatesAbsent": true,
+  "scope": "GitHub-only recovery update from full verified b59 tree and prior exact54 update; no second new-empty clone at23",
+  "records": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "bytes": 13611,
+      "sha256": "4c54234ed1ce2c540e44523f67861d25c340392c42e932d85c300bec2b472868"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1753924,
+      "sha256": "088a71bc956dd5d671150c2120f891decb0023ddad63a00cf30904147b6f8878"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-fresh-GitHub-full-tree-b59-20261015T161320Z.json.gz",
+      "bytes": 3108431,
+      "sha256": "239130ea0ffdd8441c840908bc5969e3d62decc3f524578d0b9f80f97d0cd5eb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-fresh-GitHub-recovery-b59-20261015T161320Z.json",
+      "bytes": 1115,
+      "sha256": "52f47b20e1b93a401b5777105d18b0844a026f9c297edfe4527e7d28f0a682d1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-fresh-GitHub-update-54a2873f5-20261015T161742Z.json",
+      "bytes": 36838,
+      "sha256": "d4aa4146ffd0a2eb20d642f59984ed34b4120f599b81d5c7297ce0a4fba5ea23"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-first-failure-story-legacy-independent-evidence-causal-20261015T162311Z-completed-v2-design-review.json",
+      "bytes": 27859,
+      "sha256": "a16f3efda5708cc545f2fbc92836f0ed7ef8f8635ba8090228814bc18680d553"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-worked-first-failure-story-legacy-independent-evidence-causal-20261015T162311Z-completed-v2-design-review.md",
+      "bytes": 7302,
+      "sha256": "6f3686924035edd15be967ef75d7d9c40236c57ada0031b96154674fba0eebff"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1254540,
+      "sha256": "8713bf1caf3ac3e40db7d4cf0923e66bbddeb3e49ef22439c9eb7ba75da474da"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1922627,
+      "sha256": "6c5849b6711b25aa61da96db353bf60aec1769dd151c0db40f406ee9378a02de"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 1820,
+      "sha256": "af656d336edd77d17a4b6936810860306cd278a6a75363b3b2995cdd9aedbe65"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 17144,
+      "sha256": "a13e7fced33ed15c479bcf681700bb1063ba52675673d1b2b9fd40b4444cf2b9"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "bytes": 1390,
+      "sha256": "3c4921f78c81ed211e2cc3186209364bffffd86275d3137f9803fae41e634d1b"
+    }
+  ],
+  "utc": "2026-10-15T16:31:37.718888+00:00"
+}
