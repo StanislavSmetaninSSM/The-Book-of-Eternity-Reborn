@@ -117,6 +117,16 @@ actual original headers/artifacts, current generation storage admission, story p
 `input/qte_effect_resolution_request.json`, `output/qte_effect_resolution_receipts.json`,
 `ready/qte_effect_resolution_complete.json` (только D8 разрешает consumption этих трёх controls).
 
+Также exact guard-only reads: `output/narrative_response.json`, `output/interface_updates.json`,
+`output/debug_logs.json`, `game_state/combat/combat_log.json`,
+`game_state/world/current_location.json`, `game_state/meta/guardians.json`,
+`game_state/meta/guardian_abode_residents.json`. Последний — именно conditional resident source
+`ReadMortalJointStoryRefsAsync`, не похожий pathname другого afterlife каталога. Для fixed P
+все эти paths захватываются с present/absent images до common; использование entity refs
+выводится из signed manifest.PlayerAction. Это не write/delete/rollback grants. Только
+terminal narrative получает отдельный D8 writer; interface/debug/combat остаются unchanged
+на всём этом tail. Live narrative до terminal обязан совпадать с initial bound image.
+
 Полный read set P — union этих literals, existing `JointFootprintPaths`,
 `QteDeferredEffectContinuation.SealedRootPaths`, при physical injury — `QtePhysicalInjurySource.WoundRootPaths`,
 и всех реальных source reads named derived calculator на baseline106. Списки берутся из
@@ -148,7 +158,10 @@ Crash до common не оставляет accepted tail: исходники ос
    быть связаны с current accepted frame. Hash/readability сами это не доказывают.
 3. Exact present/absent before-images трёх automatic data roots, computed before-image,
    ordered stats input, оба level resolver inputs, processed watermark/unspent balance,
-   весь P read set и разрешённые common transforms. Common не может одновременно писать
+   весь P read set и разрешённые common transforms. Raw narrative уже связан existing
+   six-field outputBinding; frozen capture не заменяет этот authenticated seal.
+   Все inputs story composition фиксируются с их source role; deterministic P4 row можно
+   заново вывести после terminal без чтения нового narrative (§8.7). Common не может одновременно писать
    один из трёх automatic roots: такое пересечение владельцев отклоняется до take.
 4. Полный ordinary progression frozen basis сохраняется отдельно без изменения его semantics.
 5. Raw offer bytes либо genuine absence; validated complete offer с source turn n (исходный
@@ -197,7 +210,7 @@ Closed `activeTail` fields:
 `version=1`, `policy="fixed_tail_b_v1"`.
 
 - `basis`: closed `{binding, preparedAtUtc, inputImages, sourceRoles, automaticPlan,
-  offer, priorTerminal, projectionReadPaths, encoderVersion}`.
+  storyPlan, offer, priorTerminal, projectionReadPaths, encoderVersion}`.
 - `binding` — ровно tuple из §5.1. `inputImages` — exact production-derived finite path map
   P **без M, runtime/offer/prior-continuation control trio**; offer.rawImage хранится отдельно,
   а control digests/retirement descriptor проверяются fresh из actual controls до handoff;
@@ -207,15 +220,31 @@ Closed `activeTail` fields:
   хранится compact descriptor/digest, не recursively embedded predecessor bytes (§8.4).
 - `sourceRoles` отделяет coordinates: closed enums `signed_original|submitted_current|common_after|guard_current`;
   каждый role/path выводится только из действительного source owner, не caller-selected authority paths.
+  Map имеет ровно inputImages keys и один role на captured coordinate каждого path. Signed-original
+  image проверяется по physical signed original; submitted-current — по admitted frame до common;
+  common-after — по named common contribution after-image; guard-current — exact unaffected bytes.
+  Другие coordinates того же path берутся только из genuine original/owner plans и phase overlays,
+  а не подменяют captured image. Поздние auto/terminal transforms не меняют P0 sourceRoles.
 - `automaticPlan`: `{trainingLevel, awardLevel, processedBefore, unspentBefore,
   orderedStats, appliedStats, blockedStats, ignoredStats, pointsAwarded,
   automaticAfterImages, mutationFingerprint}`. Exact three after-images; plan заново вычисляется.
 - `offer`: null либо `{rawImage, boundOffer, qteId, offerFingerprint, sourceTurn}`.
+- `storyPlan`: `{path,preparedAtUtc,rowBase64,rowDigest,originalHistoryBindings,readPaths}`;
+  path — единственный GetStoryPath (§4), row — exact serialized P4 row без newline, UTC — basis UTC.
+  History bindings сверяются с genuine signed manifest; readPaths — fixed actual story reads
+  включая location/soul/narrative и guardian/resident/NPC roots. Named owner заново строит row
+  из authenticated initial inputs; сохранённые row/hash сами story proof не выдают.
 - `priorTerminal`: null либо compact terminal identity/closure descriptor §8.4, не snapshot старого marker.
 - `automatic`, `projection`, `story`: `{state, receipt}`, state `pending|applied`;
   pending имеет null receipt, applied — closed owner receipt.
-- `qte`: `{state, choice, transfer, terminal}`; state `none|offered|active|declined|terminal`.
+- `qte`: `{state, choice, decisionReceipt, transfer, terminal}`; state `none|offered|active|declined|terminal`.
   `choice` null до действия, иначе closed `{decision,generation,sessionId,requestId,snapshotToken,turn,qteId,offerFingerprint,basisFingerprint}`; decision=`accept|decline`.
+  `decisionReceipt` — null iff none/offered, иначе required closed phase receipt ниже:
+  qte_accept maps имеют ровно runtime/continuation/offer/turn_complete/turn_error data keys §4;
+  qte_decline — ровно runtime/offer/turn_complete/turn_error (continuation guard unchanged).
+  M исключён из maps. Choice и receipt публикуются одной decision transaction с action;
+  phaseId/operationId, tuple, basis, before/after digests обязаны согласоваться. Receipt
+  сохраняется unchanged при active→terminal→released, доказывает только собственный consumed Ready.
   `transfer` только для accepted handoff. `terminal` null до реального selected-terminal capture,
   затем `{basis,receipt,automatic,projection}`: receipt=null до terminal COMMIT;
   `automatic` — `{basis,state,receipt}`, `projection` — `{state,receipt}`.
@@ -263,6 +292,11 @@ active automatic applied; story applied требует projection applied. Offer
 P1–P4 и choice; terminal требует actual terminal COMMIT receipt. Released требует всех
 предшествующих фаз, а после QTE ещё terminal automatic/projection applied. Нарушенные
 combinations не исправляются default значениями.
+None/offered требуют null choice/decisionReceipt/transfer/terminal; none также null offer.
+Active требует accept choice/receipt и transfer; terminal PREPARE допускает non-null terminal
+с null terminal receipt при active. Declined требует decline choice/receipt, null transfer/terminal.
+Terminal требует сохранённые accept choice/decisionReceipt/transfer и committed terminal receipt.
+Cleanup reason согласуется с none/declined/terminal; released не удаляет decisionReceipt.
 
 ### 6.2. Continuation schema 2 для joint source
 
@@ -462,12 +496,29 @@ B предлагает **D8: selected-terminal action+ack** и один post-QTE
    Все untouched members guard-only с exact inventory; `NormalizerRollbackTrackedFiles`
    не становится write allowlist. Все calculations/normalization должны быть pure owner-produced
    after-images до publication; blind call к сегодняшнему multi-write normalizer запрещён.
-3. Для ограниченного B предложен exact `GameStateChanges` subset `{experienceGained,statsIncreased}`
-   плюс existing отдельно объявленные physical-injury/effect/resource typed outcome branches.
-   FinalNarrative — existing outcome narrative source, не произвольный GM output replacement.
-   Любой иной non-null GameStateChanges field требует отдельного accepted owner contribution
-   и обсуждения расширения. Все authored terminal branches offer проверяются **до common**;
-   неизвестный field не обнаруживается впервые после committed mechanics.
+3. Exact proposed wire grammar — реальные `terminalOutcomes[].responseFragment`, напрямую
+   десериализуемые в `GameResponse`; контейнер `GameStateChanges` отсутствует.
+   `responseFragment` omitted/null означает empty fragment. В object разрешены **только**:
+   - `response`: string/null; nonblank string имеет existing precedence над sibling
+     `finalNarrative`, иначе берётся `finalNarrative`. Existing selected score summary, если
+     применим, добавляется тем же deterministic formatter; terminal output UTC frozen в basis.
+   - `experienceGained`: existing validated integer/null; amount/XP formula не меняются.
+   - `statsIncreased`: existing validated ordered string array/null; те же name/type/cap rules.
+   - `resourceChanges`: omitted либо array, принятый existing exact QTE terminal resource
+     composer; **proposed narrow B** отвергает explicit null. Только lowercase `damage`,
+     target ровно `{kind:"player",targetId:"player_current"}`, source ровно
+     `{kind:"narrative_outcome"}`, eventRef по existing sourceTurn/outcomeOrdinal/commandOrdinal.
+     Никаких definition/capacity/restore/transfer/general resource grants.
+   Duplicate/confusable/unknown keys запрещены, в том числе unknown:null.
+   `resourceDefinitionCreations`/`resourceCapacityChanges` запрещены **даже null**, как сейчас.
+   `effectChanges`, `playerStatus`, `moneyChange`, `statsDecreased`, `setCharacteristics`,
+   interface/debug/image fields и прочие GameResponse fields не входят в proposed subset.
+   Отдельный typed sibling `physicalInjury` остаётся ровно existing schema/selection/source
+   binding; effect/wound contributions могут возникнуть лишь внутри genuine existing deferred
+   plan по поддержанному resource/physical source, а не через новые raw fields.
+   Непустой `responseFragment.response` не заменяется безусловно на `finalNarrative`.
+   Все branches полностью проверяются **до common**, без выбора будущего outcome; extension
+   subset требует отдельного accepted owner contribution и обсуждения D8/C.
 4. `experience.json` writer сохраняет только **existing QTE-earned XP** authority/формулу;
    его frozen terminal computation/UTC и exact XP before/after входят в тот же action+ack.
    Нет Training Cap compensation XP. Pure projection writers не получают XP permissions.
@@ -488,6 +539,40 @@ combinations остаётся blocker: один безопасный acceptance 
 Успех/ошибка показа интерфейса не terminal proof.
 Если existing QTE abort не имеет принятого terminal protocol, B остаётся held/resumable;
 не изобретать стирание original на cancel. New original допускается только после P8 released.
+
+### 8.7. Initial story и terminal narrative — отдельные exact proofs
+
+Existing six-field outputBinding сохраняет initial normalized narrative bytes. Сейчас common
+reader сравнивает с ними live narrative, а story reader перечитывает live output. Эти old
+readers нельзя вызвать unchanged после D8 и нельзя просто убрать их сравнение. Proposed
+named phase-aware reader обязан выполнить следующий closed protocol:
+
+1. Resolve publisher debt, fresh physical original/G, actual linked QTE pair и selected-terminal
+   source proof; проверить terminal basis/receipt/plan result и точные data after-images.
+   Наличие terminal JSON/хеша без этой цепочки не разрешает narrative overlay.
+2. Original→common→H proof использует **original outputBinding bytes** и genuine common
+   receipts/typed reconstruction. Captured narrative image обязана быть byte-identical этому
+   binding. Только признанный D8 terminal after-image может заменить live narrative для current
+   phase; все original coordinates, genuine completion/base==initial checks сохраняются.
+3. Named story owner read-only заново строит exact P4 row из signed manifest.PlayerAction,
+   original realm/incarnation/history prefix, frozen initial normalized narrative/location/entity
+   inputs и basis UTC. Сверяет immutable storyPlan, P4 receipt и actual prefix+единственный row.
+   Terminal narrative **не** становится narrative прежней строки, новая story/turn не создаётся.
+   Guardians/residents/NPC labels не берутся заново из законно изменившегося terminal current state.
+4. Отдельно live `output/narrative_response.json` обязана совпасть byte-for-byte с frozen
+   terminal memberAfterImages для выбранного outcome, включая response precedence/score/UTC.
+   Terminal selected source + genuine receipt объясняют ровно это изменение. Interface/debug/combat
+   сравниваются с их initial guard images; никакого broad output waiver.
+5. До terminal COMMIT действует прежнее live==initial правило. После COMMIT — exact live==terminal
+   after, при unchanged initial binding/story. Mixed/debt/foreign output или rehashed changed
+   initial/terminal narrative — HOLD. Public draft сохраняет отдельные exact present/consumed-absent
+   правила accepted output-binding; terminal receipt не разрешает новый draft.
+6. P7b/P8 используют оба доказательства. Ни frozen storyPlan, ни terminal after-image отдельно
+   capability не выдают; named current owner проверяет весь chain перед commit/cleanup.
+
+Это explicit reader/reconstruction delta D6/D8, без general virtual filesystem и новых writers.
+Если такую composition нельзя реализовать без authority shortcut, implementation остаётся blocked
+для отдельного обсуждения; предложенный protocol не выдаётся за существующий runtime proof.
 
 ## 9. Recovery, uncertain и компенсация
 
@@ -558,7 +643,7 @@ admission блокирует изменение frozen stats/projection. Пол�
 | D5 | Joint decline отменяет optional scene без автоматического replay action | Если нужны ordinary follow-up semantics — новый отдельно обсуждённый durable intent или C, не скрытый callback. |
 | D6 | Continuation2/joint story witness, compact prior retirement, physical actual-pair proof, original retention до QTE terminal | Новый reader/schema/issuer/cleanup handoff §8 и строгий post-handoff composition proof. |
 | D7 | Pre-release schema cutover без migration незавершённых v2 в ACTIVE | Existing v1/v2 recovery только их прежние contours; schema3 только новый common publication после accepted design и implementation. |
-| D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact supported outcome subset §8.6 | Atomic terminal/XP/history/closure cohort и terminal-derived basis; расширение payload families отдельно, no implicit legacy crash-safety. |
+| D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact responseFragment subset §8.6 | Atomic terminal/XP/history/closure cohort, terminal-derived basis и initial-story/terminal-output proof §8.7; расширение payload families отдельно, no implicit legacy crash-safety. |
 
 Документ рекомендует согласовать D1–D8 как package B с отдельным обсуждением D4/D5/D8.
 Несогласованный пункт означает конкретный blocker; никакой fallback «сам решит implementation».
@@ -593,7 +678,8 @@ fresh selected BOTH подготовка, catalog/Plan (zero execution), bounded
 | Q08 | Pause/awaiting/deferred/error/abort; scene terminal and terminal-ack crash | Retain original/backups until genuine terminal; do not treat UI cancel/EOF as cleanup permission. |
 | Q11 | Crash after XP/state/history/runtime before terminal receipt; replay same selected terminal | Single terminal action+ack, exact XP level/history once; legacy multi-write sequence forbidden. |
 | Q12 | QTE-earned level/stat after pre-offer award; cold before/after P7b | One new terminal-bound automatic slot; watermark prevents P2 reaward; final points/projection agree, no XP compensation. |
-| Q13 | Unsupported non-null GameStateChanges in any authored outcome branch | Refuse before common; no surprise broad normalizer write after handoff. |
+| Q13 | Every authored responseFragment: allowed keys/nulls/types, unknown:null, forbidden definition/capacity even null, wrong resource operation/target/source/eventRef, physical sibling | Exact §8.6 grammar before common; no broad GameResponse/normalizer writes. Nonblank response takes precedence, blank/null uses finalNarrative; score/UTC deterministic. |
+| Q14 | Cold crash/repeat P7a→P7b→P8 with lawful changed terminal narrative; corrupt/rehashed initial binding, terminal output, original story/labels | Original P4 story reconstructed unchanged from authenticated initial inputs; separate exact terminal after-image. No stale live==initial refusal, no output waiver/story rewrite. |
 | Q09 | Decline once/repeated/conflicting; crash before/after marker/runtime/offer/Ready | D5 chosen semantics exact; no source action/common/award replay or phantom follow-up request. |
 | Q10 | Old prior capsule + next + third accepted QTE | No recursively nested predecessor marker/continuation growth; current terminal/source lineage still reconstructs. |
 | C01 | K absent/present exactly, foreign Ready/repair controls, stall/protocol failure | Only authenticated K paths; no whole-directory deletion, source-G crossing or arbitrary optionality. |
@@ -603,6 +689,7 @@ fresh selected BOTH подготовка, catalog/Plan (zero execution), bounded
 | U02 | Deferred allocation later ordinary failure/cancel/repeat | Separate allocator contract/coverage required; B records the limitation, no false atomic PASS. |
 | R01 | Changed/stale/foreign public draft, consumed absent draft, narrative bytes/BOM/format | Previous authenticated output-binding rules unchanged; current exactness at each appropriate phase. |
 | R02 | Bad G/authority seeded before constructor in fresh process; same/different root | No Load-created G/pristine mint/copied signing key/early write before legitimate owner admission. |
+| R03 | Changed interface/debug/combat guard; residentId/guardianId/NPC story reads present/absent/changed, path-family confusion | Fixed P capture covers each real read with correct role; no dynamic authority path, write expansion or label reread after terminal. |
 | V01 | v1 ordinary, v2 inactive pending/applied/completed, unknown schema, forged v2→v3 rehash | Strict dispatch; no automatic ACTIVE upgrade/migration; changed private fields refuse. |
 | OS01 | Linux actual native fresh-process, file-share/lock/rename faults, cleanup | Native exit/actual cases/source-binary pins/real cleanup; no Windows PASS inference. |
 | OS02 | Windows actual native same matrix, sharing/replace semantics, long/case/path aliases | Windows evidence independently required; no Linux substitute/elevated ACL/security requirement. |

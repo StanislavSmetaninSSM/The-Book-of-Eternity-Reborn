@@ -1,0 +1,140 @@
+{
+  "review_kind": "independent_design_only",
+  "recommendation": "NEEDS_BOUNDED_DOCUMENT_CORRECTION",
+  "reviewed_sha": "c5f8897949e8f484f1d9711806ef2cd2d7f04145",
+  "baseline_sha": "10611c69aa0d25683b9d74de04d1f96482f87d59",
+  "tree_clean": true,
+  "actual_diff_sha256": "09d654f6effadecfc2f5f8fde3e815c50f7e7f571873640cad4476fd64fa5bf6",
+  "changed_paths": {
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md": "745ac3bc4bf0495f9aabf162846ba7db3da9e622371bc3e7f936dffeda046e1a",
+    "specs/1536-complete-wound-materialization/plan.md": "bdfd760234c2c6eca4d94a3a4aa5359f3192b23a9a0e0c58a4004706767b9995",
+    "specs/1536-complete-wound-materialization/spec.md": "345b6baf2c151c78c1150e4a27b739e344a76ff5bbdeaf6da82f00a1329647c8",
+    "specs/1536-complete-wound-materialization/tasks.md": "2274d2150491a84bb164833485b9854818d1f226b160aafbd6372c2380a7be7c"
+  },
+  "reviewer_configuration": {
+    "requested_model": "Astra",
+    "requested_effort": "XHigh",
+    "backend_model_telemetry": "unavailable",
+    "backend_effort_telemetry": "unavailable"
+  },
+  "findings": [
+    {
+      "id": "D-F1",
+      "severity": "material_design_gap",
+      "design_lines": [
+        77,
+        101,
+        217,
+        256,
+        518
+      ],
+      "summary": "No closed durable slot for accept/decline action acknowledgement",
+      "required_correction": "Add decisionReceipt with state/nullability/cohort/retention rules; no self-referential marker digest.",
+      "sources": [
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:211",
+        "BookOfEternityClient/Services/QteSceneService.cs:746"
+      ]
+    },
+    {
+      "id": "D-F2",
+      "severity": "material_design_gap",
+      "design_lines": [
+        465,
+        596
+      ],
+      "summary": "Nonexistent GameStateChanges grammar leaves actual responseFragment allowlist and narrative precedence unspecified",
+      "required_correction": "Specify real direct GameResponse fields, typed branches and exact unknown/null rules before common; preserve or explicitly propose narrative precedence; retain current QTE damage-only resource limits.",
+      "sources": [
+        "BookOfEternityClient/Models/GameResponse.cs:33",
+        "BookOfEternityClient/Services/QteSceneService.cs:2148",
+        "BookOfEternityClient/Services/QteSceneService.cs:6539",
+        "BookOfEternityClient/Services/QteTerminalResourceOutcome.cs:797"
+      ]
+    },
+    {
+      "id": "D-F3",
+      "severity": "material_design_gap",
+      "design_lines": [
+        110,
+        147,
+        201,
+        383,
+        458
+      ],
+      "summary": "Closed frozen read roles and post-terminal narrative/story proof composition are incomplete",
+      "required_correction": "Enumerate omitted output/retained/conditional story reads and define source roles; preserve original outputBinding/story proof while independently verifying exact terminal narrative afterimage; add cold/repeat/corruption cases.",
+      "initial_narrative_already_bound": true,
+      "sources": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs:89",
+        "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs:146",
+        "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs:276",
+        "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs:13",
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:323"
+      ]
+    }
+  ],
+  "source_pins_unchanged_from_baseline": {
+    "AGENTS.md": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+    "docs/development-workflow.md": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+    ".specify/memory/constitution.md": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+    "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+    "BookOfEternityClient/Models/GameResponse.cs": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+    "BookOfEternityClient/Services/CharacteristicsService.cs": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+    "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Services/QteSceneService.cs": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+    "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs": "f2b9b47d454f3d8fc7811404de62e641063dc00f22df782fa735268d4b0cfd85",
+    "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+    "BookOfEternityClient/Services/QtePhysicalInjurySource.cs": "56115c27300bd945c068bed94307b2658b69fe143258f9d5f8101328a7d3be59",
+    "BookOfEternityClient/Services/QteTerminalResourceOutcome.cs": "1106c76793201320fc1d1a2647ce394ea8d9890228c47cadb765d280e4e13a6f",
+    "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900",
+    "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+    "BookOfEternityClient/Services/GuardianAbodeResidentState.cs": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42",
+    "BookOfEternityClient/Services/ShiningAbodeState.cs": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873"
+  },
+  "reviewed_coverage": [
+    "accepted INACTIVE contract and governance",
+    "B/C/A alternatives",
+    "closed phase/schema DAG and owner member sets",
+    "genuine cold proof, source roles and QTE drift",
+    "compact prior-terminal retirement",
+    "automatic award versus allocation D4",
+    "decline semantics D5",
+    "terminal XP/history/closure split and D8 proposed cohort",
+    "signed cleanup K and phase-local compensation",
+    "compatibility/corruption/crash/restart/repeat/Linux/Windows matrix",
+    "guided US5 dependencies and explicit open scope"
+  ],
+  "new_runtime_evidence": "UNRUN",
+  "authorization_accepted": false,
+  "implementation_or_runtime_release": false,
+  "executed": [
+    "read-only Git/source inspection",
+    "read-only exact byte/hash checks",
+    "external review report writes only"
+  ],
+  "not_executed": [
+    "build",
+    "test",
+    "runner",
+    "discovery",
+    "native owner",
+    "runtime tool",
+    "tracked edit"
+  ],
+  "scope_limits": [
+    "All D1-D8 decisions remain for user discussion",
+    "No full US5/FR063/lawful ACTIVE completion claim",
+    "No historical evidence reconstruction",
+    "No production/test/runtime tool change or implementation plan"
+  ],
+  "markdown_sha256": "140e363c0c37775d2c05f0b8798e7d3532d23e32b29674b909a3c97df5218736",
+  "final_stop": true,
+  "pending_writes": false
+}
