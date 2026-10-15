@@ -1,3 +1,8 @@
+## Retained-prefix corrected static gates accepted; fresh BOTH next — 2026-10-15
+
+- Independent Astra XHigh110121 SOURCE/FIXTURE/SELECTION accepted exacta5c36d4b8299394f464ae4343fad945e7d5a8d1a three-line fixture repair,32 file pins. Every other fixture byte/oracle is unchanged; no production/authority/member/schema/budget/inventory change. Existing RED retained1/native1 and secondchild134 stays frozen; corrected runtime remains UNRUN. Exact review MD/JSON copied byte-identically.
+- This carrier adds only the exact review pair and identical accurate fronts. Remint currentHEAD gate/source pins, then fresh BOTH40methods94cases23descriptors/strict discovery/exact Late2Plan/catalogValid751/11596 and first actual Late2 ONLY. Old ce56/v4 binaries are invalid for corrected fixture. New Late2 EVIDENCE/controller provenance gate is required before retained retry and nine successors. Historical basis19/checkpoint5/newA17/live1/cold3 dependencies accepted as unaffected at original provenance; no repeat or fresh PASS inferred. Full FR063/T070/#1536, initially damaged authority9 and separately required ACTIVE direction remain OPEN.
+
 ## Retained-story signed-prefix fixture correction WIP — 2026-10-15
 
 - Independent105640 EVIDENCE accepted exact live1/cold3 PASS and retained1 FAIL:108 chains/696 Git pin records/11 then-current ce56 payloads/five actual child bindings+native witnesses/10 real strict cleanup roots absent. Second retained child native134/turn43/completedfalse failed at fixture Cold681 requesting an unselected canonical story path; no production defect or retained PASS inferred. Exact reports copied byte-identically. Existing failure packets remain unchanged.
