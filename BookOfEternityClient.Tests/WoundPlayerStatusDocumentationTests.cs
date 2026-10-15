@@ -1,10 +1,31 @@
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class WoundPlayerStatusDocumentationTests
 {
+    [Fact]
+    public void SharedManifestModelsExistingQteCoverageAndStillRejectsUnknownProperties()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        Assert.Equal("mortal_qte_physical_opportunity_projection_v1", manifest.QtePhysicalOpportunityProjectionCoverage.ContractId);
+        Assert.Equal("input/turn_request.json.woundOpportunities", manifest.QtePhysicalOpportunityProjectionCoverage.InputSurface);
+        Assert.Equal("mortal_qte_physical_decision_draft_v1", manifest.QtePhysicalDecisionDraftCoverage.ContractId);
+        Assert.Equal("output/mortal_wound_decisions.json", manifest.QtePhysicalDecisionDraftCoverage.OutputSurface);
+        Assert.Equal(new[] { "mortal_qte_physical_none_decision_v1", "mortal_qte_physical_materialize_decision_v1",
+            "mortal_qte_physical_materialize_scene_v1" }, manifest.QtePhysicalDecisionDraftCoverage.Examples);
+        foreach (var raw in new[]
+        {
+            "{\"version\":1,\"unexpectedCoverage\":{}}",
+            "{\"version\":1,\"qtePhysicalOpportunityProjectionCoverage\":{\"unexpected\":true}}",
+            "{\"version\":1,\"qtePhysicalDecisionDraftCoverage\":{\"unexpected\":true}}"
+        })
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<ExampleValidationManifest>(raw,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
+    }
+
     [Fact]
     public void CurrentReadonlyStatusIsSynchronizedForGm()
     {
