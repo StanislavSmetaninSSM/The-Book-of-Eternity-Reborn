@@ -309,7 +309,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
         Dictionary<string, byte[]?>? retainedRawBefore = null, retainedRawAfter = null;
         PendingTurnSnapshotReadAuthority? original = null;
-        byte[]? storyBefore = null;
+        byte[]? storyBefore = null, originalStoryPrefix = null;
         try
         {
             Assert.NotEqual(Environment.ProcessId, context["parentProcessId"]!.GetValue<int>());
@@ -407,7 +407,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var originalStoryLength = context["originalStoryLength"]!.GetValue<int>();
                 Assert.NotNull(storyBefore);
                 Assert.InRange(originalStoryLength, 1, storyBefore!.Length);
-                var originalStoryPrefix = storyBefore.AsSpan(0, originalStoryLength).ToArray();
+                originalStoryPrefix = storyBefore.AsSpan(0, originalStoryLength).ToArray();
                 Assert.Equal(context["originalStorySha256"]!.GetValue<string>(), MortalArchiveHash(originalStoryPrefix));
                 await AssertJointColdSignedStoryInventoryAsync(files, lease, manifest, originalStoryPrefix);
                 var expectedStoryDerivedTurn = 42;
@@ -678,7 +678,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var storyPrefix = storyBefore!;
                 if (scenario == 8)
                 {
-                    storyPrefix = original.ReadRequiredBytes(QteStoryPath);
+                    storyPrefix = Assert.IsType<byte[]>(originalStoryPrefix);
                     Assert.Equal(storyBefore, story); Assert.Equal(0, retainedStoryAppendAttempts);
                 }
                 Assert.True(story.AsSpan().StartsWith(storyPrefix));
