@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-bounded-design-review",
+  "reviewedMetadata": "550efeba72ef8bb3d7538f88f71d158ea151d1f8",
+  "proposal": "specs/1536-complete-wound-materialization/recovery/fr063-joint-generation-admission-order-proposed-design-20261015T115100Z.md",
+  "proposalSha256": "eb5725494472da4100bed7166e7ff841d3428ff3c30ccb2c0df87e09857d75f1",
+  "model": {
+    "requested": "Astra",
+    "effortRequested": "XHigh",
+    "inherited": true,
+    "actualBackendTelemetry": "UNAVAILABLE"
+  },
+  "designVerdict": "ACCEPTED_WITH_MANDATORY_IMPLEMENTATION_INTERPRETATIONS",
+  "implementationRelease": false,
+  "sourceFixtureSelectionVerdicts": "PENDING_AUTHORED_DIFF",
+  "actualRelease": [],
+  "restorationNotNewArchitecture": true,
+  "Q1": "Same admitted unbound lease veto before GetOrCreate closes observed bootstrap gap. Existing bound fence protects canonical recovery/writes and finalization, not unconditional callback/checkpoint non-entry.",
+  "Q2": "Marker.G negative comparison only is acceptable. Never pass/return/cache/install it as binding or capability; equal claims must still pass ordinary real proof.",
+  "Q3": "Keep existing storage admission/recovery order for quiescent observed contour. No new below-admission reader/quarantine/debt policy.",
+  "Q4": "Mandatory fresh BOTH/discovery/catalog -> first actual Late2 -> independent EVIDENCE -> finite helper/wrapper/affected-consumer controls -> corrected G2 -> independent EVIDENCE before seven successors. Prior same-G/default scoped PASS may retain historical provenance after exact authored dependency equivalence; no unconditional cold/retained/newroot/newA rerun.",
+  "mandatoryRefinements": [
+    "Share only pure Parse/Matches/Tuple helpers; preserve existing hold identified state/catch body",
+    "Private static early helper(files, lease) is sufficient; no public grant/API",
+    "Propagate early read failure instead of NotApplicable bootstrap",
+    "Preserve existing bound/expected/default/close behavior; do not claim pre-callback physical verification",
+    "Three proposed wrapper cases alone do not cover helper applicability and G validation"
+  ],
+  "integrationSelectionRequirements": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json",
+    "tests/selections/1536-fr063-joint-connected-generation-refusal.json"
+  ],
+  "unitRowsRequired": [
+    "nonapplicable marker/family/tuple and stale headers",
+    "each single matching header and both conflicting-header orientations",
+    "missing/malformed physical G",
+    "missing/non-string/invalid/noncanonical/foreign marker G",
+    "equal valid G ordinary continuation only",
+    "read instability refuses",
+    "throwing veto absent/existing G scope release and subsequent ordinary operation",
+    "successful opted-in order and no-veto bootstrap",
+    "bound veto-skip and physical fence",
+    "expected-generation no bootstrap and eventual refusal",
+    "focused close/replacement/escaped writer dependencies"
+  ],
+  "counts": "UNAUTHORED; proposed42/97/24 and20selectors not accepted/discovered",
+  "historicalEvidenceTransfer": "Permitted only with original SHAs/raw provenance and exact SOURCE equivalence: pure read-only equal-G candidate guard; unchanged hold body/classification and full later proof/owner; no cross-root cache/write/normalization/callback skip; live default null unchanged; current focused helper/default/bound/expected/close and actual Late2 evidence. No unconditional old17/cold/retained/newroot repeats; no current-source execution claim.",
+  "scopeLimits": [
+    "No new canonical paths/schema/storage authority",
+    "No write/delete/rollback membership changes",
+    "No generic storage/recovery reorder",
+    "No full FR063 closure",
+    "No tests/build/discovery/controller executed"
+  ],
+  "sourcePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-generation-admission-order-proposed-design-20261015T115100Z.md",
+      "bytes": 7466,
+      "sha256": "eb5725494472da4100bed7166e7ff841d3428ff3c30ccb2c0df87e09857d75f1",
+      "gitBlob": "839d347f314a36edda89bc5f121ddf1d49762857"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "bytes": 123449,
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+      "gitBlob": "26ec745d69c89724b5477fe4169041470f6a5d00"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "bytes": 22597,
+      "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
+      "gitBlob": "27fa1c9f45502fc5ef92ef4b9a68ea79559115a0"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241343,
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "gitBlob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "bytes": 3337,
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "gitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "bytes": 5364,
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+      "gitBlob": "23a1188abe10f636c0133417f38984c0838a8daf"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+      "bytes": 5039,
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "gitBlob": "6fc38fbf349ee8d86c762ee4e3a48284bed8170e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "bytes": 294837,
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "gitBlob": "7c9072ba03313e08f9157569ca78d83fb3db1745"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "bytes": 28648,
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "gitBlob": "733ada0284d92cc70274edf8f3d0d594fc54b605"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "gitBlob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 55825,
+      "sha256": "c983d1822ff3161af45c95d8d801bc2e86606062bed2d92c00eccaae396fd65d",
+      "gitBlob": "96e19856945ec404213a95cf52d8eda08280f008"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34",
+      "gitBlob": "0f8636b557d4330c82e84a3994e78512bcac4678"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/SessionOperationContextTests.cs",
+      "bytes": 14706,
+      "sha256": "37096b0922ecfceffb6cab05ea82f139ea5ded6397ea454f582b4791295733ba",
+      "gitBlob": "cf98339c01da547b3bee83c0ed0d5f715c4ff565"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a",
+      "gitBlob": "3b7cd08c49daa22d2b31acbf4c5599ad9fe4f8f8"
+    }
+  ],
+  "reportMarkdown": "/workspace/boe-fr063-tools-20261015/fr063-generation-veto-independent-design-20261015T115849Z-completed-v2-design-review.md",
+  "reportMarkdownSha256": "9e618bdada94a0bc0fb46f274d5cf324d83257912413ca0df079c465c4f9a635",
+  "metadataCarrierPermission": "Byte-identical reports plus accurate aligned design/front metadata only; no source/runtime release",
+  "reviewerStopped": true,
+  "conditionalRechecksOnlyIfAuthoredDependencyEquivalenceFails": [
+    "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+    "tests/selections/1536-fr063-joint-connected-retained-story.json",
+    "tests/selections/1536-fr063-joint-connected-new-root.json",
+    "affected output draft/scene/binding or live selection as identified by exact changed dependency"
+  ],
+  "supersedesUnissuedSelectionDraft": "fr063-generation-veto-independent-design-20261015T115712Z-completed-v2-design-review.md/json; no source/runtime authorization was issued by that draft."
+}

@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-joint-generation-admission",
+      "responsibility": "Finite real-filesystem negative-only early joint generation veto: fixed v2/header applicability, missing/malformed physical G, invalid/different marker G, read refusal, default/bootstrap and equal-G no-grant path, bound/expected fences and original close/escaped writer. Raw claims issue no completion authority.",
+      "excludes": "No signed-original/phase/story completion claim, no replacement of genuine cold G2 or Late2. No new storage policy, authority or durable members. Exact counts provisional until independent gates and official discovery; whole FR063 remains open.",
+      "changeHints": [
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+        "BookOfEternityClient.Tests/MortalJointGenerationAdmissionTests.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Fresh Late2 is the first actual after reviewed correction; independently classify evidence before this singleton."
+        },
+        {
+          "id": "fr063-joint-generation-refusal",
+          "when": "Genuine missing/foreign donor cold owner refusal remains required after these controls."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-joint-output-basis",
       "responsibility": "Closed six-field output basis, exact detached UTF8/BOM/hash/shape and projector fixed point. Pure parser tests grant no completion authority.",
       "excludes": "No new authority, canonical members or storage routes. Independent source/fixture/selection and runtime evidence required; whole FR063 remains open.",

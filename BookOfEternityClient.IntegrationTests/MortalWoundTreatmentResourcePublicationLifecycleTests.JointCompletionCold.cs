@@ -543,8 +543,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
                 Assert.Equal(inGameBeforeAdmission, GetPrivateFieldValue<bool>(engine, "_inGame"));
                 var refused = Assert.IsType<InvalidDataException>(generationAdmissionFailure);
-                Assert.Equal(scenario == 3 ? "Console preparation generation is missing."
-                    : "Console preparation generation or identity differs; evidence retained.", refused.Message);
+                Assert.Equal(scenario == 3 ? "Active joint continuation generation is missing; evidence retained."
+                    : "Active joint continuation generation is invalid or differs; evidence retained.", refused.Message);
                 Assert.False(actualCallerEntered); Assert.Null(handled);
                 refusalVerified = true;
                 return;

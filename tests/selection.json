@@ -3,11 +3,28 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536 FR063/T070 independent retained-story EVIDENCE confirmed native1 fixture failure: story is signed history, not a selected canonical snapshot leaf. Preserve the detached pre-owner authenticated originalStoryPrefix for scenario8 final oracle; all signed inventory/prefix/full row/zero append/turn/cleanup/repeat guards remain. No production/authority/member/schema/budget/method/case change. Corrected independent gates then fresh BOTH40/94/23/discovery/Plan/catalog and first Late2 only; retained retry and nine successors HELD pending new EVIDENCE and controller provenance adaptation.",
+      "reason": "#1536 accepted generation-veto DESIGN115849 closes actual missing-G bootstrap defect before the unbound Late operation. Only Late opts into a no-value veto; raw marker G can only refuse. Existing hold/owner/proofs/member sets unchanged. Fresh BOTH/discovery/catalog then first actual singleton Late2; new helper controls and corrected G2 require independent release after Late2 EVIDENCE. No blanket historical reruns or full FR063 closure.",
       "contracts": [
         "FR-012",
         "FR-063",
         "signed history inventory and original prefix; genuine retained writer row, zero duplicate append, terminal cleanup and inert repeat; unchanged Late2 union/progression/story/repeat"
+      ]
+    },
+    {
+      "category": "fr063-joint-generation-admission",
+      "reason": "#1536 accepted generation-veto DESIGN115849: finite negative-only helper/wrapper/default/bound/expected/close controls with isolated roots and genuine cleanup. Actual singleton only after corrected fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE. Static source expectation9methods29cases1descriptor; UNRUN, not completion authority.",
+      "contracts": [
+        "FR-012",
+        "FR-063",
+        "existing same-G/no-new-G contract; raw marker comparison can only refuse; no new members or authority"
+      ]
+    },
+    {
+      "category": "fr063-joint-generation-refusal",
+      "reason": "#1536 accepted G2 evidence114125 and generation-veto DESIGN115849: actual unbound Late refuses before inner checkpoint through the real joint veto, without assuming nonexistent console cohort. Preserve complete raw target/donor namespace, missing-G absence, story/turn/inGame, no handled result. Two existing methods/cases unchanged. Retry requires corrected gates/fresh BOTH/first Late2 EVIDENCE/finite helper controls; currently FAIL under old source, corrected runtime UNRUN.",
+      "contracts": [
+        "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+        "SOURCE-only/provisional: Actual first outer Late storage admission refuses missing physicalG or exact lawful independent donorG after intact prerequisites and leases close; raw after-damage images/Ready/original/output/backups/story/turn retained without newG or second admission. Outer attempt vs inner hook distinguished."
       ]
     }
   ]

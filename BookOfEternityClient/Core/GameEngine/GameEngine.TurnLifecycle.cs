@@ -1209,7 +1209,7 @@ public partial class GameEngine
         }
         catch { _fs.BrowserDiagnosticMark("finalizer-failed"); throw; }
 #endif
-        });
+        }, beforeCurrentGeneration: lease => ValidateMortalJointGenerationBeforeBootstrapAsync(_fs, lease));
         if (stagedIdle) await Task.Delay(250);
         return handled;
     }

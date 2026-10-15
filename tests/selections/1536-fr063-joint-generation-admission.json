@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-generation-admission",
+      "reason": "#1536 accepted generation-veto DESIGN115849: finite negative-only helper/wrapper/default/bound/expected/close controls with isolated roots and genuine cleanup. Actual singleton only after corrected fresh BOTH/discovery/catalog, first Late2 and independent EVIDENCE. Static source expectation9methods29cases1descriptor; UNRUN, not completion authority.",
+      "contracts": [
+        "FR-012",
+        "FR-063",
+        "existing same-G/no-new-G contract; raw marker comparison can only refuse; no new members or authority"
+      ]
+    }
+  ]
+}

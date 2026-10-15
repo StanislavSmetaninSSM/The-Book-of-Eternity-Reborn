@@ -107,18 +107,18 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null) =>
-        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default);
+    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration=null) =>
+        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default, beforeCurrentGeneration);
 
     // Dedicated Init-bound callers never bootstrap or adopt a later generation.
     internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,CancellationToken admissionCancellation=default)
     {
         if (!Guid.TryParseExact(expectedGeneration, "N", out var parsed) || parsed.ToString("N") != expectedGeneration)
             throw new InvalidDataException("An exact existing helper generation is required.");
-        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation);
+        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation, null);
     }
 
-    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation)
+    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
         await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);
@@ -129,7 +129,12 @@ internal static class SessionOperationContext
             else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
                 var lease=await files.AcquireCanonicalWriteLeaseAsync();
                 CoordinatedStatePublicationUncertainException? uncertainty=null;
-                try {generation=files.GetOrCreateSessionGeneration(lease);}
+                try {
+                    // A caller may only veto bootstrap under this same admitted
+                    // lease. No claimed generation is returned or installed.
+                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);
+                    generation=files.GetOrCreateSessionGeneration(lease);
+                }
                 catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}
                 finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}
             }

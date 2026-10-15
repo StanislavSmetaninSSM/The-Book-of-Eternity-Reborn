@@ -8,6 +8,33 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    // Negative applicability only, before the unbound Late caller can bootstrap.
+    // Passing this check grants no original, generation or completion authority.
+    private static async Task ValidateMortalJointGenerationBeforeBootstrapAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    {
+        var marker = ParseMortalJointHoldObject(await files.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath));
+        if (marker?["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var schema) || schema != 2 ||
+            marker["jointTreatment"] is not JsonObject || marker["progression"] is not JsonObject ||
+            !TryReadMortalJointHoldTuple(marker, "turn", out var session, out var request, out var turn))
+            return;
+
+        var manifest = ParseMortalJointHoldObject(await files.ReadFileBytesAsync(lease,
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        var input = ParseMortalJointHoldObject(await files.ReadFileBytesAsync(lease, "input/turn_request.json"));
+        if (!MatchesMortalJointHoldHeader(manifest, session, request, turn) &&
+            !MatchesMortalJointHoldHeader(input, session, request, turn))
+            return;
+
+        var generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
+        if (generation is null)
+            throw new InvalidDataException("Active joint continuation generation is missing; evidence retained.");
+        if (marker["generation"] is not JsonValue claimed || !claimed.TryGetValue<string>(out var value) ||
+            !Guid.TryParseExact(value, "N", out var parsed) || parsed.ToString("N") != value ||
+            !string.Equals(generation, value, StringComparison.Ordinal))
+            throw new InvalidDataException("Active joint continuation generation is invalid or differs; evidence retained.");
+    }
+
     // Preservation applicability only. Raw correlated claims cannot issue an
     // original, phase, receipt, accepted outcome or completion capability.
     private async Task<bool> TryHoldMortalJointWithoutValidatedOriginalAsync()
