@@ -1,5 +1,47 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Complete current joint before-image guards SOURCE WIP — 2026-10-15
+
+Owning base `a4c0d1ef0988c9d900f0da86734b1250a7059c96`. Independent EVIDENCE
+`8db37f1d` ACCEPTED the Important complete-before-image producer omission;
+explicit bounded source-only release `c78f3c0d` governs this correction.
+The actual Late2 first outcome remains frozen:2 executed/0 PASS/2 FAIL, one
+common-plan diagnostic naming pending_spiritual_wound_decisions;12 additional
+omissions were source-inferred. No dynamic Completed/Awaiting callsite is proved.
+
+One private GameEngine producer now physically reads ALL40 existing RequiredPaths
+under the SAME participating lease, after the original admission loop and before
+inactive-tail validation/mechanical authority seal/common-input/cache fingerprints.
+An overlapping capture must still have exactly the same null/present bytes;
+otherwise admission refuses. Earlier images are never replaced. New nulls come
+only from actual reads, never original absence flags or canonical normalization.
+The existing mechanical fingerprint and ValidateCurrent iterate the expanded map;
+the existing complete joint common/input/private chain therefore retains these guards.
+This is current guard capture, not new source authorization/signed absence or foreign
+work ownership. Original-equality admission, closed signed presence, active work
+refusals, issuers, reducers, Take and publication/write/delete/rollback member sets
+remain unchanged; legitimate current GM outputs need not equal their original images.
+
+Additive phase clarification from independent raw evidence: in BOTH frozen rows,
+all5 sampled milestone images equal their signed originals. AFTER the actual owner,
+debug logs change379→1064bytes and interface updates77→68bytes; the other3 sampled
+roots remain unchanged. Earlier frozen author prose/grouping artifacts stay immutable.
+
+Only this production partial and identical additive plan/tasks fronts change.
+Fixtures/assertion order/once-Spend/history/union/story/turn/repeat-idle oracles and
+all categories/selections remain exact. No mirror test is needed: actual Late2 RED
+is the regression basis. No GM update: this is client-owned private guard completeness,
+with no change to public grammar, guidance, outputs or gameplay policy.
+Source WIP is not qualification: new compilation/API/fixture/runtime UNVERIFIED;
+all project/compiler/build/discovery/PlanOnly/catalog/test/runtime/fault/provider
+execution by the author remains UNRUN. ROOT must preserve/recover and obtain focused
+SOURCE/FIXTURE/SELECTION closure before fresh matching prerequisites and only failed
+Late2 first corrected outcome/freeze. Checkpoint5 PASS is retained without repetition;
+later12 remain UNRUN/HELD. Full FR063/T070, active combinations, fresh-PID initially
+bad authority, no-frame/all-erased traces and arbitrary partial cleanup remain OPEN.
+Requested historical retained Sol XHigh; actual backend/model/effort UNAVAILABLE.
+Prior metadata tails/checkmarks remain byte-exact; no acceptance boxes changed.
+
 ## First capture-corrected Late2 outcome: incomplete before-image inventory — 2026-10-15
 
 Tested and compile source `6b0d00fe44e276da91a55d284d09d0c409ba2fc2`.

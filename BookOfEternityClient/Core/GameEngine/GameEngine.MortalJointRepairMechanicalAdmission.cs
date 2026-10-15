@@ -129,6 +129,18 @@ public partial class GameEngine
             "output/narrative_response.json", LiveTurnPreparationService.TurnRequestPath,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
             before.TryAdd(path, await _fs.ReadFileBytesAsync(lease, path));
+        // Complete current guard coverage separately from original-source admission:
+        // current GM-owned outputs need not equal their signed original images.
+        foreach (var path in WoundAcceptedTurnSnapshotContract.RequiredPaths)
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, path);
+            if (before.TryGetValue(path, out var captured))
+            {
+                if (captured is null ? current is not null : current is null || !captured.AsSpan().SequenceEqual(current))
+                    throw new InvalidDataException("Joint required before-image changed during capture: " + path);
+            }
+            else before.Add(path, current);
+        }
         // Unchanged bytes alone are not no-work evidence. Prove the approved
         // inactive completion tail BEFORE common fingerprints/cache/take.
         RequireInactiveMortalJointTail(before, binding.Turn);

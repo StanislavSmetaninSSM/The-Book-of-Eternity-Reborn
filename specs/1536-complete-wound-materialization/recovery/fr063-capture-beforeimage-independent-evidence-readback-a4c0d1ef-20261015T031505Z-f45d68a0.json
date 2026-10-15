@@ -1,0 +1,3119 @@
+{
+  "status": "Artifact/native verification complete; bounded contract/phase supplement to follow before final",
+  "reviewedCarrier": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+  "testedCompileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+  "configurationRequested": "historical retained Astra XHigh",
+  "actualBackendTelemetry": "UNAVAILABLE",
+  "manifest": {
+    "path": "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/manifest.json",
+    "sha256": "af3dd68984ad24b152885ddadcf380cc05ac9d9ce222eaa47d10c674b6dc4ae6"
+  },
+  "artifactChains": [
+    {
+      "name": "actual-all-json-observations-raw.json.gz",
+      "uncompressedBytes": 4231686,
+      "uncompressedSha256": "c5df748431a7681608f1b82530f7c0a9b37f13ca5078f406192b47912dcdf905",
+      "compressedBytes": 1450490,
+      "compressedSha256": "f46a76b353a621158981620e810f9cbff676d8f774c9bacef0c3f1ae46671377",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-all-json-observations-raw.json"
+      ]
+    },
+    {
+      "name": "actual-all-trx-results-raw.json.gz",
+      "uncompressedBytes": 15515,
+      "uncompressedSha256": "4b72a0d19df0a6090502c69e684fc2e6482768f483e1bac76b3f1940053a9183",
+      "compressedBytes": 1976,
+      "compressedSha256": "a50e5ab3d5040aeece41f34f9b3a8dd3bb5336df5665d4d05e7afbca91d00b79",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-all-trx-results-raw.json"
+      ]
+    },
+    {
+      "name": "actual-child-evidence-containers-raw.json.gz",
+      "uncompressedBytes": 3,
+      "uncompressedSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "compressedBytes": 23,
+      "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-child-evidence-containers-raw.json"
+      ]
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 4204717,
+      "uncompressedSha256": "555ef41e46e079b6378191e384f8190cde302d73602d540e5624888017e28a9f",
+      "compressedBytes": 1455722,
+      "compressedSha256": "1673cda963f1cf146cbf459d0f5c8f7ea5d52e7ad3df3c8e0563612b3c682df4",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-console.log"
+      ]
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 4187345,
+      "uncompressedSha256": "4307d754af11adc0a4e0319286e2497d70dbbd803c0272d40dab69296e58041b",
+      "compressedBytes": 1451470,
+      "compressedSha256": "5163afa68d68c29c3c16f2de59fde449cc487b13e46231ad7023d94fad200738",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-full-trx-stdout.txt"
+      ]
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "12671c7ae77ffdb4bba4b35d3800399993cc52c506e77f2e96b4b15594694ec9",
+      "compressedBytes": 313,
+      "compressedSha256": "91179c42fb0d506be96c5ad1550603c336bba56b6f8eea9ee3c16757d2a1ad62",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-invocation-prewritten.json"
+      ]
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 4231360,
+      "uncompressedSha256": "e833efd64493b77c8563595c2954f00d9300b3855d33e1d19d31fb336b1a5522",
+      "compressedBytes": 1450313,
+      "compressedSha256": "237191e5ae20593c1a9b89c27f27a12d701dfef853816169fe68582922d1be16",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-native-observations.json"
+      ]
+    },
+    {
+      "name": "actual-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "0ec5171be9c326d5ea9e6d7363eb9b216c1d9e0d1d87acc24f0a1b1f621da2b5",
+      "compressedBytes": 279,
+      "compressedSha256": "bd3abfc7eb8809e1db33252dacddf8be3a31d9ae6a1eccf8c8f852bfdd5191b2",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-native-process-result.json"
+      ]
+    },
+    {
+      "name": "actual-pre-assertion-root-observations.json.gz",
+      "uncompressedBytes": 18622,
+      "uncompressedSha256": "697bd465d8c227598afafdb61fa1c33a5388a3b5b022f5f07e17b25d9726d7fd",
+      "compressedBytes": 3121,
+      "compressedSha256": "2809af4676b8cba095e11014b0e9876f78b501ea72056f249491f05963d22408",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-pre-assertion-root-observations.json",
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-root-readback.json"
+      ]
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 18622,
+      "uncompressedSha256": "697bd465d8c227598afafdb61fa1c33a5388a3b5b022f5f07e17b25d9726d7fd",
+      "compressedBytes": 3121,
+      "compressedSha256": "2809af4676b8cba095e11014b0e9876f78b501ea72056f249491f05963d22408",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-pre-assertion-root-observations.json",
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-root-readback.json"
+      ]
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "8e3cbbd7a95f856be3c41fbf8be3b73270c98c6a2145ecbb36564378d9258dbd",
+      "compressedBytes": 268,
+      "compressedSha256": "18a13f59d93b7476c42949ebc558d9d40daf17ef974689bb4908c0ece3df116e",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-run-location.json"
+      ]
+    },
+    {
+      "name": "actual-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2350,
+      "uncompressedSha256": "49d74a0d0d7810bd684b1a875072e418f8d9f1ec51f3091474d4fd66e8beafe9",
+      "compressedBytes": 981,
+      "compressedSha256": "ad1cc470b81353c28dc63bcd0a359f2fde5539e5bba307533b9c4953c5cc3a62",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories/summary.json"
+      ]
+    },
+    {
+      "name": "actual-strict-cleanup-origins-raw.json.gz",
+      "uncompressedBytes": 285,
+      "uncompressedSha256": "e0692d2079d94bf8cd5c001c8ee4325411be4a93b3540f4ce1d60a61227722c5",
+      "compressedBytes": 181,
+      "compressedSha256": "1c1fd1e2b43dbf49448619de162916950de28ce77d3a0c28a84e69502fa99d06",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-strict-cleanup-origins-raw.json"
+      ]
+    },
+    {
+      "name": "actual-strict-cleanup-receipts-raw.json.gz",
+      "uncompressedBytes": 329,
+      "uncompressedSha256": "494024823c1e8e36df2e0030ddca11d9e0c1ea95a8ecdd750936d1dfce90020c",
+      "compressedBytes": 182,
+      "compressedSha256": "6427165591a97002df39227c4293202dd1880ec83da3cd86b32dcd843f55582d",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-strict-cleanup-receipts-raw.json"
+      ]
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 36436,
+      "uncompressedSha256": "2a979100a8fefb7e4f61da1fde414bf9a5b9b7b9b532a5d75eec9d3a3a3d1686",
+      "compressedBytes": 10245,
+      "compressedSha256": "485b61afac7a80342bc67474a9784358f7f5488c33465e4ae8add04797ce0452",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/candidate-source-pins.json"
+      ]
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "ab3822b1537fb3cf8020099e14a30fd74904d1a5c2003aee2f4dd019e17e2b93",
+      "compressedBytes": 410,
+      "compressedSha256": "ca1465dfdfb197cbd79294783ad4ba81d89253cf3bc73cae2def398a57ea0d1d",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-console.log"
+      ]
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 432,
+      "uncompressedSha256": "4211c294524602efafc58b3e4b9b32c0fef3896165c1ef1f9990f5b3088ac522",
+      "compressedBytes": 280,
+      "compressedSha256": "7b6e7ca18643357f135623d1db000f291f645e6941c05db7df6fdebb2a4c66f3",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-invocation-prewritten.json"
+      ]
+    },
+    {
+      "name": "catalog-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "c72cf590158b9e34ed98536328581e22f7f097335625881e8a83cf0122cdbfdc",
+      "compressedBytes": 279,
+      "compressedSha256": "96c3e7aeb6ad2c5d67b051130687a6e70a758533d0392fa17113d24a5d503053",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-native-process-result.json"
+      ]
+    },
+    {
+      "name": "catalog-root-readback.json.gz",
+      "uncompressedBytes": 1302,
+      "uncompressedSha256": "d81ac23b1dae5307f9817a0a95368fd3653c3b13b8784e29bce2894f4d0792b0",
+      "compressedBytes": 638,
+      "compressedSha256": "353c6e36fba258552bf9f16dc2e15f219e7d6a39a12b477a40b55504ae021b5e",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-root-readback.json"
+      ]
+    },
+    {
+      "name": "catalog-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "823d206f879a9b155edf65b93a8994c0d8efb5d88fb1118ccfe8041dcc46f2e7",
+      "compressedBytes": 269,
+      "compressedSha256": "fb750a9713cc4117f6a3c8ba9aca933129ea0b8764255e7db0b19838bc93c7e8",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-run-location.json"
+      ]
+    },
+    {
+      "name": "catalog-runner-summary-raw.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "5ef9498f00c0ca81c67ef0593134b7f154dae348d889c15563b803efe7cb4a3c",
+      "compressedBytes": 600,
+      "compressedSha256": "a65a6a776ef6d326be94cc11dd3331fdef5e69d65361f664ea51fea67f2ed683",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories/summary.json"
+      ]
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "77f152c0336f4c03aea8694cb2edc26bcc4831cb0576238d3f09ebdce812106c",
+      "compressedBytes": 2505,
+      "compressedSha256": "b4e48fef23c0188c88da64cde6fbb266ff263b26a01e9af794bfe9347da8becd",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-console.log"
+      ]
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 539,
+      "uncompressedSha256": "2e53dc77829ae51696279e0feb00cf77f4ca220f58b0a868dd1741498e33af77",
+      "compressedBytes": 324,
+      "compressedSha256": "d3849053f349fe71de1d070f8fd579e76d945376457a3f7ac7a29e0bcc60bad5",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-invocation-prewritten.json"
+      ]
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "833f31ad2f010a0a6cd75bb8de9bf18fda9c78599d625897eba3dee4f8debf77",
+      "compressedBytes": 279,
+      "compressedSha256": "68449087228872fece1151cfbaff3dfd1f892a0a92f292a8e9c7226b6ccd65ba",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-native-process-result.json"
+      ]
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 2201,
+      "uncompressedSha256": "c3d27a1995b74df68f9b603411477d738eca5adbf9fb72abd199679eb23866a2",
+      "compressedBytes": 877,
+      "compressedSha256": "3bf1ec5a83704afa734634ee8e4782f91c93ffe0933dd333c8823d7284810136",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-root-readback.json"
+      ]
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "6f5c9c0adbf5b93499108bfa2ac735ff89a1b7e3f9bb3b252aa391023ae71166",
+      "compressedBytes": 269,
+      "compressedSha256": "a35f0535ff86ed72c5dd032cdcdcb9a17ecedf4feab744c3f97aec396a7382d5",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-run-location.json"
+      ]
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17371,
+      "uncompressedSha256": "65f2324a06eaf938882634d13ebb1ea9fb07d4f00834b98be2101efe53d9bf49",
+      "compressedBytes": 3652,
+      "compressedSha256": "f024d94088ecb24da8f062fddd39d530057b66bf4342d1cb25fa235cf8e348df",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories/summary.json"
+      ]
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2719,
+      "uncompressedSha256": "bf5c1181caa06ee5d7556ee7110cc6b4525b57ded04fb9992f105920c61fdec4",
+      "compressedBytes": 723,
+      "compressedSha256": "8b75332bea10e406bcd72937e8107830c174760ca0c98084e860eb51967f72f9",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/fresh-binary-pins.json"
+      ]
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "4a049277d34945234c91301233c52d7be3f56d15fcac57df9d208ce1c77afe4e",
+      "compressedBytes": 2505,
+      "compressedSha256": "bee454de2897a9175cd8826a622ed84ce37ef0d57c4ff5f55795c6a6014458ca",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-console.log"
+      ]
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "d9aa4374007cf1dc7e42cb5d4c3d88634d20078b50b9e5ae6cfd8d406ede7f2f",
+      "compressedBytes": 315,
+      "compressedSha256": "35b2acd2087719c10c05b16b6f9f81493e9ce6d959fa890a4e319ec93d856c20",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-invocation-prewritten.json"
+      ]
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "2637fb0afbc2ddb48e86edcceb5cb7854b6a60e35123187cb038117f1c39e740",
+      "compressedBytes": 279,
+      "compressedSha256": "58e3c5039a3c66b0e8084d550d98147b601ce79fbcd9280259e56ab0d5b2d52b",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-native-process-result.json"
+      ]
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2334,
+      "uncompressedSha256": "64c74cdd9f10e0348d8f88ec1526ed21d3fab5156fbfa4780b3869690f24e178",
+      "compressedBytes": 915,
+      "compressedSha256": "63eb9e78a7bdcaa4a142d09ae91bae7ac2cc544e0137390c4d86f124be56cf81",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-root-readback.json"
+      ]
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "4ac20b6f657838424664f8de1be2ecd6d9a0d5abbd7a9a7a6d984b64f847a95c",
+      "compressedBytes": 268,
+      "compressedSha256": "a9c89fda032107e2cac69733e8a052a14c95b31ed7a69945c3d563b8d4017184",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-run-location.json"
+      ]
+    },
+    {
+      "name": "preparation-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17565,
+      "uncompressedSha256": "96bbe309dddfe1a7b01927c97931656597a5dc99002c3e2dfda81cce50ed8794",
+      "compressedBytes": 3689,
+      "compressedSha256": "a48cc22593cab6aedb1b3522739765f815adb60d7d88a8fad0e9f04d4ab6f67c",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/summary.json"
+      ]
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 5873513,
+      "uncompressedSha256": "cb36b6b67bc6e0de25e72f4f8d3a1e1b3072bd197fb46afea7bac1476bd83267",
+      "compressedBytes": 1643565,
+      "compressedSha256": "7ed8765baa1c3630a145bab8496e3f3de8f334c7f01868c3152e01549691e147",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories/dotnet-test.log"
+      ]
+    },
+    {
+      "name": "actual-fr063-joint-late-completion-integration-001.trx.gz",
+      "uncompressedBytes": 8418954,
+      "uncompressedSha256": "63ef7169e690e8f5e68dc022bf62385071646c1c68d64c454ac73bb821467162",
+      "compressedBytes": 2914445,
+      "compressedSha256": "1e50cc516e230cf4a5f9d1f69718a81c17e13b73bed2ee8c41382c1889aeed37",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories/fr063-joint-late-completion-integration-001.trx"
+      ]
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2520,
+      "uncompressedSha256": "903aa4cbd75669e63d6932f112c16164e0bffcdbb1bbc0551d09cac7a1f6a4a6",
+      "compressedBytes": 967,
+      "compressedSha256": "e830d6bf52d82eefd72d3ab9c9b8c8baabd0547ecf4d738ef98a19528f075667",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories/plan.json"
+      ]
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2350,
+      "uncompressedSha256": "49d74a0d0d7810bd684b1a875072e418f8d9f1ec51f3091474d4fd66e8beafe9",
+      "compressedBytes": 981,
+      "compressedSha256": "ad1cc470b81353c28dc63bcd0a359f2fde5539e5bba307533b9c4953c5cc3a62",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/actual-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories/summary.json"
+      ]
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "75bfe15ca6feba1ba51dc365cc186fea319a674df545ef49fe7a5a805d439516",
+      "compressedBytes": 103,
+      "compressedSha256": "136016b12f27f723aad8e59eeb0843a1dd583749c75536e6e421e44d6502faca",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories/catalog-audit.json"
+      ]
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3337240,
+      "uncompressedSha256": "02f0f177d373f87a53f2b79a2728f56b00bd5d8ab2a32276f6e80df7c3db328c",
+      "compressedBytes": 369424,
+      "compressedSha256": "7c58ff697886ac6037429e6a8d0a55f469899878e1efa68f323be234298aeed3",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories/dotnet-test.log"
+      ]
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "5ef9498f00c0ca81c67ef0593134b7f154dae348d889c15563b803efe7cb4a3c",
+      "compressedBytes": 600,
+      "compressedSha256": "a65a6a776ef6d326be94cc11dd3331fdef5e69d65361f664ea51fea67f2ed683",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/catalog-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories/summary.json"
+      ]
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 3337765,
+      "uncompressedSha256": "cf29aeb5f6fdbab2d8b2aa2eb965c2bd375ec1eeb2b4a50b52a742acb5238fcf",
+      "compressedBytes": 369612,
+      "compressedSha256": "ab70a5fca2c50352457954e5755b7c562cf5c9d729e7a8000430d1f2298fb80e",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories/dotnet-test.log"
+      ]
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 35688,
+      "uncompressedSha256": "eecb775e6033e1d078d054a09ccd01a1af68e7d7f268923844dcbda968f2cb5c",
+      "compressedBytes": 5090,
+      "compressedSha256": "4ad1f419894afcdad26c43d89d43f8881b679fab6b58e765ec8b9870cc0f585e",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories/plan.json"
+      ]
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 17371,
+      "uncompressedSha256": "65f2324a06eaf938882634d13ebb1ea9fb07d4f00834b98be2101efe53d9bf49",
+      "compressedBytes": 3652,
+      "compressedSha256": "f024d94088ecb24da8f062fddd39d530057b66bf4342d1cb25fa235cf8e348df",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/exact-plan-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories/summary.json"
+      ]
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 130910,
+      "uncompressedSha256": "5323be6ade58030031b43adef772e6203919b0a0050cb0e68ffb4ae58388bc37",
+      "compressedBytes": 9134,
+      "compressedSha256": "92a7860ecd7bd9d29d04c73b1c6eb673bd2470f55706bad4f510fdb2081efca7",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/Build-integration.log"
+      ]
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "6600466127f67cab19c4203c15957702818efd4fc1723418159e3f12ba6c510b",
+      "compressedBytes": 1751,
+      "compressedSha256": "cc3863fc351faf61924b1f057e0db3d2fcf5ca74740dae6765c6428e1b3f1004",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/Build-unit.log"
+      ]
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3499346,
+      "uncompressedSha256": "8937c45dbab4c996986507a63ecb184e679506dd2af5a3902d7db0d02b10822a",
+      "compressedBytes": 380662,
+      "compressedSha256": "7c53e2c116c51734fb0ec611930fdaa551004575fcc451d7ce4714d2bc0af726",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/dotnet-test.log"
+      ]
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 35690,
+      "uncompressedSha256": "29e238a9e8e8832fcd2a71cc20c48429010b519b65335788336ecd0553e1cc33",
+      "compressedBytes": 5091,
+      "compressedSha256": "911b43f47ccf031bcddb4b3f474cfcb1e9165d0b847bfe625dcfe6ce6f2555a2",
+      "verified": true,
+      "originals": [
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/plan.json"
+      ]
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 17565,
+      "uncompressedSha256": "96bbe309dddfe1a7b01927c97931656597a5dc99002c3e2dfda81cce50ed8794",
+      "compressedBytes": 3689,
+      "compressedSha256": "a48cc22593cab6aedb1b3522739765f815adb60d7d88a8fad0e9f04d4ab6f67c",
+      "verified": true,
+      "originals": [
+        "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a/preparation-runner-summary-raw.json",
+        "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories/summary.json"
+      ]
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+      "bytes": 30297,
+      "sha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "bytes": 11712,
+      "sha256": "6f75f8a014c4092653e1928d56830fcd1eda676f6cddc76c00c260bf6dafec9a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "6f75f8a014c4092653e1928d56830fcd1eda676f6cddc76c00c260bf6dafec9a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs",
+      "bytes": 14368,
+      "sha256": "1e6e2dca9442a45ae2e1c8449c85c8c64b9839a94f4d59542e6cb5be9803946d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "1e6e2dca9442a45ae2e1c8449c85c8c64b9839a94f4d59542e6cb5be9803946d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompatibility.cs",
+      "bytes": 4381,
+      "sha256": "d20fc75de3bc5659a41e3cb64fdb5a9af862eca69b65db14df32d06217fc1768",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d20fc75de3bc5659a41e3cb64fdb5a9af862eca69b65db14df32d06217fc1768"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 67131,
+      "sha256": "7aca6e45f193092b4e08e4aff0a144c45ff4c528dbee000c91f75de3786af037",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "7aca6e45f193092b4e08e4aff0a144c45ff4c528dbee000c91f75de3786af037"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "bytes": 10571,
+      "sha256": "7858daa6dd304a756eefe0736c085b010b347644e811440f7d5934eeca943bf1",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "7858daa6dd304a756eefe0736c085b010b347644e811440f7d5934eeca943bf1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 48749,
+      "sha256": "02ca0f1834ad9fd211e0cf83026d28ca17f39ea61781e11d1d6a6fb9f4bbfd89",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "02ca0f1834ad9fd211e0cf83026d28ca17f39ea61781e11d1d6a6fb9f4bbfd89"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+      "bytes": 614,
+      "sha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs",
+      "bytes": 8639,
+      "sha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs",
+      "bytes": 6872,
+      "sha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+      "bytes": 7553,
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs",
+      "bytes": 9705,
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "bytes": 15753,
+      "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47208,
+      "sha256": "3be1c51566bef63723926742435085163fe42b4b5e48dea0e032cc951dfc34f3",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3be1c51566bef63723926742435085163fe42b4b5e48dea0e032cc951dfc34f3"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "bytes": 10951,
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+      "bytes": 5039,
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs",
+      "bytes": 8747,
+      "sha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 13335,
+      "sha256": "99cab519cb61e90d56034ff6ff17cb045283f19dc026467634616bfda4103b0c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "99cab519cb61e90d56034ff6ff17cb045283f19dc026467634616bfda4103b0c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 9437,
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10811,
+      "sha256": "4e4609a8d79690b42804849a3e556e954eed53fe14fa88af8ad53d8eecac0235",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "4e4609a8d79690b42804849a3e556e954eed53fe14fa88af8ad53d8eecac0235"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "bytes": 10095,
+      "sha256": "2e9ca8cc49644cf7fd49710cd8586f5a342d226819bebd927032271c76c80e57",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "2e9ca8cc49644cf7fd49710cd8586f5a342d226819bebd927032271c76c80e57"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "bytes": 11002,
+      "sha256": "b23174fcf51ad22d6d5a20be8df7b22591880774be5752f4b94ac363407ba7e8",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b23174fcf51ad22d6d5a20be8df7b22591880774be5752f4b94ac363407ba7e8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "bytes": 7710,
+      "sha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "bytes": 10353,
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "bytes": 17078,
+      "sha256": "782dcc4904f5873060c1f267ef56b35bcc1ab2e52854c0639503b340f95ddb81",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "782dcc4904f5873060c1f267ef56b35bcc1ab2e52854c0639503b340f95ddb81"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "bytes": 23509,
+      "sha256": "8950d13babac3984b25df92c406fbeaa131b3cbdd3bed029bce537ef2c6113e1",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "8950d13babac3984b25df92c406fbeaa131b3cbdd3bed029bce537ef2c6113e1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "bytes": 11986,
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "bytes": 112701,
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "bytes": 294837,
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "bytes": 28110,
+      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+      "bytes": 6659,
+      "sha256": "24a33d0a26aa294e18f4d95cf5941c72bb0731df53b6243857d7fb3b23a2b4f9",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "24a33d0a26aa294e18f4d95cf5941c72bb0731df53b6243857d7fb3b23a2b4f9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+      "bytes": 58332,
+      "sha256": "0bdb41b1f59e8ef6f2058e52941a800490280ef1e6f1a020939f549ae5ab426b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "0bdb41b1f59e8ef6f2058e52941a800490280ef1e6f1a020939f549ae5ab426b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "bytes": 417718,
+      "sha256": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "bytes": 8291,
+      "sha256": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "bytes": 53265,
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepair.cs",
+      "bytes": 20258,
+      "sha256": "725b30189a9b2d886c05bcc8b790c18ee189d279c22ddca31c3727e025c94489",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "725b30189a9b2d886c05bcc8b790c18ee189d279c22ddca31c3727e025c94489"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "bytes": 12842,
+      "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "bytes": 21798,
+      "sha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 262583,
+      "sha256": "20a17442b9a027f8f57c1ce1ca8bc15f6fcd6598a0b97a85022be622aae97f2f",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "20a17442b9a027f8f57c1ce1ca8bc15f6fcd6598a0b97a85022be622aae97f2f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "bytes": 60209,
+      "sha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "bytes": 9378,
+      "sha256": "3405d0e9961ac753ec24cd8f142e024da9745d2807e717d9004bad84e6ddeff2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3405d0e9961ac753ec24cd8f142e024da9745d2807e717d9004bad84e6ddeff2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "bytes": 11487,
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "bytes": 38914,
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "bytes": 25860,
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "bytes": 393326,
+      "sha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 27780,
+      "sha256": "27fa10c64ebe04cb78926274079b1e5b7412a7b248eb2571d6faa22bae493d6b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "27fa10c64ebe04cb78926274079b1e5b7412a7b248eb2571d6faa22bae493d6b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "bytes": 9143,
+      "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "bytes": 3958,
+      "sha256": "0e83dd847802e66d07fa7ed7fac195638acf24ae82a14f0c98bd6c5d25452cde",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "0e83dd847802e66d07fa7ed7fac195638acf24ae82a14f0c98bd6c5d25452cde"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "bytes": 9959,
+      "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "bytes": 19147,
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs",
+      "bytes": 10789,
+      "sha256": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 31056,
+      "sha256": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "bytes": 23678,
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+      "bytes": 26213,
+      "sha256": "dedb2fa4477b1f74d2caff305e65192f0bfe7b09aa6bd8740a66c1e3441c41d6",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "dedb2fa4477b1f74d2caff305e65192f0bfe7b09aa6bd8740a66c1e3441c41d6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.MortalJointRepair.cs",
+      "bytes": 1713,
+      "sha256": "47af54b8bfa1e744518050fcab0b5d730ff3495cc28e5b08d70ea60ebfadb19a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "47af54b8bfa1e744518050fcab0b5d730ff3495cc28e5b08d70ea60ebfadb19a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "bytes": 61576,
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs",
+      "bytes": 46656,
+      "sha256": "a8507e3e6be1c678253fcbe7a7de75859993346d4ebf2aa467151305fcd84d0d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a8507e3e6be1c678253fcbe7a7de75859993346d4ebf2aa467151305fcd84d0d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.ResourceProof.cs",
+      "bytes": 6886,
+      "sha256": "f077dfbc1cff6b21f7ae81ac27a79f72459bb1abe119f09fa17a5bb964a3554c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "f077dfbc1cff6b21f7ae81ac27a79f72459bb1abe119f09fa17a5bb964a3554c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "bytes": 116877,
+      "sha256": "10845ce0b0f87af45d0e9597bd4c92500718b245168c10d8ed23a9201afd3e69",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "10845ce0b0f87af45d0e9597bd4c92500718b245168c10d8ed23a9201afd3e69"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.PersistedJointProof.cs",
+      "bytes": 3584,
+      "sha256": "ba039355af8ea2e89bb9b61d2d4bbb589db12997c6d5b16e4b371b2097e4aee2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ba039355af8ea2e89bb9b61d2d4bbb589db12997c6d5b16e4b371b2097e4aee2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs",
+      "bytes": 81817,
+      "sha256": "1699e9c784b2ae9e119563de4d818369b03216a5cac0d2f192fdcf377456e016",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "1699e9c784b2ae9e119563de4d818369b03216a5cac0d2f192fdcf377456e016"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublication.cs",
+      "bytes": 69508,
+      "sha256": "9c40d7c875bf42ef67660d3486a12b2ca86edb4ec0555306ee96726324ffbf11",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9c40d7c875bf42ef67660d3486a12b2ca86edb4ec0555306ee96726324ffbf11"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "bytes": 15931,
+      "sha256": "7ae0231ad50a41a70ed9f8a6b592601d004b936b3210001f9c1aa50de6dbb43c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "7ae0231ad50a41a70ed9f8a6b592601d004b936b3210001f9c1aa50de6dbb43c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "bytes": 93122,
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "bytes": 90294,
+      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "bytes": 83387,
+      "sha256": "ac3b8d4d77674067557518c6fcfdab6d42ca33139bbc375e562d80cc08a75f15",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ac3b8d4d77674067557518c6fcfdab6d42ca33139bbc375e562d80cc08a75f15"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "bytes": 34289,
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "bytes": 98744,
+      "sha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "bytes": 13558,
+      "sha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "bytes": 15071,
+      "sha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs",
+      "bytes": 54927,
+      "sha256": "a74da3d38aff0d267eeac1b6306e7ae5e91959cfbf35250e0da93321e541335d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a74da3d38aff0d267eeac1b6306e7ae5e91959cfbf35250e0da93321e541335d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 4958,
+      "sha256": "c43ad46968b3219ce98578835891e9bd315db6edba7fd6d5b794592fd360ee02",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "c43ad46968b3219ce98578835891e9bd315db6edba7fd6d5b794592fd360ee02"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+      "bytes": 48695,
+      "sha256": "164dd4015e1749e5686d1b4d5147ac9b845e8474e07fd845c91bceb3b0acc631",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "164dd4015e1749e5686d1b4d5147ac9b845e8474e07fd845c91bceb3b0acc631"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.Contributions.cs",
+      "bytes": 17119,
+      "sha256": "161a82e5221aa578aafd859828e150397db092884dedb4fad7df131f1adf136c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "161a82e5221aa578aafd859828e150397db092884dedb4fad7df131f1adf136c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 30552,
+      "sha256": "69de278fb3a6bb7723ce3e588a22d537a048e45109dbd8dd8f9339af71077ff6",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "69de278fb3a6bb7723ce3e588a22d537a048e45109dbd8dd8f9339af71077ff6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommon.cs",
+      "bytes": 8196,
+      "sha256": "a6597f0e32d5204cb32ec540e8e0bd0998d3d0311e5453fd7a2950bee7ef546b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a6597f0e32d5204cb32ec540e8e0bd0998d3d0311e5453fd7a2950bee7ef546b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 18952,
+      "sha256": "cec254e49a86e8fbc8c2e8350b176abc0c89ab6b1cae2107a0dd20de07500be6",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "cec254e49a86e8fbc8c2e8350b176abc0c89ab6b1cae2107a0dd20de07500be6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairFinal.cs",
+      "bytes": 5117,
+      "sha256": "5d78c45022d1e02bd54f2dfd2eff8147fa1c0609217b75b1837bdea8a7da31d2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5d78c45022d1e02bd54f2dfd2eff8147fa1c0609217b75b1837bdea8a7da31d2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "bytes": 19799,
+      "sha256": "58d0dc9c065b2ec843104a968940a6b1a74a7271abfac73f5d702e2fa05035cb",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "58d0dc9c065b2ec843104a968940a6b1a74a7271abfac73f5d702e2fa05035cb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.TreatmentPublicationContributions.cs",
+      "bytes": 16421,
+      "sha256": "07764d451dca5027f6b87ed83ad64a2cfd93122d26414d436feb7fcd11422573",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "07764d451dca5027f6b87ed83ad64a2cfd93122d26414d436feb7fcd11422573"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs",
+      "bytes": 196569,
+      "sha256": "ec080b51a939c57de541ed3e61992c6c70d94db04209b028a98a107a54fb91bd",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ec080b51a939c57de541ed3e61992c6c70d94db04209b028a98a107a54fb91bd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "bytes": 9227,
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "bytes": 44369,
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs",
+      "bytes": 38961,
+      "sha256": "e63bc86dddb3f83481e703fa58d27bee89f54c88a1d03460c60adcf3dd129ac4",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "e63bc86dddb3f83481e703fa58d27bee89f54c88a1d03460c60adcf3dd129ac4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.cs",
+      "bytes": 44863,
+      "sha256": "f86ee1add354c00e16ab4a41f3a68b3ae843afa3dce6c27755b952cae56b6aaf",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "f86ee1add354c00e16ab4a41f3a68b3ae843afa3dce6c27755b952cae56b6aaf"
+    },
+    {
+      "path": "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "bytes": 21571,
+      "sha256": "70d39bc5b67af261123659b44a077148607f3c363d9862a1f2fcced92f5d4f68",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "70d39bc5b67af261123659b44a077148607f3c363d9862a1f2fcced92f5d4f68"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 400716,
+      "sha256": "07b13a7375b042fc7659756ba9fed996777a62a7b2a34223d8baa72accdc6e44",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "07b13a7375b042fc7659756ba9fed996777a62a7b2a34223d8baa72accdc6e44"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 248694,
+      "sha256": "236c4bec95bccc9ff6fe40904c9735af417e69451e52551a650a2f18ce1e4f7c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "236c4bec95bccc9ff6fe40904c9735af417e69451e52551a650a2f18ce1e4f7c"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 161314,
+      "sha256": "748dd6846a8cebb99e533a1508b461facb352f0bcad642b0c7cbbd7d46001f6f",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "748dd6846a8cebb99e533a1508b461facb352f0bcad642b0c7cbbd7d46001f6f"
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "bytes": 108675,
+      "sha256": "a23dfdddc031bc23d1d83218633e78e49c3e45ffd8ca37ceddb346af72f01943",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a23dfdddc031bc23d1d83218633e78e49c3e45ffd8ca37ceddb346af72f01943"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "bytes": 98121,
+      "sha256": "94755c63f45e4906f18ef30a12d094fae0519bc38f0317668a3e69e1e9d78375",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "94755c63f45e4906f18ef30a12d094fae0519bc38f0317668a3e69e1e9d78375"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 184578,
+      "sha256": "130baf7c1ec16124b0282d64d7876f4ff488ad9ad2764aa5cd8b1cf428212073",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "130baf7c1ec16124b0282d64d7876f4ff488ad9ad2764aa5cd8b1cf428212073"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "bytes": 87546,
+      "sha256": "ada43b4e36a34a4fb7301a0c93d6931e7547721ab66f9246f7f3787647e91c5a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ada43b4e36a34a4fb7301a0c93d6931e7547721ab66f9246f7f3787647e91c5a"
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "bytes": 108312,
+      "sha256": "2d8b168ffe91a7ce2e93a5c52778ffebb90a89cdef3869c7e8bdcac37ebae98b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "2d8b168ffe91a7ce2e93a5c52778ffebb90a89cdef3869c7e8bdcac37ebae98b"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 189417,
+      "sha256": "8e8ad5bcc7346fb3ff40cc96f1957a81fbbf9a6aa585c6bb563a8cbba03ad621",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "8e8ad5bcc7346fb3ff40cc96f1957a81fbbf9a6aa585c6bb563a8cbba03ad621"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryAdapters.ps1",
+      "bytes": 7006,
+      "sha256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "path": "scripts/testing/TestCategoryExecution.ps1",
+      "bytes": 11710,
+      "sha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "bytes": 121506,
+      "sha256": "80f0bc0ef0f5268c3d66c0e7dba635c15e731adba604f2839aeb4ca699dc437f",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "80f0bc0ef0f5268c3d66c0e7dba635c15e731adba604f2839aeb4ca699dc437f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1601741,
+      "sha256": "455d7647ab800017810fbef452c963de43694d913ddefc2577f26fd19c76bea8",
+      "testedGitVerified": true,
+      "currentEqual": false,
+      "currentSha256": "e70a236df557fa514527120a61ef3e7b69a0c0b5dbed63272597b4717f34f4ab"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-all-gates-current-native-recovery-and-preparation-input-20261014T230309Z-45ecfd5c.json",
+      "bytes": 1689,
+      "sha256": "cacadebc42667a734aa0f09d7c271e3647c1cb6677d064e171a9c892f7c86114",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "cacadebc42667a734aa0f09d7c271e3647c1cb6677d064e171a9c892f7c86114"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-corrected-source-execution-gate-proof-eb206948-20261014T230143Z-aee3f391.json",
+      "bytes": 32232,
+      "sha256": "f784253d043803f1c809cf27510376d5d71f0ae0b0aa69b3fc7c13e368b80196",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "f784253d043803f1c809cf27510376d5d71f0ae0b0aa69b3fc7c13e368b80196"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z-readback.json",
+      "bytes": 8905,
+      "sha256": "70697e84b01a872441dfa8ef724b901cc28ac11e19c015fcca3ebbcc4ee3927f",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "70697e84b01a872441dfa8ef724b901cc28ac11e19c015fcca3ebbcc4ee3927f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z.md",
+      "bytes": 6651,
+      "sha256": "0f2abe0eb879a85ac5ce4a75de1616fa35929f049a7a2a56a6a9fef9fc1b4799",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "0f2abe0eb879a85ac5ce4a75de1616fa35929f049a7a2a56a6a9fef9fc1b4799"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-build-failure-evidence-with-diagnosis-root-wip-20261014.json",
+      "bytes": 93483,
+      "sha256": "3e4542eff4eaafa2cd0c101eef66342f4707642169a6e40bd8ed4a4e89842ca8",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3e4542eff4eaafa2cd0c101eef66342f4707642169a6e40bd8ed4a4e89842ca8"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-timing-precision-20261014T231019Z-ebb00b53.json",
+      "bytes": 810,
+      "sha256": "d90b078056f9d3c69f6cacc0917df5eab9d07bef9af41950f2848fb42ea25393",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d90b078056f9d3c69f6cacc0917df5eab9d07bef9af41950f2848fb42ea25393"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-gates-observed-completed-publication-audit-20261014T230106Z-b63bbe09.json",
+      "bytes": 3033,
+      "sha256": "714e19b39068d834f77d04ef48af931d5c7e4feb9b88688b7d642ebea9272571",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "714e19b39068d834f77d04ef48af931d5c7e4feb9b88688b7d642ebea9272571"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-j2-j8-connected-category-selection-source-report-20261014.md",
+      "bytes": 10489,
+      "sha256": "f820080b642351d6a20f8fa5fee72dc0f82862a18071ec205ab56c76612e757d",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "f820080b642351d6a20f8fa5fee72dc0f82862a18071ec205ab56c76612e757d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-j8-cleanup-evidence-source-finding-20261014T214935Z-19a030a0.json",
+      "bytes": 871,
+      "sha256": "b8dbc84574bfa4bbdae52771fe896da960a19d81acb467d2009f5f9d099071a3",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b8dbc84574bfa4bbdae52771fe896da960a19d81acb467d2009f5f9d099071a3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-null-frame-authority-readonly-disposition-20261014.md",
+      "bytes": 17835,
+      "sha256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json",
+      "bytes": 2665,
+      "sha256": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md",
+      "bytes": 8903,
+      "sha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-independent-review-20261014.md",
+      "bytes": 9900,
+      "sha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md",
+      "bytes": 52388,
+      "sha256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md",
+      "bytes": 2455,
+      "sha256": "a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-story-lifecycle-readonly-disposition-20261014.md",
+      "bytes": 16440,
+      "sha256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/candidate-source-pins.json.gz",
+      "bytes": 8578,
+      "sha256": "bda1ae84639ca06e41c8c74aff7495e9f070ba9835ec661c1e618fb8dd42c070",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "bda1ae84639ca06e41c8c74aff7495e9f070ba9835ec661c1e618fb8dd42c070"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/execution-gate-proof-raw.json.gz",
+      "bytes": 9350,
+      "sha256": "94dcf71b08bcbf4a58ed5e09ad75abde79813aff3eeff85531800636472ffd72",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "94dcf71b08bcbf4a58ed5e09ad75abde79813aff3eeff85531800636472ffd72"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/manifest.json",
+      "bytes": 7427,
+      "sha256": "99fc7529644b33547c486c094aaf3b47fabfd5818e14e76382ff9058b7b40987",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "99fc7529644b33547c486c094aaf3b47fabfd5818e14e76382ff9058b7b40987"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-console.log.gz",
+      "bytes": 583,
+      "sha256": "640ba24cd5282110026d9992b2dc7db08946d7624c1c85d8974d3646d524e355",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "640ba24cd5282110026d9992b2dc7db08946d7624c1c85d8974d3646d524e355"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-dotnet-test.log.gz",
+      "bytes": 2373,
+      "sha256": "d8466491c36cec42f896b3da1cea8e569a8190f129581e3986ddde543774bb3b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d8466491c36cec42f896b3da1cea8e569a8190f129581e3986ddde543774bb3b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-invocation-prewritten.json.gz",
+      "bytes": 318,
+      "sha256": "723e99189d8dba90402064caa4a0aeba7f003fb14cf1e577d16ab24609bdbc4e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "723e99189d8dba90402064caa4a0aeba7f003fb14cf1e577d16ab24609bdbc4e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-native-process-result.json.gz",
+      "bytes": 281,
+      "sha256": "6b354f2b5f0961dffdc598207c8bfc0a8a4e1e2fa8228fcdece70e9147d96ed2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "6b354f2b5f0961dffdc598207c8bfc0a8a4e1e2fa8228fcdece70e9147d96ed2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-root-readback.json.gz",
+      "bytes": 1563,
+      "sha256": "290bdb0e127054f36e6b1a8fa852583930ee705a975e227c65037b23418c69dc",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "290bdb0e127054f36e6b1a8fa852583930ee705a975e227c65037b23418c69dc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-run-location.json.gz",
+      "bytes": 270,
+      "sha256": "5949cb381d6442618bd750309ff8ec0f8b59ff3e698e94130876f566f276a253",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5949cb381d6442618bd750309ff8ec0f8b59ff3e698e94130876f566f276a253"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-summary.json.gz",
+      "bytes": 3493,
+      "sha256": "5a84a3a7df46335fef64a0806e0aacb395d9b2495d88fba7494c23bcc8678f5c",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5a84a3a7df46335fef64a0806e0aacb395d9b2495d88fba7494c23bcc8678f5c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-root-old-wrapper-readonly-findings-20261014T205036Z-75c087a5.json",
+      "bytes": 796,
+      "sha256": "54181c0ff1a773474fc4e0902798aa8d237f384301bfc73f677e98e3d87960d2",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "54181c0ff1a773474fc4e0902798aa8d237f384301bfc73f677e98e3d87960d2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/publish-fr063-stopped-wip-explicit-project-status-20261014.py.txt",
+      "bytes": 4168,
+      "sha256": "5f0eeb5ed7016ed0b25a0550c9d1a104f4e5a32434ebf5c3a833d6b677a79d13",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "5f0eeb5ed7016ed0b25a0550c9d1a104f4e5a32434ebf5c3a833d6b677a79d13"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 224226,
+      "sha256": "406f9c5e00390bdd39b98b09f7643e961a88028d4754eda5ea4a096f3d2bf75b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "406f9c5e00390bdd39b98b09f7643e961a88028d4754eda5ea4a096f3d2bf75b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1102357,
+      "sha256": "15d221435599cbf2fdc18e0837eb52f093ba80f7abb82fdc7c07caa8c3b8be1b",
+      "testedGitVerified": true,
+      "currentEqual": false,
+      "currentSha256": "a27508413afdf2d34dd46fcf4279acd944d63a7ca4a91e1336851dc87d5028c1"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1914072,
+      "sha256": "aaf7101f791a58b9a9ceb7f94532f4af7cd7641d7550edc5146fea3d7a2ed32a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "aaf7101f791a58b9a9ceb7f94532f4af7cd7641d7550edc5146fea3d7a2ed32a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-checkpoint-provenance.json",
+      "bytes": 1175,
+      "sha256": "80c361b8878e6c94740535e28111fade4ea04524d463899b98706e5bf4e4cbec",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "80c361b8878e6c94740535e28111fade4ea04524d463899b98706e5bf4e4cbec"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "bytes": 1106,
+      "sha256": "d701c35a91cf314ab952ced7c2bf427de443ddd89f800ea1e803c361829d9963",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d701c35a91cf314ab952ced7c2bf427de443ddd89f800ea1e803c361829d9963"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "bytes": 3370,
+      "sha256": "d1f01993f6b36012043cd4c29aadb926405d3a4fc5067fa2fa6c5833b83d64ff",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "d1f01993f6b36012043cd4c29aadb926405d3a4fc5067fa2fa6c5833b83d64ff"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "bytes": 1401,
+      "sha256": "0e4931efd84018b4052236d0e0b092f843db5c9bb84a7192d131931ba7911004",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "0e4931efd84018b4052236d0e0b092f843db5c9bb84a7192d131931ba7911004"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "bytes": 1063,
+      "sha256": "9e1f41adb13eefd0367889ed556cb85e5c1ae48b671b09650f3bc755fa10234a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "9e1f41adb13eefd0367889ed556cb85e5c1ae48b671b09650f3bc755fa10234a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "bytes": 1103,
+      "sha256": "3932189d94f5f645b6d20f0a647747c30b78a624b8387f8f909688431ac9cf2e",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "3932189d94f5f645b6d20f0a647747c30b78a624b8387f8f909688431ac9cf2e"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "bytes": 893,
+      "sha256": "2e61513fc29c2aa742e122482dc2fc20f8f61e7e7c2ee1e82e98700e3cc28ae0",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "2e61513fc29c2aa742e122482dc2fc20f8f61e7e7c2ee1e82e98700e3cc28ae0"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "bytes": 800,
+      "sha256": "e55fd0a685ef2103f31ee62b78a498ab5007dfec00c9eb3c369b77522743dd90",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "e55fd0a685ef2103f31ee62b78a498ab5007dfec00c9eb3c369b77522743dd90"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "bytes": 971,
+      "sha256": "77c91b6e0735c9dacfbc810cce2e90fdbf6e7ac7fbc13aa30ff26d4ada42a59a",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "77c91b6e0735c9dacfbc810cce2e90fdbf6e7ac7fbc13aa30ff26d4ada42a59a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "bytes": 1226,
+      "sha256": "bae269bb018e8ce830b092740c1fa3a426f2ad6529dc4dc036b95fd742e8c30b",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "bae269bb018e8ce830b092740c1fa3a426f2ad6529dc4dc036b95fd742e8c30b"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "bytes": 1073,
+      "sha256": "022209a77079def972d800eaa6a944f35ac0af58fd6b1e9ae8d899c4a458e0b5",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "022209a77079def972d800eaa6a944f35ac0af58fd6b1e9ae8d899c4a458e0b5"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 14527,
+      "sha256": "facdac733d226122cc8336c8d59ecdf88db5a3a77835350edcc36673684822fc",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "facdac733d226122cc8336c8d59ecdf88db5a3a77835350edcc36673684822fc"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "bytes": 933,
+      "sha256": "b4347a982a9760e52c8f2060d61d5c8e14d4a0fae91346dc1d372c4b7ac31c23",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "b4347a982a9760e52c8f2060d61d5c8e14d4a0fae91346dc1d372c4b7ac31c23"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "bytes": 1062,
+      "sha256": "ff0cd26f3f92bc3d5d2a8bf13ce1c2dfb1a3e65b46d489cc333bb527419c5fde",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "ff0cd26f3f92bc3d5d2a8bf13ce1c2dfb1a3e65b46d489cc333bb527419c5fde"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "bytes": 1141,
+      "sha256": "97e66d2e73325b9545ebde73f2184ddc8eed2cd1fde0fccc2d0159c62683bf31",
+      "testedGitVerified": true,
+      "currentEqual": true,
+      "currentSha256": "97e66d2e73325b9545ebde73f2184ddc8eed2cd1fde0fccc2d0159c62683bf31"
+    }
+  ],
+  "currentMetadataExceptions": [
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+      "bytes": 29777,
+      "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 28873728,
+      "sha256": "65afd7a43733296e658619fff13362177df01f62f0b4349361d5bd13e4b9fbd1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+      "bytes": 366,
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1828352,
+      "sha256": "e84964773e770ca77cec7923b8b18de2eb23cb3e14029205ccc64afe7fbdf225"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25986560,
+      "sha256": "ed6768b8cd9532e53e16519a0f536d653e986b34d293f3b096a563c865883f05"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "bytes": 251160,
+      "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1828352,
+      "sha256": "e84964773e770ca77cec7923b8b18de2eb23cb3e14029205ccc64afe7fbdf225"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+      "bytes": 24394,
+      "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9275904,
+      "sha256": "909d327140aa56d942339ea52c0e18313c0ae1d990d48702a1feb66720a1c51f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+      "bytes": 366,
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25986560,
+      "sha256": "ed6768b8cd9532e53e16519a0f536d653e986b34d293f3b096a563c865883f05"
+    }
+  ],
+  "supportingSourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "bytes": 9227,
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "bytes": 10095,
+      "sha256": "2e9ca8cc49644cf7fd49710cd8586f5a342d226819bebd927032271c76c80e57",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 18952,
+      "sha256": "cec254e49a86e8fbc8c2e8350b176abc0c89ab6b1cae2107a0dd20de07500be6",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "bytes": 8291,
+      "sha256": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "bytes": 53265,
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 43996,
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "bytes": 41585,
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "bytes": 393326,
+      "sha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "bytes": 28369,
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs",
+      "bytes": 8747,
+      "sha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "bytes": 417718,
+      "sha256": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
+      "bytes": 31785,
+      "sha256": "e9bdb0d7ee9f09df6581c773485f51baed9908fc85fedacd0bb33bc302e00c96",
+      "testedGitExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 67131,
+      "sha256": "7aca6e45f193092b4e08e4aff0a144c45ff4c528dbee000c91f75de3786af037",
+      "testedGitExact": true
+    }
+  ],
+  "supportingExternalPins": {
+    "fr063-capture-first-outcome-verified-recovery-20261015T030814Z-2e2b07fd.json": "1236c337423eaf2237ad71bdc55d6e933d94fb762f968ba7921364ac75fab0f6",
+    "fr063-joint-capture-first-corrected-late2-root-frozen-20261015T025431Z-4b3e7367.json": "11a59c2eeb6e349043b43c02096617de549442290e86b97166371e2cf0131ac3",
+    "fr063-joint-capture-first-corrected-bounded-readback-20261015T025443Z-97a2ffaf.json": "d7f03e8dd0708ceee3247ddc00944567210e480b419e41f5160e4f1755cf1564",
+    "fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-corrected.md": "fb9cfa41468097c69886dc97f4c5f8b11144deef1d252cbee5ec8834dc6956da",
+    "fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-corrected-readback.json": "607bddc0f9cddd2a3dc7577076ac398b65ad916ef6c24d46b5da8d75f0502eee"
+  },
+  "metadata": {
+    "changedPaths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-corrected-readback.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-corrected.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-inspection-diagnostics.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-readback.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-accepted-carrier-recovered-input-20261015T024948Z-5cf2f24a.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-corrected-fresh-preparation-gates-20261015T024948Z-5cf2f24a.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-bounded-readback-20261015T025443Z-97a2ffaf.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-all-json-observations-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-all-trx-results-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-child-evidence-containers-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-console.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-fr063-joint-late-completion-integration-001.trx.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-full-trx-stdout.txt.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-invocation-prewritten.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-native-observations.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-native-process-result.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-plan.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-pre-assertion-root-observations.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-root-readback.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-run-location.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-runner-summary-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-strict-cleanup-origins-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-strict-cleanup-receipts-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/actual-summary.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/candidate-source-pins.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-catalog-audit.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-console.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-invocation-prewritten.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-native-process-result.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-root-readback.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-run-location.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-runner-summary-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/catalog-summary.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-console.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-invocation-prewritten.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-native-process-result.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-plan.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-root-readback.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-run-location.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-runner-summary-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/exact-plan-summary.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/fresh-binary-pins.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/manifest.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-Build-integration.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-Build-unit.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-console.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-invocation-prewritten.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-native-process-result.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-plan.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-root-readback.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-run-location.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-runner-summary-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-outcome-frozen-6b0d00fe-20261015T025431Z-4b3e7367/preparation-summary.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-corrected-late2-root-frozen-20261015T025431Z-4b3e7367.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-first-outcome-beforeimage-evidence-root-wip-20261014.json",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "nonmetadataPinsUnchanged": 158,
+    "identicalFrontSha256": "e36d7e3eb3ff207d7b538d7acec75cc18c164370181d8f620616686fdc316e2e",
+    "oldBodiesCheckboxesExact": true
+  },
+  "stages": {
+    "preparation": {
+      "summary": {
+        "Categories": [
+          "fr063-guaranteed-joint-checkpoint-provenance",
+          "fr063-joint-late-completion",
+          "fr063-joint-live-completion",
+          "fr063-joint-cold-progression",
+          "fr063-joint-retained-story",
+          "fr063-joint-new-root",
+          "fr063-joint-generation-refusal",
+          "fr063-joint-phase-refusal",
+          "fr063-joint-phase-settlement",
+          "fr063-joint-active-tail",
+          "fr063-joint-story-owner",
+          "fr063-joint-legacy-exclusion",
+          "fr063-joint-worked-example",
+          "fr063-joint-c1-treatment-defaults",
+          "fr063-joint-c1-common-mixed-guard",
+          "fr063-joint-c1-qte-default-publication",
+          "fr063-joint-c1-original-rollback"
+        ],
+        "Reasons": [
+          {
+            "category": "fr063-guaranteed-joint-checkpoint-provenance",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof. The same five rows also refuse private joint preparation without the actual installed full wave, preserving no issued authority/plan; this is a negative prerequisite, not positive prepared-cache/effect/publication qualification."
+            ]
+          },
+          {
+            "category": "fr063-joint-late-completion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry."
+            ]
+          },
+          {
+            "category": "fr063-joint-live-completion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual ProcessPlayerTurn/TerminalWaitStarted owner with real43 and nonzero correction: full union/one charge/report/story/turn/cleanup/inert repeat."
+            ]
+          },
+          {
+            "category": "fr063-joint-cold-progression",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Same-root fresh PID/empty registries from genuine common-unapplied or phase-applied pre-story pause, including actual nonzero consumed report. Real original/G/full union reconstruct; report/mechanics/projection/story/turn apply once and repeat inertly. Native child45s unchanged."
+            ]
+          },
+          {
+            "category": "fr063-joint-retained-story",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Genuine committed writer/readback-failure seed retains exact row/Ready/original/union; fresh PID independently recognizes it, forbids append/projection stamp rewrite, completes turn/cleanup once and repeats inertly."
+            ]
+          },
+          {
+            "category": "fr063-joint-new-root",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: One distinct owned physical root/fresh PID from nonzero/APPLIED producer: complete quiescent durable cohort/currentG transport, no-follow directory/file/byte comparisons, real original/G readers and late owner complete once/inert repeat."
+            ]
+          },
+          {
+            "category": "fr063-joint-generation-refusal",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual first outer Late storage admission refuses missing physicalG or exact lawful independent donorG after intact prerequisites and leases close; raw after-damage images/Ready/original/output/backups/story/turn retained without newG or second admission. Outer attempt vs inner hook distinguished."
+            ]
+          },
+          {
+            "category": "fr063-joint-phase-refusal",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Twelve literal after-tamper controls: missing marker, phase fingerprint, mixed schedule/report, basis/current control/worldtime, admitted-child signed payload digest and four header counterparts. First actual owner holds and preserves exact captured after-tamper file inventory/G/Ready/original/output/backups/turn/story without authority preflight after tamper."
+            ]
+          },
+          {
+            "category": "fr063-joint-phase-settlement",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two genuine nonzero/common-unapplied first-owner hook cases: known committed exact3member progression compensation versus foreign/uncertain debt retention. Raw phase/cohort/claim/mechanics/Ready/original/output/backups/story/turn outcomes precede oracles; no second call settles debt."
+            ]
+          },
+          {
+            "category": "fr063-joint-active-tail",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Three actual before-original43 inputs after genuine prior42 inactive owner: pending stats, uncovered canonical level with actual processed acknowledgement untouched, newQTE offer. Named inactive refusal must precede common take; request/ConfirmedHeld/source/mechanics/Ready/original/story/turn retained."
+            ]
+          },
+          {
+            "category": "fr063-joint-story-owner",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Five actual story controls: changed signed prefix, actual committed-row narrative/G edits, real append failure and real committed readback failure. Raw outcome/captured cohort/turn/debt before assertions; retain applied union/Ready/original/output/backups without second admission."
+            ]
+          },
+          {
+            "category": "fr063-joint-legacy-exclusion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two-row NONAUTHORIZING component exclusion: absent marker and genuine actual42/43/common-published v1. Requires false and all GameSession filenames/bytes plus physicalG/turn/inGame preservation."
+            ]
+          },
+          {
+            "category": "fr063-joint-worked-example",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two focused Facts: genuine QTE42/original43 -> real adapter/builder/closed actual packet shape -> exact III-to-II public correction and seven guidance surfaces/both daemon definitions. Five correlation fields omitted from document view, six remaining semantics compared; actual packet/outcomes precede relevant oracles."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-treatment-defaults",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Shared typed contribution/root assembly, private-family cache/final fences and named joint entry preserve old exact sixarg surface, procedure/course singleton history, persisted public-mixed refusal and co-tampered carrier/lifecycle final rejection. Five existing Facts only."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-common-mixed-guard",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: New private common/cache family must not authorize old generic mixed CREATE/WORSEN anchors; one existing unit Fact covers strict default-family refusal."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-qte-default-publication",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Five changed-dependency old consumers: no-offer/single-draft singleton, changed completed-v1 replay, real uncommitted rollback, CREATE-owned periodic effect plus independent ordinary resource work/replay, and isolated v1/default whole-batch compensation. Protect old adapter partition/shared single scheduler/catches. CREATE replay has two historical owners but executes once."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-original-rollback",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two exact existing hash-refusal Facts protect shared strict original/backup hash validation consumed by joint coordinated restore/install; their ordinary-file fixtures do not justify the broad historical afterlife owner."
+            ]
+          }
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "Revision": {
+          "Head": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.033671,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0362543,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.089782,
+            "Completed": true
+          },
+          {
+            "Name": "Build-integration",
+            "Seconds": 111.5694884,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 23.9825149,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0057507,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 30,
+        "WallTime": "00:02:20.3837369",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 18,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 58,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+            "fr063-joint-active-tail-integration-002",
+            "fr063-joint-c1-common-mixed-guard-unit-003",
+            "fr063-joint-c1-original-rollback-integration-004",
+            "fr063-joint-c1-qte-default-publication-integration-005",
+            "fr063-joint-c1-treatment-defaults-integration-006",
+            "fr063-joint-cold-progression-integration-007",
+            "fr063-joint-generation-refusal-integration-008",
+            "fr063-joint-late-completion-integration-009",
+            "fr063-joint-legacy-exclusion-integration-010",
+            "fr063-joint-live-completion-integration-011",
+            "fr063-joint-new-root-integration-012",
+            "fr063-joint-phase-refusal-integration-013",
+            "fr063-joint-phase-settlement-integration-014",
+            "fr063-joint-retained-story-integration-015",
+            "fr063-joint-story-owner-integration-016",
+            "fr063-joint-worked-example-integration-017",
+            "fr063-joint-worked-example-unit-018"
+          ],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "native": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "processExitCode": 0,
+        "newRunDirectories": [
+          "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories"
+        ],
+        "finishedUtc": "2026-10-15T02:52:23.418958+00:00"
+      },
+      "rootReadback": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "run": "20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories",
+        "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025002-990-599283-528fcc54b7444008b4a9987ac8c5ce85-categories",
+        "processExitCode": 0,
+        "finishedUtc": "2026-10-15T02:52:23.420679+00:00",
+        "classification": "JOINT_CAPTURE_CORRECTED_FRESH_BOTH_PREPARATION_ZERO_EXECUTION",
+        "wallTime": "00:02:20.3837369",
+        "exitCode": 0,
+        "timedOut": false,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 18,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 58,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+            "fr063-joint-active-tail-integration-002",
+            "fr063-joint-c1-common-mixed-guard-unit-003",
+            "fr063-joint-c1-original-rollback-integration-004",
+            "fr063-joint-c1-qte-default-publication-integration-005",
+            "fr063-joint-c1-treatment-defaults-integration-006",
+            "fr063-joint-cold-progression-integration-007",
+            "fr063-joint-generation-refusal-integration-008",
+            "fr063-joint-late-completion-integration-009",
+            "fr063-joint-legacy-exclusion-integration-010",
+            "fr063-joint-live-completion-integration-011",
+            "fr063-joint-new-root-integration-012",
+            "fr063-joint-phase-refusal-integration-013",
+            "fr063-joint-phase-settlement-integration-014",
+            "fr063-joint-retained-story-integration-015",
+            "fr063-joint-story-owner-integration-016",
+            "fr063-joint-worked-example-integration-017",
+            "fr063-joint-worked-example-unit-018"
+          ],
+          "Complete": false
+        },
+        "sourcePinsPrePostMatched": 160,
+        "freshBinaryPinsPrePostMatched": 11,
+        "metadataEditedBeforeRootPostReadback": false,
+        "runnerOwnedTreeCleanupSucceeded": true,
+        "runnerRuntimeCleanupSucceeded": true,
+        "verifiedUtc": "2026-10-15T02:52:30.821319+00:00",
+        "methods": 32,
+        "cases": 58,
+        "descriptors": 18,
+        "warnings": {
+          "Build-integration.log": 130,
+          "Build-unit.log": 35
+        },
+        "errors": {
+          "Build-integration.log": 0,
+          "Build-unit.log": 0
+        }
+      }
+    },
+    "exact-plan": {
+      "summary": {
+        "Categories": [
+          "fr063-guaranteed-joint-checkpoint-provenance",
+          "fr063-joint-late-completion",
+          "fr063-joint-live-completion",
+          "fr063-joint-cold-progression",
+          "fr063-joint-retained-story",
+          "fr063-joint-new-root",
+          "fr063-joint-generation-refusal",
+          "fr063-joint-phase-refusal",
+          "fr063-joint-phase-settlement",
+          "fr063-joint-active-tail",
+          "fr063-joint-story-owner",
+          "fr063-joint-legacy-exclusion",
+          "fr063-joint-worked-example",
+          "fr063-joint-c1-treatment-defaults",
+          "fr063-joint-c1-common-mixed-guard",
+          "fr063-joint-c1-qte-default-publication",
+          "fr063-joint-c1-original-rollback"
+        ],
+        "Reasons": [
+          {
+            "category": "fr063-guaranteed-joint-checkpoint-provenance",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof. The same five rows also refuse private joint preparation without the actual installed full wave, preserving no issued authority/plan; this is a negative prerequisite, not positive prepared-cache/effect/publication qualification."
+            ]
+          },
+          {
+            "category": "fr063-joint-late-completion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry."
+            ]
+          },
+          {
+            "category": "fr063-joint-live-completion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual ProcessPlayerTurn/TerminalWaitStarted owner with real43 and nonzero correction: full union/one charge/report/story/turn/cleanup/inert repeat."
+            ]
+          },
+          {
+            "category": "fr063-joint-cold-progression",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Same-root fresh PID/empty registries from genuine common-unapplied or phase-applied pre-story pause, including actual nonzero consumed report. Real original/G/full union reconstruct; report/mechanics/projection/story/turn apply once and repeat inertly. Native child45s unchanged."
+            ]
+          },
+          {
+            "category": "fr063-joint-retained-story",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Genuine committed writer/readback-failure seed retains exact row/Ready/original/union; fresh PID independently recognizes it, forbids append/projection stamp rewrite, completes turn/cleanup once and repeats inertly."
+            ]
+          },
+          {
+            "category": "fr063-joint-new-root",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: One distinct owned physical root/fresh PID from nonzero/APPLIED producer: complete quiescent durable cohort/currentG transport, no-follow directory/file/byte comparisons, real original/G readers and late owner complete once/inert repeat."
+            ]
+          },
+          {
+            "category": "fr063-joint-generation-refusal",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual first outer Late storage admission refuses missing physicalG or exact lawful independent donorG after intact prerequisites and leases close; raw after-damage images/Ready/original/output/backups/story/turn retained without newG or second admission. Outer attempt vs inner hook distinguished."
+            ]
+          },
+          {
+            "category": "fr063-joint-phase-refusal",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Twelve literal after-tamper controls: missing marker, phase fingerprint, mixed schedule/report, basis/current control/worldtime, admitted-child signed payload digest and four header counterparts. First actual owner holds and preserves exact captured after-tamper file inventory/G/Ready/original/output/backups/turn/story without authority preflight after tamper."
+            ]
+          },
+          {
+            "category": "fr063-joint-phase-settlement",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two genuine nonzero/common-unapplied first-owner hook cases: known committed exact3member progression compensation versus foreign/uncertain debt retention. Raw phase/cohort/claim/mechanics/Ready/original/output/backups/story/turn outcomes precede oracles; no second call settles debt."
+            ]
+          },
+          {
+            "category": "fr063-joint-active-tail",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Three actual before-original43 inputs after genuine prior42 inactive owner: pending stats, uncovered canonical level with actual processed acknowledgement untouched, newQTE offer. Named inactive refusal must precede common take; request/ConfirmedHeld/source/mechanics/Ready/original/story/turn retained."
+            ]
+          },
+          {
+            "category": "fr063-joint-story-owner",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Five actual story controls: changed signed prefix, actual committed-row narrative/G edits, real append failure and real committed readback failure. Raw outcome/captured cohort/turn/debt before assertions; retain applied union/Ready/original/output/backups without second admission."
+            ]
+          },
+          {
+            "category": "fr063-joint-legacy-exclusion",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two-row NONAUTHORIZING component exclusion: absent marker and genuine actual42/43/common-published v1. Requires false and all GameSession filenames/bytes plus physicalG/turn/inGame preservation."
+            ]
+          },
+          {
+            "category": "fr063-joint-worked-example",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two focused Facts: genuine QTE42/original43 -> real adapter/builder/closed actual packet shape -> exact III-to-II public correction and seven guidance surfaces/both daemon definitions. Five correlation fields omitted from document view, six remaining semantics compared; actual packet/outcomes precede relevant oracles."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-treatment-defaults",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Shared typed contribution/root assembly, private-family cache/final fences and named joint entry preserve old exact sixarg surface, procedure/course singleton history, persisted public-mixed refusal and co-tampered carrier/lifecycle final rejection. Five existing Facts only."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-common-mixed-guard",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: New private common/cache family must not authorize old generic mixed CREATE/WORSEN anchors; one existing unit Fact covers strict default-family refusal."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-qte-default-publication",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Five changed-dependency old consumers: no-offer/single-draft singleton, changed completed-v1 replay, real uncommitted rollback, CREATE-owned periodic effect plus independent ordinary resource work/replay, and isolated v1/default whole-batch compensation. Protect old adapter partition/shared single scheduler/catches. CREATE replay has two historical owners but executes once."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-original-rollback",
+            "reason": "ZERO-EXEC fresh preparation/PlanOnly input only, NOT permission for aggregate actual execution. BOTH selected unit/integration projects and complete finite candidate inventory; zero execution intent. Separate actual files are method-disjoint. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Two exact existing hash-refusal Facts protect shared strict original/backup hash validation consumed by joint coordinated restore/install; their ordinary-file fixtures do not justify the broad historical afterlife owner."
+            ]
+          }
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "Revision": {
+          "Head": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0372405,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0343331,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.0861014,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0052687,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 30,
+        "WallTime": "00:00:04.6730196",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 18,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 58,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+            "fr063-joint-active-tail-integration-002",
+            "fr063-joint-c1-common-mixed-guard-unit-003",
+            "fr063-joint-c1-original-rollback-integration-004",
+            "fr063-joint-c1-qte-default-publication-integration-005",
+            "fr063-joint-c1-treatment-defaults-integration-006",
+            "fr063-joint-cold-progression-integration-007",
+            "fr063-joint-generation-refusal-integration-008",
+            "fr063-joint-late-completion-integration-009",
+            "fr063-joint-legacy-exclusion-integration-010",
+            "fr063-joint-live-completion-integration-011",
+            "fr063-joint-new-root-integration-012",
+            "fr063-joint-phase-refusal-integration-013",
+            "fr063-joint-phase-settlement-integration-014",
+            "fr063-joint-retained-story-integration-015",
+            "fr063-joint-story-owner-integration-016",
+            "fr063-joint-worked-example-integration-017",
+            "fr063-joint-worked-example-unit-018"
+          ],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "native": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "processExitCode": 0,
+        "newRunDirectories": [
+          "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories"
+        ],
+        "finishedUtc": "2026-10-15T02:52:36.656944+00:00"
+      },
+      "rootReadback": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "run": "20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories",
+        "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025231-940-599610-a2cb895775ff4403b22278f28d812203-categories",
+        "processExitCode": 0,
+        "finishedUtc": "2026-10-15T02:52:36.658826+00:00",
+        "classification": "JOINT_CAPTURE_CORRECTED_EXACT_PLAN_ZERO_EXECUTION",
+        "wallTime": "00:00:04.6730196",
+        "exitCode": 0,
+        "timedOut": false,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 18,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 58,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+            "fr063-joint-active-tail-integration-002",
+            "fr063-joint-c1-common-mixed-guard-unit-003",
+            "fr063-joint-c1-original-rollback-integration-004",
+            "fr063-joint-c1-qte-default-publication-integration-005",
+            "fr063-joint-c1-treatment-defaults-integration-006",
+            "fr063-joint-cold-progression-integration-007",
+            "fr063-joint-generation-refusal-integration-008",
+            "fr063-joint-late-completion-integration-009",
+            "fr063-joint-legacy-exclusion-integration-010",
+            "fr063-joint-live-completion-integration-011",
+            "fr063-joint-new-root-integration-012",
+            "fr063-joint-phase-refusal-integration-013",
+            "fr063-joint-phase-settlement-integration-014",
+            "fr063-joint-retained-story-integration-015",
+            "fr063-joint-story-owner-integration-016",
+            "fr063-joint-worked-example-integration-017",
+            "fr063-joint-worked-example-unit-018"
+          ],
+          "Complete": false
+        },
+        "sourcePinsPrePostMatched": 160,
+        "freshBinaryPinsPrePostMatched": 11,
+        "metadataEditedBeforeRootPostReadback": false,
+        "runnerOwnedTreeCleanupSucceeded": true,
+        "runnerRuntimeCleanupSucceeded": true,
+        "verifiedUtc": "2026-10-15T02:52:43.123466+00:00",
+        "methods": 32,
+        "cases": 58,
+        "descriptors": 18,
+        "warnings": {},
+        "errors": {}
+      }
+    },
+    "catalog": {
+      "summary": {
+        "Categories": [
+          null
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": true,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": {
+          "Valid": true,
+          "Methods": 11588,
+          "Categories": 746,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0384286,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0335269,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.0910656,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0042047,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:05.4188793",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "native": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "processExitCode": 0,
+        "newRunDirectories": [
+          "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories"
+        ],
+        "finishedUtc": "2026-10-15T02:52:49.609692+00:00"
+      },
+      "rootReadback": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "run": "20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories",
+        "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025244-147-599816-bc7c28bf959d4e8fa0dbc70343df7dc9-categories",
+        "processExitCode": 0,
+        "finishedUtc": "2026-10-15T02:52:49.611451+00:00",
+        "classification": "JOINT_CAPTURE_CORRECTED_CATALOG_ZERO_EXECUTION",
+        "wallTime": "00:00:05.4188793",
+        "exitCode": 0,
+        "timedOut": false,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "sourcePinsPrePostMatched": 160,
+        "freshBinaryPinsPrePostMatched": 11,
+        "metadataEditedBeforeRootPostReadback": false,
+        "runnerOwnedTreeCleanupSucceeded": true,
+        "runnerRuntimeCleanupSucceeded": true,
+        "verifiedUtc": "2026-10-15T02:52:54.281157+00:00",
+        "catalogAudit": {
+          "Valid": true,
+          "Methods": 11588,
+          "Categories": 746,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "warnings": {},
+        "errors": {}
+      }
+    },
+    "actual": {
+      "summary": {
+        "Categories": [
+          "fr063-joint-late-completion"
+        ],
+        "Reasons": [
+          {
+            "category": "fr063-joint-late-completion",
+            "reason": "One finite later actual stage after whole SOURCE/FIXTURE/SELECTION and ROOT fresh official preparation/PlanOnly. SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry. Static source counts are provisional; timing unknown/expectedSeconds=null.",
+            "contracts": [
+              "FR012/FR063 accepted DESIGNv2 and approved progression/story/null-frame first contour",
+              "SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry."
+            ]
+          }
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-joint-late-completion",
+            "Seconds": 66.2542889,
+            "BudgetMinutes": 5,
+            "Completed": false
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0373197,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0281215,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.0897,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:01:08.8963900",
+        "ExitCode": 1,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 0,
+          "Failed": 2
+        },
+        "DuplicateTests": []
+      },
+      "native": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "processExitCode": 1,
+        "newRunDirectories": [
+          "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories"
+        ],
+        "finishedUtc": "2026-10-15T02:54:14.851605+00:00"
+      },
+      "rootReadback": {
+        "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "compileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+        "run": "20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories",
+        "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-025305-916-600024-dcd459db17454116964f09a1a882fed8-categories",
+        "processExitCode": 1,
+        "finishedUtc": "2026-10-15T02:54:14.853258+00:00",
+        "classification": "JOINT_CAPTURE_FIRST_CORRECTED_LATE2_OUTCOME_FAILED_PENDING_EVIDENCE",
+        "wallTime": "00:01:08.8963900",
+        "exitCode": 1,
+        "timedOut": false,
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 0,
+          "Failed": 2
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "sourcePinsPrePostMatched": 160,
+        "freshBinaryPinsPrePostMatched": 11,
+        "metadataEditedBeforeRootPostReadback": false,
+        "runnerOwnedTreeCleanupSucceeded": true,
+        "runnerRuntimeCleanupSucceeded": true,
+        "verifiedUtc": "2026-10-15T02:54:31.099000+00:00",
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "allNativeResults": [
+          {
+            "executionId": "86c4eef1-bce1-405d-a0bd-f805c3458a91",
+            "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+            "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "computerName": "28b8447448e8",
+            "duration": "00:00:36.6311916",
+            "startTime": "2026-10-15T02:53:47.1534185+00:00",
+            "endTime": "2026-10-15T02:53:47.1534378+00:00",
+            "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+            "outcome": "Failed",
+            "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+            "relativeResultsDirectory": "86c4eef1-bce1-405d-a0bd-f805c3458a91",
+            "errorMessage": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_105aee50f3e33ed70e0d0a3a74d7b78d, OperationId = resource_operation_13315963fae2873bcda818500259dd03, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+            "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+          },
+          {
+            "executionId": "fde20e35-a302-48dc-b6df-2d8eb800c560",
+            "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+            "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "computerName": "28b8447448e8",
+            "duration": "00:00:27.1661750",
+            "startTime": "2026-10-15T02:54:14.3359981+00:00",
+            "endTime": "2026-10-15T02:54:14.3359983+00:00",
+            "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+            "outcome": "Failed",
+            "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+            "relativeResultsDirectory": "fde20e35-a302-48dc-b6df-2d8eb800c560",
+            "errorMessage": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_db6db470c3fcee2b7a320d1ada92cb7d, OperationId = resource_operation_b3461f621271a2e7a6c3a57275b125a6, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+            "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+          }
+        ],
+        "skipCount": 0,
+        "duplicateTestIDs": 0,
+        "nativeObservationCount": 60,
+        "nativeObservationBoundaries": {
+          "fr063_guaranteed_native_pre_original_npc_shape": 2,
+          "qte_story_actual_client_append": 2,
+          "qte_story_actual_engine_result": 2,
+          "qte_physical_actual_occurrence": 2,
+          "fr063_joint_actual_prior42_inactive_tail": 2,
+          "fr063_joint_natural_stage43_image_before_assert": 38,
+          "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+          "fr063_confirmed_claim_inspection": 2,
+          "fr063_joint_completion_actual_prerequisites": 2,
+          "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+          "fr063_joint_completion_actual_owner_outcome": 2
+        },
+        "strictCleanupReceipts": [
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5976c2e254c643999584a32ff3d92d28",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e98b5504ed8e4e6cbae622702d7bf355",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "allParsedStrictRootsActuallyAbsent": true,
+        "strictCleanupObservation": "OBSERVED_PARSED_RECEIPTS_ONLY",
+        "childEvidenceCoverage": "NO_NAMED_CHILD_CONTAINERS_OBSERVED",
+        "strictCleanupReceiptOrigins": [
+          {
+            "receiptIndex": 0,
+            "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=31"
+          },
+          {
+            "receiptIndex": 1,
+            "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=31"
+          }
+        ],
+        "childEvidenceContainerCount": 0,
+        "binaryProvenanceScope": "selected10artifacts+declaredchildImmutable; actualchildloadedbindings need separate evidence inspection",
+        "allJsonObservationCount": 62,
+        "evidenceReview": "PENDING"
+      }
+    }
+  },
+  "nativeTRXResults": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+      "outcome": "Failed",
+      "message": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_105aee50f3e33ed70e0d0a3a74d7b78d, OperationId = resource_operation_13315963fae2873bcda818500259dd03, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+      "outcome": "Failed",
+      "message": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_db6db470c3fcee2b7a320d1ada92cb7d, OperationId = resource_operation_b3461f621271a2e7a6c3a57275b125a6, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "nativeObservationsMatched": 60,
+  "nativeSnapshots": [
+    {
+      "CheckpointPresent": true,
+      "CorrectionReady": true,
+      "CanonicalRefreshPresent": true,
+      "CanonicalDispositionPropertyPresent": true,
+      "CanonicalDisposition": "PublicationUncertain",
+      "IssuePropertyPresent": true,
+      "IssueCollectionPresent": true,
+      "IssueCount": 1,
+      "MaximumReportedIssues": 32,
+      "ReportedIssueCount": 1,
+      "IssueRowsTruncated": false,
+      "CompletePublicIssueProjectionSha256": "E3C693D84DE97C5197E9008637E29612C035E2571410AF984AA88A166566E777",
+      "Issues": [
+        {
+          "Index": 0,
+          "Code": {
+            "Value": "wound_plan_joint_common_plan_invalid",
+            "OriginalLength": 36,
+            "Truncated": false,
+            "FullUtf8Sha256": "DEC327B2EE9FE6BE6436D622E70697F998499CAA045AA227A1C1FBC971704E92"
+          },
+          "FilePath": {
+            "Value": "acceptedTurn.wounds",
+            "OriginalLength": 19,
+            "Truncated": false,
+            "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+          },
+          "Message": {
+            "Value": "Wound accepted mechanics path 'game_state/control/pending_spiritual_wound_decisions.json' has no exact before-image. (Parameter 'BeforeImages')",
+            "OriginalLength": 143,
+            "Truncated": false,
+            "FullUtf8Sha256": "C7E914A3FEC9E456B85D8E20FBF90E8E9BC940B394B41474372747960F3A55E5"
+          }
+        }
+      ],
+      "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+    },
+    {
+      "CheckpointPresent": true,
+      "CorrectionReady": true,
+      "CanonicalRefreshPresent": true,
+      "CanonicalDispositionPropertyPresent": true,
+      "CanonicalDisposition": "PublicationUncertain",
+      "IssuePropertyPresent": true,
+      "IssueCollectionPresent": true,
+      "IssueCount": 1,
+      "MaximumReportedIssues": 32,
+      "ReportedIssueCount": 1,
+      "IssueRowsTruncated": false,
+      "CompletePublicIssueProjectionSha256": "E3C693D84DE97C5197E9008637E29612C035E2571410AF984AA88A166566E777",
+      "Issues": [
+        {
+          "Index": 0,
+          "Code": {
+            "Value": "wound_plan_joint_common_plan_invalid",
+            "OriginalLength": 36,
+            "Truncated": false,
+            "FullUtf8Sha256": "DEC327B2EE9FE6BE6436D622E70697F998499CAA045AA227A1C1FBC971704E92"
+          },
+          "FilePath": {
+            "Value": "acceptedTurn.wounds",
+            "OriginalLength": 19,
+            "Truncated": false,
+            "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+          },
+          "Message": {
+            "Value": "Wound accepted mechanics path 'game_state/control/pending_spiritual_wound_decisions.json' has no exact before-image. (Parameter 'BeforeImages')",
+            "OriginalLength": 143,
+            "Truncated": false,
+            "FullUtf8Sha256": "C7E914A3FEC9E456B85D8E20FBF90E8E9BC940B394B41474372747960F3A55E5"
+          }
+        }
+      ],
+      "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+    }
+  ],
+  "cleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5976c2e254c643999584a32ff3d92d28",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e98b5504ed8e4e6cbae622702d7bf355",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allTwoParsedRootsActuallyAbsent": true,
+  "authorInspectionDiagnostics": {
+    "path": "/workspace/boe-cloud-tools-20261014/fr063-joint-beforeimage-readonly-diagnosis-6b0d00fe-20261015T030134Z-inspection-diagnostics.json",
+    "sha256": "e3fa693faba3f55d59774ec2ff0876b75818ed832ee8dfbc719923bd693975de"
+  },
+  "projectExecutionByReviewer": false,
+  "repositoryWritesByReviewer": false
+}

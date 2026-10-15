@@ -1,0 +1,21 @@
+{
+  "checkpoint": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+  "publicationNative": "c1d028 session44358/7cc697 exit0",
+  "recoveryNative": "fc7636 session68452/e2ba87 exit0",
+  "readback": "/workspace/boe-cloud-tools-20261012/1536-t070-story-wip-recovery-readback.json",
+  "readbackSHA256": "0cc7fe7c82f9e847683e92ac4dbbbdc106c5ab4136039f21f24cef8395869786",
+  "verification": {
+    "checkpoint": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+    "remoteSha": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2866,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2337,
+    "consumerProduction": "First capture-corrected Late2 failure and complete beforeimage diagnosis preserved; independent EVIDENCE pending; source/runtime HELD",
+    "verifiedUtc": "2026-10-15T03:08:03.643690+00:00"
+  },
+  "sourceRuntime": "HELD pending independent outcome EVIDENCE",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "utc": "2026-10-15T03:08:14.440473+00:00"
+}
