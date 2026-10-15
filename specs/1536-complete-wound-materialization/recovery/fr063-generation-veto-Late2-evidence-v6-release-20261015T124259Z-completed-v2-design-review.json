@@ -1,0 +1,784 @@
+{
+  "schemaVersion": 1,
+  "kind": "LATE2_EVIDENCE_AND_CORRECTED_V6_PROVENANCE",
+  "createdUtc": "2026-10-15T12:42:59.453583+00:00",
+  "configurationRequested": {
+    "model": "Astra",
+    "reasoningEffort": "XHigh",
+    "inherited": true
+  },
+  "configurationActual": "Backend/model/effort telemetry unavailable",
+  "reviewedSource": "cedb907ffead2c0f6e9edb7f99b177e65ad9bb9d",
+  "testedSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "initialMetadata": "3ce8024bd596098ceb2295b7dd7498618a94ba9a",
+  "observedCleanHead": "1d5a843eca4c9dd7953cb9a265b18cf1dad63fe0",
+  "remoteVerification": "Parent reported exact; independent local Git/blob checks",
+  "verdicts": {
+    "Late2Evidence": "ACCEPTED_EXACT_2_PASS_EXTENT",
+    "correctedControllerV6": "ACCEPTED_STATIC_PROVENANCE_ONLY",
+    "binaryReuse": "ACCEPTED_ONLY_UNCHANGED_2aeed_BUILD_INPUTS_AND_EXACT11",
+    "fullFR063": "OPEN"
+  },
+  "packet": {
+    "path": "specs/1536-complete-wound-materialization/recovery/fr063-generation-veto-corrected-Late2-frozen-2aeedaa2f-20261015T122004Z",
+    "manifestSha256": "193e21b0777234f3b31c2eec5f2df5e443af51e31055e8c55c211c1b35fefdbc",
+    "chainsVerified": 62,
+    "sourceGitPinsVerified": 268,
+    "sourcePinManifestSha256": "69e1396bc6c98563cfbdf28383b34b92decb571be75e40f84a5db30c7c516b34",
+    "freshBinaryPinManifestSha256": "7870ca0d7850caf7d1ef6030f4472ed2ff0611ced2daa3774d28a32b3437486b",
+    "gateProofSha256": "48c2743a6ba3e15c56cf1d71d81fd8242dd905782f31ac939c8161f68f047156",
+    "gateEvidenceHashesVerified": true,
+    "exactUsedA6Sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e"
+  },
+  "stages": {
+    "preparation": {
+      "source": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "run": "20261015-122017-648-48358-e309050b4cbf43f787c9a3e7998a7d39-categories",
+      "wallTime": "00:02:18.2053115",
+      "exitCode": 0,
+      "timedOut": false,
+      "methods": 49,
+      "cases": 123,
+      "descriptors": 24,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 24,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 123,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+          "fr063-joint-active-tail-integration-002",
+          "fr063-joint-c1-common-mixed-guard-unit-003",
+          "fr063-joint-c1-original-rollback-integration-004",
+          "fr063-joint-c1-qte-default-publication-integration-005",
+          "fr063-joint-c1-treatment-defaults-integration-006",
+          "fr063-joint-cold-progression-integration-007",
+          "fr063-joint-generation-admission-unit-008",
+          "fr063-joint-generation-refusal-integration-009",
+          "fr063-joint-late-completion-integration-010",
+          "fr063-joint-legacy-exclusion-integration-011",
+          "fr063-joint-live-completion-integration-012",
+          "fr063-joint-new-root-integration-013",
+          "fr063-joint-output-basis-unit-014",
+          "fr063-joint-output-binding-refusal-integration-015",
+          "fr063-joint-output-draft-refusal-integration-016",
+          "fr063-joint-output-positive-integration-017",
+          "fr063-joint-output-scene-refusal-integration-018",
+          "fr063-joint-phase-refusal-integration-019",
+          "fr063-joint-phase-settlement-integration-020",
+          "fr063-joint-retained-story-integration-021",
+          "fr063-joint-story-owner-integration-022",
+          "fr063-joint-worked-example-integration-023",
+          "fr063-joint-worked-example-unit-024"
+        ],
+        "Complete": false
+      },
+      "sourcePinsPrePostMatched": 268,
+      "freshBinaryPinsPrePostMatched": 11
+    },
+    "exact-plan": {
+      "source": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "run": "20261015-122308-195-48713-13650bb392dd4458b61d281eb6b6fc24-categories",
+      "wallTime": "00:00:02.4947693",
+      "exitCode": 0,
+      "timedOut": false,
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 2,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "fr063-joint-late-completion-integration-001"
+        ],
+        "Complete": false
+      },
+      "sourcePinsPrePostMatched": 268,
+      "freshBinaryPinsPrePostMatched": 11
+    },
+    "catalog": {
+      "source": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "run": "20261015-122329-878-48873-94b2b8cd26f54707a2f795e93d6de273-categories",
+      "wallTime": "00:00:05.5674815",
+      "exitCode": 0,
+      "timedOut": false,
+      "methods": null,
+      "cases": null,
+      "descriptors": null,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "sourcePinsPrePostMatched": 268,
+      "freshBinaryPinsPrePostMatched": 11
+    },
+    "actual": {
+      "source": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "run": "20261015-122407-301-49090-bd5c5d60d58e45c9af5370e6179a7be7-categories",
+      "wallTime": "00:02:32.7559348",
+      "exitCode": 0,
+      "timedOut": false,
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "sourcePinsPrePostMatched": 268,
+      "freshBinaryPinsPrePostMatched": 11
+    }
+  },
+  "oracles": {
+    "trxReparsedExactAllJson": true,
+    "nativeCases": [
+      {
+        "executionId": "008ed826-8713-437f-b9e3-59bdc27048ee",
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:27.5271093",
+        "startTime": "2026-10-15T12:25:39.2812130+00:00",
+        "endTime": "2026-10-15T12:25:39.2812368+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "008ed826-8713-437f-b9e3-59bdc27048ee"
+      },
+      {
+        "executionId": "7ca2dbce-9e5d-4656-9414-09e798957b36",
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:00.0918743",
+        "startTime": "2026-10-15T12:26:39.3771045+00:00",
+        "endTime": "2026-10-15T12:26:39.3771050+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7ca2dbce-9e5d-4656-9414-09e798957b36"
+      }
+    ],
+    "cleanup": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fa72f0f77d3341e48fb114fe7d8a3ccf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c1d54036f35e469998427cee1f6a8301",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "progression": [
+      {
+        "requestId": "64b4dfb944444f96a9b259f1153e3316",
+        "nonzero": true,
+        "worldCycles": 1,
+        "lastWorldBefore": 1260,
+        "lastWorldAfter": 1500,
+        "signedOriginalExact": true,
+        "allFourImageDigestsVerified": true,
+        "fullPairEqualExceptPhase": true,
+        "independentArithmeticAllFieldsEqual": true
+      },
+      {
+        "requestId": "1b088004c2bb421baaac13c0f9b2c497",
+        "nonzero": false,
+        "worldCycles": 0,
+        "lastWorldBefore": 1260,
+        "lastWorldAfter": 1260,
+        "signedOriginalExact": true,
+        "allFourImageDigestsVerified": true,
+        "fullPairEqualExceptPhase": true,
+        "independentArithmeticAllFieldsEqual": true
+      }
+    ],
+    "union": [
+      {
+        "requestId": "64b4dfb944444f96a9b259f1153e3316",
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "distinctWounds": true,
+        "receiptCreateIdentityMatches": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "fullOwnerCanonicalValidationReported": true,
+        "actualTurn": 43
+      },
+      {
+        "requestId": "1b088004c2bb421baaac13c0f9b2c497",
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "distinctWounds": true,
+        "receiptCreateIdentityMatches": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "fullOwnerCanonicalValidationReported": true,
+        "actualTurn": 43
+      }
+    ],
+    "repeats": [
+      {
+        "paths": 84,
+        "turn": 43,
+        "entireRecordedMapsEqual": true
+      },
+      {
+        "paths": 84,
+        "turn": 43,
+        "entireRecordedMapsEqual": true
+      }
+    ],
+    "childEvidence": "NONE_IN_LATE2",
+    "buildWarnings": {
+      "unit": 35,
+      "integration": 129
+    },
+    "buildErrors": 0,
+    "catalog": {
+      "Valid": true,
+      "Methods": 11605,
+      "Categories": 752,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "reportRemovalHistory": [
+      {
+        "nonzero": true,
+        "removals": [
+          {
+            "tx": "09900fa792534b1598962ce04f6ad43c",
+            "role": "original_baseline_restore",
+            "memberCount": 8,
+            "paths": [
+              "game_state/control/pending_wound_resolutions.json",
+              "game_state/control/progression_report.json",
+              "game_state/control/progression_schedule.json",
+              "game_state/control/qte_runtime.json",
+              "output/debug_logs.json",
+              "output/interface_updates.json",
+              "output/mortal_wound_decisions.json",
+              "output/narrative_response.json"
+            ]
+          },
+          {
+            "tx": "93054ae7eccb4658a927bc78916e4df7",
+            "role": "progression_consumption",
+            "memberCount": 3,
+            "paths": [
+              "game_state/control/progression_schedule.json",
+              "game_state/control/progression_report.json",
+              "game_state/wounds/mortal_qte_decision_publication.json"
+            ]
+          }
+        ]
+      },
+      {
+        "nonzero": false,
+        "removals": []
+      }
+    ],
+    "outputStoryBinding": [
+      {
+        "requestId": "64b4dfb944444f96a9b259f1153e3316",
+        "outputBindingFullNarrativeHashVerified": true,
+        "boundCreateIdsVerified": true,
+        "retainedGMatchesTypedTreatAndStory": true,
+        "story43": true
+      },
+      {
+        "requestId": "1b088004c2bb421baaac13c0f9b2c497",
+        "outputBindingFullNarrativeHashVerified": true,
+        "boundCreateIdsVerified": true,
+        "retainedGMatchesTypedTreatAndStory": true,
+        "story43": true
+      }
+    ]
+  },
+  "freshBinaryPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+      "bytes": 29777,
+      "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 28911616,
+      "sha256": "922d935bdbceec661b4cc005696de0ebc36c2b67870af87339ea9229f070e42e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+      "bytes": 366,
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1828352,
+      "sha256": "19787ae35ece770761f3538e25fb175a873df88e4c4697a5b9d784ca55ba4b57"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26020352,
+      "sha256": "f8f687ee93eb27fdd315e2dc24724d045cccd0bdc1b3a2284b5a2675d0e5aa91"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "bytes": 251160,
+      "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1828352,
+      "sha256": "19787ae35ece770761f3538e25fb175a873df88e4c4697a5b9d784ca55ba4b57"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+      "bytes": 24394,
+      "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9319936,
+      "sha256": "c59957647f6c72ca117b5e6255b265783f1561586e7dd1ac27f8cc0d9b04b300"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+      "bytes": 366,
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26020352,
+      "sha256": "f8f687ee93eb27fdd315e2dc24724d045cccd0bdc1b3a2284b5a2675d0e5aa91"
+    }
+  ],
+  "trackedEvidenceToolPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-generation-veto-corrected-Late2-frozen-2aeedaa2f-20261015T122004Z/manifest.json",
+      "bytes": 30668,
+      "sha256": "193e21b0777234f3b31c2eec5f2df5e443af51e31055e8c55c211c1b35fefdbc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v6-20261015.py.txt",
+      "bytes": 10299,
+      "sha256": "69a0419a793cd64ccbfa117746e6e363041193d00a5d5791115407257a5c9b9d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-2aeedaa2f-20261015.json",
+      "bytes": 7411,
+      "sha256": "4dc5298fc93ca5b8a6a119b9b6c25bffdb29e840c134d082b2912ae4c986adad"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v6-20261015.py.txt",
+      "bytes": 17019,
+      "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-generation-veto-Late2-root-evidence-readback-20261015T123046Z.json",
+      "bytes": 1639,
+      "sha256": "337d51f16bd29808405f774a12a41ffd72a92c7d3d9c488650dd060d0f71a945"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1703006,
+      "sha256": "ffd2f26ed6289c467fb4cd7cf0e141a5c71ea00415f14a254ee55462b29a96f4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1203622,
+      "sha256": "ffbb5d51826e873d1738da3259a9dc9b336b0b87689e33d312ccbf5fb5b6f7e0"
+    }
+  ],
+  "controller": {
+    "sha256": "69a0419a793cd64ccbfa117746e6e363041193d00a5d5791115407257a5c9b9d",
+    "staticOnly": true,
+    "executed": false,
+    "resolvedFinding": "Old global distinct-root count was not per-case bijection; corrected lines120-142 require one index/root percase, distinct roots and all receipt indices attributed",
+    "priorUnacceptedHash": "8386398aae2c4f2bcddc7c0c109eb563740cdf85f73e28cf757c5fd43ae6be04",
+    "remainingBlockers": []
+  },
+  "inventory": {
+    "sha256": "4dc5298fc93ca5b8a6a119b9b6c25bffdb29e840c134d082b2912ae4c986adad",
+    "rowsVerified": 20,
+    "freshOfficialTotals": [
+      49,
+      123,
+      24
+    ],
+    "allDescriptorBudgetsVerified": true,
+    "rows": [
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+        "categories": [
+          "fr063-joint-active-tail"
+        ],
+        "methods": 1,
+        "cases": 3,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-active-tail-integration-002": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+        "categories": [
+          "fr063-joint-c1-treatment-defaults",
+          "fr063-joint-c1-common-mixed-guard",
+          "fr063-joint-c1-qte-default-publication",
+          "fr063-joint-c1-original-rollback"
+        ],
+        "methods": 13,
+        "cases": 17,
+        "descriptors": 4,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+          "fr063-joint-c1-original-rollback-integration-004": 3,
+          "fr063-joint-c1-qte-default-publication-integration-005": 8,
+          "fr063-joint-c1-treatment-defaults-integration-006": 4
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+        "categories": [
+          "fr063-guaranteed-joint-checkpoint-provenance"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-guaranteed-joint-checkpoint-provenance-integration-001": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+        "categories": [
+          "fr063-joint-cold-progression"
+        ],
+        "methods": 3,
+        "cases": 3,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-cold-progression-integration-007": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+        "categories": [
+          "fr063-joint-generation-refusal"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-generation-refusal-integration-009": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+        "categories": [
+          "fr063-joint-late-completion"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-late-completion-integration-010": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+        "categories": [
+          "fr063-joint-legacy-exclusion"
+        ],
+        "methods": 1,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-legacy-exclusion-integration-011": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+        "categories": [
+          "fr063-joint-live-completion"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-live-completion-integration-012": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+        "categories": [
+          "fr063-joint-new-root"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-new-root-integration-013": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+        "categories": [
+          "fr063-joint-phase-refusal"
+        ],
+        "methods": 1,
+        "cases": 12,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-phase-refusal-integration-019": 15
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+        "categories": [
+          "fr063-joint-phase-settlement"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-phase-settlement-integration-020": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+        "categories": [
+          "fr063-joint-retained-story"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-retained-story-integration-021": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+        "categories": [
+          "fr063-joint-story-owner"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-story-owner-integration-022": 10
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+        "categories": [
+          "fr063-joint-worked-example"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 2,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-worked-example-integration-023": 3,
+          "fr063-joint-worked-example-unit-024": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+        "categories": [
+          "fr063-joint-output-basis"
+        ],
+        "methods": 3,
+        "cases": 19,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-basis-unit-014": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+        "categories": [
+          "fr063-joint-output-binding-refusal"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-binding-refusal-integration-015": 7
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+        "categories": [
+          "fr063-joint-output-draft-refusal"
+        ],
+        "methods": 1,
+        "cases": 4,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-draft-refusal-integration-016": 6
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+        "categories": [
+          "fr063-joint-output-positive"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-positive-integration-017": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+        "categories": [
+          "fr063-joint-output-scene-refusal"
+        ],
+        "methods": 1,
+        "cases": 6,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-scene-refusal-integration-018": 7
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-generation-admission.json",
+        "categories": [
+          "fr063-joint-generation-admission"
+        ],
+        "methods": 9,
+        "cases": 29,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-generation-admission-unit-008": 3
+        }
+      }
+    ]
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-generation-admission.json"
+  ],
+  "conditionalNext": {
+    "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+    "expected": [
+      2,
+      2,
+      1
+    ],
+    "conditions": [
+      "helper exact9/29/1 native0 complete29PASS",
+      "29 actual per-case distinct removed root bijection with true/null and roots absent",
+      "ROOT qualified native and cleanup raw evidence",
+      "immutable helper freeze; stop on any failure/missing proof",
+      "fresh singleton current metadata gate/sourcepins and exactPlan",
+      "original2aeed11 binary payloads reverified"
+    ],
+    "G2ExtraRequirements": [
+      "actual missing-G absence and target/donor raw preservation",
+      "outer attempted/inner not entered/handled null/exacttypedrefusal",
+      "two actual children entry/final3Default+5context and native0/PID/EOF/timeout evidence",
+      "real cleanup origins and roots absent",
+      "freeze before diagnosis"
+    ]
+  },
+  "independentEvidenceRequiredBeforeSuccessors": "Combined unit29 and corrected actualG2",
+  "heldSuccessors": [
+    "phase12",
+    "settlement2",
+    "active3-refusal-only",
+    "story5",
+    "legacy2",
+    "worked2",
+    "C1last17"
+  ],
+  "metadataTransfer": {
+    "allowed": [
+      "byte-identical review copies",
+      "accurate identical plan/tasks fronts",
+      "added immutable recovery evidence/readbacks"
+    ],
+    "checkedCurrentDiffPaths": 68,
+    "mustRemainUnchanged": [
+      "product",
+      "tests",
+      "config",
+      "build inputs",
+      "approved runtime-tool behavior"
+    ],
+    "compiledSourceMustRemainTruthful": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+    "currentSourcePinsAndSingletonGateMustBeReminted": true,
+    "prePost11PayloadVerification": true,
+    "passingMetadataAloneRequiresRebuild": false,
+    "codeChangeInvalidatesReuse": true
+  },
+  "manualPreparedBatch": "UNREVIEWED_UNUSED",
+  "historicalPasses": "Original qualified SHAs only; prior dependency transfer conditions retained",
+  "newChildOrHelperEvidenceFromLate2": false,
+  "reviewerExecutedRuntime": false,
+  "repositoryWrites": false,
+  "reviewerStopped": true,
+  "mdReport": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-generation-veto-Late2-evidence-v6-release-20261015T124259Z-completed-v2-design-review.md",
+    "sha256": "666fd926a664a55eeb43fd2e9fca826d044621d064bc0868b6e7b94c7f1c2c51"
+  }
+}
