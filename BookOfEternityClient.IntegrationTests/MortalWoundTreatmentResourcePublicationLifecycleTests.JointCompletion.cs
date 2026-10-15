@@ -89,6 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         string generation = null!;
         Dictionary<string, byte[]?> before = new(StringComparer.Ordinal);
         var authoredPublicOutputs = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        byte[]? correctedNarrativeForBinding = null;
         byte[]? authoredProgressionReport = null;
         JsonObject heldCommand = new();
 
@@ -346,6 +347,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
+        if (normalizeNarrativeBeforeCheckpoint)
+        {
+            var correctedNarrative = Assert.IsType<byte[]>(correctedNarrativeForBinding);
+            var markers = milestones.Where(row => row.Path == MortalQteDecisionPublication.StatePath).ToArray();
+            Assert.NotEmpty(markers);
+            foreach (var marker in markers)
+            {
+                var binding = ParseJsonObjectBytes(Encoding.UTF8.GetBytes(marker.Raw))["outputBinding"]!;
+                Assert.Equal(correctedNarrative, Convert.FromBase64String(binding["narrativeBase64"]!.GetValue<string>()));
+                Assert.Equal(MortalArchiveHash(correctedNarrative), binding["narrativeHash"]!.GetValue<string>());
+            }
+        }
         if (pauseAppliedForCold || pauseUnappliedForCold)
         {
             Assert.True(pauseUnappliedForCold ? unappliedPauseReached : appliedPauseReached);
@@ -449,10 +462,35 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.True(JsonNode.DeepEquals(decision, authoredDecision));
                         var corrected = authoredDecision.DeepClone().AsObject();
                         corrected["proposal"]!["severity"] = "II";
+                        var resubmittedPublicOutputs = authoredPublicOutputs.ToDictionary(
+                            pair => pair.Key, pair => pair.Value.ToArray(), StringComparer.Ordinal);
+                        if (normalizeNarrativeBeforeCheckpoint)
+                        {
+                            var initialPublicScene = ParseJsonObjectBytes(authoredPublicOutputs["output/narrative_response.json"]);
+                            Assert.Equal(scene.Replace("\n", "`n", StringComparison.Ordinal), initialPublicScene["response"]!.GetValue<string>());
+                            var checkpoint = ParseJsonObjectBytes(Assert.IsType<byte[]>(
+                                images[WoundAcceptedTurnSnapshotContract.PendingResolutionPath]))["jointRepairCheckpoint"]!;
+                            var capturedBytes = Convert.FromBase64String(checkpoint["narrativeBase64"]!.GetValue<string>());
+                            Assert.Equal(MortalArchiveHash(capturedBytes), checkpoint["narrativeHash"]!.GetValue<string>());
+                            Assert.False(AcceptedTurnOutputProjector.ProjectNarrative(CanonicalJsonUtf8.DecodeOneOptionalBom(capturedBytes)).Changed);
+                            // The genuine FIRST checkpoint is an oracle only. Public reply
+                            // fields come from the initial GM input and the known scene.
+                            var expectedFirstScene = initialPublicScene.DeepClone().AsObject();
+                            expectedFirstScene["response"] = scene;
+                            Assert.True(JsonNode.DeepEquals(expectedFirstScene, ParseJsonObjectBytes(capturedBytes)));
+                            var reply = expectedFirstScene.DeepClone().AsObject();
+                            var firstTimestamp = initialPublicScene["timestamp"]!.GetValue<string>();
+                            reply["timestamp"] = DateTimeOffset.Parse(firstTimestamp, System.Globalization.CultureInfo.InvariantCulture)
+                                .AddSeconds(1).ToString("O", System.Globalization.CultureInfo.InvariantCulture);
+                            Assert.NotEqual(firstTimestamp, reply["timestamp"]!.GetValue<string>());
+                            correctedNarrativeForBinding = Encoding.UTF8.GetBytes(reply.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                            resubmittedPublicOutputs["output/narrative_response.json"] = correctedNarrativeForBinding;
+                        }
                         // Offline MAIN-GM resubmits the COMPLETE actual43 public turn
-                        // after real baseline restore, changing only the allowed severity.
+                        // after real baseline restore. The normalized positive additionally
+                        // exercises the permitted pre-seal timestamp-only scene correction.
                         // Never copy canonical/private command, pending, source or seal roots.
-                        foreach (var publicOutput in authoredPublicOutputs)
+                        foreach (var publicOutput in resubmittedPublicOutputs)
                         {
                             if (publicOutput.Key == MortalWoundOpportunityAdapter.DecisionPath) continue;
                             File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);
@@ -462,7 +500,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         if (nonzeroProgression)
                             File.WriteAllBytes(_fs.ResolvePath(ProgressionScheduleService.ReportPath),
                                 Assert.IsType<byte[]>(authoredProgressionReport));
-                        foreach (var publicOutput in authoredPublicOutputs)
+                        foreach (var publicOutput in resubmittedPublicOutputs)
                         {
                             if (publicOutput.Key != MortalWoundOpportunityAdapter.DecisionPath)
                                 Assert.Equal(publicOutput.Value, File.ReadAllBytes(_fs.ResolvePath(publicOutput.Key)));
@@ -474,7 +512,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         var severityReverted = actualCorrected.DeepClone().AsObject();
                         severityReverted["proposal"]!["severity"] = "III";
                         Assert.True(JsonNode.DeepEquals(authoredDecision, severityReverted));
-                        Assert.Equal(scene, ParseJsonObjectBytes(authoredPublicOutputs["output/narrative_response.json"])["response"]!.GetValue<string>());
+                        Assert.Equal(scene, ParseJsonObjectBytes(resubmittedPublicOutputs["output/narrative_response.json"])["response"]!.GetValue<string>());
                         // Correlated repair Ready is LAST, after complete public readback.
                         File.WriteAllText(_fs.ResolvePath("game_state/control/validation_repair_ready.json"),
                             JsonSerializer.Serialize(new { sessionId = original.SessionId, requestId = original.RequestId,

@@ -24,6 +24,44 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_NonzeroReportConsumedBeforeAppliedColdCompletesWithoutRecreation() =>
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true);
 
+    private static async Task AssertJointColdSignedStoryInventoryAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, LiveTurnPendingSnapshotManifest manifest, byte[] originalStoryPrefix)
+    {
+        // ReadCurrent already authenticated this exact manifest under this lease.
+        // Histories have signed TEXT hashes, not canonical snapshot-file leaves.
+        var histories = Assert.IsType<Dictionary<string, string>>(manifest.ClientOwnedValidationHashes);
+        Assert.Contains("game_state/history/chat_log.json", histories.Keys, StringComparer.Ordinal);
+        Assert.Contains(QteStoryPath, histories.Keys, StringComparer.Ordinal);
+        var signedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pair in histories)
+        {
+            Assert.True(signedNames.Add(pair.Key), "ambiguous signed history: " + pair.Key);
+            Assert.True(pair.Key == "game_state/history/chat_log.json" ||
+                (pair.Key.StartsWith("stories/", StringComparison.OrdinalIgnoreCase) && pair.Key.EndsWith(".jsonl", StringComparison.OrdinalIgnoreCase)));
+            Assert.DoesNotContain('\\', pair.Key);
+            Assert.DoesNotContain(pair.Key.Split('/'), part => part is "" or "." or "..");
+            Assert.NotNull(pair.Value);
+            Assert.True(pair.Value.Length == 0 || (pair.Value.Length == 64 && pair.Value.All(Uri.IsHexDigit)));
+            if (string.Equals(pair.Key, QteStoryPath, StringComparison.OrdinalIgnoreCase)) Assert.Equal(QteStoryPath, pair.Key);
+            var image = pair.Key == QteStoryPath ? originalStoryPrefix : await files.ReadFileBytesAsync(lease, pair.Key);
+            if (pair.Value.Length == 0) Assert.Null(image);
+            else
+            {
+                Assert.NotNull(image);
+                Assert.Equal(pair.Value.ToUpperInvariant(), PendingTurnSnapshotAuthority.ComputeSha256(
+                    CanonicalJsonUtf8.DecodeOneOptionalBom(image!)).ToUpperInvariant());
+            }
+        }
+        var actualNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var name in GameEngine.SelectOriginalStoryContinuityFiles(files.EnumerateFiles(lease, "*")))
+        {
+            Assert.True(actualNames.Add(name), "ambiguous physical story: " + name);
+            Assert.Contains(name, histories.Keys, StringComparer.Ordinal);
+        }
+        foreach (var pair in histories.Where(row => row.Key != "game_state/history/chat_log.json" && row.Value.Length != 0))
+            Assert.Contains(pair.Key, actualNames);
+    }
+
     private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
         string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied",
         string? refusalScenario = null, bool newPhysicalRoot = false, bool recoverRetainedStoryRow = false)
@@ -99,6 +137,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["refusalScenario"] = refusalScenario,
             ["newPhysicalRoot"] = newPhysicalRoot, ["sourceRoot"] = _fs.BasePath, ["expectedRoot"] = childRoot,
             ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
+            ["originalStorySha256"] = MortalArchiveHash(Assert.IsType<byte[]>(originalBefore[QteStoryPath])),
+            ["originalStoryLength"] = originalBefore[QteStoryPath]!.Length,
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
                 pair => pair.Value is null ? null : MortalArchiveHash(pair.Value), StringComparer.Ordinal))
@@ -313,13 +353,22 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(context["generationSha256"]!.GetValue<string>(), MortalArchiveHash(files.ReadLocalGenerationSnapshot(lease).Bytes));
                 if (scenario is 7 or 8) actualGeneration = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
                 var read = PendingTurnSnapshotReader.ReadCurrent(files, lease,
-                    ["game_state/meta/soul_state.json", WoundHistoryState.HistoryPath, QteStoryPath]);
+                    ["game_state/meta/soul_state.json", WoundHistoryState.HistoryPath]);
                 Assert.True(read.Success, DescribeValidationIssues(read.Issues));
                 original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
                 Assert.Equal(context["sessionId"]!.GetValue<string>(), original.SessionId);
                 Assert.Equal(context["requestId"]!.GetValue<string>(), original.RequestId);
                 Assert.Equal(context["snapshotToken"]!.GetValue<string>(), original.SnapshotToken);
                 Assert.Equal(43, original.TurnNumber);
+                var manifest = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(
+                    CanonicalJsonUtf8.DecodeOneOptionalBom(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease,
+                        LiveTurnPreparationService.PendingTurnSnapshotManifestPath))),
+                    LiveTurnPreparationService.ManifestHashJsonOptions, "cold actual authenticated manifest");
+                Assert.NotNull(manifest);
+                Assert.Equal(original.SessionId, manifest!.SessionId);
+                Assert.Equal(original.RequestId, manifest.RequestId);
+                Assert.Equal(original.SnapshotToken, manifest.ManifestPayloadHash);
+                Assert.Equal(original.TurnNumber, manifest.TurnNumber);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
                 var observedMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
                 Assert.Equal(scenario is 1 or 5 or 6 ? "unapplied" : "applied", observedMarker["progression"]!["phase"]!.GetValue<string>());
@@ -355,13 +404,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                         await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                 }
                 storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
+                var originalStoryLength = context["originalStoryLength"]!.GetValue<int>();
+                Assert.NotNull(storyBefore);
+                Assert.InRange(originalStoryLength, 1, storyBefore!.Length);
+                var originalStoryPrefix = storyBefore.AsSpan(0, originalStoryLength).ToArray();
+                Assert.Equal(context["originalStorySha256"]!.GetValue<string>(), MortalArchiveHash(originalStoryPrefix));
+                await AssertJointColdSignedStoryInventoryAsync(files, lease, manifest, originalStoryPrefix);
                 var expectedStoryDerivedTurn = 42;
                 if (scenario == 8)
                 {
-                    var signedPrefix = original.ReadRequiredBytes(QteStoryPath);
-                    Assert.True(storyBefore!.AsSpan().StartsWith(signedPrefix));
                     Assert.Equal(context["expectedRetainedStorySha256"]!.GetValue<string>(), MortalArchiveHash(storyBefore));
-                    var actualSuffix = Encoding.UTF8.GetString(storyBefore.AsSpan(signedPrefix.Length));
+                    var actualSuffix = Encoding.UTF8.GetString(storyBefore.AsSpan(originalStoryLength));
                     var retainedRow = StrictJsonAuthority.Deserialize<StoryEntry>(
                         Assert.Single(actualSuffix.Split('\n', StringSplitOptions.RemoveEmptyEntries)),
                         SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual retained writer row before fresh owner");
@@ -371,7 +424,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.Equal(observedMarker["progression"]!["preparedAtUtc"]!.GetValue<string>(), retainedRow.Timestamp);
                     Assert.Equal("Осмотреть ушиб.", retainedRow.Player); Assert.Equal(context["scene"]!.GetValue<string>(), retainedRow.Narrative);
                 }
-                else Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
+                else Assert.Equal(originalStoryPrefix, storyBefore);
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
                 Assert.Equal(expectedStoryDerivedTurn, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
                 GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, expectedStoryDerivedTurn);

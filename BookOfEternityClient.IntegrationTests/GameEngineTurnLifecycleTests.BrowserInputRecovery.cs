@@ -229,15 +229,33 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             finally
             {
-                await File.WriteAllTextAsync(log, failure + Environment.NewLine +
-                    (stdout.IsCompletedSuccessfully ? stdout.Result : "stdout EOF unobserved") + Environment.NewLine +
-                    (stderr.IsCompletedSuccessfully ? stderr.Result : "stderr EOF unobserved"));
+                await WriteActualNativeLogAsync(failure);
             }
             throw;
         }
         var text = await stdout + await stderr;
-        await File.WriteAllTextAsync(log, text);
+        await WriteActualNativeLogAsync(null);
         Assert.True(process.ExitCode == 0, log + Environment.NewLine + text);
+
+        Task WriteActualNativeLogAsync(Exception? failure)
+        {
+            var exited = process.HasExited;
+            var witness = JsonSerializer.Serialize(new
+            {
+                Boundary = "cold_child_native_result",
+                Observation = new
+                {
+                    ChildProcessId = process.Id, ParentProcessId = Environment.ProcessId,
+                    HasExited = exited, ExitCode = exited ? (int?)process.ExitCode : null,
+                    TimedOut = failure is TimeoutException, Failure = failure?.ToString(),
+                    StdoutEofObserved = stdout.IsCompletedSuccessfully, StderrEofObserved = stderr.IsCompletedSuccessfully
+                }
+            });
+            return File.WriteAllTextAsync(log, witness + Environment.NewLine +
+                (failure is null ? string.Empty : failure + Environment.NewLine) +
+                (stdout.IsCompletedSuccessfully ? stdout.Result : "stdout EOF unobserved") + Environment.NewLine +
+                (stderr.IsCompletedSuccessfully ? stderr.Result : "stderr EOF unobserved"));
+        }
     }
 
     private async Task PrepareSettledBrowserRecordAsync()
