@@ -3,11 +3,11 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536/T070 scope1 fixture correction: retain distinct baseline restore and exact three-member progression consumption transactions; existing zero/nonzero actual Late cases expose the native failure. Both projects are prepared separately via zero-execution preparation selection. Checkpoint5 unchanged; later stages held pending corrected gates and this first outcome.",
+      "reason": "#1536/T070 scope2 fixture correction: existing native Late2 rows fail scalar severity read after independently accepted scope1 observer extent. Assert the exact canonical severity object fields/types and CREATE event binding. Fresh BOTH/PlanOnly/catalog remain zero-execution prerequisites; only the first Late2 outcome is released after corrected gates. Scope3 decision and later stages remain held; checkpoint5 unchanged.",
       "contracts": [
         "FR-012",
         "FR-063",
-        "once-only report consumption; exact original restoration and progression member/phase evidence"
+        "canonical WoundSeverity object and source CREATE provenance; preserve once-only report/union/story oracles"
       ]
     }
   ]

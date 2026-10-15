@@ -1,5 +1,22 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Severity object assertion correction WIP — 2026-10-15
+
+Scope1 first-outcome EVIDENCE was independently ACCEPTED before this edit:
+49chains/162sourcepins/11selectedbinarypins, native2FAIL at scalar fixture793,
+strict baseline8/phase3 histories, two real cleanup receipts and absent roots.
+Its acceptance qualifies observer extent only; full Late2/FR063 remain unpassed.
+
+Scope2 changes only the existing severity oracle to the established closed
+WoundSeverity object: exactly value/rank/maximumAtCreation/lastChangeEventRef,
+II/2/II and eventRef equal to the actual new CREATE history row. Both frozen
+actual snapshots independently confirm that object. No production scalarfallback,
+new test, oracle relaxation, budget/category or public/GM contract change.
+Independent SOURCE/FIXTURE/SELECTION, fresh BOTH/PlanOnly/catalog and first Late2
+are PENDING. Existing source warnings remain recorded, not silently suppressed.
+Scope3 owner-output proof/schema requires the pending coordinator decision;
+checkpoint5 is not repeated, later12 HELD, fullFR063/T070/#1536 OPEN.
+
 ## New-cloud observer first actual outcome frozen — 2026-10-15
 
 Compiled/tested source `33dc6a7bb5755f1d390fbf0a283c9e778584eea8` passed

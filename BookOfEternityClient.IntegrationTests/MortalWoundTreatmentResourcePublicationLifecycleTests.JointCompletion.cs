@@ -790,7 +790,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         var treated = Assert.Single(wounds.OfType<JsonObject>(), wound => wound["woundId"]!.GetValue<string>() == request.Coordinates.WoundId);
         Assert.Equal("stabilized", treated["care"]!["state"]!.GetValue<string>());
         var acquired = Assert.Single(wounds.OfType<JsonObject>(), wound => wound["woundId"]!.GetValue<string>() == union[0].WoundId);
-        Assert.Equal("II", acquired["severity"]!.GetValue<string>());
+        var severity = Assert.IsType<JsonObject>(acquired["severity"]);
+        Assert.Equal(new[] { "lastChangeEventRef", "maximumAtCreation", "rank", "value" },
+            severity.Select(field => field.Key).OrderBy(key => key, StringComparer.Ordinal));
+        Assert.Equal("II", severity["value"]!.GetValue<string>());
+        Assert.Equal(2, severity["rank"]!.GetValue<int>());
+        Assert.Equal("II", severity["maximumAtCreation"]!.GetValue<string>());
+        Assert.Equal(union[0].EventRef, severity["lastChangeEventRef"]!.GetValue<string>());
         var receipts = MortalWoundOpportunityReceiptState.Parse(await _fs.ReadFileAsync(lease, MortalWoundOpportunityReceiptState.StatePath), MortalWoundOpportunityReceiptState.StatePath);
         Assert.True(receipts.IsValid, DescribeValidationIssues(receipts.Issues));
         var receipt = Assert.Single(receipts.State!.Receipts);
