@@ -1,5 +1,45 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First Late2 in-memory diagnostic outcome frozen — ROOT checkpoint 2026-10-15
+
+Source/compile76b7d5ffd997d018690494faef5740c5dfcc2c84. Diagnostic-only fixture
+SOURCE/FIXTURE/SELECTION gates were accepted statically; production unchanged.
+Fresh BOTH134.8964081s/exactPlan4.5818031s/catalog5.4483279s each native0;
+32methods58cases18descriptors/catalogValid746categories11588methods/no unmapped
+or stale selectors. All three executed0tests; logs0errors/130integration+35unit
+warnings.155source and11selectedbinary pins matched, with the same bounded
+selected-file provenance limits.
+
+Only Late2 ran for its first diagnostic outcome:2executed/0PASS2FAIL, native1,
+complete1/1,34.0093501s/no timeout.155source11binary pre/post match; two actual
+strict cleanup receipts/removal=true/failure=null and both owned roots absent.
+49artifact chains were frozen before diagnosis/metadata. Previous failures stay
+immutable; checkpoint5componentPASS was not rerun; later12actual stagesUNRUN.
+
+The new pre-filesystem in-memory capture was reached twice. Both show checkpoint
+present/correctionReady=true/canonicalRefresh present/PublicationUncertain and
+exactly2fully reported issues without truncation:
+wound_plan_effect_diagnostic_location_invalid at
+prepared.effectOperationBatches[0].rootApplications[0], then
+wound_plan_effect_stage_failed atacceptedTurn.wounds. The strict Spend43 oracle
+still fails atJointCompletion676; no completed joint turn is established.
+
+Read-only source tracing supports a private joint handoff omission: joint effect
+composition supplies SkillScopeAuthority but leaves WoundApplicationLocations
+null, triggering the strict CREATE coordinate guard. Ordinary wiring derives
+and binds that detached map through existing ValidateSkillScopes and prepared
+sources. ROOT confirmed the relevant constructor/composer/guard source; exact
+causal classification and the proposed real-producer reuse await independent
+EVIDENCE. PublicationUncertain here is a retained refused stage, not proof that
+mechanical publication partially committed. No guard waiver or fixture authority
+injection is proposed, and adding a map would not prove downstream completion.
+
+No production correction or rerun is released. Preserve natural Stage43,
+original/rollback authority, fingerprint/cache freshness, one effect stage and
+all strict completion oracles. Independent EVIDENCE is next; fullFR063/T070,
+live/cold/newroot and previously open contours remainOPEN. This factual ROOT
+checkpoint changes no task checkmarks or historical tails.
+
 ## Late2 retained in-memory diagnostic capture SOURCE WIP STOP — 2026-10-15
 
 Owning base `d20ff57c9269fb2f1dd73256df9e9153823e81c0`. Independent EVIDENCE
