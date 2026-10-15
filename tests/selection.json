@@ -2,28 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "c5-original-rollback-streaming-contracts",
-      "reason": "Causal RED frozen at exact693744B payload/allocation growth plus17 existing controlPASS. Reviewed minimal three-file exact rollback streaming callback now needs eleven narrow allocation/strict-read/length/EOF/native-path/dispatch/original-exception/same-lease drift cases before actual GREEN, then actual C5 protocol separately. No bypass/cache or broad matrix.",
+      "category": "fr063-joint-late-completion",
+      "reason": "#1536/T070 scope1 fixture correction: retain distinct baseline restore and exact three-member progression consumption transactions; existing zero/nonzero actual Late cases expose the native failure. Both projects are prepared separately via zero-execution preparation selection. Checkpoint5 unchanged; later stages held pending corrected gates and this first outcome.",
       "contracts": [
-        "#1553",
-        "T069-C5-ORDINARY-CONSUMER",
-        "strict exact rollback allocation without weakening current authority/path checks"
-      ]
-    },
-    {
-      "category": "portable-signed-snapshot-authority-neighbors",
-      "reason": "Existing fifteen signed snapshot/rollback authority exact-byte and legacy consumers must pass alongside allocation RED; future optional callback must preserve default and legacy behavior.",
-      "contracts": [
-        "#1553",
-        "signed snapshot authority exact/legacy byte contracts"
-      ]
-    },
-    {
-      "category": "c5-held-proof-scope-budget",
-      "reason": "Existing two controls verify real held proof scope lifetime and subsequent snapshot drift refusal; no proof boundary or scope reuse is changed.",
-      "contracts": [
-        "#1553",
-        "physical lease ownership and fresh same-lease integrity proof"
+        "FR-012",
+        "FR-063",
+        "once-only report consumption; exact original restoration and progression member/phase evidence"
       ]
     }
   ]

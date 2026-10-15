@@ -1,5 +1,23 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## New-cloud observer correction WIP — 2026-10-15
+
+User delegation resumes the existing accepted plan from verified remote
+`79e6c7a4e2d35910212f1005a240eb799a6973f7`; old sessions remain stopped.
+Ancestry of accepted `e34b0498` and clean checkout were verified before edits.
+Scope 1 only: the existing native nonzero RED conflated two distinct report
+removals. Preserve complete member images and transaction IDs for both; classify
+baseline restoration before repair separately from the exact three-member
+unapplied-to-applied progression transaction. Require one consumption, distinct
+IDs, unchanged marker basis and exact schedule/report/marker physical readback.
+No production authority, publisher membership, budgets or assertion order changes.
+The two existing Late cases remain the regression; severity/model and completed-v2
+output binding are separate, unfixed scopes. Checkpoint5 is not repeated.
+SOURCE/FIXTURE/SELECTION review and fresh BOTH/PlanOnly/catalog/Late2 are PENDING;
+no runtime PASS is claimed. The current tests/selection.json selects Late2 only.
+GM prompts/docs/examples need no change for this fixture-only correction.
+Full FR063/T070/#1536 and all previously open contours remain OPEN.
+
 ## P5 bounded phase EVIDENCE accepted — canonical extent only — 2026-10-15
 
 Independent first-corrected EVIDENCE690fe023/50603eb8 ACCEPTED the saved outcome.

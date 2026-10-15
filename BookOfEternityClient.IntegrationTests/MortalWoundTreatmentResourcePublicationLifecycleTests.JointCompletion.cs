@@ -238,6 +238,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var publications = new List<object>();
         var repairReplies = 0;
         var reportDeletions = 0;
+        string? baselineReportRemovalTransaction = null;
+        string? progressionReportConsumptionTransaction = null;
+        var reportRemovalHistory = new List<object>();
         var milestones = new List<(string Path, string Raw, Dictionary<string, byte[]?> Images)>();
         Exception? observerFailure = null;
         _consolePublicationObserver = ObserveActualRepair;
@@ -266,7 +269,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             liveCallerReturned, liveWaitEntered, jointOriginalAuthored,
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), EngineDiagnostics = logger.Describe(),
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, InputKeyAvailable = input.KeyAvailable,
-            Publications = publications, Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,
+            Publications = publications, ReportRemovalHistory = reportRemovalHistory,
+            Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,
                 Images = m.Images.ToDictionary(pair => pair.Key, pair => pair.Value is null ? null : Convert.ToBase64String(pair.Value)) }),
             After = MortalArchiveDigests(after)
         });
@@ -328,6 +332,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // BEFORE returning to a fresh process. Unapplied must remain beforephase.
                 await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
                 Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
+                Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);
+                Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);
             }
             await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene,
                 expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied", refusalScenario: refusalScenario,
@@ -337,6 +343,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
         await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
         Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
+        Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);
+        Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);
         if (useLiveCaller) Assert.True(liveCallerReturned);
         else Assert.False(handled); // Actual caller completion follows the strict full-union oracles.
         Dictionary<string, byte[]?> complete;
@@ -382,7 +390,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         if (path == _fs.ResolvePath(ProgressionScheduleService.ReportPath) && member.GetProperty("Before").GetProperty("Exists").GetBoolean())
                         {
                             Assert.Equal(before[ProgressionScheduleService.ReportPath], member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
-                            Assert.Equal(0, reportDeletions++);
+                            ObserveReportRemoval(journal.RootElement, member);
                         }
                         continue;
                     }
@@ -452,6 +460,80 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             }
             catch (Exception error) { observerFailure = error; input.Enqueue(Key(ConsoleKey.Escape)); }
+        }
+
+        void ObserveReportRemoval(JsonElement journal, JsonElement reportMember)
+        {
+            Assert.True(nonzeroProgression);
+            var transactionId = Assert.IsType<string>(journal.GetProperty("TransactionId").GetString());
+            Assert.NotEmpty(transactionId);
+            var members = journal.GetProperty("Members").EnumerateArray().ToArray();
+            var paths = members.Select(member => member.GetProperty("Path").GetString()!).ToArray();
+            var isProgressionPhase = paths.ToHashSet(StringComparer.Ordinal).SetEquals(new[]
+            {
+                _fs.ResolvePath(ProgressionScheduleService.SchedulePath),
+                _fs.ResolvePath(ProgressionScheduleService.ReportPath),
+                _fs.ResolvePath(MortalQteDecisionPublication.StatePath)
+            });
+            // Keep both real transactions. A pre-dispatch baseline removal is
+            // distinct from consuming the resubmitted report in the exact phase.
+            reportRemovalHistory.Add(new { TransactionId = transactionId,
+                Role = isProgressionPhase ? "progression_consumption" : "original_baseline_restore",
+                Members = members.Select(member => member.Clone()).ToArray() });
+            Assert.False(File.Exists(_fs.ResolvePath(ProgressionScheduleService.ReportPath)));
+            if (!isProgressionPhase)
+            {
+                Assert.Null(baselineReportRemovalTransaction);
+                Assert.Null(progressionReportConsumptionTransaction);
+                Assert.Equal(0, repairReplies);
+                Assert.DoesNotContain(milestones, milestone => milestone.Path == repairPath ||
+                    milestone.Path == MortalQteDecisionPublication.StatePath);
+                Assert.False(File.Exists(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath)));
+                Assert.True(JsonNode.DeepEquals(heldCommand, ParseJsonObjectBytes(
+                    File.ReadAllBytes(_fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)))));
+                baselineReportRemovalTransaction = transactionId;
+                return;
+            }
+
+            Assert.Equal(3, members.Length);
+            Assert.NotNull(baselineReportRemovalTransaction);
+            Assert.NotEqual(baselineReportRemovalTransaction, transactionId);
+            Assert.Null(progressionReportConsumptionTransaction);
+            Assert.Equal(1, repairReplies);
+            var marker = Assert.Single(members, member => member.GetProperty("Path").GetString() ==
+                _fs.ResolvePath(MortalQteDecisionPublication.StatePath));
+            var markerBeforeBytes = marker.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64();
+            var markerAfterBytes = marker.GetProperty("After").GetProperty("Bytes").GetBytesFromBase64();
+            Assert.Equal(Encoding.UTF8.GetBytes(Assert.Single(milestones,
+                milestone => milestone.Path == MortalQteDecisionPublication.StatePath).Raw), markerBeforeBytes);
+            var markerBefore = ParseJsonObjectBytes(markerBeforeBytes);
+            var markerAfter = ParseJsonObjectBytes(markerAfterBytes);
+            Assert.Equal(2, markerBefore["schemaVersion"]!.GetValue<int>());
+            Assert.Equal(original.SessionId, markerBefore["sessionId"]!.GetValue<string>());
+            Assert.Equal(original.RequestId, markerBefore["requestId"]!.GetValue<string>());
+            Assert.Equal(original.SnapshotToken, markerBefore["snapshotToken"]!.GetValue<string>());
+            Assert.Equal(original.TurnNumber, markerBefore["turn"]!.GetValue<int>());
+            Assert.Equal("unapplied", markerBefore["progression"]!["phase"]!.GetValue<string>());
+            Assert.Equal("applied", markerAfter["progression"]!["phase"]!.GetValue<string>());
+            Assert.NotEmpty(markerBefore["fingerprint"]!.GetValue<string>());
+            Assert.NotEmpty(markerAfter["fingerprint"]!.GetValue<string>());
+            markerBefore["progression"]!["phase"] = "applied";
+            markerBefore.Remove("fingerprint");
+            markerAfter.Remove("fingerprint");
+            Assert.True(JsonNode.DeepEquals(markerBefore, markerAfter));
+            var schedule = Assert.Single(members, member => member.GetProperty("Path").GetString() ==
+                _fs.ResolvePath(ProgressionScheduleService.SchedulePath));
+            Assert.Equal(Convert.FromBase64String(markerBefore["progression"]!["scheduleBefore"]!["bytes"]!.GetValue<string>()),
+                schedule.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+            var scheduleAfter = schedule.GetProperty("After").GetProperty("Bytes").GetBytesFromBase64();
+            Assert.Equal(Convert.FromBase64String(markerBefore["progression"]!["scheduleAfter"]!["bytes"]!.GetValue<string>()), scheduleAfter);
+            Assert.Equal(scheduleAfter, File.ReadAllBytes(_fs.ResolvePath(ProgressionScheduleService.SchedulePath)));
+            Assert.Equal(markerAfterBytes, File.ReadAllBytes(_fs.ResolvePath(MortalQteDecisionPublication.StatePath)));
+            Assert.Equal(Convert.FromBase64String(markerBefore["progression"]!["reportBefore"]!["bytes"]!.GetValue<string>()),
+                reportMember.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+            Assert.False(markerBefore["progression"]!["reportAfter"]!["exists"]!.GetValue<bool>());
+            Assert.Equal(0, reportDeletions++);
+            progressionReportConsumptionTransaction = transactionId;
         }
     }
 
