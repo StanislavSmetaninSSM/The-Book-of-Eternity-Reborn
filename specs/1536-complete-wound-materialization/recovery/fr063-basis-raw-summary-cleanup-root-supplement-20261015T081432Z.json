@@ -1,0 +1,26 @@
+{
+  "testedMetadataSource": "540401302838de60e0db6feef9db09b267afe78f",
+  "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+  "frozenPacketManifestSha256": "ab8cc6421f3fc2f922c13edc617f6967671cf12f0e1d2f2358fb50faa8913976",
+  "rawTrxSha256": "d6f3a288d9138ae975fb8956996476273ad733dd8e9b6d854052d7e21374e5ea",
+  "compressedTrxSha256": "4e3ea49c4b1cd2fcfcbee1fae805131f643a885698cc164d8d2893da71ae3705",
+  "findings": [
+    {
+      "xpath": "ResultSummary/Output/StdOut",
+      "line": 11,
+      "rawLine": "{\"Boundary\":\"joint_readonly_owned_cleanup\",\"Root\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-joint-readonly-dfa8061ff8424e138395071cd24cc3a1\",\"Removed\":true}",
+      "receipt": {
+        "Boundary": "joint_readonly_owned_cleanup",
+        "Root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-readonly-dfa8061ff8424e138395071cd24cc3a1",
+        "Removed": true
+      },
+      "rootActuallyAbsent": true
+    }
+  ],
+  "perTestStdoutReceipt": "UNOBSERVED",
+  "v5StandardStrictCollector": "UNOBSERVED zero standard receipts",
+  "customCleanupQualifiedFromRawSummary": true,
+  "category": "FAIL: local_invalid expected exception for valid interior-space identifier",
+  "originalFrozenPacketModified": false,
+  "createdUtc": "20261015T081432Z"
+}
