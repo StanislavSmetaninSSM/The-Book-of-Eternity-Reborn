@@ -17,6 +17,13 @@
 - **Save compatibility**: Not required under the pre-release constitution and the user's explicit decision. Repository bootstrap state, fixtures, examples, and tests move directly to the new contract.
 - **Out of scope**: A catalog of ready-made wounds; migration of non-empty legacy saves; replacement of the effect engine; a general combat-damage or experience redesign; automatic post-battle fatigue; automatic soul dissipation; a full afterlife inventory; a mandatory public clinic for the whole Shining Abode. If Saref's `memory_suppression` is only audit metadata rather than a complete independent effect, a separate linked issue MUST be created before #1536 closes.
 
+## Proposed lawful ACTIVE design — not accepted runtime contract
+
+The user authorized DESIGN-only preparation of [variant B](./design/lawful-active-joint-tail-b.md)
+after readonly checkpoint10611c69a. All additional schema/member/issuer grants are proposals
+awaiting discussion and independent DESIGN review. The accepted INACTIVE contour remains
+unchanged; no implementation or ACTIVE runtime acceptance follows from this link.
+
 ## Clarifications
 
 ### Session 2026-09-22 — T081-C Durable Spiritual Decision Contract Approved

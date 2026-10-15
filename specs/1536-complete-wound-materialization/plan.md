@@ -1,3 +1,12 @@
+## FR063-ACTIVE-DESIGN-B: authorized DESIGN-only WIP — 2026-10-15
+
+- User/coordinator explicitly authorized only preparation of variantB fixedjointtail DESIGN, comparisonC/A, exactproposedgrants/recovery/cleanup/matrix andindependentDESIGNreview; thenstopfordiscussion. Base/actualremote10611c69aa0d25683b9d74de04d1f96482f87d59 verifiedclean/79e6ancestry, mainactuald0241e71 unchanged. Existingissue#1536 remainsOPEN. No implementation/writeauthority accepted.
+- Draft `design/lawful-active-joint-tail-b.md` is the onlynewdesign document: fixedatomicstats+award action/ack, derivedprojection/story, closedQTEtransfer/retirement/originalretention, two-chainposthandoffproof, deferredallocation andexplicitdeclinepolicydecision. Allschema/member/issuer/cleanupgrant tables arePROPOSED. Existingacceptedcontractandruntimeunchanged;allnewruntime/platformcasesUNRUN. No new implementationplan, C#test/catalog/selection, production/runtime-tools/GMprompt edits. Existingreadonly96PASS retainoriginal737pins only.
+- [x] FR063-ACTIVE-DESIGN-B/source: inspect actualowner paths, formulas, initializer/decline/windows andacceptedINACTIVEscope.
+- [ ] FR063-ACTIVE-DESIGN-B/document: complete source-grounded design, exactschemas/grants/proof/recovery andalternatives/matrix;self-review.
+- [ ] FR063-ACTIVE-DESIGN-B/review: mandatoryindependentAstraXHighDESIGNreview, fixmaterialfindings, preservefinalhashpairafterFINALSTOP.
+- [ ] FR063-ACTIVE-DESIGN-B/discussion: finaldocument/remoteSHA/cleanGitHubrecoveryhandoff; userdecisionD1-D7pending, thenSTOPbeforeimplementation.
+
 ## US5-RO2 independently ACCEPTED; readonly slice complete, lawfulACTIVE decision required — 2026-10-15
 
 - Final independentEVIDENCE230306 accepts boundedUS5-RO2 at evidencecarriere9fb77348ac979eb4371527b7b731eac3d66085d, reviewedcorrectionb0158bf33144408d5858fea4b1566c638bbec5bb, tested/compiled737092c39f9d87af1f588c96a22e7111570d36c2. Exactfinal MD9d39065a5f9f264b50635789cbfea8a46f6e1506cc97f45e71756e10b7c28ba0/JSON6a7f7c1e48a89e693219e97921ee83f983d31edf72f33ecc27bc54484c71cee7 retained onlyafterFINALSTOP/no pendingwrites. OneSolwriter; independentlyconfigured/requestedAstraXHigh, backendtelemetryunavailable. No material finding, no extra native repeat needed. This finalcarrier changes only reports/progressmetadata; sourcebytes remain reviewedb015/tested737, no newcompiledHEADclaim.
