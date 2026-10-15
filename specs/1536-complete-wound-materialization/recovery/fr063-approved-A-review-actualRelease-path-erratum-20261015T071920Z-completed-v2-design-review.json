@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "kind": "artifact-only actualRelease path erratum",
+  "verdict": "ACCEPTED",
+  "reviewedSource": "7375c24a41430b9d578e817d07d847c1ef68cbe4",
+  "verifiedMetadataCarrier": "4ab8576acffeec123fe0a8ece61c3083a0be9f7b",
+  "sourceGatesUnchanged": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "supersedesOnly": {
+    "artifact": "/workspace/boe-fr063-tools-20261015/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.json",
+    "field": "actualRelease[0]",
+    "previousLiteral": "tests/selections/1536-fr063-joint-late-completion.json"
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "selectionPin": {
+    "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+    "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee",
+    "bytes": 1032
+  },
+  "selectionCounts": {
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1
+  },
+  "methods": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "line": 16,
+      "kind": "Fact",
+      "cases": 1
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "line": 20,
+      "kind": "Fact",
+      "cases": 1
+    }
+  ],
+  "selectionUnchangedSince": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "originalReports": [
+    {
+      "externalPath": "/workspace/boe-fr063-tools-20261015/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.md",
+      "trackedPath": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.md",
+      "sha256": "5ec4f26020aac8ad48afe40ca87849a61626c63055ce0318fa3eeb2eb800821b"
+    },
+    {
+      "externalPath": "/workspace/boe-fr063-tools-20261015/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.json",
+      "trackedPath": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.json",
+      "sha256": "666268c905a8583511d255a7fec1d92aeb31df4664bd1d899e975af48173aa81"
+    }
+  ],
+  "verifiedOriginalChangedFilePins": 44,
+  "verifiedOriginalAdditionalDependencyPins": 12,
+  "carrierDiffExactlyOriginalReports": true,
+  "metadataOnlyErratumCopiesAllowed": true,
+  "metadataCarrierConstraints": "Exactly two added byte-identical erratum recovery paths; prior bytes unchanged; verify remote; distinguish reviewedSource from carrier; actual FINALSTOP required.",
+  "modelRequested": "gpt-6-astra",
+  "reasoningEffortRequested": "xhigh",
+  "actualModelEffortTelemetry": "unavailable",
+  "execution": "No build/discovery/tests/runtime/provider; repository/Git writes none",
+  "reviewerStatusAtWrite": "FINALIZING; requires actual FINALSTOP",
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-approved-A-review-actualRelease-path-erratum-20261015T071920Z-completed-v2-design-review.md",
+    "sha256": "965a13528e01f548c2cff895717c64d51a12cb36382fadaeda3215cb398bcd1d"
+  },
+  "createdUtc": "2026-10-15T07:19:20.363928+00:00"
+}
