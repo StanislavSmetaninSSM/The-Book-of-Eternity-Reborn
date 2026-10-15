@@ -1,5 +1,46 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Complete approved-owned QTE contribution SOURCE WIP — 2026-10-15
+
+Owning base `64ebd96dc2a710659606e8027bac445373021cb8`. Independent EVIDENCE
+`ab14afa1` ACCEPTED the missing approved-owned QTE contribution; explicit source-only
+release `543f3898` governs this correction. Prior native Late2 remains2executed/
+0PASS2FAIL: marker member coverage is the observed refusal; the missing partition
+successors/draft consumption were source-inferred, not additional native diagnoses.
+
+The existing private joint resource producer now recomputes its genuine QTE occurrence/
+receipt successor pair using fresh real checkpoint reconstruction+corrected adapter,
+exact retained acquisition command, same official signed original partition and FULL
+joint final history. Existing PlanConsumeAndAppend performs only the pure calculation:
+exact QTE CREATE/operation/event/profile and unrelated partition/receipt entries remain
+checked, independently of the already validated TREAT vector/request/guarantee.
+The pair and exact public-draft before-image/consumption path are fingerprinted BEFORE
+the existing resource/common/input/context/candidate/cache lineage. Successors are
+cloned into the SAME single registered outcome's companions; conflicts refuse.
+Fresh resource validation rebuilds and compares fingerprint and both successor roots.
+No cached/parsed/exact-replay result issues authority, no fabricated old Prepared,
+new issuer, second reduction/scheduler/hold/reservation/Project/Apply/Take or merged
+final plans. A detached command view is comparison data only.
+
+The existing receipt-triggered assembly branch now receives the actual pair and adds
+marker touch/exact public-draft consumption without changing generic planner code.
+Existing sole nonrecursive v2 marker writer, full desired/Touched/Before/Consumed/member
+checks, same-batch readback/settlement, complete compensation and unknown-byte refusal
+are unchanged. No unrelated/foreign owner or member is added. Previous map/outcome/
+complete-current-guard corrections and all fixture/oracle/category/selector bodies
+remain byte-exact. No GM update: client-owned private contribution handoff changes no
+public grammar, GM-authored output contract or gameplay policy.
+
+Source WIP only: compilation/API/fixture/runtime correctness UNVERIFIED; all compiler/
+project/build/discovery/PlanOnly/catalog/tests/runtime/fault/provider execution by this
+author UNRUN. Native Completed-versus-Awaiting remains UNKNOWN. Existing Late2 RED is
+the regression basis; no mirror tests or automatic broader selection. ROOT must save/
+recover, obtain corrected SOURCE/FIXTURE/SELECTION, refresh matching prerequisites,
+then release only failed Late2 first outcome/freeze. Checkpoint5 PASS not repeated;
+later12 UNRUN/HELD. FullFR063/T070 and all earlier open contours stay unqualified.
+Requested historical retained SolXHigh; actual backend/model/effort UNAVAILABLE.
+Historical metadata tails/checkmarks and raw evidence remain unchanged.
+
 ## First complete-current-guard Late2 outcome: sealed member refusal — 2026-10-15
 
 Tested/compile source `9a57b34c2de70a42217b58b318b91f556b03826c` passed

@@ -27,7 +27,7 @@ internal static partial class WoundAcceptedTurnPlanner
             ResourceOwnerAuthority baselineOwners, ResourceOwnerAuthority finalOwners, string identitySeed,
             MortalWoundTreatmentResourcePublicationDraft resources, TreatmentItemConsumptionContribution? items,
             IReadOnlyDictionary<string, JsonNode?> finalItemRoots, IReadOnlyDictionary<string, JsonObject> companions,
-            string effectBefore, string effectAfter)
+            string effectBefore, string effectAfter, string qteContributionFingerprint)
         {
             if (!ReferenceEquals(issuer, JointResourcePublicationIssuer))
                 throw new InvalidOperationException("Joint resources require the private union issuer.");
@@ -37,6 +37,7 @@ internal static partial class WoundAcceptedTurnPlanner
             _finalItemRoots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(finalItemRoots);
             _companions = companions.ToDictionary(row => row.Key, row => row.Value.DeepClone().AsObject(), StringComparer.Ordinal);
             EffectBeforeFingerprint = effectBefore; EffectAfterFingerprint = effectAfter;
+            QteContributionFingerprint = qteContributionFingerprint;
             Fingerprint = ComputeFingerprint();
         }
         private MortalJointRepairCommonAuthority? _commonAuthority;
@@ -52,6 +53,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal ResourceOwnerAuthority FinalOwners { get; }
         internal string EffectBeforeFingerprint { get; }
         internal string EffectAfterFingerprint { get; }
+        internal string QteContributionFingerprint { get; }
         internal ResourceDefinitionCatalog Definitions => _definitions;
         internal ResourceStateLedger State => _state;
         internal ResourceHistoryState History => _history;
@@ -73,7 +75,7 @@ internal static partial class WoundAcceptedTurnPlanner
             var fields = new List<string?> { "book_of_eternity.mortal_joint_repair.resource_publication.v1",
                 Baseline.Fingerprint, WoundAcceptedTurnFingerprintWriter.CanonicalJson(_definitions.ToCanonicalRoot()), _state.Fingerprint, _history.Fingerprint,
                 _baselineOwners.Fingerprint, FinalOwners.Fingerprint, _identitySeed, _resources.Fingerprint,
-                _items?.Consumption.Fingerprint, EffectBeforeFingerprint, EffectAfterFingerprint };
+                _items?.Consumption.Fingerprint, EffectBeforeFingerprint, EffectAfterFingerprint, QteContributionFingerprint };
             foreach (var row in _finalItemRoots.OrderBy(row => row.Key, StringComparer.Ordinal))
             { fields.Add(row.Key); fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(row.Value)); }
             foreach (var row in _companions.OrderBy(row => row.Key, StringComparer.Ordinal))
@@ -221,9 +223,13 @@ internal static partial class WoundAcceptedTurnPlanner
             if (issues.Count != 0) return new(null, issues);
             if (effectBefore.CanonicalFingerprint != baseline.Bundle.EffectBatchPlan.EffectPlan.SourceAuthorityFingerprint)
                 throw new InvalidDataException("Joint effect-source before-authority changed.");
+            var qte = await RecomputeJointQteContributionAsync(files, lease, baseline);
+            foreach (var row in qte.AfterImages)
+                if (!companions.TryAdd(row.Key, row.Value.DeepClone().AsObject()))
+                    throw new InvalidDataException("Joint QTE successor conflicts with another producer: " + row.Key);
             var authority = new JointResourcePublicationAuthority(JointResourcePublicationIssuer, baseline, definitions, state, history,
                 owners, finalOwners, identitySeed, resources, items, finalRoots, companions,
-                effectBefore.CanonicalFingerprint, effectAfter.CanonicalFingerprint);
+                effectBefore.CanonicalFingerprint, effectAfter.CanonicalFingerprint, qte.Fingerprint);
             await ValidateJointRepairCommonBaselineAsync(files, lease, baseline);
             if (!authority.HasValidSeal()) throw new InvalidDataException("Joint registered contribution did not reproduce its seal.");
             return new(authority, Array.Empty<ValidationIssue>());
@@ -239,5 +245,10 @@ internal static partial class WoundAcceptedTurnPlanner
         if (value is not JointResourcePublicationAuthority authority || !authority.HasValidSeal())
             throw new InvalidDataException("Invalid private joint resource publication authority.");
         await ValidateJointRepairCommonBaselineAsync(files, lease, authority.Baseline);
+        var qte = await RecomputeJointQteContributionAsync(files, lease, authority.Baseline);
+        var companions = authority.Companions;
+        if (qte.Fingerprint != authority.QteContributionFingerprint ||
+            qte.AfterImages.Any(row => !companions.TryGetValue(row.Key, out var actual) || !JsonNode.DeepEquals(row.Value, actual)))
+            throw new InvalidDataException("The sealed joint QTE partition contribution changed.");
     }
 }

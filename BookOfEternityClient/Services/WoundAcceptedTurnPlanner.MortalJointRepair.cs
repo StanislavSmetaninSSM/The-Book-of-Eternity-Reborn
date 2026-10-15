@@ -50,6 +50,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentResourceFinalization Finalization { get; }
         internal MortalWoundTreatmentRematerializationAuthority? Rematerialization { get; }
         internal WoundAcceptedTurnInput AcquisitionInput => WoundAcceptedTurnData.CloneInput(_acquisitionInput)!;
+        internal JsonObject AcquisitionCommandRoot => _acquisitionCommandRoot.DeepClone().AsObject();
         internal WoundAcceptedTurnInput TreatmentInput => WoundAcceptedTurnData.CloneInput(_treatmentInput)!;
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);

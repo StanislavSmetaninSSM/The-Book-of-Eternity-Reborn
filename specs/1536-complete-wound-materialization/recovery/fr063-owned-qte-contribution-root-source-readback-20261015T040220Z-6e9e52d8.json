@@ -1,0 +1,66 @@
+{
+  "base": "64ebd96dc2a710659606e8027bac445373021cb8",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "baseExists": true,
+      "baseBytes": 30552,
+      "baseSha256": "69de278fb3a6bb7723ce3e588a22d537a048e45109dbd8dd8f9339af71077ff6",
+      "currentBytes": 30654,
+      "currentSha256": "9347a9a2f5405b4137635ad371834bff39354c9fec99f1363d6ee858c07bc173"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "baseExists": true,
+      "baseBytes": 19799,
+      "baseSha256": "58d0dc9c065b2ec843104a968940a6b1a74a7271abfac73f5d702e2fa05035cb",
+      "currentBytes": 20792,
+      "currentSha256": "df187c38fb0ce70e3d1bb7cb155f5b09573dea08ae94811ca6999255b125aa98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs",
+      "baseExists": false,
+      "baseBytes": null,
+      "baseSha256": null,
+      "currentBytes": 8115,
+      "currentSha256": "8b1e4b489edf91347622411d2076813996bb0e245129e54a588730d5f6331088"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "baseExists": true,
+      "baseBytes": 1610509,
+      "baseSha256": "b506f11204b2097820bdada29f7ed8157c1e013a689e03a7d58a9f9dd5e6e5be",
+      "currentBytes": 1613484,
+      "currentSha256": "f272e4438909ca65ebd5d69bba202f12e03fd9ff031a2ec47497868ddd2b6fa0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "baseExists": true,
+      "baseBytes": 1111125,
+      "baseSha256": "02aff1eef56152805d59c7be1f1e71f460b64c48d4a0a9f48ae8771ca735db0a",
+      "currentBytes": 1114100,
+      "currentSha256": "b5520488db8ff838c9e397b6b3ea68284b6a860b99c851d7d9138707bad61866"
+    }
+  ],
+  "protectedPinsExact": 158,
+  "rootSourceRead": "a4cf04 report/hashes;6669c0 complete newhelper and2trackedproductiondiffs;842f9d diagnostics",
+  "authorWholeFileInverses": {
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs": {
+      "replacements": 1,
+      "baseRestored": true,
+      "restoredSha256": "69de278fb3a6bb7723ce3e588a22d537a048e45109dbd8dd8f9339af71077ff6"
+    },
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs": {
+      "replacements": 7,
+      "baseRestored": true,
+      "restoredSha256": "58d0dc9c065b2ec843104a968940a6b1a74a7271abfac73f5d702e2fa05035cb"
+    }
+  },
+  "rootReversePatchCheckExit": 0,
+  "metadata": "oldtails/checkmarks exact, additive fronts",
+  "diffCheckExit": 0,
+  "projectExecution": "UNRUN source block",
+  "gates": "corrected SOURCE/FIXTURE/SELECTION REQUIRED",
+  "runtime": "HELD"
+}
