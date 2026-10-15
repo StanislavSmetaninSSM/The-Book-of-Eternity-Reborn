@@ -1,3 +1,8 @@
+## US5-RO1 reader preparation FAILED before tests; frozen before correction — 2026-10-15
+
+- Tested36f696c99cd3432af8159bb77e4612e4fcd67c2b; official reader RED attempt native1/77.7850366s, Build-integration failed with four CS1061 calls to nonexistent fixture-only FileSystemManager.WriteFileAsync. Actual0cases/0descriptors,complete=false/no timeout; no test/behavioral RED or PASS, zero fixture receipts is not PASS. `us5-ro1-reader-build-failure-36f696c99-20261015T200222Z-freeze.json` retains 3 compressed/raw original artifact chains and 2085 exact tested-Git source pins. Original projection RED unchanged. Stop/freeze/publish before causal fixture correction or any retry; no production/read-service result inferred.
+- Independent causal/fixture/sequencing report200126 now retained exact MD5b6ec8a7/JSONc7a52525: original12RED evidence fully verified, narrow hidden-route/GM-only diagnosis correction and explicit early RO1+existingstatusRO2 order are consistent. Final implementation, coverage/selection and GREEN remain UNQUALIFIED. Reviewer FINALSTOP/no pending writes. Full FR063/T070/US5/lawful ACTIVE remain OPEN.
+
 ## US5-RO1 causal fixture correction; reader RED checkpoint — 2026-10-15
 
 - Independent causal/FIXTURE review confirms first immutable RED:10 intentional stub failures plus1 invalid undiscoverable hidden-route fixture; lone unavailable-stub PASS is vacuous, not agreement qualification. Narrow tests now keep unknown hidden route unknown but add a valid public diagnosis path; assert no future route name/requirements. Already-known hidden route stays positive, and GM-only privacy is tested on valid diagnosis paths, not forbidden physical route visibility. No materialization-validator change. Added current-facts versus future-reveals control.
