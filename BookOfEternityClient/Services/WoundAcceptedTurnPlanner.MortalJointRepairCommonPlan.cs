@@ -35,12 +35,20 @@ internal static partial class WoundAcceptedTurnPlanner
             var joint = ReadJoint();
             var command = joint.ReadAcquisitionCommands().Single();
             var history = WoundHistoryState.Parse(Bundle.FinalPlan.HistoryAfterImage?.ToJsonString(), WoundHistoryState.HistoryPath);
-            var creates = history.State?.Transitions.Where(row => row.Kind == "create" && row.OperationKey == command.OperationKey).ToArray();
+            var creates = history.State?.Transitions.Where(row => row.Kind == "create" && row.EventRef == command.Opportunity.EventRef &&
+                row.SourceFingerprint == command.Opportunity.AuthorityFingerprint).ToArray();
             if (!history.IsValid || creates is not { Length: 1 } ||
                 !Bundle.PreparedPlan.AllocatedWoundIds.Contains(creates[0].WoundId, StringComparer.Ordinal) ||
                 !Bundle.PreparedPlan.AllocatedTransitionIds.Contains(creates[0].TransitionId, StringComparer.Ordinal))
                 throw new InvalidDataException("Joint output basis requires the SAME prepared acquisition CREATE identities.");
-            OutputBasis = MortalJointAcceptedOutputBasis.Capture(command.LocalWoundRef, creates[0].WoundId,
+            var localRef = command.Decision.GetProperty("woundRef").GetString() ?? throw new InvalidDataException("Missing sealed acquisition local ref.");
+            var acquisition = Bundle.PreparedPlan.PreparedWounds.Single(wound => wound.WoundId == creates[0].WoundId);
+            var decisionFingerprint = WoundOpportunityDecisionAuthority.ComputeDecisionFingerprint(command.Opportunity.AuthorityFingerprint,
+                command.Opportunity.OpportunityId, command.Opportunity.EventRef, command.Opportunity.Owner, null,
+                "materialize", acquisition.Severity.Rank, localRef);
+            if (creates[0].OperationKey != "wound_operation_" + decisionFingerprint["sha256:".Length..])
+                throw new InvalidDataException("The sealed acquisition local ref must reproduce the SAME CREATE operation.");
+            OutputBasis = MortalJointAcceptedOutputBasis.Capture(localRef, creates[0].WoundId,
                 creates[0].TransitionId, joint.ReadAcceptedNarrative());
             Fingerprint = ComputeFingerprint();
         }

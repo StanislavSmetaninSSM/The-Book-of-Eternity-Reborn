@@ -1,3 +1,8 @@
+## A common input API correction — 2026-10-15
+
+- Before build/runtime, writer self-review found nonexistent OperationKey/LocalWoundRef properties on WoundResponseCommandDraft. Corrected to actual sealed Opportunity/Decision APIs: exact allocated CREATE source coordinates, actual prepared severity and pure existing decision fingerprint verify the CREATE operation; local ref comes only from strict adapter-issued Decision.woundRef.
+- This is a source correction within accepted A, not a runtime failure or new authority. Independent SOURCE/FIXTURE/SELECTION remains pending; fresh BOTH and all A actual stages UNRUN. GitHub restore of8e16cb7f clean,41 changed files raw Git blob-verified; no recovery build claimed.
+
 ## Approved A implementation SOURCE WIP — 2026-10-15
 
 - Test-first checkpoint d3c9156ca756d35a1a2b3f53ab8717249e0d9515 remotely verified. Same sole writer implements DESIGN A accepted at revised hash68d7870e...; source/runtime are not accepted by that verdict.
