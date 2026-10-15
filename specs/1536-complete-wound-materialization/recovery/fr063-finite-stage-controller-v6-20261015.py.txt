@@ -117,12 +117,25 @@ try:
                     for r in required_cases]
         valid = bool(receipts) and observed['allParsedStrictRootsActuallyAbsent'] is True and all(
             r['parsedReceiptObserved'] for r in coverage)
+        isolated_unit_roots = None
         if a.selection == 'tests/selections/1536-fr063-joint-generation-admission.json':
-            # This isolated fixture owns exactly one genuine root per native case.
+            # Attribute exactly one distinct real root to each actual native case;
+            # global counts cannot substitute for this bijection.
+            isolated_unit_roots = []
+            for case in required_cases:
+                indices = sorted({o['receiptIndex'] for o in origins
+                                  if '/' + case['testId'] + '#' in o['origin']})
+                roots = sorted({receipts[i]['CleanupOwnedRoot'] for i in indices})
+                isolated_unit_roots.append({'testId': case['testId'], 'testName': case['testName'],
+                                            'receiptIndices': indices, 'roots': roots})
+            mapped_indices = {i for case in isolated_unit_roots for i in case['receiptIndices']}
+            mapped_roots = {root for case in isolated_unit_roots for root in case['roots']}
             valid = valid and len(required_cases) == row['cases'] and len(receipts) == row['cases'] and (
-                len({r['CleanupOwnedRoot'] for r in receipts}) == row['cases'])
+                all(len(case['receiptIndices']) == len(case['roots']) == 1 for case in isolated_unit_roots) and
+                len(mapped_roots) == row['cases'] and mapped_indices == set(range(len(receipts))))
         write(scratch / 'required-owned-root-cleanup-readback.json', {
             'strictReceiptCount': len(receipts), 'gameEngineCaseCoverage': coverage,
+            'isolatedUnitCaseRoots': isolated_unit_roots,
             'validated': valid,
             'scope': 'observed strict receipts cover every GameEngine/new generation-admission fixture case; new isolated unit selection requires exactly one distinct root per native case; other pure cases grant no filesystem cleanup claim'})
         if not valid:
