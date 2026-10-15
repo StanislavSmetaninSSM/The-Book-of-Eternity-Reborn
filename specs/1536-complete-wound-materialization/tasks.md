@@ -1,3 +1,9 @@
+## US5-RO1 first GREEN attempt FAILED and frozen before correction — 2026-10-15
+
+- Testedb469b3d679acba40a1b205b0492d57e470331eb4, original compiled8e4ffcf05, reviewed2844. ExactNoBuildPlan native0/4.9253621s33methods65cases2descriptors; freeze cf5523369d7335438e230e6fc67557b13b44e669cb7c5fafcc181c68b923d048,6chains. Actual native1/7.1836684s, first descriptor32executed28PASS4FAIL,complete=false/no timeout/no duplicate IDs; reader33cases UNRUN. Pure fixtures own no filesystem roots; zero receipts is not reader PASS. No automatic retry.
+- Failure packetd11554ee78660f91ed1be0b6d0d572da3e9c621cb11d8aeb777efdbadeecf336 retains7raw/compressed/originalchains,full32TRXidentities,2551sourcepins and8originalfreshpayloads. Observed failures are strict fixture prerequisite assertions: foreign NPC carrier complete materialization, second effect duplicate transition/event identity, both afterlife owner.kind identity authority. These messages do not yet establish the corrections or final production cause. Independent causal/FIXTURE/SOURCE review next; GREEN held.
+- Fresh BOTH/catalog remain successful preparation at original pins, not behavioral acceptance. Source unchanged after failure; all old RED/failure evidence immutable. GitHub-only recoveryb469 verified18changedpaths exact bytes/clean/noalternates. RO2 and full FR063/T070/#1536/lawful ACTIVE remain OPEN.
+
 ## US5-RO1 fresh BOTH and official inventory/catalog qualified locally — 2026-10-15
 
 - Reviewed2844/code-identical carrier/tested+compiled8e4ffcf05ba170806c7bce99d9b2e023346464db. Official fresh selected BOTH preparation native0/146.1301806s; integration131warnings0errors(111.95s),unit35warnings0errors(29.08s). Exact Plan25methods32cases projection +8methods33cases reader =33methods65cases2descriptors, zero execution. Catalog native0/5.9477566s,Valid756categories11640methods,no unmapped/stale selectors,zero execution.
