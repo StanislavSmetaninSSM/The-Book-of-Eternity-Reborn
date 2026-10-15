@@ -49,12 +49,34 @@ public partial class CanonicalStateNormalizer
         if (!probe.IsValid) throw new InvalidDataException(string.Join(";", probe.Issues.Select(row => row.Code + ": " + row.FilePath)));
         var plan = receipt.Plan;
         var bundle = receipt.Authority.Bundle;
-        if (plan.EffectPlan is null || plan.WoundStageBundle is null || !receipt.HasValidSeal ||
-            plan.WoundStageBundle.BundleFingerprint != bundle.BundleFingerprint ||
-            WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan.EffectPlan) !=
-                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(bundle.EffectBatchPlan.EffectPlan) ||
-            !receipt.Authority.AgreesWith(plan.WoundStageBundle, receipt.Authority.Anchors, plan.OwnerAuthority))
-            throw new InvalidDataException("Joint publication lost its exclusive complete effect/wound/item lineage.");
+        string? firstFailure = null;
+        var details = string.Empty;
+        if (plan.EffectPlan is null) firstFailure = "1:effect_plan_missing";
+        else if (plan.WoundStageBundle is null) firstFailure = "2:wound_bundle_missing";
+        else if (!receipt.HasValidSeal) firstFailure = "3:receipt_seal_invalid";
+        else if (plan.WoundStageBundle.BundleFingerprint != bundle.BundleFingerprint)
+            firstFailure = "4:wound_bundle_fingerprint_mismatch";
+        else
+        {
+            var currentPayload = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan.EffectPlan);
+            var initialPayload = WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(bundle.EffectBatchPlan.EffectPlan);
+            if (currentPayload != initialPayload)
+            {
+                firstFailure = "5:effect_payload_mismatch";
+                details = $"; currentPayload={BoundedFingerprint(currentPayload)}; initialPayload={BoundedFingerprint(initialPayload)}" +
+                    $"; storedBase={BoundedFingerprint(plan.EffectPlan.AcceptedBoundaryBasePlanFingerprint)}" +
+                    $"; storedFinal={BoundedFingerprint(plan.EffectPlan.AcceptedBoundaryFinalPlanFingerprint)}" +
+                    $"; boundaryComplete={plan.EffectPlan.IsAcceptedBoundaryComplete}";
+            }
+            else if (!receipt.Authority.AgreesWith(plan.WoundStageBundle, receipt.Authority.Anchors, plan.OwnerAuthority))
+                firstFailure = "6:joint_authority_agreement_invalid";
+        }
+        if (firstFailure is not null)
+            throw new InvalidDataException("Joint publication lost its exclusive complete effect/wound/item lineage. First failed predicate: " +
+                firstFailure + details);
+
+        static string BoundedFingerprint(string? value) => value is null ? "<null>" :
+            value.Length <= 80 ? value : value[..80] + "<truncated>";
         // Preflight validated the complete effect/source/target stages and final
         // aggregate bounds. This taken capability additionally proves exact
         // unchanged original/current bytes and the actual vacant item cache slot.

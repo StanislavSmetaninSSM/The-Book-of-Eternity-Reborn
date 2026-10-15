@@ -1,0 +1,39 @@
+{
+  "base": "7c79c3116c1159cc629f5541e9a84a47776dc13d",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "baseBytes": 9378,
+      "baseSha256": "3405d0e9961ac753ec24cd8f142e024da9745d2807e717d9004bad84e6ddeff2",
+      "currentBytes": 10667,
+      "currentSha256": "5ee5fff3cd801ba63e435b1548b47f98658ce22689cd9ea55f0253f9a309b14c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "baseBytes": 1616536,
+      "baseSha256": "4256f3c3000a975851c2953d758cec9253952f14e2fc30e563c4313a8cb75e0c",
+      "currentBytes": 1618910,
+      "currentSha256": "47d634697589c077e93bfc4e4c0c1be30bee76f657e9bd82a553cd3d16e7f54c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "baseBytes": 1117152,
+      "baseSha256": "f72dc63dd8abfa195e0247bb7b00c0bce1be1d1a0b5d0fd1920b0290101cd130",
+      "currentBytes": 1119526,
+      "currentSha256": "d9e8a43116acb13b0b6ee408b21092222da9d06d23d3e6af5cf119053bc85a8b"
+    }
+  ],
+  "protectedPinsExact": 160,
+  "rootSourceRead": "ab8028 full diagnostic report and exact ordered guard diff; authored/base/protected pins",
+  "authorWholeFileInverse": {
+    "oneGuardReplacementRestoresBase": true,
+    "restoredSha256": "3405d0e9961ac753ec24cd8f142e024da9745d2807e717d9004bad84e6ddeff2"
+  },
+  "rootReversePatchCheckExit": 0,
+  "metadata": "oldtails/checkmarks exact, additive fronts",
+  "diffCheckExit": 0,
+  "projectExecution": "UNRUN source block",
+  "gates": "corrected SOURCE/FIXTURE/SELECTION REQUIRED",
+  "runtime": "HELD"
+}

@@ -1,5 +1,38 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## First-lineage-predicate diagnostic SOURCE WIP — 2026-10-15
+
+Owning base `7c79c3116c1159cc629f5541e9a84a47776dc13d`. EVIDENCE report
+e08a8625 ACCEPTED the actual Late2 failure status; exact predicate remains UNPROVED.
+Additive reviewer erratum f5b4ffac confirms the unchanged actual failing fixture:
+MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:676.
+Explicit diagnostic-only release a4a75f60 applies; no consumer correction/rerun released.
+
+One normalizer partial now names the FIRST failed existing lineage predicate.
+All6 original checks retain left-to-right short circuit/null safety and refusal;
+HasValidSeal/AgreesWith are not rerun. Current effect payload is computed before
+initial payload exactly where the old comparison reached them. ONLY predicate5
+failure appends those already-computed hashes, bounded stored base/final hashes
+(with explicit nulls) and the existing boundary-complete flag. Each fingerprint
+is at most80characters plus explicit truncation marker. No plans/capabilities/
+requests/receipts/commands/source maps are serialized. No new hook/owner/probe/IO,
+validation/reducer/projector/issuer/publication path or changed settlement.
+A first-failure5 record DOES NOT evaluate or prove predicate6; earlier predicates
+are only known to have passed in that same ordered evaluation if actually reached.
+
+All lineage acceptance requirements and inventory/Take/member/publication/readback/
+compensation/settlement remain exact. Fixtures/oracle order/once-Spend/history/union/
+story/turn/idle-repeat, categories/selectors/budgets and GM/public grammar unchanged.
+No GM update: bounded client-private diagnostic text only, no gameplay/output contract.
+Existing2nativeLateFAIL is the regression basis; no mirror tests or passing repeat.
+Compilation/API/fixture/runtime for this source UNVERIFIED; no project/compiler/build/
+discovery/PlanOnly/catalog/test/runtime/fault/provider call by author. ROOT must save/
+recover and obtain corrected SOURCE/FIXTURE/SELECTION plus fresh matching prerequisites
+before any separately released diagnostic actual (both failed Late2 rows). Checkpoint5
+PASS not repeated; later12 UNRUN/HELD; consumer correction/fullFR063/prior contours OPEN.
+Historical retained Sol XHigh requested; actual backend/model/effort UNAVAILABLE.
+Historical metadata tails/raw evidence/checkmarks remain unchanged.
+
 ## First owned-QTE-contribution Late2 outcome: composite lineage refusal — 2026-10-15
 
 Tested/compile source `edc0ee622e5b47ae45decde56e21e3bb71a35661` passed
