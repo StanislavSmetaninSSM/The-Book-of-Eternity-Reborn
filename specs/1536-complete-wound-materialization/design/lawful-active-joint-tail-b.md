@@ -51,7 +51,7 @@ B оставляет существующий common publisher и `PublishLocalF
 
 | Вариант | Предлагаемое изменение | Цена и предел |
 |---|---|---|
-| **B — рекомендуется для обсуждения** | Fixed phase state в joint marker; один atomic automatic action+ack; отдельные projection/story и QTE handoff/cleanup. | Локальнее по владельцам, без нового pathname. Нужны явные schema/member/issuer grants и новый post-handoff proof. Не чинит автоматически обычный allocator/все обычные turn owners. |
+| **B — рекомендуется для обсуждения** | Fixed phase state в joint marker; automatic action+ack; отдельные projection/story, QTE handoff и selected-terminal action+ack/cleanup. | Без нового pathname. Нужны явные schema/member/issuer grants и новый post-handoff proof; D8 затрагивает также terminal XP/history owner. Не чинит автоматически обычный allocator/все обычные turn owners. |
 | C | Каждый stats/award/QTE owner получает durable per-operation receipt/idempotent action; joint делегирует им. | Лучше повторное использование обычными lifecycle callers, но шире shared schema, consumers, receipt retirement и regression cohort. Это тоже не общий journal. |
 | A | Оставить принятые INACTIVE/refusal guards. | Новые grants не нужны; lawful ACTIVE и полный FR063 остаются открытыми. |
 
@@ -105,7 +105,7 @@ optional controls/draft сохраняют прежние absent правила;
 Никаких новых deletions canonical mechanics, QTE history, current continuation, story,
 computed projection, outputs narrative/interface/debug, generation metadata или signing material.
 
-### Только read/guard, не новые grants
+### Read/guard inventory; исключения только в named фазах
 
 `game_state/player/experience.json` (кроме отдельно proposed D8 earned-QTE-XP writer; никогда compensation), `game_state/core/player_status.json`,
 `game_state/meta/soul_state.json`, `game_state/world/world_time.json`,
@@ -113,9 +113,9 @@ computed projection, outputs narrative/interface/debug, generation metadata ил
 `game_state/player/skills_active.json`, `game_state/player/skills_passive.json`,
 `game_state/npcs/npc_core.json`, accepted effect carrier/identity/source inventories,
 actual original headers/artifacts, current generation storage admission, story prefix,
-`game_state/history/qte_history.json`,
+`game_state/history/qte_history.json` (только D8 разрешает terminal append),
 `input/qte_effect_resolution_request.json`, `output/qte_effect_resolution_receipts.json`,
-`ready/qte_effect_resolution_complete.json`.
+`ready/qte_effect_resolution_complete.json` (только D8 разрешает consumption этих трёх controls).
 
 Полный read set P — union этих literals, existing `JointFootprintPaths`,
 `QteDeferredEffectContinuation.SealedRootPaths`, при physical injury — `QtePhysicalInjurySource.WoundRootPaths`,
@@ -168,8 +168,12 @@ Crash до common не оставляет accepted tail: исходники ос
   + frozen basis + exact before/current images; даёт только следующую named phase.
 - `JointQteHandoffCapability`: additionally applied automatic/projection/story, exact current offer/Ready,
   known submitted UI choice и genuine prior terminal retirement proof.
-- `JointQteTerminalCapability`: actual runtime/continuation/history/wave terminal closure
-  + joint transfer lineage + still genuine retained original/G; только marker terminal ack/cleanup.
+- `JointQteSelectedTerminalCapability`: actual persisted selected outcome/resolved wave + genuine
+  joint transfer lineage/current original/G; только terminal PREPARE и exact COMMIT cohort D8.
+- `JointQteTerminalTailCapability`: genuine committed terminal proof, actual lawful terminal
+  stats/levels/balance и fixed terminal basis; только P7b automatic/projection.
+- `JointQteTerminalCapability`: actual runtime/continuation/history/wave terminal closure,
+  terminal COMMIT и P7b receipts + joint transfer lineage + retained original/G; только cleanup.
 - `PriorQteTerminalRetirementProof`: historical terminal validation; не active QTE permission,
   не новый harmful occurrence и не право восстановить старую continuation.
 
@@ -213,8 +217,10 @@ Closed `activeTail` fields:
 - `qte`: `{state, choice, transfer, terminal}`; state `none|offered|active|declined|terminal`.
   `choice` null до действия, иначе closed `{decision,generation,sessionId,requestId,snapshotToken,turn,qteId,offerFingerprint,basisFingerprint}`; decision=`accept|decline`.
   `transfer` только для accepted handoff. `terminal` null до реального selected-terminal capture,
-  затем `{basis,receipt,automatic,projection}`: receipt=null до terminal COMMIT, nested automatic/projection
-  используют pending/applied receipts. Они не содержат неизвестный выбор до его реального совершения.
+  затем `{basis,receipt,automatic,projection}`: receipt=null до terminal COMMIT;
+  `automatic` — `{basis,state,receipt}`, `projection` — `{state,receipt}`.
+  Nested state=`pending|applied`; pending receipt=null. Automatic basis=null до отдельного
+  post-terminal PREPARE, applied требует non-null immutable basis. Они не содержат неизвестный выбор.
 - `cleanup`: `{state, reason, receipt}`, state `retained|released`;
   reason null до release, затем `no_qte|declined|qte_terminal`.
 
@@ -227,6 +233,29 @@ Root fingerprint покрывает marker; стабильный `basisFingerpri
 и immutable common proof core (progression calculation **без mutable phase**, existing immutable
 receipt/output fields), но исключает сам `basisFingerprint`, root fingerprint и phase receipts.
 Хеши — corruption/correlation checks; права выдаёт §5.2, а не совпавшая строка.
+
+Closed `terminal.basis`:
+`{binding,transferId,selectedTerminalBinding,resolvedWaveBinding,preparedAtUtc,
+sourceReadImages,memberPaths,memberBeforeImages,memberAfterImages,planInputFingerprint,
+terminalResultFingerprint}`. Fingerprint этого basis имеет отдельный domain
+`T070-MORTAL-QTE-JOINT-SELECTED-TERMINAL-V1\n`; qte_terminal receipt связывает его.
+`selectedTerminalBinding`/nullable `resolvedWaveBinding` — exact
+existing typed-owner schemas, не arbitrary payload. `sourceReadImages` — полный fixed read set
+terminal calculator/normalizer/selected plan с теми же image правилами; M исключён. `memberPaths`
+выводит named owner из принятого D8 subset и existing typed contributions (§8.6), не caller.
+Before/after maps имеют ровно эти data keys, включая present/absent wave controls. Внутри maps
+нет M; current continuation может содержать только текущий joint capsule, без predecessor blobs.
+
+Closed `terminal.automatic.basis`:
+`{binding,transferId,terminalResultFingerprint,preparedAtUtc,inputImages,sourceRoles,
+automaticPlan,projectionReadPaths,encoderVersion}`. Это тот же strict P2 arithmetic/image policy,
+но actual inputs после terminal COMMIT; P2 receipt/watermark проверяются, не служат новыми inputs.
+Его fingerprint вычисляется из всего basis с отдельным domain
+`T070-MORTAL-QTE-JOINT-TERMINAL-TAIL-V1\n`; phase receipt `basisFingerprint` у P7b связывает именно его,
+а `terminalResultFingerprint` связывает terminal outcome. Initial P2/P3/P4/P6 receipts связывают
+immutable activeTail.basis. Phase IDs закрыты: `progression|automatic|projection|story|qte_accept|
+qte_decline|qte_terminal|qte_automatic|qte_projection|cleanup`; PREPARE не выдаёт applied receipt.
+Один deterministic operationId на named phase, а не общий ID всех transactions turn.
 
 Фазовые invariants: automatic applied требует progression applied; projection applied требует
 active automatic applied; story applied требует projection applied. Offered в P0 означает только
@@ -280,6 +309,8 @@ Physical-injury source остаётся genuine existing source capture; нов�
 
 P2 intentionally объединяет stats и award в один four-member logical cohort. Нет окна
 «stat +1, command ещё не consumed» или «+5 points, watermark старый».
+Начисление переносится перед QTE prompt относительно ordinary пути; это часть D3. Оно не
+выбирает будущий outcome. P7b обрабатывает только возникшие позже QTE stats/level и не повторяет P2.
 P1/P3/P4 — отдельные уже понятные владельцы, не повод объединять всё хранилище в transaction.
 В v3 `publishedFootprint` остаётся initial common evidence. Current expectation — точные
 phase overlays: progression after, automatic after (3 paths), computed after, story suffix,
@@ -420,6 +451,10 @@ B предлагает **D8: selected-terminal action+ack** и один post-QTE
    current continuation/runtime, actual plan/receipt/Ready source, captured terminal UTC,
    exact terminal data before/after images, expected one history row и frozen result fingerprint.
    Choice/outcome к этому моменту уже известны. Raw caller result не может выдать этот basis.
+   PREPARE требует исходный M до basis, exact before cohort и complete source proof;
+   repeated PREPARE принимает только тот же frozen basis. Crash до PREPARE допускает fresh
+   calculation по тому же genuine selected source; после PREPARE captured UTC/after-images
+   больше не заменяются. Другой selected outcome/Ready/wave — HOLD.
 2. COMMIT использует existing publisher **одним** atomic batch: genuine deferred plan after-images
    (включая physical wound/effect/resource contribution по existing typed grants), earned XP,
    submitted new stats, one history append, runtime inactive/summary, continuation terminal,
@@ -522,8 +557,8 @@ admission блокирует изменение frozen stats/projection. Пол�
 | D4 | Distribution deferred до P8; allocation safety отдельно | Player flow и explicit guided US5 dependency; не объявлять обычный allocator crash-safe. |
 | D5 | Joint decline отменяет optional scene без автоматического replay action | Если нужны ordinary follow-up semantics — новый отдельно обсуждённый durable intent или C, не скрытый callback. |
 | D6 | Continuation2/joint story witness, compact prior retirement, physical actual-pair proof, original retention до QTE terminal | Новый reader/schema/issuer/cleanup handoff §8 и строгий post-handoff composition proof. |
-| D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact supported outcome subset §8.6 | Atomic terminal/XP/history/closure cohort и terminal-derived basis; расширение payload families отдельно, no implicit legacy crash-safety. |
 | D7 | Pre-release schema cutover без migration незавершённых v2 в ACTIVE | Existing v1/v2 recovery только их прежние contours; schema3 только новый common publication после accepted design и implementation. |
+| D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact supported outcome subset §8.6 | Atomic terminal/XP/history/closure cohort и terminal-derived basis; расширение payload families отдельно, no implicit legacy crash-safety. |
 
 Документ рекомендует согласовать D1–D8 как package B с отдельным обсуждением D4/D5/D8.
 Несогласованный пункт означает конкретный blocker; никакой fallback «сам решит implementation».

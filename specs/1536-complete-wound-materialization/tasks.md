@@ -1,11 +1,11 @@
 ## FR063-ACTIVE-DESIGN-B: authorized DESIGN-only WIP — 2026-10-15
 
 - User/coordinator explicitly authorized only preparation of variantB fixedjointtail DESIGN, comparisonC/A, exactproposedgrants/recovery/cleanup/matrix andindependentDESIGNreview; thenstopfordiscussion. Base/actualremote10611c69aa0d25683b9d74de04d1f96482f87d59 verifiedclean/79e6ancestry, mainactuald0241e71 unchanged. Existingissue#1536 remainsOPEN. No implementation/writeauthority accepted.
-- Draft `design/lawful-active-joint-tail-b.md` is the onlynewdesign document: fixedatomicstats+award action/ack, derivedprojection/story, closedQTEtransfer/retirement/originalretention, two-chainposthandoffproof, deferredallocation andexplicitdeclinepolicydecision. Allschema/member/issuer/cleanupgrant tables arePROPOSED. Existingacceptedcontractandruntimeunchanged;allnewruntime/platformcasesUNRUN. No new implementationplan, C#test/catalog/selection, production/runtime-tools/GMprompt edits. Existingreadonly96PASS retainoriginal737pins only.
+- Draft `design/lawful-active-joint-tail-b.md` is the onlynewdesign document: fixedatomicstats+award action/ack, derivedprojection/story, closedQTEtransfer/retirement/originalretention, two-chainposthandoffproof, deferredallocation andexplicitdeclinepolicydecision; sourceaudit additionally found non-atomiclegacyQTEterminalXP/history/closure, nowexplicitD8selected-terminalaction+ack/post-QTEautomatic proposal. Allschema/member/issuer/cleanupgrant tables arePROPOSED. Existingacceptedcontractandruntimeunchanged;allnewruntime/platformcasesUNRUN. No new implementationplan, C#test/catalog/selection, production/runtime-tools/GMprompt edits. Existingreadonly96PASS retainoriginal737pins only.
 - [x] FR063-ACTIVE-DESIGN-B/source: inspect actualowner paths, formulas, initializer/decline/windows andacceptedINACTIVEscope.
-- [ ] FR063-ACTIVE-DESIGN-B/document: complete source-grounded design, exactschemas/grants/proof/recovery andalternatives/matrix;self-review.
+- [x] FR063-ACTIVE-DESIGN-B/document: complete source-grounded design, exactschemas/grants/proof/recovery andalternatives/matrix;self-review.
 - [ ] FR063-ACTIVE-DESIGN-B/review: mandatoryindependentAstraXHighDESIGNreview, fixmaterialfindings, preservefinalhashpairafterFINALSTOP.
-- [ ] FR063-ACTIVE-DESIGN-B/discussion: finaldocument/remoteSHA/cleanGitHubrecoveryhandoff; userdecisionD1-D7pending, thenSTOPbeforeimplementation.
+- [ ] FR063-ACTIVE-DESIGN-B/discussion: finaldocument/remoteSHA/cleanGitHubrecoveryhandoff; userdecisionD1-D8pending, thenSTOPbeforeimplementation.
 
 ## US5-RO2 independently ACCEPTED; readonly slice complete, lawfulACTIVE decision required — 2026-10-15
 
