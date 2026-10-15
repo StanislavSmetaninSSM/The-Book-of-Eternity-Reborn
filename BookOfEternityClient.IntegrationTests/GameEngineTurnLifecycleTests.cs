@@ -10289,6 +10289,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string trackedPath = "lore/current_world/world_setting.json";
         const string baselineJson = """{ "worldName": "Baseline" }""";
         const string changedJson = """{ "worldName": "Changed" }""";
@@ -10501,6 +10502,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string path = "game_state/world/weather.json";
         const string backupPath = path + ".rollback.corrupt_evidence";
         await _fs.WriteFileAtomicAsync(path, """{"weather":"baseline"}""");

@@ -3,11 +3,11 @@
   "selections": [
     {
       "category": "fr063-joint-late-completion",
-      "reason": "#1536 T070 signed-schedule fixture correction after immutable first A actual2FAIL at later report helper899. Both rows observed exact scene/story43/eligible cleanup; category and repeat not PASS. Retain signed original schedule via official reader before owner, distinguish current submitted report/schedule, preserve exact phase counts/images and arithmetic. Fresh BOTH40/94/23 and corrected independent gates, then first corrected Late2 only; later stages held.",
+      "reason": "#1536 T070 bounded fixture correction after frozen output-basis19actual/18PASS1FAIL: existing exact identifiers permit interior spaces and reject edge whitespace; route actual custom cleanup to per-test ITestOutputHelper, and add existing owned cleanup wrappers to two C1 rollback controls. Production/authority/oracles/budgets/inventory unchanged. Fresh BOTH40/94/23, corrected independent gates, then user-required first Late2 only; corrected basis and remaining stages held pending qualified new Late2 EVIDENCE.",
       "contracts": [
         "FR-012",
         "FR-063",
-        "authenticated original schedule versus current submitted report/world inputs; exact immutable progression cohort and post-A story/cleanup/repeat oracles"
+        "existing exact identifier semantics, real per-case cleanup evidence and unchanged joint Late2 publication/story/repeat after fresh build"
       ]
     }
   ]

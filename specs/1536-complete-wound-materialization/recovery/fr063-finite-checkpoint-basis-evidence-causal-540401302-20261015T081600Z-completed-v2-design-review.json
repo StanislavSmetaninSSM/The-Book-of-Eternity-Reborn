@@ -1,0 +1,885 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-15T08:17:19.249827+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), inherited explicit request",
+  "configurationActual": "Unavailable telemetry",
+  "testedSource": "540401302838de60e0db6feef9db09b267afe78f",
+  "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+  "evidenceCarrier": "0362db8aa5e025e105076d64b63f2bcadedd4bc1",
+  "observedHeadAtArtifact": "f7b8a99bb07c5f406ef54ba5b77a78ddbd5a0866",
+  "observedStatusAtArtifact": "",
+  "verdicts": {
+    "EVIDENCE": "ACCEPTED_FACTUAL_FRONT_CORRECTION_RESOLVED",
+    "checkpoint": "SCOPED_RUNTIME_PASS_5_OF_5",
+    "basis": "RUNTIME_FAIL_18_PASS_1_FAIL",
+    "basisStandardCleanup": "UNOBSERVED",
+    "basisCustomCleanup": "INDEPENDENTLY_OBSERVED_RAW_TRX_RUN_SUMMARY_AND_ROOT_ABSENT",
+    "identifierCausal": "FIXTURE_EXPECTATION_DEFECT_CONFIRMED",
+    "outputCausal": "PER_TEST_COLLECTOR_OMISSION_NOT_TOTAL_TRX_ABSENCE",
+    "groupedFixtureCorrectionScope": "ACCEPTABLE_PENDING_AUTHORED_EXACT_STATIC_REVIEW",
+    "SOURCE_FIXTURE_SELECTION_CORRECTED": "NOT_YET_REVIEWED",
+    "fullFR063_T070": "OPEN"
+  },
+  "packets": [
+    {
+      "stage": "checkpoint",
+      "packet": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-frozen-540401302-20261015T080715Z",
+      "manifestSha256": "581fdc8eb782687ac37f44a5d9ab649d00ad66a08aac70715ba01ed0b16fd40d",
+      "frozenUtc": "2026-10-15T08:08:25.357271+00:00",
+      "chains": [
+        {
+          "name": "actual-all-json-observations-raw.json.gz",
+          "rawSha256": "1d8cb701ee82376e4b6c7607f079c27f7d43d7a284df0ab7c4887e849cb0bda1",
+          "compressedSha256": "2ef7c9e7522a197964c9202dd820852b3fe19481072c28a56ad671452062bb26"
+        },
+        {
+          "name": "actual-all-trx-results-raw.json.gz",
+          "rawSha256": "2c829a6d4fd411f16901875839c0278a5dd2032dbf7d19553193ceb421f27d6f",
+          "compressedSha256": "38718c228000cf9abbeb55e97e50d05d463df9fa9039ada341a70f61348a403c"
+        },
+        {
+          "name": "actual-child-evidence-containers-raw.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "actual-console.log.gz",
+          "rawSha256": "eb47cf67350646b6c7f5a35eec893a09b32bbab1dc2a555c225212a8942e1996",
+          "compressedSha256": "b27265a981b49feee525c759ddd9d57c067b149923279592e99d1f7b3fdecea6"
+        },
+        {
+          "name": "actual-full-trx-stdout.txt.gz",
+          "rawSha256": "c2dd7e0afd2f32f003aad3404c4e0aa981ec7bd66a4f553f9cacb683b28fd473",
+          "compressedSha256": "812051cdeef4792c3b274cf739992b3e26829c728d16326fb8a175cdc74134c3"
+        },
+        {
+          "name": "actual-invocation-prewritten.json.gz",
+          "rawSha256": "07fcb22c47dce0f54695b39a95a3baab6f39bfb01fb884b510104d7aee77d60c",
+          "compressedSha256": "15d251eb7ac63fa07e6806812e72b4d1948df8509fe07ceb53efb57313f93b22"
+        },
+        {
+          "name": "actual-native-observations.json.gz",
+          "rawSha256": "3ce72e3f6f7f20368535082a183bf54ebb1ccc9a36b2e631c637c20c646d5aa1",
+          "compressedSha256": "f2181bfe042265a7d667a93c720603eaff7c06b2bd74a92aeefe89373fc84909"
+        },
+        {
+          "name": "actual-native-process-result.json.gz",
+          "rawSha256": "b6d180a39be27581ad409c32e68a75419e95aa8d039a0bf46318f03571e63c48",
+          "compressedSha256": "5e43610950a912e9ab4b11a9d4ab4b531c244058a551fcaa768cea5243581bd3"
+        },
+        {
+          "name": "actual-pre-assertion-root-observations.json.gz",
+          "rawSha256": "2762f2c15d57886e6fef76872e525d968ff6e5ad230bb5e2b60ddc079b343f85",
+          "compressedSha256": "14c85cf1e9e5ee96f3aa0696c7b069e5327904e0bde1c983d286d577a747276b"
+        },
+        {
+          "name": "actual-root-readback.json.gz",
+          "rawSha256": "2762f2c15d57886e6fef76872e525d968ff6e5ad230bb5e2b60ddc079b343f85",
+          "compressedSha256": "14c85cf1e9e5ee96f3aa0696c7b069e5327904e0bde1c983d286d577a747276b"
+        },
+        {
+          "name": "actual-run-location.json.gz",
+          "rawSha256": "56fd311b021df66d75c54d34e2138124526d564c4a97231ae5c2ce7127f58379",
+          "compressedSha256": "3dc131c0c44b5a86157c714e8625bae14662f294a3ef55356cf206bb374ffe2f"
+        },
+        {
+          "name": "actual-runner-summary-raw.json.gz",
+          "rawSha256": "d8c729ab7202e822f2c4b4197a6de77fc0b63c9469578c25673893a7f975ddf0",
+          "compressedSha256": "4590a4891b9832f18fa87d3e0d8ea24346f82049eaabc5a08d8564b29edd1128"
+        },
+        {
+          "name": "actual-strict-cleanup-origins-raw.json.gz",
+          "rawSha256": "93bf7ecd445b9c00d578737347ce0b10501b5c35090501cbe9de61e79555648d",
+          "compressedSha256": "4034fb9ac94ab715fd9b21fa7885f48cbfed7779a21a95af4b0277ca864242af"
+        },
+        {
+          "name": "actual-strict-cleanup-receipts-raw.json.gz",
+          "rawSha256": "39be2e4a46c8f187413a8c5d2b1dbf6d595a139cdad65106e32b33eb0a0246e5",
+          "compressedSha256": "38e155c6f57897e07c6ed06cdf8346d0d135e5ef3ba6e0d7c967f0dcb0b938cb"
+        },
+        {
+          "name": "candidate-source-pins.json.gz",
+          "rawSha256": "b7ccb6f2c8f8a452140f0c91247e3487956df9fbe690a60d09891f8b7cae2131",
+          "compressedSha256": "008fe44201f4e12b4c77574a9d9cd64e3d9b1590f08a413ded51a4d5b2f2cb1f"
+        },
+        {
+          "name": "exact-independent-gate-proof.json.gz",
+          "rawSha256": "8e70d82bbcea24deea3659e8bc742f33d7fc05fc088ef4aeba15c05e32c897f1",
+          "compressedSha256": "2d0f50dfd2d39dfc529fe32b8811075277740a16799c299a2a3ca8fafe3e4244"
+        },
+        {
+          "name": "exact-plan-console.log.gz",
+          "rawSha256": "4b9d57b83251dae06aff5c071f19f10608048a47d31303c344163ae6acbd7854",
+          "compressedSha256": "34021a583f90e04912e03f5a8909e64b5770c6cc3c30f0af1e4c3a49fb4fbf3b"
+        },
+        {
+          "name": "exact-plan-invocation-prewritten.json.gz",
+          "rawSha256": "828070a084294f2f39e96423d455b86090cc43f2a21af2ec769f431197b863ba",
+          "compressedSha256": "ad637a64a23128dc4e513db5bf699d58ef969465e0a95567229e8aada2fb0d80"
+        },
+        {
+          "name": "exact-plan-native-process-result.json.gz",
+          "rawSha256": "dec955ec15403cb5cf0d52ac8fa0620bb077380b391169335d803a44eea21faa",
+          "compressedSha256": "f20bd13158898fa70821272f6d3fbe87806f65282652580c44fba8267a0d7cf5"
+        },
+        {
+          "name": "exact-plan-root-readback.json.gz",
+          "rawSha256": "89b51b086daa67f122038d29745969f9b3276253501614e4dc17a70febe8170b",
+          "compressedSha256": "18f8129f4b77f63a5b3c86dc1053c43d5c529dc79d719d4ed8fecb16e7e55c8d"
+        },
+        {
+          "name": "exact-plan-run-location.json.gz",
+          "rawSha256": "1882320b9def311b6ba99f64ad5559e69c52ce9414ae1c793eec80c6c151550d",
+          "compressedSha256": "2c7a9693486175b54d4f477cc5e8482dffdad2e761551a7af9fe75b7d4ed07b9"
+        },
+        {
+          "name": "exact-plan-runner-summary-raw.json.gz",
+          "rawSha256": "3ad0ddfee3badaee6dd69d835c2e6cc40b459655341771ae7b47d87c009b9a9b",
+          "compressedSha256": "edffc072cc9c9537e66b60b510b398dc3498d119ee99026812d33090d57dfa36"
+        },
+        {
+          "name": "exact-used-finite-stage-controller.py.txt.gz",
+          "rawSha256": "7e342f26d57002d711da2280cd10d5ce7f7187cf2d3bbfa8fcccf67458b60b82",
+          "compressedSha256": "08b5bb5c89d0fcfc61c06b5237dde96f19b4303db39ea6b4c99415887d080a43"
+        },
+        {
+          "name": "exact-used-finite-stage-inventory.json.gz",
+          "rawSha256": "111458d77078a4a58ef8a86a7ac0d8daef818bf9ed099b256ed8746014c4ff9e",
+          "compressedSha256": "1da5738e1f23f592762c58d7b431cec15c14893ddaae570048bfa7be75d10ee9"
+        },
+        {
+          "name": "exact-used-root-runner-v5.py.txt.gz",
+          "rawSha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+          "compressedSha256": "42b53b5087317edd0781e4293fede19016d5d93aa62c7d69e2e54119288765a8"
+        },
+        {
+          "name": "fresh-binary-pins.json.gz",
+          "rawSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+          "compressedSha256": "e0f34af68ccdb1fccb5130f1470d75795dc930cce0ce5ad14aca0f919cb62b44"
+        },
+        {
+          "name": "inherited-both-build-provenance.json.gz",
+          "rawSha256": "f6e56dbc4ed66b96fd4eb6be2155f80ea426482634517da8bdb237d07254da99",
+          "compressedSha256": "7f3507377e844dba6d21affbe7b4c1693c7e5944f596bedb75a5c7407014975d"
+        },
+        {
+          "name": "orchestration-stdout.log.gz",
+          "rawSha256": "045cd93584220d5704642379c528f418c4df47ed670b8db691bfd5cf8b7b7963",
+          "compressedSha256": "13d28a4f0f42cfc6d4dfbed0621452129afa481ade9c49947c65ac7928e00463"
+        },
+        {
+          "name": "required-owned-root-cleanup-readback.json.gz",
+          "rawSha256": "93aaa663a29fd2b278c9aa9cc83f135b8870537b9338dbd8482e6176afd1fd39",
+          "compressedSha256": "804fafc8480d1c2ae2415487297e0103c234e990afce39cbb1f4d33fa0c76402"
+        },
+        {
+          "name": "actual-dotnet-test.log.gz",
+          "rawSha256": "1aebe0509510366c8945173821944b7693e98992637c1bce4ab7964b5214e8b8",
+          "compressedSha256": "da42061455b995de042ea10b6bb31b0b8e4acb5ccc33308762efb91aee3f055c"
+        },
+        {
+          "name": "actual-fr063-guaranteed-joint-checkpoint-provenance-integration-001.trx.gz",
+          "rawSha256": "853597df60cf8fec2f671bd09bef9fd63b64ecfc74b3cd5ce208b9b546e04dba",
+          "compressedSha256": "955cbce6162ff88e66195351594fa6c60370954cfef2da244864a60d2f1baa1a"
+        },
+        {
+          "name": "actual-plan.json.gz",
+          "rawSha256": "d3d7414b8ffcddd837a47a8ad8944ca0f0eeef4cb8bad7fc30787d76a8369fae",
+          "compressedSha256": "2b9f20884f395a953e4c38047273453b97b2f415986be448714981d791593616"
+        },
+        {
+          "name": "actual-summary.json.gz",
+          "rawSha256": "d8c729ab7202e822f2c4b4197a6de77fc0b63c9469578c25673893a7f975ddf0",
+          "compressedSha256": "4590a4891b9832f18fa87d3e0d8ea24346f82049eaabc5a08d8564b29edd1128"
+        },
+        {
+          "name": "exact-plan-dotnet-test.log.gz",
+          "rawSha256": "f27528ad8517176dc0b3534aadbfee9b82b97cff351213966dcfd0e38176cea4",
+          "compressedSha256": "f0c34c5c1f550e71bef0157c735dd1c70e7cef132f147a83097b81664a69aa2f"
+        },
+        {
+          "name": "exact-plan-plan.json.gz",
+          "rawSha256": "a2f8c9488f9e1c69e34cc31a8a61689861b84446e7e7e668556ce48e5806739e",
+          "compressedSha256": "0e925db1993b6ead03d3d059f2386d171d2a356eb5e1cc05719d0e91f4274c60"
+        },
+        {
+          "name": "exact-plan-summary.json.gz",
+          "rawSha256": "3ad0ddfee3badaee6dd69d835c2e6cc40b459655341771ae7b47d87c009b9a9b",
+          "compressedSha256": "edffc072cc9c9537e66b60b510b398dc3498d119ee99026812d33090d57dfa36"
+        }
+      ],
+      "sourcePinsCount": 189,
+      "sourcePinsSha256": "b7ccb6f2c8f8a452140f0c91247e3487956df9fbe690a60d09891f8b7cae2131",
+      "sourcePinsCheckedGit": "540401302838de60e0db6feef9db09b267afe78f",
+      "binaryPinsCount": 11,
+      "binaryPinsSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+      "binaryPinsCheckedActualFiles": true,
+      "actualRelease": [
+        "tests/selections/1536-fr063-joint-connected-checkpoint.json"
+      ],
+      "exactPlan": {
+        "run": "20261015-080716-678-17403-5dd1c05fb6a140e28ae9ecec8ca8b234-categories",
+        "wallTime": "00:00:03.0678352",
+        "exitCode": 0,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1
+      },
+      "actual": {
+        "run": "20261015-080720-865-17548-d5120ac2a12f4276aca14aa7cc575db7-categories",
+        "finishedUtc": "2026-10-15T08:08:24.977580+00:00",
+        "wallTime": "00:01:04.0729446",
+        "exitCode": 0,
+        "tests": {
+          "Total": 5,
+          "Executed": 5,
+          "Passed": 5,
+          "Failed": 0
+        },
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 5,
+          "CompletedCases": 5,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "skipCount": 0,
+        "duplicateTestIDs": 0,
+        "timedOut": false
+      },
+      "failures": [],
+      "strictPerCaseCleanup": [
+        {
+          "testId": "11fe697c-88b2-c176-0d9f-a4e691fb4750",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-523845d533bd46c1a02433285203b748",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "rootActuallyAbsent": true
+        },
+        {
+          "testId": "2e573de1-68ec-cfc7-ea97-87a31557bbf7",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-6f95da3d28fd4a519a0cdd923f754e44",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "rootActuallyAbsent": true
+        },
+        {
+          "testId": "5f432f7f-a0a1-fc4d-0cad-dab5df44cbd4",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e08ad3bc282148dc9c72ea38e03f9eaf",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "rootActuallyAbsent": true
+        },
+        {
+          "testId": "4e7feb44-6451-b65b-5964-e9aaec5b53a7",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e1c943c57aa24d79a7c9ac2633dd1acc",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "rootActuallyAbsent": true
+        },
+        {
+          "testId": "eef80ed5-c602-00bf-764f-d47def7c0d96",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-670483bff9cc4ff6b51161f13e963b6d",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "rootActuallyAbsent": true
+        }
+      ],
+      "readonlyCase": null,
+      "customCleanup": null,
+      "nativeRawTrxSha256": "853597df60cf8fec2f671bd09bef9fd63b64ecfc74b3cd5ce208b9b546e04dba",
+      "binaryProvenance": {
+        "source": "540401302838de60e0db6feef9db09b267afe78f",
+        "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+        "officialPreparation": "20261015-074619-800-14924-09b8d585bc2b4332a5774619234342fc-categories",
+        "originalScratch": "/workspace/boe-fr063-tools-20261015/scope3-signed-schedule-20261015T074618Z",
+        "frozenPreparationPacket": "/workspace/boe-fr063-tools-20261015/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z",
+        "frozenPreparationManifestSha256": "114609b6822bbde3b1cf26baa75ae9b3d05c3cae254660563f6c97d61f7c2dea",
+        "originalBinaryPinsSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+        "metadataChanges": [
+          "M\tspecs/1536-complete-wound-materialization/plan.md",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-approved-A-finite-stage-inventory-d6c7259a9-20261015.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-approved-finite-stage-controller-v1-20261015.py.txt",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.md",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-all-json-observations-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-all-trx-results-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-child-evidence-containers-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-fr063-joint-late-completion-integration-001.trx.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-full-trx-stdout.txt.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-native-observations.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-pre-assertion-root-observations.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-strict-cleanup-origins-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-strict-cleanup-receipts-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/candidate-source-pins.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-catalog-audit.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-independent-gate-proof.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-used-root-runner-v5.py.txt.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/fresh-binary-pins.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/manifest.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-Build-integration.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-Build-unit.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-summary.json.gz",
+          "M\tspecs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "buildInputsUnchanged": true,
+        "stage": {
+          "selection": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+          "categories": [
+            "fr063-guaranteed-joint-checkpoint-provenance"
+          ],
+          "methods": 1,
+          "cases": 5,
+          "descriptors": 1
+        },
+        "binaryReuseReview": {
+          "path": "/workspace/boe-fr063-tools-20261015/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.json",
+          "sha256": "b148479373bcc93242a12bfd4756eef9195b0a744f174c578267c4b19a3db91a",
+          "conditions": [
+            "ROOT alone remints current clean remotely published metadata source, complete candidate source pins and gate.actualRelease exactly one current selection; reviewerStopped true only after this reviewer FINALSTOP.",
+            "Keep compileSource d6c7259a941398dd3a4ad21ff90733c9013cce0b and original fresh BOTH provenance truthful. Compare all 11 immutable binary pins before/after each invocation and source pins before/after; do not claim recompilation at metadata HEAD.",
+            "Exact Git diff from d6 may contain only plan.md/tasks.md metadata modifications and added recovery evidence/reports/tool copies. No modified/deleted old recovery evidence. Code, tests, configuration, selected GM documentation, project/build inputs, category catalog and budgets must remain byte-identical. No new executable build input.",
+            "Each stage requires fresh exact official NoBuild PlanOnly with its reviewed methods/cases/descriptors and zero executed tests; actual uses this one finite selection and unchanged descriptor budgets. Never run the 40/94/23 preparation aggregate as actual.",
+            "After each stage require native PASS, exact complete case/descriptor counts, no skips/duplicate test IDs/timeouts, unchanged pins, all required actual cleanup evidence and absent roots; freeze full raw/compressed chains including exact gate, runner, wrapper, inventory before diagnosis or release of successor.",
+            "Any failure, incomplete result, evidence/pin/tuple drift or required cleanup gap stops and freezes; require independent review before correction/retry. Do not raise budgets or silently retry. Later-stage cold-child loaded bindings require actual raw evidence inspection; eleven pins alone are not proof of all child dependencies.",
+            "Metadata-only evidence groups may advance HEAD under these conditions without rebuilding unchanged inputs or repeating SOURCE review solely for log additions. Any product/test/config/build-input change invalidates reuse and requires corrected gates and fresh BOTH. Full FR063/T070 acceptance remains separate.",
+            "ROOT enforces predecessor order when minting singleton gates; the reviewed wrapper validates singleton and inventory, not predecessor receipts. C1 remains HELD before execution until its missing per-case cleanup evidence is resolved and separately reviewed."
+          ]
+        },
+        "runtime": "UNRUN"
+      }
+    },
+    {
+      "stage": "basis",
+      "packet": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-finite-basis-frozen-540401302-20261015T080852Z",
+      "manifestSha256": "ab8cc6421f3fc2f922c13edc617f6967671cf12f0e1d2f2358fb50faa8913976",
+      "frozenUtc": "2026-10-15T08:09:02.746614+00:00",
+      "chains": [
+        {
+          "name": "actual-all-json-observations-raw.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "actual-all-trx-results-raw.json.gz",
+          "rawSha256": "58cd8d2b3144a7c1c6df331900ecfd21b43f3a81ebe94680427f825985ff15c6",
+          "compressedSha256": "73bed5f3a39966b07e2cd3745d828e7081d4b80a411935b77d314aa2667f95b5"
+        },
+        {
+          "name": "actual-child-evidence-containers-raw.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "actual-console.log.gz",
+          "rawSha256": "b6e8a1946e8e4c6655c3c2044bdafa3f6949d90073788391feaae850b83a87ae",
+          "compressedSha256": "91dbdb7f352e475389ff28e2d4531d7d3c3aa1c984beeaa422f78cdebbff89c7"
+        },
+        {
+          "name": "actual-full-trx-stdout.txt.gz",
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+        },
+        {
+          "name": "actual-invocation-prewritten.json.gz",
+          "rawSha256": "6db24c06f4a4b938845a83a62288491ca261b6120161aa26c8b8c92871b03b01",
+          "compressedSha256": "f92efc4624d4893505d747f542e90c16ce446cf27f4ef699b71149ead9c98cea"
+        },
+        {
+          "name": "actual-native-observations.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "actual-native-process-result.json.gz",
+          "rawSha256": "635c552498dd481f08c0c8d4dbbfc1de875175f8fe83d3a4f4b73e43d1b2b19e",
+          "compressedSha256": "769c6c0e7f64c683580892fdc93ebc5259e77e5e6d7c28cbffc46872e5afbf94"
+        },
+        {
+          "name": "actual-pre-assertion-root-observations.json.gz",
+          "rawSha256": "ee56557c63e952dd54ee58c96e94ccb6722f7e5229915f7b19f7b6ec3fc3472e",
+          "compressedSha256": "5962b02c5eb3be2c6eafc9ec3ff956f35ce1e25d879afc48a6a876cb08c94f0e"
+        },
+        {
+          "name": "actual-root-readback.json.gz",
+          "rawSha256": "ee56557c63e952dd54ee58c96e94ccb6722f7e5229915f7b19f7b6ec3fc3472e",
+          "compressedSha256": "5962b02c5eb3be2c6eafc9ec3ff956f35ce1e25d879afc48a6a876cb08c94f0e"
+        },
+        {
+          "name": "actual-run-location.json.gz",
+          "rawSha256": "afd2ce2ba76cbaab9a0a5e1c4c2677b3111f5c014db55370ae3347c1daaf0ea2",
+          "compressedSha256": "2eedf8fb246343a1fb34fec3fd98025d67095c64ef27bcac7a7a5c4a6154fe0d"
+        },
+        {
+          "name": "actual-runner-summary-raw.json.gz",
+          "rawSha256": "7017f777eb5ccfdadf447a312f7b19f14c4d97e30a39af4ed5f8a10bbc50e39e",
+          "compressedSha256": "7290cf51d07b34be621b5d2b0878064e066a87ce4c8d899dd64abb777ede486b"
+        },
+        {
+          "name": "actual-strict-cleanup-origins-raw.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "actual-strict-cleanup-receipts-raw.json.gz",
+          "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+        },
+        {
+          "name": "candidate-source-pins.json.gz",
+          "rawSha256": "e3a4228b0d7b69e3a2a9f2691f4459f45d17fb93c2880aeae962dda120b63502",
+          "compressedSha256": "90232204123534bed0134646d73532950f3d110a0cfdb31bf40998c9531a5eeb"
+        },
+        {
+          "name": "custom-owned-root-cleanup-readback.json.gz",
+          "rawSha256": "be5318a3621eb0966fb0783b6828c38497b0f85b29c1d36c8264267e97cb1ce1",
+          "compressedSha256": "1613722fa4c9b2902c92768eece8171c0712c9a3981539816ef9607fb2cc5550"
+        },
+        {
+          "name": "exact-independent-gate-proof.json.gz",
+          "rawSha256": "62358deb62cc7bf1ea3104b28cdc85bc8a8ed1173eba8bacd63442cbb075d55e",
+          "compressedSha256": "d5475d948f14c0d63ed167fef2f701c3cb464a6872e009861735438380249d9b"
+        },
+        {
+          "name": "exact-plan-console.log.gz",
+          "rawSha256": "2fdadba9a5113545f0449a35479b0ed26de5dc134ca6961f3056f84c74f986ee",
+          "compressedSha256": "db76d0a3b1d811ca7ce4a63331f9e690874d53ef7ba964938459e34e75787c59"
+        },
+        {
+          "name": "exact-plan-invocation-prewritten.json.gz",
+          "rawSha256": "b89a2f8dcf105cef5c1d33691c1756e6de477d45530e4662259c4738515a7538",
+          "compressedSha256": "0558551d1ac6e7b96a6b6ec748d7a60a86eb342528ae285392d0edff09642f49"
+        },
+        {
+          "name": "exact-plan-native-process-result.json.gz",
+          "rawSha256": "cca92e2d50466c292c9ca01ea7c8f112ffa45414be023d172e8384e9d68bbb2e",
+          "compressedSha256": "5d14ec976cc626a2b765927c42095d9b1527a898672e1aa7eaa4d51815b8cc87"
+        },
+        {
+          "name": "exact-plan-root-readback.json.gz",
+          "rawSha256": "c015a3b4f4594e004daed00628774f0a0f5b84471246f1f8df6ebc3269938f51",
+          "compressedSha256": "7353dcf732b50d0d4be1f2543429d54033db918a525f882e7262f23ec303524e"
+        },
+        {
+          "name": "exact-plan-run-location.json.gz",
+          "rawSha256": "89812ed1dcaf2aa62c52e840d773c484fdf915c350acfa30b6e18cda1948e170",
+          "compressedSha256": "1d3f9db9ef850a29e2c3730b9e428ace4257f950a827d2ebe9265e2dadd9b694"
+        },
+        {
+          "name": "exact-plan-runner-summary-raw.json.gz",
+          "rawSha256": "89b7f67cda460b8ccadafc648db760eb4a02f3ff534d4abda7caf96f707e54a3",
+          "compressedSha256": "d05bbb9dae0d6cc092f4c879951f9e5b6ffc32d49e9989f2588d708f38ece971"
+        },
+        {
+          "name": "exact-used-finite-stage-controller.py.txt.gz",
+          "rawSha256": "7e342f26d57002d711da2280cd10d5ce7f7187cf2d3bbfa8fcccf67458b60b82",
+          "compressedSha256": "08b5bb5c89d0fcfc61c06b5237dde96f19b4303db39ea6b4c99415887d080a43"
+        },
+        {
+          "name": "exact-used-finite-stage-inventory.json.gz",
+          "rawSha256": "111458d77078a4a58ef8a86a7ac0d8daef818bf9ed099b256ed8746014c4ff9e",
+          "compressedSha256": "1da5738e1f23f592762c58d7b431cec15c14893ddaae570048bfa7be75d10ee9"
+        },
+        {
+          "name": "exact-used-root-runner-v5.py.txt.gz",
+          "rawSha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+          "compressedSha256": "42b53b5087317edd0781e4293fede19016d5d93aa62c7d69e2e54119288765a8"
+        },
+        {
+          "name": "fresh-binary-pins.json.gz",
+          "rawSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+          "compressedSha256": "e0f34af68ccdb1fccb5130f1470d75795dc930cce0ce5ad14aca0f919cb62b44"
+        },
+        {
+          "name": "inherited-both-build-provenance.json.gz",
+          "rawSha256": "9aa8801a3f98adc155b4bbd1d9e684cce635aca55dac6ea7ca39d9b9958ea6f1",
+          "compressedSha256": "bca00298940b79d92602cfd8a8d8f3d8cfc4bdb030d86de50e1a1ebc579fc200"
+        },
+        {
+          "name": "orchestration-stdout.log.gz",
+          "rawSha256": "266fa09e383c5a470325d5a4a0056d66054ede4c28bd7dfae714bda161e8fd0f",
+          "compressedSha256": "de06a0b91713490e49788115a6a0e973771ff844f8211b6a873ee6a35202410d"
+        },
+        {
+          "name": "actual-dotnet-test.log.gz",
+          "rawSha256": "b3b1ce33de8adc8f070da12cd06e9cd09d99d18a35078fe9d98af746376bf35f",
+          "compressedSha256": "c13fe3850cedb6122fae6f44d44566bebb92999ecd604c8fd0713bccb1c970cc"
+        },
+        {
+          "name": "actual-fr063-joint-output-basis-unit-001.trx.gz",
+          "rawSha256": "d6f3a288d9138ae975fb8956996476273ad733dd8e9b6d854052d7e21374e5ea",
+          "compressedSha256": "4e3ea49c4b1cd2fcfcbee1fae805131f643a885698cc164d8d2893da71ae3705"
+        },
+        {
+          "name": "actual-plan.json.gz",
+          "rawSha256": "d44af593155a14b6d4a4c36fc73b8014054b62305e9e3fa5c8d27ae7dd0306d6",
+          "compressedSha256": "94ab2c7d794724f74c00e64bd7caab8d66f1a74758d2460779e8f5d2bf7094fd"
+        },
+        {
+          "name": "actual-summary.json.gz",
+          "rawSha256": "7017f777eb5ccfdadf447a312f7b19f14c4d97e30a39af4ed5f8a10bbc50e39e",
+          "compressedSha256": "7290cf51d07b34be621b5d2b0878064e066a87ce4c8d899dd64abb777ede486b"
+        },
+        {
+          "name": "exact-plan-dotnet-test.log.gz",
+          "rawSha256": "9ed6cd558b49cf93cb74aea3796119b416cbcdc2a31823d83e310b50c8f5ddb8",
+          "compressedSha256": "1132f253b98d6438aca33985c0d31eecc9408b033e6066ca09d3d674d69cacd5"
+        },
+        {
+          "name": "exact-plan-plan.json.gz",
+          "rawSha256": "ce5d07099148f025af61439f0efb9ebd6a4af6160f4f7446cb613a80eaf0e393",
+          "compressedSha256": "5c3b7cd1c668cf1a1e10fd58c9bbba20005e7b84153bc71fea46d8576e4d0bd1"
+        },
+        {
+          "name": "exact-plan-summary.json.gz",
+          "rawSha256": "89b7f67cda460b8ccadafc648db760eb4a02f3ff534d4abda7caf96f707e54a3",
+          "compressedSha256": "d05bbb9dae0d6cc092f4c879951f9e5b6ffc32d49e9989f2588d708f38ece971"
+        }
+      ],
+      "sourcePinsCount": 189,
+      "sourcePinsSha256": "e3a4228b0d7b69e3a2a9f2691f4459f45d17fb93c2880aeae962dda120b63502",
+      "sourcePinsCheckedGit": "540401302838de60e0db6feef9db09b267afe78f",
+      "binaryPinsCount": 11,
+      "binaryPinsSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+      "binaryPinsCheckedActualFiles": true,
+      "actualRelease": [
+        "tests/selections/1536-fr063-joint-output-basis.json"
+      ],
+      "exactPlan": {
+        "run": "20261015-080854-021-17924-959c2c6e6cba4357b4eab6caae9d4621-categories",
+        "wallTime": "00:00:02.3063014",
+        "exitCode": 0,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "methods": 3,
+        "cases": 19,
+        "descriptors": 1
+      },
+      "actual": {
+        "run": "20261015-080857-406-18062-afede2c3e0964100a359da6f3e128e6d-categories",
+        "finishedUtc": "2026-10-15T08:09:02.425133+00:00",
+        "wallTime": "00:00:04.9836843",
+        "exitCode": 1,
+        "tests": {
+          "Total": 19,
+          "Executed": 19,
+          "Passed": 18,
+          "Failed": 1
+        },
+        "methods": 3,
+        "cases": 19,
+        "descriptors": 1,
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 19,
+          "CompletedCases": 19,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "skipCount": 0,
+        "duplicateTestIDs": 0,
+        "timedOut": false
+      },
+      "failures": [
+        {
+          "testId": "dea48be3-948f-0ef8-4157-0d79cd5e927d",
+          "testName": "BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.ClosedBasisRejectsMalformedOrUnnormalizedImages(corruption: \"local_invalid\")",
+          "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(System.IO.InvalidDataException)",
+          "stackTrace": "   at BookOfEternityClient.Tests.MortalJointAcceptedOutputBasisTests.ClosedBasisRejectsMalformedOrUnnormalizedImages(String corruption) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs:line 104\n   at InvokeStub_MortalJointAcceptedOutputBasisTests.ClosedBasisRejectsMalformedOrUnnormalizedImages(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+        }
+      ],
+      "strictPerCaseCleanup": [],
+      "readonlyCase": {
+        "testId": "cbf08ec1-b3b4-f5cc-94b5-b71b0986dedb",
+        "nativeOutcome": "Passed",
+        "perTestStdOut": ""
+      },
+      "customCleanup": {
+        "independentObservation": "OBSERVED_RAW_TRX_RUN_SUMMARY",
+        "origin": "actual-fr063-joint-output-basis-unit-001.trx/ResultSummary/Output/StdOut",
+        "receipt": {
+          "Boundary": "joint_readonly_owned_cleanup",
+          "Root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-readonly-dfa8061ff8424e138395071cd24cc3a1",
+          "Removed": true
+        },
+        "rootActuallyAbsent": true,
+        "rawOccurrenceCount": 1,
+        "perTestCollector": "UNOBSERVED",
+        "standardStrictCollector": "UNOBSERVED",
+        "frozenControllerReadback": {
+          "boundary": "joint_readonly_owned_cleanup",
+          "receipts": [],
+          "validated": false,
+          "standardStrictCollector": "UNOBSERVED, not inferred PASS"
+        },
+        "qualificationScope": "This single owned readonly fixture cleanup only; not whole category PASS"
+      },
+      "nativeRawTrxSha256": "d6f3a288d9138ae975fb8956996476273ad733dd8e9b6d854052d7e21374e5ea",
+      "binaryProvenance": {
+        "source": "540401302838de60e0db6feef9db09b267afe78f",
+        "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+        "officialPreparation": "20261015-074619-800-14924-09b8d585bc2b4332a5774619234342fc-categories",
+        "originalScratch": "/workspace/boe-fr063-tools-20261015/scope3-signed-schedule-20261015T074618Z",
+        "frozenPreparationPacket": "/workspace/boe-fr063-tools-20261015/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z",
+        "frozenPreparationManifestSha256": "114609b6822bbde3b1cf26baa75ae9b3d05c3cae254660563f6c97d61f7c2dea",
+        "originalBinaryPinsSha256": "36ec382bcd8cf437059f9554875b0955517ec26f1b11d8b030dd07b249c5efd1",
+        "metadataChanges": [
+          "M\tspecs/1536-complete-wound-materialization/plan.md",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-approved-A-finite-stage-inventory-d6c7259a9-20261015.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-approved-finite-stage-controller-v1-20261015.py.txt",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.md",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-all-json-observations-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-all-trx-results-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-child-evidence-containers-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-fr063-joint-late-completion-integration-001.trx.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-full-trx-stdout.txt.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-native-observations.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-pre-assertion-root-observations.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-strict-cleanup-origins-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-strict-cleanup-receipts-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/actual-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/candidate-source-pins.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-catalog-audit.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/catalog-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-independent-gate-proof.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-plan-summary.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/exact-used-root-runner-v5.py.txt.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/fresh-binary-pins.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/manifest.json",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-Build-integration.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-Build-unit.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-console.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-dotnet-test.log.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-invocation-prewritten.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-native-process-result.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-plan.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-root-readback.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-run-location.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-runner-summary-raw.json.gz",
+          "A\tspecs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-Late2-frozen-d6c7259a9-20261015T075211Z/preparation-summary.json.gz",
+          "M\tspecs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "buildInputsUnchanged": true,
+        "stage": {
+          "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+          "categories": [
+            "fr063-joint-output-basis"
+          ],
+          "methods": 3,
+          "cases": 19,
+          "descriptors": 1
+        },
+        "binaryReuseReview": {
+          "path": "/workspace/boe-fr063-tools-20261015/fr063-signed-schedule-Late2-evidence-next-release-d6c7259a9-20261015T080400Z-completed-v2-design-review.json",
+          "sha256": "b148479373bcc93242a12bfd4756eef9195b0a744f174c578267c4b19a3db91a",
+          "conditions": [
+            "ROOT alone remints current clean remotely published metadata source, complete candidate source pins and gate.actualRelease exactly one current selection; reviewerStopped true only after this reviewer FINALSTOP.",
+            "Keep compileSource d6c7259a941398dd3a4ad21ff90733c9013cce0b and original fresh BOTH provenance truthful. Compare all 11 immutable binary pins before/after each invocation and source pins before/after; do not claim recompilation at metadata HEAD.",
+            "Exact Git diff from d6 may contain only plan.md/tasks.md metadata modifications and added recovery evidence/reports/tool copies. No modified/deleted old recovery evidence. Code, tests, configuration, selected GM documentation, project/build inputs, category catalog and budgets must remain byte-identical. No new executable build input.",
+            "Each stage requires fresh exact official NoBuild PlanOnly with its reviewed methods/cases/descriptors and zero executed tests; actual uses this one finite selection and unchanged descriptor budgets. Never run the 40/94/23 preparation aggregate as actual.",
+            "After each stage require native PASS, exact complete case/descriptor counts, no skips/duplicate test IDs/timeouts, unchanged pins, all required actual cleanup evidence and absent roots; freeze full raw/compressed chains including exact gate, runner, wrapper, inventory before diagnosis or release of successor.",
+            "Any failure, incomplete result, evidence/pin/tuple drift or required cleanup gap stops and freezes; require independent review before correction/retry. Do not raise budgets or silently retry. Later-stage cold-child loaded bindings require actual raw evidence inspection; eleven pins alone are not proof of all child dependencies.",
+            "Metadata-only evidence groups may advance HEAD under these conditions without rebuilding unchanged inputs or repeating SOURCE review solely for log additions. Any product/test/config/build-input change invalidates reuse and requires corrected gates and fresh BOTH. Full FR063/T070 acceptance remains separate.",
+            "ROOT enforces predecessor order when minting singleton gates; the reviewed wrapper validates singleton and inventory, not predecessor receipts. C1 remains HELD before execution until its missing per-case cleanup evidence is resolved and separately reviewed."
+          ]
+        },
+        "runtime": "UNRUN"
+      }
+    }
+  ],
+  "metadataReuse": {
+    "540401302838de60e0db6feef9db09b267afe78f": {
+      "changedPaths": 58,
+      "onlyPermittedMetadata": true
+    },
+    "0362db8aa5e025e105076d64b63f2bcadedd4bc1": {
+      "changedPaths": 132,
+      "onlyPermittedMetadata": true
+    }
+  },
+  "frontsEqual": true,
+  "frontCorrectionRequired": {
+    "locations": [
+      "specs/1536-complete-wound-materialization/plan.md:6",
+      "specs/1536-complete-wound-materialization/tasks.md:6"
+    ],
+    "incorrectClaim": "Custom cleanup receipt absent from actual TRX",
+    "observed": "Present exactly once in ResultSummary/Output/StdOut; absent from per-test captured/derived streams",
+    "action": "Append accurate new metadata; preserve both frozen packets byte-identically",
+    "status": "RESOLVED by independently verified exact metadata erratum",
+    "resolvedCarrier": "f7b8a99bb07c5f406ef54ba5b77a78ddbd5a0866"
+  },
+  "causalLocations": [
+    "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs:83",
+    "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs:104",
+    "BookOfEternityClient/Services/ResourceMaterializationContract.cs:184",
+    "BookOfEternityClient/Services/WoundOpportunityAuthority.cs:1109",
+    "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs:17",
+    "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs:48",
+    "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj:12"
+  ],
+  "boundedCorrection": {
+    "files": [
+      "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+    ],
+    "existingTestMethodsTouchedMaximum": 5,
+    "newMethods": 0,
+    "newCases": 0,
+    "expectedInventory": [
+      40,
+      94,
+      23
+    ],
+    "identifier": "Truly invalid edge-whitespace negative; positive exact interior-space preservation in existing Fact",
+    "cleanupRouting": "Existing ITestOutputHelper to emit unchanged actual finally custom receipt into per-test output",
+    "C1": "Existing CleanupOwnedFixture using declaration in each of two old rollback methods; no changed oracles",
+    "productionChange": false,
+    "guardRelaxation": false
+  },
+  "actualRelease": [],
+  "requiredNext": [
+    "Author bounded patch by sole writer",
+    "Independent corrected SOURCE/FIXTURE/SELECTION",
+    "Fresh BOTH and authoritative inventory; old d6 reuse invalid for changed tests",
+    "Exact PlanOnly/catalog and user-required Late2",
+    "Qualified new Late2 EVIDENCE before corrected basis and further conditional stages"
+  ],
+  "checkpointReplay": "Retain current scoped PASS if exact patch review proves checkpoint source/dependencies unaffected; repeat only on real impact/new risk",
+  "metadataCopyPermission": "Append byte-identical MD/JSON and accurate new plan/tasks fronts; do not modify old frozen packets; source corrections require separate gates",
+  "reviewerRuntimeExecutions": 0,
+  "repositoryWrites": false,
+  "reportPath": "/workspace/boe-fr063-tools-20261015/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.md",
+  "reportSha256": "35ed49762a5982c1a357fcbbd867b4582fa7086ccb51d59f229f07dfcc665523",
+  "stop": "FINALSTOP after artifacts; no pending writes",
+  "metadataErratumCarrier": "f7b8a99bb07c5f406ef54ba5b77a78ddbd5a0866",
+  "metadataErratumReview": {
+    "verdict": "ACCEPTED",
+    "diffPaths": [
+      "M\tspecs/1536-complete-wound-materialization/plan.md",
+      "A\tspecs/1536-complete-wound-materialization/recovery/fr063-basis-raw-summary-cleanup-root-supplement-20261015T081432Z.json",
+      "M\tspecs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "frontsIdentical": true,
+    "productionTestsConfigUnchanged": true,
+    "originalPacketsUnchanged": true,
+    "supplementPath": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-basis-raw-summary-cleanup-root-supplement-20261015T081432Z.json",
+    "supplementSha256": "3a5e6ac845ea42dc7e4dac27e8c01a9e24ae2dcc31832c8d5405594abfae4639",
+    "rawXPathLineAndHashesIndependentlyMatched": true,
+    "supplement": {
+      "testedMetadataSource": "540401302838de60e0db6feef9db09b267afe78f",
+      "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+      "frozenPacketManifestSha256": "ab8cc6421f3fc2f922c13edc617f6967671cf12f0e1d2f2358fb50faa8913976",
+      "rawTrxSha256": "d6f3a288d9138ae975fb8956996476273ad733dd8e9b6d854052d7e21374e5ea",
+      "compressedTrxSha256": "4e3ea49c4b1cd2fcfcbee1fae805131f643a885698cc164d8d2893da71ae3705",
+      "findings": [
+        {
+          "xpath": "ResultSummary/Output/StdOut",
+          "line": 11,
+          "rawLine": "{\"Boundary\":\"joint_readonly_owned_cleanup\",\"Root\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-joint-readonly-dfa8061ff8424e138395071cd24cc3a1\",\"Removed\":true}",
+          "receipt": {
+            "Boundary": "joint_readonly_owned_cleanup",
+            "Root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-readonly-dfa8061ff8424e138395071cd24cc3a1",
+            "Removed": true
+          },
+          "rootActuallyAbsent": true
+        }
+      ],
+      "perTestStdoutReceipt": "UNOBSERVED",
+      "v5StandardStrictCollector": "UNOBSERVED zero standard receipts",
+      "customCleanupQualifiedFromRawSummary": true,
+      "category": "FAIL: local_invalid expected exception for valid interior-space identifier",
+      "originalFrozenPacketModified": false,
+      "createdUtc": "20261015T081432Z"
+    }
+  },
+  "supersedesPreErratumReview": {
+    "md": "/workspace/boe-fr063-tools-20261015/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081500Z-completed-v2-design-review.md",
+    "json": "/workspace/boe-fr063-tools-20261015/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081500Z-completed-v2-design-review.json",
+    "originalFilesUnmodified": true
+  }
+}

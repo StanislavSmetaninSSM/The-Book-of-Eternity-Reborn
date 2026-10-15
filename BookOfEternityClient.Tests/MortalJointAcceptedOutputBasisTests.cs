@@ -2,10 +2,11 @@ using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalJointAcceptedOutputBasisTests
+public sealed class MortalJointAcceptedOutputBasisTests(ITestOutputHelper output)
 {
     private static byte[] Scene(string response = "Первая\nВторая") => Encoding.UTF8.GetBytes(
         new JsonObject { ["response"] = response, ["timestamp"] = "2026-10-15T06:00:00Z" }.ToJsonString());
@@ -21,6 +22,8 @@ public sealed class MortalJointAcceptedOutputBasisTests
         Assert.Equal(expected, roundtrip.NarrativeBytes);
         Assert.Equal(basis.Fingerprint, roundtrip.Fingerprint);
         Assert.Equal("local_impact", roundtrip.LocalWoundRef);
+        Assert.Equal("local impact", MortalJointAcceptedOutputBasis.Read(
+            MortalJointAcceptedOutputBasis.Capture("local impact", "wound_1", "transition_1", expected).ToJson()).LocalWoundRef);
         var detached = roundtrip.NarrativeBytes; detached[^1] = 0;
         Assert.Equal(expected, roundtrip.NarrativeBytes);
         Assert.NotEqual(basis.Fingerprint, MortalJointAcceptedOutputBasis.Capture(
@@ -48,7 +51,7 @@ public sealed class MortalJointAcceptedOutputBasisTests
         finally
         {
             if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Boundary = "joint_readonly_owned_cleanup", Root = root, Removed = !Directory.Exists(root) }));
+            output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Boundary = "joint_readonly_owned_cleanup", Root = root, Removed = !Directory.Exists(root) }));
         }
     }
 
@@ -80,7 +83,7 @@ public sealed class MortalJointAcceptedOutputBasisTests
             case "version": root["version"] = 2; break;
             case "version_type": root["version"] = "1"; break;
             case "local_empty": root["localWoundRef"] = ""; break;
-            case "local_invalid": root["localWoundRef"] = "foreign ref"; break;
+            case "local_invalid": root["localWoundRef"] = " local_impact"; break;
             case "wound_empty": root["woundId"] = ""; break;
             case "transition_empty": root["transitionId"] = ""; break;
             case "base64": root["narrativeBase64"] = "!"; break;
