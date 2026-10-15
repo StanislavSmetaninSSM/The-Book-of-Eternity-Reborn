@@ -1,0 +1,64 @@
+{
+  "scope": "Affected-only H1/F1 afterlife status header correction gate",
+  "disposition": "ACCEPT_CORRECTION_AND_RELEASE_FRESH_SELECTED_VERIFICATION",
+  "reviewerConfiguration": "Requested/configured independent Astra XHigh retained; backend telemetry unavailable.",
+  "reviewed": {
+    "base": "faa886e86e6f69714298d4e1ab94de7b0920bd12",
+    "sourceHead": "b07853b1358aaec14bc1f39676f8970865ed0756",
+    "evidenceCarrierHead": "f2df7a320af53875afa6536c19cbc2b953d8a570",
+    "localStatus": "clean",
+    "remote": "Actual remote verified by parent; reviewer did not repeat remote read.",
+    "codeTestDeltaFiles": 3,
+    "frontFiles": 2,
+    "carrierDelta": "Only prior exact review copies and metadata fronts after b078; code bytes identical."
+  },
+  "finding": {
+    "id": "H1 (F1 in prior report)",
+    "state": "resolved",
+    "reason": "Afterlife identity header now uses captured State.SoulName, SoulFormDescription and Incarnation. It contains no soulRoot read; realm/turn and these identity fields come from the same retained header snapshot as the typed wound projection. Existing Markup.Escape and fallbacks are preserved; independent supplementary resource panels are unchanged."
+  },
+  "verification": [
+    "Read exact three-file delta and affected StateManager/AggregatedGameState APIs; all fields are existing typed properties populated by the read-only refresh.",
+    "Real snapshot fixture seeds distinct name/form/incarnation before the read-only baseline. Existing assertions still require one lock, no mutation/repair, whole-tree equality and a visible wound. A later independent write changes realm plus all three identity fields; subsequent read-only refresh checks new state and retained original captured values.",
+    "Existing source guard bounds only the identity header, rejects soulRoot there, and requires all three captured fields. No Fact/Theory/InlineData declaration or assertion removal.",
+    "All three source/test files match immutable b078 and f2df Git bytes. Selection/catalog/budgets are byte-identical to faa. Correction diff-check passed. Prior 215550 MD/JSON copies match final external hashes."
+  ],
+  "pins": {
+    "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.StatusAudit.cs": "5db42bb1768c96cb398d88cb02be99b6daf71b23df38786e7cac78bd004cfe22",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs": "714be12dd7652a3ae1f97217d6b0317ce7dcd380a8ca925d9cc6013e04845d40",
+    "BookOfEternityClient.Tests/WoundPlayerStatusSourceGuardTests.cs": "083898d01b47ef763d74795e219ceee6a2ecfb18e51b871fe461545a8e6884cb",
+    "tests/categories.json": "d70f7abad41de9e7914b786b13d73d53e804afa0ab0bef31c519f74d13aa8e8c",
+    "tests/selection.json": "637cb22c80a87c399f5e8d3f913c49184b7719a17a5e763df22c01b71d8524ab"
+  },
+  "selection": {
+    "categories": [
+      "wounds-player-projection",
+      "wounds-player-read",
+      "wounds-player-status",
+      "wounds-player-status-guidance",
+      "documentation-afterlife-entrypoints-coverage"
+    ],
+    "provisional": {
+      "methods": 52,
+      "cases": 95,
+      "descriptors": 7,
+      "catalogCategories": 758,
+      "catalogMethods": 11652,
+      "realRoots": 50,
+      "pureRepositoryIntegrationCases": 2,
+      "pureUnitCases": 43
+    },
+    "evidenceCollector": "Previously accepted v2 exact two-method pure repository classification retained; all other integration cases require strict real cleanup."
+  },
+  "releasedSequence": [
+    "./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -PlanOnly (fresh BOTH builds; official zero-execution discovery/Plan)",
+    "./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild (standalone complete catalog discovery, zero executions)",
+    "./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild -PlanOnly (exact selected Plan)",
+    "./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild (only the five selected owners, existing budgets)"
+  ],
+  "conditions": "Fresh successful selected project outputs and exact official counts are required before NoBuild runtime. No f9 RED binary reuse. First unexpected build/setup/selection/runtime failure must freeze/publish before correction; final independent EVIDENCE qualification remains required.",
+  "retainedEvidence": "Prior 215550 original intentional RED evidence qualification and limits remain unchanged. No historical broad rerun or A7 grant.",
+  "limits": "Static correction acceptance only; current GREEN UNRUN. Full US5/FR063/lawful ACTIVE remain open. No frontend DOM/visual runtime claim.",
+  "finalState": "FINALSTOP; no tracked edits, native build/test/discovery/runner work, or pending reviewer writes."
+}
+
