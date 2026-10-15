@@ -66,8 +66,8 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
             Assert.True(lease.IsActive);
             Assert.Equal(locks, fixture.LockOpens);
             Assert.Equal(mutations, fixture.MutationCalls);
-            Assert.Equal(before, fixture.Snapshot());
         }
+        Assert.Equal(before, fixture.Snapshot());
     }
 
     [Fact]
@@ -95,12 +95,16 @@ public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
         Assert.Equal(before, fixture.Snapshot());
         // A subsequent independent refresh must not replace the already-captured header.
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
-        {
             await fixture.Files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal\",\"soulName\":\"Иной путник\",\"soulFormDescription\":\"Иная форма\",\"currentIncarnation\":5}");
-            var changed = fixture.Snapshot();
+        var changed = fixture.Snapshot();
+        var refreshMutations = fixture.MutationCalls;
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence))
+        {
             await state.RefreshGameStateReadOnlyAsync(lease);
-            Assert.Equal(changed, fixture.Snapshot());
+            Assert.True(lease.IsActive);
+            Assert.Equal(refreshMutations, fixture.MutationCalls);
         }
+        Assert.Equal(changed, fixture.Snapshot());
         Assert.NotSame(snapshot.State, state.CurrentState);
         Assert.Equal("Mortal", state.CurrentState.CurrentRealm);
         Assert.Equal("Иной путник", state.CurrentState.SoulName);
