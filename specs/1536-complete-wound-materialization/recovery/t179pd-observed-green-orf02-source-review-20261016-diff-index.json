@@ -1,0 +1,111 @@
+[
+  {
+    "path": "t179pd-observed-green-orf02-source-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-full.diff",
+    "raw_sha256": "de9f076e50d191b1228fc182f0fff496a27a49227eeb6563058eade04c9a457e",
+    "raw_bytes": 6063543,
+    "stored_sha256": "164a5ec4b3c4532b81f952413d565043d80363260787cac843448aee9302fe6d",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-orf02-source-fixture.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-fixture.diff",
+    "raw_sha256": "e1f713e0263cfa8413a23394f0e49e055dbf5c0b9fbc11420cf8ca05b378f85f",
+    "raw_bytes": 1462,
+    "stored_sha256": "8225631ed839064c18426595fb5669b5247eb5ca7883148055ff7d823d21e01f",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "--",
+      "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-orf02-source-production-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-production-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-orf02-source-other-runtime-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-other-runtime-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts",
+      ":(exclude)BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-orf02-source-source-carrier-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-source-carrier-full.diff",
+    "raw_sha256": "61b7921b9c780b9ebce916628bf4b3353af5615158bd4197855e7482942b6c0f",
+    "raw_bytes": 1229231,
+    "stored_sha256": "71f2626db17167dbe4dd88cf58e4832a65d12619513182660ed57ddf4bd5606c",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "37bdacfdcce3b2455568e0ff1dcfa07ff412c93a",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-orf02-source-source-carrier-runtime.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-orf02-source-source-carrier-runtime.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "37bdacfdcce3b2455568e0ff1dcfa07ff412c93a",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  }
+]
