@@ -1,3 +1,5 @@
+- Pd.3a barrier initialSOURCE accepted/no blockingfinding; release onlyfirstLate2 withfresh9aaDLLs. BarriercharPASS1/causalRED1 remainsUNRUN pendingfrozenLate2/separateEVIDENCE; no prodsuccesslogic.
+
 - Pd.3a test-only causalbarrier cycle WIP: realoriginal A/B→existing B-postopen mutatesalready-readA; legacycharacterizationPASS1 + explicitlyguarded absent-feature barrierRED1 expected. Newfiniteowner+Late2 expected2descriptors4cases pendingfreshBOTH/PlanOnly/SOURCE/firstLate2/EVIDENCE; no prodsuccesslogic.
 - T197 locationalternative conditional independentreview preserved57pins2diffs/LA-O1citation334–335; no mode choice/engineeringrelease. Nextexactparentseal/unwindDESIGN; allfullG-C/target/keeperloss/browser/protocol/platformgatesOPEN.
 
