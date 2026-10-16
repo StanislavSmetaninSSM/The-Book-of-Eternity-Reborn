@@ -1,6 +1,6 @@
 - T179-Pc retained-v2common-C bounded prerequisite planned in canonical implementation plan; test-first boundary10+actualretainedC1 and finite affected regressions, fresh BOTH/firstLate2/independentEVIDENCE gates. AllPcUNRUN. No activeS/B/M3 or fullF1 acceptance; specific before-seal drift/foreignowner/after-seal tests belong next actual active interface.
 
-- T197 DEP-L distinct-root proposal: DESIGN-only WIP/unaccepted,29sourcepins14futureUNRUNchecks/sevenOPENquestions. Exact original pair preserved; independent review pending. DEP-C/I/L/fulltarget/H2/H3/newQTE stayblocked; no schema/lifecycle/runtimegrant.
+- T197 DEP-L distinct-root proposal: DESIGN-only REVIEWED FOR CONDITIONAL DISCUSSION/unaccepted at3b7c5c547, no confirmed material defect. Exact independentpair preserved/rootpins verified;29sourcepins14futureUNRUNchecks/sevenOPENquestions. DEP-C/I/L/fulltarget/H2/H3/newQTE stayblocked; no schema/lifecycle/runtimegrant. Prior stale DEP-I pending metadata reconciled66cbc.
 
 - T197 DEP-I source/intake proposal: DESIGN-only REVIEWED FOR DISCUSSION/unaccepted atf130982be; independent Astra/XHigh no confirmed material defects in partial discussion scope. Exact report pair preserved/rootpins checked.35sourcepins18entryrows13futureUNRUNcases; Q1–Q6/DEP-C/I/L/fulltarget gates OPEN, no T197 completion/runtimepermission.
 
