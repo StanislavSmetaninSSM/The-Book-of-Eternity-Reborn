@@ -1,3 +1,8 @@
+## T179-Pd.3a corrected fresh preparation — 131 planned, ZERO actual, 2026-10-16
+
+- Corrected source56765cb1fe55534c25465b7f1222aa1799293c42 was pushed/readback, clean GitHub-only selected restore616files/noalternates/no restoredruntime. Fresh BOTH/catalog native0,132.8786243s,11718methods772categories,0exec. Exact PlanOnly native0,6.9481949s,8descriptors131cases/0exec: Late2 FIRST; reader1; barrier2; conformance35; default67; ordinary16/two descriptors; browser8 (positive1, genuine rollback4, explicitly secondary private-session3). FourfreshDLLhashes and12rawchains retained under t179pd-observed-green-corrected-prep-*.
+- OR-C01/02 affected SOURCE review required before ANY actual. Previous115caseprep/source report remains immutable/blocked; no prior actual failure occurred. Code unchanged from00aa; test/selection correction does not relax guards or old oracles. Current everynewactual isUNRUN, no legacybranch/Windows runtimeclaim. After accepted SOURCE only firstLate2 may run; freeze/push/readback, separate EVIDENCE before specifically released singleton GREEN. No whole Pd/admission/M3/F1/T197/activation grant.
+
 ## T179-Pd.3a OR-C01/02 test correction WIP — zero new actuals, 2026-10-16
 
 - Independent [SOURCE/FIXTURE/SELECTION review](./recovery/t179pd-observed-green-source-review-20261016.md) on24f3d3c/compiled00aa is **BLOCKED, released actuals NONE**. No confirmed production defect; OR-C01 source occurrence/drift coverage and OR-C02 after-open/pending-decision coverage must close. Root72source/evidence Gitpins,24rawchains,4exactdiffs and inspection digest verified; immutable report/prep retained. The old115case PlanOnly packet executed0 tests and is superseded for runtime selection by this test correction.
