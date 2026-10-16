@@ -1,0 +1,31 @@
+diff --git a/tests/selections/1536-hot-worker-windows.json b/tests/selections/1536-hot-worker-windows.json
+new file mode 100644
+index 000000000..7267fa53c
+--- /dev/null
++++ b/tests/selections/1536-hot-worker-windows.json
+@@ -0,0 +1,25 @@
++{
++  "schemaVersion": 1,
++  "decision": "ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2",
++  "reviewedSource": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
++  "acceptedCheckpoint": "bd407f0a4cc0a38db838b41a2bba32ed064babbf",
++  "sourceReview": {
++    "md": {
++      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-windows-source-review-20261016.md",
++      "sha256": "4b296c8b0318017e91442ad0df6a0451bc7a64ae15963ec2991ae5c5ed7003ae"
++    },
++    "json": {
++      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-windows-source-review-20261016.json",
++      "sha256": "fd5dbe79fd801210b91c17965b4b0da21020fbcc7dd7fdde13583a1ee802ab48"
++    }
++  },
++  "selections": [
++    {
++      "category": "fr063-hot-worker-ready-disposition",
++      "reason": "#1536 T179-Pd.3b HS-WORKER-F01/O02 FIRST native WindowsJob worker2 after independent affected SOURCE and recovered acceptance parent. Two genuine actual process/apply routes; initial Linux2FAIL immutable, prior13PASS retained without replay.",
++      "contracts": [
++        "Existing ordinary WindowsJob only; real correlated worker apply/generated Ready versus accepted apply/failed Ready publication; HOT remains unavailable in both. Exactly2cases/5m/exclusive/frontendfalse, fresh BOTH/catalog and exact PlanOnly before NoBuild. No retry, synthetic authority, ordinary LinuxRelease activation, fullWindows/visual/F1/S/B/M3/T197 claim."
++      ]
++    }
++  ]
++}
