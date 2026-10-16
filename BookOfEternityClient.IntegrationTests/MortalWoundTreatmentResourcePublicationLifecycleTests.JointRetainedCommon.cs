@@ -68,7 +68,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 .OrderBy(static p => p, StringComparer.Ordinal));
         Assert.Same(plan.EffectPlan, ReadCalculationProperty<EffectAcceptedTurnPlan>(calculation!, "Effects"));
         var resources = ReadCalculationProperty<AcceptedMechanicsResourcePlanningResult>(calculation!, "Resources");
-        Assert.Equal(plan.ResourceEvents, resources.Events);
+        Assert.Equal(plan.ResourceEvents, resources.Events.OrderBy(static e => e.Turn)
+            .ThenBy(static e => e.ExecutionSequence).ThenBy(static e => e.EventKind, StringComparer.Ordinal)
+            .ThenBy(static e => e.OperationId, StringComparer.Ordinal));
         Assert.NotEmpty(resources.AppliedTransitions);
         Assert.True(resources.EffectBoundaryTranscript!.IsComplete);
         Assert.True(plan.EffectPlan!.IsAcceptedBoundaryComplete);

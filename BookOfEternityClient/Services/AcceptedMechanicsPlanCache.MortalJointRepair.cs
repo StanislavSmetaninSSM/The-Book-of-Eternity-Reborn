@@ -70,7 +70,7 @@ internal sealed partial class AcceptedMechanicsPlanCache
             var fingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
             var planned = _inputFingerprint == fingerprint && _planningResult is not null &&
                 ReferenceEquals(_planningResult.Plan?.JointRepairCommonAuthority, authority)
-                ? _planningResult : _planner(input, fingerprint) ?? throw new InvalidOperationException("Joint common planner returned null.");
+                ? _planningResult : AcceptedMechanicsPlanner.AssembleRetainedJointPlan(input, fingerprint);
             var result = ValidatePlannerResult(input, fingerprint, planned);
             if (!result.Success) { InvalidateAllCore(); return (result, null); }
             _inputFingerprint = fingerprint;

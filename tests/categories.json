@@ -2,6 +2,42 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-common-resource-continuation",
+  "responsibility": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
+  "excludes": "No new mechanics authority, changed shared EffectMaterializationTestContext or broader resource/effect/pending category. Actual bounded completion here is ordinary regression; held joint C construction remains unbounded and full F1 remains future.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+    "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "effects-materialization",
+      "when": "Intentional exact existing-method subset ownership; execute each once, no broad owner expansion."
+    },
+    {
+      "id": "resources-materialization",
+      "when": "Intentional exact existing-method subset ownership; execute each once, no broad owner expansion."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+        "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-common-boundary-calculation",
   "responsibility": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
   "excludes": "No full F1 ordinary rejection policy, active S/B provenance, M3, QTE/T197/visual/platform qualification.",
@@ -59,7 +95,7 @@
 },
 {
   "id": "fr063-common-calculation-regression",
-  "responsibility": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls.",
+  "responsibility": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Two exact existing original spiritual prefix controls cover their shared capacity/mutation/projection data adapters; no new original-spiritual authority.",
   "excludes": "Intentional subset overlap with effects-planning/accepted-mechanics-planning; no broad category or unrelated owner execution.",
   "changeHints": [
     "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
@@ -96,7 +132,9 @@
         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
-        "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState"
+        "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.OriginalPrefix_ClosesOrdinaryWorkWithoutReplay",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.OriginalPrefix_ExchangeContinuesWithExactOwnerAndNoReplay"
       ]
     }
   ]

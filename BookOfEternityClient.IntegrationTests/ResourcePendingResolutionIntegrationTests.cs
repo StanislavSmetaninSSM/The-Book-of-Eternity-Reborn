@@ -6,6 +6,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ResourcePendingResolutionIntegrationTests
 {
+    private readonly Xunit.Abstractions.ITestOutputHelper _commonCalculationOutput;
+    public ResourcePendingResolutionIntegrationTests(Xunit.Abstractions.ITestOutputHelper output) => _commonCalculationOutput = output;
+
     private static readonly string[] MechanicalPaths =
     {
         ResourceMaterializationContract.StatePath,
@@ -103,7 +106,9 @@ public sealed class ResourcePendingResolutionIntegrationTests
     [Fact]
     public async Task FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce()
     {
-        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var context = await EffectMaterializationTestContext.CreateAsync();
+        using var owned = new CleanupOwnedFixture(context.RootPath, _commonCalculationOutput.WriteLine);
+        await using var ownedContext = context;
         await SeedBoundedTurnEndAsync(context);
         await PublishPendingAsync(context);
         var pending = ParsePending(

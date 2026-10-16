@@ -4196,143 +4196,22 @@ internal static partial class AcceptedMechanicsPlanner
                     "missing"));
         }
 
-        var woundStages = context.WoundStageBundle;
-        if (woundStages is not null)
-        {
-            var woundEffectAgreement =
-                AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(
-                    context.EffectPlan,
-                    woundStages);
-            if (woundEffectAgreement.Count != 0)
-            {
-                return AcceptedMechanicsReduction.Rejected(woundEffectAgreement);
-            }
-        }
-
+        if (context.JointRepairCommonAuthority is not null)
+            return AcceptedMechanicsReduction.Rejected(Issue(
+                "accepted_mechanics_joint_retained_assembly_required",
+                "the named joint owner assembly from its privately retained calculation", "generic reduction"));
+        var calculation = AcceptedMechanicsCalculationInputs.FromContext(input.Turn, input.Realm, context);
+        var discovered = DiscoverCommonMechanics(calculation);
+        if (discovered.Discovery is not { } discovery)
+            return AcceptedMechanicsReduction.Rejected(discovered.Issues);
+        var definitions = discovery.Definitions;
+        var effectPlan = discovery.Effects;
+        var basePeriodicResolution = discovery.BasePeriodicResolution;
+        var ordinaryMutations = discovery.OrdinaryMutations;
+        var capacityTransitions = discovery.CapacityTransitions;
+        var sources = discovery.Sources;
+        var discoveryResourceResult = discovery.Resources;
         var issues = new List<ValidationIssue>();
-        var definitions = context.Definitions;
-        var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
-            StringComparer.Ordinal);
-        if (context.Commands.DefinitionCreations.Count != 0)
-        {
-            var definitionBatch =
-                ResourceDefinitionCatalog.BeginMaterializationBatch(
-                    definitions);
-            var definitionIdentityFactory = context.ResourceIdentityFactory
-                ?? new AcceptedMechanicsIdentityFactory();
-            foreach (var creation in context.Commands.DefinitionCreations
-                         .OrderBy(static value => value.CommandOrdinal))
-            {
-                using var proposal = JsonDocument.Parse(
-                    creation.Definition.ToJsonString());
-                var materialized = definitionBatch.MaterializeProposal(
-                    proposal.RootElement,
-                    input.Turn,
-                    creation.EventRef,
-                    () => new ResourceDefinitionIdentity(
-                        definitionIdentityFactory.CreateDefinitionId(creation, input.Turn),
-                        definitionIdentityFactory.CreateDefinitionSeal(creation, input.Turn)));
-                issues.AddRange(materialized.Issues);
-                if (!materialized.IsValid || materialized.Definition == null)
-                    continue;
-                sameTurnDefinitions.Add(
-                    creation.DefinitionRef,
-                    materialized.Definition);
-            }
-            definitions = definitionBatch.Freeze();
-        }
-
-        var capacityTransitions = ComposeCapacityTransitions(
-            input,
-            context,
-            definitions,
-            sameTurnDefinitions,
-            issues);
-        var effectPlan = context.EffectPlan;
-        var basePeriodicResolution = effectPlan == null
-            ? new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
-                Array.Empty<ResourceMutationSourceExport>(),
-                Array.Empty<ResourceMutationIntent>(),
-                Array.Empty<ValidationIssue>())
-            : EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
-                effectPlan,
-                context.Owners,
-                definitions);
-        var priorResolvedBindings = context.PendingResolutionState is
-            { Requests.Count: > 0 } activePendingState
-            ? SelectPendingReplayBindings(activePendingState)
-            : Array.Empty<ResourcePendingResolvedBinding>();
-        var discoveryReplay = new ResolvedPendingReplaySession(
-            priorResolvedBindings);
-        var periodicResolution = discoveryReplay.Bind(basePeriodicResolution);
-        issues.AddRange(periodicResolution.Issues);
-        var sources = context.Sources;
-        if (periodicResolution.SourceExports.Count != 0)
-        {
-            var sourceResult = ResourceMutationSourceCatalog.Create(
-                context.Sources.Exports.Concat(periodicResolution.SourceExports));
-            issues.AddRange(sourceResult.Issues);
-            if (sourceResult.Catalog != null)
-                sources = sourceResult.Catalog;
-        }
-        var ordinaryMutations = ComposeOrdinaryMutations(
-            input,
-            context,
-            definitions,
-            issues)
-            .Concat(context.RegisteredSystemOutcomes.SelectMany(static outcome => outcome.Mutations))
-            .ToArray();
-        var mutations = ordinaryMutations
-            .Concat(periodicResolution.Mutations)
-            .ToArray();
-        if (issues.Count != 0)
-            return AcceptedMechanicsReduction.Rejected(issues);
-
-        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveAndCollect(
-            ResourceAppliedEvent resourceEvent,
-            ResourceOperationKey producer)
-        {
-            var expansion = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
-                effectPlan!,
-                resourceEvent,
-                producer,
-                context.Owners,
-                definitions);
-            return discoveryReplay.Bind(expansion);
-        }
-
-        var discoveryResourceResult = BuildResources(
-            new AcceptedMechanicsResourceInput(
-                input.Turn,
-                definitions,
-                context.State,
-                context.History,
-                sources,
-                mutations,
-                capacityTransitions,
-                ExecutionSequenceOffset: context.ExecutionSequenceOffset,
-                EventMutationResolver: effectPlan == null
-                    ? null
-                    : ResolveAndCollect,
-                InitialTriggerCandidates: periodicResolution.TriggerCandidates,
-                InitialEffectResolutionWork: periodicResolution.Work,
-                EffectPlanAuthority: effectPlan == null
-                    ? null
-                    : CreateEffectPlanAuthority(effectPlan)),
-            context.ResourceIdentityFactory ??
-            new AcceptedMechanicsIdentityFactory());
-        if (!discoveryResourceResult.IsValid ||
-            discoveryResourceResult.StateAfterImage == null ||
-            discoveryResourceResult.HistoryAfterImage == null)
-        {
-            return AcceptedMechanicsReduction.Rejected(discoveryResourceResult.Issues);
-        }
-        var discoveryReplayIssues = discoveryReplay.ValidateComplete(
-            discoveryResourceResult.AcceptedResolvedPendingRequestIds);
-        if (discoveryReplayIssues.Count != 0)
-        {
-            return AcceptedMechanicsReduction.Rejected(discoveryReplayIssues);
-        }
 
         var pendingDecision = ResolvePendingBoundary(
             input,
@@ -4455,34 +4334,14 @@ internal static partial class AcceptedMechanicsPlanner
                     discoveryResourceResult, resourceResult);
             }
         }
-        if (effectPlan != null)
-        {
-            var finalizedEffects =
-                EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
-                effectPlan,
-                resourceResult.EffectBoundaryTranscript!,
-                context.EffectIdentityFactory ?? new EffectIdentityFactory());
-            if (!finalizedEffects.Success || finalizedEffects.Plan == null)
-            {
-                return AcceptedMechanicsReduction.Rejected(finalizedEffects.Issues);
-            }
-            effectPlan = finalizedEffects.Plan;
-        }
-        var ownerAgreementIssues = context.Owners.ValidateCanonicalAgreement(
-            resourceResult.StateAfterImage,
-            resourceResult.HistoryAfterImage);
-        if (ownerAgreementIssues.Count != 0)
-            return AcceptedMechanicsReduction.Rejected(ownerAgreementIssues);
-
-        var projectedOwners = ProjectRegisteredSystemOutcomes(context, resourceResult);
-        issues.AddRange(projectedOwners.Issues);
-        if (issues.Count != 0)
-            return AcceptedMechanicsReduction.Rejected(issues);
+        var completion = CompleteCommonMechanics(calculation, resourceResult, effectPlan);
+        if (completion.Completion is not { } completed)
+            return AcceptedMechanicsReduction.Rejected(completion.Issues);
         return AcceptedMechanicsReduction.CompletedOrdinary(
             new CompletedOrdinaryMechanicsReduction(
-                input, inputFingerprint, context, definitions, resourceResult, effectPlan,
-                pendingDecision.StateAfterImage, projectedOwners.CompanionAfterImages,
-                projectedOwners.OwnerTransitions, false, CompletedOrdinaryIssuanceKey),
+                input, inputFingerprint, context, definitions, resourceResult, completed.Effects,
+                pendingDecision.StateAfterImage, completed.Projection.CompanionAfterImages,
+                completed.Projection.OwnerTransitions, false, CompletedOrdinaryIssuanceKey),
             discoveryResourceResult);
     }
 
@@ -4507,18 +4366,27 @@ internal static partial class AcceptedMechanicsPlanner
         AcceptedMechanicsResourcePlanningResult resourceResult,
         bool originalSpiritualPrefix = false)
     {
-        ArgumentNullException.ThrowIfNull(context);
+        return ProjectRegisteredSystemOutcomes(context.OwnerCompanionAfterImages,
+            context.OwnerTransitions, context.RegisteredSystemOutcomes, resourceResult, originalSpiritualPrefix);
+    }
+
+    private static ResourceRegisteredSystemOutcomeProjectionResult ProjectRegisteredSystemOutcomes(
+        IReadOnlyDictionary<string, JsonObject> initialCompanions,
+        IReadOnlyList<AcceptedMechanicsOwnerTransition> initialTransitions,
+        IReadOnlyList<IResourceRegisteredSystemOutcomeDraft> outcomes,
+        AcceptedMechanicsResourcePlanningResult resourceResult, bool originalSpiritualPrefix = false)
+    {
         ArgumentNullException.ThrowIfNull(resourceResult);
         var issues = new List<ValidationIssue>();
-        var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
+        var ownerCompanionAfterImages = initialCompanions
             .ToDictionary(
                 static pair => pair.Key,
                 static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
-        var ownerTransitions = context.OwnerTransitions
+        var ownerTransitions = initialTransitions
             .Select(static value => value.Clone())
             .ToList();
-        foreach (var outcome in context.RegisteredSystemOutcomes)
+        foreach (var outcome in outcomes)
         {
             if (originalSpiritualPrefix &&
                 AfterlifeSpiritualConflictResourceOutcome.IsConflictOutcome(outcome))
@@ -4572,163 +4440,15 @@ internal static partial class AcceptedMechanicsPlanner
                     section: "AcceptedTurnWoundMaterialization")
             ]);
         var input = completed.Input;
-        var inputFingerprint = completed.InputFingerprint;
         var context = input.PlanningContext!;
-        var resourceResult = completed.Resources;
-        var effectPlan = completed.Effects;
-        var woundStages = context.WoundStageBundle;
-        var liveWounds = completed.LiveWoundCompletion;
-        var definitionAfterImage = completed.Definitions.ToCanonicalRoot();
-        var stateAfterImage = JsonNode.Parse(resourceResult.StateAfterImage!.ToCanonicalJson())!.AsObject();
-        var historyAfterImage = JsonNode.Parse(resourceResult.HistoryAfterImage!.ToCanonicalJson())!.AsObject();
-        var pendingAfterImage = completed.PendingAfterImage;
-        var ownerCompanionAfterImages = completed.OwnerCompanionAfterImages.ToDictionary(
-            static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
-        var ownerTransitions = completed.OwnerTransitions.Select(static value => value.Clone()).ToList();
-        var issues = new List<ValidationIssue>();
-        var carrierComposition = liveWounds is null
-            ? AcceptedMechanicsCarrierAssembler.Compose(
-                effectPlan, ownerCompanionAfterImages, woundStages,
-                context.WoundAnchorPlan)
-            : AcceptedMechanicsCarrierAssembler.ComposeLive(
-                effectPlan, ownerCompanionAfterImages, liveWounds, woundStages);
-        if (!carrierComposition.Success)
-        {
-            return new AcceptedMechanicsPlanningResult(
-                null,
-                carrierComposition.Issues);
-        }
-        var carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
-            static pair => pair.Key,
-            static pair => pair.Value.DeepClone().AsObject(),
-            StringComparer.Ordinal);
-        ownerCompanionAfterImages =
-            carrierComposition.OwnerCompanionAfterImages.ToDictionary(
-                static pair => pair.Key,
-                static pair => pair.Value.DeepClone().AsObject(),
-                StringComparer.Ordinal);
-        var woundPublication = carrierComposition.WoundPublication;
-        foreach (var transitionPath in ownerTransitions
-                     .Select(static value => value.Path)
-                     .Distinct(StringComparer.Ordinal))
-        {
-            if (ownerCompanionAfterImages.ContainsKey(transitionPath) ||
-                carriers.ContainsKey(transitionPath) ||
-                (woundPublication?.CarrierAfterImages.ContainsKey(transitionPath) ??
-                 false))
-            {
-                issues.AddRange(Issue(
-                    "accepted_mechanics_owner_transition_path_conflict",
-                    "one typed owner transition or one whole-root after-image producer per path",
-                    transitionPath));
-            }
-        }
-        if (issues.Count != 0)
-            return new AcceptedMechanicsPlanningResult(null, issues);
-        var effectIdentity = effectPlan?.IdentityIndexAfterImage ??
-            context.EffectIdentityRoot;
-        var touched = new HashSet<string>(StringComparer.Ordinal)
-        {
-            ResourceMaterializationContract.DefinitionsPath,
-            ResourceMaterializationContract.StatePath,
-            ResourceMaterializationContract.HistoryPath,
-            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
-            EffectAcceptedTurnPlan.IdentityIndexPath
-        };
-        if (!context.Commands.IsMissing)
-            touched.Add(ResourceMaterializationContract.CommandPath);
-        if (effectPlan != null)
-        {
-            touched.UnionWith(effectPlan.TouchedPaths);
-            touched.UnionWith(effectPlan.DeletedPaths);
-        }
-        if (woundPublication is not null)
-        {
-            touched.Add(AcceptedMechanicsPlan.WoundCommandPath);
-            touched.UnionWith(woundPublication.CarrierAfterImages.Keys);
-            touched.Add(WoundIdentityState.StatePath);
-            touched.Add(WoundHistoryState.HistoryPath);
-        }
-        touched.UnionWith(ownerCompanionAfterImages.Keys);
-        if (completed.HasMortalProducerCompletion)
-        {
-            touched.UnionWith(QtePhysicalInjurySource.WoundRootPaths);
-            touched.Add("input/turn_request.json");
-        }
-        touched.UnionWith(ownerTransitions.Select(static value => value.Path));
-        if (pendingAfterImage != null)
-            touched.Add(ResourcePendingResolutionState.PendingPath);
-        var consumed = new HashSet<string>(StringComparer.Ordinal);
-        if (!context.Commands.IsMissing)
-            consumed.Add(ResourceMaterializationContract.CommandPath);
-        if (effectPlan != null)
-            consumed.UnionWith(effectPlan.DeletedPaths);
-        if (woundPublication is not null)
-            consumed.Add(AcceptedMechanicsPlan.WoundCommandPath);
-        if (ownerCompanionAfterImages.ContainsKey(SpiritualWoundOpportunityReceiptState.StatePath))
-        {
-            var spiritualControls = new[] { SpiritualWoundCaptureCheckpointState.StatePath,
-                SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath };
-            touched.UnionWith(spiritualControls);
-            consumed.UnionWith(spiritualControls);
-        }
-        if (ownerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath))
-        {
-            touched.Add(MortalQteDecisionPublication.StatePath);
-            var mortalControls = input.WoundCommands is not null
-                ? new[] { MortalWoundOpportunityAdapter.DecisionPath, AcceptedMechanicsPlan.WoundCommandPath }
-                : new[] { MortalWoundOpportunityAdapter.DecisionPath };
-            touched.UnionWith(mortalControls);
-            consumed.UnionWith(mortalControls);
-            touched.Add("output/narrative_response.json");
-        }
-
-        if (context.JointRepairCommonAuthority is not null)
-        {
-            touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-            consumed.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-        }
-
-        return new AcceptedMechanicsPlanningResult(
-            new AcceptedMechanicsPlan(
-                inputFingerprint,
-                definitionAfterImage,
-                stateAfterImage,
-                historyAfterImage,
-                carriers,
-                effectIdentity,
-                pendingAfterImage == null
-                    ? new Dictionary<string, JsonObject?>()
-                    : new Dictionary<string, JsonObject?>
-                    {
-                        [ResourcePendingResolutionState.PendingPath] =
-                            pendingAfterImage
-                    },
-                ownerCompanionAfterImages,
-                input.BeforeImages,
-                touched.ToArray(),
-                consumed.ToArray(),
-                input.AuthorityFingerprints,
-                resourceResult.Events,
-                new ResourceProjectionInput(
-                    definitionAfterImage,
-                    stateAfterImage,
-                    historyAfterImage,
-                    context.Owners.Fingerprint),
-                context.Owners,
-                effectPlan,
-                ownerTransitions: ownerTransitions,
-                woundStageBundle: woundStages,
-                carrierComposition: woundStages is null && liveWounds is null
-                    ? null
-                    : carrierComposition,
-                liveWoundCompletion: liveWounds,
-                directWoundPublicationAuthority:
-                    context.DirectWoundPublicationAuthority,
-                treatmentResourcePublicationAuthority:
-                    context.TreatmentResourcePublicationAuthority,
-                jointRepairCommonAuthority: context.JointRepairCommonAuthority),
-            Array.Empty<ValidationIssue>());
+        var calculated = AssembleCalculatedCommonArtifacts(
+            AcceptedMechanicsCalculationInputs.FromContext(input.Turn, input.Realm, context), completed.Definitions,
+            completed.Resources, completed.Effects, completed.PendingAfterImage, completed.OwnerCompanionAfterImages,
+            completed.OwnerTransitions, completed.LiveWoundCompletion, completed.HasMortalProducerCompletion,
+            input.WoundCommands is not null, context.JointRepairCommonAuthority is not null);
+        return calculated.Calculation is { } artifacts
+            ? AssembleCalculatedPlan(input, completed.InputFingerprint, artifacts, completed.LiveWoundCompletion)
+            : new AcceptedMechanicsPlanningResult(null, calculated.Issues);
     }
 
     private static PendingBoundaryDecision ResolvePendingBoundary(
@@ -4924,21 +4644,9 @@ internal static partial class AcceptedMechanicsPlanner
 
         if (pendingState != null && pendingStateOverride == null)
         {
-            var hasTerminalReplayAuthority = pendingState.TerminalReceipts.Any(
-                terminal =>
-                    string.Equals(terminal.SessionId, input.SessionId, StringComparison.Ordinal) &&
-                    string.Equals(
-                        terminal.AcceptedRequestId,
-                        input.RequestId,
-                        StringComparison.Ordinal) &&
-                    terminal.RequestTurn == input.Turn);
-            if (hasTerminalReplayAuthority)
-            {
-                return FailedPendingDecision(Issue(
-                    "resource_pending_terminal_replay_incomplete",
-                    "the complete terminal receipt set for semantic replay",
-                    "effectResolutionReceipts missing"));
-            }
+            var terminalIssues = ValidateMissingTerminalReceiptSet(
+                input.SessionId, input.RequestId, input.Turn, pendingState);
+            if (terminalIssues.Count != 0) return FailedPendingDecision(terminalIssues);
         }
 
         if (candidates.Count == 0)
@@ -5793,13 +5501,22 @@ internal static partial class AcceptedMechanicsPlanner
         IReadOnlyDictionary<string, ResourceDefinition> sameTurnDefinitions,
         List<ValidationIssue> issues)
     {
-        var result = ComposeOwnerCapacityTransitions(input, context, issues).ToList();
-        result.AddRange(context.RegisteredSystemOutcomes
+        return ComposeCapacityTransitions(AcceptedMechanicsCalculationInputs.FromContext(input.Turn, input.Realm, context),
+            definitions, sameTurnDefinitions, issues);
+    }
+
+    private static IReadOnlyList<ResourceCapacityIntent> ComposeCapacityTransitions(
+        AcceptedMechanicsCalculationInputs calculation, ResourceDefinitionCatalog definitions,
+        IReadOnlyDictionary<string, ResourceDefinition> sameTurnDefinitions, List<ValidationIssue> issues)
+    {
+        var result = ComposeOwnerCapacityTransitions(calculation.Turn, calculation.Owners, calculation.State,
+            calculation.OwnerCapacityDrafts, calculation.TerminalOwners, issues).ToList();
+        result.AddRange(calculation.RegisteredSystemOutcomes
             .OfType<IResourceRegisteredSystemCapacityDraft>()
             .SelectMany(static draft => draft.CapacityTransitions));
-        var supplied = context.CapacityTransitions.ToArray();
+        var supplied = calculation.CapacityTransitions.ToArray();
         var consumed = new HashSet<int>();
-        foreach (var command in context.Commands.CapacityChanges
+        foreach (var command in calculation.Commands.CapacityChanges
                      .OrderBy(static value => value.CommandOrdinal))
         {
             var definition = ResolveCapacityDefinition(
@@ -5809,7 +5526,7 @@ internal static partial class AcceptedMechanicsPlanner
                 issues);
             if (definition == null)
                 continue;
-            var owner = ResolveOwner(input.Realm, command.Target, definition, context, issues);
+            var owner = ResolveOwner(calculation.Realm, command.Target, definition, calculation.Owners, issues);
             if (owner == null)
                 continue;
             var coordinate = new ResourceCoordinate(
@@ -6152,8 +5869,16 @@ internal static partial class AcceptedMechanicsPlanner
         ResourceDefinitionCatalog definitions,
         List<ValidationIssue> issues)
     {
+        return ComposeOrdinaryMutations(AcceptedMechanicsCalculationInputs.FromContext(input.Turn, input.Realm, context),
+            definitions, issues);
+    }
+
+    private static IReadOnlyList<ResourceMutationIntent> ComposeOrdinaryMutations(
+        AcceptedMechanicsCalculationInputs calculation, ResourceDefinitionCatalog definitions,
+        List<ValidationIssue> issues)
+    {
         var result = new List<ResourceMutationIntent>();
-        foreach (var command in context.Commands.ResourceChanges
+        foreach (var command in calculation.Commands.ResourceChanges
                      .OrderBy(static value => value.CommandOrdinal))
         {
             if (!definitions.TryResolveExact(command.ResourceKey, out var definition) ||
@@ -6166,7 +5891,7 @@ internal static partial class AcceptedMechanicsPlanner
                     command.ResourceKey);
                 continue;
             }
-            var owner = ResolveOwner(input.Realm, command.Target, definition, context, issues);
+            var owner = ResolveOwner(calculation.Realm, command.Target, definition, calculation.Owners, issues);
             if (owner == null)
                 continue;
             result.Add(new ResourceMutationIntent(
@@ -6221,10 +5946,10 @@ internal static partial class AcceptedMechanicsPlanner
         string realm,
         ResourceCommandTarget target,
         ResourceDefinition definition,
-        AcceptedMechanicsPlanningContext context,
+        ResourceOwnerAuthority owners,
         List<ValidationIssue> issues)
     {
-        var resolution = context.Owners.Resolve(new ResourceOwnerRequest(
+        var resolution = owners.Resolve(new ResourceOwnerRequest(
             realm,
             target.OwnerKind,
             definition.ResourceKey,

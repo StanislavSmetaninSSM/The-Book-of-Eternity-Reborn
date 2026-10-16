@@ -17,7 +17,8 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalJointRepairCommonAuthority(object issuer, object resources, GameEngine.MortalJointProgressionSource progression)
         {
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer) ||
-                resources is not JointResourcePublicationAuthority actual || !actual.HasValidSeal() || !progression.HasValidSeal)
+                resources is not JointResourcePublicationAuthority actual || !actual.HasValidSeal() ||
+                !actual.HasRetainedCommonCalculation || !progression.HasValidSeal)
                 throw new InvalidOperationException("Joint common input requires its private complete resource owner.");
             _resources = actual;
             Progression = progression;
@@ -53,6 +54,9 @@ internal static partial class WoundAcceptedTurnPlanner
             Fingerprint = ComputeFingerprint();
         }
         internal GameEngine.MortalJointProgressionSource Progression { get; }
+        internal AcceptedMechanicsPlanner.CalculatedCommonArtifacts RetainedCommonCalculation =>
+            _resources.RetainedCommonCalculation;
+        internal AcceptedMechanicsCalculationInputs RetainedCalculationInputs => _resources.RetainedCalculationInputs;
         internal MortalJointAcceptedOutputBasis OutputBasis { get; }
         private JointCommonBaselineAuthority Baseline => _resources.Baseline;
         internal MortalItemAcceptedTurnNormalizationSnapshot ItemsForRegistry => Baseline.Items;
@@ -82,7 +86,8 @@ internal static partial class WoundAcceptedTurnPlanner
             "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
             Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
             Progression.Fingerprint, OutputBasis.Fingerprint });
-        internal bool HasValidSeal => _resources.HasValidSeal() && Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
+        internal bool HasValidSeal => _resources.HasValidSeal() && _resources.HasRetainedCommonCalculation &&
+            Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
         internal bool AgreesWith(AcceptedMechanicsWoundStageBundle? bundle, MortalWoundCanonicalAnchorPlan? anchors,
             ResourceOwnerAuthority owners) => HasValidSeal && bundle is not null && anchors is not null &&
             ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
@@ -101,12 +106,13 @@ internal static partial class WoundAcceptedTurnPlanner
             _planningInputFingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
             _bindingFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
         }
-        internal bool MatchesInput(AcceptedMechanicsInput input) => HasValidSeal && _planningInputFingerprint is not null &&
+        internal bool MatchesInput(AcceptedMechanicsInput input) => HasValidSeal && _resources.RetainedInputAgrees(input) &&
+            _planningInputFingerprint is not null &&
             ReferenceEquals(input.PlanningContext?.JointRepairCommonAuthority, this) && AgreesWithContext(input.PlanningContext) &&
             _planningInputFingerprint == AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input) &&
             _bindingFingerprint == AcceptedMechanicsPlanFingerprints.ComputeInput(input.CreateBinding());
         internal bool AgreesWithContext(AcceptedMechanicsPlanningContext context) =>
-            AgreesWith(context.WoundStageBundle, context.WoundAnchorPlan, context.Owners) &&
+            AgreesWith(context.WoundStageBundle, context.WoundAnchorPlan, context.Owners) && _resources.RetainedContextAgrees(context) &&
             context.TreatmentResourcePublicationAuthority is null && context.DirectWoundPublicationAuthority is null &&
             context.State.Fingerprint == State.Fingerprint && context.History.Fingerprint == History.Fingerprint &&
             JsonNode.DeepEquals(context.DefinitionRoot, Definitions.ToCanonicalRoot()) &&
@@ -226,7 +232,10 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
             await progression.ValidateCurrentAsync(files, lease);
-            authority = ((JointResourcePublicationAuthority)resourceAuthority).GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
+            var resources = (JointResourcePublicationAuthority)resourceAuthority;
+            var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
+            if (calculationIssues.Count != 0) return new(null, calculationIssues);
+            authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
             var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
             authority.BindInput(JointCommonAuthorityIssuer, composed.Input);

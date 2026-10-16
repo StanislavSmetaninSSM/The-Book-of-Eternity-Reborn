@@ -10,7 +10,7 @@ internal static partial class WoundAcceptedTurnPlanner
 
     // The distinct joint family holds the actual common baseline. It cannot be
     // passed as a singleton treatment continuation or a public mixed permission.
-    private sealed class JointResourcePublicationAuthority : IResourceRegisteredSystemOutcomeDraft,
+    private sealed partial class JointResourcePublicationAuthority : IResourceRegisteredSystemOutcomeDraft,
         IResourceRegisteredSystemCapacityDraft
     {
         private readonly MortalWoundTreatmentResourcePublicationDraft _resources;
@@ -45,6 +45,8 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer))
                 throw new InvalidOperationException("Joint common authority requires its existing private resource owner.");
+            if (!HasRetainedCommonCalculation)
+                throw new InvalidOperationException("Joint common authority requires its already-complete private calculation.");
             if (_commonAuthority is not null && !ReferenceEquals(_commonAuthority.Progression, progression))
                 throw new InvalidDataException("The issued joint common basis cannot be replaced or appended after sealing.");
             return _commonAuthority ??= new MortalJointRepairCommonAuthority(issuer, this, progression);
