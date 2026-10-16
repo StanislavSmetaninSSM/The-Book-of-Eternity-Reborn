@@ -1,0 +1,10 @@
+{
+  "pair": "t197-pending-fate-family-reservation-producer-design-20261016",
+  "source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "root_verified_git_pins": 36,
+  "root_verified_exact_projections": 38,
+  "root_verified_static_search_outputs": 3,
+  "root_verified_selected_source_diff": "zero bytes",
+  "scope": "Conditional DESIGN only;16writer families/9states/8OPENprerequisites/20UNRUNfuturechecks; noexistingissuer/fullwriterproof/engineeringrelease",
+  "review_status": "independent review not yet started"
+}
