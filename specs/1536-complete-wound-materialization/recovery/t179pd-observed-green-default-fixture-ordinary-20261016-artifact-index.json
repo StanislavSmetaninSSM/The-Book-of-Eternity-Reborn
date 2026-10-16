@@ -1,0 +1,124 @@
+{
+  "source_sha": "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/dotnet-test.log",
+      "raw_bytes": 3386062,
+      "raw_sha256": "cb93b4fd23779c7d3e0f9a5d4973807eb0a54249a7330267a8663df993f45ddd",
+      "stored_sha256": "4eb8e868b4fb854165224733ccc6f97b2501c0577d0ab58cd306dda44089bb29"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/native-exit.json",
+      "raw_bytes": 861,
+      "raw_sha256": "de7147cf73fcfb78231fbda6008bde412a6f89af8131bbdc57040c620417eac5",
+      "stored_sha256": "de7147cf73fcfb78231fbda6008bde412a6f89af8131bbdc57040c620417eac5"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/plan.json",
+      "raw_bytes": 3373,
+      "raw_sha256": "9133e1ec496f0e6cd03698b905a2abb7bb94f585203ec69ec513edf942452342",
+      "stored_sha256": "9133e1ec496f0e6cd03698b905a2abb7bb94f585203ec69ec513edf942452342"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-portable-ordinary-readers-integration-001.trx.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/portable-ordinary-readers-integration-001.trx",
+      "raw_bytes": 3114,
+      "raw_sha256": "5f46bec796006f4a3385ef420f813f7b152b594d7409ea879246d8a14dcb191f",
+      "stored_sha256": "c16daf2948821b3edfbf82c4d042cd2b68cf056ee3561ee0e56748fe2d05682b"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-portable-ordinary-readers-unit-002.trx.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/portable-ordinary-readers-unit-002.trx",
+      "raw_bytes": 26719,
+      "raw_sha256": "d3063a4801042ad03277dcc9ab0ee3974810cb1db8f7a6e154093bbfc4decf3e",
+      "stored_sha256": "0b87ca5bb036acac7a1e288f86af6831eb3afee2e9a1d664d389bfc5e310aca3"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/stdout.log",
+      "raw_bytes": 4292,
+      "raw_sha256": "2c4ed1d22b3474a35e4d66f855980d2f4b01bec412d8ea259c5ead5fe896c21a",
+      "stored_sha256": "0721f0b623d2616a2a7e11133095bb07323b8c69b5e50f6a43b4c76d4abadeb4"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-164235-134-177891-4595069c7cc642fe9fb76eb7ad4a9e17-categories/summary.json",
+      "raw_bytes": 1462,
+      "raw_sha256": "4d5f224e91b59b51b8b14e429a15b369676594d24f14b64d61ae7c20f7157fc3",
+      "stored_sha256": "4d5f224e91b59b51b8b14e429a15b369676594d24f14b64d61ae7c20f7157fc3"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "portable-ordinary-readers"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "portable-ordinary-readers",
+        "Seconds": 3.8635153,
+        "BudgetMinutes": 4,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0606125,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0453371,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1324734,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0039053,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 9,
+    "WallTime": "00:00:11.3919457",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 16,
+      "CompletedCases": 16,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 16,
+      "Executed": 16,
+      "Passed": 16,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

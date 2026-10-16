@@ -1,0 +1,435 @@
+{
+  "category": "portable-ordinary-readers",
+  "actual_head": "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+  "compiled_source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "carrier": "WORKTREE",
+  "artifact_chains": [
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-dotnet-test.log.gz",
+      "raw_sha256": "cb93b4fd23779c7d3e0f9a5d4973807eb0a54249a7330267a8663df993f45ddd",
+      "stored_sha256": "4eb8e868b4fb854165224733ccc6f97b2501c0577d0ab58cd306dda44089bb29"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-native-exit.json",
+      "raw_sha256": "de7147cf73fcfb78231fbda6008bde412a6f89af8131bbdc57040c620417eac5",
+      "stored_sha256": "de7147cf73fcfb78231fbda6008bde412a6f89af8131bbdc57040c620417eac5"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-plan.json",
+      "raw_sha256": "9133e1ec496f0e6cd03698b905a2abb7bb94f585203ec69ec513edf942452342",
+      "stored_sha256": "9133e1ec496f0e6cd03698b905a2abb7bb94f585203ec69ec513edf942452342"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-portable-ordinary-readers-integration-001.trx.gz",
+      "raw_sha256": "5f46bec796006f4a3385ef420f813f7b152b594d7409ea879246d8a14dcb191f",
+      "stored_sha256": "c16daf2948821b3edfbf82c4d042cd2b68cf056ee3561ee0e56748fe2d05682b"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-portable-ordinary-readers-unit-002.trx.gz",
+      "raw_sha256": "d3063a4801042ad03277dcc9ab0ee3974810cb1db8f7a6e154093bbfc4decf3e",
+      "stored_sha256": "0b87ca5bb036acac7a1e288f86af6831eb3afee2e9a1d664d389bfc5e310aca3"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-stdout.log.gz",
+      "raw_sha256": "2c4ed1d22b3474a35e4d66f855980d2f4b01bec412d8ea259c5ead5fe896c21a",
+      "stored_sha256": "0721f0b623d2616a2a7e11133095bb07323b8c69b5e50f6a43b4c76d4abadeb4"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-ordinary-20261016-summary.json",
+      "raw_sha256": "4d5f224e91b59b51b8b14e429a15b369676594d24f14b64d61ae7c20f7157fc3",
+      "stored_sha256": "4d5f224e91b59b51b8b14e429a15b369676594d24f14b64d61ae7c20f7157fc3"
+    }
+  ],
+  "descriptors": 2,
+  "actual_cases": 16,
+  "distinct_methods": 7,
+  "cases": [
+    {
+      "descriptor": "portable-ordinary-readers-integration-001",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+      "id": "2af6e70c-fe4a-7b83-244a-f8d682bf0231",
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable",
+      "diagnostics": []
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "id": "9f2e3c01-60b7-fd9f-c6eb-0b04e65ee20f",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"empty\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-c1028999554942c4b0c9217175e7a09a",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "id": "9699ff92-8176-a48b-dfc0-d30c4f98a964",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess(operation: \"async\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1afa4d73fd6f457f9983d80b68256429",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "id": "61fc1ff5-71e5-8f29-0dae-c39f503f6d8a",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"absent\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-8605a7bb631b4b90a2a16b8e75513328",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "id": "a11a0494-b457-1db2-a795-0a7ebc45ca00",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess(operation: \"sync\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-a2445f42110e4f71b738e9b6cc503bf9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "id": "6c0d4637-7334-586d-6779-49b858da3eb5",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-a95f9587f3d34f5981d59fd5b79fc749",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "id": "78e792ca-7fa4-cd90-65df-7df217708ea5",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess(operation: \"exists\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-4d6410ee06ad4598b4709a706d0c6a1e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "id": "b0d22935-d7b6-bc7f-2a15-b7448e4f9cf5",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes(atBoundary: False)",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1e1263b44bdb4b8083658e75aa34a6d2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "id": "c827ab1d-ae3e-9ff0-db8e-ecbeb93f65b2",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: True)",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-81ae96e2fad146dfbf186d807a379c9e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "id": "eac73752-a1be-3351-0d15-ab2c5745c85a",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"utf16-bom\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-04c0f17501174b3fb742556c2b40df74",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "id": "0f6539dd-3dd0-d0eb-2f4b-23ab800e3d8b",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1779980a77834857915288526bc61ec4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "id": "4eca0d76-b860-3f62-8847-2da85587611b",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"utf8-bom\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-792f9fa4b11f4a2997248dbf6ec6dcdb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "id": "10c134ea-88b1-5e5a-7c28-37c8323c90ae",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess(operation: \"async-boundary\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-ef54f7e0e1604a56a6e75b2b131bb40e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "id": "ef790003-ba9b-5443-5772-5090171209d2",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes(atBoundary: True)",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-d415e5b25bc448efbc899eba10284d16",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "id": "75d48d3c-8cbf-9063-1f9e-facf74afb9da",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding(value: \"binary\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-e61cb16be9b14031b5a6e3a25ac949cf",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "portable-ordinary-readers-unit-002",
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "id": "16cf7a47-2a95-4048-316d-f62b2ae1962a",
+      "name": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening(disposed: False)",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-ordinary-read-d6b30e5fd8f248f8bbd302aa32411a4c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    }
+  ],
+  "strict_cleanup_receipts": [
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-c1028999554942c4b0c9217175e7a09a",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1afa4d73fd6f457f9983d80b68256429",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-8605a7bb631b4b90a2a16b8e75513328",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-a2445f42110e4f71b738e9b6cc503bf9",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.SnapshotTimestampAndBytesBelongToTheOpenedFile",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-a95f9587f3d34f5981d59fd5b79fc749",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-4d6410ee06ad4598b4709a706d0c6a1e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1e1263b44bdb4b8083658e75aa34a6d2",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-81ae96e2fad146dfbf186d807a379c9e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-04c0f17501174b3fb742556c2b40df74",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.HardLinkedOrdinaryInputReachesCoordinatedPublicationWithoutChangingOutsideAlias",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-1779980a77834857915288526bc61ec4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-792f9fa4b11f4a2997248dbf6ec6dcdb",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.FifoRejectedBeforeOpenInBoundedOwnedProcess",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-ef54f7e0e1604a56a6e75b2b131bb40e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.CancellationBeforeOrAtOpenDoesNotConsumeBytes",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-d415e5b25bc448efbc899eba10284d16",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.OrdinarySurfacesPreserveExactBytesAbsenceAndBomDecoding",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-e61cb16be9b14031b5a6e3a25ac949cf",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableOrdinaryReadTests.LeasedReadersRejectForeignOrDisposedOwnerBeforeOpening",
+      "CleanupOwnedRoot": "/tmp/boe-ordinary-read-d6b30e5fd8f248f8bbd302aa32411a4c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strict_cleanup_count": 15,
+  "scoped_temp_witness": {
+    "boe-ordinary-read-": [],
+    "boe-filesystem-manager-": []
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "61e2f28d365c34abd8b0e913405848250dc83bd5b96e5fe79c1bacf00ca9d2e2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "25d2d61aa1397baae54b13ed1ae81f53b108ed3d190924bee92a4b5888aa4b73"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "portable-ordinary-readers"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "portable-ordinary-readers",
+        "Seconds": 3.8635153,
+        "BudgetMinutes": 4,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0606125,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0453371,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1324734,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0039053,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 9,
+    "WallTime": "00:00:11.3919457",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 16,
+      "CompletedCases": 16,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 16,
+      "Executed": 16,
+      "Passed": 16,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "source_scope_docs_only": true,
+  "limits": "Bounded selected reader/storage regression only. Secondary private callback controls are not natural authenticated aliases. Existing default/integration fixtures without strict receipt use runner/scoped temp witness only. No full Pd/admission/S/C/B/M3/cold/F1/T197/Windows qualification."
+}

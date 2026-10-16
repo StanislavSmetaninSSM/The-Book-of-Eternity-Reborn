@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "portable-ordinary-readers",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+  "compiled_source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "category": "portable-ordinary-readers",
+  "started_utc": "2026-10-16T16:42:34.315628+00:00",
+  "ended_utc": "2026-10-16T16:42:46.577084+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-ordinary-read-": [],
+    "boe-filesystem-manager-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-ordinary-read-": [],
+    "boe-filesystem-manager-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-ordinary-read-": [],
+    "boe-filesystem-manager-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}
