@@ -22,6 +22,9 @@ New direct delegation resumes implementation from745b and supersedes the complet
 
 - [ ] C01/C02 new-worker-only correction WIP UNCOMPILED/UNRUN: nested request/session/turn-bound ledger oracle; actual40s Escape supervisor joins real Wait+guard; settled audit/task diagnostic preserves primary/secondary failures. BLOCKEDb62e saved/recovered30files/all24delta. Production/otherfixtures/selection/tools unchanged. Fresh preparation/exactdelta/affected SOURCE before any actual.
 
+- [x] Workerfix sourcef9bc fresh BOTH/catalog777/11725/native0/133+35warnings0errors; exactPlanOnly8desc15cases/ZEROexecutions;12completechains/fourfreshDLLs/NEW32fileALL26delta source recovery frozen. Earlier uncompiledWIP entries are historical.
+- [ ] Push/readback/recover workerfix-prepared carrier; affected independent SOURCE closes C01/C02 before anyactual. Only explicit FIRSTLate2 then frozen separate EVIDENCE before GREEN; full3b/priorlimitsOPEN.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
