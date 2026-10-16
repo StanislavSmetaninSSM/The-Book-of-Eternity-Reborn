@@ -2,6 +2,137 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-common-boundary-calculation",
+  "responsibility": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+  "excludes": "No full F1 ordinary rejection policy, active S/B provenance, M3, QTE/T197/visual/platform qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_*",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.CommonBoundary_*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-joint-retained-common-calculation",
+  "responsibility": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+  "excludes": "Post-common evidence does not prove active S/B sealing, pre-seal drift or foreign owner/reservation. No new production hook, reflection issuer, arbitrary C import, QTE/T197 or OS/visual qualification.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "Protected common owner: fresh BOTH and independent SOURCE/FIXTURE/SELECTION, first actual Late2 then freeze/independent EVIDENCE before this stage actual."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-common-calculation-regression",
+  "responsibility": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls.",
+  "excludes": "Intentional subset overlap with effects-planning/accepted-mechanics-planning; no broad category or unrelated owner execution.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs"
+  ],
+  "related": [
+    {
+      "id": "effects-planning",
+      "when": "Intentional exact subset ownership; deduplicate methods if combined, never select broad owner automatically."
+    },
+    {
+      "id": "accepted-mechanics-planning",
+      "when": "Intentional exact subset ownership; common pending/carrier guards only."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+        "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+        "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-common-qte-consumers",
+  "responsibility": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+  "excludes": "Intentional subset overlap with fr063-joint-c1-qte-default-publication. No adapter grammar/default/singleton/changed-v1 replay expansion, full QTE or F1 activation.",
+  "changeHints": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-c1-qte-default-publication",
+      "when": "Intentional exact affected subset; combined membership deduplicated. Unchanged adapter-only consumers excluded."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-story-calculation",
   "responsibility": "T179-Pb/T182 detached exact Mortal joint story row calculation shared with the actual v2 story owner: frozen coordinates/UTC, Unicode and normalization, existing path/location/tag/label policies, conditional named source reads and immutable results.",
   "excludes": "No genuine S/history/artifact capture, M3, common seal, new publication capability, active F1/QTE, death handoff, browser visual or OS qualification. Unit data calculations own zero roots.",

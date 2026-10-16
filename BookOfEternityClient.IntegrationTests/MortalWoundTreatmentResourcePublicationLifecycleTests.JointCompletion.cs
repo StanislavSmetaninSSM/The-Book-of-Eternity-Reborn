@@ -23,7 +23,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
-        bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false)
+        bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
+        Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -93,7 +94,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         byte[]? authoredProgressionReport = null;
         JsonObject heldCommand = new();
 
-        var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+        GameEngine engine = null!;
+        engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = checkpoint =>
@@ -103,6 +105,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                     {
                         entered = true; liveWaitEntered = true;
                         return PrepareJointOriginalAsync();
+                    }
+                    if (observeSettledCommonPlan is not null &&
+                        checkpoint == SessionFinalizationCheckpoint.MortalJointCommonReadbackSettledBeforeProgression)
+                    {
+                        // Read-only observation of the actual retained owner after its
+                        // lease closes. No capability construction or owner invocation.
+                        var refresh = GetPrivateFieldValue<object?>(engine, "_mortalJointRepairCanonicalRefresh");
+                        observeSettledCommonPlan(refresh?.GetType().GetProperty("Plan")?.GetValue(refresh)
+                            as AcceptedMechanicsPlan);
                     }
                     if (pauseUnappliedForCold && checkpoint == SessionFinalizationCheckpoint.MortalJointCommonReadbackSettledBeforeProgression)
                     {
