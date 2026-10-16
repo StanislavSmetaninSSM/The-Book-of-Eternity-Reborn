@@ -196,7 +196,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
 
     private static OrdinaryReductionFixture CreateOrdinaryReductionFixture(
         bool effects, bool bounded = false, bool createDefinition = false, int ordinaryCount = 0,
-        ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false)
+        ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false,
+        Func<EffectAcceptedTurnInput, EffectAcceptedTurnInput>? configureEffectInput = null)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 41, 10, 10, 10, 10, 10);
         Assert.True(bootstrap.IsValid, DescribeOrdinaryReductionIssues(bootstrap.Issues));
@@ -221,6 +222,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             lifecycle["causalEventRef"] = "turn_42:owner_turn_end:1";
             lifecycle["phase"] = "owner_turn_end";
             lifecycle["triggerId"] = "on_owner_turn_end";
+            effectInput = configureEffectInput?.Invoke(effectInput) ?? effectInput;
             var result = new EffectAcceptedTurnPlanCache(fixture.Effects).GetOrBuild(effectInput);
             Assert.True(result.Success, DescribeOrdinaryReductionIssues(result.Issues));
             effectPlan = result.Plan!;

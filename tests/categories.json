@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-active-prefix-lifecycle-evidence",
+  "responsibility": "T179-Pd/T192b test-first actual planner lifecycle evidence. Three independent ordinary completed-reduction cases (advance, real scheduler no_change, empty matched roster) require both real first-pass ledger rows, exact source ordinals, detached copies and unchanged identities/projection calls. Initial causal RED is missing genuine plan ledger only after existing planner/common assembly succeeds.",
+  "excludes": "No engine submitted-output admission, action capability, active S/C/B seal, M3/common publication, cold closure, new QTE/F1/T197 or visual/platform qualification. This finite unit owner is a first step of the coherent P0 stage, not completion.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+    "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs"
+  ],
+  "related": [
+    {
+      "id": "effects-planning",
+      "when": "Exact lifecycle evidence subset only; intentional overlap with any broader existing type ownership, deduplicate methods if combined; never automatically select the broad owner."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-common-resource-continuation",
   "responsibility": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
   "excludes": "No new mechanics authority, changed shared EffectMaterializationTestContext or broader resource/effect/pending category. Actual bounded completion here is ordinary regression; held joint C construction remains unbounded and full F1 remains future.",

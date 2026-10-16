@@ -2,59 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-common-boundary-calculation",
-      "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+      "category": "fr063-active-prefix-lifecycle-evidence",
+      "reason": "Initial T179-Pd/T192b test-first source only: three genuine completed planner controls reach missing LifecycleExecutionLedger assertion. No production caller or success implementation changed. Existing fixture default remains identical; optional input configuration is local to new cases. All runtime UNRUN until G5 release.",
       "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-joint-retained-common-calculation",
-      "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
-      "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-common-calculation-regression",
-      "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the actual original-context capacity/mutation adapters and exact identity replay. Ordinary tests cover the detached projection overload; unchanged original-spiritual routing/projection wrapper is statically reviewed and excluded from runtime qualification.",
-      "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-common-qte-consumers",
-      "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
-      "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        "#1536 T179/T192 coherent internal pre-seal→P0; foundation only, no activation. Independent SOURCE→firstLate2→separate EVIDENCE→expected unit RED3; stop first unexpected failure."
       ]
     },
     {
       "category": "fr063-joint-late-completion",
-      "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+      "reason": "G5 requires first actual unchanged Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE gate. Freeze/push/readback plus independent EVIDENCE before expected ledger RED; no aggregate execution.",
       "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-joint-active-tail",
-      "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
-      "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-joint-c1-common-mixed-guard",
-      "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
-      "contracts": [
-        "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
-      ]
-    },
-    {
-      "category": "fr063-common-resource-continuation",
-      "reason": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
-      "contracts": [
-        "#1536 T179-Pc shared ordinary pending/reaction behavior; finite exact actuals after fresh BOTH/source/firstLate2/EVIDENCE."
+        "#1536 v2 genuine full common union/progression/story/turn/replay and strict roots remain preserved; later active work needs its own affected selection."
       ]
     }
   ]
