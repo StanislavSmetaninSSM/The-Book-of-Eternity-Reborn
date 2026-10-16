@@ -1,0 +1,110 @@
+{
+  "source_sha": "f6b9d5f0499546ae9b0e78b308a679677e261e1d",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-initial-late-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories/dotnet-test.log",
+      "raw_bytes": 1682817,
+      "raw_sha256": "ea348c92a5fa8df56a384763018fe1ad51ac263b95de37de2e28e03fb74f435f",
+      "stored_sha256": "1e2cf526aa3cbaec394b646fd31b74d2c2780baa486566100f459725bc0574bb"
+    },
+    {
+      "path": "t179pd-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976994,
+      "raw_sha256": "d44d1fb85069229b212083030c4691d241f594efb45ff82a1a76e30e86ddc755",
+      "stored_sha256": "1ed98118e0e55ecf9656545aa01f43c58309d5588e32237634ad9f0316fb9375"
+    },
+    {
+      "path": "t179pd-initial-late-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories/plan.json",
+      "raw_bytes": 1533,
+      "raw_sha256": "2749b8093c241e8ba12af98e9ff0b305bf634d2026beb43b24abda1d85012172",
+      "stored_sha256": "2749b8093c241e8ba12af98e9ff0b305bf634d2026beb43b24abda1d85012172"
+    },
+    {
+      "path": "t179pd-initial-late-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories/runner-stdout.log",
+      "raw_bytes": 2244,
+      "raw_sha256": "f6bec21d521712b86497138693e9ece4d2a22d708439e7da77a6afc3a0122adf",
+      "stored_sha256": "bd685c877d367ff00f75a2a170df1b300d6f58a8986b76a2013b60178024b210"
+    },
+    {
+      "path": "t179pd-initial-late-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-113046-704-65391-4d698e7df7fb40edbb8ca668b1d6a509-categories/summary.json",
+      "raw_bytes": 1464,
+      "raw_sha256": "a5b183eb1bb833efbaecdf15f73aa7274c76d67702b69b32f5ab207ce678d238",
+      "stored_sha256": "a5b183eb1bb833efbaecdf15f73aa7274c76d67702b69b32f5ab207ce678d238"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "f6b9d5f0499546ae9b0e78b308a679677e261e1d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 195.3229142,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0646317,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0505457,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1295061,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0039974,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:03:20.0513169",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

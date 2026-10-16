@@ -1,3 +1,9 @@
+## T179-Pd initial unchanged Late2 frozen — EVIDENCE review pending, 2026-10-16
+
+- First released singleton fr063-joint-late-completion on clean f6b9d5f04 / compiled cf95c6091: native exit0, **2/2 PASS**, 1 complete descriptor, wall200.0513169s, no timeout/skip/duplicate/underfill; runner and runtime cleanup complete. Full immutable recovery/t179pd-initial-late-20261016* retains runner stdout, raw log/TRX/plan/summary and native exit/hash index. Source/fixture/catalog/selection and all four DLL pins unchanged.
+- Root checked complete raw/stored/local chains, actual source42→original43 request/token binding, CREATE2/TREAT3, damage3 and charge2 once, zero/nonzero signed schedule arithmetic and native transaction members, exact story append, inert repeat84images,142 cleanup paths and two strict removed/noerror/physically absent roots. This proves the unchanged v2 control only.
+- Next: independent separate Late2 EVIDENCE review, then only if released causal lifecycle RED3 (missing property after genuine completed reduction/assembly). No new unit actual or success implementation yet. Full coherent Pd S/C/B/M3/P0, F1, T197 and activation remain open.
+
 ## T179-Pd/T192b initial SOURCE gate — first Late2 only, 2026-10-16
 
 - Independent configured Astra/XHigh [review](./recovery/t179pd-initial-source-review-20261016.md) of cf95c6091 source / 6ee0ca0c4 preparation: READY_FOR_FIRST_UNCHANGED_LATE2_ONLY, no blocking finding. Root independently verified 48 historical source/context/evidence pins, four exact diffs, 8 raw/stored/local chains and four current DLL hashes; report pair preserved byte-for-byte. Preparation executes zero tests.
