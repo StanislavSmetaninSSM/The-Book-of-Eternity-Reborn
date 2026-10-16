@@ -1,3 +1,6 @@
+- PreP0 history proposal preserved41pins/10priorartifacts: versionedexistingrepairowner+actualworkeratomiccompanion, no newpath; fullatomicity/worker-cold/lostC/identity/semanticgatesOPEN, independentreviewpending/no release.
+- T197 parent-seal conditionalreview preserved80pins2diffs; PS-O1waiterrethrow correction, PS-O2bothretainedadmissionframes and PS-D1canonical/native-stop lockorder mandatorybeforecode; fullG-C/targetgatesOPEN.
+
 - Pd.3a causalbarrierRED frozen: native1/charPASS1+solebarrierFAIL1 line36/7.325s/realoldreaderSuccess afterlateA mutation/6rawchains/2strictabsentroots/fourDLLsame. BothcausalREDsbeforeprodsuccesslogic; nextcomplete safeobservedvertical+meaningfulconformance/freshG5, no GREENrelease yet.
 
 - Pd.3a barriercycle Late2EVIDENCE accepted; release onlycharPASS1 + causalbarrierRED1 line36 aftercontrols/cleanup. No prodsuccesslogic or GREEN/otheractualrelease.
