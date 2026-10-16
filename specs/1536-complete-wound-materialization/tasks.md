@@ -1,3 +1,6 @@
+- Pd.3a barriercycle firstLate2 native0/2PASS/214.931s/6rawchains/2strictabsentroots/fourDLLfixed9aa frozen; fullrootsemantics verified. SeparateEVIDENCE beforebarrierpair; no prodsuccesslogic.
+- T197 exactparent/seal proposal preserved62pins/20futureUNRUN, nestedparent/noReplay/held-notCancel/join-before-close; transitiveleaf/catch/input/fullG-CgatesOPEN, independentreviewpending/no release.
+
 - Pd.3a barrier initialSOURCE accepted/no blockingfinding; release onlyfirstLate2 withfresh9aaDLLs. BarriercharPASS1/causalRED1 remainsUNRUN pendingfrozenLate2/separateEVIDENCE; no prodsuccesslogic.
 
 - Pd.3a test-only causalbarrier cycle WIP: realoriginal A/B→existing B-postopen mutatesalready-readA; legacycharacterizationPASS1 + explicitlyguarded absent-feature barrierRED1 expected. Newfiniteowner+Late2 expected2descriptors4cases pendingfreshBOTH/PlanOnly/SOURCE/firstLate2/EVIDENCE; no prodsuccesslogic.
