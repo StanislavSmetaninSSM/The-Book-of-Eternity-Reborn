@@ -1,3 +1,5 @@
+- Pd.3a barriercycle Late2EVIDENCE accepted; release onlycharPASS1 + causalbarrierRED1 line36 aftercontrols/cleanup. No prodsuccesslogic or GREEN/otheractualrelease.
+
 - Pd.3a barriercycle firstLate2 native0/2PASS/214.931s/6rawchains/2strictabsentroots/fourDLLfixed9aa frozen; fullrootsemantics verified. SeparateEVIDENCE beforebarrierpair; no prodsuccesslogic.
 - T197 exactparent/seal proposal preserved62pins/20futureUNRUN, nestedparent/noReplay/held-notCancel/join-before-close; transitiveleaf/catch/input/fullG-CgatesOPEN, independentreviewpending/no release.
 
