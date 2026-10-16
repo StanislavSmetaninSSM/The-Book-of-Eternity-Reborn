@@ -1,4 +1,6 @@
-- T179-Pc retained-v2common-C bounded prerequisite planned in canonical implementation plan; test-first boundary10+actualretainedC1 and finite affected regressions, fresh BOTH/firstLate2/independentEVIDENCE gates. AllPcUNRUN. No activeS/B/M3 or fullF1 acceptance; specific before-seal drift/foreignowner/after-seal tests belong next actual active interface.
+- T197 Q-L1 finite-source refinement WIP/UNACCEPTED:112sourcepins/16catalogs22recipes10phaseprojections, sevenOPENquestions/12UNRUNchecks. Fulltarget/EP/E1/intake/accepted-bootstrap leaves remain incomplete; independent review pending. No archive/runtime/newgrant or T197 release.
+
+- T179-Pc retained-v2common-C bounded prerequisite: freshBOTH/source/firstLate2 2PASS/independentEVIDENCE complete, causal unitRED10 + actualretainedCRED1 preserved before successlogic. Sharedkernel/private-retention implementation next, then freshBOTH/source/firstLate2/EVIDENCE before GREEN/regressions. No activeS/B/M3/fullF1 acceptance; specific before-seal drift/foreignowner/after-seal tests belong next actual active interface.
 
 - T197 DEP-L distinct-root proposal: DESIGN-only REVIEWED FOR CONDITIONAL DISCUSSION/unaccepted at3b7c5c547, no confirmed material defect. Exact independentpair preserved/rootpins verified;29sourcepins14futureUNRUNchecks/sevenOPENquestions. DEP-C/I/L/fulltarget/H2/H3/newQTE stayblocked; no schema/lifecycle/runtimegrant. Prior stale DEP-I pending metadata reconciled66cbc.
 
