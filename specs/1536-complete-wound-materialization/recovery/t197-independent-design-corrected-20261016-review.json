@@ -1,0 +1,861 @@
+{
+  "task": "T197 affected independent corrected DESIGN review",
+  "date": "2026-10-16",
+  "verdict": "ACCEPTED_FOR_DISCUSSION_AS_BLOCKED_DESIGN_PROPOSAL",
+  "t197_design_complete": false,
+  "transition_qualified": false,
+  "satisfies_complete_t197_design_release_prerequisite": false,
+  "new_joint_qte_activation_allowed": false,
+  "reviewer": {
+    "agent": "/root/t197_independent_review",
+    "independent_of_author": true,
+    "actual_configured_invocation": {
+      "fork_turns": "none",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh"
+    },
+    "invocation_evidence": "parent explicit confirmation",
+    "backend_telemetry": "unknown/unobservable",
+    "subagents_spawned": 0
+  },
+  "revisions": {
+    "r2_source_baseline": "d43d6f3a9ee151e9e7742c5328e6281dd8af3528",
+    "initial_reviewed": "42371407986d0a226b7bd023e855496a8a82df18",
+    "correction_parent": "62c404507142ea692e81a4425faf584ecf8678d5",
+    "corrected_candidate": "6663c222a48a6c68970ccd3a7830e3486b4d3fee",
+    "final_reviewed": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529"
+  },
+  "remote_confirmation": "parent reported published/remote-confirmed; reviewer inspected local immutable Git objects only",
+  "scope": {
+    "paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "changed_paths": 7,
+    "only_documentation_or_evidence": true,
+    "t192a_code_review": false,
+    "plan_tasks": "affected status only; historical ledger not requalified",
+    "git_binary_full_index_diffs": [
+      {
+        "name": "corrected_vs_parent",
+        "base": "62c404507142ea692e81a4425faf584ecf8678d5",
+        "target": "6663c222a48a6c68970ccd3a7830e3486b4d3fee",
+        "scope": [
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "specs/1536-complete-wound-materialization/plan.md",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+          "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "command": "git diff --no-ext-diff --no-textconv --binary --full-index BASE TARGET -- [scope paths in listed order]",
+        "bytes": 182066,
+        "sha256": "16f68a75f95d47055534a4f6a99936f3aaecc05ae0a5a0292c6e043c5979c075"
+      },
+      {
+        "name": "dep_c_amendment",
+        "base": "6663c222a48a6c68970ccd3a7830e3486b4d3fee",
+        "target": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+        "scope": [
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "specs/1536-complete-wound-materialization/plan.md",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+          "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "command": "git diff --no-ext-diff --no-textconv --binary --full-index BASE TARGET -- [scope paths in listed order]",
+        "bytes": 24773,
+        "sha256": "108c6fd143b788bfed0ea10e0aad1cf0bf23f8f1298cfcc69de285df88c5b50f"
+      },
+      {
+        "name": "full_reviewed_vs_parent",
+        "base": "62c404507142ea692e81a4425faf584ecf8678d5",
+        "target": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+        "scope": [
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "specs/1536-complete-wound-materialization/plan.md",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+          "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "command": "git diff --no-ext-diff --no-textconv --binary --full-index BASE TARGET -- [scope paths in listed order]",
+        "bytes": 185265,
+        "sha256": "b4dc1090a80f5f045baa7c9fbe7e54a6334abc632893f9401a75591aa35e9db7"
+      },
+      {
+        "name": "initial_to_final_affected_scope",
+        "base": "42371407986d0a226b7bd023e855496a8a82df18",
+        "target": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+        "scope": [
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "specs/1536-complete-wound-materialization/plan.md",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+          "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+          "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "command": "git diff --no-ext-diff --no-textconv --binary --full-index BASE TARGET -- [scope paths in listed order]",
+        "bytes": 188193,
+        "sha256": "28b264cc5b63863e2a642ab8c36d9e0ae5c2dece742229405ee5d54af34db794"
+      }
+    ]
+  },
+  "document_pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "741d93af7e7c6b82ca5b9dc1fbf6c9d8d2eee061",
+      "sha256": "dfdb84d14c64d150b0bcace2c03fbcf38def96e7ae7d03d861726a3c2b294ae8",
+      "bytes": 62918
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "62910dcc549acbf815b3b2a4f47794268a34dffa",
+      "sha256": "011b2125fcf495cbe9d5bd1570bd937f54ee860eaa8744bdc381226a57f9bebc",
+      "bytes": 92267
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "1d50be0ec040d6615ca2577fec76f49d8c70709e",
+      "sha256": "89a3966c7d1bcd30b61ee781b36bceef354e0edf9eb1978799a3561f9fe8c7a3",
+      "bytes": 1903208
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "527054b8798f2f0b4793db9bd3e39ecb7f15425a",
+      "sha256": "43df4cbb44144802ea3b5e7f7b687c62a2bd04a12c470a72f06e2c32531b887b",
+      "bytes": 45201
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "b4b610999d84f9474f1f3ebc236828d28dc24bf0",
+      "sha256": "618c0697d70ee9f104e1afd8b36198803773425cafa38f1a0331d2855cd30bcc",
+      "bytes": 9144
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "b8f11236b9b36b2e65fd7338ce304344b3c37b48",
+      "sha256": "089d3730ad1a3aa1fb5f895bca7bd304e5ee1c5c6e6b1b9d772ef66b13a2a2d0",
+      "bytes": 18051
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "abcfeaee2333b3b9c43fc90bc29f328f7f41ac80",
+      "sha256": "f1ffff3899b272a5aee262e0349ae4248b5f41773568eba723b5ae11c1e03c6d",
+      "bytes": 1400566
+    }
+  ],
+  "author_evidence_provenance": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-corrected-design-source-evidence-20261016.json",
+    "sha256": "089d3730ad1a3aa1fb5f895bca7bd304e5ee1c5c6e6b1b9d772ef66b13a2a2d0",
+    "unchanged_between_corrected_and_final": true,
+    "author_design_sha256": "2e6a2c603e5a84c99091c608c7463fd00f5840b9473d799eec140bf0c2c4a614",
+    "author_design_revision": "6663c222a48a6c68970ccd3a7830e3486b4d3fee",
+    "does_not_bind_parent_dep_c_amendment": true,
+    "author_source_revision": "42371407986d0a226b7bd023e855496a8a82df18",
+    "source_pins_verified": 50,
+    "historical_head_worktree_tmp_fields_not_current_claims": true
+  },
+  "source_context_pins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "AGENTS.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "9235e00574267be794045b8c32eb2c34c3121f78",
+      "sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5",
+      "bytes": 584397,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "f448e6f20e4149b7dc1c476aab35cc8c85fbb8f2",
+      "sha256": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18",
+      "bytes": 2729,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "bytes": 29382,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "bytes": 3337,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+      "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a",
+      "bytes": 15169,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "bytes": 6154,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "2548c6fb821a60a0230cc035a48f6c0307a31e20",
+      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70",
+      "bytes": 22014,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "bytes": 28648,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "673fe8ff83e1e5804c9369d5fc415348673c782d",
+      "sha256": "8d56ab99f8707fcf9c43fb5938250ef786a87ab69c343425195077d786d5b00c",
+      "bytes": 6519,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "1840a006ee71fd10507bb64a36343d39b18b4b22",
+      "sha256": "1b59be5ce9a915769d55be60fb2bd1a18d96188b025ed3a2e81d7458fa362c02",
+      "bytes": 46491,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "bytes": 17372,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "bytes": 11986,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "7831be8e58492e161f8b982d634666a7bcf6f5d4",
+      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+      "bytes": 56992,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "bytes": 503876,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "bytes": 2673,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "a7c759e2aa09b4c5e3ef7791b5e9ec1339a7b342",
+      "sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1",
+      "bytes": 1118,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveCandidateService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "466f6112b7084fb3909db363185c33a80a748e41",
+      "sha256": "ab38d24fa9ee1bd4cd683bad5ccf425b5768400477b972942d8eb1b2f26b7b24",
+      "bytes": 18082,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "f9119d428ff09a6edb4fe7bf0532c8acaa55b965",
+      "sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b",
+      "bytes": 17142,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeReturnGuardService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "f8e2808955acf194cf0e07e36ad3c3271e7195f8",
+      "sha256": "1e10ddc29700aa3c312de010a89a3a033891518f3200bbb5c589b313dc601ee3",
+      "bytes": 9134,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "44e85e5be97145d0d6d9135e3f87b42f8f5cf1c9",
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "bytes": 23872,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "3f16a4e7cfa4639fb46af6f5ee2ae48648984e64",
+      "sha256": "6b2de14c772aa509fb04d3b00192ddee491bdc3110f85aafd140ab0e63972c4d",
+      "bytes": 82191,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "cc85baa51834dbccaaa886b5c33bf667a83e7d9d",
+      "sha256": "24d5bc2f353a58e1f10a1bdf802cbe3282f8e9adee1e4758575edfd0fdbad692",
+      "bytes": 42114,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "3f6d32096396ef7841074660f5774cabfb45ad59",
+      "sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
+      "bytes": 6978,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "bytes": 2993,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "7f19572f2b7d64ea69e69e44b6d79a779138f95d",
+      "sha256": "4bb3f34de7dc2341cf7c7481a5787158b557085f091571f726be8d0963f113b5",
+      "bytes": 97320,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LifeEvaluationRewardAnalyzer.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "bb2197e433b52ba82d9f697307b6a10bade8e75c",
+      "sha256": "102de6c9380c652c060f245323e88626d9e147774c37ea0d6cf1226ff0f1d9bb",
+      "bytes": 5801,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingPlayerActionService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "e84a72850725b2b4d0c4c1eae136f993de0593db",
+      "sha256": "7560a6b093fffd6cc70b825b8bf80854cce2998fcec72262800b00cc802411a6",
+      "bytes": 7670,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "bytes": 41585,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "bytes": 43996,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "bytes": 93122,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/RivalSoulArcService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "f540a64f3228ee1e25b56a0807d7aec12531b355",
+      "sha256": "9428b0af42fb32218ed49e1455d25d9878b76dd29820f8c2bffedeffd6f80f75",
+      "bytes": 32383,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ScenarioCoreService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "eb2821f95893ed6869978c97d86fefead797694e",
+      "sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088",
+      "bytes": 22857,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd",
+      "sha256": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873",
+      "bytes": 96769,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "bytes": 14974,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "e0ed469706453205397b5665b049b83db9431e6b",
+      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "bytes": 90294,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0",
+      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "bytes": 401224,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "docs/testing.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "bytes": 18979,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "62910dcc549acbf815b3b2a4f47794268a34dffa",
+      "sha256": "011b2125fcf495cbe9d5bd1570bd937f54ee860eaa8744bdc381226a57f9bebc",
+      "bytes": 92267,
+      "equals_initial_reviewed_source": false,
+      "equals_r2_baseline": false,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "bytes": 63665,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "b882e9309c5a61f307a47e70ab9beede1f6afde4",
+      "sha256": "b3dc09484fd05455892e368e8f428e17c946d6c2946d15d010b5e7771b727de0",
+      "bytes": 229043,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": false,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "tests/categories.json",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "1442ddd4e0815a73ffa1caa84b8e4770b75a3edc",
+      "sha256": "a73173c242b5c425c89700d7293ae8340b496510b2b9bcb60f678f0c7d3f081b",
+      "bytes": 1934259,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": false,
+      "author_initial_source_pin_verified": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "revision": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "git_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "equals_initial_reviewed_source": true,
+      "equals_r2_baseline": true,
+      "review_role": "additional independently read DEP-C source"
+    }
+  ],
+  "source_pin_note": "51 blob/hash pins verified, including 50 author entries and added coordinator; not every downstream implementation independently re-reviewed. Only implementation-plan pin changed initial-to-final.",
+  "immutable_initial_reports": [
+    {
+      "path": "/tmp/t197-independent-initial-review.md",
+      "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+      "repository_copy": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+      "byte_identical_to_reviewed_copy": true,
+      "repository_copy_unchanged_since_parent": true
+    },
+    {
+      "path": "/tmp/t197-independent-initial-review.json",
+      "sha256": "ace62320ebee6cb7d8e2dff112f9814b4d329b27668a6b93a65a5a7557fab31f",
+      "repository_copy": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.json",
+      "byte_identical_to_reviewed_copy": true,
+      "repository_copy_unchanged_since_parent": true
+    }
+  ],
+  "initial_source_evidence_unchanged": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-design-source-evidence-20261016.json",
+    "sha256": "d4a01b3f03f0f637884348ee73880f75892022d12510fb89e5106d73b2f91a30",
+    "unchanged_since": "42371407986d0a226b7bd023e855496a8a82df18"
+  },
+  "t192a_report_copy_checks": [
+    {
+      "original": "/tmp/t192a-independent-initial-review.md",
+      "copy": "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.md",
+      "sha256": "618c0697d70ee9f104e1afd8b36198803773425cafa38f1a0331d2855cd30bcc",
+      "byte_identical": true,
+      "scope": "copy integrity and stated verdict/provenance only; no T192a code re-review"
+    },
+    {
+      "original": "/tmp/t192a-independent-initial-review.json",
+      "copy": "specs/1536-complete-wound-materialization/recovery/t192a-independent-stage-20261016-review.json",
+      "sha256": "43df4cbb44144802ea3b5e7f7b687c62a2bd04a12c470a72f06e2c32531b887b",
+      "byte_identical": true,
+      "scope": "copy integrity and stated verdict/provenance only; no T192a code re-review"
+    }
+  ],
+  "initial_findings": [
+    {
+      "id": "R1",
+      "status": "CORRECTED_AT_DESIGN_LEVEL",
+      "remaining": "HP pure extraction/qualification UNRUN"
+    },
+    {
+      "id": "R2",
+      "status": "STATE_AND_ADMISSION_DESIGN_CORRECTED_WITH_BLOCKING_DEP_C",
+      "remaining": "actual main Lost retirement contract and adapter qualification"
+    },
+    {
+      "id": "R3",
+      "status": "FALSE_REMAINING_WORK_OWNERSHIP_REMOVED_COMPLETION_BLOCKED",
+      "remaining": "DEP-C/I/L plus full concrete typed target catalog/implementation/qualification"
+    },
+    {
+      "id": "R4",
+      "status": "CORRECTED_AT_DESIGN_LEVEL",
+      "remaining": "distinct receipt implementations and fault qualification UNRUN"
+    },
+    {
+      "id": "R5",
+      "status": "CORRECTED_NO_AUTOMATIC_NEW_PRINCIPLED_GRANT",
+      "remaining": "assess any concrete future actual authority expansion with coordinator"
+    }
+  ],
+  "confirmed_material_findings": [
+    {
+      "id": "C1",
+      "dependency": "DEP-C",
+      "found_at": "6663c222a48a6c68970ccd3a7830e3486b4d3fee",
+      "summary": "Lost active main pin retains counted uncertainty; existing BeginStop/ConfirmSettledStop cannot retire it",
+      "sources": [
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+          "lines": "44-50"
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+          "lines": "309-311,341-354"
+        }
+      ],
+      "documentation_resolution": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+      "technical_resolution": false,
+      "final_status": "documented globally blocking unaccepted owner contract; no current success asserted"
+    }
+  ],
+  "remaining_dependencies": [
+    {
+      "id": "DEP-C",
+      "decision": "exact durable terminal/retirement owner contract, existing run/G and real native/managed/source/main debt proof",
+      "accepted": false
+    },
+    {
+      "id": "DEP-I",
+      "decision": "actual eligible incarnation acceptance-only inbox with all finite obligations or durable-bootstrap completion before release",
+      "accepted": false
+    },
+    {
+      "id": "DEP-L",
+      "decision": "supported distinct-root archive/load exact membership and genuine new-G restore/old-main retirement receipt",
+      "accepted": false
+    }
+  ],
+  "global_blockers": [
+    "H2 remaining-work qualification",
+    "H3 source release",
+    "new joint QTE activation",
+    "complete T197 DESIGN release prerequisite"
+  ],
+  "other_required_completion_work": [
+    "concrete executable full target callsite/root/companion catalog",
+    "actual specialized private pending/take/rearm/debt and repair adapters",
+    "H1/HP/read-guard/original-role/physical-G proof",
+    "strict browser outer admission/main close/H3/HQ and unified dispatch",
+    "distinct target terminal receipts and cleanup",
+    "source/fixture review followed by bounded selected runtime and full ordinary/platform/client gates"
+  ],
+  "optional_observations": [
+    {
+      "id": "O1",
+      "kind": "nonblocking status wording",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "lines": "18,24",
+      "summary": "pending T192a stage-review and next correct R1-R5 wording remains alongside completed/current entries; parent acknowledged metadata follow-up"
+    }
+  ],
+  "verification": {
+    "git_diff_check_exit": 0,
+    "author_source_pin_checks": "50/50",
+    "additional_coordinator_pin": "verified unchanged executable source",
+    "t192a_report_copies": "2/2 byte-identical",
+    "initial_reports": "2/2 byte-identical to preserved copies",
+    "builds": "UNRUN",
+    "test_discovery": "UNRUN",
+    "tests_runtime": "UNRUN",
+    "all_t197_checks": "UNRUN",
+    "t192a_24_of_24": "preserved separate detached-stage evidence; not T197 or live F1 proof",
+    "parent_static_recovery_or_catalog_checks": "reported by parent only; not reviewer gameplay/discovery execution"
+  },
+  "preserved_limits": [
+    "D4 allocator",
+    "guided US5",
+    "D8 payload limits",
+    "visual/DOM gates",
+    "Windows/native-platform parity",
+    "full ordinary outcome qualification",
+    "no automatic F2",
+    "no life-evaluation turn suppression",
+    "no source realm eligibility expansion",
+    "trusted-local threat model"
+  ],
+  "authorization_provenance": {
+    "visible_restored_delegation": "DESIGN-only",
+    "historical_summary_spec_ledger": "later staged implementation approval recorded",
+    "original_conversation_approval_independently_verified": false,
+    "current_parent_boundary": "clarification pending; docs/read-only reviews only",
+    "routine_d11_paths": "specializations, not reflex new grants",
+    "no_permission_requested_by_this_review": true
+  },
+  "report_markdown_path": "/tmp/t197-independent-corrected-review.md",
+  "report_markdown_sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+  "json_self_hash": "reported externally after write",
+  "finalstop": {
+    "repository_writes": false,
+    "builds_discovery_tests_runtime": false,
+    "commits_pushes": false,
+    "pending_writes": false,
+    "background_activity": false,
+    "only_new_written_paths": [
+      "/tmp/t197-independent-corrected-review.md",
+      "/tmp/t197-independent-corrected-review.json"
+    ]
+  }
+}

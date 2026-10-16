@@ -9,6 +9,8 @@
 - Client-owned calculation foundation has no reachable GM-authored field, pending schema or player behavior yet: no active prompt/example update for this slice; same-change synchronization mandatory when real issuer/request/accepted gameplay is connected. D4/guided/visual/Windows/D8 not closed.
 - T192a detached calculation independent [review](./recovery/t192a-independent-stage-20261016-review.md) on62c404507: no material findings; existing24/24 GREEN, prior RED and discovery-only evidence verified, no new runtime execution. Full T192 remains unchecked; actual source/M3/common/cold integration is future work. Current DESIGN-only delegation versus recovered later implementation approval is being reconciled; continue only documents/read-only reviews until clarified. Next: T197 corrected DESIGN and affected independent rereview; do not repeat completed passing checks without new impact.
 
+- Final [T197 independent review](./recovery/t197-independent-design-corrected-20261016-review.md) on7a6b410: discussion-ready blocked proposal, NOT complete T197 DESIGN/transition qualification. DEP-C/DEP-I/DEP-L plus complete executable target catalog remain required; all T197 checks UNRUN, T197 and every full T178–T198 checkbox remain unchecked. Stop for discussion; no new implementation/runtime.
+
 ## FR063-D5-F1-R2 готов к обсуждению; реализация не разрешена — 2026-10-16
 
 - Source/recovery base `e7f86f590892e4c335ad29ece88c265ad94b8138`, branch `1536-wound-b2-cloud-20261012`; sole writer. Пользователь разрешил дальнейший DESIGN и независимое review: без лишнего tick из-за decline, полный lawful ordinary outcome. Implementation/code/tests/runtime tools/build/discovery/GM/client/visual/OS runs не разрешены и **UNRUN**.
