@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "fr063-observed-original-barrier"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.486636,
+  "Descriptors": [
+    {
+      "Name": "fr063-observed-original-barrier-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-observed-original-barrier",
+      "Categories": [
+        "fr063-observed-original-barrier"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadCurrent_CharacterizesCapturedOriginalBytesAfterLaterSourceDrift|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadObservedCurrent_MustRejectAlreadyReadOriginalDriftBeforeIssuingAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadCurrent_CharacterizesCapturedOriginalBytesAfterLaterSourceDrift",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadObservedCurrent_MustRejectAlreadyReadOriginalDriftBeforeIssuingAuthority",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

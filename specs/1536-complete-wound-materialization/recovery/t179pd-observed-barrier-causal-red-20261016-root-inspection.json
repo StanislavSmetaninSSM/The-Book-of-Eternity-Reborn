@@ -1,0 +1,144 @@
+{
+  "classification": "EXPECTED_CAUSAL_RED_ABSENT_OBSERVED_BARRIER_REAL_OLD_CURRENT_BEHAVIOR",
+  "actual": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+  "compiledSource": "9aa339141ec8ebec301b18679aa021d018250b0f",
+  "nativeExit": 1,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadObservedCurrent_MustRejectAlreadyReadOriginalDriftBeforeIssuingAuthority",
+      "outcome": "Failed",
+      "message": "A completed original read must not issue authority after B's post-open hook changed already-read A.",
+      "stack": "   at BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadObservedCurrent_MustRejectAlreadyReadOriginalDriftBeforeIssuingAuthority() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalBarrierTests.cs:line 36\n--- End of stack trace from previous location ---",
+      "control": {
+        "GenuineBarrierControl": true,
+        "ApiPresent": false,
+        "InvokedApi": "ReadCurrent",
+        "Success": true,
+        "SnapshotReturned": true,
+        "EvidenceReturned": false,
+        "FirstLogicalPath": "game_state/control/pending_mortal_wound_occurrences.json",
+        "SecondLogicalPath": "game_state/core/observed_original_control.json",
+        "FirstPhysicalPath": "game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json",
+        "SecondPhysicalPath": "game_state/control/pending_turn_snapshot/game_state/core/observed_original_control.json",
+        "OriginalFirst": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W119",
+        "ChangedFirst": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W119IA==",
+        "OriginalSecond": "77u/eyJ2YWx1ZSI6MTd9",
+        "Generation": "b227a5fee34c4c8ebae8605ec4040530",
+        "ManifestPayloadHash": "AD5BC1511632BE20F355272213BA001AEBED06E10324A1CF6D32701E5BFC2936",
+        "InjectionCount": 1,
+        "ReadOrder": [
+          "A",
+          "B"
+        ],
+        "OnlyFirstSnapshotChanged": true,
+        "SameGeneration": true
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-original-barrier-46c93de81e8b49ddb088de47bd7119f0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadCurrent_CharacterizesCapturedOriginalBytesAfterLaterSourceDrift",
+      "outcome": "Passed",
+      "message": null,
+      "stack": null,
+      "control": {
+        "GenuineBarrierControl": true,
+        "ApiPresent": false,
+        "InvokedApi": "ReadCurrent",
+        "Success": true,
+        "SnapshotReturned": true,
+        "EvidenceReturned": false,
+        "FirstLogicalPath": "game_state/control/pending_mortal_wound_occurrences.json",
+        "SecondLogicalPath": "game_state/core/observed_original_control.json",
+        "FirstPhysicalPath": "game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json",
+        "SecondPhysicalPath": "game_state/control/pending_turn_snapshot/game_state/core/observed_original_control.json",
+        "OriginalFirst": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W119",
+        "ChangedFirst": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W119IA==",
+        "OriginalSecond": "77u/eyJ2YWx1ZSI6MTd9",
+        "Generation": "2ee61c2b4e1645b287d5e72b78fa271f",
+        "ManifestPayloadHash": "250A78D1F54043B43BF681FBFC1EF6458E8B0E50703A254175CD2777E2004BF3",
+        "InjectionCount": 1,
+        "ReadOrder": [
+          "A",
+          "B"
+        ],
+        "OnlyFirstSnapshotChanged": true,
+        "SameGeneration": true
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-original-barrier-ab1500ee3f504359a19a8af52d317601",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "sourceScopeUnchanged": true,
+  "fourDllsUnchanged": true,
+  "rawChains": 6,
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-barrier"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-barrier",
+        "Seconds": 3.4609697,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0562204,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0500485,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1451309,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:00:07.3249163",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 1,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

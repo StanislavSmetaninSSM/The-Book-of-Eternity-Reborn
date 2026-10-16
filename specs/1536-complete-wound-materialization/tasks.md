@@ -1,3 +1,5 @@
+- Pd.3a causalbarrierRED frozen: native1/charPASS1+solebarrierFAIL1 line36/7.325s/realoldreaderSuccess afterlateA mutation/6rawchains/2strictabsentroots/fourDLLsame. BothcausalREDsbeforeprodsuccesslogic; nextcomplete safeobservedvertical+meaningfulconformance/freshG5, no GREENrelease yet.
+
 - Pd.3a barriercycle Late2EVIDENCE accepted; release onlycharPASS1 + causalbarrierRED1 line36 aftercontrols/cleanup. No prodsuccesslogic or GREEN/otheractualrelease.
 
 - Pd.3a barriercycle firstLate2 native0/2PASS/214.931s/6rawchains/2strictabsentroots/fourDLLfixed9aa frozen; fullrootsemantics verified. SeparateEVIDENCE beforebarrierpair; no prodsuccesslogic.

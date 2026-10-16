@@ -1,0 +1,112 @@
+{
+  "source_sha": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories",
+  "native_exit_code": 1,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/dotnet-test.log",
+      "raw_bytes": 1700209,
+      "raw_sha256": "5417371a0f1e611e3c507f0a182830571ca00338a53dfdfbe2bb18036e9d976b",
+      "stored_sha256": "08ede85b8b667754c3b6297a2d7b449ee47beecc1d57a5e24ecd30beda145882"
+    },
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-fr063-observed-original-barrier-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/fr063-observed-original-barrier-unit-001.trx",
+      "raw_bytes": 9533,
+      "raw_sha256": "2f4d8b03622540ba313e2ee7da9c9a7bd5f3964d733a03a53ccf982ab08d1887",
+      "stored_sha256": "2cab3c92567a19f4f332f6c6c16728db43a5a8f55c41554c6ce7160642d51737"
+    },
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/native-exit.json",
+      "raw_bytes": 326,
+      "raw_sha256": "7e6eeec51e3f51fc194d4f8838d15f70ec828621e298281d4d5897a94ece4793",
+      "stored_sha256": "7e6eeec51e3f51fc194d4f8838d15f70ec828621e298281d4d5897a94ece4793"
+    },
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/plan.json",
+      "raw_bytes": 1527,
+      "raw_sha256": "12bb87f9a6d692bacf7fece2b0b1c8e3bf5e98ffe92720f302c26ef6d0e0a07f",
+      "stored_sha256": "12bb87f9a6d692bacf7fece2b0b1c8e3bf5e98ffe92720f302c26ef6d0e0a07f"
+    },
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/runner-stdout.log",
+      "raw_bytes": 4198,
+      "raw_sha256": "97cbe1695a5b78ca52c82b783ff6108f1d81135fc2a112f00d6e9d7903e99421",
+      "stored_sha256": "51c95d87dff73316aa8743d37903f791871c7d1b1e982b27ec9f2ce129dd937d"
+    },
+    {
+      "path": "t179pd-observed-barrier-causal-red-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-141009-229-111689-5da4363e097542fa9dbe6f05c5263ff7-categories/summary.json",
+      "raw_bytes": 1372,
+      "raw_sha256": "2f9d85c0bdc4ea5066b3622ac4ffdc1aab9d7b352fc2e684e8ba43429efc84d0",
+      "stored_sha256": "2f9d85c0bdc4ea5066b3622ac4ffdc1aab9d7b352fc2e684e8ba43429efc84d0"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-barrier"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-barrier",
+        "Seconds": 3.4609697,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0562204,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0500485,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1451309,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:00:07.3249163",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 1,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}
