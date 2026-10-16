@@ -1,3 +1,7 @@
+## T197 DEP-C supplemental DESIGN — WIP / UNACCEPTED, 2026-10-16
+
+- User-authorized parallel T197 DESIGN only; root sole writer. Source-only separate Astra/High consultation preserved byte-exact as recovery/t197-depc-lifecycle-proposal-20261016.md/.json; parent checked23historical source/blob/SHA pins. Concrete participant/native/managed/debt proof and retirement transition proposal with12future UNRUN rows. G-C/A1–A5, durable lifecycle extension and cold original-native-scope custody are expressly UNACCEPTED, not routine D11/new permission. Native platform custody/lock coverage remain incomplete design, DEP-C/I/L/fulltarget/H2/H3/QTE remain blocked. Canonical death-handoff only links this conditional discussion proposal. No code/tests/tools/runtime change. Independent focused Astra/XHigh review pending; no implementation or T197 completion.
+
 ## T179-Pb/T182 story calculation prerequisite — WIP, 2026-10-16
 
 - Base remote/clean `d13aab44fd3487d95bf6005bb8296dbda54846bb`, same authorized staged F1-R2 branch/sole writer. Test-first literal rows, exact frozen UTC/Unicode/normalization/no append framing; path/location/tag/label policy; conditional optional root reads/absence; current versus original realm/incarnation; immutable named root data and row/read-list. New finite `fr063-joint-story-calculation`; full T179/T182 unchecked.
