@@ -206,17 +206,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             AssertOriginalAdmissionTree(before);
         }
-        finally
-        {
-            Exception? failure = null;
-            try { if (Directory.Exists(_rootPath)) Directory.Delete(_rootPath, recursive: true); }
-            catch (Exception error) { failure = error; }
-            Assert.NotNull(_directGachaOutput);
-            _directGachaOutput!.WriteLine(JsonSerializer.Serialize(new { CleanupOwnedRoot = _rootPath,
-                OwnedFixtureRemoved = !Directory.Exists(_rootPath), CleanupFailure = failure?.ToString() }));
-            Assert.Null(failure);
-            Assert.False(Directory.Exists(_rootPath));
-        }
+        finally { CleanupObservedOriginalFixture(); }
     }
 
     [Fact]

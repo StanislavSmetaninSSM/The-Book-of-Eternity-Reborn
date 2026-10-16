@@ -80,6 +80,12 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
     [InlineData("repair_presence")]
     [InlineData("ready_presence")]
     [InlineData("generation")]
+    [InlineData("generation_replaced")]
+    [InlineData("request_missing")]
+    [InlineData("repair_text")]
+    [InlineData("repair_missing")]
+    [InlineData("ready_text")]
+    [InlineData("ready_missing")]
     public async Task ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(string role)
     {
         var armed = false;
@@ -93,25 +99,38 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
                 if (armed && path == trigger && injections == 0)
                 {
                     injections++;
-                    File.WriteAllBytes(fullTarget!, changed!);
+                    if (changed is null) File.Delete(fullTarget!);
+                    else File.WriteAllBytes(fullTarget!, changed);
                 }
                 return Task.CompletedTask;
             }
         };
         await using var fixture = new OriginalFixture(output, hooks);
         await fixture.PrepareAsync();
+        // Secondary lifecycle contexts are derived from the genuine request;
+        // they never substitute a manufactured original or authority.
+        if (role is "repair_text" or "repair_missing" or "ready_text" or "ready_missing")
+            File.WriteAllBytes(fixture.Files.ResolvePath(role.StartsWith("repair_", StringComparison.Ordinal) ? Repair : Ready),
+                File.ReadAllBytes(fixture.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath)));
         var target = role switch
         {
             "manifest" => LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
             "authority" => PendingTurnSnapshotAuthority.AuthorityPath,
-            "request" => LiveTurnPreparationService.TurnRequestPath,
-            "repair_presence" => Repair,
-            "ready_presence" => Ready,
+            "request" or "request_missing" => LiveTurnPreparationService.TurnRequestPath,
+            "repair_presence" or "repair_text" or "repair_missing" => Repair,
+            "ready_presence" or "ready_text" or "ready_missing" => Ready,
             _ => fixture.Files.SessionGenerationPath
         };
-        fullTarget = role == "generation" ? target : fixture.Files.ResolvePath(target);
-        changed = File.Exists(fullTarget) ? File.ReadAllBytes(fullTarget).Concat(new byte[] { 0x20 }).ToArray()
+        fullTarget = role.StartsWith("generation", StringComparison.Ordinal) ? target : fixture.Files.ResolvePath(target);
+        changed = role.EndsWith("_missing", StringComparison.Ordinal) ? null
+            : File.Exists(fullTarget) ? File.ReadAllBytes(fullTarget).Concat(new byte[] { 0x20 }).ToArray()
             : Encoding.UTF8.GetBytes("{}");
+        if (role == "generation_replaced")
+        {
+            var generation = JsonNode.Parse(File.ReadAllText(fullTarget))!;
+            generation["generationId"] = Guid.NewGuid().ToString("N");
+            changed = JsonSerializer.SerializeToUtf8Bytes(generation);
+        }
         trigger = fixture.Manifest.Files[Second];
         var before = fixture.Tree();
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
@@ -125,11 +144,13 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
             Assert.Null(result.Snapshot);
             Assert.Null(result.Evidence);
             var issue = Assert.Single(result.Issues);
-            Assert.Equal(role == "generation" ? "pending_turn_snapshot_reader_source_generation_changed"
+            Assert.Equal(role.StartsWith("generation", StringComparison.Ordinal) ? "pending_turn_snapshot_reader_source_generation_changed"
                 : "pending_turn_snapshot_reader_source_changed", issue.Code);
             Assert.Equal(target, issue.FilePath);
         }
-        before[Path.GetRelativePath(fixture.Root, fullTarget)] = changed;
+        var key = Path.GetRelativePath(fixture.Root, fullTarget);
+        if (changed is null) Assert.True(before.Remove(key));
+        else before[key] = changed;
         fixture.EqualTree(before);
     }
 
@@ -345,6 +366,102 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
             using (ExecutionContext.SuppressFlow())
                 task = Task.Run(() => fixture.ReadValid(lease));
             await task;
+        }
+        fixture.EqualTree(before);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ActualOpen_RevalidatesTheExplicitByteLeafAndObservedAdmission(bool directLeaf)
+    {
+        var armed = false;
+        var invalidations = 0;
+        string? target = null;
+        FileSystemManager.CanonicalWriteLease? active = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalReadInitialValidationAsync = path =>
+            {
+                if (armed && path == target)
+                { invalidations++; return active!.DisposeAsync().AsTask(); }
+                return Task.CompletedTask;
+            }
+        };
+        await using var fixture = new OriginalFixture(output, hooks);
+        await fixture.PrepareAsync();
+        target = fixture.Manifest.Files[First];
+        var before = fixture.Tree();
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            active = lease;
+            fixture.ReadValid(lease);
+            armed = true;
+            if (directLeaf)
+            {
+                byte[]? bytes = null;
+                Assert.Throws<InvalidOperationException>(() => bytes = fixture.Files.ReadFileBytesSync(lease, target));
+                Assert.Null(bytes);
+            }
+            else
+            {
+                PendingTurnSnapshotObservedReadResult? result = null;
+                Assert.Throws<InvalidOperationException>(() => result =
+                    PendingTurnSnapshotReader.ReadObservedCurrent(fixture.Files, lease, [First, Second]));
+                Assert.Null(result);
+            }
+            armed = false;
+            Assert.Equal(1, invalidations);
+        }
+        fixture.EqualTree(before);
+    }
+
+    [Fact]
+    public async Task GenuinePendingDecision_RefusesObservedEntryAndEvidenceWithoutReadingOrSettlingIt()
+    {
+        var tracing = false;
+        var reads = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalReadInitialValidationAsync = _ =>
+            { if (tracing) reads++; return Task.CompletedTask; }
+        };
+        await using var fixture = new OriginalFixture(output, hooks);
+        await fixture.PrepareAsync();
+        var before = fixture.Tree();
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var original = fixture.ReadValid(lease);
+            var baseline = File.ReadAllBytes(fixture.Files.ResolvePath(Second));
+            var applied = Encoding.UTF8.GetBytes("""{"value":20}""");
+            var transaction = await fixture.Files.BeginWorkerApplyTransactionAsync(lease,
+                [new CanonicalWorkerApplyChange(Second, baseline, applied)]);
+            try
+            {
+                var pending = lease.PendingLocalDecision;
+                Assert.NotNull(pending);
+                var activePath = Path.Combine(fixture.Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+                var activeBytes = File.ReadAllBytes(activePath);
+                Assert.Equal(applied, File.ReadAllBytes(fixture.Files.ResolvePath(Second)));
+                tracing = true;
+                PendingTurnSnapshotObservedReadResult? result = null;
+                Assert.Throws<InvalidOperationException>(() => result =
+                    PendingTurnSnapshotReader.ReadObservedCurrent(fixture.Files, lease, [First, Second]));
+                Assert.Null(result);
+                Assert.Throws<InvalidOperationException>(() => original.Evidence!.RequireCurrent(fixture.Files, lease, original.Snapshot!));
+                Assert.Equal(0, reads);
+                tracing = false;
+                Assert.Same(pending, lease.PendingLocalDecision);
+                Assert.Equal(activeBytes, File.ReadAllBytes(activePath));
+                Assert.Equal(applied, File.ReadAllBytes(fixture.Files.ResolvePath(Second)));
+            }
+            finally
+            {
+                tracing = false;
+                Assert.Empty(await fixture.Files.RollbackWorkerApplyTransactionAsync(lease, transaction));
+            }
+            Assert.Null(lease.PendingLocalDecision);
+            fixture.ReadValid(lease);
         }
         fixture.EqualTree(before);
     }

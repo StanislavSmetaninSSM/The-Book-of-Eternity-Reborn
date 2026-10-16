@@ -1,0 +1,605 @@
+{
+  "report": "t197-depc-parent-admission-stop-order-design-20261016",
+  "status": "CONDITIONAL_DESIGN_REFINEMENT_NOT_ENGINEERING_RELEASE",
+  "source_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+  "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+  "observed_head_metadata_only": "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+  "author_configuration": {
+    "delegated": "Astra/High",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "findings": {
+    "PS-O1": "SOURCE_SUMMARY_CORRECTED_IN_NEW_ARTIFACT",
+    "PS-O2": "REFERENCE_EXACT_PROPOSED_ACCOUNTING_SPECIFIED_NOT_IMPLEMENTED",
+    "PS-D1": "NATIVE_FIRST_PROPOSED_SCHEDULE_SPECIFIED_TRANSITIVE_DEPENDENCIES_OPEN"
+  },
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "lines": 6246,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "same_as_prior": false
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+      "sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
+      "bytes": 36016,
+      "lines": 670,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "f8a990edc821b0758b03145a4cacbf27710d1b93",
+      "sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+      "bytes": 25187,
+      "lines": 557,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "f8a990edc821b0758b03145a4cacbf27710d1b93",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "4c48476debc4415525e62449f66e9bdacd48c16b",
+      "sha256": "f8c6db40f934bdafd08ff781b0aa657753c538b119dd6703a197bdff1f30141b",
+      "bytes": 8263,
+      "lines": 149,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "4c48476debc4415525e62449f66e9bdacd48c16b",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d",
+      "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739",
+      "bytes": 27899,
+      "lines": 667,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "lines": 75,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "lines": 410,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "bytes": 10947,
+      "lines": 334,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "lines": 261,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+      "bytes": 91410,
+      "lines": 2042,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "863a9a85f1831395bd8499bd05d66ce15e5d6732",
+      "sha256": "2e6318b45aae98237326879f4d5a29c63714684ebbcff3a4075d5433c86f694c",
+      "bytes": 4962,
+      "lines": 116,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "863a9a85f1831395bd8499bd05d66ce15e5d6732",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "lines": 2456,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
+      "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
+      "bytes": 167823,
+      "lines": 3455,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "bytes": 10951,
+      "lines": 244,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+      "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969",
+      "bytes": 782,
+      "lines": 32,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+      "same_as_prior": true
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "be1c372f3407aa3f0737aae3fb23e0ace323440c",
+      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f",
+      "bytes": 42395,
+      "lines": 1096,
+      "prior_source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
+      "prior_blob": "be1c372f3407aa3f0737aae3fb23e0ace323440c",
+      "same_as_prior": true
+    }
+  ],
+  "source_projections": [
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start_line": 93,
+      "end_line": 155,
+      "role": "actual outer and inner admission lifetime",
+      "text": "    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null,CancellationToken admissionCancellation=default)\n    {\n        ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);\n        if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException(\"A session operation requires a generation.\",nameof(expectedGeneration));\n        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;\n        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}\n        catch(Exception e){failure=e;throw;}\n        finally {\n            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure,capturedOutcome?.Invoke());\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n        }\n        return result!;\n    }\n\n    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration=null) =>\n        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default, beforeCurrentGeneration);\n\n    // Dedicated Init-bound callers never bootstrap or adopt a later generation.\n    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,CancellationToken admissionCancellation=default)\n    {\n        if (!Guid.TryParseExact(expectedGeneration, \"N\", out var parsed) || parsed.ToString(\"N\") != expectedGeneration)\n            throw new InvalidDataException(\"An exact existing helper generation is required.\");\n        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation, null);\n    }\n\n    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)\n    {\n        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);\n        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;\n        try {\n            string generation;\n            if(initializedGeneration != null) generation=initializedGeneration;\n            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {\n                var lease=await files.AcquireCanonicalWriteLeaseAsync();\n                CoordinatedStatePublicationUncertainException? uncertainty=null;\n                try {\n                    // A caller may only veto bootstrap under this same admitted\n                    // lease. No claimed generation is returned or installed.\n                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);\n                    generation=files.GetOrCreateSessionGeneration(lease);\n                }\n                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}\n                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}\n            }\n            result=await RunBoundCoreAsync(files,generation,async()=> {\n                var value=await operation();\n                // Freeze the callback's established decision once, before any\n                // actual finalization or close can fail. Later reads use this value.\n                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                return value;\n            },null,()=>outcome,admissionCancellation);\n        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}\n        finally {\n            outcome=failure==null?outcome:OutcomeFor(failure,outcome);\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }\n        }\n",
+      "projection_sha256": "6ba06a9f67d5d45a70f3cc652a94374493b72a09b9c61729ca0e1eefb4d1415c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start_line": 192,
+      "end_line": 310,
+      "role": "binding owner and closing branches",
+      "text": "    private static async Task<T> RunBoundBodyAsync<T>(\n        FileSystemManager fileSystem,\n        string expectedGeneration,\n        Func<Task<T>> operation,\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        Func<MainOperationOutcome>? capturedOutcome)\n    {\n        ArgumentNullException.ThrowIfNull(fileSystem);\n        ArgumentNullException.ThrowIfNull(operation);\n        var normalizedRoot = NormalizeRoot(fileSystem.BasePath);\n        if (string.IsNullOrWhiteSpace(expectedGeneration))\n            throw new ArgumentException(\"A session operation requires a generation.\", nameof(expectedGeneration));\n\n        var existing = FindBinding(normalizedRoot);\n        if (existing != null)\n        {\n            if (!string.Equals(\n                    existing.ExpectedGeneration,\n                    expectedGeneration,\n                    StringComparison.Ordinal))\n            {\n                throw existing.MarkReplaced(\n                    expectedGeneration,\n                    \"A nested session operation attempted to adopt a different generation.\");\n            }\n\n            return await RunWithinBindingAsync(\n                existing,\n                fileSystem,\n                operation,\n                writeLease);\n        }\n\n        var state = new BindingState(normalizedRoot, expectedGeneration);\n        var previous = CurrentFrame.Value;\n        CurrentFrame.Value = new Frame(state, previous);\n        Exception? operationFailure = null;\n        T? establishedResult=default;\n        bool established=false;\n        try\n        {\n            establishedResult=await RunWithinBindingAsync(\n                state,\n                fileSystem,\n                operation,\n                writeLease,\n                verifyAfterOperation: writeLease != null);\n            established=true;\n            return establishedResult;\n        }\n        catch (Exception failure)\n        {\n            // RunWithinBindingAsync has already applied replacement precedence.\n            operationFailure = failure;\n            throw;\n        }\n        finally\n        {\n            if (writeLease != null)\n            {\n                state.Close();\n                CurrentFrame.Value = previous;\n            }\n            else\n            {\n                fileSystem.BeginMainOperationClosing();\n                state.BeginClosing();\n                try\n                {\n                    await fileSystem.InvokeSessionOperationClosingHookAsync();\n                    await using var finalizationLease = await fileSystem.AcquireCanonicalWriteLeaseAsync(\n                        CanonicalWritePurpose.SessionFinalization);\n                    if (!fileSystem.IsCurrentSessionGeneration(\n                            finalizationLease,\n                            state.ExpectedGeneration))\n                    {\n                        throw state.MarkReplaced(\n                            actualGeneration: null,\n                            \"The game session was replaced before the bound operation could close.\");\n                    }\n\n                    state.Close();\n                }\n                catch (Exception closingFailure) when (operationFailure != null)\n                {\n                    // The read-only finalization lease still acquires, checks\n                    // generation without recovery, and disposes normally. Retain\n                    // replacement even if disposal masked its check exception.\n                    var replacement = closingFailure as SessionReplacedException ??\n                        operationFailure as SessionReplacedException ??\n                        state.GetEstablishedReplacement(operationFailure);\n                    var retained = (Exception?)replacement ?? operationFailure;\n                    if (replacement != null && FindStorageDecisionFailure(operationFailure) is { } storageFailure)\n                        replacement.Data[\"SessionOperationFailure\"] = storageFailure;\n                    if (!ReferenceEquals(retained, closingFailure))\n                        retained.Data[\"SessionFinalizationFailure\"] = closingFailure;\n                    ExceptionDispatchInfo.Capture(retained).Throw();\n                    throw;\n                }\n                catch (Exception closingFailure)\n                {\n                    closingFailure.Data[\"SessionFinalizationFailure\"] = true;\n                    if(established && closingFailure is not SessionReplacedException) {\n                        var outcome=capturedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                        var retained=new MainOperationContinuationException<T>(establishedResult!,outcome,\n                            fileSystem.DescribeMainOperationClose(outcome,true),closingFailure);\n                        retained.Data[\"SessionFinalizationFailure\"]=closingFailure;\n                        throw retained;\n                    }\n                    if(established)closingFailure.Data[\"EstablishedOperationResult\"]=establishedResult;\n                    throw;\n                }\n                finally\n                {\n                    state.Close();\n                    CurrentFrame.Value = previous;\n                }\n            }\n        }\n",
+      "projection_sha256": "28ae53c33601673dcb2d2d6540cf7c66842e1fe9f5d94ca4632c75cca744375e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start_line": 374,
+      "end_line": 389,
+      "role": "nested verification may reacquire ordinary storage",
+      "text": "    private static async Task<T> RunWithinBindingAsync<T>(\n        BindingState state,\n        FileSystemManager fileSystem,\n        Func<Task<T>> operation,\n        FileSystemManager.CanonicalWriteLease? writeLease = null,\n        bool verifyAfterOperation = true)\n    {\n        state.ThrowIfInvalid();\n        try\n        {\n            var result = await operation();\n            if (verifyAfterOperation && writeLease != null)\n                fileSystem.VerifyCurrentSessionOperation(writeLease);\n            else if (verifyAfterOperation && !state.PostOperationReadmissionBlocked)\n                await fileSystem.VerifyCurrentSessionOperationAsync();\n            state.ThrowIfInvalid();\n",
+      "projection_sha256": "e2f16c1d5c3827626aece334269e38c8ee1c75833723983d8caa855f6ac6c451"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "start_line": 54,
+      "end_line": 77,
+      "role": "actual borrow and pin retain",
+      "text": "        internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, WorldValidationReadScope? worldIssuance, bool physicalScope)\n        {_files=files;_parent=parent;_requested=requested;_participating=participating;_worldIssuance=worldIssuance;PhysicalScope=physicalScope;}\n        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)\n        {\n            _workerPurpose=workerPurpose;\n            // Finalization borrows an actual original closing frame. The purpose\n            // value alone cannot bypass admission or acquire recovery authority.\n            if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();\n            var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this,diagnosticOrigin:\"main-admission-acquire\");\n            // A quiescent witness cannot become a new active grant while opening.\n            browserOriginal?.RequireCurrent(_files);\n            if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)\n                await originalHook();\n            if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();\n            if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);\n            for(var p=_parent;p!=null;p=p._parent)\n                if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access is { } borrowed)\n                {\n                    if(quiescentOnly && (borrowed.Remote!=null || borrowed.Original?.Pin!=null))throw GmSessionRunPersistence.Invalid();\n                    borrowed.Remote?.Validate(_files.BasePath,closing && borrowed.Remote.Closing);\n                    if(_files._hooks?.BeforeMainBorrowRetainAsync is { } hook)await hook();\n                    _access=borrowed.Retain(this,_worldIssuance);WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}\n            if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)\n            {_requested.Pin?.Retain();_access=new(this,null,_requested);_retainedOriginal=_requested;return;}\n",
+      "projection_sha256": "5ee90d44ea9c6e524c0893e9c6cc3c587fd85499c28339a145c7726cb407f6fd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "start_line": 190,
+      "end_line": 250,
+      "role": "actual frame membership and release",
+      "text": "        public async ValueTask DisposeAsync()\n        {\n            var remote=_ownsRemote?_access?.Remote:null;\n            Dispose();if(remote!=null)await remote.DisposeAsync();\n        }\n        public void Dispose()\n        {\n            if(_closed)return;_closed=true;_access?.Release(this);_access=null;\n            if(MainAdmissions.Value==this)MainAdmissions.Value=_parent;\n        }\n    }\n    private sealed class MainAccess(MainAdmission owner, GmMainOwnerGuard? guard,GmSessionRunCoordinator.Access? original,GmMainOperationClient? remote=null,bool workerObservationRequired=false)\n    {\n        private readonly object _state = new();\n        private int _references=1;\n        private bool _frozen;\n        private readonly HashSet<MainAdmission> _admissions = [owner];\n        private WorldValidationReadScope? _worldRead;\n        internal void ReserveWorldRead(WorldValidationReadScope scope, HashSet<MainAdmission> ancestors)\n        {\n            lock (_state)\n            {\n                if (_frozen || _worldRead != null || _references == 0 ||\n                    _admissions.Any(p => p.PhysicalScope || !ancestors.Contains(p)))\n                    throw new InvalidOperationException(\"World read phase conflicts with an existing original admission.\");\n                _worldRead = scope;\n            }\n        }\n        internal void ReleaseWorldRead(WorldValidationReadScope scope)\n        { lock (_state) { if (ReferenceEquals(_worldRead, scope)) _worldRead = null; } }\n        internal void RequireNoWorldReadConflict(WorldValidationReadScope? issuance)\n        { lock (_state) { if (_worldRead != null && !ReferenceEquals(_worldRead, issuance))\n            throw new InvalidOperationException(\"Original access is reserved by a World read phase.\"); } }\n        internal GmWorkerRootContext? Workers;\n        internal bool WorkerObservationRequired=>workerObservationRequired;\n        internal GmMainOperationClient? Remote=>remote;\n        internal GmMainOwnerGuard? Guard=>guard;\n        internal GmSessionRunCoordinator.Access? Original=>original;\n        internal MainAccess Retain(MainAdmission admission, WorldValidationReadScope? issuance)\n        {\n            lock(_state)\n            {\n                if(_frozen || _references==0)throw GmSessionRunPersistence.Invalid();\n                if (_worldRead != null && !ReferenceEquals(_worldRead, issuance)) throw new InvalidOperationException(\"Original access is reserved by a World read phase.\");\n                if (!_admissions.Add(admission)) throw GmSessionRunPersistence.Invalid();\n                _references++;return this;\n            }\n        }\n        internal void FreezeForTerminalClose()\n        {\n            lock(_state)\n            {\n                _frozen=true;\n                if(_references!=1)throw new IOException(\"Original operation still owns filesystem leases; close is unconfirmed.\");\n            }\n        }\n        public void Release(MainAdmission admission)\n        {\n            bool release;\n            lock(_state) { if(!_admissions.Remove(admission))return;release=--_references==0; }\n            if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}\n",
+      "projection_sha256": "3cd81ded83e96d8b82b2ef12e461e03b1b09ed74048d0d6db2934de53b46c79b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "start_line": 294,
+      "end_line": 299,
+      "role": "metadata uses canonical acquisition",
+      "text": "    internal void BeginMainOperationClosing()\n    {\n        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(!p.Closed && p.RootIdentity==CanonicalRootAuthorityIdentity){p.BeginClosing();return;}\n    }\n    internal Task<CanonicalWriteLease> AcquireMainMetadataLeaseAsync()=>\n        AcquireCanonicalWriteLeaseWithAmbientAsync(CanonicalWritePurpose.MainMetadata,CancellationToken.None);\n",
+      "projection_sha256": "a91cc7b1239233e1614691c5355e5f3be186af24b631570e66a545ed62f1d306"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start_line": 324,
+      "end_line": 367,
+      "role": "real disposal outcome versus early field clearing",
+      "text": "        public async ValueTask DisposeAsync()\n        {\n            var stream = _stream;\n            var parentAuthority = _parentAuthority;\n            var externalPublicationContext =\n                ExternalPublicationContext as IDisposable;\n            _stream = null;\n            _parentAuthority = null;\n            ExternalPublicationContext = null;\n            PendingLocalDecision = null;\n            MutationIntentRecorder = null;\n            BrowserLocalAccess?.Dispose();\n            var mainForFailure = MainAdmission;\n            Exception? failure = null;\n            void RetainFailure(Exception next) =>\n                failure = failure == null ? next : new AggregateException(failure, next);\n\n            try { externalPublicationContext?.Dispose(); }\n            catch (Exception ex) { RetainFailure(ex); }\n            // Every owned resource must be released even if the earlier\n            // external context failed. Clearing _stream above makes retries\n            // idempotent, so skipping this close would orphan the lock handle.\n            try\n            {\n                if (stream != null)\n                    await stream.DisposeAsync();\n            }\n            catch (Exception ex) { RetainFailure(ex); }\n            try { parentAuthority?.Dispose(); }\n            catch (Exception ex) { RetainFailure(ex); }\n            try { MainAdmission?.Dispose(); MainAdmission=null; }\n            catch (Exception ex) { RetainFailure(ex); }\n            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; }\n            catch (Exception ex) { RetainFailure(ex); }\n            try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }\n            catch (Exception ex) { RetainFailure(ex); }\n            finally\n            {\n                _ambientRegistration = null;\n            }\n            if (failure != null)\n            {\n                mainForFailure?.MarkUnresolved();\n                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();\n",
+      "projection_sha256": "8b0edd68603ba2f767eb87cc74401be365d52809b52a4028f8ecb57ae64a9b24"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start_line": 3760,
+      "end_line": 3796,
+      "role": "pending acquisition and registration",
+      "text": "        AcquireCanonicalWriteLeaseWithAmbientAsync(\n            CanonicalWritePurpose purpose,\n            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, WorldValidationReadScope? worldIssuance = null)\n    {\n        var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);\n        var registration = new AmbientCanonicalLeaseRegistration(\n            CompactAmbientCanonicalLeaseHead());\n        _ambientCanonicalLease.Value = registration;\n        return CompleteCanonicalWriteLeaseAcquisitionAsync(\n            registration,\n            purpose,\n            cancellationToken, workerPurpose, mainAdmission);\n    }\n\n    private async Task<CanonicalWriteLease>\n        CompleteCanonicalWriteLeaseAcquisitionAsync(\n            AmbientCanonicalLeaseRegistration registration,\n            CanonicalWritePurpose purpose,\n            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission)\n    {\n        try\n        {\n            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);\n            var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(\n                purpose,\n                cancellationToken, workerPurpose);\n            writeLease.MainAdmission=mainAdmission;\n            registration.Activate();\n            writeLease.AmbientRegistration = registration;\n            return writeLease;\n        }\n        catch\n        {\n            mainAdmission.Dispose();\n            ReleaseAmbientCanonicalLease(registration);\n            throw;\n        }\n",
+      "projection_sha256": "06265e1aeeaa3535adb7c0aafe1965fb448531a706a449f64cb74bd3f28297ea"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start_line": 3869,
+      "end_line": 3904,
+      "role": "metadata/finalization purpose versus recovery",
+      "text": "            try\n            {\n                if(purpose==CanonicalWritePurpose.MainMetadata) {\n                    if(workerPurpose!=null)throw GmSessionRunPersistence.Invalid();\n                    if(writeLease.MainAdmission?.MetadataOnly!=true)throw GmSessionRunPersistence.Invalid();\n                    writeLease.MainAdmission.Validate(writeLease);return writeLease;\n                }\n                workerPurpose?.ValidateRoot(this);\n                var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;\n                workerContext?.ValidateCanonical(this, writeLease);\n                workerContext?.ValidateBeforeRecovery();\n                writeLease.WorkerRootPin = workerContext?.PinCanonical();\n                if(purpose==CanonicalWritePurpose.SessionFinalization) {\n                    // Closing verifies the current generation without replaying\n                    // publication recovery or granting mutation authority.\n                    writeLease.MainAdmission!.Validate(writeLease);return writeLease;\n                }\n                EnsureMainBeforeRecovery(writeLease, \"acquired-lock-before-recovery\");\n                // An explicitly bound reader is fenced before any recovery or\n                // evidence classification, including quiescent local admission.\n                EnsureBoundSessionOperationCanWrite(writeLease);\n                // Classify the entire browser namespace before either recovery owner\n                // can mutate anything. Structural direct-gacha backups are neutral.\n                var browserProtocol = ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease);\n                if (browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Original &&\n                    HasStorageEvidence(LocalPublicationRoot))\n                    throw new InvalidDataException(\"Mixed original browser and current publication evidence; bytes retained.\");\n                if (OperatingSystem.IsLinux() || browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Current)\n                {\n                    EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);\n                    ExplorerLocalTurnRollbackArtifacts.PreflightLocalBrowserEvidence(this, writeLease);\n                    try\n                    {\n                        // A pending member/manifest publication must settle before browser rollback.\n                        RecoverTrustedLocalStorage(writeLease);\n                        if (purpose is CanonicalWritePurpose.SessionMutation or CanonicalWritePurpose.SessionReplacement)\n",
+      "projection_sha256": "13307a6a4c43c369525ff31f7ee7e739f60ac68faa56a1579ec5063e99bcb836"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "start_line": 292,
+      "end_line": 358,
+      "role": "original main stop and complete retirement conjunction",
+      "text": "    internal async Task BeginStopAsync()\n    {\n        lock(_sync)_closed=true;\n        await _transitions.WaitAsync();\n        try\n        {\n            using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())\n            {\n                if(_persistence.HasDebt){_persistence.Retry();Acknowledge();} // exact metadata only; never release replay\n                if(_record==null || _record.Disposition==GmSessionRunDisposition.Stopped)return;\n                var next=_uncertain?GmSessionRunTransitions.MarkUncertain(_record):\n                    _record.Disposition==GmSessionRunDisposition.Stopping?_record:GmSessionRunTransitions.MarkStopping(_record,Identity);\n                if(next!=_record)Publish(next);\n            }\n        }\n        finally{_transitions.Release();}\n        if(_terminal==null)throw GmSessionRunPersistence.Invalid(); // retained no-child uncertainty cannot claim retirement\n        Task drain;lock(_sync)drain=_drained.Task;\n        try {await drain.WaitAsync(TimeSpan.FromSeconds(5));}\n        catch(TimeoutException failure){RecordStopFailure(failure,\"pin_drain_timeout\");NotifyUncertain();throw;} // no filesystem locks across pin drain\n        using(Enter(true))if(_stopLifecycle==null)_stopLifecycle=await _files.AcquireSessionLifecycleLeaseAsync();\n    }\n    internal async Task ConfirmSettledStopAsync(IOwnedTerminalSession original,TerminalStopEvidence proof)\n    {\n        var binding=_retirement;\n        var drain=binding?.InputDrain();\n        // Caller evidence alone cannot mint retirement. Require actual registered\n        // original managed tasks, original adapter's proof object and disposal.\n        if(!ReferenceEquals(original,_terminal))throw StopInvalid(\"original_terminal_mismatch\",drain,firstGate:0);\n        if(binding==null)throw StopInvalid(\"binding_missing\",drain,firstGate:1);\n        if(!ReferenceEquals(binding.Session,original))throw StopInvalid(\"binding_session_mismatch\",drain,firstGate:2);\n        if(drain?.IsCompleted!=true)throw StopInvalid(\"input_drain_incomplete\",drain,firstGate:3);\n        if(binding.Loops.Any(t=>!t.IsCompleted))throw StopInvalid(\"registered_loops_incomplete\",drain,firstGate:4);\n        if(_stopLifecycle?.IsActive!=true)throw StopInvalid(\"stop_lifecycle_inactive\",drain,firstGate:5);\n        var actual=await original.StopAndObserveAsync(CancellationToken.None);\n        if(!ReferenceEquals(proof,actual))throw StopInvalid(\"proof_reference_mismatch\",drain);\n        try {await drain;await Task.WhenAll(binding.Loops);await original.DisposeAsync();}\n        catch(Exception failure){NotifyUncertain();RecordStopFailure(failure,\"managed_input_drain\",inputDrain:drain,actualBridgeProof:actual);throw;}\n        string? failed=null;\n        if(actual.Identity!=original.Identity)failed=\"native_identity_mismatch\";\n        else if(actual.Identity.RunId!=Identity.RunId)failed=\"native_run_mismatch\";\n        else if(actual.State!=GmWorkerStopState.StoppedWithinScope)failed=\"native_stop_unconfirmed\";\n        else if(!actual.CleanupComplete)failed=\"native_cleanup_incomplete\";\n        else if(actual.AuthorityRetained)failed=\"native_authority_retained\";\n        else if(original.AuthorityLost.IsCompleted)failed=\"original_authority_lost\";\n        else if(!original.RootExited.IsCompletedSuccessfully)failed=\"original_root_incomplete\";\n        if(failed!=null){NotifyUncertain();throw StopInvalid(failed,drain,actual);}\n        // The original proof and actual settlement survive metadata ACK debt.\n        _settledStop??=proof;\n        lock(_sync)failed=_uncertain?\"owner_uncertain\":_pins!=0?\"active_pins\":null;\n        if(failed!=null)throw StopInvalid(failed,drain,actual);\n        using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())\n        {\n            if(_persistence.HasDebt){_persistence.Retry();Acknowledge();}\n            if(_record?.Disposition is not (GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Stopped))throw StopInvalid(\"record_disposition_invalid\",drain,actual);\n            if(_record?.Disposition!=GmSessionRunDisposition.Stopped)\n                Publish(GmSessionRunTransitions.ConfirmStopped(_record!,new(Identity,GmSessionRunStopKind.OwnedScopeEmpty,Identity.BootId)));\n        }\n        failed=original.AuthorityLost.IsCompleted?\"late_authority_lost\":!original.RootExited.IsCompletedSuccessfully?\"late_root_incomplete\":null;\n        if(failed!=null) {NotifyUncertain();throw StopInvalid(failed,drain,actual);}\n        await _stopLifecycle.DisposeAsync();_stopLifecycle=null;\n        lock(_sync){failed=_uncertain?\"late_owner_uncertain\":null;if(failed==null)_retired=true;}\n        if(failed!=null)throw StopInvalid(failed,drain,actual);\n        lock(RootIdentity.WorkerContextGate){failed=RootIdentity.MainCoordinator!=this?\"late_coordinator_mismatch\":null;if(failed==null)RootIdentity.MainCoordinator=null;}\n        if(failed!=null)throw StopInvalid(failed,drain,actual);\n        _productionWorkers?.ReleaseClient();\n        _guard.Dispose();\n",
+      "projection_sha256": "f5ccef012f04186346866a6aa226174405b8bd8f3e7bd7a54340ab1a51af2c52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "start_line": 51,
+      "end_line": 72,
+      "role": "Linux native-only stop and later dispose",
+      "text": "    public async Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken token)\n    {\n        Task<TerminalStopEvidence> task;\n        lock(_gate) { ((LinuxPtyStream)InputWriter).SealInput(); _retiring.TrySetResult(); task=_stop ??= ObserveStopAsync(); }\n        var proof=await task.WaitAsync(token);\n        return _owner.Uncertainty is { } reason ? proof with { State=GmWorkerStopState.Uncertain, Reason=reason } : proof;\n    }\n    private async Task<TerminalStopEvidence> ObserveStopAsync()\n    {\n        var proof = await _owner.StopAndObserveAsync();\n        return new(Identity, proof.State, proof.Reason, proof.CleanupComplete, proof.AuthorityRetained);\n    }\n    public ValueTask DisposeAsync() { lock(_gate)return new(_dispose ??= DisposeCoreAsync()); }\n    private async Task DisposeCoreAsync()\n    {\n        if (_disposed) return;\n        var proof = await StopAndObserveAsync(CancellationToken.None);\n        if (proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained) throw new InvalidOperationException(\"Uncertain terminal retains original owner.\");\n        await _owner.SettleOutputsAsync();\n        await _owner.DisposeAsync();\n        await InputWriter.DisposeAsync(); await OutputReader.DisposeAsync();\n        _disposed = true;\n",
+      "projection_sha256": "29394521686991ebd43f5d2cd94320b00776f0abae84278233fd9b700abb45a9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "start_line": 288,
+      "end_line": 331,
+      "role": "Linux native control stop dependencies",
+      "text": "    private async Task SendControlAsync(char command)\n    {\n        await _controlGate.WaitAsync();\n        try { await _supervisor.StandardInput.WriteAsync(command); await _supervisor.StandardInput.FlushAsync(); }\n        finally { _controlGate.Release(); }\n    }\n\n    internal override async Task<GmWorkerStopEvidence> StopAndObserveAsync()\n    {\n        await _stopGate.WaitAsync();\n        try\n        {\n            using var observation = new CancellationTokenSource(TimeSpan.FromSeconds(5));\n            if (!_processStarted)\n                return new(_run, GmWorkerBackend.NativeLineage, GmWorkerBackendSelector.NativeGuarantee, GmWorkerStopState.Uncertain, \"start-unconfirmed\", false, true, null);\n            if (!_stopped)\n            {\n                _stopped = true;\n                try\n                {\n                    if (!_supervisor.HasExited)\n                    {\n                        _stopControl = SendControlAsync('S');\n                        await _stopControl.WaitAsync(observation.Token);\n                    }\n                }\n                catch { Lose(\"control-lost\"); }\n            }\n            try\n            {\n                await Task.WhenAll(_supervisorExit!, _statusReader!, _helperErrorDrain!, _hostExit ?? Task.CompletedTask).WaitAsync(observation.Token);\n            }\n            catch { Lose(\"observation-timeout-or-io\"); }\n            lock (_stateGate)\n            {\n                if (_uncertainty == null && _terminal?.State == GmWorkerStopState.StoppedWithinScope &&\n                    _supervisorExit!.IsCompletedSuccessfully && _supervisor.ExitCode == 0)\n                    return _terminal;\n                return new(_run, GmWorkerBackend.NativeLineage, GmWorkerBackendSelector.NativeGuarantee, GmWorkerStopState.Uncertain,\n                    _uncertainty ?? \"stop-unconfirmed\", _terminal?.CleanupComplete == true && _supervisorExit!.IsCompletedSuccessfully,\n                    !_supervisorExit!.IsCompletedSuccessfully, _terminal?.RootExitCode);\n            }\n        }\n        finally { _stopGate.Release(); }\n",
+      "projection_sha256": "a66c5a3222b6b2cffcde4ca51b5f11282f5d783bfc9604ce8062f4dcd39309a3"
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "start_line": 89,
+      "end_line": 123,
+      "role": "Windows native stop and later dispose",
+      "text": "    public async Task<TerminalStopEvidence> StopAndObserveAsync(CancellationToken token)\n    {\n        Task<TerminalStopEvidence> task;lock(_gate) { _stopping=true;task=_stopTask??=StopCoreAsync(); }\n        var proof=await task.WaitAsync(token);lock(_gate)return _uncertain?proof with{State=GmWorkerStopState.Uncertain,Reason=\"conpty-uncertain\"}:proof;\n    }\n    private async Task<TerminalStopEvidence> StopCoreAsync()\n    {\n        try {\n            if(_job!=null)await _job.StopAndWaitAsync(); // actual original Job terminate/query-empty\n            else if(_processHandle!=IntPtr.Zero && !_released) {\n                // Failed assignment retained a never-released suspended original kernel handle.\n                if(!ConPtyNativeMethods.TerminateProcess(_processHandle,1))throw new IOException(\"Suspended original root cleanup failed.\");\n                await RootExited.WaitAsync(TimeSpan.FromSeconds(5));\n            } else if(_released)throw new InvalidOperationException(\"ConPTY Job authority lost.\");\n            // Do not wait for output EOF before beginning this retained close task.\n            lock(_gate)_closeTask??=Task.Factory.StartNew(()=>ConPtyNativeMethods.ClosePseudoConsole(_pseudoConsole),CancellationToken.None,TaskCreationOptions.LongRunning,TaskScheduler.Default);\n            return new(Identity,_uncertain?GmWorkerStopState.Uncertain:GmWorkerStopState.StoppedWithinScope,\"original-job-empty\",true,_uncertain);\n        } catch { Lose(\"conpty-stop-fault\");return new(Identity,GmWorkerStopState.Uncertain,\"original-job-stop-unconfirmed\",false,true); }\n    }\n    public ValueTask DisposeAsync() { lock(_gate)return new(_disposeTask??=DisposeCoreAsync()); }\n    private async Task DisposeCoreAsync()\n    {\n        var proof=await StopAndObserveAsync(CancellationToken.None);\n        if(proof.State!=GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)throw new InvalidOperationException(\"Uncertain ConPTY retains original Job/session.\");\n        try { await Task.WhenAll(_closeTask!,RootExited,((FaultStream)InputWriter).Settlement,((FaultStream)OutputReader).Settlement).WaitAsync(TimeSpan.FromSeconds(5)); }\n        catch { Lose(\"conpty-close-unsettled\");throw; }\n        // Actual EOF and all admitted I/O, plus the one original close task, are joined.\n        await InputWriter.DisposeAsync();await OutputReader.DisposeAsync();\n        _inputPipe?.Dispose();_outputPipe?.Dispose();\n        await _job!.DisposeAsync();_job=null;\n        _process?.Dispose();\n        if(_threadHandle!=IntPtr.Zero)ConPtyNativeMethods.CloseHandle(_threadHandle);\n        if(_processHandle!=IntPtr.Zero)ConPtyNativeMethods.CloseHandle(_processHandle);\n        _threadHandle=_processHandle=_pseudoConsole=IntPtr.Zero;\n    }\n",
+      "projection_sha256": "fe73346ab1431e52272cd571ac0cf644a9b22d99659b1acd9acec751a9e5c147"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "start_line": 50,
+      "end_line": 114,
+      "role": "auxiliary status pin and seal/drain",
+      "text": "    private async Task PublishOriginalStatusAsync(SemaphoreSlim signal)\n    {\n        try\n        {\n            while (true)\n            {\n                await signal.WaitAsync();\n                StatusPublication? publication;\n                lock (_sync)\n                {\n                    publication = _pendingStatus; _pendingStatus = null;\n                    if (_statusSealed) return;\n                    if (publication == null) continue;\n                }\n                try\n                {\n                await publication.Owner.RunOperationAsync(async () =>\n                {\n                    if (BeforeStatusPublication != null) await BeforeStatusPublication();\n                    await _neutralFiles!.WriteFileAtomicBytesAsync(\"game_state/control/gm_bridge_status.json\", publication.Bytes);\n                    return true;\n                });\n                }\n                catch (Exception failure) when (_neutralFiles!.IsOriginalBrowserPhaseRefusal(failure))\n                {\n                    // The original browser phase refused before this diagnostic\n                    // write. Its real pin/lease has closed; a later snapshot can\n                    // publish under the same owner after the phase advances.\n                }\n                catch (Exception failure) when (publication.Owner.IsOriginalRootExitRefusal(failure) ||\n                    (GmSessionRunPersistence.IsAdmissionRefusal(failure) && publication.Owner.AdmissionClosed && !publication.Owner.IsUncertain))\n                {\n                    // Revoked before publication; all actual lease disposals completed.\n                    // This snapshot grants no closing write or recovery.\n                }\n                _firstStatus.TrySetResult();\n\n            }\n        }\n        catch (Exception failure)\n        {\n            lock (_sync)\n            {\n                _pendingStatus = null; _statusSealed = true;\n                _mainRun?.NotifyUncertain();\n                _status.LastError = \"Original status publication is unconfirmed.\";\n                _statusSettlement.TrySetException(failure);\n                _firstStatus.TrySetException(failure);\n            }\n            throw;\n        }\n    }\n\n    private async Task SealOriginalStatusPublicationAsync()\n    {\n        Task actual;\n        lock (_sync)\n        {\n            _statusSealed = true; _pendingStatus = null; actual = _statusPublisher;\n            if (!actual.IsCompleted && _statusSignal is { CurrentCount: 0 }) _statusSignal.Release();\n        }\n        try { await actual; _statusSettlement.TrySetResult(); }\n        catch (Exception failure) { _mainRun?.NotifyUncertain(); _statusSettlement.TrySetException(failure); throw; }\n        finally { lock (_sync) { _statusSignal?.Dispose(); _statusSignal = null; } }\n        await _statusSettlement.Task;\n",
+      "projection_sha256": "4d1ae179e0d728fdaf26bf1096a825e996d7cf2ce19a5eea8257dcfb0658961a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start_line": 616,
+      "end_line": 639,
+      "role": "PS-O1 exact waiter outcome ordering",
+      "text": "        var uncertainty = waitFailure as CoordinatedStatePublicationUncertainException\n            ?? presentationFailure as CoordinatedStatePublicationUncertainException\n            ?? keyFailure as CoordinatedStatePublicationUncertainException;\n        if (uncertainty != null)\n        {\n            RetainSecondaryFailure(uncertainty, \"TerminalWaitTaskFailure\", waitFailure);\n            RetainSecondaryFailure(uncertainty, \"TerminalWaitPresentationFailure\", presentationFailure);\n            RetainSecondaryFailure(uncertainty, \"TerminalWaitKeyFailure\", keyFailure);\n            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(uncertainty).Throw();\n        }\n\n        // Only the original waiter establishes Completed. Cleanup cancellation\n        // and an observed ordinary key/renderer failure cannot reverse that fact.\n        if (terminalResult == TerminalSignalWaitOutcome.Completed)\n            return escapeRequested ? TerminalSignalWaitOutcome.Cancelled : TerminalSignalWaitOutcome.Completed;\n\n        var originalFailure = presentationFailure ?? waitFailure;\n        if (originalFailure != null)\n        {\n            RetainSecondaryFailure(originalFailure, \"TerminalWaitTaskFailure\", waitFailure);\n            RetainSecondaryFailure(originalFailure, \"TerminalWaitKeyFailure\", keyFailure);\n            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(originalFailure).Throw();\n        }\n        return TerminalSignalWaitOutcome.Cancelled;\n",
+      "projection_sha256": "c39b8d2fbd463d9b38473a9137706e7dda5797eb0d30ec85db073d6dbd40cf5d"
+    }
+  ],
+  "prior_immutable_artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "7689081abec0dc52792c42a22654ea418ab1d562",
+      "sha256": "97c214837dd06c88920ea164a81761c08e5dc790297b966e96f38d7d16624478",
+      "bytes": 60328,
+      "local_path": "/tmp/t197-depc-original-parent-seal-design-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "b30b4cc433b1050d974af984c0a419d22457d07d",
+      "sha256": "fec344f49475f1aead3ea4ea63adea009866646f99e7e9a077ef64b8e20b8547",
+      "bytes": 110780,
+      "local_path": "/tmp/t197-depc-original-parent-seal-design-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.md",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "85cc1c7bb3b617ecc4f4f78c922cda336b03e8ed",
+      "sha256": "a439b33960bdbc375eab2ed32ba0988f9ac2306a3b6519b1cc62063cd3557605",
+      "bytes": 17801,
+      "local_path": "/tmp/t197-depc-original-parent-seal-independent-review-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.json",
+      "commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "blob": "94440d20b6a5cadc663f35e14ea76ac779c9603c",
+      "sha256": "134003e2933357e14be327bc901f76c5bfd9a7185a40cd5979b268c709cc68a3",
+      "bytes": 52784,
+      "local_path": "/tmp/t197-depc-original-parent-seal-independent-review-20261016.json"
+    }
+  ],
+  "sections": [
+    {
+      "title": "Bounded ruling and correction provenance",
+      "text": "**Specify PS-O2 by registering both retained owning admission frames by reference, and replace the PS-D1 cyclic proposed schedule by moving stopping-metadata publication after native stop, exact debt settlement and storage-lock release.** A two-stage quiescence/join protocol is necessary: live owning frames and pending invocation Tasks are retained through the first barrier; they are not mistaken for unfinished storage borrows or prematurely disposed.\n\nThis is a new conditional DESIGN refinement of the immutable original-parent proposal, not an implementation release or a claim that a successful G-C route currently exists. The prior design/review bytes remain unchanged. Source is pinned at `00aa1c2d70e539805bd6ea72941f4c09c0c00c31`; all source pins include comparison to the prior `61e10b09122cdd0d3af4478214fdb3cef11864f4`. Unrelated internal-reader work is not changed or qualified. Author configuration retained from delegation: Astra/High; backend telemetry UNKNOWN.\n\nPS-O1 source correction: TurnLifecycle:616–624 rethrows retained publication uncertainty. At629–630 the original Completed result survives an ordinary renderer/key failure unless genuine Escape was observed. Without Completed,632–637 rethrows an ordinary presentation/wait failure; only the remaining case639 returns Cancelled. The previous summary that presentation exceptions generally collapse toward Cancelled was imprecise. This report also uses the actual enum name `TerminalSignalWaitOutcome`; the earlier proposed new held union remains a proposal. No error, EOF or cancellation is newly equated with held custody or a successful terminal result.\n\nThe exact contract below closes these **design questions within stated prerequisites**; independent acceptance, implementation and future qualification remain absent. H-B02 transitive catch/composite/input closure is not established by this protocol. Safe HOLD is an incomplete fail-closed state, not an accepted permanent lawful ordinary-death outcome. No F2 or new OS/security/service/credential grant."
+    },
+    {
+      "title": "PS-O2: actual frame graph, not one-reference arithmetic",
+      "text": "Source: SessionOperationContext:124 creates the outer main admission O; :97 creates inner I; RunBoundBody:225–227 installs the actual binding B; :257–263 begins closing and creates finalization admission F through the canonical-lease path. MainRunFence:70–77 shares/retains MainAccess or retains the original pin. Its private MainAccess._admissions set and _references (:201–250) already distinguish actual frame membership; current code does not expose a custody snapshot.\n\nFor a clean root under the original coordinator's RunOperationAsync:126–130, pin P starts with its wrapper reference. O acquires original Access and retains P once; it owns one MainAccess A. I borrows A. An ordinary canonical lease creates another main admission L (FileSystemManager:3764–3786) which also borrows A. This is **two live owning frames O/I plus zero or more temporary descendant/storage frames**, not a target reference count of one. Neither O nor I can dispose while the body containing the before-close hook is still awaited.\n\n| Frame/obligation | Registered issuer and lifetime | First storage-quiescence barrier | Final release |\n|---|---|---|---|\n| Root coordinator invocation/P | Original run owner before invoking RunOperation; actual P bound inside its body | Must remain live; not a child borrow | Only actual RunOperation using-disposal after its delegate, both admissions and finalization finish |\n| O: outer participating admission | New local sibling at existing :124 callsite, registered before AcquireAsync | Retained owning frame by exact reference; may not be closed/frozen to fake quiescence | After inner returns and local outer close bookkeeping, actual await-using disposal |\n| I: inner bound admission | New original-owned core at existing :97 callsite, registered before AcquireAsync | Retained owning frame by exact reference | After B's genuine finalization; before O |\n| B: session binding and ambient frame | Actual RunBoundBody:225–227, or exact inherited B at205–223 | Live; no semantic readmission; not counted as a lease or completed Task | Real BeginClosing/check/Close and ambient restoration; inherited B closes only at its original owner |\n| Nested invocation's O2/I2 | Its original registered child slot, at those same two creation sites | Both references remain if nested invocation is parked; ancestor O/I also remain | Child closes its O2/I2 normally after its permitted held unwind; parent awaits actual child completion |\n| L: canonical/lifecycle admission | Actual lease acquisition wrapper before any synchronous prefix; PhysicalScope=true is evidence, not the only classification | Never excluded as an owning frame; its attempt settles and actual disposal completes, including failed/pending acquisition | Observed real lease release and frame release; failure is retained, not zeroed |\n| Other nested filesystem/helper borrow | Original child/callback plus BeginMainAdmission/actual Retain | Must release or be exactly identified as a live invocation-owning frame; unknown frame blocks | Actual Release removes that exact frame once |\n| F: read-only finalization admission | Created only after stopping ACK and original binding begins closing | Does not exist at first barrier | Acquired/checked/disposed normally; recorded separately, no mutation/recovery permit |\n| M: stop-metadata admission | Actual coordinator Enter(true), then AcquireMainMetadataLeaseAsync | Does not exist until first barrier passes | Actual metadata lease disposal before source finalization starts; no original source pin synthesized |\n\nProposed instrumentation is inside the actual issuers, not an inventory reconstructed from AsyncLocal ancestry. `RunParticipatingOriginalParentAsync` calls `BeginOriginalOwningMainAdmission(parent, Outer)` and the new original-bound core calls the same with `Inner`. Each synchronously reserves a frame slot under the custody gate before calling the existing BeginMainAdmission implementation; bind the resulting actual MainAdmission reference before AcquireAsync's prefix. MainAccess's existing _state lock records actual successful membership/retain and release. A slot that is only promised/acquiring is **not** treated as a live owning exemption. It must reach Acquired or FailedAndDisposed, with every acquisition-created resource resolved. Root/main/G/owner identity and exact role are checked; arbitrary callers cannot designate their lease an owning frame.\n\nThe proposed `OriginalAdmissionFrameSet` is a private reference set issued by these owners. For invocation i it contains its O/I, its actual inherited owner chain, and recorded live descendant invocation O/I sets. It contains no storage lease admissions, unrelated sibling owners, status publisher frames, or caller-provided handles merely because they have the same root/Access. A full stop wave separately inventories other original participating operations; their owning frames are identified under their own slots, not attached as children of this source.\n\nUse two disjoint ledgers: (a) invocation/frame lifetimes; (b) pending acquisition and storage/borrow lifetimes. No total `_references == 1`, `==2`, pin count subtraction or owner-set count is a completion predicate. A new internal `MainAccess.ObserveOriginalFrameMembership()` returns reference-exact membership while holding _state; after seal, the custody ledger is stable except registered settlement/finalization transitions. Compare observations against registered actual frames and pending acquire/release epochs. Unknown membership, unacknowledged acquire/release or an advancing epoch causes retry/retained refusal, never inferred exhaustion.\n\nLock ordering for this observation: do not nest the custody gate and MainAccess._state. Reserve lifecycle transitions under the custody gate; perform actual retain/release under _state; record completion under custody gate. Pending transition slots remain blockers throughout. Observation reads each separately and validates a stable epoch on return. `MainAccess.Release` calls Pin.Dispose outside its _state lock in current source:246–250; retain this separation. The physical pin references still balance naturally: in the clean-root example I then O disappear; A's last release disposes its retained P reference; RunOperation finally disposes P's original reference. This arithmetic is an explanation, not a hard-coded implementation invariant."
+    },
+    {
+      "title": "Two barriers prevent a nested-task deadlock",
+      "text": "The first barrier is **StorageQuiescent**, not ParentCompleted. A nested child's Task may be legitimately waiting for stopping metadata before its read-only finalization; requiring that Task to complete before metadata would recreate a cycle even after O/I accounting is corrected.\n\nProposed registered invocation states: Running; BodyExitedAwaitingJoin; ParkedOnOriginalChild; StorageQuiescentAwaitingMetadata; Finalizing; CompletedObserved; HeldUnresolved. ParkedOnOriginalChild is issued by an explicit `AwaitOriginalChildAsync(childSlot)` at the actual nested await, with exact parent/child references and a promise that no local semantic continuation executes before the typed child result is processed. It is not inferred from Task.Status or a stack snapshot. A synchronous prefix still running or an uninterruptible input read does not qualify. Returned held values propagate before any next semantic action, prompt or cleanup.\n\nFirst barrier for the sealed run wave W:\n\n* Every admitted producer and pending factory/acquisition is registered; no new semantic or publication arm is allowed. Pending starts resolve as never-entered or actual joined/parked invocations with all prefix effects inventoried.\n* Every invocation is BodyExitedAwaitingJoin or demonstrably ParkedOnOriginalChild / StorageQuiescentAwaitingMetadata. Each owns **zero active or pending storage/lifecycle/native-publication locks**, after actual debt settlement and actual lease disposal. Its O/I owning frames and P remain alive.\n* All already-armed attempts are terminal with exact cleanup outcomes; no unresolved/committed-cleanup debt is hidden by facade return. All direct storage-producing callbacks are joined or are parked without a storage lock and with no permission for new effects. Original native writers required for these debts are stopped by genuine original proof; auxiliary status/prompt writers are included as separate producer slots.\n* Exact observed MainAccess membership contains only registered live owning frames; every non-owning borrow is disposed. The wave has no unowned physical lease/acquisition. A caller-owned lease is a real storage blocker, even if its admission is an ancestor of the proposed local sibling.\n\nThen the metadata publisher may acquire the canonical lock, publish/ACK Stopping and release its own M lease. Only afterward does the wave signal `StoppingAcknowledged` to original invocations. Child invocations finalize bottom-up and their actual Tasks complete; parents join those actual Tasks, then finalize their own binding if they own it. The final barrier is **InvocationAndBindingCompleted**: all actual children/callbacks/read operations observed, finalization successful, all invocation O/I released, original wrapper returns and P finally disposes. No first-barrier receipt certifies this second barrier or retires main.\n\nFor nested same-G binding, existing RunBoundBody:205–223 inherits B rather than creating/closing one. Its new local held route must not call ordinary VerifyCurrentSessionOperationAsync after seal (current RunWithinBinding:385–388 can do so). It preserves the actual typed held decision and delegates the mandatory final generation check to B's original closing owner. This is a private original-bound protocol change, not use of a raw blocked-readmission flag to omit verification. If the nested child needs a standalone closing check, perform its original read-only finalization only after ACK under the existing binding, then return. The root must not claim settlement until B's final check succeeds.\n\nCaller-owned write-lease branch (:250–254) requires explicit integration in its real enclosing owner: settle its exact attempt while that lease is live, perform any required same-lease G verification, dispose the lease and observe the disposal, publish StorageQuiescent, await ACK, then perform the mandatory read-only current-G closing check before B closes. Calling the current caller-owned branch unchanged would close B early or wait for metadata while still holding its lease. No lease is transferred after disposal or recreated from metadata. An existing outer MainMenu/Explorer operation not using this owner protocol remains unqualified; ProcessPlayerTurn cannot retrofit it after effects.\n\n**Exact inherited-lease nested cut:** a child using its original ancestor's caller-owned canonical lease cannot wait for metadata while that ancestor awaits the child. Use a separate private result `HeldUnwoundToOwningBinding(actualBindingOwner, actualChildSlot)`, not `SealedSettled`. After native-only stop and settlement of all of that child's own armed attempts/callbacks/borrows, the new local nested route performs any required same-lease G check through its original read-only debt verification, excludes ordinary post-operation reacquisition, releases only its own O2/I2, and returns this typed control result **before metadata**. The child's real Task is now observed completed, but its inherited B, ancestor lease, O/I and original P remain with the real owner. The owner receives that result before any semantic continuation, settles its remaining exact attempt, disposes its own lease, then reaches StorageQuiescent. It alone awaits metadata and performs the mandatory read-only binding finalization/current-G check. This is control unwind, not a child receipt certifying B/parent/HC completion or a release of borrowed ancestor resources.\n\nThis early-unwind variant is permitted only for an actual inherited same-G B and its registered owner, never a separately owned binding, unknown outer wrapper, or arbitrary copied lease. Every level in a nested chain must propagate the control result until that actual owner is reached. If a child owns an independent finalization obligation, it must first become storage-quiescent and await ACK through the ordinary two-barrier variant; an ancestor cannot retain storage while waiting for that child. Such a call graph requires restructuring at the real original owner before admission and remains a blocker until specified. The read-only finalization requirement is deferred to the actual owning B, not waived. Existing `RunWithinBindingAsync` cannot be used unchanged for this typed early unwind because its ordinary post-operation verification may reacquire storage at:388.\n"
+    },
+    {
+      "title": "PS-D1: source-backed cycle and revised native-first schedule",
+      "text": "Confirmed source edges:\n\n* AcquireMainMetadataLeaseAsync (MainRunFence:298–299) enters the canonical acquisition path. FileSystemManager:3819–3825 opens the same canonical lock FileShare.None; MainMetadata's special branch3871–3874 runs **after** that lock is held. Enter(true) is not a lock bypass.\n* BeginStopAsync coordinator:294–307 currently closes then publishes stopping; :309–312 drains pins and takes lifecycle. Bridge StopShellCore:612 awaits it before native StopAndObserve:619. A source debt holding canonical C and waiting for native N, while metadata M waits for C before starting N, has cycle `debt(C) → N → M(C)`.\n* LinuxOwnedTerminalSession:51–61 seals input and calls the retained NativeLineageOwner.StopAndObserveAsync. NativeLineageOwner:288–331 writes original control, awaits actual supervisor/status/error/root tasks and returns original terminal evidence. This route does not acquire the game canonical/lifecycle lease or call GmSessionRunCoordinator.BeginStop.\n* ConPtySession:89–106 calls actual Job StopAndWait or terminates an original unreleased suspended handle and starts retained HPCON close. WindowsJobProcessTree:164–173 terminates/queries the original Job and awaits actual process-tree completion. No game canonical/lifecycle lease is on that native-stop path. This is a source dependency observation, not fresh OS/platform qualification.\n\n**Replace the previous proposal's stop order.** The prior `CloseAdmissionAndPublishStoppingAsync → native stop` must not be the entry prerequisite for this debt-retention route. Proposed original owner sequence:\n\n1. `GmSessionRunCoordinator.SealOriginalStopWave()` synchronously seals source/main admission and original native/input release under short gates, installs a private original stop-wave object and captures exact current acknowledged identity/record plus already-armed debt references. It performs **no canonical/lifecycle acquisition, publication, disk logging or async callback under the gate**. In particular it does not call NotifyUncertain for the planned seal. Existing uncertainty remains absorbing. All stop/load entrypoints must rendezvous with this same wave; no parallel legacy BeginStop may hold `_transitions` waiting for C while a debt waits for that transition.\n2. Seal status/input/prompt production and register their real drain promises without awaiting filesystem-dependent drains. Existing `RevokeInputLifetime`:783–792 sets Revoked and uses CancelAsync; keep callbacks async and register their Task. `SealOriginalStatusPublicationAsync`:103–114 has a short seal prefix but then awaits actual status publisher; separate that prefix/retained promise in the new owner or start the registered async call without awaiting it here. Do not hold the root/bridge lock while awaiting its drain. No diagnostic status write is a prerequisite to native stop.\n3. Invoke **the original retained** terminal.StopAndObserveAsync once, in a registered slot, independently of canonical/lifecycle/metadata/parent completion. Continue original output draining independently of the detachable viewer. Actual stop evidence must establish stopped within owned scope and no authority loss; this evidence is not yet full disposal or main retirement. Windows's HPCON close/stream settlement and Linux's output settlement remain actual later obligations. A failed/time-limited/uncertain stop provides no positive receipt; don't erase `_uncertain` or retry from a fresh process.\n4. Each actual source/native publisher resumes only its original armed debt continuation under the exact private settlement permit described below. Native stop no longer depends on M, so a holder of C can settle and release C. Every required unmanaged/CLI writer must be genuinely within the proven stopped scope or have its own exact stop/join receipt. No helper executable name, shared PID namespace or shared physical path establishes that. Full writer inventory remains OPEN.\n5. Reach StorageQuiescent for all registered wave producers, with actual pending acquisitions and canonical/lifecycle leases released. Parent O/I and P remain. At this point metadata has no registered source-held C to wait on, and no owner awaiting M holds C. Original keeper main guard remains held; sealed admission prevents replacement and new sources.\n6. `PublishOriginalStoppingAfterStorageQuiescenceAsync(wave)` executes the existing coordinator :295–307 transition/metadata publication/ACK machinery under original Enter(true), now after the barrier. Preserve exact `_persistence` retry/Acknowledge semantics and failure. Release the metadata canonical lease before signaling ACK. Do not assert Stopping/ACK from the in-memory seal. The old durable record may truthfully remain Running until this step.\n7. Signal original ACK, perform bottom-up child/body joins and actual read-only binding finalization, dispose O/I, let each RunOperation P exhaust naturally. No gameplay resumes. Then the original stop owner runs pin-drain/lifecycle-acquisition part of BeginStop (:308–312) and existing ConfirmSettledStop:314–358, with the original bound tasks/input drain/native proof, genuine disposal, same-G metadata and late checks. Metadata Stopped/ACK and actual guard release remain last-stage obligations.\n\nThis schedule breaks the **specific metadata-before-native cycle by construction**. It does not prove arbitrary hooks or external writers deadlock-free. It is a proposed new orchestration path, not a claim existing StopShellCore already follows it. The exact parent and native-only task receipts are distinct; a storage-quiescence or early native-stop receipt never substitutes for the final full main conjunction."
+    },
+    {
+      "title": "Private settlement before stopping ACK: exact authority and prohibitions",
+      "text": "The corrected ordering requires a deliberately new **private original-debt interface valid before stopping metadata ACK**. This is not supplied by today's ordinary leases and is not accepted implementation authority merely because it is named here.\n\nProposed `OriginalStopWave` captures the actual original coordinator/terminal/root identity, current acknowledged run/G/fence, registered invocation/frame set and already-armed attempts. It is issued only by that live owner for an acknowledged active run with no pre-existing unresolved authority/metadata condition. If another stop wave already exists, reuse that original object; unexpected state or existing uncertainty is not normalized to Running. It is not created by a source action tuple, caller DTO or deserialization. No worker or external native writer can be attached retrospectively on a path/PID guess.\n\n`SettleOriginalArmedAttemptAsync(wave, originalAttempt, originalLease)` is called by the original trusted-local publisher's retained continuation, before its owned lease disposes. It validates: actual object lineage and registered slot; actual still-active canonical lease/physical authority; exact original current G; exact acknowledged metadata bytes unchanged or an explicitly retained original metadata decision (not assumed ACK); original keeper/main guard alive; native stop receipt from this original terminal plus any separately required original writer receipts; no AuthorityLost or independent uncertainty; exact transaction ID, prepared member before/after images, scratch paths, namespace effects and already-entered phase. The wave's own planned admission seal is not uncertainty and does not itself grant anything. An unexpected metadata/G/namespace change fails closed.\n\nThe native method validates this private capability directly for **only its recorded attempt's remaining commit/rollback/cleanup steps**. It must not call the ordinary public source facade, new TryCommitWithOwnedLeaseAsync, generalized recovery, a recomputation/normalizer, or BeginStop/metadata as a prerequisite. In particular CoordinatedStateWriteHelper:73–99 may already hold CommitGate plus canonical lease; reentering its owned-lease helper to settle would self-deadlock. Continue the original publisher/attempt in its original owning context; no second canonical or CommitGate acquisition. PendingLocalDecision, worker root pins, namespace preparation and recovery ownership must remain associated with their actual originals, not cleared by a generic finally or capability boolean.\n\nIf an attempt did not retain its actual lease/owner, this report does not authorize manufacturing them. A separate exact reacquisition adapter would need its own issuer/debt/lock proof and is OPEN; the bounded schedule here uses retained original ownership. Facade success-with-cleanup-debt must be intercepted before its lease release, rather than learned later from a journal hash. Unknown pre-existing recovery cannot be laundered into this invocation.\n\nOrdinary admission remains unchanged. `ValidateAccessAcquisition`:137 rejects `_closed` for ordinary acquisition. **Existing already-held lease validation does not simply reject `_closed`: coordinator ValidateAccess:151–157 also depends on metadata, uncertainty, workers and root exit.** Therefore the source's semantic effect/arm gate remains essential from the first seal; setting `_closed` alone does not freeze all current writers. After intentional native exit the ordinary guard refuses that root; the private debt path is a narrow separate authority, never a global relaxation of that guard. It cannot issue new after-images, a new transaction/retry, G/M/target writes, rewards, dice, source replay, lifecycle cleanup or a story/HC/parent semantic receipt. Current SessionFinalization remains read-only and MainMetadata remains metadata-only.\n\nNative committed data remains committed. Uncommitted rollback is the original transaction's before-image settlement, distinct from RestorePreTurnBackup. Committed cleanup failures, disposal failures, partial native termination or mutation collisions retain debt and prevent the first barrier. `CanonicalWriteLease.DisposeAsync`:330–367 nulls fields before asynchronous resource disposal and marks main unresolved on failure. **IsActive=false is not successful release.** Store and await the actual DisposeAsync outcome; require successful release of its stream, directory authority, external context, main admission, worker pin and ambient registration. `ReleaseOwnedLeaseAsync`:103–121 can attach/suppress secondary failures; the custody adapter must retain their actual outcome independently, not infer zero debt from its caller's return. Do not clear a resulting NotifyUncertain."
+    },
+    {
+      "title": "Pending acquisitions and auxiliary producers are first-class obligations",
+      "text": "No empty currently-held-lease list proves quiescence. `AcquireCanonicalWriteLeaseWithAmbientAsync`:3764–3771 creates a MainAdmission and ambient registration before the awaited physical acquisition. :3782–3795 can be pending or fail after retaining main access. Every such invocation is pre-registered as `AcquisitionPromised → Invoking → Acquired(lease)` or `FailedAndDisposed(actual failure)`. Its native open, retry-delay/hook work, activated ambient registration and final cleanup are part of that same slot. Seal cancels only an existing explicitly cancelable operation; until the actual call exits and cleanup is observed it remains pending. A noncancelable old call must genuinely return; a timeout isn't release. No late acquire may start recovery or return an ordinary mutating lease after seal: its new original-owned wrapper checks the same seal before activation/recovery and releases the exact resources. This is an OPEN integration seam in FileSystemManager:3782–3903, not behavior current code already guarantees.\n\nThe run wave inventories **every owned async producer**, not only children of ProcessPlayerTurn. Actual BridgeHost.StatusPublication:66–71 creates its own RunOperation pin and writes `game_state/control/gm_bridge_status.json`. Queued status not invoked is discarded by the existing seal prefix; in-flight status has a real pin/body/lease/native debt. Register that auxiliary producer before RunOperation's prefix, keep its actual original owner, and include its storage acquisition/attempt/disposal in StorageQuiescent. It is not a member of the selected parent O/I exemption set and it cannot be assumed finished because `_statusSealed` is true. Existing root-exit/admission-refusal catch:79–84 is not a positive cleanup receipt if a newly introduced retained attempt exists. Its actual attempt adapter must settle first. Global `_pins` sees both operations until both genuinely release.\n\nInput cancellation: RevokeInputLifetime:783–792 itself only changes in-memory state and starts CancelAsync, with no canonical/lifecycle request in that method. Cancellation callbacks are separate invoked work, may run later, and are **not transitively proved storage-free** by that fact. Register and join actual CancellationTask and callback slots; after seal they may perform exact already-armed cleanup or nonsemantic unwinding, never initiate ordinary storage admission. The same applies to prompt-task completion: Program:795–806 calls WriteStatusFile; new status queuing after seal is rejected, an earlier admitted status attempt still settles under its own owner.\n\nNative stop's examined direct control/Job paths have no game canonical/lifecycle acquisition, but native output processing is not automatically independent of presentation: current PumpOutputAsync:1145–1146 awaits consoleWriter.Write/Flush before continuing read. The Client-host proposal must retain a genuinely independent original native drain and isolate detachable viewer backpressure; otherwise Windows close/output EOF or Linux output settlement may remain blocked. This remains an exact hosting/I/O dependency, not solved by changing the stop call order. Keep native EOF/close, input writes, resize, prompt, status and authority/root-observer Tasks in their actual original inventories. Only the native process-scope stop receipt is the early gate; full I/O settlement and disposal are still required before main retirement.\n\nNo nested child is allowed to await stopping metadata, parent completion, or any storage-dependent stop wrapper **while holding or waiting for storage**. Such a child must first finish its acquisition/attempt and release storage, or remain visibly unqualified. It may await only the original native-only stop signal or its own bounded native attempt I/O while holding its original lease, provided that dependency has no reverse edge to canonical/lifecycle/CommitGate/metadata. A callback whose dependency graph is unknown blocks release; no Task.Status/empty list/boolean proves otherwise."
+    },
+    {
+      "title": "Wait graph and release stages",
+      "text": "| Stage | May retain | May await | Must not await / must not do |\n|---|---|---|---|\n| S0 pre-seal arm | Actual root pin, O/I, enrolled source lease/attempt | Existing admitted source work | No unregistered synchronous prefix/Task/callback |\n| S1 seal/control | Main guard, P/O/I, immutable stop-wave inventory | Registered native-only stop task outside short gates | No canonical/lifecycle acquire, metadata ACK, status drain, whole-parent join or canonical logging before starting native stop |\n| S2 native stopped / exact debt continuation | Exact original C and optional lifecycle/CommitGate already held by that attempt | Native-only original proof; own exact attempt's bounded I/O | No second C/CommitGate; no metadata/whole parent/child needing C; no new source effects |\n| S3 storage release barrier | P, O/I and binding; parked invocations and actual recorded receipts | Actual release/acquisition/callback outcomes | No live/pending C/lifecycle/publication borrow; no unknown producer excluded from count |\n| S4 stopping publication | Original coordinator Enter(true), `_transitions`, own M/C | Its own metadata native publication/ACK | No source-held C; no callback into source; no publication of Stopped yet |\n| S5 closing wave | Original P/O/I; one actual F/C at a time as required | Original child completion; read-only G checks/disposal | No ordinary recovery/admission, source cleanup, metadata retry inside a retained source lease |\n| S6 main retirement | Existing original terminal proof/tasks and stop lifecycle | Actual pin drain, actual IO/handle disposal, exact Stopped publication/ACK | No decrement by assertion, no fresh terminal/PID evidence, no uncertainty reset |\n\nThe critical dependency graph is now `debt holding C → original native-only stop`, with no edge from that stop to M/C. After native stop, `debt → actual dispose(C) → StorageQuiescent → M(C) → ACK → child/root read-only finalization → actual pin drain`. O/I may remain across all pre-finalization edges because they are main-access frames, not physical canonical locks. Pending storage acquisition is a blocker on the left of StorageQuiescent, never allowed to migrate unnoticed across it. Finalization's F is a separately registered restricted epoch after M disposes; it is not a reopening of semantic storage/recovery.\n\nS5 uses existing finalization validation: FileSystemManager:3881–3884 bypasses recovery but validates original admission; SessionOperationContext:262–270 checks actual current G. The new route authorizes only those exact original finalizer frames once their binding really begins closing. Their hooks must be storage-free or separately enrolled before the barrier; a hook may not reenter ordinary storage after seal. Finalization disposal failure keeps original uncertainty/diagnostic precedence and blocks success. No helper gets general closing permission from a purpose enum alone."
+    },
+    {
+      "title": "H-B02 remains open: exact remaining source frontier",
+      "text": "This bounded protocol does **not** close the transitive selected-parent leaf/catch/input frontier. No new direct row is relabeled complete. The prior P01–P16 inventory remains the direct owner frontier. Mandatory missing adapters/decisions are:\n\n| Dependency | Actual source anchor | Required before this proposed schedule can qualify |\n|---|---|---|\n| All real outer entries | MainMenu:1493 enclosing participating callback; :2267; TurnLifecycle:1384/1398/1447/2357 | Original owner installed before outer effects; register actual inherited frames and nested wait states. Do not retrofit Explorer changes or declined-action replay. |\n| Pre-effect acquisition and actual release | FileSystemManager:3760–3795,3869–3903,324–367; MainRunFence:56–77,190–250 | Pending acquire/release/frame epochs and late-seal rejection before recovery; custody retains actual cleanup faults independently of facade suppression. |\n| Publisher/debt retained owner | TrustedLocalStorage:181–268; TrustedLocalFilePublication original attempts; namespace/deferred/frame paths | Exact pre-directory/pre-recovery arm, original transaction/lease retention and private pre-ACK settlement; no fresh retry; complete concrete per-owner member/namespace inventory. |\n| Known destructive catches | Stage:1629–1632,1672–1737; snapshot capture:1992–2019, manifest:569–583, cleanup:2443; wait harness:827; game loop:1408–1440; RunAsync:219–235 | Actual typed held propagation bypasses rollback/log/delete. Deep repair/normalizer/health catches not transitively audited; a new exception class does not close them. |\n| Blocking input/renderer | IConsoleInputSource:24–26; Wait:553–614; AgentConsoleLiveInputSource ReadKey/CancelPendingReads/Shutdown | Original interruptible read/join and held result; no storage side effect from interrupt; actual callback work accounted; no prompt/EOF replay. |\n| Stage composites | Stage:1568 validation,1589 reminder,1595 progression,1597 preview,1600 skill authority,1606 snapshot initializers,1610+ characteristics,1648+ projection | Finite source inputs/after-images/no-change witnesses and all subsidiary attempts/catches; these functions are not pure because of their names. |\n| Finalize composites | Finalize:1756 joint reconcile,1822 validation repair,1864 materialization,1870 dice rotation/normalization,1872 repair,1917 progression,1921+ lifecycle/ascension/return/QTE/autosave/incarnation | Every effect arm and exact debt owner; preserve original accepted n/action and separate evaluation n+1. No full target acceptance claim from source freeze. |\n| Terminal/health cleanup | SessionAndSnapshots:1526–1564,2435–2453 | Actual conditional training/afterlife health/notification/state effects and namespace cleanup outcomes; committed source append never authorizes the rest. |\n| Run-wide auxiliary/native writers | StatusPublication:66–71,103–114; prompt/cancel/PTY callbacks; helpers/CLI/worker/browser routes | Pre-invoke producer/acquisition inventory and authentic original stop/lock coverage; no currently-held-list shortcut or external Lost-pin reset. |\n| Finalizer hooks/owner shutdown | SessionOperationContext:261; GameEngine.RunAsync:239–241; original Program/service lifetime | Closing hook and disposal are effect-accounted without reopening ordinary storage; app shutdown waits genuine settlement, not presentation death. |\n\nAccordingly PS-D1 is **a concrete proposed acyclic schedule with an identified private interface and prerequisite graph**, not a closed/qualified existing transitive route. PS-O2 reference accounting is specified, but actual instrumentation and every admission issuer still need implementation/review/qualification. B01/A1, H-B02, B03/B04, G-C, DEP-C/I/L/full target/H2/H3/HQ/new QTE remain OPEN/BLOCKED. These are engineering dependencies under existing autonomous direction, not a new repeated permission request."
+    },
+    {
+      "title": "Cold, crash, cleanup and semantic limits",
+      "text": "| Cut/outcome | Required retained result |\n|---|---|\n| Seal before native stop, durable record still Running | Current original owner refuses new admission; keeper holds actual main guard and all slots. Running metadata alone does not grant continuation. Native stop may proceed without waiting for metadata. |\n| Native stopped before stopping metadata; keeper survives | Original proof/leases/attempts retained; settle exact debt, release storage, then actual Stopping ACK. No guessed durable state. |\n| Same cut; keeper dies/reboot/container-host migration/distinct root | No surviving original issuer; do not reconstruct from metadata hash/PID/new G. Cold recovery remains blocked. This deliberate durable window does not improve cold liveness. |\n| Committed member but cleanup incomplete | Preserve after-image, original cleanup debt and pin; no append/source replay. Native rollback only for the exact uncommitted attempt. |\n| Physical release throws although IsActive became false | Retain exact failure and any MarkUnresolved/NotifyUncertain; no barrier completion or clearing original uncertainty. |\n| Native stop uncertain, EOF or timeout | Preserve actual owners/tasks/debts. No stop proof, same-G retirement or additional ordinary writes. Native EOF O1 remains uncertainty; successful native exit requires stopping + actual empty + !exec_pending. |\n| Stopping publication fails after source storage released | P/O/I remain; no finalization gate signal or new source. Exact original metadata retry only if its retained owner permits it; do not infer ACK. |\n| Genuine ready Completed predated seal | Preserve that terminal fact separately; seal can still stop later materialization. No retagging it as Cancelled/Failed/Held gameplay completion. |\n| Child/nested held result | Propagate before caller's explorer refresh, next prompt, action, cleanup or increment. No whole-parent or HC receipt from child settlement. |\n| Source fully settled but continuation/target unresolved | Main/source evidence remains distinct; no automatic gameplay continuation. HOLD is preservation pending missing contract, not a lawful permanent outcome. |\n\nNo effect completed before seal is undone merely because of seal. No extra Mortal tick, dice/gacha redraw, reward, replay, evaluation suppression or target request synthesized from source tuples is authorized. Accepted Mortal n/action and genuine evaluation n+1 owners remain intact. F1 FD/FT ordinary continuation must resolve its original situation with remaining work/budget through existing request owners; existing declined-action recursion is not a recovery grant. D4/guided/visual/D8, Windows/Linux prerequisites and all prior isolation/cold/full-target limits remain. Final main retirement still requires the complete actual coordinator:314–358 conjunction; this report adds no shortcut."
+    },
+    {
+      "title": "Future bounded checks and stop",
+      "text": "* **PO01 O/I reference accounting — FUTURE UNRUN.** Root barrier retains both actual frames, excludes neither storage leases nor pending acquisition; no magic count.\n* **PO02 Nested frame wave — FUTURE UNRUN.** Child O2/I2 and ancestors registered; ParkedOnOriginalChild verified; no parent/metadata wait with held or pending storage.\n* **PO03 Retain/release epochs — FUTURE UNRUN.** Seal races frame reservation/acquire/retain/dispose; pending epochs block barrier; unknown membership refuses.\n* **PO04 Real pin retention — FUTURE UNRUN.** RunOperation delegate and original P live across both barriers; release only after actual child/binding/frame completion.\n* **PO05 Canonical metadata cycle cut — FUTURE UNRUN.** Hold original canonical lease awaiting native stop; native-only stop starts before any metadata/lifecycle request; settle/release then M publishes.\n* **PO06 Auxiliary status and pending acquisitions — FUTURE UNRUN.** In-flight status RunOperation pin, queued status, acquired/contended/late-open lease and cancellation callback all tracked; empty held list never suffices.\n* **PO07 Native cancellation dependency — FUTURE UNRUN.** Original Linux/Windows stop and input cancellation start without canonical dependency; callbacks/PTY drains cannot block behind metadata/viewer.\n* **PO08 Pre-ACK private permit — FUTURE UNRUN.** Exact original attempt can settle despite planned seal/root stop; wrong owner/root/G/transaction/member or uncertainty denied; ordinary guards unchanged.\n* **PO09 CommitGate and namespace debt — FUTURE UNRUN.** No reacquire of held CommitGate/canonical; exact committed cleanup or uncommitted rollback, no fresh retry or generic recovery.\n* **PO10 Disposal failure — FUTURE UNRUN.** IsActive cleared before failure is not release proof; external context/stream/main/worker/ambient release failures retained and block barriers.\n* **PO11 Caller-owned lease and finalization — FUTURE UNRUN.** Real caller releases its lease before M; mandatory G check preserved; F after ACK cannot reopen mutation/recovery; hook effects covered.\n* **PO12 PS-O1 waiter outcomes — FUTURE UNRUN.** Uncertainty precedence; original Completed with non-Escape failures retained; no Completed ordinary waiter/presentation failure rethrows; held distinct.\n* **PO13 Destructive catch propagation — FUTURE UNRUN.** All selected outer and transitive catches, inputs and finally effects reviewed before release; no rollback/log/prompt/cleanup on seal.\n* **PO14 Late metadata/native/G fault — FUTURE UNRUN.** Exact ACK and original proof retained; no Stopped or pin release shortcut on timeout/uncertainty/late drift.\n* **PO15 Cold and user outcome — FUTURE UNRUN.** Keeper loss/old Running record/newhost/distinct root not recovered; no permanent HOLD acceptance, replay/redraw/extra turn/target authority.\n\nFINALSTOP. New /tmp design/evidence pair only; no repository, code, runtime, native, build/test/discovery, network, OS/settings, fetch/push or delegation actions. Prior artifacts unchanged. No engineering/activation release; no pending writes after delivery."
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "PO01",
+      "title": "O/I reference accounting",
+      "description": "Root barrier retains both actual frames, excludes neither storage leases nor pending acquisition; no magic count.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO02",
+      "title": "Nested frame wave",
+      "description": "Child O2/I2 and ancestors registered; ParkedOnOriginalChild verified; no parent/metadata wait with held or pending storage. Include inherited caller-owned lease: child returns HeldUnwoundToOwningBinding before metadata without certifying finalization; ancestor releases its own lease and later verifies B.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO03",
+      "title": "Retain/release epochs",
+      "description": "Seal races frame reservation/acquire/retain/dispose; pending epochs block barrier; unknown membership refuses.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO04",
+      "title": "Real pin retention",
+      "description": "RunOperation delegate and original P live across both barriers; release only after actual child/binding/frame completion.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO05",
+      "title": "Canonical metadata cycle cut",
+      "description": "Hold original canonical lease awaiting native stop; native-only stop starts before any metadata/lifecycle request; settle/release then M publishes.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO06",
+      "title": "Auxiliary status and pending acquisitions",
+      "description": "In-flight status RunOperation pin, queued status, acquired/contended/late-open lease and cancellation callback all tracked; empty held list never suffices.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO07",
+      "title": "Native cancellation dependency",
+      "description": "Original Linux/Windows stop and input cancellation start without canonical dependency; callbacks/PTY drains cannot block behind metadata/viewer.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO08",
+      "title": "Pre-ACK private permit",
+      "description": "Exact original attempt can settle despite planned seal/root stop; wrong owner/root/G/transaction/member or uncertainty denied; ordinary guards unchanged.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO09",
+      "title": "CommitGate and namespace debt",
+      "description": "No reacquire of held CommitGate/canonical; exact committed cleanup or uncommitted rollback, no fresh retry or generic recovery.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO10",
+      "title": "Disposal failure",
+      "description": "IsActive cleared before failure is not release proof; external context/stream/main/worker/ambient release failures retained and block barriers.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO11",
+      "title": "Caller-owned lease and finalization",
+      "description": "Real caller releases its lease before M; mandatory G check preserved; F after ACK cannot reopen mutation/recovery; hook effects covered.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO12",
+      "title": "PS-O1 waiter outcomes",
+      "description": "Uncertainty precedence; original Completed with non-Escape failures retained; no Completed ordinary waiter/presentation failure rethrows; held distinct.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO13",
+      "title": "Destructive catch propagation",
+      "description": "All selected outer and transitive catches, inputs and finally effects reviewed before release; no rollback/log/prompt/cleanup on seal.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO14",
+      "title": "Late metadata/native/G fault",
+      "description": "Exact ACK and original proof retained; no Stopped or pin release shortcut on timeout/uncertainty/late drift.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PO15",
+      "title": "Cold and user outcome",
+      "description": "Keeper loss/old Running record/newhost/distinct root not recovered; no permanent HOLD acceptance, replay/redraw/extra turn/target authority.",
+      "status": "FUTURE_UNRUN"
+    }
+  ],
+  "H_B02_transitive_frontier_closed": false,
+  "existing_successful_route_proven": false,
+  "all_new_contracts": "PROPOSED_UNACCEPTED",
+  "engineering_release": false,
+  "gates": {
+    "B01/A1": "OPEN/BLOCKED",
+    "H-B02": "OPEN/BLOCKED",
+    "B03": "OPEN/BLOCKED",
+    "B04": "OPEN/BLOCKED",
+    "G-C": "OPEN/BLOCKED",
+    "DEP-C": "OPEN/BLOCKED",
+    "DEP-I": "OPEN/BLOCKED",
+    "DEP-L": "OPEN/BLOCKED",
+    "full_target": "OPEN/BLOCKED",
+    "H2": "OPEN/BLOCKED",
+    "H3": "OPEN/BLOCKED",
+    "HQ": "OPEN/BLOCKED",
+    "new_QTE": "OPEN/BLOCKED"
+  },
+  "F2": false,
+  "runtime_execution": false,
+  "tests": false,
+  "builds": false,
+  "discovery": false,
+  "repo_writes": false,
+  "network_access": false,
+  "subagents": false,
+  "final_stop": true,
+  "markdown_artifact": {
+    "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.md",
+    "sha256": "25c91a0a638074702e47ec36581d673e1a43cd73a65bdf3e473429f03d0499a5",
+    "bytes": 47209
+  }
+}
