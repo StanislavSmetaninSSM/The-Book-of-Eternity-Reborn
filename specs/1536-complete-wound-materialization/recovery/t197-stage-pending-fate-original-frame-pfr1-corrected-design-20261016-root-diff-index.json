@@ -1,0 +1,16 @@
+[
+  {
+    "path": "t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+    "raw_sha256": "0f6bc188c2f82ca6f58558f1ed18d724e7fce1777927c5e3cde5eadb07275f3a",
+    "raw_bytes": 31909,
+    "stored_sha256": "3560c603029630ea9a6334e1bb7c27c4a0f330a4365a9cbd67861edad61483e6",
+    "reconstructedByteExact": true
+  },
+  {
+    "path": "t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+    "raw_sha256": "516aca95953a44da266a62f05a63bfba7f35c68c78bf20370c1ee45f65617904",
+    "raw_bytes": 51546,
+    "stored_sha256": "476de9e944fd74d921328908efa060bdb82c8b13236801caa3497dff06cbf891",
+    "reconstructedByteExact": true
+  }
+]
