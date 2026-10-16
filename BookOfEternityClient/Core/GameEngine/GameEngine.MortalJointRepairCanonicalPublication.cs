@@ -19,6 +19,8 @@ public partial class GameEngine
         ValidatedPendingTurnSnapshotContext frame, int expectedTurn,
         IReadOnlyDictionary<string, string> backups)
     {
+        if (_mortalJointPublicationAttempt is { Live: true })
+            throw new InvalidOperationException("A live joint attempt already owns this engine.");
         if (!MatchesMortalJointRepairFrame(frame, expectedTurn) || !_mortalJointRepairCorrectionReady)
             throw new InvalidDataException("Joint canonical publication requires the actual corrected admitted frame.");
         if (_mortalJointRepairCanonicalRefresh is { Disposition: MortalJointRepairPublicationDisposition.Committed or

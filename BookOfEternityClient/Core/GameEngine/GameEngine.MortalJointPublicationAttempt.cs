@@ -124,7 +124,7 @@ public partial class GameEngine
         }
         internal JsonObject ExportDiagnostic() => new()
         {
-            ["phase"] = _phase, ["closeDisposition"] = _close?.Disposition ?? "UnavailableNotReserved",
+            ["phase"] = _phase, ["closeDisposition"] = _close?.Disposition ?? (_delegated ? "UnavailableDelegated" : "UnavailableNotReserved"),
             ["delegated"] = _delegated, ["captureCanOpen"] = _capturing && !_expired,
             ["liveCapabilitiesExpired"] = _expired, ["fullSemanticAdmission"] = false,
             ["hasS"] = false, ["hasB"] = false, ["hasM3"] = false,
@@ -141,8 +141,18 @@ public partial class GameEngine
         var attempt = new MortalJointPublicationAttempt(JointAttemptIssuer, this, _fs, lease, frame, capture,
             HotBindingDiagnostic(_hotOrdinaryOriginal), HotCustodyDiagnostic(null));
         _mortalJointPublicationAttempt = attempt;
-        attempt.RequireActualOwner(_fs, lease);
-        return attempt;
+        try
+        {
+            attempt.RequireActualOwner(_fs, lease);
+            return attempt;
+        }
+        catch
+        {
+            // The caller cannot receive this owner when Begin fails. Expire
+            // exactly this unreserved registration without touching any debt.
+            attempt.Expire(JointAttemptIssuer);
+            throw;
+        }
     }
 
     private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,

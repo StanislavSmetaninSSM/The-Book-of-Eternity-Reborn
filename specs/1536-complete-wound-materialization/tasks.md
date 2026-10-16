@@ -10,6 +10,8 @@ New direct delegation resumes implementation from745b and supersedes the complet
 
 - [ ] Current bounded3b custody/attempt/MC/owned-close source WIP is uncompiled/unrun/unreviewed; selection3categories anticipated6cases. Push/readback/full-current-source recovery, fresh BOTH/catalog/PlanOnly0 and independent SOURCE before ONLYFIRSTLate2; frozen separate EVIDENCE before releasedGREEN. No fullstage/activation claim.
 
+- [ ] Initial bb SOURCE BLOCKED F01/F02/F03 preserved with first native1 preparation/ZERO tests and later full54236-file recovery. Constructor/failed-Begin expiry/source reentry/foreign classification corrections and8category/15anticipatedcase selection with genuine registry/browser/worker controls are WIP UNCOMPILED/UNRUN; fresh preparation/recovery/affected SOURCE still required. Exact Begin IO/G seam remainsOPEN, static correction only; no foreign-engine source import. No actual release.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.

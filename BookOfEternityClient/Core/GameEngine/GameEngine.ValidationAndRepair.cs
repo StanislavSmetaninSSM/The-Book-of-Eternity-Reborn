@@ -3213,6 +3213,8 @@ public partial class GameEngine
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
         _hotRepairReady?.Fail("SubsequentRepairInvocation");
+        _hotRepairReady = null;
+        _hotRepairRoute = HotRepairRoute.Pending;
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
         if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "validation_failed";
         var isBoundedPendingResolutionResubmission =
@@ -3341,6 +3343,7 @@ public partial class GameEngine
             woundRequiredResubmissionPaths,
             effectRepairPackets,
             isBoundedPendingResolutionResubmission);
+        ObserveHotRepairDispatch(dispatch);
         var hotWorkerRoute = dispatch.WorkerApplyAccepted || dispatch.ReadySignalCreated;
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
@@ -3477,6 +3480,7 @@ public partial class GameEngine
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     BuildInvalidRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                ObserveHotRepairDispatch(rejectedReadyRepair.Dispatch);
                 hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
@@ -3530,6 +3534,7 @@ public partial class GameEngine
                     BuildActualRepairContext(ready, pendingSnapshot),
                     BuildMismatchedRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                ObserveHotRepairDispatch(rejectedReadyRepair.Dispatch);
                 hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)

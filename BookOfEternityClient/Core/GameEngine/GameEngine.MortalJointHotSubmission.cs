@@ -26,6 +26,14 @@ public partial class GameEngine
     private long _hotReadyOrdinal;
     private HotOrdinaryOriginal? _hotOrdinaryOriginal;
     private HotRepairReadyRead? _hotRepairReady;
+    private enum HotRepairRoute { Pending, Ordinary, Worker, DiagnosticOnly }
+    private HotRepairRoute _hotRepairRoute;
+
+    private void ObserveHotRepairDispatch(ValidationRepairDispatchState dispatch)
+    {
+        _hotRepairRoute = dispatch.MetadataDiagnosticOnly ? HotRepairRoute.DiagnosticOnly :
+            dispatch.WorkerApplyAccepted || dispatch.ReadySignalCreated ? HotRepairRoute.Worker : HotRepairRoute.Ordinary;
+    }
 
     private sealed class HotOrdinaryOriginal(long ordinal, string generation,
         PendingPlayerActionService.Binding? browserBinding)
@@ -89,7 +97,7 @@ public partial class GameEngine
             throw new InvalidOperationException("The issued ordinary original does not belong to its Stage producer.");
         var generation = _fs.ReadLocalGenerationSnapshot(lease);
         if (generation.Binding.Id != owner.Generation || generation.Bytes is null)
-            throw new SessionReplacedException("Ordinary staging generation changed.");
+            throw new SessionReplacedException("Ordinary staging generation changed.", owner.Generation, generation.Binding.Id);
         owner.GenerationBytes = generation.Bytes.ToArray();
         owner.ManifestBytes = FileSystemManager.EncodeUtf8WithPreamble(manifestJson);
         owner.AuthorityBytes = FileSystemManager.EncodeUtf8WithPreamble(authorityJson);
@@ -132,7 +140,7 @@ public partial class GameEngine
         main.Validate(lease);
         var generation = _fs.ReadLocalGenerationSnapshot(lease);
         if (generation.Binding.Id != origin.Generation)
-            throw new SessionReplacedException("HOT original belongs to a replaced session.");
+            throw new SessionReplacedException("HOT original belongs to a replaced session.", origin.Generation, generation.Binding.Id);
         if (!ReferenceEquals(origin, _hotOrdinaryOriginal) || origin.Preparation is null ||
             origin.State is not ("Staged" or "StagedUnderLiveOwner") || !HotBytesEqual(generation.Bytes, origin.GenerationBytes))
             throw new InvalidDataException("The actual live ordinary original is unavailable.");
@@ -277,9 +285,11 @@ public partial class GameEngine
         return rows;
     }
 
-    private static JsonObject HotCustodyDiagnostic(HotRepairReadyRead? read) => new()
+    private JsonObject HotCustodyDiagnostic(HotRepairReadyRead? read) => new()
     {
-        ["status"] = read?.Status ?? "Unavailable", ["reason"] = read?.Reason ?? "MissingLiveOrigin",
+        ["status"] = read?.Status ?? "Unavailable", ["reason"] = read?.Reason ?? (_hotRepairRoute == HotRepairRoute.Worker ? "WorkerDispositionNotIntegrated" :
+            _hotRepairRoute == HotRepairRoute.DiagnosticOnly ? "DiagnosticOnlyDispatch" :
+            _hotOrdinaryOriginal?.Preparation is not null ? "MatchingConsumptionNotCompleted" : "MissingLiveOrigin"),
         ["readyObservedBeforeDelete"] = read?.ReadyObservedBeforeDelete ?? false,
         ["readyDeleteReturned"] = read?.ReadyDeleteReturned ?? false,
         ["readyReleaseReturned"] = read?.ReadyReleaseReturned ?? false,

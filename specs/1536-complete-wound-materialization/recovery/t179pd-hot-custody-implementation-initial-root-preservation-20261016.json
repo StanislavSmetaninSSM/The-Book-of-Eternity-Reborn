@@ -1,0 +1,26 @@
+{
+  "source": "bb1328e656539732b153f4396bf16cab82b2ad40",
+  "receiptRawBytes": 20002897,
+  "receiptRawSha256": "9e6d9cfc3c15181b3bf6ad0a992aef0c7fe7c388b997dd31a4bf62e7df9c226a",
+  "receiptGzipSha256": "cc3e324d20100c245169b1e19a947059d637f273e2bcd14313bbb3b7c06436b8",
+  "argv": [
+    "python",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-fresh-github-full-tree-restore-20261016.py",
+    "bb1328e656539732b153f4396bf16cab82b2ad40",
+    "/workspace/f1-r2-hot-custody-implementation-initial-source-github-20261016",
+    "/tmp/t179pd-hot-custody-implementation-initial-full-recovery-20261016.json"
+  ],
+  "nativeExit": 0,
+  "verifiedFiles": 54236,
+  "verifiedTrackedBytes": 3623129494,
+  "restoredRuntime": "NOT_RUN",
+  "scope": "Full CURRENT tracked tree only; all bytes/modes Git+writer exact/new GitHub-only/clean/noalternates/nosparse/mainunchanged. Initial blocked review did not inspect this later-completed receipt; affected review must verify it.",
+  "rootReviewVerification": {
+    "gitPinEntries": 81,
+    "exactDiffs": 5,
+    "temporaryReferences": 3,
+    "exactProjections": 43,
+    "reviewMdSha256": "28ed5855e83b782c5cf35175a0a9d4a6ab3d186364bd04ecac824698f9a83611",
+    "reviewJsonSha256": "4e10ab0876ff44ad394d919748ec7f55ed33a2b3f8a1fcd78a6d110961920ca8"
+  }
+}

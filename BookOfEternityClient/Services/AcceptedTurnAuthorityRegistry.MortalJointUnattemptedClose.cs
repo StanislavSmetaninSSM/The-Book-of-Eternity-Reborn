@@ -39,6 +39,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             if (lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder is not null || lease.BrowserLocalAccess is not null ||
                 lease.MainAdmission is null) return UnattemptedUnavailable("UnavailableForeignOwner");
             lease.MainAdmission.Validate(lease);
+            if (!attempt.IsCurrentOwner(files, lease)) return UnattemptedUnavailable("UnavailableForeignOwner");
             attempt.RequireActualOwner(files, lease);
             // Inspect an existing slot only. A failed close must never mint G or
             // replace a registry state, even when the old owner is absent.

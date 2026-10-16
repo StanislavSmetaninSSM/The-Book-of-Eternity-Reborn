@@ -199,6 +199,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
             .ToDictionary(path => path, path => before[path], StringComparer.Ordinal));
 
+        var actualAttempt = GetPrivateField<GameEngine.MortalJointPublicationAttempt>(engine, "_mortalJointPublicationAttempt");
+        var expiredLease = GetPrivateField<FileSystemManager.CanonicalWriteLease>(actualAttempt, "_lease");
+        Assert.False(expiredLease.IsActive);
+        Assert.Throws<InvalidDataException>(() => actualAttempt.RequireActualOwner(_fs, expiredLease));
+        var expiredClose = AcceptedTurnAuthorityRegistry.CloseOwnedJointAttemptUnattempted(_fs, expiredLease, actualAttempt);
+        Assert.Equal("UnavailableSourceFault", expiredClose.Disposition);
+        Assert.Null(GetPrivateFieldValue<object?>(expiredClose, "_receipt"));
+        Assert.Equal("ClosedNoNativeAttempt", Assert.IsType<JsonObject>(export.Invoke(engine, null))["closeDisposition"]!.GetValue<string>());
+
         // Diagnostics are detached DATA. Mutating an export cannot mutate the
         // retained source or turn it into a live lease/issuer/capture capability.
         var frozen = diagnostic.DeepClone();

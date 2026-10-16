@@ -1,0 +1,138 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody(bool failReadyPublication)
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        const string weatherPath = "game_state/world/weather.json";
+        const string readyPath = "game_state/control/validation_repair_ready.json";
+        var readyCuts = 0; var armed = false;
+        string? appliedTaskAtCut = null;
+        FileSystemManager? files = null;
+        files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationAsync = path =>
+                {
+                    if (!armed || !failReadyPublication || readyCuts != 0 || path != readyPath)
+                        return Task.CompletedTask;
+                    var auditPath = files!.ResolvePath(GmWorkerAuditLog.AuditLogPath);
+                    if (!File.Exists(auditPath)) return Task.CompletedTask;
+                    var applied = File.ReadAllLines(auditPath).Where(line => !string.IsNullOrWhiteSpace(line))
+                        .Select(line => GmWorkerJson.Deserialize<WorkerAuditEvent>(line))
+                        .Where(row => row?.EventType == "proposal-applied").ToArray();
+                    if (applied.Length == 0) return Task.CompletedTask;
+                    appliedTaskAtCut = Assert.Single(applied)!.TaskId;
+                    readyCuts++;
+                    // Real accepted apply has returned. This existing physical
+                    // mutation hook is before Ready publisher/temp creation.
+                    throw new IOException("Actual accepted worker apply; Ready publication did not begin.");
+                }
+            });
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, files.GameSessionPath);
+        await files.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(
+            Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await files.WriteFileAtomicAsync("game_state/player/experience.json",
+            "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 42, 20, 20, 20, 20, 20);
+        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
+        await files.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
+        await files.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());
+        await files.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions,
+            path => files.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
+        await files.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
+        await files.WriteFileAtomicAsync(weatherPath, "{\"tendency\":\"NO_CHANGE\",\"description\":\"Погода не меняется.\"}");
+        var scriptPath = Path.Combine(_rootPath, "hot-custody-worker.ps1");
+        await File.WriteAllTextAsync(scriptPath, """
+            $ErrorActionPreference = 'Stop'
+            $task = Get-Content -Raw -LiteralPath $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+            $weather = @($task.contextFiles | Where-Object { $_.path -eq 'game_state/world/weather.json' })[0]
+            if ($null -eq $weather) { throw 'Missing actual weather context.' }
+            $proposalId = 'worker_proposal_hot_custody'
+            $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+            $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+            New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+            Copy-Item -LiteralPath (Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state/world/weather.json') -Destination $contentPath
+            $proposal = [ordered]@{
+                schemaVersion = 1; proposalId = $proposalId; taskId = $task.taskId; workerId = $task.workerId
+                status = 'completed'; summary = 'Actual no-op weather repair for HOT route control.'
+                changedFiles = @([ordered]@{
+                    path = 'game_state/world/weather.json'; changeKind = 'replace'; beforeSha256 = $weather.sha256
+                    afterSha256 = (Get-FileHash -LiteralPath $contentPath -Algorithm SHA256).Hash.ToLowerInvariant()
+                    contentRef = $contentRef
+                })
+                findings = @(); selfCheck = [ordered]@{ scopeReviewed = $true; validationExpectedToPass = $true; notes = @() }
+                createdAtUtc = [DateTime]::UtcNow.ToString('O')
+            }
+            $proposal | ConvertTo-Json -Depth 40 | Set-Content -LiteralPath $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+            """, Encoding.UTF8);
+        var executable = OperatingSystem.IsWindows() ? "pwsh.exe" : "pwsh";
+        var shell = (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator)
+            .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)
+            ?? throw new InvalidOperationException("PowerShell 7 fixture executable is unavailable.");
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), settings =>
+        {
+            InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;
+            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+                { Enabled = true, LaunchCommand = $"\"{shell}\" -NoLogo -NoProfile -File \"{scriptPath}\"", TimeoutSeconds = 15 });
+        }, fileSystem: files);
+        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_hot_actual_worker", 42);
+        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>
+        {
+            var preparation = Assert.IsAssignableFrom<object>(await InvokePrivateTaskNullableResultAsync(
+                engine, "StagePlayerTurnAsync", "Спокойно осмотреться.", null, null));
+            var request = Assert.IsType<TurnRequest>(preparation.GetType().GetProperty("Request")!.GetValue(preparation));
+            var backup = preparation.GetType().GetProperty("Backup")!.GetValue(preparation)!;
+            var generation = Assert.IsType<string>(preparation.GetType().GetProperty("Generation")!.GetValue(preparation));
+            var before = await files.ReadFileBytesAsync(weatherPath);
+            armed = true;
+            var accepted = await InvokePrivateAsync<bool>(engine, "WaitForContractRepairAsync", "hot actual worker control",
+                new List<ValidationIssue> { new(weatherPath, IssueSeverity.Error, "Synthetic weather repair owner control.",
+                    code: "normalized_weather_missing_description") }, 1, backup, generation);
+            Assert.True(accepted); Assert.Equal(failReadyPublication ? 1 : 0, readyCuts);
+            var audit = await new GmWorkerAuditLog(files).ReadEventsAsync();
+            var applied = Assert.Single(audit.Where(row => row.EventType == "proposal-applied"));
+            var task = GmWorkerJson.Deserialize<WorkerTaskPacket>((await files.ReadFileAsync(
+                GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath))!)!;
+            Assert.Equal(task.TaskId, applied.TaskId); Assert.Equal(request.SessionId, task.SourceTurn.SessionId);
+            Assert.Equal(request.RequestId, task.SourceTurn.RequestId); Assert.Equal(43, task.SourceTurn.TurnNumber);
+            Assert.Equal(generation, task.SessionGeneration);
+            if (failReadyPublication) Assert.Equal(task.TaskId, appliedTaskAtCut);
+            Assert.Equal(before, await files.ReadFileBytesAsync(weatherPath));
+            Assert.Null(await files.ReadFileBytesAsync(readyPath));
+            Assert.Null(await files.ReadFileBytesAsync("game_state/control/validation_repair_request.json"));
+            var ledger = (await files.ReadFileAsync("game_state/control/gm_trajectory_ledger.jsonl"))!
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(line => JsonNode.Parse(line)!.AsObject()).ToArray();
+            Assert.Contains(ledger, row => row["requestId"]?.GetValue<string>() == request.RequestId &&
+                row["acceptanceScope"]?.GetValue<string>() == (failReadyPublication ? "worker_apply_gate_accepted" : "correlated_repair_ready"));
+            var diagnostic = InvokePrivateValue<JsonObject>(engine, "ExportHotOrdinarySubmissionDiagnostic");
+            Assert.True(diagnostic["binding"]!["actualStageCompleted"]!.GetValue<bool>());
+            Assert.Equal("Unavailable", diagnostic["custody"]!["status"]!.GetValue<string>());
+            Assert.Equal("WorkerDispositionNotIntegrated", diagnostic["custody"]!["reason"]!.GetValue<string>());
+            Assert.Equal(!failReadyPublication, diagnostic["custody"]!["readyDeleteReturned"]!.GetValue<bool>());
+            Assert.Equal(!failReadyPublication, diagnostic["custody"]!["readyReleaseReturned"]!.GetValue<bool>());
+            foreach (var key in new[] { "hasS", "hasB", "hasM3" }) Assert.False(diagnostic[key]!.GetValue<bool>());
+            WritePhysicalInjuryDiagnostic("fr063_hot_actual_worker_disposition", new
+                { failReadyPublication, readyCuts, appliedTaskAtCut, applied, task, diagnostic, request.RequestId, generation });
+            return true;
+        });
+    }
+}

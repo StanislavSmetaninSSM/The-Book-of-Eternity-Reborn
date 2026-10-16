@@ -25,7 +25,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
         bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
         Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
-        bool postOriginalAutomaticSubmission = false)
+        bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -130,6 +130,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return Task.CompletedTask;
                 }
             }, logger: logger);
+        attachActualOwnerProbe?.Invoke(engine);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         if (!useLiveCaller)
