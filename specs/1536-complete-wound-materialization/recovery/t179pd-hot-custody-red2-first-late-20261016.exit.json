@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-fresh-github-full-tree-restore-20261016.py",
+    "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+    "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+    "/tmp/t179pd-hot-custody-red2-first-late-recovery-20261016.json"
+  ],
+  "native_exit": 0,
+  "actual_head": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+  "started_utc": "2026-10-16T20:06:53.375426+00:00",
+  "ended_utc": "2026-10-16T20:11:42.789229+00:00",
+  "scope": "GitHub full current-tree source recovery ONLY; no build/discovery/tests/application runtime"
+}

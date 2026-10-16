@@ -1,3 +1,12 @@
+## Current delegated scope — DESIGN ONLY (2026-10-16)
+
+Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
+
+- [x] Preserve separately accepted bounded 3e DESIGN review at2ab: no confirmed finding, root66pins/fourexactdiffs/14temporaryreferences/84projections; immutable MD/JSON/documentary supports only. DFR01–07 remain UNRUN; no implementation or actual release.
+- [ ] Verify F1-FINAL-D01's current DESIGN-only scope corrections and the future shared-composer O03 clarification through affected independent review; preserve the original report. Then publish/readback/recover the document checkpoint and STOP. No actual run can be released by this checklist.
+
+## Historical checkpoint records — current scope above takes precedence
+
 ## T179-Pd.3b FIRST Late2 saved — EVIDENCE gate pending (2026-10-16)
 
 - [x] Actual93a/compiledd474 native0:2/2PASS,203.1165103s wall/197.930765s≤5m, exactselection/strict2cleanup/no newtempresidue/fourDLLs+HEADclean unchanged. Sixrawchains/fullroot66snapshot66rollback+request/G/common/story/progression/inert bindings verified; scripts/results saved. Acceptance93afullsource54164files/newGitHub-only/clean/noalts/nosparse/mainunchanged verified beforeactual; no restoredruntime.

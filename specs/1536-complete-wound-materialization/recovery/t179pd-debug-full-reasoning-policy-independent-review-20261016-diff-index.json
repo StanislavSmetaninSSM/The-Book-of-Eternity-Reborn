@@ -1,0 +1,72 @@
+[
+  {
+    "path": "t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff",
+    "raw_sha256": "03f64a4e38a9bf77667d127d1a60bd23b0a3cfa0b7b3b6648489f15009417c89",
+    "raw_bytes": 47753640,
+    "stored_sha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--no-ext-diff",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz",
+    "raw_path": "/tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff",
+    "raw_sha256": "c39e0b33722c20c0c10c03c7649043b41a9355efa66beacf2f84679f1de95be1",
+    "raw_bytes": 205363,
+    "stored_sha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--no-ext-diff",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.json",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ]
+  },
+  {
+    "path": "t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--no-ext-diff",
+      "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz",
+    "raw_path": "/tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--name-status",
+      "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "--",
+      "BookOfEternityClient"
+    ]
+  }
+]

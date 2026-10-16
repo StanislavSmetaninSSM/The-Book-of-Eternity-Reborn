@@ -1,5 +1,7 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
+> **Current delegated scope, 2026-10-16: DESIGN ONLY.** Follow the [current plan entry](../plan.md): documents and independent DESIGN review/corrections only, with task-branch publication/source recovery. No code/test/runtime-tool changes or build/discovery/tests/runtime. Historical execution records do not release actual runs in this pass. After corrected final review and verified document recovery, STOP for implementation discussion. Existing source/evidence and all D4/guided/DOM/visual/platform/D8/full-F1/T197/new-QTE limits are retained.
+
 **Статус:** PROPOSED DESIGN, подготовлен для обсуждения. Не accepted runtime contract,
 не implementation plan и не разрешение менять production, тесты или полномочия записи.
 **Задача:** [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070.
