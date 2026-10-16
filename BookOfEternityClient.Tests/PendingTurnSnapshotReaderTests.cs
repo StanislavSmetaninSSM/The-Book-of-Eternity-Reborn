@@ -331,17 +331,29 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         var duplicate = $"\"files\":{filesJson},";
         var insertion = json.IndexOf('{') + 1;
         json = json.Insert(insertion, duplicate);
-        await _fs.WriteFileAtomicAsync(
-            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
-            json);
+        var duplicateBytes = Encoding.UTF8.GetPreamble()
+            .Concat(Encoding.UTF8.GetBytes(json)).ToArray();
+        var before = SnapshotTree();
 
         PendingTurnSnapshotReadResult result;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var baseline = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+            Assert.True(baseline.Success, Describe(baseline.Issues));
+            Assert.Empty(baseline.Issues);
+            Assert.NotNull(baseline.Snapshot);
+            // Preserve genuine admission; corrupt only the reader's input after
+            // the real lease exists, using the original text writer's BOM bytes.
+            File.WriteAllBytes(path, duplicateBytes);
             result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+        }
 
         Assert.False(result.Success);
+        Assert.Null(result.Snapshot);
         Assert.Contains(result.Issues, issue =>
             issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+        before[Path.GetRelativePath(_root, path).Replace('\\', '/')] = duplicateBytes;
+        AssertTreeEqual(before, SnapshotTree());
     }
 
     [Theory]
