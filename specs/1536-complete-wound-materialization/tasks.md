@@ -1,3 +1,5 @@
+- T179-Pd static NPC correction now takes genuine initial carrier baseline entries, not initially untouched-path filtering. Prior05f BOTH/catalog valid but superseded; no actual ran. Fresh G5 required. Submitted-output transitive read-closure consultation preserved71pins/73leaves; full source admission/cold semantics still unimplemented.
+
 - T179-Pd unexpected15 diagnosis preserved; narrow unit fixture/assertion corrections UNRUN. Fresh BOTH/catalog/PlanOnly/SOURCE/firstLate2/EVIDENCE mandatory before retry; prior remaining-category release stopped.
 - T197 targeted G-C/A4 independent conditional review complete, no material defect; six exact engineering closures and28UNRUN checks remain. Next DESIGN: one actual source executor/capability/pre-effect enrollment/publication-leaf vertical contract; no implementation release or target activation.
 

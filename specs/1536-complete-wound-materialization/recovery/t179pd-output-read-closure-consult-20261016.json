@@ -1,0 +1,2972 @@
+{
+  "inspected_head": "59e05adb13602dca91a58238701620b00381d3f4",
+  "previous_consult_baseline": "c1eff0c66e44eb4223cdd5ed140e204a2ba53fee",
+  "completion_head": "05f39661739e6bae26da5af428d9d182e132b1c5",
+  "repo": "/workspace/The-Book-of-Eternity-Reborn",
+  "status_porcelain": "",
+  "working_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "head_advance_changed_files": [
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-artifact-index.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-plan.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-runner-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-20261016-summary.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-failure-diagnosis.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-failure-diagnosis.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-artifact-index.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-plan.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-runner-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-summary.json",
+    "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
+    "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "configuration": {
+    "assigned_model": "Astra",
+    "assigned_reasoning": "High",
+    "serving_backend": "unknown"
+  },
+  "scope": "Read-only source architecture consultation. Only new /tmp report pair written. No repository/build/test/discovery/app/runtime/network/git mutations.",
+  "report": "/tmp/t179pd-output-read-closure-consult-20261016.md",
+  "report_sha256": "8e3b2c088ee84c7aade1be5b9209e2a5656133d67bc1957b9d5401d822bdddd8",
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "4ecefd74e99304a178e2c9ab8bb3d14701f83bf0",
+      "sha256": "686f625feb106b653dc3380be11d8e2fbac9d7c7f601c79a6d07ba76b71d3d37",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/AbodePowerRules.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "b738d643c7c99c456f9b21795d362dc0e5b475fe",
+      "sha256": "59a147370ca060748dcf643f37657b137983e8c0e0e62c00da8c5cd45ef08c2a",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "79afa8a1faf751002e7b1210f9945eed91635f4c",
+      "sha256": "5da0c9b4a45e1d19e4ecf6d37988569c1d5f218ca4b1725f25ff66bc505502fa",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9aacb56c60f7bdc9882852dfe96b4d005c106990",
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65",
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "7831be8e58492e161f8b982d634666a7bcf6f5d4",
+      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GuardianManifestation.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "78aaa9ead870238723a9fc06f885518b3c7dc9d5",
+      "sha256": "30b2af366d5a3b6d4e24d95bdb6d38348fd9bec9ada66c98871fd9596c6e6701",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GuardianRelationshipRules.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "c8f4c535bda9e49cd694654c941d1a45e48dc2c5",
+      "sha256": "fd8857e38f9e27a9152a6f608c04d804e2aadf7a0cce941850acf3265bf7f957",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "0cf0e4b0d4751490afb0c2652f5f0f5e978ff594",
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnProjectionClock.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "8e724aeefd2ce6c0b39ae34134b54af7678aaa31",
+      "sha256": "b8fdda0730c89d3f02c4824938f7b0cc89e147dcf5b979eba4aa0c521aa0aba7",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "2b2e8c5c8e1e72e1ba984fe7ee43fbbb681966a4",
+      "sha256": "6edaf6fe85d264e2139794c6a12761fbdee86a226dee277a125634d93b5498e3",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d02aa23575693cc8103a75563574374cd882f619",
+      "sha256": "28c4bbb02b583fb95f936ec9978ac10e53300747ac38c18ac328db7fb13193f9",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "fa37ebc643bb56e80b41945d1005cbd0f764d3ee",
+      "sha256": "7750e2cc3102dcff057d4439de89739743c25308f43b694b90049f4b5c8ffe72",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "cc85baa51834dbccaaa886b5c33bf667a83e7d9d",
+      "sha256": "24d5bc2f353a58e1f10a1bdf802cbe3282f8e9adee1e4758575edfd0fdbad692",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "20d66788fe4d760e6558602da2fb133654caa289",
+      "sha256": "e628d6d382eef03a8535a3db192a27944d6a545fd797566e09c96ca8ea74ee6e",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "3c01893f9d321182bf6cabb9b8979b5edb5f826a",
+      "sha256": "f55cbe8b0a25ee6a4713e2b6a43503f2194afbe41b771f9443fa65cdfd117449",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeOfferingState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "20ece52b44714621e4637333cf415289100da9e2",
+      "sha256": "94caa7d66133344bb088050ce87f5cd1815e72b19109bf21446b918392803db4",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "80ba77e0d8760b8595c47f602b454efcddd11b16",
+      "sha256": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianGachaChargeRules.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "b89983a751fae0b8c741a203c2702e67d2ccf83d",
+      "sha256": "10031d54f86c8e9bcb6b594056f74081a0e59fe8c5b87496f682bd9bed3e9e89",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPolicyContracts.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "8b5db968a7889c7c27a5d9277a80420ac62bf85d",
+      "sha256": "2be228ffd895e11dcfe28b8c4f05905a47d638f4fccd2d960f8baa4348245c0f",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "7633ea207afb6236ac46e73a044a489235123f59",
+      "sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianProjectState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "4b73d2cc3ca49f96f7607c63c066ddcf5054b341",
+      "sha256": "b7b776abc6535f8a78e041638a87864d655f8c72238c57b0b3f0e26679d5c75b",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianThoughtJournalState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "6c28948b47df4f1af6defa869203638d97e59457",
+      "sha256": "fbe99d062748126c1aeff7ffdc6aa1bef74fab3e4059cbcc1740418674736da7",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "c1d8ffd66471f36293675a006783d01a799bddf8",
+      "sha256": "5b69b4a71660bd9bcc899b6b184aaccbfa877e0c325db5e9a58b738a22822b3d",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9af6bf96b38e545e90dabe4fa5f4f11f14e71368",
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "f91b5619173ebdb261ba585ac705fa69dcdeeeea",
+      "sha256": "64c3d989c4f20fc01c9a07e09b2254da010bf9ddb6aef043004e0815ecd49e90",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d0adeaf89a575dec982f9887d9b1fe12f0965416",
+      "sha256": "f2b9b47d454f3d8fc7811404de62e641063dc00f22df782fa735268d4b0cfd85",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ScenarioCoreService.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "eb2821f95893ed6869978c97d86fefead797694e",
+      "sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd",
+      "sha256": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StructuredBonusCanonicalizer.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "0f829336fced15a67f585350584db47cca05ebd7",
+      "sha256": "0404c4f678a7e46bb82cbf55207ff85060f2645d6e6ace8b9370a35fccb434d0",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "af50ab53ec60892fe41230840136d583c23d7f64",
+      "sha256": "f6ce6b4767d130bb8f71c7a77742cb00aead9a3bf4525352203c9e085c164918",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "3a817e031d8cc5e4c3122c5ac3437e8665f2dd33",
+      "sha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "e0ed469706453205397b5665b049b83db9431e6b",
+      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.CoreBootstrapAndCrossRefs.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "44f887842fe690dd0983a1594e031d82490dd09f",
+      "sha256": "1c4696da83450319b10e1ca941affa5c5cd2d3389f99d72217ed25f50b1e079f",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9e5e75ac2b20aac75c8e3849c0ea5797a9a60453",
+      "sha256": "6ea65bf4e414c1050ef4ce5d2939f25349917c611784ba9b5faf2d9a0e307188",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "619c123044a87dc8ed8bd76c9a5ed307ca44948f",
+      "sha256": "5fefc400888488ae912bee4c0808d888d524eaa81be71fe073e611201dea4855",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "29bfb470f09a9daf1025fb9b95b7b69f1cdb4196",
+      "sha256": "fee7954509cf733de02ecbc18eabed531546888f19061c6bfcec9cca4cebf865",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "f05878ad24fb68d86aaba57a7c341035be6be148",
+      "sha256": "a894c83caeabaeb74e674c66ecd1ea575abd71a63bb7105aef429c2e2a694fb5",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d15f84c02e7d8d8d3c0d4bb30b07d27165bb1505",
+      "sha256": "d9a268c30cb219fc1e66e3a6466880e4124155cbefcc448a8b4824fdcb39179b",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "a7ac75403ea26423545a62b02186c00956f6195c",
+      "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "e03ec83e0832c19c2d689b28e9c55bdf55e109ba",
+      "sha256": "a0b1af0d4b06a0d4c74bf31a1cfca22fe9d902f3d7586b4d9a51888664ab7f93",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "a8cdc8ccbf7e4042c057214745de13168d4885f7",
+      "sha256": "bc6a6f0d2b571d30108aa90cf2d3ed5a02570a8bda35b77c2ed42e2f7c028cb5",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "9c874a99d31b806c3b30facc6022b5ab24faaccd",
+      "sha256": "5c96f4bb13c83a88c9bfcd1c180e5de556ecbbb8fc85f6befc6887d0d4ba569a",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "456415569129ff288c324515aaba6927049eb543",
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "e5e9e8d77a5313eba8c7d2fe6515a476c0f81ad5",
+      "sha256": "96042bf2e790c80932810689d5dc0ee2f13ed567c2be47487effa05c6730c0a0",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "243c6bbf9faedb2f132f2cb2a3ca21c9bc8aa18b",
+      "sha256": "a8e0669c2bb1c692c2e9fa7481d78f2102267503bc31061974874da9a4551971",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "680d9f86fd83cc5e93daae18d482b1cb75b9a663",
+      "sha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "d1ceccac2e2f7f68e1151cf3ce7980a860df1d0b",
+      "sha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "b5b85f9318f2b6b1951dd8d2a0439075050b4660",
+      "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "2a24975b00c08dde57c7ae98ea02e9d57b8712c8",
+      "sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "59e05adb13602dca91a58238701620b00381d3f4",
+      "git_blob": "6ea55ad597ee138d7ef2999d0cf49acf240c5b4e",
+      "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "current_worktree_matches": true,
+      "same_as_previous_consult_baseline": false
+    }
+  ],
+  "checks_run": [],
+  "future_checks": "All proposed checks UNRUN by consultant. Parent ongoing tests not reviewed or claimed.",
+  "remaining_implementation_obligations": [
+    "Source-aware original authority/context/callback read core",
+    "Explicit bound current/control/original leaf threading with sticky failures and invocation cache isolation",
+    "Same-lease completed guardian comparison",
+    "Genuine full-resubmission and applicable repair freshness evidence or exact same-lease extraction",
+    "Capture and retain first-pass volatile comparison observations; no cold clock/allocation reruns"
+  ],
+  "previous_reports_modified": false,
+  "prior_report_sha256": {
+    "/tmp/t179pd-submitted-admission-consult-20261016.json": "4338d3a859d358b9fda1c10922efa48392f80907096b12ef15eee8772c341ea8",
+    "/tmp/t179pd-submitted-admission-consult-20261016.md": "b6387f4983518a3b949132b2101e2a03105970687788c5f1455235348874a46b"
+  },
+  "direct_leaf_inventory": [
+    {
+      "name": "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 79,
+      "end": 213,
+      "calls": [
+        "NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync",
+        "TryFindTechnicalRepairLeakInNarrative",
+        "ValidateAcceptedTurnProseStateDeltasAsync",
+        "ValidateAcceptedTurnTransientOutputFreshnessAsync",
+        "ValidateAchievementUnlockNarrativeMarkersAsync",
+        "ValidateRequiredIsoTimestampField",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          88,
+          "var json = await _fs.ReadFileAsync(\"output/narrative_response.json\");"
+        ]
+      ],
+      "paths": [
+        "output/narrative_response.json",
+        "output/narrative_response.json must be freshly rewritten for the current accepted turn",
+        "output/narrative_response.json with non-empty response",
+        "output/narrative_response.json должен быть JSON object",
+        "output/narrative_response.json должен быть валидным JSON",
+        "output/narrative_response.json содержит неподдерживаемое top-level поле",
+        "output/narrative_response.json.response",
+        "output/narrative_response.json.{prop.Name}"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 230,
+      "end": 235,
+      "calls": [],
+      "io": [
+        [
+          233,
+          "await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 324,
+      "end": 360,
+      "calls": [],
+      "io": [
+        [
+          326,
+          "var interfaceJson = await _fs.ReadFileAsync(\"output/interface_updates.json\");"
+        ]
+      ],
+      "paths": [
+        "output/interface_updates.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadCurrentKnownPlayerSkillNamesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 363,
+      "end": 368,
+      "calls": [
+        "ParsePlayerSkillNames"
+      ],
+      "io": [
+        [
+          365,
+          "names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync(\"game_state/player/skills_active.json\"), \"activeSkillChanges\"));"
+        ],
+        [
+          366,
+          "names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync(\"game_state/player/skills_passive.json\"), \"passiveSkillChanges\"));"
+        ]
+      ],
+      "paths": [
+        "game_state/player/skills_active.json",
+        "game_state/player/skills_passive.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadCurrentActiveRegularQuestIdentitiesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 371,
+      "end": 416,
+      "calls": [
+        "GetFirstNonEmptyString"
+      ],
+      "io": [
+        [
+          373,
+          "var json = await _fs.ReadFileAsync(\"game_state/quests/regular_quests.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/quests/regular_quests.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "HasAcceptedTurnStateDeltaAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 419,
+      "end": 444,
+      "calls": [
+        "ContainsPath",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync"
+      ],
+      "io": [
+        [
+          429,
+          "var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadAcceptedTurnNoProgressRationaleTextAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 447,
+      "end": 468,
+      "calls": [],
+      "io": [
+        [
+          448,
+          "var debugJson = await _fs.ReadFileAsync(\"output/debug_logs.json\");"
+        ]
+      ],
+      "paths": [
+        "output/debug_logs.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 582,
+      "end": 695,
+      "calls": [
+        "NormalizeAcceptedTurnInterfaceDialogueOptionsAsync",
+        "ValidateAcceptedTurnTransientOutputFreshnessAsync",
+        "ValidateDialogueOptionsData",
+        "ValidateOptionalNullableStringField",
+        "ValidateRequiredIsoTimestampField",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          593,
+          "if (!_fs.FileExists(interfacePath))"
+        ],
+        [
+          596,
+          "var json = await _fs.ReadFileAsync(interfacePath);"
+        ]
+      ],
+      "paths": [
+        "output/interface_updates.json",
+        "output/interface_updates.json must be freshly rewritten for the current accepted turn",
+        "output/interface_updates.json должен быть JSON object",
+        "output/interface_updates.json должен быть валидным JSON: {ex.Message}",
+        "output/interface_updates.json не должен быть timestamp-only stub без интерфейсного payload",
+        "output/interface_updates.json содержит неподдерживаемое top-level поле"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "NormalizeAcceptedTurnInterfaceDialogueOptionsAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 710,
+      "end": 717,
+      "calls": [],
+      "io": [
+        [
+          712,
+          "? DateTimeOffset.UtcNow : null;"
+        ],
+        [
+          715,
+          "await _fs.WriteFileAtomicAsync(interfacePath, projected.Json);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 720,
+      "end": 758,
+      "calls": [
+        "ContainsExplicitMortalCombatSignal",
+        "ContainsPath",
+        "HasMortalCombatState",
+        "HasPositiveExperienceGain",
+        "HasSkillMasteryChanges",
+        "IsAcceptedTurnMortalRealmAsync",
+        "ReadAcceptedTurnFilesModifiedAsync",
+        "TryReadStringPropertyFromJsonFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          736,
+          "HasPositiveExperienceGain(await _fs.ReadFileAsync(\"game_state/player/experience.json\")) &&"
+        ],
+        [
+          737,
+          "HasSkillMasteryChanges(await _fs.ReadFileAsync(\"game_state/player/skill_mastery.json\")) &&"
+        ],
+        [
+          739,
+          "_fs.FileExists(\"game_state/core/player_status.json\"));"
+        ]
+      ],
+      "paths": [
+        "game_state/combat/combat_log.json",
+        "game_state/combat/combat_log.json and, when tactically relevant, game_state/combat/enemies.json / game_state/combat/allies.json",
+        "game_state/core/player_status.json",
+        "game_state/player/experience.json",
+        "game_state/player/skill_mastery.json",
+        "input/turn_request.json",
+        "output/narrative_response.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadAcceptedTurnFilesModifiedAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 850,
+      "end": 880,
+      "calls": [
+        "NormalizeValidationPath"
+      ],
+      "io": [
+        [
+          852,
+          "var json = await _fs.ReadFileAsync(\"ready/turn_complete.json\");"
+        ]
+      ],
+      "paths": [
+        "ready/turn_complete.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync"
+      ]
+    },
+    {
+      "name": "HasMortalCombatState",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 883,
+      "end": 890,
+      "calls": [
+        "ContainsPath"
+      ],
+      "io": [
+        [
+          887,
+          "_fs.FileExists(\"game_state/combat/combat_log.json\") ||"
+        ],
+        [
+          888,
+          "_fs.FileExists(\"game_state/combat/enemies.json\") ||"
+        ],
+        [
+          889,
+          "_fs.FileExists(\"game_state/combat/allies.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/combat/allies.json",
+        "game_state/combat/combat_log.json",
+        "game_state/combat/enemies.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync"
+      ]
+    },
+    {
+      "name": "TryReadStringPropertyFromJsonFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 951,
+      "end": 972,
+      "calls": [],
+      "io": [
+        [
+          952,
+          "var json = await _fs.ReadFileAsync(relativePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync"
+      ]
+    },
+    {
+      "name": "TryReadNestedStringPropertyFromJsonFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 978,
+      "end": 1001,
+      "calls": [],
+      "io": [
+        [
+          979,
+          "var json = await _fs.ReadFileAsync(relativePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateDirectChaosSeaGachaOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1035,
+      "end": 1153,
+      "calls": [
+        "CollectSoulRelicIds",
+        "CurrentSoulFeathers",
+        "GetNodeString",
+        "IsClientInkFeatherSpendAlreadyInSnapshotAsync",
+        "IsExactChaosSeaRealm",
+        "ReadRequiredValidatedCurrentPreTurnTrackedFileAsync",
+        "TryFindSoulRelicNode",
+        "ValidateDirectChaosSeaGachaExactRarity",
+        "ValidateDirectChaosSeaGachaExactSoulDiff",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1046,
+          "var currentSoulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json.inkFeathers.current",
+        "input/turn_request.json.playerAction"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateChaosSeaTravelOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1207,
+      "end": 1406,
+      "calls": [
+        "ContainsString",
+        "ExtractChaosSeaTravelActionValue",
+        "FindGuardianNode",
+        "GetNodeString",
+        "IsExactChaosSeaRealm",
+        "ReadRequiredValidatedCurrentPreTurnTrackedFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1309,
+          "var currentGuardiansJson = await _fs.ReadFileAsync(\"game_state/meta/guardians.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes",
+        "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.guardians[].abode.isDiscovered",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardians.json with activeGuardian and chaosSeaNavigation",
+        "game_state/meta/guardians.json.activeGuardian.guardianId",
+        "game_state/meta/guardians.json.chaosSeaNavigation.currentAbodeId",
+        "game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes",
+        "game_state/meta/guardians.json.guardians",
+        "game_state/meta/guardians.json.guardians[].abode.isDiscovered",
+        "game_state/meta/soul_state.json",
+        "input/turn_request.json.playerAction"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "IsClientInkFeatherSpendAlreadyInSnapshotAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1459,
+      "end": 1497,
+      "calls": [
+        "CurrentSoulFeathers",
+        "DecodePendingSnapshotText",
+        "LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync"
+      ],
+      "io": [
+        [
+          1472,
+          "var rollbackBytes = await _fs.ReadFileBytesAsync(rollbackPath);"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAfterlifeClientPrepaidInkFeatherBalanceAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1502,
+      "end": 1551,
+      "calls": [
+        "CurrentSoulFeathers",
+        "GetNodeInt",
+        "IsClientInkFeatherSpendAlreadyInSnapshotAsync",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1507,
+          "var currentSoulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json.inkFeathers.current"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateInkFeatherActionReceiptAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1621,
+      "end": 1792,
+      "calls": [
+        "RequireString",
+        "TryGetStateEvidence",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1623,
+          "var receiptJson = await _fs.ReadFileAsync(InkFeatherActionResultPath);"
+        ]
+      ],
+      "paths": [
+        "output/ink_feather_action_result.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAbsorbFeathersOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1819,
+      "end": 1863,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "ReadPrimaryExperienceCounter",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "RequirePositiveEvidenceNumber",
+        "TryGetStateEvidence",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidateResolutionType",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1838,
+          "var currentExperience = ReadPrimaryExperienceCounter(await _fs.ReadFileAsync(\"game_state/player/experience.json\"));"
+        ]
+      ],
+      "paths": [
+        "game_state/player/experience.json",
+        "game_state/player/experience.json должен реально измениться после ABSORB_FEATHERS."
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateLearnSkillOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1866,
+      "end": 1943,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "RequireString",
+        "SkillExistsInJson",
+        "TryGetStateEvidence",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidateResolutionType",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1914,
+          "var postSkillJson = await _fs.ReadFileAsync(skillFile);"
+        ]
+      ],
+      "paths": [
+        "game_state/player/skills_*.json",
+        "game_state/player/skills_active.json",
+        "game_state/player/skills_passive.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateFateShieldOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 1946,
+      "end": 1995,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "RequireString",
+        "TryGetStateEvidence",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidateResolutionType",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          1961,
+          "var currentEffectsJson = await _fs.ReadFileAsync(\"game_state/player/effects.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/player/effects.json",
+        "game_state/player/effects.json должен реально измениться после FATE_SHIELD."
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateCultivateEnlightenmentOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 2153,
+      "end": 2213,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "ReadEnlightenmentExperienceAsync",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "RequirePositiveEvidenceNumber",
+        "TryGetStateEvidence",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidateResolutionType",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          2186,
+          "var currentExperience = await ReadEnlightenmentExperienceAsync(await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\"));"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json должен реально измениться после CULTIVATE_ENLIGHTENMENT."
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAbodeOfferingOutcomeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 2289,
+      "end": 2690,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "CreateGuardianPowerEventAuthorityScopeForGuardian",
+        "CreateGuardianPowerEventProofScopeForOffering",
+        "HasGuardianAcceptedTurnSnapshotContractFailure",
+        "HasListedAffectedFile",
+        "ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync",
+        "ReadRequiredValidatedGuardianAcceptedTurnSnapshotGuardiansAsync",
+        "ReadRequiredValidatedPendingTurnSnapshotFileAsync",
+        "ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync",
+        "RequirePositiveEvidenceNumber",
+        "RequireString",
+        "ResolveGuardianPolicyContextAsync",
+        "SummarizeOfferingJournalProof",
+        "TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome",
+        "TryGetStateEvidence",
+        "TryReadGuardianCurrentAbodePowerFromPolicyContext",
+        "TryReadValidatedGuardianAcceptedTurnSnapshotGuardian",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidatePendingAbodeOfferingConsumptionProof",
+        "ValidatePendingAbodeOfferingContract",
+        "ValidateResolutionType",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          2505,
+          "var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);"
+        ],
+        [
+          2682,
+          "var currentSoulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardians.json и {GuardianPowerEventState.JournalPath} должны реально измениться после ABODE_OFFERING.",
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json listed in affectedFiles"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateGuardianAffectedFilesChangedAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 2881,
+      "end": 2946,
+      "calls": [
+        "DescribeValidatedPendingTurnSnapshotStatus",
+        "LoadValidatedPendingTurnSnapshotLookupAsync",
+        "ReadValidatedPendingTurnSnapshotFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          2928,
+          "var current = await _fs.ReadFileAsync(file);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAcceptedTurnTransientOutputFreshnessAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3125,
+      "end": 3143,
+      "calls": [
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3130,
+          "var currentContent = await _fs.ReadFileAsync(relativePath) ?? string.Empty;"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "LoadValidatedPendingTurnSnapshotLookupSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3432,
+      "end": 3454,
+      "calls": [
+        "IsValidatedPendingTurnSnapshotManifestUsable",
+        "ParseValidationPendingTurnSnapshotManifest",
+        "ReadPendingTurnSnapshotAuthoritySync"
+      ],
+      "io": [
+        [
+          3436,
+          "var manifestJson = _fs.ReadFileSync("
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadPendingTurnSnapshotAuthoritySync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3457,
+      "end": 3461,
+      "calls": [
+        "CurrentWorldReadPhase"
+      ],
+      "io": [
+        [
+          3460,
+          ": _fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadRelativeFileBytesFromWorkspace",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3464,
+      "end": 3469,
+      "calls": [
+        "CurrentWorldReadPhase"
+      ],
+      "io": [
+        [
+          3468,
+          "return CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadValidatedPendingTurnSnapshotFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3506,
+      "end": 3544,
+      "calls": [
+        "ComputeSha256",
+        "CurrentWorldReadPhase",
+        "DecodePendingSnapshotText",
+        "LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync"
+      ],
+      "io": [
+        [
+          3523,
+          "? CurrentWorldReadPhase() is { } phase ? await phase.ReadBytesAsync(snapshotPath) : await _fs.ReadFileBytesAsync(snapshotPath)"
+        ],
+        [
+          3524,
+          ": await _fs.ReadFileBytesAsync(writeLease, snapshotPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadValidatedPendingTurnSnapshotFileSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3549,
+      "end": 3588,
+      "calls": [
+        "ComputeSha256",
+        "CurrentWorldReadPhase",
+        "DecodePendingSnapshotText",
+        "ReadPendingTurnSnapshotAuthoritySync"
+      ],
+      "io": [
+        [
+          3565,
+          "var snapshotBytes = CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(snapshotPath) : _fs.ReadFileBytesSync(snapshotPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadRequiredValidatedCurrentPreTurnTrackedFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 3621,
+      "end": 3659,
+      "calls": [
+        "DescribeValidatedPendingTurnSnapshotStatus",
+        "LoadValidatedPendingTurnSnapshotLookupAsync",
+        "ReadValidatedPendingTurnSnapshotFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3622,
+          "var currentJson = await _fs.ReadFileAsync(relativePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "LoadPendingTurnRequestValidationContextSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 4010,
+      "end": 4040,
+      "calls": [
+        "CurrentWorldReadPhase",
+        "GetFirstNonEmptyString"
+      ],
+      "io": [
+        [
+          4012,
+          "? CurrentWorldReadPhase() is { } phase ? phase.ReadTextSync(requestPath) : _fs.ReadFileSync(requestPath)"
+        ],
+        [
+          4013,
+          ": _fs.ReadFileAsync(writeLease, requestPath)"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "LoadValidatedPendingTurnSnapshotLookupAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 5077,
+      "end": 5103,
+      "calls": [
+        "IsValidatedPendingTurnSnapshotManifestUsable",
+        "LoadValidationPendingTurnSnapshotManifestAsync",
+        "ReadAcceptedTurnValidationFileAsync"
+      ],
+      "io": [
+        [
+          5082,
+          "? _fs.FileExists(PendingTurnSnapshotManifestPath)"
+        ],
+        [
+          5083,
+          ": _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadAcceptedTurnValidationFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 5225,
+      "end": 5228,
+      "calls": [
+        "CurrentWorldReadPhase"
+      ],
+      "io": [
+        [
+          5227,
+          "? CurrentWorldReadPhase() is { } phase ? phase.ReadTextAsync(path) : _fs.ReadFileAsync(path)"
+        ],
+        [
+          5228,
+          ": _fs.ReadFileAsync(writeLease, path);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadRelativeFileBytesFromWorkspace",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 5233,
+      "end": 5242,
+      "calls": [
+        "CurrentWorldReadPhase"
+      ],
+      "io": [
+        [
+          5238,
+          "? CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath)"
+        ],
+        [
+          5239,
+          ": _fs.ReadFileBytesAsync(writeLease, relativePath)"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync",
+        "ValidateAcceptedTurnInterfacePayloadInternalAsync",
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidatePendingMemoryLegacyApplicationInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadCanonicalFileSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 5266,
+      "end": 5277,
+      "calls": [
+        "CurrentWorldReadPhase"
+      ],
+      "io": [
+        [
+          5270,
+          "return _fs.ReadFileSync(relativePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "DescribeTrackedFileChangeAgainstManifestAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 5392,
+      "end": 5412,
+      "calls": [
+        "HasValidatedTrackedSnapshotRegistration",
+        "IsTrackedByValidatedBaseline",
+        "ReadValidatedPendingTurnSnapshotFileAsync"
+      ],
+      "io": [
+        [
+          5393,
+          "var current = await _fs.ReadFileAsync(relativePath) ?? string.Empty;"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "SoulImprintExistsAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 7260,
+      "end": 7287,
+      "calls": [
+        "ElementContainsNamedObject"
+      ],
+      "io": [
+        [
+          7261,
+          "var json = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "PendingInkActionExistsAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 7290,
+      "end": 7331,
+      "calls": [
+        "GetStringValue"
+      ],
+      "io": [
+        [
+          7291,
+          "var json = await _fs.ReadFileAsync(PendingInkActionsPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "SoulImprintHasMinimalCoreTraitsAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 7334,
+      "end": 7366,
+      "calls": [
+        "SoulImprintObjectMatchesMinimalContract"
+      ],
+      "io": [
+        [
+          7335,
+          "var json = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "SoulImprintHasSourceProvenanceAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 7373,
+      "end": 7420,
+      "calls": [
+        "SoulImprintObjectMatchesSourceProvenance"
+      ],
+      "io": [
+        [
+          7377,
+          "var json = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAcceptedTurnReasoningInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 7525,
+      "end": 7987,
+      "calls": [
+        "BuildGuardianReasoningIdentityContext",
+        "CoalesceCanonicalGuardianAliasesInScope",
+        "CollectStructuredActorUpdatesAsync",
+        "ContainsAny",
+        "DescribeValidatedPendingTurnSnapshotStatus",
+        "FindMirrorOnlyGuardianScopeActors",
+        "FindRawGuardianIdScopeActors",
+        "IsChaosSeaRealm",
+        "IsPlayerScopeActor",
+        "ParseReasoningScopeMode",
+        "ReadKnownNpcReferencesAsync",
+        "ReadMortalPersistentActorAliasesAsync",
+        "ReadMortalPlayerScopeActorAliasesAsync",
+        "RequiresGuardianReasoningScopeValidation",
+        "ResolveCanonicalActorsMentionedInPlayerActionAsync",
+        "ResolveExplicitTargetActorIds",
+        "ResolveGuardianPolicyContextAsync",
+        "ResolveGuardianValidatedSnapshotContextAsync",
+        "ScopeContainsRelevantActor",
+        "TryParseReasoningScope",
+        "TryReadStringPropertyFromJsonFileAsync",
+        "TryResolveCurrentRealmAsync",
+        "ValidateAcceptedTurnTransientOutputFreshnessAsync",
+        "ValidateActorReasoningBlock",
+        "ValidateDirectlyAddressedActorsAgainstScope",
+        "ValidateMortalRelevantActorsHavePersistence",
+        "ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync",
+        "ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync",
+        "ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync",
+        "ValidateRelevantGuardianMusingDeltasAsync",
+        "ValidateRelevantMortalNpcThoughtJournalDeltasAsync",
+        "ValidateRelevantShiningFactionMemoryDeltasAsync",
+        "ValidateRequiredIsoTimestampField",
+        "ValidateStructuredActorUpdatesAgainstScope",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          7535,
+          "var debugJson = await _fs.ReadFileAsync(\"output/debug_logs.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardians.json.activeGuardian",
+        "input/turn_request.json",
+        "output/debug_logs.json",
+        "output/debug_logs.json must be freshly rewritten for the current accepted turn",
+        "output/debug_logs.json должен быть JSON object",
+        "output/debug_logs.json должен быть валидным JSON: {ex.Message}",
+        "output/debug_logs.json содержит неподдерживаемое top-level поле",
+        "output/debug_logs.json.{prop.Name}"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 8042,
+      "end": 8443,
+      "calls": [
+        "AddMissingStateEvidenceIssue",
+        "BuildPendingMemoryLegacyComparisonSignature",
+        "ParseInkFeatherActionContext",
+        "ReadPreviousPendingMemoryLegacyJsonAsync",
+        "RequireString",
+        "ResolveAcceptedTurnInkFeatherRealmAsync",
+        "ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync",
+        "TryGetStateEvidence",
+        "ValidateAbodeOfferingOutcomeAsync",
+        "ValidateAbodeResidentQuestRequestOutcomeAsync",
+        "ValidateAbodeResidentRelicGrantOutcomeAsync",
+        "ValidateAbsorbFeathersOutcomeAsync",
+        "ValidateAffectedFilesChangedAsync",
+        "ValidateAfterlifeClientPrepaidInkFeatherBalanceAsync",
+        "ValidateChaosSeaTravelOutcomeAsync",
+        "ValidateCultivateEnlightenmentOutcomeAsync",
+        "ValidateDirectChaosSeaGachaOutcomeAsync",
+        "ValidateDonateToGuardianOutcomeAsync",
+        "ValidateFateShieldOutcomeAsync",
+        "ValidateGuardianFavorOutcomeAsync",
+        "ValidateInkFeatherActionReceiptAsync",
+        "ValidateLearnSkillOutcomeAsync",
+        "ValidateMemoryLegacyGrantObject",
+        "ValidateResolutionType",
+        "ValidateSacrificeToChaosOutcomeAsync",
+        "ValidateSealInInkOutcomeAsync",
+        "ValidateSoulImprintOutcomeAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          8191,
+          "var soulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json должен реально измениться после MEMORY_GATES.",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.bonus",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.characteristic",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.grantSnapshot",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.grantSource",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.legacyId",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.legacyType",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.playerStatBonus",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.structuredBonuses",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.{fieldName}",
+        "input/turn_request.json",
+        "input/turn_request.json.playerAction"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 8446,
+      "end": 8485,
+      "calls": [
+        "LoadValidatedCurrentPendingTurnSnapshotManifestAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          8447,
+          "var requestJson = await _fs.ReadFileAsync(\"input/turn_request.json\");"
+        ]
+      ],
+      "paths": [
+        "input/turn_request.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidatePendingMemoryLegacyApplicationInternalAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 8488,
+      "end": 8635,
+      "calls": [
+        "PassiveSkillMatchesExpectedShapeAsync",
+        "ReadCurrentCharacteristicValueAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          8492,
+          "var soulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.applicationAudit",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.applicationAudit.expectedCharacteristicValue",
+        "game_state/meta/soul_state.json.pendingMemoryLegacy.applicationAudit.expectedPassiveSkillName",
+        "game_state/misc/characteristics.json.{characteristic}",
+        "game_state/player/skills_passive.json"
+      ],
+      "roots": [
+        "ValidatePendingMemoryLegacyApplicationInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadCurrentCharacteristicValueAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 8676,
+      "end": 8697,
+      "calls": [],
+      "io": [
+        [
+          8677,
+          "var json = await _fs.ReadFileAsync(\"game_state/misc/characteristics.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/misc/characteristics.json"
+      ],
+      "roots": [
+        "ValidatePendingMemoryLegacyApplicationInternalAsync"
+      ]
+    },
+    {
+      "name": "PassiveSkillMatchesExpectedShapeAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 8705,
+      "end": 8758,
+      "calls": [
+        "PassiveSkillArrayContainsExpectedShape",
+        "ReadValidatedCurrentPreTurnTrackedFileSync"
+      ],
+      "io": [
+        [
+          8706,
+          "var json = await _fs.ReadFileAsync(\"game_state/player/skills_passive.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/player/skills_passive.json"
+      ],
+      "roots": [
+        "ValidatePendingMemoryLegacyApplicationInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadJsonObjectForSpecialActionAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "line": 9034,
+      "end": 9067,
+      "calls": [
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          9035,
+          "var json = await _fs.ReadFileAsync(path);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveGuardianPolicyContextAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 195,
+      "end": 208,
+      "calls": [
+        "BuildGuardianPolicyContext",
+        "ResolveValidatedGuardianTrackedSnapshotFileAsync"
+      ],
+      "io": [
+        [
+          197,
+          "_gameStateValidationGuardianPolicyContextCache.Value is { } cachedContext)"
+        ],
+        [
+          202,
+          "var currentJson = await _fs.ReadFileAsync(\"game_state/meta/guardians.json\");"
+        ],
+        [
+          206,
+          "_gameStateValidationGuardianPolicyContextCache.Value = context;"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveGuardianPolicyContextSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 211,
+      "end": 225,
+      "calls": [
+        "BuildGuardianPolicyContext",
+        "ReadCurrentTrackedFileSync",
+        "ResolveValidatedGuardianTrackedSnapshotFileSync"
+      ],
+      "io": [
+        [
+          214,
+          "_gameStateValidationGuardianPolicyContextCache.Value is { } cachedContext)"
+        ],
+        [
+          223,
+          "_gameStateValidationGuardianPolicyContextCache.Value = context;"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "IsIdleStateWithoutActiveTurn",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 1569,
+      "end": 1577,
+      "calls": [],
+      "io": [
+        [
+          1573,
+          "return !_fs.FileExists(PendingTurnSnapshotManifestPath) &&"
+        ],
+        [
+          1574,
+          "!_fs.FileExists(\"input/turn_request.json\") &&"
+        ],
+        [
+          1575,
+          "!_fs.FileExists(\"ready/turn_complete.json\") &&"
+        ],
+        [
+          1576,
+          "!_fs.FileExists(\"ready/turn_error.json\");"
+        ]
+      ],
+      "paths": [
+        "input/turn_request.json",
+        "ready/turn_complete.json",
+        "ready/turn_error.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveValidatedGuardianTrackedSnapshotFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 1650,
+      "end": 1687,
+      "calls": [
+        "DecodePendingSnapshotText",
+        "LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync",
+        "LoadValidatedPendingTurnSnapshotLookupAsync"
+      ],
+      "io": [
+        [
+          1668,
+          "var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveValidatedGuardianTrackedSnapshotFileSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 1690,
+      "end": 1739,
+      "calls": [
+        "DecodePendingSnapshotText",
+        "LoadValidatedPendingTurnSnapshotLookupSync",
+        "ReadPendingTurnSnapshotAuthoritySync"
+      ],
+      "io": [
+        [
+          1711,
+          "snapshotBytes = _fs.ReadFileBytesAsync(snapshotPath).GetAwaiter().GetResult();"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveGuardianProjectTrackerPolicyContextSync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "line": 1769,
+      "end": 1793,
+      "calls": [
+        "BuildGuardianAuthorityRoots",
+        "BuildGuardianProjectTrackerPolicyContext",
+        "ReadCurrentTrackedFileSync",
+        "ResolveGuardianPolicyContextSync",
+        "ResolveValidatedGuardianTrackedSnapshotFileSync"
+      ],
+      "io": [
+        [
+          1772,
+          "_gameStateValidationGuardianProjectTrackerPolicyContextCache.Value is { } cachedContext)"
+        ],
+        [
+          1791,
+          "_gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = context;"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadKnownNpcReferencesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs",
+      "line": 201,
+      "end": 240,
+      "calls": [
+        "GetFirstNonEmptyString",
+        "ReadPreTurnTrackedFileAsync"
+      ],
+      "io": [
+        [
+          208,
+          "await _fs.ReadFileAsync(\"game_state/npcs/npc_core.json\")"
+        ]
+      ],
+      "paths": [
+        "game_state/npcs/npc_core.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateAchievementUnlockNarrativeMarkersAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "line": 745,
+      "end": 802,
+      "calls": [
+        "CollectAchievementNamesRequiringNarrativeMarkers",
+        "ReadPreTurnTrackedFileAsync",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          746,
+          "var json = await _fs.ReadFileAsync(\"game_state/meta/achievements.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/achievements.json",
+        "game_state/meta/achievements.json.unlockedAchievements[new:{index++}]",
+        "output/narrative_response.json.response"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnNarrativePayloadInternalAsync"
+      ]
+    },
+    {
+      "name": "TryResolveCurrentRealmAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 578,
+      "end": 596,
+      "calls": [],
+      "io": [
+        [
+          579,
+          "var soulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "CollectStructuredNpcUpdatesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 760,
+      "end": 813,
+      "calls": [
+        "BuildNpcAliasLookup",
+        "CreateInterNpcRelationshipStructuredActorUpdates",
+        "CreateNpcRenameStructuredActorUpdates",
+        "IsUnchangedPreTurnCanonicalNpcObject",
+        "LoadUnchangedPreTurnCanonicalNpcObjectSignaturesAsync",
+        "TryCreateNpcStructuredActorUpdate"
+      ],
+      "io": [
+        [
+          761,
+          "var npcJson = await _fs.ReadFileAsync(\"game_state/npcs/npc_core.json\");"
+        ]
+      ],
+      "paths": [
+        "game_state/npcs/npc_core.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "CollectStructuredResidentUpdatesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 944,
+      "end": 985,
+      "calls": [
+        "AddResidentJournalStructuredActorUpdates",
+        "BuildResidentAliasLookup",
+        "CollectResidentCanonicalDiffStructuredActorTouches",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "TryCreateResidentStructuredActorUpdate"
+      ],
+      "io": [
+        [
+          945,
+          "var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "CollectStructuredShiningActorUpdatesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 988,
+      "end": 1013,
+      "calls": [
+        "CollectShiningFactionDiffStructuredActorTouches",
+        "CollectShiningPoliticalActorDiffStructuredActorTouches",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync"
+      ],
+      "io": [
+        [
+          989,
+          "var currentJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "CollectStructuredAfterlifeEntityProfileUpdatesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 1016,
+      "end": 1061,
+      "calls": [
+        "BuildAfterlifeEntityProfileMap",
+        "ReadValidatedCurrentPreTurnTrackedFileAsync",
+        "TryCreateAfterlifeEntityProfileStructuredUpdate"
+      ],
+      "io": [
+        [
+          1017,
+          "var currentJson = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ResolveCanonicalActorsMentionedInPlayerActionAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 2339,
+      "end": 2435,
+      "calls": [
+        "ActorNamesMatch",
+        "AddCanonicalActorReference",
+        "BuildAfterlifeEntityMemoryAuditMap",
+        "BuildAfterlifeResidentThoughtJournalAuditMap",
+        "BuildGuardianMusingAuditMap",
+        "BuildMortalNpcThoughtJournalAuditMap",
+        "BuildShiningFactionMemoryAuditMap",
+        "BuildShiningPoliticalActorMap",
+        "GetFirstNonEmptyNodeString",
+        "IsPlayerScopeActor",
+        "PlayerActionContainsCanonicalActorAlias",
+        "RemoveStructuredRoutingMetadataFromPlayerAction",
+        "ResolveExplicitTargetActorIds",
+        "TryCreateShiningPoliticalActorStructuredUpdate"
+      ],
+      "io": [
+        [
+          2347,
+          "var guardians = BuildGuardianMusingAuditMap(await _fs.ReadFileAsync(\"game_state/meta/guardians.json\"));"
+        ],
+        [
+          2352,
+          "await _fs.ReadFileAsync(\"game_state/npcs/npc_core.json\"),"
+        ],
+        [
+          2353,
+          "await _fs.ReadFileAsync(\"game_state/npcs/npc_journals.json\"));"
+        ],
+        [
+          2358,
+          "await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));"
+        ],
+        [
+          2363,
+          "await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));"
+        ],
+        [
+          2373,
+          "await _fs.ReadFileAsync(ShiningAbodeState.StatePath));"
+        ],
+        [
+          2383,
+          "var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/npcs/npc_journals.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadMortalPlayerScopeActorAliasesAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 2638,
+      "end": 2684,
+      "calls": [
+        "AddMortalPlayerAliasCandidates",
+        "EnumerateMortalPlayerDescriptionTexts",
+        "GetFirstNonEmptyString"
+      ],
+      "io": [
+        [
+          2654,
+          "var soulJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");"
+        ],
+        [
+          2670,
+          "var json = await _fs.ReadFileAsync(ScenarioCoreService.ManifestPath);"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/soul_state.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "AddMortalPersistentActorAliasesFromFileAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 2777,
+      "end": 2814,
+      "calls": [
+        "GetFirstNonEmptyString"
+      ],
+      "io": [
+        [
+          2780,
+          "var json = await _fs.ReadFileAsync(path);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantGuardianMusingDeltasAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3150,
+      "end": 3248,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildGuardianMusingAuditMap",
+        "BuildGuardianStructuredThoughtJournalAuditMap",
+        "IsGuardianScopeActor",
+        "ReadActorMemorySnapshotFileAsync",
+        "ValidateActorBrainDeclaresActualJournalSurface",
+        "ValidateNewActorThoughtUsesFirstPerson",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3159,
+          "var currentJson = await _fs.ReadFileAsync(guardiansPath);"
+        ],
+        [
+          3162,
+          "await _fs.ReadFileAsync(GuardianThoughtJournalState.StatePath));"
+        ],
+        [
+          3182,
+          "if (!preTurnGuardiansFile.IsUsable || !preTurnStructuredThoughtsFile.IsUsable)"
+        ],
+        [
+          3185,
+          "var preTurnGuardians = BuildGuardianMusingAuditMap(preTurnGuardiansFile.Json);"
+        ],
+        [
+          3187,
+          "preTurnStructuredThoughtsFile.Json);"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardians.json.guardians[{currentGuardian.GuardianId}].musings"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantMortalNpcThoughtJournalDeltasAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3364,
+      "end": 3450,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildMortalNpcThoughtJournalAuditMap",
+        "HasAppendOnlyJournalDelta",
+        "IsMortalRealmName",
+        "ReadActorMemorySnapshotFileAsync",
+        "ValidateActorBrainDeclaresActualJournalSurface",
+        "ValidateNewActorThoughtUsesFirstPerson",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3376,
+          "await _fs.ReadFileAsync(npcCorePath),"
+        ],
+        [
+          3377,
+          "await _fs.ReadFileAsync(npcJournalsPath));"
+        ]
+      ],
+      "paths": [
+        "game_state/npcs/npc_core.json",
+        "game_state/npcs/npc_journals.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3458,
+      "end": 3535,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildAfterlifeResidentThoughtJournalAuditMap",
+        "HasAppendOnlyJournalDelta",
+        "IsChaosSeaRealm",
+        "ReadActorMemorySnapshotFileAsync",
+        "ValidateActorBrainDeclaresActualJournalSurface",
+        "ValidateNewActorThoughtUsesFirstPerson",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3468,
+          "await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));"
+        ],
+        [
+          3481,
+          "if (!preTurnFile.IsUsable)"
+        ],
+        [
+          3485,
+          "preTurnFile.Json);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3656,
+      "end": 3741,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildAfterlifeEntityMemoryAuditMap",
+        "IsChaosSeaRealm",
+        "IsShiningAbodeRealm",
+        "ReadActorMemorySnapshotFileAsync",
+        "ValidateActorBrainDeclaresActualJournalSurface",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3666,
+          "await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));"
+        ],
+        [
+          3683,
+          "if (!preTurnFile.IsUsable)"
+        ],
+        [
+          3687,
+          "preTurnFile.Json);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantShiningFactionMemoryDeltasAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3749,
+      "end": 3845,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildShiningFactionMemoryAuditMap",
+        "IsShiningAbodeRealm",
+        "ReadActorMemorySnapshotFileAsync",
+        "ValidateActorBrainDeclaresActualJournalSurface",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3759,
+          "await _fs.ReadFileAsync(ShiningAbodeState.StatePath));"
+        ],
+        [
+          3772,
+          "if (!preTurnFile.IsUsable)"
+        ],
+        [
+          3776,
+          "preTurnFile.Json);"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "line": 3851,
+      "end": 3893,
+      "calls": [
+        "ActorNamesMatch",
+        "BuildAfterlifeEntityMemoryAuditMap",
+        "BuildAfterlifeResidentThoughtJournalAuditMap",
+        "BuildGuardianMusingAuditMap",
+        "BuildShiningFactionMemoryAuditMap",
+        "IsChaosSeaRealm",
+        "IsShiningAbodeRealm",
+        "ValidationIssue"
+      ],
+      "io": [
+        [
+          3860,
+          "await _fs.ReadFileAsync(\"game_state/meta/guardians.json\"));"
+        ],
+        [
+          3862,
+          "await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath));"
+        ],
+        [
+          3864,
+          "await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));"
+        ],
+        [
+          3866,
+          "? BuildShiningFactionMemoryAuditMap(await _fs.ReadFileAsync(ShiningAbodeState.StatePath))"
+        ]
+      ],
+      "paths": [
+        "game_state/meta/guardians.json",
+        "output/debug_logs.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync"
+      ]
+    },
+    {
+      "name": "TryReadCurrentTurnGachaBaseRaritySync",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "line": 2660,
+      "end": 2684,
+      "calls": [
+        "TryReadValidatedTurnGachaBaseRaritySync"
+      ],
+      "io": [
+        [
+          2661,
+          "var requestJson = _fs.ReadFileSync(\"input/turn_request.json\");"
+        ]
+      ],
+      "paths": [
+        "input/turn_request.json"
+      ],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    },
+    {
+      "name": "ReadCompletedGuardianMusingsForComparison",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "line": 243,
+      "end": 250,
+      "calls": [],
+      "io": [
+        [
+          245,
+          "var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();"
+        ],
+        [
+          247,
+          "try { return completion.ReadForComparisonAsync(_fs, lease, currentRoot).GetAwaiter().GetResult() ?? []; }"
+        ],
+        [
+          249,
+          "finally { CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure).GetAwaiter().GetResult(); }"
+        ]
+      ],
+      "paths": [],
+      "roots": [
+        "ValidateAcceptedTurnReasoningInternalAsync",
+        "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync",
+        "ValidateAcceptedTurnQteOfferInternalAsync"
+      ]
+    }
+  ],
+  "projection_static_index": {
+    "method_count": 460,
+    "root_counts": {
+      "BuildGuardianAuthorityRootForValidation": 23,
+      "BuildGuardianProjectAuthorityRootForValidation": 49,
+      "ResolveRequiredCurrentGuardianProjectSoulContext": 8,
+      "TryResolveGuardianProjectAuthoritySoulContext": 24,
+      "HasLifecycleAuthorizedTriggerLifeEnd": 4
+    },
+    "methods": [
+      {
+        "name": "BuildGuardianProjectUpdatePowerEvents",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+        "line": 188,
+        "end": 254,
+        "calls": [
+          "CloneObject",
+          "GetNodeString",
+          "GuardianExists",
+          "ResolveGuardianProjectAssistReasonType"
+        ],
+        "io": [
+          [
+            212,
+            "$\"guardian_project_update_assist_{guardianId}_{projectId}_{currentTurn}_{Guid.NewGuid():N}\","
+          ],
+          [
+            242,
+            "$\"guardian_project_update_sabotage_{guardianId}_{projectId}_{currentTurn}_{Guid.NewGuid():N}\","
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "BuildGuardianProjectJournalEntry",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+        "line": 957,
+        "end": 989,
+        "calls": [
+          "AppendGuardianProjectDiffDetail",
+          "GetNodeString"
+        ],
+        "io": [
+          [
+            979,
+            "[\"entryId\"] = $\"gpj_{guardianId}_{projectId}_{currentTurn}_{eventType}_{Guid.NewGuid():N}\","
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "ConsumeLoreResearchQuestTokens",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+        "line": 1171,
+        "end": 1236,
+        "calls": [
+          "CollectGuardianQuestIds",
+          "GetNodeString"
+        ],
+        "io": [
+          [
+            1216,
+            "[\"entryId\"] = $\"gpj_{guardianId}_{sourceProjectId}_{questId}_token_{Guid.NewGuid():N}\","
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "ConsumeRelicForgingGachaUses",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+        "line": 1243,
+        "end": 1293,
+        "calls": [
+          "CollectGuardianGachaHistoryKeys",
+          "GetNodeInt",
+          "GetNodeString"
+        ],
+        "io": [
+          [
+            1276,
+            "[\"entryId\"] = $\"gpj_{guardianId}_{sourceProjectId}_gacha_{Guid.NewGuid():N}\","
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "BuildGuardianProjectPowerEvent",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+        "line": 1304,
+        "end": 1354,
+        "calls": [
+          "GetNodeString"
+        ],
+        "io": [
+          [
+            1344,
+            "$\"gpe_{guardianId}_{projectId}_{reasonType}_{Guid.NewGuid():N}\","
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "BuildGuardianProjectAuthorityRootForValidation",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs",
+        "line": 18,
+        "end": 107,
+        "calls": [
+          "ApplyGuardianProjectCompletionCommands",
+          "ApplyGuardianProjectStartCommands",
+          "ApplyGuardianProjectUpdateCommands",
+          "BuildGuardianProjectsTrackerRoot",
+          "CollectGuardianProjectEntries",
+          "ConsumeLoreResearchQuestTokens",
+          "ConsumeRelicForgingGachaUses",
+          "GetNodeString"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "BuildGuardianProjectAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "BuildGuardianAuthorityRootForValidation",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs",
+        "line": 117,
+        "end": 162,
+        "calls": [
+          "ApplyCurrentGuardianRootAuthoritySurfaces",
+          "ApplyGuardianCommands",
+          "ApplyGuardianQuestProgressAuthorityUpdates",
+          "CloneObject",
+          "SyncGuardianAuthorityActiveGuardian"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "BuildGuardianAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "ResolveRequiredCurrentGuardianProjectSoulContext",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs",
+        "line": 1035,
+        "end": 1038,
+        "calls": [
+          "GetGuardianProjectSoulContextRequirementsForCompletedProjects",
+          "GetGuardianProjectSoulContextRequirementsForCompletions"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "ResolveRequiredCurrentGuardianProjectSoulContext"
+        ]
+      },
+      {
+        "name": "ApplyMetaStateUpdates",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs",
+        "line": 29,
+        "end": 200,
+        "calls": [
+          "AddUniqueNode",
+          "EnsureArray",
+          "FindRelic",
+          "GetNodeInt",
+          "GetNodeString",
+          "NormalizeInkFeathersShape",
+          "NormalizeSoulRelicsShape",
+          "RemoveRelic",
+          "SetRelicEquipped",
+          "TakeRelic",
+          "UpsertRelic"
+        ],
+        "io": [
+          [
+            168,
+            "[\"legacyId\"] = GetNodeString(memoryLegacyGrant[\"legacyId\"]) ?? $\"memory_legacy_{Guid.NewGuid():N}\","
+          ],
+          [
+            176,
+            "memoryLegacyGrant.DeepClone().AsObject()).UtcDateTime ?? DateTime.UtcNow).ToString(\"o\")"
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext"
+        ]
+      },
+      {
+        "name": "ApplyGuardianCommands",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs",
+        "line": 216,
+        "end": 415,
+        "calls": [
+          "AddUniqueNode",
+          "BuildGuardianQuestPowerEvent",
+          "CloneObject",
+          "EnsureArray",
+          "FindGuardian",
+          "FindGuardianQuestSnapshot",
+          "GetNodeInt",
+          "GetNodeString",
+          "NormalizeGuardianQuestDifficulty",
+          "RemoveQuestFromArray",
+          "SyncActiveGuardian",
+          "TryAddGuardian",
+          "UpsertByIdentity"
+        ],
+        "io": [
+          [
+            276,
+            "[\"timestamp\"] = DateTime.UtcNow.ToString(\"o\")"
+          ],
+          [
+            299,
+            "[\"completionDate\"] = DateTime.UtcNow.ToString(\"o\"),"
+          ]
+        ],
+        "paths": [],
+        "roots": [
+          "BuildGuardianAuthorityRootForValidation"
+        ]
+      },
+      {
+        "name": "TryResolveGuardianProjectAuthoritySoulContext",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+        "line": 249,
+        "end": 314,
+        "calls": [
+          "BuildNormalizedSoulStateRoot",
+          "GetNodeInt",
+          "GetNodeString",
+          "HasCompleteGuardianProjectAuthoritySoulContext",
+          "HasLifecycleAuthorizedTriggerLifeEnd",
+          "TryDescribeInvalidCurrentGuardianProjectSoulStateRoot",
+          "TryReadGuardianProjectAuthoritySoulStateRoot"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext"
+        ]
+      },
+      {
+        "name": "HasLifecycleAuthorizedTriggerLifeEnd",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+        "line": 524,
+        "end": 527,
+        "calls": [
+          "TryReadCanonicalTriggerLifeEnd"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext",
+          "HasLifecycleAuthorizedTriggerLifeEnd"
+        ]
+      },
+      {
+        "name": "HasLifecycleAuthorizedTriggerLifeEnd",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+        "line": 533,
+        "end": 538,
+        "calls": [
+          "ResolveLifecycleAuthorizedTriggerLifeEnd"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext",
+          "HasLifecycleAuthorizedTriggerLifeEnd"
+        ]
+      },
+      {
+        "name": "HasLifecycleAuthorizedTriggerLifeEnd",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+        "line": 543,
+        "end": 547,
+        "calls": [
+          "TryReadStrictCurrentRealm"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext",
+          "HasLifecycleAuthorizedTriggerLifeEnd"
+        ]
+      },
+      {
+        "name": "HasLifecycleAuthorizedTriggerLifeEnd",
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+        "line": 553,
+        "end": 558,
+        "calls": [
+          "TryReadStrictCurrentRealm"
+        ],
+        "io": [],
+        "paths": [],
+        "roots": [
+          "TryResolveGuardianProjectAuthoritySoulContext",
+          "HasLifecycleAuthorizedTriggerLifeEnd"
+        ]
+      }
+    ]
+  },
+  "lexical_index_notes": "Static lexical source audit aid. Overloads may overapproximate; path literals are not permissions. Generic original readers/external projections manually inspected; no compiler or runtime execution.",
+  "source_root_counts": {
+    "ValidateAcceptedTurnNarrativePayloadInternalAsync": 51,
+    "ValidateAcceptedTurnInterfacePayloadInternalAsync": 30,
+    "ValidateAcceptedTurnReasoningInternalAsync": 447,
+    "ValidateAcceptedTurnSpecialActionOutcomesInternalAsync": 439,
+    "ValidateAcceptedTurnMortalCombatMaterializationInternalAsync": 16,
+    "ValidatePendingMemoryLegacyApplicationInternalAsync": 23,
+    "ValidateAcceptedTurnQteOfferInternalAsync": 987
+  }
+}

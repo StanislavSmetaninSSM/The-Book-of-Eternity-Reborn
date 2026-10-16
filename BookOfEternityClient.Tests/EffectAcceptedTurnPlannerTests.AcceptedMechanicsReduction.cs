@@ -296,10 +296,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             // New nonplayer fixtures must supply their actual input carrier;
             // the common plan's real path-coverage guard remains mandatory.
             var carriersBefore = effectPlan.CarrierBeforeImages;
-            foreach (var path in effectPlan.TouchedPaths.Where(path => !beforeImages.ContainsKey(path)))
+            foreach (var (path, root) in carriersBefore.Where(pair => !beforeImages.ContainsKey(pair.Key)))
             {
-                Assert.True(carriersBefore.TryGetValue(path, out var root),
-                    "The fixture lacks an actual input before-image: " + path);
                 beforeImages.Add(path, new CanonicalBeforeImage(root is not null,
                     root is null ? null : System.Text.Encoding.UTF8.GetBytes(root.ToJsonString())));
             }
@@ -318,7 +316,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     private const string ReductionHash =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     private static string DescribeOrdinaryReductionIssues(IEnumerable<ValidationIssue> issues) =>
-        string.Join(Environment.NewLine, issues.Select(issue => $"{issue.Code}: {issue.Expected}; {issue.Actual}"));
+        string.Join(Environment.NewLine, issues.Select(issue => $"{issue.Code} at {issue.FilePath}: {issue.Expected}; {issue.Actual}"));
 
     private sealed class OrdinaryReductionFixture
     {

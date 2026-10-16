@@ -1,0 +1,126 @@
+{
+  "source_sha": "05f39661739e6bae26da5af428d9d182e132b1c5",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-Build-integration.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/Build-integration.log",
+      "raw_bytes": 119991,
+      "raw_sha256": "3cd901e88ea65484e729db681e0a5d6aa0f4dd1464aaa47f4300efe090074883",
+      "stored_sha256": "9ae8aa4821fe52c9a935c75871c1301cf0af0faeeba759a52cf49f8ab8fc81a6"
+    },
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-Build-unit.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/Build-unit.log",
+      "raw_bytes": 26198,
+      "raw_sha256": "4173b3bd0e998d33aea1a26d37f21ae51a4a3c9976a5a5624617e65a90ba987a",
+      "stored_sha256": "20aaa0affd50065aaba7aaaa58a4404740203ffa0128c9a4cea25f95b77e48d4"
+    },
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-catalog-audit.json",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/catalog-audit.json",
+      "raw_bytes": 103,
+      "raw_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "stored_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a"
+    },
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/dotnet-test.log",
+      "raw_bytes": 3523795,
+      "raw_sha256": "c3b5f64a182251a770263d1e93c0e5368efd83d4787a461db2220d685e437f95",
+      "stored_sha256": "6f223de32bae704d0f1c89ddabcaa19c286ebd91c338313d941465ad65509310"
+    },
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/runner-stdout.log",
+      "raw_bytes": 712,
+      "raw_sha256": "2c78d90697f5fcc3083ded9b93fed5e040ba4f56149ba4a9fa3ce3c7a8cf43f2",
+      "stored_sha256": "bd68ba54fa4a2926916406e8cd9bc736a085c5b8021e7213a3fa3e55ecddadc7"
+    },
+    {
+      "path": "t179pd-ledger-fixture-preflight-superseded-catalog-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-122226-332-76530-597f5fefcb344ce7b4df4f54c6ca386c-categories/summary.json",
+      "raw_bytes": 1601,
+      "raw_sha256": "f69c486cfc90f2f612eab29a038dbfcf3ffe33e44146950b9478b280254e4593",
+      "stored_sha256": "f69c486cfc90f2f612eab29a038dbfcf3ffe33e44146950b9478b280254e4593"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11702,
+      "Categories": 767,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0613691,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0524974,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1374135,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 105.7040774,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 16.2920701,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0043045,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:02:10.5793882",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

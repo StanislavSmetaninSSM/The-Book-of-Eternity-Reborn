@@ -123,7 +123,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
                 .Where(row => newIds.Contains(row!["transitionId"]!.GetValue<string>())).ToArray();
             Assert.Equal(new[] { "trigger", "consume" }, actual.Select(row => row!["kind"]!.GetValue<string>()));
             Assert.Equal(actual[1]!["transitionId"]!.GetValue<string>(),
-                Assert.Single(finalEvent["subjects"]!.AsArray())!["transitionRefs"]![0]!.GetValue<string>());
+                Assert.Single(Assert.Single(finalEvent["subjects"]!.AsArray())!["transitionRefs"]!.AsArray())!.GetValue<string>());
         }
     }
 
