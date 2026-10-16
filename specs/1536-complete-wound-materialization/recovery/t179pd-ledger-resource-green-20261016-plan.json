@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "fr063-common-resource-continuation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "cb8fccfc427d167a97bbb3496c4fd95ae8197876",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.1063832,
+  "Descriptors": [
+    {
+      "Name": "fr063-common-resource-continuation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-common-resource-continuation",
+      "Categories": [
+        "fr063-common-resource-continuation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
