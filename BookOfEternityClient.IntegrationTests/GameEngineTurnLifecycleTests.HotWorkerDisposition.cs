@@ -109,7 +109,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     code: "normalized_weather_missing_description") }, 1, backup, generation);
             Assert.True(accepted); Assert.Equal(failReadyPublication ? 1 : 0, readyCuts);
             var audit = await new GmWorkerAuditLog(files).ReadEventsAsync();
-            var applied = Assert.Single(audit.Where(row => row.EventType == "proposal-applied"));
+            var applied = Assert.Single(audit, row => row.EventType == "proposal-applied");
             var task = GmWorkerJson.Deserialize<WorkerTaskPacket>((await files.ReadFileAsync(
                 GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath))!)!;
             Assert.Equal(task.TaskId, applied.TaskId); Assert.Equal(request.SessionId, task.SourceTurn.SessionId);

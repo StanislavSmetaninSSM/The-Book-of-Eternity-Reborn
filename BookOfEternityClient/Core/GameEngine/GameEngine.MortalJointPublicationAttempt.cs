@@ -33,7 +33,8 @@ public partial class GameEngine
         {
             RequireIssuer(issuer);
             _engine = engine; _files = files; _lease = lease; _frame = actualFrame; _capture = actualCapture;
-            _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
+            _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id
+                ?? throw new InvalidDataException("Joint attempt requires its existing physical generation.");
             _binding = binding.DeepClone().AsObject(); _custody = custody.DeepClone().AsObject();
         }
         private static void RequireIssuer(object issuer)

@@ -261,9 +261,22 @@ public partial class GameEngine
     }
 
     private static bool HotBytesEqual(byte[]? a, byte[]? b) => a is null ? b is null : b is not null && a.AsSpan().SequenceEqual(b);
-    private static bool IsOptionalHotFailure(Exception error) =>
-        error is not SessionReplacedException && error is not CoordinatedStatePublicationUncertainException &&
-        error is not AggregateException && error is IOException or InvalidDataException or InvalidOperationException or ArgumentException or JsonException;
+    private static bool IsOptionalHotFailure(Exception error)
+    {
+        var seen = new HashSet<Exception>(ReferenceEqualityComparer.Instance);
+        bool HasOwningFailure(Exception current)
+        {
+            if (!seen.Add(current)) return false;
+            if (current is SessionReplacedException or CoordinatedStatePublicationUncertainException) return true;
+            if (current is AggregateException aggregate && aggregate.InnerExceptions.Any(HasOwningFailure)) return true;
+            if (current.InnerException is { } inner && HasOwningFailure(inner)) return true;
+            return current.Data.Values.OfType<Exception>().Any(HasOwningFailure);
+        }
+        // Optional source failure cannot hide the owning failure just because a
+        // close/continuation wrapper retained it as an inner or secondary error.
+        return !HasOwningFailure(error) && error is not AggregateException &&
+            error is IOException or InvalidDataException or InvalidOperationException or ArgumentException or JsonException;
+    }
 
     private JsonObject HotBindingDiagnostic(HotOrdinaryOriginal? origin) => new()
     {

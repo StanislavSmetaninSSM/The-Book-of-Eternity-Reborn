@@ -1,0 +1,22 @@
+{
+  "source_sha": "870a4703aca5779e26dea0bf682f9345e23e462e",
+  "scope": "Fresh BOTH/catalog native0/777categories11725methods; PlanOnly8descriptors15cases/ZEROexecutions. Integration136+unit35warnings, zeroerrors; two nullable-generation and one xUnit2031 newwarnings need narrow correction before next SOURCE.",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "8a5f4268f86f99f7a09c3d302c05913e771005302c689ad453f82e17a55cfa4d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "6b442f01e0ad2318655d382743139f01c8d5d26d962cf5430415872816d22d17"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "8a5f4268f86f99f7a09c3d302c05913e771005302c689ad453f82e17a55cfa4d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "a8f76c29fb4369e05c5e8bec9c38146317360758ff1a519e4494262d50c220a9"
+    }
+  ]
+}
