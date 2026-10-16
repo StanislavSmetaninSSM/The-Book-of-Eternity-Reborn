@@ -1,0 +1,111 @@
+[
+  {
+    "path": "t179pd-observed-admission-fixture-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-full.diff",
+    "raw_sha256": "b964e5bdfe89d874445e014f298063d66674148f918b3f4b59d9b2cbf4a654c3",
+    "raw_bytes": 291427,
+    "stored_sha256": "ebccf46d4cdd4d3751b686229e1f8de4a28ae7123ab4ac760bbfd965d9a4c42e",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "865be2d2a9e74473180faf3c20c2e281c7b76a71",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-admission-fixture-fixture.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-fixture.diff",
+    "raw_sha256": "9592eddda113803371dbd8a51d66d7e1df7c4ab9977a45f3593e6410fbddd89d",
+    "raw_bytes": 2916,
+    "stored_sha256": "beb60d9d7a7e641682fd67e7eb9b53a4f7e7ca8ea2ccf57dc7a9f13c30d2cf34",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "865be2d2a9e74473180faf3c20c2e281c7b76a71",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--",
+      "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-admission-fixture-production-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-production-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-observed-admission-fixture-other-runtime-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-other-runtime-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts",
+      ":(exclude)BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-admission-fixture-source-carrier-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-source-carrier-full.diff",
+    "raw_sha256": "9e4a91736e86e7b9468ab8b925cb8e3bac07a216960769313f3b262709865785",
+    "raw_bytes": 9558608,
+    "stored_sha256": "08ff11bd78a6eed0faf777c029c2b49c7a9d4b4a9b38ad5d21f9915a2b1319d8",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-admission-fixture-source-carrier-runtime.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-admission-fixture-source-carrier-runtime.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  }
+]
