@@ -1,0 +1,126 @@
+{
+  "source_sha": "2e1c1f764d809d5336dcb142cb6d1a850bcb5266",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-084051-169-24101-34fdc117f7204afeb2af7c0fcbcebce7-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pb-initial-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-084051-169-24101-34fdc117f7204afeb2af7c0fcbcebce7-categories/dotnet-test.log",
+      "raw_bytes": 3373119,
+      "raw_sha256": "143ac752e3f15b3c421a32e42b53993243c0992b0960bd7e535d0794ad1a993a",
+      "stored_sha256": "bce617846165062e3c84bf656a4da8398679d686f5e5119c5cebe18d24e525f9"
+    },
+    {
+      "path": "t179pb-initial-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-084051-169-24101-34fdc117f7204afeb2af7c0fcbcebce7-categories/plan.json",
+      "raw_bytes": 8917,
+      "raw_sha256": "52e3d28c22d196f582f6e6dd9e3735241b18f637e8fe34432fcc1863fb550186",
+      "stored_sha256": "52e3d28c22d196f582f6e6dd9e3735241b18f637e8fe34432fcc1863fb550186"
+    },
+    {
+      "path": "t179pb-initial-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-084051-169-24101-34fdc117f7204afeb2af7c0fcbcebce7-categories/summary.json",
+      "raw_bytes": 3465,
+      "raw_sha256": "4a74a4563dc286e73fe469d9e835883a40b62921599acc6ee32ee1b1a238e3f1",
+      "stored_sha256": "4a74a4563dc286e73fe469d9e835883a40b62921599acc6ee32ee1b1a238e3f1"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-story-calculation",
+      "fr063-joint-late-completion",
+      "fr063-joint-story-owner",
+      "fr063-joint-retained-story"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-story-calculation",
+        "reason": "T179-Pb/T182 pure shared row calculation; exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Unit API scaffold is initially unwired; runtime RED before success logic.",
+        "contracts": [
+          "#1536 T179/B01 storyPlan calculation prerequisite; T182/B04 existing v2 story owner. Not complete source/history/artifact storyPlan authority."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "First actual gate before all story stage actuals after fresh BOTH preparation and independent SOURCE/FIXTURE/SELECTION. Freeze raw Late2, independent EVIDENCE release before calculator RED/GREEN or other actuals. Existing original/checkpoint fixture is unchanged.",
+        "contracts": [
+          "Actual staged43 Late zero/nonzero full union, charge/history/story/turn/cleanup and inert repeat; exact original/G/source protections."
+        ]
+      },
+      {
+        "category": "fr063-joint-story-owner",
+        "reason": "After calculator is wired: five existing actual signed-prefix/committed-row narrative/G/append/readback failure controls; no new checkpoint/source fixture or owner membership change.",
+        "contracts": [
+          "Current original/output/history/source checks and retained applied union/debt on uncertain story publication."
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-story",
+        "reason": "After calculator is wired: actual appended row/readback failure then fresh PID durable-only recognition, no second append and exact turn/cleanup.",
+        "contracts": [
+          "Same exact row serialization and existing private current proof; durable replay remains owner-derived."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "2e1c1f764d809d5336dcb142cb6d1a850bcb5266",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0616796,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0508172,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1331564,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004559,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.6573804",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 28,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-late-completion-integration-001",
+        "fr063-joint-retained-story-integration-002",
+        "fr063-joint-story-calculation-unit-003",
+        "fr063-joint-story-owner-integration-004"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

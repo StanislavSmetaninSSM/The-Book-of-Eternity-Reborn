@@ -1,0 +1,22 @@
+{
+  "source_sha": "2e1c1f764d809d5336dcb142cb6d1a850bcb5266",
+  "phase": "fresh BOTH; before first Late2, no runtime executed",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "5cf2e9abe22e490755b0129e09d72bba6137a2d29af8331e9bc75686da7fc912"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "0ae4056ff651c9cbc1c97c28de1a5e954ae070d686c51cc87316fc2d0ce942ba"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "5cf2e9abe22e490755b0129e09d72bba6137a2d29af8331e9bc75686da7fc912"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "7e63fcf0159e7ea810279acc773544bbbfba6bf4f457b9e9d60179a5570fbd90"
+    }
+  ]
+}
