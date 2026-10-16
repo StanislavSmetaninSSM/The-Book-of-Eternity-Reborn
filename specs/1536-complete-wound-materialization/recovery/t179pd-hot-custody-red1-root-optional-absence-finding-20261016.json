@@ -1,0 +1,141 @@
+{
+  "finding": "ROOT-HS01-F02",
+  "source_commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "status": "confirmed static precondition defect; no actual HS01 run",
+  "expected_earliest_failure": "pending_turn_snapshot_reader_required_paths_invalid at ValidatePathSelection before manifest read: all five observed-optional paths lie outside originalPathPresenceV1 closed set",
+  "historical_trx": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-fixture-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+  "stored_sha256": "1455812f2ab3bc30f3c9b43c4a04b77028629e0a8a15d30054a9f287c1700dbb",
+  "raw_sha256": "1a2bb8054bb9122bc5448fef13a8f48c199f7a23952ec5cca1ffb37a9ca503b2",
+  "historical_cases": [
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "observations": [
+        {
+          "Boundary": "fr063_joint_natural_stage43_image_before_assert",
+          "Observation": {
+            "Scope": "current",
+            "Path": "game_state/player/status_changes.json",
+            "ExpectedPresent": false,
+            "ActualPresent": false,
+            "ExpectedLength": null,
+            "ActualLength": null,
+            "ExpectedSha256": null,
+            "ActualSha256": null
+          }
+        },
+        {
+          "Boundary": "fr063_joint_original_inventory_structural_absence_before_assert",
+          "Observation": {
+            "Path": "game_state/player/status_changes.json",
+            "OriginalCovered": false,
+            "InManifestFiles": false,
+            "InSnapshotFileHashes": false,
+            "InRollbackBackups": false,
+            "InRollbackBaselineFiles": false,
+            "Scope": "validated signed-inventory/rollback structural absence; no signed presence authority"
+          }
+        },
+        {
+          "Boundary": "fr063_joint_natural_stage43_image_before_assert",
+          "Observation": {
+            "Scope": "original-inventory-structural",
+            "Path": "game_state/player/status_changes.json",
+            "ExpectedPresent": false,
+            "ActualPresent": false,
+            "ExpectedLength": null,
+            "ActualLength": null,
+            "ExpectedSha256": null,
+            "ActualSha256": null
+          }
+        }
+      ],
+      "original_presence_v1_count": 22,
+      "target_in_manifest_files": false,
+      "target_in_presence_v1": false
+    },
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "observations": [
+        {
+          "Boundary": "fr063_joint_natural_stage43_image_before_assert",
+          "Observation": {
+            "Scope": "current",
+            "Path": "game_state/player/status_changes.json",
+            "ExpectedPresent": false,
+            "ActualPresent": false,
+            "ExpectedLength": null,
+            "ActualLength": null,
+            "ExpectedSha256": null,
+            "ActualSha256": null
+          }
+        },
+        {
+          "Boundary": "fr063_joint_original_inventory_structural_absence_before_assert",
+          "Observation": {
+            "Path": "game_state/player/status_changes.json",
+            "OriginalCovered": false,
+            "InManifestFiles": false,
+            "InSnapshotFileHashes": false,
+            "InRollbackBackups": false,
+            "InRollbackBaselineFiles": false,
+            "Scope": "validated signed-inventory/rollback structural absence; no signed presence authority"
+          }
+        },
+        {
+          "Boundary": "fr063_joint_natural_stage43_image_before_assert",
+          "Observation": {
+            "Scope": "original-inventory-structural",
+            "Path": "game_state/player/status_changes.json",
+            "ExpectedPresent": false,
+            "ActualPresent": false,
+            "ExpectedLength": null,
+            "ActualLength": null,
+            "ExpectedSha256": null,
+            "ActualSha256": null
+          }
+        }
+      ],
+      "original_presence_v1_count": 22,
+      "target_in_manifest_files": false,
+      "target_in_presence_v1": false
+    }
+  ],
+  "source_projections": [
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+      "start": 29,
+      "end": 58,
+      "sha256": "2bf59b0cf054c3765c3fc7a7f01d885fd433352efbe7ad54f4295db907119b60",
+      "text": "    private sealed record HotJointSubmissionFixture(\n        string Generation,\n        Dictionary<string, byte[]?> OriginalInputs,\n        Dictionary<string, byte[]?> CurrentInputs,\n        Dictionary<string, byte[]> AuthoredPublicInputs);\n\n    private async Task<HotJointSubmissionFixture> AuthorHotJointSubmissionAfterOriginalAsync(\n        FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority actualOriginal)\n    {\n        var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,\n            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(\n                [\"game_state/meta/soul_state.json\"],\n                HotJointInputPaths.Where(path => path != \"game_state/meta/soul_state.json\")));\n        Assert.True(read.Success, DescribeValidationIssues(read.Issues));\n        var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);\n        Assert.Equal(actualOriginal.SessionId, original.SessionId);\n        Assert.Equal(actualOriginal.RequestId, original.RequestId);\n        Assert.Equal(actualOriginal.SnapshotToken, original.SnapshotToken);\n        Assert.Equal(43, original.TurnNumber);\n        var originalInputs = new Dictionary<string, byte[]?>(StringComparer.Ordinal);\n        foreach (var path in HotJointInputPaths)\n        {\n            if (original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))\n                originalInputs.Add(path, original.ReadRequiredBytes(path).ToArray());\n            else\n            {\n                Assert.Contains(path, original.AbsentLogicalPaths);\n                originalInputs.Add(path, null);\n            }\n            Assert.Equal(originalInputs[path], await _fs.ReadFileBytesAsync(lease, path));\n"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "start": 641,
+      "end": 696,
+      "sha256": "b14f0c136031d4d7354c0f84f88523da4cc9ee41cbcbb875f8e775d4d8dd6b13",
+      "text": "        bool requireSignedAbsence,\n        ICollection<ValidationIssue> issues,\n        out bool selected,\n        out bool observedAbsent)\n    {\n        selected = false;\n        observedAbsent = false;\n        var fileKeys = manifest.Files.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var hashKeys = manifest.SnapshotFileHashes.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var fileExact = fileKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n        var hashExact = hashKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n\n        if (fileKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)) ||\n            hashKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)))\n        {\n            Add(\n                issues,\n                path,\n                \"pending_turn_snapshot_reader_coverage_case_mismatch\",\n                \"signed snapshot coverage contains a confusable path key\");\n            return false;\n        }\n\n        if (fileExact == 1 && hashExact == 1)\n        {\n            selected = true;\n            return true;\n        }\n\n        if (optional && fileExact == 0 && hashExact == 0)\n        {\n            if (!requireSignedAbsence)\n                return true;\n            if (manifest.OriginalPathPresenceV1 is not null &&\n                manifest.OriginalPathPresenceV1.TryGetValue(path, out var present) &&\n                !present)\n            {\n                observedAbsent = true;\n                return true;\n            }\n            Add(\n                issues,\n                path,\n                \"pending_turn_snapshot_reader_absence_unproven\",\n                \"optional logical path is uncovered without authenticated original absence\");\n            return false;\n        }\n\n        Add(\n            issues,\n            path,\n            \"pending_turn_snapshot_reader_coverage_missing\",\n"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "start": 115,
+      "end": 131,
+      "sha256": "6ac90fe187cf893fe23a864c37aafd75ff36abbfd4681c2eb26cbd1d6c9c06bc",
+      "text": "                if (current is not null) throw new InvalidDataException(\"Joint concurrent command is unsupported: \" + path);\n                continue;\n            }\n            if (!original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))\n            {\n                if (current is not null) throw new InvalidDataException(\"Uncovered joint mechanical input is present: \" + path);\n                // Refusal-only absence never grants pristine canonical authority.\n                continue;\n            }\n            if (current is null || !JsonNode.DeepEquals(ReadJointMechanicalNode(original.ReadRequiredBytes(path), path),\n                    ReadJointMechanicalNode(current, path)))\n                throw new InvalidDataException(\"Concurrent joint mechanical input changed: \" + path);\n        }\n        foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,\n            \"output/narrative_response.json\", LiveTurnPreparationService.TurnRequestPath,\n            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })\n            before.TryAdd(path, await _fs.ReadFileBytesAsync(lease, path));\n"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "start": 406,
+      "end": 470,
+      "sha256": "10402cb8cad8fe8229e6fefca08fff8b036f6f84f5981925d380518c06180dca",
+      "text": "        var requireSignedAbsenceForMissingOptionalPaths = false;\n        if (paths is PendingTurnSnapshotPathSelection pathSelection)\n        {\n            foreach (var path in pathSelection.OptionalLogicalPaths)\n                optional.Add(path);\n            requireSignedAbsenceForMissingOptionalPaths =\n                pathSelection.RequireSignedAbsenceForMissingOptionalPaths;\n        }\n        var exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);\n        var yieldedCount = 0;\n        foreach (var path in paths)\n        {\n            yieldedCount++;\n            if (yieldedCount > MaximumRequiredPaths)\n            {\n                Add(\n                    issues,\n                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,\n                    \"pending_turn_snapshot_reader_required_paths_invalid\",\n                    $\"count>{MaximumRequiredPaths}\");\n                return PendingTurnSnapshotValidatedPathSelection.Empty;\n            }\n            if (string.IsNullOrWhiteSpace(path) ||\n                !string.Equals(path, path.Trim(), StringComparison.Ordinal) ||\n                path.Contains('\\\\') ||\n                !PendingTurnSnapshotAuthority.IsSafeRelativePath(path) ||\n                !exact.Add(path))\n            {\n                Add(\n                    issues,\n                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,\n                    \"pending_turn_snapshot_reader_required_paths_invalid\",\n                    path ?? \"null\");\n                continue;\n            }\n            result.Add(path);\n        }\n        if (result.Count == 0)\n        {\n            Add(\n                issues,\n                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,\n                \"pending_turn_snapshot_reader_required_paths_invalid\",\n                \"count=0\");\n            return PendingTurnSnapshotValidatedPathSelection.Empty;\n        }\n        if (requireSignedAbsenceForMissingOptionalPaths)\n        {\n            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths\n                .ToHashSet(StringComparer.Ordinal);\n            foreach (var path in result.Where(optional.Contains))\n            {\n                if (observed.Contains(path))\n                    continue;\n                Add(\n                    issues,\n                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,\n                    \"pending_turn_snapshot_reader_required_paths_invalid\",\n                    $\"observed optional path is outside originalPathPresenceV1: {path}\");\n            }\n            if (issues.Count != 0)\n                return PendingTurnSnapshotValidatedPathSelection.Empty;\n        }\n        return new PendingTurnSnapshotValidatedPathSelection(\n            Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),\n"
+    }
+  ],
+  "required_correction": "ordinary optional selection, explicit UncoveredInSignedInventory without original absence/pristine authority, exact uncovered-present v2 refusal; no production/original change",
+  "new_tests_executed": 0,
+  "initial_earliest_failure_inference": "pending_turn_snapshot_reader_absence_unproven at new fixture ReadCurrent success oracle",
+  "inference_correction": "Independent addendum trace and root406–467 source check establish the earlier selection-policy gate; the later absence_unproven branch is unreachable for this frozen call. Both are static analysis, no HS01 runtime."
+}

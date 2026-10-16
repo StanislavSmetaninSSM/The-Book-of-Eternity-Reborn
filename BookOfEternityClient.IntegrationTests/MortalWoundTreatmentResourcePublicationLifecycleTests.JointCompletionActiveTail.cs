@@ -106,7 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "pending_stats" => "The first joint contour cannot own pending statsIncreased work.",
             "unprocessed_level" => "The first joint contour cannot own an unprocessed level-up or stat-point initialization/award.",
             "new_qte_offer" => "The first joint contour cannot own a new QTE offer for its decision turn.",
-            "post_original_stats_level" => "Concurrent joint mechanical input changed: " + Assert.IsType<string>(mechanicalChangedPath),
+            "post_original_stats_level" => "Uncovered joint mechanical input is present: " + Assert.IsType<string>(mechanicalChangedPath),
             _ => throw new InvalidDataException("Unknown bounded active-tail assertion.")
         };
         var refusal = Assert.Single(issues!);

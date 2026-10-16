@@ -29,6 +29,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private sealed record HotJointSubmissionFixture(
         string Generation,
         Dictionary<string, byte[]?> OriginalInputs,
+        HashSet<string> UncoveredOriginalPaths,
         Dictionary<string, byte[]?> CurrentInputs,
         Dictionary<string, byte[]> AuthoredPublicInputs);
 
@@ -36,7 +37,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority actualOriginal)
     {
         var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
-            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+            new PendingTurnSnapshotPathSelection(
                 ["game_state/meta/soul_state.json"],
                 HotJointInputPaths.Where(path => path != "game_state/meta/soul_state.json")));
         Assert.True(read.Success, DescribeValidationIssues(read.Issues));
@@ -46,17 +47,25 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(actualOriginal.SnapshotToken, original.SnapshotToken);
         Assert.Equal(43, original.TurnNumber);
         var originalInputs = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        var uncoveredOriginalPaths = new HashSet<string>(StringComparer.Ordinal);
         foreach (var path in HotJointInputPaths)
         {
             if (original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
                 originalInputs.Add(path, original.ReadRequiredBytes(path).ToArray());
             else
             {
-                Assert.Contains(path, original.AbsentLogicalPaths);
+                // This genuine producer did not sign an absence row for this
+                // path. Uncovered inventory is not pristine/absence authority.
+                Assert.DoesNotContain(path, original.AbsentLogicalPaths);
+                Assert.DoesNotContain(path, original.DeclaredOriginalLogicalPaths);
                 originalInputs.Add(path, null);
+                uncoveredOriginalPaths.Add(path);
             }
             Assert.Equal(originalInputs[path], await _fs.ReadFileBytesAsync(lease, path));
         }
+        Assert.Equal(new[] { "game_state/player/status_changes.json" },
+            uncoveredOriginalPaths.Order(StringComparer.Ordinal));
+        Assert.Null(originalInputs["game_state/player/status_changes.json"]);
         var originalExperience = ParseJsonObjectBytes(Assert.IsType<byte[]>(originalInputs[HotJointInputPaths[1]]));
         Assert.Equal(1, originalExperience["level"]!.GetValue<int>());
         var points = ParseJsonObjectBytes(Assert.IsType<byte[]>(originalInputs[HotJointInputPaths[5]]));
@@ -109,11 +118,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ActualCaller = "ProcessPlayerTurn", original.SessionId, original.RequestId,
             original.SnapshotToken, original.TurnNumber, Generation = generation,
-            OriginalInputs = originalInputs, CurrentInputs = currentInputs,
+            OriginalInputs = originalInputs, UncoveredOriginalPaths = uncoveredOriginalPaths,
+            OriginalAbsenceAuthorityClaimed = false, CurrentInputs = currentInputs,
             AuthoredPublicPaths = authored.Keys, StatAcknowledgmentAuthored = false,
             PrivateOriginOrAdmissionAuthored = false
         });
-        return new(generation, originalInputs, currentInputs, authored);
+        return new(generation, originalInputs, uncoveredOriginalPaths, currentInputs, authored);
     }
 
     private async Task AssertHotJointPostOriginalCustodyAsync(GameEngine engine,
@@ -127,6 +137,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         var firstChanged = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths
             .Concat(GameEngine.MortalJointInactiveTailPaths).Distinct(StringComparer.Ordinal)
             .First(fixture.AuthoredPublicInputs.ContainsKey);
+        Assert.Equal("game_state/player/status_changes.json", firstChanged);
+        Assert.Equal(new[] { firstChanged }, fixture.UncoveredOriginalPaths.Order(StringComparer.Ordinal));
+        Assert.Null(fixture.OriginalInputs[firstChanged]);
+        Assert.NotNull(fixture.CurrentInputs[firstChanged]);
         await AssertJointActiveTailRefusalAsync("post_original_stats_level", engine, original, request, finalization,
             before, signedOriginalSchedule, signedOriginalQteRuntime, heldCommand, milestones,
             repairReplies, entered, handled, failure, observerFailure,
@@ -179,7 +193,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(custody["readyDeleteReturned"]!.GetValue<bool>());
         Assert.True(custody["readyReleaseReturned"]!.GetValue<bool>());
         Assert.True(custody["currentSourceRecheckSucceeded"]!.GetValue<bool>());
-        AssertHotCustodyImageRows(custody["originalInputs"], fixture.OriginalInputs);
+        AssertHotCustodyImageRows(custody["originalInputs"], fixture.OriginalInputs, fixture.UncoveredOriginalPaths);
         AssertHotCustodyImageRows(custody["currentInputs"], fixture.CurrentInputs);
         AssertHotCustodyImageRows(custody["outputs"], new[]
             { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
@@ -193,13 +207,24 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(JsonNode.DeepEquals(frozen, Assert.IsType<JsonObject>(export.Invoke(engine, null))));
     }
 
-    private static void AssertHotCustodyImageRows(JsonNode? value, IReadOnlyDictionary<string, byte[]?> expected)
+    private static void AssertHotCustodyImageRows(JsonNode? value, IReadOnlyDictionary<string, byte[]?> expected,
+        IReadOnlySet<string>? uncoveredOriginalPaths = null)
     {
         var rows = Assert.IsType<JsonArray>(value);
         Assert.Equal(expected.Keys.Order(StringComparer.Ordinal), rows.Select(row => row!["path"]!.GetValue<string>()).Order(StringComparer.Ordinal));
         foreach (var row in rows)
         {
-            var bytes = expected[row!["path"]!.GetValue<string>()];
+            var path = row!["path"]!.GetValue<string>();
+            var bytes = expected[path];
+            if (uncoveredOriginalPaths?.Contains(path) == true)
+            {
+                Assert.Equal("UncoveredInSignedInventory", row["sourceStatus"]!.GetValue<string>());
+                Assert.Null(row["present"]);
+                Assert.Null(row["base64"]);
+                continue;
+            }
+            if (uncoveredOriginalPaths is not null)
+                Assert.Equal("Present", row["sourceStatus"]!.GetValue<string>());
             Assert.Equal(bytes is not null, row["present"]!.GetValue<bool>());
             if (bytes is null) Assert.Null(row["base64"]);
             else Assert.Equal(bytes, Convert.FromBase64String(row["base64"]!.GetValue<string>()));
