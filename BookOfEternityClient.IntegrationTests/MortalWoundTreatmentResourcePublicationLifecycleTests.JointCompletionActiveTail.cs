@@ -74,7 +74,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         MortalWoundTreatmentResourceFinalization finalization, IReadOnlyDictionary<string, byte[]?> before,
         byte[] signedOriginalSchedule, byte[] signedOriginalQteRuntime,
         JsonObject heldCommand, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones,
-        int repairReplies, bool entered, bool handled, Exception? failure, Exception? observerFailure)
+        int repairReplies, bool entered, bool handled, Exception? failure, Exception? observerFailure,
+        bool useLiveCaller = false, string? mechanicalChangedPath = null)
     {
         // Capture physical evidence before assertions. This supported reader
         // inspects the existing confirmed agreement; it creates no publication
@@ -89,7 +90,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var hasCommon = AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease);
         WritePhysicalInjuryDiagnostic("fr063_joint_active_tail_actual_refusal", new
         {
-            scenario, ActualCaller = "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync", entered, handled,
+            scenario, ActualCaller = useLiveCaller ? "ProcessPlayerTurn" : "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync", entered, handled,
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), disposition, Issues = issues,
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, hasCommon, repairReplies,
             ConfirmedValid = confirmed.IsValid, ConfirmedState = confirmed.State, ConfirmedIssues = confirmed.Issues,
@@ -97,7 +98,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             SignedOriginalQteRuntime = signedOriginalQteRuntime,
             Milestones = milestones.Select(row => new { row.Path, row.Raw, row.Images })
         });
-        Assert.Null(observerFailure); Assert.Null(failure); Assert.True(entered); Assert.True(handled);
+        Assert.Null(observerFailure); Assert.Null(failure); Assert.True(entered); Assert.Equal(!useLiveCaller, handled);
         Assert.Equal("PublicationUncertain", disposition);
         Assert.NotNull(issues);
         var expected = scenario switch
@@ -105,6 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "pending_stats" => "The first joint contour cannot own pending statsIncreased work.",
             "unprocessed_level" => "The first joint contour cannot own an unprocessed level-up or stat-point initialization/award.",
             "new_qte_offer" => "The first joint contour cannot own a new QTE offer for its decision turn.",
+            "post_original_stats_level" => "Concurrent joint mechanical input changed: " + Assert.IsType<string>(mechanicalChangedPath),
             _ => throw new InvalidDataException("Unknown bounded active-tail assertion.")
         };
         var refusal = Assert.Single(issues!);
@@ -140,7 +142,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         expectedAfter[QteSceneService.QteRuntimePath] = signedOriginalQteRuntime;
         const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
         Assert.False(before.ContainsKey(ledgerPath)); // Known absent BEFORE owner.
-        AssertJointActiveTailRepairLedger(original, Assert.IsType<byte[]>(after[ledgerPath]));
+        AssertJointActiveTailRepairLedger(original, Assert.IsType<byte[]>(after[ledgerPath]),
+            useLiveCaller ? "обработки хода" : "late response GM");
         // The one strictly qualified client diagnostic append is separate from
         // canonical preservation; it is not a blanket ledger exclusion.
         var canonicalAfter = after.Where(row => row.Key != ledgerPath)
@@ -160,7 +163,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Single(ReadCurrentTreatmentHistory(_fs).State!.Transitions);
     }
 
-    private static void AssertJointActiveTailRepairLedger(PendingTurnSnapshotReadAuthority original, byte[] bytes)
+    private static void AssertJointActiveTailRepairLedger(PendingTurnSnapshotReadAuthority original, byte[] bytes,
+        string validationSource = "late response GM")
     {
         var text = CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
         var lines = text.Split(Environment.NewLine, StringSplitOptions.None);
@@ -189,7 +193,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             templateVersions = new { turnOutput = "v1", validationRepair = "v1", progressionReport = "v1", actorReasoning = "v1", tempoAdvantage = "v1" },
             outputFiles = Array.Empty<string>(),
             dispatch = new { attempts = 0, busyRetries = 0, timeout = false, status = "client_observed_terminal" },
-            validation = new { status = "accepted", source = "late response GM", acceptanceScope = "correlated_repair_ready",
+            validation = new { status = "accepted", source = validationSource, acceptanceScope = "correlated_repair_ready",
                 fullCanonicalStateAccepted = false, issueKinds = new[] { "wound_severity_above_opportunity" },
                 repairPacketRefs = new[] { "wound_materialization_repair" } },
             repair = new { attempts = 1, status = "accepted" }, workerEvents = Array.Empty<object>(), rollbackEvents = Array.Empty<object>(),

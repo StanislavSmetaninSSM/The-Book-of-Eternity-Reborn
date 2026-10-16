@@ -24,7 +24,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
         string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
         bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,
-        Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null)
+        Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,
+        bool postOriginalAutomaticSubmission = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -90,6 +91,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         string generation = null!;
         Dictionary<string, byte[]?> before = new(StringComparer.Ordinal);
         var authoredPublicOutputs = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        HotJointSubmissionFixture? hotSubmission = null;
         byte[]? correctedNarrativeForBinding = null;
         byte[]? authoredProgressionReport = null;
         JsonObject heldCommand = new();
@@ -236,6 +238,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
                 await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision,
                     normalizeNarrativeBeforeCheckpoint ? scene.Replace("\n", "`n", StringComparison.Ordinal) : scene);
+                if (postOriginalAutomaticSubmission)
+                {
+                    Assert.True(useLiveCaller);
+                    Assert.Null(activeTailScenario);
+                    hotSubmission = await AuthorHotJointSubmissionAfterOriginalAsync(lease, original);
+                    foreach (var submitted in hotSubmission.AuthoredPublicInputs)
+                        authoredPublicOutputs.Add(submitted.Key, submitted.Value.ToArray());
+                }
                 if (activeTailScenario == "new_qte_offer")
                 {
                     // Stage43 signed this independent input, then correctly cleared
@@ -264,7 +274,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     authoredProgressionReport = Assert.IsType<byte[]>(
                         await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath)).ToArray();
                 before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
-                if (activeTailScenario is not null)
+                if (activeTailScenario is not null || postOriginalAutomaticSubmission)
                     Assert.False(before.ContainsKey("game_state/control/gm_trajectory_ledger.jsonl"));
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
                     CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
@@ -273,7 +283,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.NotNull(actualRequest!.ProgressionControl);
                 Assert.Equal(nonzeroProgression ? 1 : 0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
                 Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
-                if (activeTailScenario is null)
+                if (activeTailScenario is null && !postOriginalAutomaticSubmission)
                     await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
             }
             WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
@@ -329,6 +339,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Images = m.Images.ToDictionary(pair => pair.Key, pair => pair.Value is null ? null : Convert.ToBase64String(pair.Value)) }),
             After = MortalArchiveDigests(after)
         });
+        if (postOriginalAutomaticSubmission)
+        {
+            Assert.True(liveCallerReturned);
+            await AssertHotJointPostOriginalCustodyAsync(engine, original, request, finalization,
+                before, signedOriginalSchedule, Assert.IsType<byte[]>(jointOriginalTail[QteSceneService.QteRuntimePath]),
+                heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure,
+                Assert.IsType<HotJointSubmissionFixture>(hotSubmission));
+            return;
+        }
         if (activeTailScenario is not null)
         {
             await AssertJointActiveTailRefusalAsync(activeTailScenario, engine, original, request, finalization,
