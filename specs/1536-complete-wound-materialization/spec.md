@@ -1,5 +1,7 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
+> **Current delegation from f87, 2026-10-16:** T179-Pd-AUDIT-SBM documents existing source/dependencies/future checks only; [current plan authority](plan.md) controls. Windows CI permission is unanswered; failed hold delivery and technical SOURCE/availability review are not user permission. No runtime, transfer workaround, CI/settings/release/catalog change or new QTE. Earlier continuation/release banners are historical. Prior13PASS+first2LinuxFAIL retained, Windows JOBsuccess separate; raw worker2 qualification BLOCKED, full S/B/M3/F1/T197 and D4/guided/DOM+visual/Windows/D8 OPEN.
+
 > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.
 
 > Ready3 causal RED is independently qualified atcc8; accepted bounded3b implementation may continue after decision persistence, with fresh source/evidence gates and no additional actual/GREEN release. See [current plan](plan.md).

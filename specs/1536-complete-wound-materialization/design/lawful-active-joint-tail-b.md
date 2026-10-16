@@ -1,5 +1,7 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
+> **Current delegation from f87, 2026-10-16:** document-only source/dependency audit in the [implementation plan](lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87), governed by [current authority](../plan.md). Windows permission is unanswered; failed hold delivery and technical reviews give no user permission. No runtime/CI/settings/transfer/release/catalog change or new QTE. Earlier continuation/release text is checkpoint history. This audit accepts no new evidence codec/issuer or full F1/T197; all D4/guided/DOM+visual/Windows/D8 limits remain.
+
 > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.
 
 > Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).

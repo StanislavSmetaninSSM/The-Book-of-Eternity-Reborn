@@ -1,4 +1,15 @@
-## Current execution — autonomous bounded T179-Pd.3b (2026-10-16)
+## Current delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)
+
+Latest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a751589fc78c896` for independent source/design work. Windows CI permission question is unanswered; unsuccessful delivery of hold messages is not permission. Earlier technical SOURCE/availability decisions are historical evidence, not user authorization. This block edits documents only; no runtime, tests, build/discovery, CI/settings/release/catalog changes, artifact transfer/retry or new QTE. See [current authority and audit](plan.md).
+
+- [x] Verify clean f87 task branch and remote SHA; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` unchanged. Read governance, current design/plans and actual source owners; select the dependency audit because static source/history/cold-proof analysis does not consume Windows runtime qualification.
+- [x] T179-Pd-AUDIT-SBM static map/matrix prepared for review: document exact implemented/proposed boundaries, concrete dependency map, future verification matrix and T178–T191/T192–T198 handoff. Distinguish structural data prerequisites from acceptance/scheduling holds; do not assert every pure-kernel implementation needs Windows worker evidence. No code or new design/implementation grant.
+- [ ] Preserve WIP/push/readback/new exact GitHub recovery before independent Astra/XHigh review; fix confirmed findings and inspect supporting source pins/diff.
+- [ ] Save final documentary review/result, verify task remote SHA and clean GitHub recovery. Audit completion alone closes no full T179/F1/T197/new-QTE gate. Retain prior13PASS+first2LinuxFAIL, Windows JOBsuccess separately, raw worker2 qualification BLOCKED WIN-E01.
+
+The sections below are immutable chronological authority/evidence history. Their earlier "current", "permitted" or continuation wording is superseded by this section and the current plan for this delegation; it cannot authorize a Windows action.
+
+## Historical execution — autonomous bounded T179-Pd.3b (2026-10-16)
 
 New direct delegation resumes implementation from745b and supersedes the completed discussion STOP below. Follow [current execution authority](plan.md); accepted F1 is not redesigned, routine user approval is not a new gate.
 
