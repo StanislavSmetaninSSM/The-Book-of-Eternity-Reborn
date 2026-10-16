@@ -1,0 +1,8 @@
+00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md
+230060e97f3a71567c80afd63eb3d73d9c36470cf9368947cee5983b9b278ef5  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.json
+f28216c63fa5c58de664f719c85c016d3f37d3c02f8ff7b3f09c432e880b4ef9  /tmp/t179pd-automatic-policy-independent-inspection-20261016.json
+395bdcc7a3174f826a67cc991dbd53993e91a8f396383b3f8063244f3b1155b0  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-carrier.diff
+74609cf880f12fd411b039825617b78678a27080750f1f4933ea2035a34c03d6  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-scoped.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-production-continuity.diff
+e3f4cb1b263a05cee119179f909aa77176017c295126345f9c1b962737f479bb  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-observed-scope-drift.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-pinned-production-continuity.diff

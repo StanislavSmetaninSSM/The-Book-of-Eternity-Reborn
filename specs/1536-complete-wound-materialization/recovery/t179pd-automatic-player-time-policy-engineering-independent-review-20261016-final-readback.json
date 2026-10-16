@@ -1,0 +1,35 @@
+{
+  "review_candidate": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+  "observed_head": "f13fba34c73c61eedff413c32723d2703d95fc55",
+  "observed_status": "",
+  "utc": "2026-10-16T18:38:29.934733+00:00",
+  "report_pair_immutable": true,
+  "report_artifacts": [
+    {
+      "path": "/tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md",
+      "sha256": "00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98",
+      "bytes": 16560
+    },
+    {
+      "path": "/tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.json",
+      "sha256": "230060e97f3a71567c80afd63eb3d73d9c36470cf9368947cee5983b9b278ef5",
+      "bytes": 108100
+    },
+    {
+      "path": "/tmp/t179pd-automatic-player-time-policy-engineering-independent-review-20261016-sha256.txt",
+      "sha256": "92e4d467a1b9fcbfa1cf482aecd122859cfe2239c1c4c86faa3047c78da2c4b5",
+      "bytes": 1281
+    }
+  ],
+  "checks": {
+    "historical_and_candidate_git_pins": 95,
+    "reviewer_exact_projections": 18,
+    "actual_diff_argv_reexecuted": 5,
+    "digest_manifest_entries_verified": 8,
+    "proposal_and_all_production_committed_and_working_continuity": true
+  },
+  "final_writer_script_note": "Reports and digest manifest were fully emitted and all report/diff assertions passed. Its final blanket clean-tree assertion stopped because root concurrently preserved unrelated untracked 3b HS01 evidence. No report was changed; this separate final readback records actual status and verifies frozen scope explicitly.",
+  "excluded_concurrent_status": "Only root 3b evidence/recovery/script artifacts are observed untracked; they are outside this design review and are not evaluated.",
+  "repo_edits_or_runtime_by_reviewer": false,
+  "FINALSTOP": true
+}
