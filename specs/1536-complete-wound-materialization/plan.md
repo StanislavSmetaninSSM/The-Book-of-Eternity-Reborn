@@ -2,7 +2,7 @@
 
 - База/actual remote `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, clean; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` неизменён. Пользователь согласился с B как основой следующего планирования и уточнил D5: отказ только от QTE, без отмены сцены/последствий, повторного исходного действия или потери обязательного ordinary resolution. Разрешены только документы + независимое review + commit/push/readback; code/tests/runtime tools/main/merge запрещены.
 - **Подтверждённое противоречие D5:** ordinary `GameEngine.TurnLifecycle.cs:2355–2357`, `Rules/Block_CLI_Operations.txt` QTE Offer Flow и CLI/пример требуют ordinary resolution после decline; offer-turn не должен уже разрешать ту же ситуацию. Поэтому прежнее «decline → cleanup без follow-up» не принимается как generic gameplay contract. Новый durable remaining-resolution handoff требует отдельного решения schema/authority; пока new joint QTE admission остаётся blocked до common. Остальные B/D4/D8 ограничения сохраняются.
-- [ ] FR063-ACTIVE-PLAN-B/document: подробный [план](./design/lawful-active-joint-tail-b-implementation-plan.md), точные этапы/paths/interfaces, тесты до кода, Linux/Windows, checkpoints и зависимости. Пишется; все implementation/runtime проверки UNRUN.
+- [x] FR063-ACTIVE-PLAN-B/document: подробный [план](./design/lawful-active-joint-tail-b-implementation-plan.md), точные этапы/paths/interfaces, тесты до кода, Linux/Windows, checkpoints и зависимости. Полный draft из 14 этапов (T178–T191) написан и self-reviewed; independent review pending. Будущие tasks unchecked, все implementation/runtime проверки UNRUN.
 - [ ] FR063-ACTIVE-PLAN-B/review: independent Astra/XHigh review плана и D5 causal delta; сохранить immutable финальную пару после FINALSTOP.
 - [ ] FR063-ACTIVE-PLAN-B/discussion: вернуть последовательность и конкретные открытые решения; STOP до принятия плана/разрешения реализации.
 
@@ -17,7 +17,7 @@
 - [x] FR063-ACTIVE-DESIGN-B/source: actual owners, formulas, initializer, QTE/decline/terminal boundaries и принятый INACTIVE scope сверены.
 - [x] FR063-ACTIVE-DESIGN-B/document: complete source-grounded DESIGN, self-review, exact proposed schemas/grants/proof/recovery, alternatives и matrix.
 - [x] FR063-ACTIVE-DESIGN-B/review: независимые initial/corrected DESIGN reports; все 3 замечания закрыты для обсуждения, финальная пара hashes проверена после FINALSTOP.
-- [ ] FR063-ACTIVE-DESIGN-B/discussion: пользователь/координатор ещё не принял D1–D8. **STOP до обсуждения.** Новый implementation plan, contract delta, code/test/tool changes и runtime release не разрешены. #1557 frozen2601fd6, #1558/#1559 не начинать; main/merge/force-push/branch deletion/secrets/issue closure не разрешены.
+- [x] FR063-ACTIVE-DESIGN-B/discussion: пользователь выбрал B как основу planning без кода. Исторический D5 no-follow-up пересмотрен обязательным уточнением 2026-10-16; Q-D5 schema/authority и текущий implementation plan ещё не приняты. Актуальный STOP/gates — в начале документа.
 
 ## US5-RO2 independently ACCEPTED; readonly slice complete, lawfulACTIVE decision required — 2026-10-15
 

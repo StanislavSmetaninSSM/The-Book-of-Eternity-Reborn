@@ -81,7 +81,7 @@ Unchanged members остаются точными guards; actual write set — �
 | **PROJECTION** | `game_state/player/computed_characteristics.json`, M | Существующий named derived owner, связанный с applied automatic capability. Не вызывает normal refresh/repair или `AddStatPoints`. |
 | **STORY** | `stories/mortal_life_{i}.jsonl`, i=original incarnation>0, иначе existing fallback1; единственный `StoryService.GetStoryPath`, M | Named joint story writer. Только точный signed prefix + один deterministic row; `chat_log.json` не новый writer. |
 | **QTE ACCEPT** | `game_state/control/qte_runtime.json`, `game_state/control/qte_deferred_effect_continuation.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Named QTE handoff publisher. runtime/continuation устанавливаются вместе, offer/Ready становятся absent. `turn_error` должен быть absent, а не стёрт как конфликт. |
-| **QTE DECLINE** | `game_state/control/qte_runtime.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Устанавливает existing `lastDeclinedQteId/lastDeclinedAtTurn`, обнуляет pending/active только при доказанной пустоте исходного runtime, consumes только свои offer/Ready. Prior terminal continuation остаётся unchanged. Политика дальнейшего ordinary разрешения — D5. |
+| **QTE DECLINE base (недостаточен для revised D5)** | `game_state/control/qte_runtime.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Устанавливает existing `lastDeclinedQteId/lastDeclinedAtTurn`, обнуляет pending/active только при доказанной пустоте исходного runtime, consumes только свои offer/Ready. Prior terminal continuation остаётся unchanged. Этот base cohort не сохраняет обязательное ordinary continuation: Q-D5 обязан принять дополнительный exact handoff до activation; одного base receipt недостаточно. |
 | **QTE TERMINAL PREPARE** | M | Named QTE selected-terminal owner фиксирует только уже известный selected outcome и exact terminal before/after plan (§8.6); не будущий выбор в P0. |
 | **QTE TERMINAL COMMIT** | Existing genuine deferred plan owned data set + `game_state/player/experience.json`, `game_state/player/status_changes.json`, `game_state/history/qte_history.json`, `game_state/control/qte_runtime.json`, `game_state/control/qte_deferred_effect_continuation.json`, `output/narrative_response.json`, три exact QTE wave controls из guard table, M | Proposed selected-terminal publisher: complete outcome action+terminal ack, без прямого ordinary distributor/normalizer writer. Новый source amount не выдаётся, earned XP берётся только из выбранного authored outcome. Не XP compensation. D8. |
 | **QTE AUTOMATIC / PROJECTION** | Тот же four-member AUTOMATIC и two-member PROJECTION, отдельные phase IDs | Обрабатывает только новые stats/level после genuine QTE terminal, с новым terminal-bound frozen basis; P2 никогда не переигрывается. |
@@ -303,6 +303,8 @@ Active требует accept choice/receipt и transfer; terminal PREPARE доп
 с null terminal receipt при active. Declined требует decline choice/receipt, null transfer/terminal.
 Terminal требует сохранённые accept choice/decisionReceipt/transfer и committed terminal receipt.
 Cleanup reason согласуется с none/declined/terminal; released не удаляет decisionReceipt.
+Declined/decisionReceipt сами не дают cleanup authority: revised D5 требует accepted genuine
+ordinary-resolution/transfer proof, schema которого пока не принят (Q-D5); до него new QTE admission blocked.
 
 ### 6.2. Continuation schema 2 для joint source
 
@@ -342,7 +344,7 @@ Physical-injury source остаётся genuine existing source capture; нов�
 | P3 PROJECTION: automatic applied | Actual calculator после stats/award, computed bytes + M projection receipt | Recompute every source, same frozen UTC; read-only validation after applied, не rewrite timestamp. |
 | P4 STORY: projection applied | Exact story prefix+row + M story receipt atomically | n−1→n in-memory reconcile только после durable story receipt; n stays n, чужой turn HOLD. |
 | P5 NONE / OFFERED | None идёт к cleanup. Offered освобождает lease и показывает current tuple-bound UI | Crash до choice снова показывает тот же offer; потерянный неcommitted click не подменяется выбором. |
-| P6 ACCEPT / DECLINE | Exact cohorts §4 + M action acknowledgement | Нового award/story/common take нет. Duplicate same decision — read-only existing result; conflicting choice HOLD. |
+| P6 ACCEPT / DECLINE | ACCEPT cohort §4 + M ack; DECLINE base недостаточен без отдельно принятого Q-D5 handoff | Нового award/story/common take нет. Duplicate decision сохраняет/resumes то же mandatory ordinary obligation, не объявляет его resolved. Conflicting choice HOLD. |
 | P7a QTE TERMINAL PREPARE/COMMIT | Selected-terminal basis фиксируется в M; terminal outcome/history/runtime/continuation + M ack публикуются одним exact cohort | Already committed не вызывает повтор XP/distribution/history. Paused/wave debt не terminal. |
 | P7b QTE AUTOMATIC/PROJECTION | Один дополнительный AUTOMATIC slot по terminal-known basis, затем актуальная computed projection с отдельным receipt | Только новые QTE-earned stats/level, watermark уже включает P2; никакого второго P2/story/turn. |
 | P8 CLEANUP | K deletions + M released ack atomically | Partial cleanup/debt не completion. Released observation даёт **никакой** новой mutation/replay authority. |
@@ -466,6 +468,10 @@ Current-turn mechanical H snapshots могут быть велики, но не 
 новый общий архив/каталог не создаётся. Это существенный review focus для cold proof.
 
 ### 8.5. D5 пересмотрен: ordinary resolution нельзя потерять
+
+Обязательное требование пользователя 2026-10-16 00:01 UTC:
+«Если отказываемся от QTE, то ситуация должна разрешаться стандартными механиками».
+Это подтверждение игровой семантики, не новый schema/authority grant.
 
 Пользователь уточнил: отказ отменяет только QTE-механизм, **не** игровую сцену и уже
 committed последствия. Исходное действие не выполняется повторно. Это не разрешение
@@ -705,7 +711,7 @@ fresh selected BOTH подготовка, catalog/Plan (zero execution), bounded
 | Q12 | QTE-earned level/stat after pre-offer award; cold before/after P7b | One new terminal-bound automatic slot; watermark prevents P2 reaward; final points/projection agree, no XP compensation. |
 | Q13 | Every authored responseFragment: allowed keys/nulls/types, unknown:null, forbidden definition/capacity even null, wrong resource operation/target/source/eventRef, physical sibling | Exact §8.6 grammar before common; no broad GameResponse/normalizer writes. Nonblank response takes precedence, blank/null uses finalNarrative; score/UTC deterministic. |
 | Q14 | Cold crash/repeat P7a→P7b→P8 with lawful changed terminal narrative; corrupt/rehashed initial binding, terminal output, original story/labels | Original P4 story reconstructed unchanged from authenticated initial inputs; separate exact terminal after-image. No stale live==initial refusal, no output waiver/story rewrite. |
-| Q09 | Decline once/repeated/conflicting; crash before/after marker/runtime/offer/Ready | D5 chosen semantics exact; no source action/common/award replay or phantom follow-up request. |
+| Q09 revised | Decline once/repeated/conflicting; crash/restart до/после decision/intent/request/original/ordinary completion | Mandatory actual standard-mechanics resolution; no lost remainder or duplicate source action/wound/treatment/award. Same obligation/request identity on redelivery, console/browser parity; accepted scene cannot decline. Q-D5 grants required. |
 | Q10 | Old prior capsule + next + third accepted QTE | No recursively nested predecessor marker/continuation growth; current terminal/source lineage still reconstructs. |
 | C01 | K absent/present exactly, foreign Ready/repair controls, stall/protocol failure | Only authenticated K paths; no whole-directory deletion, source-G crossing or arbitrary optionality. |
 | C02 | Crash each deletion/M release; recovery/debt; all before/all after/partial K | Actual journal recovery, exact fixed member readback, partial!=completion, no recreated old original after release. |
@@ -763,7 +769,8 @@ stats/level/QTE authoring, видит понятный repair/hold contract и �
 
 1. Независимый DESIGN reviewer проверяет exact ownership, phase/receipt DAG, frozen source roles,
    post-handoff genuine proof, retirement/cleanup membership и полноту matrix.
-2. Пользователь/координатор обсуждает документ и явно принимает/меняет D1–D8.
+2. B выбран пользователем для planning; mandatory D5 семантика уточнена 2026-10-16.
+   Q-D5 follow-up schema/authority и implementation plan ещё требуют отдельного обсуждения.
 3. Только после written-design approval возможен отдельный implementation plan/selection,
    его review и разрешение реализации. Никаких production/test/runtime-tools edits в этой задаче.
 4. Full FR063/T070/#1536, ACTIVE runtime PASS и Windows acceptance остаются открытыми.

@@ -2,9 +2,26 @@
 
 - База/actual remote `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, clean; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` неизменён. Пользователь согласился с B как основой следующего планирования и уточнил D5: отказ только от QTE, без отмены сцены/последствий, повторного исходного действия или потери обязательного ordinary resolution. Разрешены только документы + независимое review + commit/push/readback; code/tests/runtime tools/main/merge запрещены.
 - **Подтверждённое противоречие D5:** ordinary `GameEngine.TurnLifecycle.cs:2355–2357`, `Rules/Block_CLI_Operations.txt` QTE Offer Flow и CLI/пример требуют ordinary resolution после decline; offer-turn не должен уже разрешать ту же ситуацию. Поэтому прежнее «decline → cleanup без follow-up» не принимается как generic gameplay contract. Новый durable remaining-resolution handoff требует отдельного решения schema/authority; пока new joint QTE admission остаётся blocked до common. Остальные B/D4/D8 ограничения сохраняются.
-- [ ] FR063-ACTIVE-PLAN-B/document: подробный [план](./design/lawful-active-joint-tail-b-implementation-plan.md), точные этапы/paths/interfaces, тесты до кода, Linux/Windows, checkpoints и зависимости. Пишется; все implementation/runtime проверки UNRUN.
+- [x] FR063-ACTIVE-PLAN-B/document: подробный [план](./design/lawful-active-joint-tail-b-implementation-plan.md), точные этапы/paths/interfaces, тесты до кода, Linux/Windows, checkpoints и зависимости. Полный draft из 14 этапов (T178–T191) написан и self-reviewed; independent review pending. Будущие tasks unchecked, все implementation/runtime проверки UNRUN.
 - [ ] FR063-ACTIVE-PLAN-B/review: independent Astra/XHigh review плана и D5 causal delta; сохранить immutable финальную пару после FINALSTOP.
 - [ ] FR063-ACTIVE-PLAN-B/discussion: вернуть последовательность и конкретные открытые решения; STOP до принятия плана/разрешения реализации.
+
+### Future implementation task index — все UNRUN, не разрешены к исполнению
+
+- [ ] T178 B00 Закрыть contract/authorization и Q-D5 gate в `design/lawful-active-joint-tail-b-implementation-plan.md`.
+- [ ] T179 [US7] B01 Strict marker3/original/G capture в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointActiveTail.cs` и engine source.
+- [ ] T180 [US2] B02 Atomic automatic action+ack в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticPublication.cs`.
+- [ ] T181 [US2] B03 Actual projection+ack в `BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs`.
+- [ ] T182 [US7] B04 Frozen original story/turn в `BookOfEternityClient/Services/StoryService.MortalJointRepair.cs`.
+- [ ] T183 [US2] B05 No-offer vertical completion/D4 entry guards в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и exact UI consumers из плана.
+- [ ] T184 [US7] B06 QTE grammar/capture/retirement в `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs`; BLOCKED Q-D5.
+- [ ] T185 [US7] B07 Atomic accept/retention в `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs`; activation paired with mandatory decline.
+- [ ] T186 [US7] B08 Mandatory ordinary decline continuation в accepted Q-D5 appendix и known consumers; новый mechanism/schema/authority **не выбран/не выдан**.
+- [ ] T187 [US2] B09 Atomic selected-terminal D8 в `BookOfEternityClient/Services/QteSceneService.MortalJointTerminal.cs`.
+- [ ] T188 [US2] B10 Post-QTE auto/projection/two-chain proof в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs`.
+- [ ] T189 [US7] B11 Exact terminal cleanup/cold admission в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и native fixture.
+- [ ] T190 [US5] B12 Console/browser/GM qualification в exact UI/docs/test paths из плана; guided US5/allocator/visual dependencies не закрываются автоматически.
+- [ ] T191 B13 Linux/Windows finite connected acceptance/recovery в `.JointActiveNative.cs`, exact expanded path и 12 cases/OS заданы в плане.
 
 ## FR063-ACTIVE-DESIGN-B готов к обсуждению; реализация не разрешена — 2026-10-15
 
@@ -17,7 +34,7 @@
 - [x] FR063-ACTIVE-DESIGN-B/source: actual owners, formulas, initializer, QTE/decline/terminal boundaries и принятый INACTIVE scope сверены.
 - [x] FR063-ACTIVE-DESIGN-B/document: complete source-grounded DESIGN, self-review, exact proposed schemas/grants/proof/recovery, alternatives и matrix.
 - [x] FR063-ACTIVE-DESIGN-B/review: независимые initial/corrected DESIGN reports; все 3 замечания закрыты для обсуждения, финальная пара hashes проверена после FINALSTOP.
-- [ ] FR063-ACTIVE-DESIGN-B/discussion: пользователь/координатор ещё не принял D1–D8. **STOP до обсуждения.** Новый implementation plan, contract delta, code/test/tool changes и runtime release не разрешены. #1557 frozen2601fd6, #1558/#1559 не начинать; main/merge/force-push/branch deletion/secrets/issue closure не разрешены.
+- [x] FR063-ACTIVE-DESIGN-B/discussion: пользователь выбрал B как основу planning без кода. Исторический D5 no-follow-up пересмотрен обязательным уточнением 2026-10-16; Q-D5 schema/authority и текущий implementation plan ещё не приняты. Актуальный STOP/gates — в начале документа.
 
 ## US5-RO2 independently ACCEPTED; readonly slice complete, lawfulACTIVE decision required — 2026-10-15
 
