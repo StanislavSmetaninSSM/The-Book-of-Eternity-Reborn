@@ -13,6 +13,12 @@ The firstRED cc8 checkpoint is pushed/readback/recovered and independent causal 
 Preserve and independently qualify any causal RED before success implementation. Continue accepted finite 3b custody/source/attempt/owned-close work and meaningful checks; settle concrete engineering gaps through focused design and independent review. Full S/B/M3/F1, complete ordinary owners, T197, new-QTE activation and all D4/guided/DOM/visual/Windows/D8 gates remain open. F2 is not selected. Sole writer, category budgets, native/cleanup/source evidence and non-force task-branch persistence remain mandatory; main/merge/force-push/branch deletion/secrets/issue closure stay prohibited.
 
 
+## T179-Pd.3b ordered GREEN 4/7 active-tail3 PASS — held refusals preserved (2026-10-16)
+
+Live checkpointae47dd606ce10b0e0a9bb9a8b5d7e9b059924261 pushed/readback/NEWGitHub97files/all91delta; unchangedfreshf9bcfourDLLs/clean source before soleorderedactive-tail3. Native0/exact3PASS/category54.7899141s≤5m/native60.270297s; strict3rootsremoved/noresidue/sourceHEADfourDLLunchanged. Sixrawchains/rootaudit/exacthelpers/priorliverecovery frozen under `recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-*`.
+
+Rawroot checks allpending_stats/unprocessed_level/new_qte_offer: actual latecaller entered/handled, PublicationUncertain with exact admissionrefusal, currentturn42/no common, ConfirmedHeld valid, onecorrelatedrepair. Entire raw before/after canonical keysets/bytes preserved with only genuine signed-original schedule/QTE restoration and named repair-owned changes; exactlyone correlatedRepairReady diagnostic ledger/fullCanonicalStateAccepted=false, no newM publication. No complete ordinary resolution or S/B/M3/F1 authority claim. Currentselected10/15PASS/finalreviewpending. Save/readback/recover then ONLYorderedowner-refusal1 next; priorlimitsOPEN.
+
 ## T179-Pd.3b ordered GREEN 3/7 live1 PASS — nonzero actual ProcessPlayerTurn (2026-10-16)
 
 HS01 checkpointfe80e68f92b79f244330780d49cdda84cede9d42 pushed/readback/NEWGitHub85files/all79delta, cleanf9bcfourDLLs before soleorderedlive1. Native0/exact1PASS/category103.2938515s≤5m/native109.983625s; strictrootremoved/noresidue/sourceHEADfourDLLunchanged. Sixrawchains/genericaudit/strongrawunion+fullbindings/results/exacthelpertexts/priorHS01recovery preserved under `recovery/t179pd-hot-custody-implementation-green-live1-20261016-*`.

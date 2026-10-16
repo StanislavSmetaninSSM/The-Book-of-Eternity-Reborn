@@ -1,0 +1,245 @@
+{
+  "actualHead": "ae47dd606ce10b0e0a9bb9a8b5d7e9b059924261",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-joint-active-tail",
+  "artifactChains": 6,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"unprocessed_level\")",
+      "stdoutSha256": "057e9b815397a7f86287ae974d8f9a83cd9d68b2066b7f3733b6dbd7fff66052",
+      "boundaries": [
+        "fr063_guaranteed_native_pre_original_npc_shape",
+        "qte_story_actual_client_append",
+        "qte_story_actual_engine_result",
+        "qte_physical_actual_occurrence",
+        "fr063_joint_actual_prior42_inactive_tail",
+        "fr063_joint_active_tail_before_original43",
+        "fr063_joint_original_progression_reader_before_owner",
+        "fr063_joint_signed_original_schedule_before_owner",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_confirmed_claim_inspection",
+        "fr063_joint_completion_actual_prerequisites",
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+        "fr063_joint_completion_actual_owner_outcome",
+        "fr063_joint_active_tail_actual_refusal"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a6791e69d1af455b98e124cb3b2e5d0d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "scenario": "unprocessed_level",
+        "actualTurn": 42,
+        "confirmedHeld": true,
+        "commonPublication": false,
+        "preservedRawImages": 219,
+        "oneCorrelatedDiagnosticLedger": true,
+        "fullCanonicalStateAccepted": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"pending_stats\")",
+      "stdoutSha256": "a327d080dfe6bac8daf1fa52e89b0e04f20b2b081616abc94ffcc8005cbaf056",
+      "boundaries": [
+        "fr063_guaranteed_native_pre_original_npc_shape",
+        "qte_story_actual_client_append",
+        "qte_story_actual_engine_result",
+        "qte_physical_actual_occurrence",
+        "fr063_joint_actual_prior42_inactive_tail",
+        "fr063_joint_active_tail_before_original43",
+        "fr063_joint_original_progression_reader_before_owner",
+        "fr063_joint_signed_original_schedule_before_owner",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_confirmed_claim_inspection",
+        "fr063_joint_completion_actual_prerequisites",
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+        "fr063_joint_completion_actual_owner_outcome",
+        "fr063_joint_active_tail_actual_refusal"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b553a65ed45c41488a50b47fb53becff",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "scenario": "pending_stats",
+        "actualTurn": 42,
+        "confirmedHeld": true,
+        "commonPublication": false,
+        "preservedRawImages": 222,
+        "oneCorrelatedDiagnosticLedger": true,
+        "fullCanonicalStateAccepted": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion(scenario: \"new_qte_offer\")",
+      "stdoutSha256": "10ccc935cbaf21ad96f9eec60879bd3c80c2b9d7e6e8afa548fa49a95e7d7e07",
+      "boundaries": [
+        "fr063_guaranteed_native_pre_original_npc_shape",
+        "qte_story_actual_client_append",
+        "qte_story_actual_engine_result",
+        "qte_physical_actual_occurrence",
+        "fr063_joint_actual_prior42_inactive_tail",
+        "fr063_joint_active_tail_before_original43",
+        "fr063_joint_original_progression_reader_before_owner",
+        "fr063_joint_signed_original_schedule_before_owner",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_confirmed_claim_inspection",
+        "fr063_joint_completion_actual_prerequisites",
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+        "fr063_joint_completion_actual_owner_outcome",
+        "fr063_joint_active_tail_actual_refusal"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-0c6adc7b353b40e9a2f520c309a6e319",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "scenario": "new_qte_offer",
+        "actualTurn": 42,
+        "confirmedHeld": true,
+        "commonPublication": false,
+        "preservedRawImages": 222,
+        "oneCorrelatedDiagnosticLedger": true,
+        "fullCanonicalStateAccepted": false
+      }
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-active-tail"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ae47dd606ce10b0e0a9bb9a8b5d7e9b059924261",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-active-tail",
+        "Seconds": 54.7899141,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0560128,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0501797,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1393931,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0055515,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:59.3555563",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourceAssertionsAndRawDataAreDistinct": true
+}
