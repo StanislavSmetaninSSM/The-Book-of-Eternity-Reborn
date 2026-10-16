@@ -10,7 +10,7 @@
 
 **Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).
 
-**Planning base:** `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **SELF-REVIEWED WIP, independent plan review pending**. Все будущие implementation/runtime/platform checks **UNRUN**.
+**Planning base:** `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **READY FOR USER DISCUSSION; Q-D5 BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
 
 ## Global Constraints
 
@@ -406,6 +406,8 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 - [x] Проверить все existing file paths и ссылки; new paths явно пометить proposed/create. Никакой генерации setup-plan поверх существующего history, agent-context или scaffold edits: manual SpecKit reconciliation; extension hooks здесь optional.
 - [x] Type scan registry↔stage consumes/produces; capabilities только private issuers, no unused/unowned proposed public API.
 - [x] Проверить tasks.md IDs T178–T191 уникальны, все implementation tasks unchecked, plan/spec/DESIGN/front status согласованы; no [P] при одном writer и shared storage state.
-- [ ] Независимое Astra/XHigh plan review, source-backed corrections, final immutable reports после FINALSTOP; remote SHA/clean GitHub recovery до handoff.
+- [x] Независимое Astra/XHigh plan review, source-backed corrections, final immutable reports после FINALSTOP; remote SHA/clean GitHub recovery до handoff.
 
 После review вернуть документ, короткую очередность, Q-D5 и зависимости; остановиться. #1557 frozen2601fd6, #1558/#1559 не запускать.
+
+Planning closeout: [corrected independent PLAN review](../recovery/lawful-active-b-corrected-independent-plan-20261016T002709Z-review.md) на f8ab919aae3f5a62841704e37fe63b3fce020a32 закрыл P-F1–P-F4; Q-D5 по-прежнему blocked/ungranted. Итоговый carrier меняет здесь только status/review metadata; никакого implementation release.

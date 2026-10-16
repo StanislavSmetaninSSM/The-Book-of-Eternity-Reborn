@@ -23,7 +23,8 @@ The user authorized DESIGN-only preparation of [variant B](./design/lawful-activ
 after readonly checkpoint10611c69a. All additional schema/member/issuer grants are proposals
 selected as a planning basis by the user, with no implementation authorization. Independent
 corrected DESIGN review on a8479c86d covers the prior document; the revised mandatory D5
-follow-up boundary is reviewed with the current implementation plan. The accepted INACTIVE contour remains
+follow-up boundary has been independently reviewed with the current implementation plan;
+Q-D5 concrete schema/authority remains blocked and unaccepted. The accepted INACTIVE contour remains
 unchanged; no implementation or ACTIVE runtime acceptance follows from this link.
 
 ## ACTIVE implementation planning clarification — 2026-10-16
