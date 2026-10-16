@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-observed-original-default",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "c1094b47e609f62c4de4f4cb8d0acc2435b6d595",
+  "compiled_source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "category": "fr063-observed-original-default",
+  "started_utc": "2026-10-16T16:41:37.747963+00:00",
+  "ended_utc": "2026-10-16T16:41:49.595606+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-pending-snapshot-reader-": [],
+    "boe-pending-snapshot-authority-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-pending-snapshot-reader-": [],
+    "boe-pending-snapshot-authority-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-pending-snapshot-reader-": [],
+    "boe-pending-snapshot-authority-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}
