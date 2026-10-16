@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-hot-joint-attempt-ownership"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6810267,
+  "Descriptors": [
+    {
+      "Name": "fr063-hot-joint-attempt-ownership-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-hot-joint-attempt-ownership",
+      "Categories": [
+        "fr063-hot-joint-attempt-ownership"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
