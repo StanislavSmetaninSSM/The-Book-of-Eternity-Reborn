@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-joint-late-completion",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "efc8a2affe36edfdcdedcc3f1494a56e4dc95e72",
+  "compiled_source": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-joint-late-completion",
+  "started_utc": "2026-10-16T21:53:04.497683+00:00",
+  "ended_utc": "2026-10-16T21:56:43.364063+00:00",
+  "binaries_unchanged": true,
+  "source_acceptance": {
+    "source_review_stem": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016",
+    "saved_source_acceptance_head": "efc8a2affe36edfdcdedcc3f1494a56e4dc95e72",
+    "complete_delta_receipt": "/tmp/t179pd-hot-custody-implementation-source-accepted-delta-recovery-20261016.json",
+    "complete_delta_sha256": "75fe3d76ea4931feed6c10bd5c95e6c2b10dd439eecb3c99298f19142fc3de6e"
+  },
+  "scoped_temp_prefixes_before": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}
