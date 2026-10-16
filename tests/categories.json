@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-action-boundary-calculation",
+      "responsibility": "T192a detached same-action/request coordinates, consumed owner-turn admission calculation and resolved/unresolved time projections; real lifetime scheduler controls. No source/phase publication authority or live F1 activation.",
+      "excludes": "Genuine original/G/M3 issuer and durable action+ack, FD/FT, full ordinary outcomes, death handoff, browser/visual and OS qualification; these remain future gates.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+        "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.*",
+            "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_TurnsAdvanceOnceOnlyAtExactPhaseAndExpireAtOne",
+            "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_UntilTimeExpiresAtEqualityOrLater",
+            "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_SceneUsesExactSceneAndDeclaredSuspendResumePolicy",
+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_AfterlifeIgnoresStaleMortalTimeChange"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-player-status-guidance",
       "responsibility": "US5-RO2 current client-owned status guidance in Mortal and afterlife, paired display examples/manifest and exact affected parseability/complete-coverage inventory controls. This is the wound-status portion of afterlife documentation coverage.",
       "excludes": "No execution of broad documentation scenarios, mutation/publication/provider/quote/staging, full afterlife matrix or full FR063/US5. Two integration methods are pure read-only repository validation and own no mutable roots; real status/reader fixtures have strict roots in their separate owners.",

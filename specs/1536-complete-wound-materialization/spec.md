@@ -17,6 +17,18 @@
 - **Save compatibility**: Not required under the pre-release constitution and the user's explicit decision. Repository bootstrap state, fixtures, examples, and tests move directly to the new contract.
 - **Out of scope**: A catalog of ready-made wounds; migration of non-empty legacy saves; replacement of the effect engine; a general combat-damage or experience redesign; automatic post-battle fatigue; automatic soul dissipation; a full afterlife inventory; a mandatory public clinic for the whole Shining Abode. If Saref's `memory_suppression` is only audit metadata rather than a complete independent effect, a separate linked issue MUST be created before #1536 closes.
 
+## Staged F1-R2 implementation authorization — 2026-10-16
+
+The user approved staged F1-R2/D9–D11 implementation from d43d6f3a9 and parallel T197 DESIGN.
+This supersedes historical DESIGN-only/STOP authorization statements below, not runtime evidence.
+Death transition implementation requires its accepted independent DESIGN review first; new
+principled grants beyond R2 are referred to the coordinator while independent stages continue.
+New joint QTE remains disabled until T197, full ordinary outcomes and every required gate qualify.
+T192a first implements client-only detached calculation values; no GM-authored or live request/
+writer capability is exposed, so active GM prompt/example changes are not required for that
+foundation. Genuine original/M/issuer integration and synchronized GM contracts remain later work.
+D4/guided/visual/platform/D8 limits remain; Windows is not qualified by Linux.
+
 ## Proposed lawful ACTIVE design — not accepted runtime contract
 
 The user authorized DESIGN-only preparation of [variant B](./design/lawful-active-joint-tail-b.md)
