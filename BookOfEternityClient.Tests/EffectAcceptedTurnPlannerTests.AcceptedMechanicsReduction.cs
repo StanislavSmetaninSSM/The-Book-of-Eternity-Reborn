@@ -197,7 +197,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     private static OrdinaryReductionFixture CreateOrdinaryReductionFixture(
         bool effects, bool bounded = false, bool createDefinition = false, int ordinaryCount = 0,
         ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false,
-        Func<EffectAcceptedTurnInput, EffectAcceptedTurnInput>? configureEffectInput = null)
+        Func<EffectAcceptedTurnInput, EffectAcceptedTurnInput>? configureEffectInput = null,
+        Func<EffectAcceptedTurnPlan, EffectAcceptedTurnPlan>? configureEffectPlan = null)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 41, 10, 10, 10, 10, 10);
         Assert.True(bootstrap.IsValid, DescribeOrdinaryReductionIssues(bootstrap.Issues));
@@ -225,7 +226,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             effectInput = configureEffectInput?.Invoke(effectInput) ?? effectInput;
             var result = new EffectAcceptedTurnPlanCache(fixture.Effects).GetOrBuild(effectInput);
             Assert.True(result.Success, DescribeOrdinaryReductionIssues(result.Issues));
-            effectPlan = result.Plan!;
+            effectPlan = configureEffectPlan?.Invoke(result.Plan!) ?? result.Plan!;
             effectCommands = effectInput.RawCommands.DeepClone().AsObject();
             events = effectInput.EventInput.DeepClone().AsObject();
             identity = effectInput.PreTurnIdentityIndex!.DeepClone().AsObject();

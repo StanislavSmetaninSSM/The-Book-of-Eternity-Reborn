@@ -74,6 +74,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotEmpty(resources.AppliedTransitions);
         Assert.True(resources.EffectBoundaryTranscript!.IsComplete);
         Assert.True(plan.EffectPlan!.IsAcceptedBoundaryComplete);
+        var lifecycleLedger = Assert.IsType<EffectLifecycleExecutionLedger>(plan.EffectPlan.LifecycleExecutionLedger);
+        var retainedInputs = ReadCalculationProperty<AcceptedMechanicsCalculationInputs>(authority, "RetainedCalculationInputs");
+        Assert.True(lifecycleLedger.IsComplete);
+        Assert.True(lifecycleLedger.MatchesInitialPlan(retainedInputs.EffectPlan!));
         WritePhysicalInjuryDiagnostic("fr063_joint_actual_retained_common_calculation", new
         {
             RetainedByActualCommonAuthority = true,
@@ -81,6 +85,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             DetachedReturnedRoots = true, SameCompletedEffectResult = true,
             ResourceAppliedTransitions = resources.AppliedTransitions.Count,
             ActualResourceEvents = resources.Events.Count,
+            LifecycleExecutionLedger = lifecycleLedger.ToJsonObject(),
+            LifecycleExecutionLedgerFingerprint = lifecycleLedger.Fingerprint,
+            SamePrivateLifecycleExecution = true,
             plan.InputFingerprint, plan.PreparedPlanFingerprint,
             Scope = "actual v2 retained calculation/output preservation; no active S/B or pre-seal drift/foreign-owner proof"
         });

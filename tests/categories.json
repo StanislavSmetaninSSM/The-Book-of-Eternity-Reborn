@@ -3,7 +3,7 @@
     "categories": [
 {
   "id": "fr063-active-prefix-lifecycle-evidence",
-  "responsibility": "T179-Pd/T192b test-first actual planner lifecycle evidence. Three independent ordinary completed-reduction cases (advance, real scheduler no_change, empty matched roster) require both real first-pass ledger rows, exact source ordinals, detached copies and unchanged identities/projection calls. Initial causal RED is missing genuine plan ledger only after existing planner/common assembly succeeds.",
+  "responsibility": "T179-Pd/T192b actual first-pass lifecycle evidence: three causal RED controls plus nine roster/exclusion/expiry/source-bound/time/NPC/order cases and two owner/missing-first-pass negatives. Genuine old planner/common completion precedes evidence assertions. Private issuance, both real passes, raw ordinals/rosters/outcomes/transition refs, detached copies and unchanged identity/projection counts. This finite unit owner does not authenticate engine ACTIVE source or P0.",
   "excludes": "No engine submitted-output admission, action capability, active S/C/B seal, M3/common publication, cold closure, new QTE/F1/T197 or visual/platform qualification. This finite unit owner is a first step of the coherent P0 stage, not completion.",
   "changeHints": [
     "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
@@ -29,7 +29,10 @@
     {
       "project": "unit",
       "tests": [
-        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition"
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion"
       ]
     }
   ]

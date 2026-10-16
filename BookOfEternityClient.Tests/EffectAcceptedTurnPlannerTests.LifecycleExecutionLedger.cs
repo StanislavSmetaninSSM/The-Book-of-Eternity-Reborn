@@ -110,5 +110,266 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             (fixture.ResourceAllocations, fixture.Effects.EffectCalls, fixture.Effects.TransitionCalls));
         Assert.Same(assembled, AcceptedMechanicsPlanner.CompleteAcceptedReduction(reduction));
         Assert.Equal(1, fixture.Outcome.ProjectCalls);
+        var owned = Assert.IsType<EffectLifecycleExecutionLedger>(ledger);
+        Assert.True(owned.IsComplete);
+        Assert.True(owned.MatchesInitialPlan(fixture.Input.PlanningContext!.EffectPlan!));
+        Assert.Equal(0, fixture.Effects.EffectCalls);
+        Assert.Equal(scenario == "advance" ? 1 : 0, fixture.Effects.TransitionCalls);
+    }
+
+    [Theory]
+    [InlineData("turn_expire")]
+    [InlineData("causal_created")]
+    [InlineData("uses_mode")]
+    [InlineData("bound_active")]
+    [InlineData("bound_expire")]
+    [InlineData("until_time_null")]
+    [InlineData("npc_advance")]
+    [InlineData("ordered_events")]
+    [InlineData("empty_source")]
+    public void LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(string scenario)
+    {
+        var fixture = CreateOrdinaryReductionFixture(effects: true,
+            configureEffectInput: input => ConfigureLifecycleLedgerScenario(input, scenario));
+        var completed = ReduceLifecycleLedgerFixture(fixture);
+        var initial = fixture.Input.PlanningContext!.EffectPlan!;
+        var ledger = Assert.IsType<EffectLifecycleExecutionLedger>(completed.Effects!.LifecycleExecutionLedger);
+        Assert.True(ledger.IsComplete);
+        Assert.True(ledger.MatchesInitialPlan(initial));
+        var image = ledger.ToJsonObject();
+        var passes = image["passes"]!.AsArray();
+        Assert.Equal(2, passes.Count);
+        var source = initial.EventInput["lifecycleEvents"]!.AsArray();
+        for (var passIndex = 0; passIndex < 2; passIndex++)
+        {
+            var pass = passes[passIndex]!;
+            Assert.Equal(passIndex == 0 ? "bound_continuations" : "final_lifetime", pass["kind"]!.GetValue<string>());
+            var rows = pass["events"]!.AsArray();
+            Assert.Equal(source.Count, pass["sourceEventCount"]!.GetValue<int>());
+            Assert.Equal(source.Count, rows.Count);
+            for (var ordinal = 0; ordinal < source.Count; ordinal++)
+            {
+                Assert.Equal(ordinal, rows[ordinal]!["inputOrdinal"]!.GetValue<int>());
+                Assert.Equal(source[ordinal]!["eventRef"]!.GetValue<string>(), rows[ordinal]!["sourceEventRef"]!.GetValue<string>());
+                Assert.Equal(source[ordinal]!["target"]!.ToJsonString(), rows[ordinal]!["parsedAuthority"]!["target"]!.ToJsonString());
+                Assert.NotEmpty(rows[ordinal]!["rosterRef"]!.GetValue<string>());
+            }
+        }
+        if (scenario == "empty_source")
+        {
+            Assert.All(passes, pass => Assert.Empty(pass!["events"]!.AsArray()));
+            Assert.Equal(0, fixture.Effects.TransitionCalls);
+            return;
+        }
+        var bound = passes[0]!["events"]![0]!;
+        var final = passes[1]!["events"]![0]!;
+        var boundSubject = Assert.Single(bound["subjects"]!.AsArray())!;
+        if (scenario == "bound_expire")
+        {
+            Assert.Equal("expire", boundSubject["outcome"]!.GetValue<string>());
+            Assert.False(boundSubject["schedulerEvent"]!["sourceSatisfied"]!.GetValue<bool>());
+            Assert.Empty(final["subjects"]!.AsArray());
+            Assert.Empty(final["roster"]!.AsArray());
+            Assert.Equal("no_eligible", final["disposition"]!.GetValue<string>());
+        }
+        else
+        {
+            var subject = Assert.Single(final["subjects"]!.AsArray())!;
+            if (scenario is "causal_created" or "uses_mode")
+            {
+                Assert.Equal(scenario, subject["disposition"]!.GetValue<string>());
+                Assert.Equal(scenario, boundSubject["disposition"]!.GetValue<string>());
+                Assert.Equal("no_eligible", final["disposition"]!.GetValue<string>());
+                Assert.Null(subject["schedulerEvent"]);
+                Assert.Equal(0, fixture.Effects.TransitionCalls);
+            }
+            else if (scenario == "bound_active")
+            {
+                Assert.Equal("other_pass", subject["disposition"]!.GetValue<string>());
+                Assert.Equal("no_change", boundSubject["outcome"]!.GetValue<string>());
+                Assert.True(boundSubject["schedulerEvent"]!["sourceSatisfied"]!.GetValue<bool>());
+                Assert.Equal("source_catalog", boundSubject["resolvedSourceWitness"]!["kind"]!.GetValue<string>());
+                Assert.Equal(initial.SourceAuthority.CanonicalFingerprint,
+                    boundSubject["resolvedSourceWitness"]!["catalogFingerprint"]!.GetValue<string>());
+            }
+            else
+            {
+                Assert.Equal(scenario == "turn_expire" ? "expire" : scenario == "until_time_null" ? "no_change" : "advance",
+                    subject["outcome"]!.GetValue<string>());
+                if (scenario == "until_time_null")
+                {
+                    Assert.Null(subject["schedulerEvent"]!["currentTime"]);
+                    Assert.Empty(subject["transitionRefs"]!.AsArray());
+                }
+                if (scenario == "npc_advance")
+                {
+                    Assert.Equal("npc", subject["coordinate"]!["kind"]!.GetValue<string>());
+                    Assert.Equal(EffectCarrierCatalog.NpcPath, subject["filePath"]!.GetValue<string>());
+                    Assert.Equal(2, subject["afterImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
+                }
+                if (scenario == "turn_expire")
+                {
+                    Assert.Null(subject["afterImage"]);
+                    Assert.Single(subject["transitionRefs"]!.AsArray());
+                }
+                if (scenario == "ordered_events")
+                {
+                    var second = Assert.Single(passes[1]!["events"]![1]!["subjects"]!.AsArray())!;
+                    Assert.Equal("no_change", second["outcome"]!.GetValue<string>());
+                    Assert.Equal(3, subject["beforeImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
+                    Assert.Equal(2, second["beforeImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
+                    Assert.NotEqual(final["rosterRef"]!.GetValue<string>(), passes[1]!["events"]![1]!["rosterRef"]!.GetValue<string>());
+                }
+            }
+        }
+        Assert.Equal(0, fixture.Effects.EffectCalls);
+        Assert.Equal(scenario is "turn_expire" or "bound_expire" or "npc_advance" or "ordered_events" ? 1 : 0,
+            fixture.Effects.TransitionCalls);
+        var copy = EffectAcceptedTurnPlan.DetachedCopyOf(completed.Effects);
+        Assert.Same(ledger, copy.LifecycleExecutionLedger);
+        Assert.Equal(ledger.Fingerprint, copy.LifecycleExecutionLedger!.Fingerprint);
+    }
+
+    [Fact]
+    public void LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution()
+    {
+        var fixture = CreateOrdinaryReductionFixture(effects: true);
+        var completed = ReduceLifecycleLedgerFixture(fixture);
+        var ledger = Assert.IsType<EffectLifecycleExecutionLedger>(completed.Effects!.LifecycleExecutionLedger);
+        Assert.True(ledger.MatchesInitialPlan(fixture.Input.PlanningContext!.EffectPlan!));
+        var foreign = CreateOrdinaryReductionFixture(effects: true);
+        Assert.Equal(WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(fixture.Input.PlanningContext.EffectPlan!),
+            WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(foreign.Input.PlanningContext!.EffectPlan!));
+        Assert.False(ledger.MatchesInitialPlan(foreign.Input.PlanningContext.EffectPlan!));
+        Assert.Throws<InvalidOperationException>(() => new EffectLifecycleExecutionLedger(new object(), ledger.ToJsonObject()));
+        Assert.Throws<InvalidOperationException>(() => ledger.AppendFinalPass(new object(),
+            ledger.ToJsonObject()["passes"]![1]!.AsObject()));
+        Assert.Throws<InvalidDataException>(() => ledger.BindPlan(null, "foreign_payload"));
+        var fingerprint = ledger.Fingerprint;
+        ledger.ToJsonObject()["passes"]![0]!["events"]!.AsArray().Clear();
+        Assert.Equal(fingerprint, ledger.Fingerprint);
+    }
+
+    [Fact]
+    public void LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion()
+    {
+        var fixture = CreateOrdinaryReductionFixture(effects: true, configureEffectPlan: plan =>
+        {
+            Assert.NotNull(plan.LifecycleExecutionLedger);
+            var without = new EffectAcceptedTurnPlan(plan.InputFingerprint, plan.CarrierAuthorityFingerprint,
+                plan.SourceAuthorityFingerprint, plan.TargetAuthorityFingerprint, plan.AllocatedCombatantIds,
+                plan.AllocatedEffectIds, plan.AllocatedTransitionIds, plan.Sources, plan.Targets,
+                plan.SourceBindings, plan.DeferredReactions, plan.ReactionExpansionCount, plan.ReactionExpansionUsage,
+                plan.ActiveEffects, plan.ResourceTriggerCarriers, plan.SourceAuthority, plan.TargetAuthority,
+                plan.EventInput, plan.CarrierBeforeImages, plan.CarrierAfterImages, plan.IdentityIndexBeforeImage,
+                plan.IdentityIndexAfterImage, plan.TouchedPaths, plan.DeletedPaths,
+                acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
+                woundApplicationRootEffectBindings: plan.WoundApplicationRootEffectBindings,
+                skillScopeAuthority: plan.SkillScopeAuthority);
+            Assert.Equal(WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan),
+                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(without));
+            return without;
+        });
+        Assert.Null(fixture.Input.PlanningContext!.EffectPlan!.LifecycleExecutionLedger);
+        var completed = ReduceLifecycleLedgerFixture(fixture);
+        Assert.True(completed.Effects!.IsAcceptedBoundaryComplete);
+        Assert.Null(completed.Effects.LifecycleExecutionLedger);
+    }
+
+    private static AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction ReduceLifecycleLedgerFixture(
+        OrdinaryReductionFixture fixture)
+    {
+        var reduction = AcceptedMechanicsPlanner.ReduceAcceptedPlan(fixture.Input,
+            AcceptedMechanicsPlanFingerprints.ComputePlanningInput(fixture.Input));
+        Assert.Equal(AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction, reduction.Kind);
+        var completed = Assert.IsType<AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction>(reduction.Completed);
+        Assert.True(completed.Resources.IsValid);
+        Assert.True(completed.Resources.EffectBoundaryTranscript!.IsComplete);
+        var assembled = AcceptedMechanicsPlanner.CompleteAcceptedReduction(reduction);
+        Assert.True(assembled.Success, DescribeOrdinaryReductionIssues(assembled.Issues));
+        Assert.Same(completed.Effects, assembled.Plan!.EffectPlan);
+        Assert.Equal(1, fixture.Outcome.ProjectCalls);
+        return completed;
+    }
+
+    private static EffectAcceptedTurnInput ConfigureLifecycleLedgerScenario(EffectAcceptedTurnInput input, string scenario)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("characteristic_modifier");
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "characteristic_modifier");
+        definition["triggers"] = new JsonArray();
+        effect["triggers"] = new JsonArray();
+        var events = input.EventInput.DeepClone().AsObject();
+        var source = events["lifecycleEvents"]![0]!;
+        if (scenario == "turn_expire") effect["lifetime"]!["remainingTurns"] = 1;
+        if (scenario == "causal_created") effect["chronology"]!["createdEventRef"] = source["causalEventRef"]!.DeepClone();
+        if (scenario is "bound_active" or "bound_expire")
+        {
+            definition["lifetime"] = new JsonObject
+            {
+                ["mode"] = "source_bound", ["activePredicate"] = "active", ["onSourceLoss"] = "expire"
+            };
+            effect["lifetime"] = new JsonObject
+            {
+                ["mode"] = "source_bound", ["linkKind"] = "quest", ["targetId"] = "quest_effect_reaction_test",
+                ["activePredicate"] = "active", ["onSourceLoss"] = "expire"
+            };
+            if (scenario == "bound_expire") source["sourceSatisfied"] = false;
+        }
+        if (scenario == "until_time_null")
+        {
+            definition["lifetime"] = new JsonObject
+            {
+                ["mode"] = "until_time", ["duration"] = 5,
+                ["timeAuthority"] = EffectSourceDefinitionContract.CanonicalWorldTimeAuthority
+            };
+            effect["lifetime"] = new JsonObject { ["mode"] = "until_time", ["deadline"] = 50 };
+        }
+        if (scenario == "uses_mode")
+        {
+            definition["lifetime"] = new JsonObject
+            {
+                ["mode"] = "uses", ["initialUses"] = 3, ["consumingEventTypes"] = new JsonArray("owner_turn_end")
+            };
+            var trigger = EffectMaterializationTestFixture.CreateDefinition()["triggers"]![0]!.DeepClone();
+            trigger["consumeUses"] = true;
+            definition["triggers"]!.AsArray().Add(trigger.DeepClone());
+            effect["triggers"]!.AsArray().Add(trigger);
+            effect["lifetime"] = new JsonObject
+            {
+                ["mode"] = "uses", ["remainingUses"] = 3, ["consumingTriggerIds"] = new JsonArray("on_owner_turn_end")
+            };
+            // Exercise the lifetime exclusion without a matching consuming trigger.
+            source["phase"] = "owner_damaged"; source["triggerId"] = "on_owner_damaged";
+            source["eventRef"] = "turn_42:effect:on_owner_damaged:1";
+            source["causalEventRef"] = "turn_42:owner_damaged:1";
+        }
+        if (scenario == "ordered_events")
+        {
+            var second = source.DeepClone();
+            second["eventRef"] = "turn_42:aaa_damage:1";
+            second["causalEventRef"] = "turn_42:owner_damaged:2";
+            second["phase"] = "owner_damaged"; second["triggerId"] = "on_owner_damaged";
+            events["lifecycleEvents"]!.AsArray().Add(second);
+        }
+        if (scenario == "empty_source") events["lifecycleEvents"] = new JsonArray();
+        var rebuilt = CreateReactionInput(effect, definition) with { EventInput = events };
+        if (scenario != "npc_advance") return rebuilt;
+        effect["target"]!["kind"] = "npc"; effect["target"]!["targetId"] = "npc_test_healer";
+        source["target"] = effect["target"]!.DeepClone();
+        return rebuilt with
+        {
+            TargetAuthority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+                new[] { new EffectTargetExport("mortal_world", "npc", "npc_test_healer", SameTurn: false) },
+                Array.Empty<EffectTargetExport>(), new HashSet<string>(StringComparer.Ordinal), CombatantIdentities: null)),
+            PreTurnCarriers = new EffectCarrierCatalogInput(null, new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_test_healer", ["activeEffects"] = new JsonArray(effect.DeepClone())
+                })
+            }, null, null, null, null),
+            PreTurnIdentityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effect)
+        };
     }
 }

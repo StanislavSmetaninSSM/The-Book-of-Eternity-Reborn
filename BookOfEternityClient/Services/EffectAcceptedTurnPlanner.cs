@@ -4302,7 +4302,7 @@ internal static partial class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
-        ApplyDueLifecycleEvents(
+        var boundLifecyclePass = ApplyDueLifecycleEvents(
             input.EventInput,
             input.SourceAuthority,
             workspace,
@@ -4494,7 +4494,10 @@ internal static partial class EffectAcceptedTurnPlanner
                 woundApplicationRootEffectBindings:
                     woundApplicationRootEffectBindings,
                 skillScopeAuthority: input.SkillScopeAuthority,
-                mortalRecoveryExecutionAuthority: recoveryProof);
+                mortalRecoveryExecutionAuthority: recoveryProof,
+                lifecycleExecutionLedger: CreateInitialLifecycleLedger(
+                    input, fingerprint, carrierAuthorityFingerprint, targetAuthority, boundLifecyclePass),
+                lifecycleLedgerIssuer: LifecycleLedgerIssuer);
         recoveryProof?.Seal(completedPlan);
         return new EffectAcceptedTurnPlanningResult(
             completedPlan,
@@ -6296,7 +6299,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint)).ToArray();
     }
 
-    private static void ApplyDueLifecycleEvents(
+    private static JsonObject ApplyDueLifecycleEvents(
         JsonObject eventInput,
         EffectSourceAuthority? sourceAuthority,
         CarrierWorkspace workspace,
@@ -6308,13 +6311,48 @@ internal static partial class EffectAcceptedTurnPlanner
         List<ValidationIssue> issues,
         bool boundContinuationsOnly)
     {
-        if (eventInput["lifecycleEvents"] is not JsonArray lifecycleEvents)
-            return;
-        foreach (var node in lifecycleEvents)
+        var events = new JsonArray();
+        var pass = new JsonObject
         {
-            if (!TryParseLifecycleAuthority(node, issues, out var authority))
+            ["kind"] = boundContinuationsOnly ? "bound_continuations" : "final_lifetime",
+            ["sourceEventCount"] = (eventInput["lifecycleEvents"] as JsonArray)?.Count ?? 0,
+            ["eventInputRef"] = LifecycleArtifactRef("event_input", eventInput),
+            ["sourceAuthorityFingerprint"] = sourceAuthority?.CanonicalFingerprint,
+            ["events"] = events
+        };
+        if (eventInput["lifecycleEvents"] is not JsonArray lifecycleEvents)
+            return pass;
+        for (var inputOrdinal = 0; inputOrdinal < lifecycleEvents.Count; inputOrdinal++)
+        {
+            if (!TryParseLifecycleAuthority(lifecycleEvents[inputOrdinal], issues, out var authority))
                 continue;
-            var occurrences = EffectCarrierCatalog.Build(workspace.ToInput()).Occurrences
+            var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
+            // Retain the actual full roster before target and execution exclusions.
+            // The scheduler still visits the same eligible effectId order once.
+            var roster = new JsonArray(catalog.Occurrences.Select(occurrence =>
+                (JsonNode)LifecycleSubjectImage(occurrence)).ToArray());
+            var parsedAuthority = LifecycleEventImage(new EffectLifecycleEvent(
+                authority.EventRef, authority.Turn, authority.Phase, authority.TriggerId,
+                authority.CurrentTime, authority.CurrentSceneId, authority.SceneClosed,
+                authority.SourceSatisfied, authority.ConditionSatisfied, authority.CurrentRealm,
+                authority.CausalEventRef, authority.TargetSatisfied));
+            parsedAuthority["realm"] = authority.Target.Realm;
+            parsedAuthority["target"] = new JsonObject
+            {
+                ["kind"] = authority.Target.Kind, ["targetId"] = authority.Target.TargetId
+            };
+            parsedAuthority["effectId"] = authority.EffectId;
+            var subjects = new JsonArray();
+            var eventRow = new JsonObject
+            {
+                ["inputOrdinal"] = inputOrdinal, ["sourceEventRef"] = authority.EventRef,
+                ["parsedAuthority"] = parsedAuthority,
+                ["rosterRef"] = LifecycleArtifactRef("carrier_roster", roster),
+                ["roster"] = roster, ["subjects"] = subjects,
+                ["disposition"] = "no_eligible"
+            };
+            events.Add(eventRow);
+            var occurrences = catalog.Occurrences
                 .Where(occurrence =>
                     (authority.EffectId == null ||
                      string.Equals(
@@ -6333,20 +6371,30 @@ internal static partial class EffectAcceptedTurnPlanner
                     string.Equals(
                         target["targetId"]?.GetValue<string>(),
                         authority.Target.TargetId,
-                        StringComparison.Ordinal) &&
-                    !WasCreatedByCausalEvent(
-                        occurrence.Effect,
-                        authority.CausalEventRef))
+                        StringComparison.Ordinal))
                 .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal)
                 .ToArray();
             foreach (var occurrence in occurrences)
             {
+                var subject = LifecycleSubjectImage(occurrence);
+                subjects.Add(subject);
+                if (WasCreatedByCausalEvent(occurrence.Effect, authority.CausalEventRef))
+                {
+                    subject["disposition"] = "causal_created";
+                    continue;
+                }
                 var mode = occurrence.Effect["lifetime"]?["mode"]?.GetValue<string>();
                 if (string.Equals(mode, "uses", StringComparison.Ordinal))
+                {
+                    subject["disposition"] = "uses_mode";
                     continue;
+                }
                 var isBoundContinuation = mode is "source_bound" or "condition_bound";
                 if (boundContinuationsOnly != isBoundContinuation)
+                {
+                    subject["disposition"] = "other_pass";
                     continue;
+                }
                 var triggerId = authority.TriggerId;
                 if (triggerId == null &&
                     string.Equals(mode, "uses", StringComparison.Ordinal) &&
@@ -6375,6 +6423,7 @@ internal static partial class EffectAcceptedTurnPlanner
                         occurrence.Effect,
                         authority.Turn));
                 var sourceSatisfied = authority.SourceSatisfied;
+                JsonObject? sourceWitness = null;
                 if (mode == "source_bound" && !sourceSatisfied.HasValue)
                 {
                     if (sourceAuthority == null)
@@ -6390,22 +6439,35 @@ internal static partial class EffectAcceptedTurnPlanner
                     sourceSatisfied = IsSourceBindingSatisfied(
                         occurrence.Effect,
                         sourceAuthority);
+                    sourceWitness = new JsonObject
+                    {
+                        ["kind"] = "source_catalog",
+                        ["catalogFingerprint"] = sourceAuthority.CanonicalFingerprint,
+                        ["binding"] = occurrence.Effect["source"]?.DeepClone(),
+                        ["satisfied"] = sourceSatisfied
+                    };
                 }
-                ApplyLifecycleReduction(
-                    occurrence,
-                    new EffectLifecycleEvent(
-                        eventRef,
-                        authority.Turn,
-                        authority.Phase,
-                        triggerId,
-                        authority.CurrentTime,
-                        authority.CurrentSceneId,
-                        authority.SceneClosed,
+                else if (mode == "source_bound")
+                    sourceWitness = new JsonObject
+                    {
+                        ["kind"] = "accepted_event", ["satisfied"] = sourceSatisfied
+                    };
+                var schedulerEvent = new EffectLifecycleEvent(
+                    eventRef,
+                    authority.Turn,
+                    authority.Phase,
+                    triggerId,
+                    authority.CurrentTime,
+                    authority.CurrentSceneId,
+                    authority.SceneClosed,
                     sourceSatisfied,
                     authority.ConditionSatisfied,
                     authority.CurrentRealm,
                     authority.CausalEventRef,
-                    authority.TargetSatisfied),
+                    authority.TargetSatisfied);
+                var observation = ApplyLifecycleReduction(
+                    occurrence,
+                    schedulerEvent,
                     workspace,
                     identityRoot,
                     identityFactory,
@@ -6413,8 +6475,19 @@ internal static partial class EffectAcceptedTurnPlanner
                     activeEffects,
                     processedEventRefs,
                     issues);
+                subject["disposition"] = "evaluated";
+                subject["schedulerEvent"] = LifecycleEventImage(schedulerEvent);
+                subject["resolvedSourceWitness"] = sourceWitness;
+                subject["outcome"] = observation.Reduction.Outcome;
+                subject["afterImage"] = observation.Reduction.UpdatedEffect?.DeepClone();
+                subject["afterImageRef"] = observation.Reduction.UpdatedEffect is { } after
+                    ? LifecycleArtifactRef("effect_image", after) : null;
+                subject["transitionRefs"] = observation.TransitionId is { } transitionId
+                    ? new JsonArray(JsonValue.Create(transitionId)) : new JsonArray();
+                eventRow["disposition"] = "evaluated";
             }
         }
+        return pass;
     }
 
     private static void ApplyAcceptedTerminalReactionFold(
@@ -6954,7 +7027,7 @@ internal static partial class EffectAcceptedTurnPlanner
         return true;
     }
 
-    private static void ApplyLifecycleReduction(
+    private static LifecycleReductionObservation ApplyLifecycleReduction(
         EffectCarrierOccurrence occurrence,
         EffectLifecycleEvent lifecycleEvent,
         CarrierWorkspace workspace,
@@ -6972,7 +7045,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 processedEventRefs));
         issues.AddRange(reduction.Issues);
         if (!reduction.Success || reduction.Outcome == "no_change")
-            return;
+            return new LifecycleReductionObservation(reduction, null);
 
         var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
             lifecycleEvent.EventRef, "lifecycle_" + reduction.Outcome, occurrence.EffectId));
@@ -6987,7 +7060,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     "effect_lifecycle_expiry_target_unresolved",
                     "one exact mutable active effect",
                     occurrence.EffectId);
-                return;
+                return new LifecycleReductionObservation(reduction, transitionId);
             }
             AppendIdentityTransition(
                 identityRoot,
@@ -7014,7 +7087,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     "effect_lifecycle_update_target_unresolved",
                     "one exact mutable active effect",
                     occurrence.EffectId);
-                return;
+                return new LifecycleReductionObservation(reduction, transitionId);
             }
             var transitionKind = reduction.Outcome == "advance"
                 ? "consume"
@@ -7034,6 +7107,7 @@ internal static partial class EffectAcceptedTurnPlanner
             AddOrReplaceAffected(activeEffects, updated);
         }
         processedEventRefs.Add(lifecycleEvent.EventRef);
+        return new LifecycleReductionObservation(reduction, transitionId);
     }
 
     private static bool TryApplyConsumingTriggerEvidenceBeforeReplacement(

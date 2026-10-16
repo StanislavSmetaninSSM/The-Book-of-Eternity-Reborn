@@ -210,6 +210,8 @@ internal sealed class EffectAcceptedTurnPlan
     /// <param name="mortalRecoveryExecutionAuthority">
     /// Private ordered recovery execution evidence, or null for an ordinary plan.
     /// </param>
+    /// <param name="lifecycleExecutionLedger">Actual planner-owned lifetime observations, when available.</param>
+    /// <param name="lifecycleLedgerIssuer">Private issuer when binding a newly executed ledger; null for exact copies.</param>
     internal EffectAcceptedTurnPlan(
         string inputFingerprint,
         string carrierAuthorityFingerprint,
@@ -244,7 +246,9 @@ internal sealed class EffectAcceptedTurnPlan
         IReadOnlyList<WoundApplicationRootEffectBinding>?
             woundApplicationRootEffectBindings = null,
         EffectRollSkillScopeAuthority? skillScopeAuthority = null,
-        object? mortalRecoveryExecutionAuthority = null)
+        object? mortalRecoveryExecutionAuthority = null,
+        EffectLifecycleExecutionLedger? lifecycleExecutionLedger = null,
+        object? lifecycleLedgerIssuer = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
@@ -333,9 +337,13 @@ internal sealed class EffectAcceptedTurnPlan
         _acceptedBoundaryFinalPlanFingerprint = IsAcceptedBoundaryComplete
             ? WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(this)
             : null;
+        LifecycleExecutionLedger = lifecycleExecutionLedger?.BindPlan(lifecycleLedgerIssuer,
+            _acceptedBoundaryFinalPlanFingerprint ?? WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(this));
     }
 
     internal string InputFingerprint { get; }
+
+    internal EffectLifecycleExecutionLedger? LifecycleExecutionLedger { get; }
 
     internal EffectRollSkillScopeAuthority? SkillScopeAuthority { get; }
 
@@ -500,7 +508,8 @@ internal sealed class EffectAcceptedTurnPlan
             source._acceptedBoundaryBasePlanFingerprint,
             source.WoundApplicationRootEffectBindings,
             source.SkillScopeAuthority,
-            source.MortalRecoveryExecutionAuthority);
+            source.MortalRecoveryExecutionAuthority,
+            source.LifecycleExecutionLedger);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

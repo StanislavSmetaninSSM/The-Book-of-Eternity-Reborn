@@ -1,3 +1,6 @@
+- T197 targeted G-C/A4 Linux/Windows DESIGN explicitly authorized11:44:14UTC Sentinel_6315f3c4625c81919005f154b82b6227 «Да»: native-scope custody/lost operation recovery/finite source debts/same-G retirement; no code/runtime/OS grants, no target writes. Author+separate independent review pending, all future checksUNRUN; DEP-C/I/L/newQTE stayblocked.
+- T179-Pd ledger success logic written only after frozen causalRED3; expected14unit+27affected cases pending fresh discovery/review. All wired prep/actualsUNRUN; full genuine submitted source/S/C/B/M3/coldP0 stillopen, continue independently.
+
 - T179-Pd/T192b initialtest-firstTheory3 written withgenuineoldplanner/common preconditions, intendedmissingledgerRED; optionalunitfixtureconfigdefaultnull. Newfiniteowner+Late2initialselection expected2desc5casespendingdiscovery. No prod/successlogic/callerchange; allpreparation/actualsUNRUN, strictG5SOURCE/firstLate2/EVIDENCEbeforeRED. FullPd/T192/F1stillopen; continuecoherentP0integration.
 
 - T197 Q-L1c ET-R1/ET-R2 RESOLVED byaffectedAstra/XHigh9c7f3a0; finalimmutablepair/root155pins+exactdiff verified. Onlypartialconditionaldiscussion/UNACCEPTED, all20futurechecksUNRUN/sixOPENinterfaces/allT197gatesblocked; no runtime/transitiongrant. Priorpendingentries superseded.
