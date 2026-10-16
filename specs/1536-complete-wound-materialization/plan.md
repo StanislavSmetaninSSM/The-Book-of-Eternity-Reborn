@@ -1,3 +1,7 @@
+## T197 DEP-L supplemental DESIGN — WIP / UNACCEPTED, 2026-10-16
+
+- Source-only separate Astra/High proposal preserved byte-exact recovery/t197-depl-distinct-root-proposal-20261016.md/.json; root29historical source/blob/SHA pins checked. Real ordinary stop/load/new-G route does not preserve required in-flight provenance or issue family continuation. Conditional typed export/import with exact inventories/atomic import receipt, sevenOPENquestions and14UNRUNfuturechecks; no copiedoldG authority or source-debt retirement by destination stop. DEP-C/I/L/fulltarget/H2/H3/newQTE remainOPEN; independent review pending. No runtime/code/test/tool or accepted archive/lifecycle contract change.
+
 ## T197 DEP-I supplemental DESIGN — REVIEWED FOR DISCUSSION / UNACCEPTED, 2026-10-16
 
 - Parallel DESIGN-only source map frome6482fc83 preserved byte-exact recovery/t197-depi-target-acceptance-proposal-20261016.md/.json; root35source/blob/SHA pins checked.18entry-owner rows and13futureUNRUNcases distinguish actual intake obligation, UI/partial allocation/echo choice, genuine n+2 bootstrap and accepted target mechanics. Non-forced Chaos evaluation eligible; no forced-on-evaluation or fabricated Shining source. Routine D11 extraction is distinct from a trulynewgameplaygrant; no such newgrant proposed. Proposed envelope/intake role/schema/phase contract unaccepted, Q1–Q6/DEP-C/I/L/fulltarget/H2/H3/newQTE remainOPEN. Independent Astra/XHigh review pending; no runtime/code/test change or T197 completion.
