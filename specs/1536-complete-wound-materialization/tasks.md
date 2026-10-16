@@ -1,3 +1,5 @@
+- T197 original-hosting conditional independent review preserved/root74pins2diffs; no materialfinding, H-B01–05/fullG-C/target remainOPEN,18checksUNRUN. Lower-coupling Client-host alternative under source comparison, not selected/granted.
+
 - Pd.3a static preflight lock-read fixture finding corrected beforeactual; superseded initial discovery124.301s/0exec retained with outer-shell exit discrepancy. Fresh corrected BOTH/PlanOnly/SOURCE/firstLate2/EVIDENCE required; no prodsuccesslogic.
 
 - Pd.3a initialtest-first actualoriginal/current/G/defaultreader→missingobservedAPI case + newfinitecategory/selection WIP. Expected2descriptors3cases pendingfreshBOTH/discovery/source/firstLate2/EVIDENCE; no prodchanges, allnewchecksUNRUN.
