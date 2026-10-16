@@ -1,0 +1,207 @@
+{
+  "task": "T179-Pd.3b source-only Stage lifetime consultation",
+  "configuration": {
+    "model": "Astra",
+    "reasoning": "High",
+    "backend": "unknown"
+  },
+  "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+  "head_at_emission": "ba89753061efedfff339af0b38cbe0082a3d23bf",
+  "scope": "Routine private HOT lifetime/cleanup routing only; no independent acceptance or implementation release",
+  "findings": [
+    "BrowserOriginalOperationScope.Dispose currently has no IO/validation/callback",
+    "observeOriginalClose executes before await-using Main disposal",
+    "Console continuous ownership and browser post-staging close need distinct acknowledgements",
+    "Original producer cleanup must preserve only its exact private Beginning ticket"
+  ],
+  "recommendation": "Explicit post-local-scope body receipt; browser acknowledge after real outer await; console live-owner acknowledgement with whole-operation failure invalidation; exact one-use ordinary-producer cleanup ticket",
+  "open_limits": [
+    "No real scope-Dispose fault seam exists in current code",
+    "Remote disposal and original-lease release failure require supported genuine seams before coverage claims",
+    "Full source/cold/M3/F1/T197 unchanged OPEN"
+  ],
+  "checks": "All future checks UNRUN; no runtime/build/discovery/tests/network/delegation",
+  "source_pins": [
+    {
+      "label": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "projections": [
+        {
+          "first_line": 1477,
+          "last_line": 1555,
+          "sha256": "43aab0ae40ea012fd4a170535442e8383d895615a56ecb3ceefb9298a0e04688",
+          "text": "    private sealed record PlayerTurnPreparation(\n        string Generation,\n        RollbackSnapshot Backup,\n        TurnRequest Request,\n        ValidatedPendingTurnSnapshotContext SnapshotContext,\n        PendingPlayerActionService.Staged? BrowserStaged);\n\n    private async Task ProcessPlayerTurn(\n        string action,\n        string? extraSystemReminder = null,\n        string? waitingTitle = null,\n        string? waitingText = null,\n        bool playerFacingTurn = true,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        if (browserAction == null)\n        {\n            // Console ordinary turns retain their original continuous owner.\n            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n            {\n                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);\n                if (preparation == null) return;\n                PublishAgentConsoleGmWaitingSnapshot(\n                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n                var outcome = await WaitForTerminalSignalAsync();\n                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);\n            });\n            return;\n        }\n\n        MainOperationClose? stagingClose = null;\n        bool stagingCloseObserved = false, stagingWasRemote = false;\n        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,\n            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),\n            observeOriginalClose: (close, observed, remote) =>\n            {\n                // Copy actual close facts only. Await-using disposal still follows\n                // this callback; the idle boundary starts after the top-level await.\n                stagingClose = close;\n                stagingCloseObserved = observed;\n                stagingWasRemote = remote;\n            });\n        if (stagedPreparation == null) return;\n        var browserStaged = stagedPreparation.BrowserStaged ?? throw BrowserOriginalMainCondition.Invalid();\n        PublishAgentConsoleGmWaitingSnapshot(\n            waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n#if DEBUG\n        await HoldOriginalBrowserIdleCutAsync(browserStaged, stagingClose, stagingCloseObserved, stagingWasRemote);\n#endif\n        var browserOutcome = await WaitForTerminalSignalWithParticipationAsync(browserStaged);\n#if DEBUG\n        using var diagnosticWindow = _fs.BrowserDiagnosticWindow(stagedPreparation.Request.RequestId ?? \"unbound\", browserStaged.Binding.ActionId, browserStaged.Binding.Generation);\n        try\n        {\n#endif\n        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation, async () =>\n        {\n            using var original = _fs.BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged);\n#if DEBUG\n            using var diagnosticOwner = _fs.BrowserDiagnosticIdentity(null, browserStaged.Binding.ActionId,\n                browserStaged.Binding.Generation, original.Condition.ActiveIdentity);\n            using var diagnosticCaller = _fs.BrowserDiagnosticLogical(null, \"browser-terminal-finalization\");\n            _fs.BrowserDiagnosticMark(\"processing-owner\");\n#endif\n            var manifest = await LoadPendingTurnSnapshotManifestAsync();\n            var context = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)\n                ?? throw BrowserOriginalMainCondition.Invalid();\n            var originalRequest = JsonSerializer.Deserialize<TurnRequest>(browserStaged.RequestJson, JsonOpts)\n                ?? throw BrowserOriginalMainCondition.Invalid();\n#if DEBUG\n            using var diagnosticRequest = _fs.BrowserDiagnosticIdentity(originalRequest.RequestId, null, null, null);\n#endif\n            await FinalizePlayerTurnAsync(stagedPreparation with\n            {\n                Request = originalRequest, SnapshotContext = context\n            }, action, playerFacingTurn, browserOutcome);\n            return true;\n        });\n#if DEBUG\n"
+        },
+        {
+          "first_line": 1561,
+          "last_line": 1607,
+          "sha256": "d97cc6ea564c7a8f93e04c6e3af9a2ea8cc2c9ee8b347e92cc8b642449b54bf8",
+          "text": "    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(\n        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)\n    {\n        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();\n        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);\n        // Reserve/refuse before health validation can remove an unrelated request.\n        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);\n        if (!await ValidateCurrentGameStateOrShowErrorsAsync(\"перед отправкой хода\"))\n            return null;\n\n        var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();\n        RollbackSnapshot? backedUpFiles = null;\n        TurnRequest? request = null;\n        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;\n        PendingPlayerActionService.Staged? browserStaged = null;\n\n        try\n        {\n            // Create backup of game state files before sending turn (for escape-rollback)\n            var backupId = DateTime.UtcNow.Ticks.ToString();\n            backedUpFiles = await CreatePreTurnBackup(backupId);\n            OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);\n\n            // Write turn request\n            request = new TurnRequest\n            {\n                SessionId = _gameLoop.SessionId,\n                TurnNumber = _gameLoop.TurnNumber + 1,\n                PlayerAction = action,\n                Timestamp = DateTime.UtcNow.ToString(\"o\"),\n                GameMode = _stateManager.Settings.AllowHistoryManipulation ? \"debug\" : \"normal\",\n                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)\n            };\n            if (browserAction != null) request.RequestId = browserAction.ActionId;\n            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n            await AttachPendingDiceAndGachaAsync(request);\n            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)\n                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);\n            RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);\n            var skillScopeAuthority = await EffectMechanicsSnapshot\n                .LoadCurrentSkillScopeAuthorityAsync(_fs);\n            request.EffectSkillScopeCatalog = skillScopeAuthority\n                .CreateGmCatalog()\n                .DeepClone()\n                .AsObject();\n            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);\n\n"
+        },
+        {
+          "first_line": 1631,
+          "last_line": 1681,
+          "sha256": "e743461a6256d4181b2668c3d1b00f0c220ffc467689ff8eb1f7658f55cfb03d",
+          "text": "                _logger.LogWarning(ex, \"Не удалось вычислить характеристики для контекста\");\n            }\n\n            ClearTransientOutputFiles();\n            var requestJson = JsonSerializer.Serialize(request, JsonOpts);\n            if (browserAction != null)\n            {\n                browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);\n                requestJson = browserStaged.RequestJson;\n            }\n            else\n            {\n                await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n                await _fs.WriteFileAtomicAsync(stagingLease, \"input/turn_request.json\", requestJson);\n                var provisional = new CanonicalBeforeImage(true,\n                    await _fs.ReadFileBytesAsync(stagingLease, \"input/turn_request.json\") ??\n                    throw new InvalidDataException(\"Ordinary provisional request disappeared.\"));\n                requestJson = ProjectOrdinaryWoundOpportunities(stagingLease, requestJson);\n                if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, stagingLease,\n                        new CoordinatedStateWriteHelper.PlannedWrite(\"input/turn_request.json\", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))\n                    throw new InvalidOperationException(\"Ordinary request changed before safe opportunity projection.\");\n                await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);\n            }\n\n            var projectedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??\n                throw new InvalidDataException(\"Final ordinary request is missing.\");\n            if (projectedRequest.SessionId != request.SessionId || projectedRequest.RequestId != request.RequestId ||\n                projectedRequest.TurnNumber != request.TurnNumber || projectedRequest.Timestamp != request.Timestamp ||\n                projectedRequest.PlayerAction != request.PlayerAction)\n                throw new InvalidDataException(\"Safe opportunity projection changed ordinary request identity.\");\n            request = projectedRequest;\n\n            var activeManifest = await LoadPendingTurnSnapshotManifestAsync();\n            activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);\n            if (activeSnapshotContext == null)\n                throw new InvalidOperationException(\"Turn staging failed to create a validated pending snapshot context.\");\n        }\n        catch (SessionReplacedException)\n        {\n            throw;\n        }\n        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n        {\n            if (browserAction != null)\n            {\n                // Staging never establishes a successful rollback disposition.\n                // Preserve the original slot, backup and any competing request;\n                // cold preparing/staged classification blocks replay before repair.\n                _inGame = false;\n                _logger.LogError(ex, \"Browser turn staging stopped; original recovery evidence is retained.\");\n                throw;\n"
+        },
+        {
+          "first_line": 1710,
+          "last_line": 1743,
+          "sha256": "20fdc0a7e44766d00f582b5623419b804511513fbc979259fc68a73519b3dbb4",
+          "text": "                }\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception rollbackEx)\n            {\n                _logger.LogError(rollbackEx, \"Не удалось восстановить локальную подготовку после ошибки постановки хода.\");\n            }\n\n            try\n            {\n                await CleanupPendingTurnSnapshotAsync();\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception cleanupEx)\n            {\n                _logger.LogDebug(cleanupEx, \"Не удалось полностью очистить частичные артефакты постановки хода.\");\n            }\n\n            throw;\n        }\n\n        if (backedUpFiles == null || request == null || activeSnapshotContext == null)\n            throw new InvalidOperationException(\"Turn staging failed before rollback snapshot and request were created.\");\n\n        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged);\n    }\n"
+        }
+      ]
+    },
+    {
+      "label": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "projections": [
+        {
+          "first_line": 203,
+          "last_line": 210,
+          "sha256": "aff05ee4dbe59643dcf46b8e85e71aa81c35eb3ac8b3598d28175e8cdce202c3",
+          "text": "    private async Task RebindRuntimeAfterSessionReplacementAsync(string? establishedGeneration = null)\n    {\n        ClearMortalQteRepairState();\n        _lastResponse = null;\n        _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();\n        _acceptedTurnSpiritualOutput = null;\n        _acceptedTurnSpiritualConflictValidation = null;\n        _acceptedTurnGuardianMusingsValidation = null;\n"
+        },
+        {
+          "first_line": 398,
+          "last_line": 424,
+          "sha256": "69e03a99587f393c1de15af1a2db733f05784dcf4c8bf6ef55a81a0b3cfd85b3",
+          "text": "    private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,\n        RollbackSnapshot? rollbackSnapshot = null,\n        string? sourceLabel = null,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try { return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel, browserAction); }\n        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }\n    }\n\n    private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        TurnRequest request,\n        RollbackSnapshot? rollbackSnapshot = null,\n        string? sourceLabel = null,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);\n        await DeleteTerminalProtocolFailureRequestAsync(writeLease);\n        CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);\n        var conflictStateExistedBeforeInitialization = _fs.FileExists(\n            writeLease,\n            AfterlifeSpiritualConflictState.StatePath);\n        var entityProfileStateExistedBeforeInitialization = _fs.FileExists(\n            writeLease,\n"
+        },
+        {
+          "first_line": 1048,
+          "last_line": 1088,
+          "sha256": "eaf07baf2d8c015adcd211fad22c9ac291c96db9dea99fe657c54c2d2c4acf70",
+          "text": "    private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)\n    {\n        _fs.AllowBrowserOriginalCleanup();\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try { CleanupPendingTurnSnapshot(writeLease, preservedRollbackPaths); }\n        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }\n    }\n\n    private void CleanupPendingTurnSnapshot(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        IEnumerable<string>? preservedRollbackPaths = null)\n    {\n        var rawPreservedPaths = preservedRollbackPaths?.ToArray() ?? [];\n        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPreservedPaths);\n        var preservedRollbackSet = new HashSet<string>(\n                rawPreservedPaths\n                    .Where(path => !string.IsNullOrWhiteSpace(path))\n                    .Select(NormalizeArtifactRelativePath),\n                StringComparer.OrdinalIgnoreCase);\n\n        bool ShouldPreserveRollbackPath(string relativePath) =>\n            preservedRollbackSet.Contains(NormalizeArtifactRelativePath(relativePath));\n\n        _fs.DeleteDirectoryTree(writeLease, PendingTurnSnapshotDirectory);\n        foreach (var relativePath in _fs.EnumerateFiles(writeLease, \"*.rollback.*\"))\n        {\n            if (ShouldPreserveRollbackPath(relativePath) ||\n                IsExplorerLocalTurnRollbackArtifactPath(relativePath))\n            {\n                continue;\n            }\n\n            _fs.DeleteFile(writeLease, relativePath);\n        }\n\n        _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);\n        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);\n        ClearMortalQteRepairState();\n    }\n"
+        }
+      ]
+    },
+    {
+      "label": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "projections": [
+        {
+          "first_line": 49,
+          "last_line": 62,
+          "sha256": "79100b72a9e8ca08ef8acd497dc01178560ef7297efb0a077b95fa5f33555ac5",
+          "text": "    internal sealed class BrowserOriginalOperationScope : IDisposable\n    {\n        internal readonly FileSystemManager _files;\n        private readonly MainAdmission _owner;\n        internal readonly BrowserOriginalOperationScope? _parent;\n        internal readonly PendingPlayerActionService.Binding Binding;\n        internal readonly BrowserOriginalMainCondition Condition;\n        internal PendingPlayerActionService.Staged? Staged { get; private set; }\n        internal bool Processing { get; private set; }\n        internal bool Cleanup { get; private set; }\n        private bool _disposed;\n        internal string? ExpectedPendingJson { get; private set; }\n        internal PendingPlayerActionService.State? ExpectedState { get; private set; }\n        internal PendingPlayerActionService.Staged? ExpectedStaged { get; private set; }\n"
+        },
+        {
+          "first_line": 88,
+          "last_line": 96,
+          "sha256": "ed35b7cb0f0a502e3018082f0fe295932c2b38206a30889c75fce7d706e2f923",
+          "text": "        }\n        internal void ValidateOwner(MainAdmission? current)\n        {\n            if(_disposed || _owner.Closed || !_owner.Acquired || _owner.MetadataOnly) throw BrowserOriginalMainCondition.Invalid();\n            for(var p=current;p!=null;p=p.Parent)\n                if(!p.Closed && p.SharesAccess(_owner)) { _owner.Validate(null);Condition.RequireCurrent(_files);return; }\n            throw BrowserOriginalMainCondition.Invalid();\n        }\n        internal void Seal(PendingPlayerActionService.Staged staged)\n"
+        },
+        {
+          "first_line": 185,
+          "last_line": 213,
+          "sha256": "f4218dd4e5a65ebf923e3a56f418ac5e6a4405a66cf5e750e0a466586361154c",
+          "text": "        {\n            if(current.RequestJson!=original.RequestJson || current.ManifestJson!=original.ManifestJson ||\n                current.AuthorityJson!=original.AuthorityJson || current.HistoryJson!=original.HistoryJson)\n                throw BrowserOriginalMainCondition.Invalid();\n        }\n        public void Dispose()\n        {\n            if(_disposed)return;_disposed=true;\n            if(ReferenceEquals(BrowserOriginalOperations.Value,this))BrowserOriginalOperations.Value=_parent;\n        }\n    }\n\n    internal bool HasBrowserOriginalOperation=>CurrentBrowserOriginalScope()!=null;\n    internal BrowserOriginalOperationScope BeginBrowserOriginalOperation(PendingPlayerActionService.Binding binding,\n        PendingPlayerActionService.Staged? staged=null)\n    {\n        var owner=MainAdmissions.Value;\n        while(owner!=null && (owner.Closed || owner.RootIdentity!=CanonicalRootAuthorityIdentity || !owner.Acquired))owner=owner.Parent;\n        if(owner==null)throw BrowserOriginalMainCondition.Invalid();\n        var scope=new BrowserOriginalOperationScope(this,owner,binding,staged,BrowserOriginalOperations.Value);\n        BrowserOriginalOperations.Value=scope;return scope;\n    }\n    internal BrowserOriginalMainCondition CaptureBrowserOriginalCondition(CanonicalWriteLease lease,string generation)\n    {\n        EnsurePhysicalCanonicalWriteLease(lease);\n        var condition=lease.MainAdmission!.CaptureBrowserCondition(generation);\n        var scope=CurrentBrowserOriginalScope();\n        if(scope==null || scope.Condition!=condition)throw BrowserOriginalMainCondition.Invalid();\n        scope.ValidateOwner(lease.MainAdmission);return condition;\n"
+        }
+      ]
+    },
+    {
+      "label": "SO",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "projections": [
+        {
+          "first_line": 94,
+          "last_line": 112,
+          "sha256": "cfa2f4a9a59e22c830b51797c566ccea55cc89cb75c303701155f5b0f252c919",
+          "text": "    {\n        ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);\n        if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException(\"A session operation requires a generation.\",nameof(expectedGeneration));\n        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;\n        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}\n        catch(Exception e){failure=e;throw;}\n        finally {\n            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure,capturedOutcome?.Invoke());\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n        }\n        return result!;\n    }\n\n    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration=null) =>\n        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default, beforeCurrentGeneration);\n\n"
+        },
+        {
+          "first_line": 120,
+          "last_line": 160,
+          "sha256": "cf7c0f870e857d0d89fb07a3276be0e444a4ffb1cf1b33434624c1adbb9e92e8",
+          "text": "\n    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)\n    {\n        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);\n        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;\n        try {\n            string generation;\n            if(initializedGeneration != null) generation=initializedGeneration;\n            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {\n                var lease=await files.AcquireCanonicalWriteLeaseAsync();\n                CoordinatedStatePublicationUncertainException? uncertainty=null;\n                try {\n                    // A caller may only veto bootstrap under this same admitted\n                    // lease. No claimed generation is returned or installed.\n                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);\n                    generation=files.GetOrCreateSessionGeneration(lease);\n                }\n                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}\n                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}\n            }\n            result=await RunBoundCoreAsync(files,generation,async()=> {\n                var value=await operation();\n                // Freeze the callback's established decision once, before any\n                // actual finalization or close can fail. Later reads use this value.\n                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                return value;\n            },null,()=>outcome,admissionCancellation);\n        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}\n        finally {\n            outcome=failure==null?outcome:OutcomeFor(failure,outcome);\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }\n        }\n        return result!;\n    }\n\n    // Bootstrap itself admits existing config and atomically publishes config +\n    // generation. Acquiring its original main pin must not invent generation first.\n"
+        },
+        {
+          "first_line": 247,
+          "last_line": 310,
+          "sha256": "d7742aaa47b7f66434c65cabf96a6d08b0af098abc0055ae5931d5e37bba7390",
+          "text": "        }\n        finally\n        {\n            if (writeLease != null)\n            {\n                state.Close();\n                CurrentFrame.Value = previous;\n            }\n            else\n            {\n                fileSystem.BeginMainOperationClosing();\n                state.BeginClosing();\n                try\n                {\n                    await fileSystem.InvokeSessionOperationClosingHookAsync();\n                    await using var finalizationLease = await fileSystem.AcquireCanonicalWriteLeaseAsync(\n                        CanonicalWritePurpose.SessionFinalization);\n                    if (!fileSystem.IsCurrentSessionGeneration(\n                            finalizationLease,\n                            state.ExpectedGeneration))\n                    {\n                        throw state.MarkReplaced(\n                            actualGeneration: null,\n                            \"The game session was replaced before the bound operation could close.\");\n                    }\n\n                    state.Close();\n                }\n                catch (Exception closingFailure) when (operationFailure != null)\n                {\n                    // The read-only finalization lease still acquires, checks\n                    // generation without recovery, and disposes normally. Retain\n                    // replacement even if disposal masked its check exception.\n                    var replacement = closingFailure as SessionReplacedException ??\n                        operationFailure as SessionReplacedException ??\n                        state.GetEstablishedReplacement(operationFailure);\n                    var retained = (Exception?)replacement ?? operationFailure;\n                    if (replacement != null && FindStorageDecisionFailure(operationFailure) is { } storageFailure)\n                        replacement.Data[\"SessionOperationFailure\"] = storageFailure;\n                    if (!ReferenceEquals(retained, closingFailure))\n                        retained.Data[\"SessionFinalizationFailure\"] = closingFailure;\n                    ExceptionDispatchInfo.Capture(retained).Throw();\n                    throw;\n                }\n                catch (Exception closingFailure)\n                {\n                    closingFailure.Data[\"SessionFinalizationFailure\"] = true;\n                    if(established && closingFailure is not SessionReplacedException) {\n                        var outcome=capturedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                        var retained=new MainOperationContinuationException<T>(establishedResult!,outcome,\n                            fileSystem.DescribeMainOperationClose(outcome,true),closingFailure);\n                        retained.Data[\"SessionFinalizationFailure\"]=closingFailure;\n                        throw retained;\n                    }\n                    if(established)closingFailure.Data[\"EstablishedOperationResult\"]=establishedResult;\n                    throw;\n                }\n                finally\n                {\n                    state.Close();\n                    CurrentFrame.Value = previous;\n                }\n            }\n        }\n"
+        }
+      ]
+    },
+    {
+      "label": "MF",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "projections": [
+        {
+          "first_line": 144,
+          "last_line": 151,
+          "sha256": "29e50e6d9de3ae617c605ffe7d896235ac97ae25464d64327ff0a26ef631a61b",
+          "text": "        internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)\n        {\n            if(!_ownsRemote)return;\n            if(_access==null)throw GmSessionRunPersistence.Invalid();\n            _access.FreezeForTerminalClose();\n            await _access.Remote!.CompleteAsync(outcome,closingFailed);\n        }\n        internal void Validate(CanonicalWriteLease? lease)\n"
+        },
+        {
+          "first_line": 190,
+          "last_line": 200,
+          "sha256": "27ad7c700a6e34c71a61e20a71aa57bf47a9789d6661cbfaecf00d82b3342fa4",
+          "text": "        public async ValueTask DisposeAsync()\n        {\n            var remote=_ownsRemote?_access?.Remote:null;\n            Dispose();if(remote!=null)await remote.DisposeAsync();\n        }\n        public void Dispose()\n        {\n            if(_closed)return;_closed=true;_access?.Release(this);_access=null;\n            if(MainAdmissions.Value==this)MainAdmissions.Value=_parent;\n        }\n    }\n"
+        }
+      ]
+    },
+    {
+      "label": "QD",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
+      "projections": [
+        {
+          "first_line": 265,
+          "last_line": 269,
+          "sha256": "f7be6f0712d2b442764b6ff3a48a0c86846bd1cab17314fa724045c35deb30b8",
+          "text": "    private void ClearMortalQteRepairState()\n    {\n        _mortalQteRejectedRepairInput = null;\n        _mortalQteRepairConstraint = null;\n    }\n"
+        }
+      ]
+    },
+    {
+      "label": "JT",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "projections": [
+        {
+          "first_line": 98,
+          "last_line": 115,
+          "sha256": "26fdf8f00bea92fe3c09fa515ad36ee59a2e7c7d00e696cd8609debe579cb4f4",
+          "text": "                cleanup = await CleanupEligibleMortalJointTerminalAsync(lease, frame);\n                if (cleanup.Disposition != MortalJointCleanupDisposition.CommittedAndVerified || cleanup.Response is null)\n                    return HoldMortalJointStoryTurn(\"The owned terminal cleanup is not verified: \" + cleanup.Failure);\n            }\n            // Only the known owned deletion batch and complete readback settle\n            // completion. Do not reissue authority from the now-deleted original.\n            _inGame = true;\n            _lastResponse = cleanup.Response!;\n            _pendingImagePrompt = _lastResponse.ImagePrompt;\n            TakeAcceptedTurnWoundNotifications();\n            _mortalJointRepairCanonicalRefresh = null;\n            _mortalJointRepairCheckpoint = null;\n            _mortalJointRepairCorrectionReady = false;\n            _mortalJointRepairTerminalReason = \"validation_failed\";\n            ClearMortalQteRepairState();\n            _logger.LogInformation(\"Joint story and runtime turn {Turn} completed once after {Source}; owned terminal cleanup verified.\",\n                frame.TurnNumber, source);\n            return MortalJointStoryTurnDisposition.Completed;\n"
+        }
+      ]
+    },
+    {
+      "label": "MM",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "source_commit": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+      "git_blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
+      "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
+      "projections": [
+        {
+          "first_line": 1305,
+          "last_line": 1316,
+          "sha256": "8b318ca7f74c75e88eefe22a42947d964b2e87618cab42613da9490cf3edc34d",
+          "text": "            Timestamp = DateTime.UtcNow.ToString(\"o\"),\n            GameMode = \"normal\",\n            SystemReminder = await BuildTurnSystemReminderAsync(maintainLegacyTurnSettings: false)\n        };\n        AttachFreshDiceAndGacha(request);\n        request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n        var rollbackBackups = await CreatePreTurnBackup(request.RequestId);\n        await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: \"первого описания Моря Хаоса\");\n\n        ClearTransientOutputFiles();\n        await _fs.WriteFileAtomicAsync(\"input/turn_request.json\",\n            JsonSerializer.Serialize(request, JsonOpts));\n"
+        }
+      ]
+    }
+  ],
+  "markdown_sha256": "06421accc0cdf4a169504c76452f78cddf0214184a01ffdc20aeb5def365c8b9"
+}

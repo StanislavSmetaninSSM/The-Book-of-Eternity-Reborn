@@ -3212,6 +3212,7 @@ public partial class GameEngine
         bool boundedPendingResolutionResubmission = false,
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
+        _hotRepairReady?.Fail("SubsequentRepairInvocation");
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
         if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "validation_failed";
         var isBoundedPendingResolutionResubmission =
@@ -3340,6 +3341,7 @@ public partial class GameEngine
             woundRequiredResubmissionPaths,
             effectRepairPackets,
             isBoundedPendingResolutionResubmission);
+        var hotWorkerRoute = dispatch.WorkerApplyAccepted || dispatch.ReadySignalCreated;
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -3457,13 +3459,13 @@ public partial class GameEngine
             if (!result)
                 continue;
 
-            var readyJson = await ReadValidationRepairFileForSessionAsync(
-                ValidationRepairReadyPath,
-                repairSessionGeneration);
+            var hotReadyRead = await ReadHotRepairReadyForSessionAsync(repairSessionGeneration);
+            var readyJson = hotReadyRead.Text;
             var ready = ReadValidationRepairReady(readyJson);
             var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
             if (ready == null)
             {
+                hotReadyRead.Fail("MalformedOrMissingReady");
                 _logger.LogWarning("Отклонён validation_repair_ready: файл не читается как валидный JSON");
                 var rejectedReadyRepair = await ReportRejectedRepairReadyAsync(
                     source,
@@ -3475,6 +3477,7 @@ public partial class GameEngine
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     BuildInvalidRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -3507,6 +3510,7 @@ public partial class GameEngine
 
             if (!IsMatchingRepairReady(ready, pendingSnapshot.Context))
             {
+                hotReadyRead.Fail("MismatchedReady");
                 _logger.LogWarning(
                     "Отклонён validation_repair_ready(session={Session}, request={Request}, turn={Turn}) — ожидается (session={ExpectedSession}, request={ExpectedRequest}, turn={ExpectedTurn})",
                     ready.SessionId,
@@ -3526,6 +3530,7 @@ public partial class GameEngine
                     BuildActualRepairContext(ready, pendingSnapshot),
                     BuildMismatchedRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -3556,6 +3561,7 @@ public partial class GameEngine
                 continue;
             }
 
+            await CaptureMatchingHotRepairReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);
             await AppendAcceptedValidationRepairTrajectoryAsync(
                 source,
                 errors,
@@ -3563,7 +3569,7 @@ public partial class GameEngine
                 ready,
                 pendingSnapshot,
                 repairSessionGeneration);
-            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
+            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration, hotReadyRead);
             return true;
         }
     }
@@ -8333,25 +8339,44 @@ public partial class GameEngine
 
     }
 
-    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration)
+    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration,
+        HotRepairReadyRead? hotRead = null)
     {
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         CoordinatedStatePublicationUncertainException? uncertainty = null;
         try
         {
             ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            if (hotRead is not null)
+            {
+                hotRead.ReadyObservedBeforeDelete = hotRead.Bytes is not null;
+                if (!hotRead.Faulted)
+                {
+                    try { await RecheckHotReadySourceAsync(writeLease, hotRead, requireReadyAbsent: false); }
+                    catch (Exception error) when (IsOptionalHotFailure(error)) { hotRead.Fail("SourceChanged"); }
+                }
+            }
             _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+            if (hotRead is not null) hotRead.ReadyDeleteReturned = true;
         }
         catch (CoordinatedStatePublicationUncertainException failure)
         {
+            hotRead?.Fail("ReadyDeletionUncertain");
             uncertainty = failure;
             throw;
         }
+        catch { hotRead?.Fail("ReadyDeletionDidNotReturn"); throw; }
         finally
         {
-            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+            try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+            catch { hotRead?.Fail("ReadyReleaseDidNotReturn"); throw; }
         }
-
+        if (hotRead is not null)
+        {
+            hotRead.ReadyReleaseReturned = true;
+            if (!hotRead.Faulted && hotRead.Source is not null && hotRead.ReadyDeleteReturned)
+            { hotRead.Status = "ConsumedReadyMatched"; hotRead.Reason = "ActualMatchingDeletionAndReleaseReturned"; }
+        }
     }
 
     private async Task WriteValidationRepairFileForSessionAsync(

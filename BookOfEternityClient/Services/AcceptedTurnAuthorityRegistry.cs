@@ -1741,6 +1741,18 @@ internal static partial class AcceptedTurnAuthorityRegistry
             }
         }
 
+        internal JointUnattemptedCloseResult CloseOwnedJointAttemptUnattempted(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string generation, long revision,
+            GameEngine.MortalJointPublicationAttempt attempt)
+        {
+            lock (_gate)
+            {
+                if (_state is null || _revision != revision || _generation != generation)
+                    return UnattemptedUnavailable("UnavailableOwnerLost");
+                return _state.CloseOwnedJointAttemptUnattempted(files, lease, attempt);
+            }
+        }
+
         internal AcceptedTurnAuthorityState GetForGeneration(
             string sessionGeneration,
             long sessionGenerationRevision)

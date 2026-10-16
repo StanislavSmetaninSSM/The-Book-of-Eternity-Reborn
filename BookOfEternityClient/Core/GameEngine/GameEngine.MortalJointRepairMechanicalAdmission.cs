@@ -20,13 +20,17 @@ public partial class GameEngine
         private readonly Dictionary<string, byte[]?> _before;
         private readonly WoundAcceptedTurnBinding _binding;
         private readonly string _generation;
+        private readonly PendingTurnSnapshotReadAuthority _originalSnapshot;
+        private readonly PendingTurnSnapshotReader.OriginalReadEvidence _originalEvidence;
         internal MortalJointRepairMechanicalAdmission(object issuer, FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, string generation, WoundAcceptedTurnBinding binding,
-            IReadOnlyDictionary<string, byte[]?> before)
+            IReadOnlyDictionary<string, byte[]?> before, PendingTurnSnapshotReadAuthority originalSnapshot,
+            PendingTurnSnapshotReader.OriginalReadEvidence originalEvidence)
         {
             if (!ReferenceEquals(issuer, JointMechanicalAdmissionIssuer))
                 throw new InvalidOperationException("Mechanical admission requires its actual GameEngine owner.");
             _files = files; _lease = lease; _generation = generation;
+            _originalSnapshot = originalSnapshot; _originalEvidence = originalEvidence;
             _binding = WoundAcceptedTurnData.CloneBinding(binding)!;
             _before = before.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
             Fingerprint = ComputeFingerprint();
@@ -50,6 +54,7 @@ public partial class GameEngine
                 !files.IsCurrentSessionGeneration(lease, _generation) || ComputeFingerprint() != Fingerprint ||
                 WoundAcceptedTurnFingerprints.ComputeBinding(binding) != WoundAcceptedTurnFingerprints.ComputeBinding(_binding))
                 throw new InvalidDataException("Joint mechanical admission belongs to a stale or foreign owner/frame.");
+            _originalEvidence.RequireCurrent(files, lease, _originalSnapshot);
             var original = MortalQteWoundOpportunityProjection.ReadSnapshot(files, lease);
             if (original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
                 original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.Turn || original.Realm != binding.Realm)
@@ -91,10 +96,10 @@ public partial class GameEngine
             .Concat(bundle.EffectBatchPlan.EffectPlan.TouchedPaths)
             .Concat(bundle.EffectBatchPlan.EffectPlan.DeletedPaths)
             .Distinct(StringComparer.Ordinal).ToArray();
-        var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new PendingTurnSnapshotPathSelection(
+        var read = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, new PendingTurnSnapshotPathSelection(
             new[] { "game_state/meta/soul_state.json" }, paths.Where(path => path != "game_state/meta/soul_state.json" &&
                 path != MortalWoundOpportunityAdapter.DecisionPath)));
-        if (!read.Success || read.Snapshot is not { } original)
+        if (!read.Success || read.Snapshot is not { } original || read.Evidence is not { } originalEvidence)
             throw new InvalidDataException("Joint mechanical original read failed: " + string.Join(";", read.Issues.Select(row => row.Code)));
         if (binding.Realm != "mortal_world" || original.SessionId != frame.SessionId || original.RequestId != frame.RequestId ||
             original.SnapshotToken != frame.Payload.ManifestPayloadHash || original.TurnNumber != frame.TurnNumber ||
@@ -146,8 +151,10 @@ public partial class GameEngine
         RequireInactiveMortalJointTail(before, binding.Turn);
         // Revalidate exact owned command/pending/draft/scene after the complete read.
         await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(_fs, lease, continuation);
+        originalEvidence.RequireCurrent(_fs, lease, original);
+        _mortalJointPublicationAttempt?.RequireMechanicalOriginalAgreement(_fs, lease, original);
         var proof = new MortalJointRepairMechanicalAdmission(JointMechanicalAdmissionIssuer, _fs, lease,
-            _fs.ReadLocalGenerationSnapshot(lease).Binding.Id, binding, before);
+            _fs.ReadLocalGenerationSnapshot(lease).Binding.Id, binding, before, original, originalEvidence);
         await proof.ValidateCurrentAsync(_fs, lease, binding);
         return proof;
     }

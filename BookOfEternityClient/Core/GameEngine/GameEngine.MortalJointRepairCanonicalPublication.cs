@@ -25,6 +25,9 @@ public partial class GameEngine
             MortalJointRepairPublicationDisposition.PublicationUncertain })
             throw new InvalidDataException("A retained joint committed/uncertain attempt requires its dedicated recovery route, not a second publication.");
         MortalJointRepairCanonicalRefresh result;
+        MortalJointPublicationAttempt? attempt = null;
+        try
+        {
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             RequireOrdinaryJointRepairLease(lease);
@@ -36,28 +39,33 @@ public partial class GameEngine
             await intake.ValidateCurrentAsync(_fs, lease, frame.SessionId, frame.RequestId,
                 frame.Payload.ManifestPayloadHash, expectedTurn);
             var capture = await ReadCurrentJointRejectedCaptureAsync(lease, _mortalJointRepairCheckpoint!.ToJsonObject());
-            var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
-            if (!preparation.IsValid)
-                return Retain(new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, preparation.Issues));
-            var continuation = preparation.Authority!;
-            object? reservationAuthority = null;
-            var publicationEntered = false;
+            attempt = BeginCurrentJointAttempt(lease, frame, capture);
             try
             {
+                await CaptureCurrentHotCustodyAsync(attempt, lease);
+                var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preparation, preparation);
+                if (!preparation.IsValid) return Refused(preparation.Issues);
+                var continuation = preparation.Authority!;
+                attempt.RetainContinuation(JointAttemptIssuer, continuation);
                 var reservation = await AcceptedTurnAuthorityRegistry.ReserveMortalJointRepairPublicationAsync(_fs, lease, continuation);
                 if (reservation.Authority is null || reservation.Status is not
                     (MortalWoundTreatmentPublicationReservationStatus.Reserved or MortalWoundTreatmentPublicationReservationStatus.Exact))
                     throw new InvalidDataException("The same joint owner could not reserve its exclusive publication slot.");
-                reservationAuthority = reservation.Authority;
+                var reservationAuthority = reservation.Authority;
+                attempt.RetainReservation(JointAttemptIssuer, reservationAuthority);
                 var prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync(
                     _fs, lease, preparation.Input!, continuation, reservationAuthority);
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Prepared, prepared);
                 if (!prepared.Success || prepared.Plan is not { } preparedPlan) return Refused(prepared.Issues);
                 var effectInput = WoundAcceptedTurnPlanner.ComposeJointRepairEffectInput(preparedPlan);
                 var effects = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairEffectValidatedAsync(
                     _fs, lease, preparedPlan, effectInput, continuation, reservationAuthority);
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Effects, effects);
                 if (!effects.Success || effects.Plan is not { } effectPlan) return Refused(effects.Issues);
                 var final = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairFinalValidatedAsync(
                     _fs, lease, preparedPlan, effects, continuation, reservationAuthority);
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Final, final);
                 if (!final.Success || final.Plan is not { } finalPlan) return Refused(final.Issues);
                 var bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, preparedPlan, effectPlan, finalPlan);
                 var anchors = MortalWoundCanonicalAnchorPlan.CreateJointRepair(_fs, lease, bundle);
@@ -74,6 +82,7 @@ public partial class GameEngine
                 var progression = await CaptureMortalJointProgressionSourceAsync(lease, frame);
                 var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(_fs, lease, resources.Authority!, progression);
                 if (!common.Success || common.Plan is not { } commonPlan) return Refused(common.Issues);
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Common, common);
                 var bound = _normalizer.BindTo(lease);
                 var preflight = await bound.PrevalidateJointRepairPublicationTransactionAsync() ??
                     throw new InvalidDataException("The exact complete joint common plan was not preflighted.");
@@ -82,7 +91,8 @@ public partial class GameEngine
                     throw new InvalidDataException("Joint canonical preflight no longer selects the same complete common candidate.");
                 // From here only the owning transaction can classify/compensate
                 // attempted publication. A generic catch must never abort/rearm it.
-                publicationEntered = true;
+                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preflight, preflight);
+                attempt.MarkDelegated(JointAttemptIssuer);
                 var published = await bound.NormalizeAndValidateJointRepairAsync(preflight, _validator, backups);
                 result = Retain(new(published.Disposition, published.Plan, published.Issues));
                 if (published.Disposition == MortalJointRepairPublicationDisposition.Committed)
@@ -99,8 +109,7 @@ public partial class GameEngine
                 error is InvalidDataException or IOException or InvalidOperationException or ArgumentException or
                     System.Text.Json.JsonException or AggregateException or OperationCanceledException)
             {
-                if (!publicationEntered && reservationAuthority is not null)
-                    AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(_fs, lease, continuation, reservationAuthority);
+                CloseCurrentJointAttempt(attempt, lease);
                 var existing = _mortalJointRepairCanonicalRefresh;
                 result = Retain(new(existing?.Disposition == MortalJointRepairPublicationDisposition.Committed
                     ? MortalJointRepairPublicationDisposition.Committed : MortalJointRepairPublicationDisposition.PublicationUncertain,
@@ -109,9 +118,15 @@ public partial class GameEngine
 
             MortalJointRepairCanonicalRefresh Refused(IReadOnlyList<ValidationIssue> issues)
             {
-                AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(_fs, lease, continuation, reservationAuthority!);
+                CloseCurrentJointAttempt(attempt, lease);
                 return Retain(new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, issues));
             }
+        }
+        }
+        finally
+        {
+            // Expiry follows the real await-using close, including its failure.
+            attempt?.Expire(JointAttemptIssuer);
         }
         // Runtime reads occur only after the participating canonical lease closes.
         if (result.Disposition == MortalJointRepairPublicationDisposition.Committed && result.Completed is not null)

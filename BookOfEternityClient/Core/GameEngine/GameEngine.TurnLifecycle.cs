@@ -1479,7 +1479,8 @@ public partial class GameEngine
         RollbackSnapshot Backup,
         TurnRequest Request,
         ValidatedPendingTurnSnapshotContext SnapshotContext,
-        PendingPlayerActionService.Staged? BrowserStaged);
+        PendingPlayerActionService.Staged? BrowserStaged,
+        HotOrdinaryOriginal? HotOrigin = null, string? HotRequestJson = null);
 
     private async Task ProcessPlayerTurn(
         string action,
@@ -1492,21 +1493,36 @@ public partial class GameEngine
         if (browserAction == null)
         {
             // Console ordinary turns retain their original continuous owner.
+            HotOrdinaryOriginal? consoleOrigin = null;
+            try
+            {
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
                 var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);
+                consoleOrigin = preparation?.HotOrigin;
                 if (preparation == null) return;
                 PublishAgentConsoleGmWaitingSnapshot(
                     waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
                 var outcome = await WaitForTerminalSignalAsync();
                 await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);
             });
+            }
+            catch
+            {
+                if (consoleOrigin is not null && ReferenceEquals(consoleOrigin, _hotOrdinaryOriginal))
+                    EndHotOrdinaryOriginal("ConsoleOwnerDidNotReturn");
+                throw;
+            }
             return;
         }
 
         MainOperationClose? stagingClose = null;
         bool stagingCloseObserved = false, stagingWasRemote = false;
-        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,
+        PlayerTurnPreparation? stagedPreparation;
+        var browserStageOrdinal = _hotStageOrdinal + 1;
+        try
+        {
+        stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,
             () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),
             observeOriginalClose: (close, observed, remote) =>
             {
@@ -1516,7 +1532,14 @@ public partial class GameEngine
                 stagingCloseObserved = observed;
                 stagingWasRemote = remote;
             });
+        }
+        catch
+        {
+            if (_hotOrdinaryOriginal?.Ordinal == browserStageOrdinal) EndHotOrdinaryOriginal("BrowserStagingOwnerDidNotReturn");
+            throw;
+        }
         if (stagedPreparation == null) return;
+        AcknowledgeHotBrowserStaging(stagedPreparation);
         var browserStaged = stagedPreparation.BrowserStaged ?? throw BrowserOriginalMainCondition.Invalid();
         PublishAgentConsoleGmWaitingSnapshot(
             waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
@@ -1561,13 +1584,35 @@ public partial class GameEngine
     private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(
         string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        EndHotOrdinaryOriginal("SubsequentOrdinaryStage");
+        var ordinal = ++_hotStageOrdinal;
+        try
+        {
+            var generation = await CaptureCurrentSessionGenerationAsync();
+            var preparation = await StagePlayerTurnBodyAsync(action, extraSystemReminder, browserAction, generation, ordinal);
+            if (preparation is not null) CompleteHotOriginalStaging(preparation);
+            return preparation;
+        }
+        catch
+        {
+            if (_hotOrdinaryOriginal?.Ordinal == ordinal) EndHotOrdinaryOriginal("StageDidNotReturn");
+            throw;
+        }
+    }
+
+    private async Task<PlayerTurnPreparation?> StagePlayerTurnBodyAsync(
+        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction,
+        string sessionGeneration, long ordinal)
+    {
         using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
         // Reserve/refuse before health validation can remove an unrelated request.
         if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return null;
 
+        var hotOrigin = new HotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);
+        _hotOrdinaryOriginal = hotOrigin;
+        string? finalRequestJson = null;
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;
@@ -1603,7 +1648,7 @@ public partial class GameEngine
                 .CreateGmCatalog()
                 .DeepClone()
                 .AsObject();
-            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);
+            var canonicalSnapshot = await CreateOrdinaryCanonicalBaselineSnapshotAsync(hotOrigin, request, backedUpFiles, browserAction);
 
             // Attach computed characteristics for GM reference
             try
@@ -1659,6 +1704,7 @@ public partial class GameEngine
                 projectedRequest.PlayerAction != request.PlayerAction)
                 throw new InvalidDataException("Safe opportunity projection changed ordinary request identity.");
             request = projectedRequest;
+            finalRequestJson = requestJson;
 
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
@@ -1739,7 +1785,7 @@ public partial class GameEngine
         if (backedUpFiles == null || request == null || activeSnapshotContext == null)
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
-        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged);
+        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged, hotOrigin, finalRequestJson);
     }
 
     private async Task FinalizePlayerTurnAsync(

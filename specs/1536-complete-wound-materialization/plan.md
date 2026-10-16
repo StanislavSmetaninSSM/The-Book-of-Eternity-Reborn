@@ -21,6 +21,21 @@ This supplies the preserved-RED prerequisite for the already authorized accepted
 
 Ruling: lifetime details are resolved against actual owner boundaries, without F1 redesign or a routine user gate. A focused read-only consultation checks Stage return/browser-scope/outer-close and own-producer cleanup before implementation; it does not mint authority or qualify runtime behavior.
 
+
+## T179-Pd.3b bounded custody source WIP — preparation/source review pending (2026-10-16)
+
+Causal classification ba897530 was pushed/readback and NEW GitHub recovery verified58exactdocuments/all53documentary changes; source remained d474 at that decision. Accepted HS01/Ready3 REDs are retained without runtime replay. [Stage lifetime consultation](recovery/t179pd-hot-custody-stage-lifetime-consultation-20261016.md) is source-only author advice, root8pins/18projections verified; no independent implementation acceptance or runtime claim.
+
+The current WIP links actual Stage/private ordinary producer/final request to the matching Ready path, optional Lc/Ld/Lp source closure, actual canonical attempt before preparation, observed mechanical reader and named registry-owned predelegation close. Browser acknowledgement follows actual outer await; console retains continuous owner and failure invalidation. Own cleanup uses the exact Beginning ticket/request/backup with single consumption; general/rebind/verified terminal cleanup invalidates. No serialized DTO imports authority, no S/B/M3/automatic/fullsemantic source or new QTE activation. This is UNCOMPILED/UNRUN/UNREVIEWED source WIP, not completed3b.
+
+Ruling: the ordinary Stage wrapper records its local successful body return after browser-scope disposal; for console that means StagedUnderLiveOwner only, governed by the actual surviving enclosing MainAdmission (not the disposed canonical lease child). ProcessPlayerTurn's continuous-operation catch withdraws availability on later failure. Browser additionally needs its actual outer-return acknowledgement. Direct Stage controls exercise local live-owner/source facts, not full browser/outer-close qualification; actual HS01 uses ProcessPlayerTurn. No unsupported fault seam or extra success issuer is introduced.
+
+Selection is now3finitecategories/anticipated6cases: FIRST Late2(2), Ready drift(3), genuine positive HS01(1), no aggregate actual. Next: preserve/push/readback/full-current-source recovery, fresh BOTH/catalog/PlanOnly (zero tests), and mandatory independent SOURCE of code/fixture/selection/lifetime/failure contracts. Only explicit SOURCE release can run FIRST protected Late2; separate saved EVIDENCE precedes specifically released GREEN. First unexpected outcome freezes; no hidden retry or unrelated131 repetition. Category budgets unchanged. Full3b/HS02–16/isolatedLdclosefault/worker/browser/native/fullS/B/M3/F1/T197/newQTE/D4/guided/DOM/visual/Windows/D8 remainOPEN.
+
+GM synchronization rationale for this bounded WIP: all new objects are client-private in-memory custody/negative-close metadata and detached test diagnostics; no GM-authored field, command, schema, output, accepted gameplay capability or prompt/example changes. FullF1/ACTIVE is not implemented. Existing v2 ordinary semantic guards, common bytes and transaction protocol remain intended behavior, still requiring actual regression evidence.
+
+Disk retention v7 retired only the audited reconstructable oldbc full clone after reviewer FINAL:54149priorverifiedfiles/3,556,631,142bytes/clean/noignored/noalts/nosparse/Git ancestor/immutable receipt+finalreview. Newer full2ab clone, writer/rawTestResults/SDK/remote refs retained; audit/result are preserved. This is capacity management, not lost recovery or new runtime evidence.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 This pass follows the direct delegation anchored at `c4dde0629cc17aad75196ec509d2cdaf621945a3`: F1 design, the future verification matrix, T178–T191 refinement, independent review and document corrections. Only documents, non-force task-branch publication and GitHub source recovery are authorized. Do not edit code, tests or runtime tools; do not run build, discovery, tests or application/runtime commands.

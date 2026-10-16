@@ -1,5 +1,7 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
+> Current bounded3b custody source is UNCOMPILED/UNRUN/UNREVIEWED WIP. Fresh source preparation/recovery/independent SOURCE must precede any new actual; no full3b/S/B/M3/F1/T197/new-QTE activation is claimed.
+
 > Ready3 causal RED is independently qualified atcc8; accepted bounded3b implementation may continue after decision persistence, with fresh source/evidence gates and no additional actual/GREEN release. See [current plan](plan.md).
 
 > **Current execution authority, 2026-10-16:** new direct delegation resumes autonomous accepted bounded3b implementation from745b and supersedes the prior discussion STOP. Follow the [current plan entry](plan.md): saved FIRST Late2 requires separate EVIDENCE before specifically released Ready3, then preserved/qualified causal RED before custody success implementation. No unchanged-test repetition or F1 redesign; full S/M3/F1/ordinary/T197/new-QTE and D4/guided/DOM/visual/Windows/D8 gates remain open.

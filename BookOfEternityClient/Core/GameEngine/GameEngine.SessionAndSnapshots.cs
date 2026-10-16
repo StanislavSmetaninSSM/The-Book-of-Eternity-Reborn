@@ -202,6 +202,7 @@ public partial class GameEngine
 
     private async Task RebindRuntimeAfterSessionReplacementAsync(string? establishedGeneration = null)
     {
+        EndHotOrdinaryOriginal("SessionRebind");
         ClearMortalQteRepairState();
         _lastResponse = null;
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
@@ -395,6 +396,19 @@ public partial class GameEngine
     }
 
 
+    private async Task<Dictionary<string, string>> CreateOrdinaryCanonicalBaselineSnapshotAsync(
+        HotOrdinaryOriginal owner, TurnRequest request, RollbackSnapshot backup,
+        PendingPlayerActionService.Binding? browserAction)
+    {
+        EnterHotOriginalProducer(owner, request);
+        owner.ProducerBackup = backup;
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await CreateCanonicalBaselineSnapshotAsync(lease, request, backup, OrdinaryPlayerTurnSourceLabel, browserAction, owner); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, uncertainty); }
+    }
+
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null,
@@ -412,11 +426,13 @@ public partial class GameEngine
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null,
-        PendingPlayerActionService.Binding? browserAction = null)
+        PendingPlayerActionService.Binding? browserAction = null,
+        HotOrdinaryOriginal? hotOwner = null)
     {
         RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
         await DeleteTerminalProtocolFailureRequestAsync(writeLease);
-        CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);
+        if (hotOwner is null) CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);
+        else CleanupHotOriginalProducerSnapshot(hotOwner, writeLease, request, rollbackSnapshot);
         var conflictStateExistedBeforeInitialization = _fs.FileExists(
             writeLease,
             AfterlifeSpiritualConflictState.StatePath);
@@ -555,16 +571,18 @@ public partial class GameEngine
             static snapshotManifest => snapshotManifest.RollbackBackups,
             relativePath => ReadRelativeFileBytesFromWorkspace(writeLease, relativePath));
 
+        var manifestJson = JsonSerializer.Serialize(manifest, JsonOpts);
         try
         {
             await _fs.WriteFileAtomicAsync(
                 writeLease,
                 PendingTurnSnapshotManifestPath,
-                JsonSerializer.Serialize(manifest, JsonOpts));
+                manifestJson);
             await _fs.WriteFileAtomicAsync(
                 writeLease,
                 PendingTurnSnapshotAuthority.AuthorityPath,
                 authorityJson);
+            if (hotOwner is not null) ObserveHotOriginalIssued(hotOwner, writeLease, manifest, manifestJson, authorityJson);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
@@ -1058,6 +1076,27 @@ public partial class GameEngine
     private void CleanupPendingTurnSnapshot(
         FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string>? preservedRollbackPaths = null)
+    {
+        EndHotOrdinaryOriginal("OriginalCleanup");
+        CleanupPendingTurnSnapshotBody(writeLease, preservedRollbackPaths);
+    }
+
+    private void CleanupHotOriginalProducerSnapshot(HotOrdinaryOriginal owner,
+        FileSystemManager.CanonicalWriteLease lease, TurnRequest request, RollbackSnapshot? backup)
+    {
+        if (!ReferenceEquals(owner, _hotOrdinaryOriginal) || owner.State != "Beginning" ||
+            !owner.ProducerEntered || owner.CleanupConsumed || !ReferenceEquals(owner.ProducerRequest, request) ||
+            !ReferenceEquals(owner.ProducerBackup, backup) ||
+            owner.Generation != _fs.ReadLocalGenerationSnapshot(lease).Binding.Id)
+            throw new InvalidOperationException("Only this actual ordinary producer can preserve its Beginning ticket.");
+        owner.CleanupConsumed = true;
+        try { CleanupPendingTurnSnapshotBody(lease, backup?.BackupFiles.Values); }
+        catch { EndHotOrdinaryOriginal("OriginalProducerCleanupFailed"); throw; }
+    }
+
+    private void CleanupPendingTurnSnapshotBody(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<string>? preservedRollbackPaths)
     {
         var rawPreservedPaths = preservedRollbackPaths?.ToArray() ?? [];
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPreservedPaths);

@@ -8,6 +8,8 @@ New direct delegation resumes implementation from745b and supersedes the complet
 - [x] FirstRED cc8 pushed/readback/new52document recovery; separate causal qualification accepted with no material finding. Root96pins/16projections/threeexactdiffs/5tmprefs and complete6chains/3cases/52files checked; no actual repetition or new runtime release.
 - [ ] Push/readback/recover this classification, then implement accepted3b genuine custody/sourcebarrier/attempt/observedreader/ownedclose throughTDD and nextfreshprep/SOURCE/FIRSTLate2/EVIDENCE/GREEN gates. No otheractual/currentGREENrelease, no hiddenretry/aggregate/unchangedpacketreplay/F1redesign. Full3b/S/B/M3/F1/T197/newQTE and prior D4/guided/visual/Windows/D8 gates remain open.
 
+- [ ] Current bounded3b custody/attempt/MC/owned-close source WIP is uncompiled/unrun/unreviewed; selection3categories anticipated6cases. Push/readback/full-current-source recovery, fresh BOTH/catalog/PlanOnly0 and independent SOURCE before ONLYFIRSTLate2; frozen separate EVIDENCE before releasedGREEN. No fullstage/activation claim.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.

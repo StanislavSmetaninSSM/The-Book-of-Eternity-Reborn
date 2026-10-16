@@ -109,6 +109,7 @@ public partial class GameEngine
             _mortalJointRepairCheckpoint = null;
             _mortalJointRepairCorrectionReady = false;
             _mortalJointRepairTerminalReason = "validation_failed";
+            EndHotOrdinaryOriginal("VerifiedJointTerminalCleanup");
             ClearMortalQteRepairState();
             _logger.LogInformation("Joint story and runtime turn {Turn} completed once after {Source}; owned terminal cleanup verified.",
                 frame.TurnNumber, source);

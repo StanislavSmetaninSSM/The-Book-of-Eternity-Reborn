@@ -1,0 +1,29 @@
+{
+  "auditSha256": "181925e45233f96b2c4170730f8046bc024d62b2f3186145cbd7689ed81f9b20",
+  "audit": {
+    "utc": "2026-10-16T20:42:44.273616+00:00",
+    "writer_head": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+    "owned_candidate": "/workspace/f1-r2-hot-custody-red2-full-source-github-20261016",
+    "candidate_head": "bc719d3f6002965167c5915d841e56c5dc45449a",
+    "receipt_path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-full-source-recovery-20261016.json",
+    "receipt_sha256": "e7c7c1de41654d3c610ab080430d4fb1c84d909446e8d361e5cf9c10bc1b43f9",
+    "verified_files": 54149,
+    "verified_tracked_bytes": 3556631142,
+    "clean_including_ignored": true,
+    "noAlternates": true,
+    "noSparse": true,
+    "ancestor": true,
+    "final_independent_review_sha256": "4cdd4cb1272adcd423d011f6123a9fde0f59375e7c25fe23218b40679a047948",
+    "newer_full_clone_retained": "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+    "newer_full_sha": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+    "phase": "AUDITED_ONLY_NOT_DELETED; pending current independent review final before retirement",
+    "scope": "Only the exact owned reconstructable old full clone; writer/raw runtime evidence/SDK/current full clone/remote refs unchanged"
+  },
+  "writer_head": "ba89753061efedfff339af0b38cbe0082a3d23bf",
+  "utc": "2026-10-16T20:51:14.643822+00:00",
+  "phase": "EXACT_OWNED_RECONSTRUCTABLE_OLD_CLONE_RETIRED",
+  "candidate_absent": true,
+  "newer_full_clone_retained": true,
+  "remoteReadback": "ba89753061efedfff339af0b38cbe0082a3d23bf\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "writer_raw_evidence_sdk_remote_refs_unchanged": true
+}
