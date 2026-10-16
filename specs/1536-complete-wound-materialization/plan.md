@@ -23428,3 +23428,7 @@ clean cleanup in 4:05:
 Independent Astra XHigh review found and confirmed corrections to duplicate
 rejection, per-method accounting, and malformed TRX reporting. Full cutover
 and PreMerge acceptance remain pending.
+
+## A1 tests-only fresh preparation — concrete SOURCE pending (2026-10-16)
+
+Clean/pushed/readback c032, newGitHub236file ALL233path source recovery. Fresh BOTH/catalog native0:780owners11732methods/no stale/unmapped; integration133/unit35 knownwarnings,0errors/no newA1diagnostic. Exact4descriptor54case PlanOnly0executions (A1 boundary2/pure33/ordinary17 plus conditionalLate2). FourDLLs/12raw-storedchains and exact runner/helper/native/summary/source-recovery records preserved; product source unchanged04f5, kernels absent. RuntimeUNRUN. Save/readback/newcomplete recovery and independent concrete SOURCE/FIXTURE/SELECTION before ONLY causal-boundary2; no unchangedLate2 at this tests-only stage. Windows/CI/transfer/settings/full gates remainheld.
