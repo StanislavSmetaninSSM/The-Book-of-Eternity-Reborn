@@ -2,9 +2,92 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-observed-original-conformance",
+  "responsibility": "Pd.3a real original-source closure: exact owner/lease/issued Snapshot, private issuer, detached diagnostics/bytes, byte-only mtime policy, late source/G/presence drift before issue, physical faults including recheck, frozen-source RequireCurrent drift, unchanged diagnostic priority/eager contexts, BOM, signed absence, missing G and explicit lease without ambient context. Per-test actual original/G and strict cleanup; finite nine methods, exact cases come from discovery.",
+  "excludes": "No submitted-output admission, active S/C/B/M3, common take, cold proof, full F1/T197, Windows or visual qualification. No activation or imported source authority.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "changeHints": [
+    "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs"
+  ],
+  "related": [],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-observed-original-default",
+  "responsibility": "Affected default reader shared-core compatibility and narrowly factored authority helper: all existing reader method and negative cases plus portable integrity/rollback and actual exact rollback callback dispatch. Existing default contract is preserved; no observed semantics silently imposed on old callers. This is a finite unit subset of pending-turn-authority, intentionally overlapping that owner; execute selected methods once.",
+  "excludes": "No submitted-output admission, active S/C/B/M3, common take, cold proof, full F1/T197, Windows or visual qualification. No activation or imported source authority.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "changeHints": [
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs"
+  ],
+  "related": [],
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.*",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode"
+      ]
+    }
+  ]
+},
+{
+  "id": "fr063-observed-original-browser",
+  "responsibility": "One genuine actual GameEngine browser original WITH real rollback, all six manifest DTO hashes/condition, old exact bytes and new privately issued observed closure/current lease, every actual rollback callback row and read-only settled tree. Strict method-owned finally cleanup. Does not claim browser UI/whole browser lifecycle qualification.",
+  "excludes": "No submitted-output admission, active S/C/B/M3, common take, cold proof, full F1/T197, Windows or visual qualification. No activation or imported source authority.",
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs"
+  ],
+  "related": [],
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-observed-original-barrier",
   "responsibility": "T179-Pd.3a causal missing drift barrier: genuine original A/B and G/default-reader success, existing B post-open hook mutates already-read A, only that physical original changes. Separate default-reader positive characterization and observed barrier specification. On absent API only test adapter invokes old real behavior; expected sole RED is Success=true at rejection assertion. Every GREEN unconditionally requires actual observed API, source_changed on A and null Snapshot/Evidence.",
-  "excludes": "No production fallback/unsafe temporary issuer/new hook/caller source map, fabricated authority, whole observed-reader acceptance or admission/S/C/B/M3/cold/F1/T197/activation/Windows/visual qualification. Initial missing-API RED1 is separately frozen and not repeated in this cycle.",
+  "excludes": "No production fallback/unsafe temporary issuer/new hook/caller source map, fabricated authority, whole observed-reader acceptance or admission/S/C/B/M3/cold/F1/T197/activation/Windows/visual qualification. Initial missing-API RED1 is separately frozen; current GREEN selection includes its own separately run owner.",
   "changeHints": [
     "BookOfEternityClient.Tests/PendingTurnObservedOriginalBarrierTests.cs",
     "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
@@ -34,7 +117,7 @@
 },
 {
   "id": "fr063-observed-original-reader",
-  "responsibility": "T179-Pd.3a actual original-source reader: genuine LiveTurnPreparationService original, changed live root, existing G and successful default reader before causal missing observed API assertion; then exact original bytes, privately issued evidence and current same lease recheck. Initial one-case causal RED; success implementation absent.",
+  "responsibility": "T179-Pd.3a actual original-source reader: genuine LiveTurnPreparationService original, changed live root, existing G and successful default reader before causal missing observed API assertion; then exact original bytes, privately issued evidence and current same lease recheck. Initial one-case causal RED is frozen61e10b091; current separately gated GREEN checks actual implementation.",
   "excludes": "No submitted-output admission, S/C/B/M3/take/cold authority, new QTE/F1/T197, Windows or visual qualification; no manufactured primary authority or caller source injection.",
   "changeHints": [
     "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderTests.cs",

@@ -2,17 +2,52 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-observed-original-barrier",
-      "reason": "Two independent genuine A/B originals. Old default positively characterizes already captured bytes after late physical A drift; missing-feature test-only adapter must causally RED on Success=true, and can never GREEN without actual observed API. Strict per-test cleanup and complete only-A-change/G/read-order controls.",
+      "category": "fr063-joint-late-completion",
+      "reason": "G5 FIRST actual only, fresh BOTH binaries: exact current v2 union/source/request/G/story/turn/progression/inert/strictcleanup; freeze and independent EVIDENCE before any other singleton.",
       "contracts": [
-        "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
       ]
     },
     {
-      "category": "fr063-joint-late-completion",
-      "reason": "G5 mandatory first actual after new test/catalog/selection changes, using fresh BOTH binaries; exact existing v2 fullunion/source/request/story/turn/progression/inert/strictcleanup before separate EVIDENCE release for barrier pair.",
+      "category": "fr063-observed-original-reader",
+      "reason": "One genuine missing-API causal RED now designated GREEN: actual original/current/live distinction, no writes, private evidence/current lease.",
       "contracts": [
-        "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-barrier",
+      "reason": "Genuine two-case old default positive and observed already-read original drift refusal. Causal RED frozen e312c78b3; GREEN must use actual API.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-conformance",
+      "reason": "Finite real-owner closure/negative/BOM/absence/priority and frozen evidence cases with strict per-test roots.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-default",
+      "reason": "Shared validation core/default read ordering and exact authority rollback normalization/factoring affected; finite unit compatibility/negative subset.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "Explicit sync bytes and shared pure existing BOM decoder affect ordinary storage surfaces: exact bytes/absence/BOM, real lease admission, hard-link input, FIFO/open controls. Existing finite coherent category, no Windows pass claimed.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-browser",
+      "reason": "Actual engine browser original WITH rollback exercises legacy physical dispatch and complete real callback coverage; six manifest DTO hashes preserved, strict cleanup.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
       ]
     }
   ]

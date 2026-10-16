@@ -805,6 +805,12 @@ internal static class PendingTurnSnapshotAuthority
         };
     }
 
+    // Data only: the observed reader confines the existing checker's rollback callback
+    // to the exact normalized rows that the same checker hashes. No IO or authority.
+    internal static IReadOnlyList<KeyValuePair<string, string>> CopyNormalizedRollbackCoordinates(
+        IDictionary<string, string>? source) =>
+        Array.AsReadOnly(CopyNormalizedFilesDictionary(source).ToArray());
+
     private static Dictionary<string, string> CopyNormalizedFilesDictionary(IDictionary<string, string>? source)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

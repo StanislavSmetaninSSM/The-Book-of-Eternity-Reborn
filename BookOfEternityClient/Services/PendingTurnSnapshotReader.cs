@@ -130,7 +130,7 @@ internal static class PendingTurnSnapshotPathPresenceV1
 /// Reads immutable bytes from the current detached-authority pending-turn snapshot.
 /// It never treats the live canonical root as the accepted before-image.
 /// </summary>
-internal static class PendingTurnSnapshotReader
+internal static partial class PendingTurnSnapshotReader
 {
     private const int MaximumRequiredPaths = 64;
     private static readonly PendingTurnSnapshotContextSource[] CurrentContextSources =
@@ -143,7 +143,14 @@ internal static class PendingTurnSnapshotReader
     internal static PendingTurnSnapshotReadResult ReadCurrent(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease,
-        IReadOnlyCollection<string> requiredLogicalPaths)
+        IReadOnlyCollection<string> requiredLogicalPaths) =>
+        ReadCurrentCore(fs, lease, requiredLogicalPaths, null);
+
+    private static PendingTurnSnapshotReadResult ReadCurrentCore(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
+        IReadOnlyCollection<string> requiredLogicalPaths,
+        OriginalSourceReadSession? sourceSession)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
@@ -155,11 +162,15 @@ internal static class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
+        if (sourceSession is not null && !sourceSession.Begin(issues))
+            return Failure(issues);
+
         LiveTurnPendingSnapshotManifest? manifest;
         try
         {
-            var manifestJson = fs.ReadFileSync(
-                LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            var manifestJson = sourceSession is null
+                ? fs.ReadFileSync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                : sourceSession.ReadManifestText();
             if (string.IsNullOrWhiteSpace(manifestJson) || HasDuplicateJsonProperties(manifestJson))
             {
                 manifest = null;
@@ -190,7 +201,9 @@ internal static class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
-        var authorityJson = fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
+        var authorityJson = sourceSession is null
+            ? fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath)
+            : sourceSession.ReadDetachedAuthorityText();
         if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
                 manifest,
                 authorityJson,
@@ -206,7 +219,9 @@ internal static class PendingTurnSnapshotReader
                 static value => value.RollbackBaselineFiles,
                 static value => value.SourceLabel,
                 static value => value.RollbackBackups,
-                fs.ReadFileBytesSync,
+                sourceSession is null
+                    ? fs.ReadFileBytesSync
+                    : path => sourceSession.ReadRollbackBytesFromAuthorityCallback(manifest, path),
                 out var payload,
                 out var authorityFailure) ||
             payload is null)
@@ -237,7 +252,7 @@ internal static class PendingTurnSnapshotReader
         }
 
         var contextReads = CurrentContextSources
-            .Select(source => ReadCurrentContext(fs, source))
+            .Select(source => ReadCurrentContext(fs, source, sourceSession))
             .ToArray();
         var invalidContext = contextReads.FirstOrDefault(
             read => read.Status == PendingTurnSnapshotContextStatus.Invalid);
@@ -341,7 +356,9 @@ internal static class PendingTurnSnapshotReader
                 continue;
             }
 
-            var bytes = fs.ReadFileBytesSync(snapshotPath);
+            var bytes = sourceSession is null
+                ? fs.ReadFileBytesSync(snapshotPath)
+                : sourceSession.ReadSelectedOriginalBytes(logicalPath, snapshotPath);
             if (bytes is null ||
                 !string.Equals(
                     PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, bytes),
@@ -360,6 +377,9 @@ internal static class PendingTurnSnapshotReader
         }
 
         if (issues.Count != 0)
+            return Failure(issues);
+
+        if (sourceSession is not null && !sourceSession.CloseAndRecheck(issues))
             return Failure(issues);
 
         return new PendingTurnSnapshotReadResult(
@@ -711,15 +731,18 @@ internal static class PendingTurnSnapshotReader
 
     private static PendingTurnSnapshotContextRead ReadCurrentContext(
         FileSystemManager fs,
-        PendingTurnSnapshotContextSource source)
+        PendingTurnSnapshotContextSource source,
+        OriginalSourceReadSession? sourceSession)
     {
-        if (!fs.FileExists(source.Path))
+        if (!(sourceSession is null ? fs.FileExists(source.Path) : sourceSession.ProbeCurrentContext(source)))
             return new PendingTurnSnapshotContextRead(
                 source.Path,
                 PendingTurnSnapshotContextStatus.Missing,
                 null);
 
-        var json = fs.ReadFileSync(source.Path);
+        var json = sourceSession is null
+            ? fs.ReadFileSync(source.Path)
+            : sourceSession.ReadCurrentContextText(source);
         if (string.IsNullOrWhiteSpace(json))
             return new PendingTurnSnapshotContextRead(
                 source.Path,

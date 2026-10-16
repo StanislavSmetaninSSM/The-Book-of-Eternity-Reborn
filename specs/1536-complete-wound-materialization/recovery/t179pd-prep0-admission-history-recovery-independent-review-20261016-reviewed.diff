@@ -1,0 +1,2170 @@
+diff --git a/specs/1536-complete-wound-materialization/plan.md b/specs/1536-complete-wound-materialization/plan.md
+index 5d7851d20..0143bb456 100644
+--- a/specs/1536-complete-wound-materialization/plan.md
++++ b/specs/1536-complete-wound-materialization/plan.md
+@@ -1,3 +1,9 @@
++## Parallel pre-P0 history proposal and parent-seal conditional review — 2026-10-16
++
++- [Pre-P0 admission-history recovery DESIGN](./recovery/t179pd-prep0-admission-history-recovery-design-20261016.md)/JSON preserved byteexact; root41historicalGitpins/current-at-completion comparisons and10priorartifacts verified. Candidate uses VERSIONED existing validation_repair_request owner with original-issued seed, explicit non-dispatch lifecycle, actual Ready consumption and real worker-native companion BEFORE prepare/seals; final evidence stays nested in existingM3, no additional pathname justified. Existing deletes, worker Applied-before-legacy-request/Ready and audit-after-commit prohibit a metadata-only addition. Genuine worker cold disposition, original/restore atomicity, complete semantic owner verification, no-publication/attempt debt and separate lostC/result/identity recovery remainOPEN. All futurechecksUNRUN, independent review pending; no schema/code/owner implementation or fullpreP0/activation release. Narrow observed reader remains independent prerequisite, not history/recovery authority.
++- Separate configured Astra/XHigh [original-parent seal review](./recovery/t197-depc-original-parent-seal-independent-review-20261016.md) on76d545066: conditional discussion accepted/no material defect, **engineeringrelease blocked**; root80pins/2exactdiffs. PS-O1 clarifies ordinary waiter presentation failures can rethrow when noCompleted result (not universallyCancelled). PS-O2 mandatory beforecode: exact retained OUTER+INNER owner main-admission frames both staylive throughbefore-close barrier, not mistaken for unfinishedchildborrows. PS-D1: main-stop metadata takescanonicallease, so native-stop/debtsettlement lockorder mustclose actualcycle beforecode. H-B02transitiveadapters/fullG-C/browser/protocol/platform/keeperloss/cold/target remainOPEN;20futureUNRUN. No terminal/lawful outcome activation or reducedHOLDpolicy.
++- Both observed-reader causalREDs are frozen at e312c78b3 before any production successlogic. Next root implements full safe Pd.3a vertical/tests; full admission/history/T197 proposals remain outside that engineering release and undergo separate review. Continue toward actual engine S/C/B/samecandidate/M3/coldproof under persistentauthorization; all fulltaskboxes/D4/guided/visual/Windows/D8 remainOPEN.
++
+ ## T179-Pd.3a causal drift-barrier RED qualified and frozen — 2026-10-16
+ 
+ - Explicitly released fr063-observed-original-barrier2 actualclean ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8/compiled9aa339141: native1, legacycharacterizationPASS1 + soleexpected causalbarrierFAIL1 atline36 Assert.False(Success=true),7.3249163s, exactcomplete1descriptor2cases/no skipduplicateunderfilltimeout. Both genuine independent originals reach actual old ReadCurrent after A→B read order and one existing B-postopen mutation of already-read A. Only physicalA changes by one trailing space; originalB/manifest/authority/G/allotherretainedfiles remain exact, real returned Snapshot still present; ApiPresent=false/InvokedApi=ReadCurrent/Evidence absent. This is explicitly absent-feature behavior, not a RED through an implemented observed owner or a defect claim against default semantics.
+diff --git a/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.json b/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.json
+new file mode 100644
+index 000000000..2690a8e42
+--- /dev/null
++++ b/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.json
+@@ -0,0 +1,455 @@
++{
++  "task": "T179-Pd full pre-P0 admission-history recovery design",
++  "status": "PROPOSAL_WITH_OPEN_BLOCKERS_NOT_IMPLEMENTATION_RELEASE",
++  "configured_model": "Astra",
++  "configured_effort": "High",
++  "backend": "unknown",
++  "source_baseline": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++  "completion_head": "e312c78b3f1a95766f535ef8372b049ee550138c",
++  "completion_status_porcelain": "",
++  "completion_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
++  "network_remote_verification": "NOT_PERFORMED_SCOPE_PROHIBITED",
++  "repo_mutations": false,
++  "runtime_build_discovery_tests": "NOT_RUN_SCOPE_PROHIBITED",
++  "future_checks": "ALL_UNRUN",
++  "recommendation": "Proposed versioned non-dispatch lifecycle at existing validation_repair_request.json; new-original seed, same-native worker companion; final frozen evidence in existing M3. No extra path. Exact design acceptance required.",
++  "blockers": [
++    "new-original atomic completion and browser owner",
++    "closed versioned schema/all consumer dispatch",
++    "restore and pending checkpoint settlement",
++    "worker cold disposition/live authority/reservation and atomic companion",
++    "complete semantic cold checkers",
++    "lost observations/C/results/identities and no replay policy",
++    "no-publication/attempt debt/common cleanup proof",
++    "same-change Mortal/afterlife GM docs/examples/guards and independent acceptance"
++  ],
++  "artifact": {
++    "markdown_path": "/tmp/t179pd-prep0-admission-history-recovery-design-20261016.md",
++    "sha256": "635049fddf83f0a7986fe4ddb0b99eaf331b89081ce87dc25893f930ed9f7fff",
++    "byte_count": 38107
++  },
++  "source_pins": [
++    {
++      "path": "AGENTS.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
++      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
++      "byte_count": 11662,
++      "current_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "docs/development-workflow.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
++      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
++      "byte_count": 66432,
++      "current_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
++      "current_matches_pinned": true
++    },
++    {
++      "path": ".specify/memory/constitution.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
++      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
++      "byte_count": 14081,
++      "current_sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "142ce6682b88ab2760a39f78471c18be6c9ddb97",
++      "sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
++      "byte_count": 107389,
++      "current_sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "348f60324a6480b53bf5f2edfc20a70f4321a29e",
++      "sha256": "3a35e5244e2a417b243a50a9c8bd87ce5e4c1942c2610ca7b998885548c18e2e",
++      "byte_count": 116993,
++      "current_sha256": "3a35e5244e2a417b243a50a9c8bd87ce5e4c1942c2610ca7b998885548c18e2e",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
++      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
++      "byte_count": 112701,
++      "current_sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
++      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
++      "byte_count": 28648,
++      "current_sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
++      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
++      "byte_count": 503876,
++      "current_sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
++      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
++      "byte_count": 11986,
++      "current_sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "e7d3744e0b6bc614c0e5c1101955327b7242b490",
++      "sha256": "2e101960e4a6c9fda2d10f7f20ea7d35ddeb6ea371cf1fff9237f92139d2d794",
++      "byte_count": 14910,
++      "current_sha256": "2e101960e4a6c9fda2d10f7f20ea7d35ddeb6ea371cf1fff9237f92139d2d794",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "04aacf85244601da516466216ff565dfefb868ae",
++      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
++      "byte_count": 17372,
++      "current_sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "7831be8e58492e161f8b982d634666a7bcf6f5d4",
++      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
++      "byte_count": 56992,
++      "current_sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
++      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
++      "byte_count": 20289,
++      "current_sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
++      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
++      "byte_count": 43996,
++      "current_sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
++      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
++      "byte_count": 41585,
++      "current_sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "16b91defd789624b70382974d689a29d0203e223",
++      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
++      "byte_count": 29080,
++      "current_sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "e479cba88f1e817150baebbb942cf83f6845e7e9",
++      "sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20",
++      "byte_count": 27552,
++      "current_sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "e4b395e7e2c64ba93719fdb442ae86a56a1e7f89",
++      "sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
++      "byte_count": 18522,
++      "current_sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "33c28be8d479f9c1b4fac55c0db5510a825e0dd4",
++      "sha256": "f98dff889c7ef1c63aa74ffe4838f10a66075623402f4cb5e2112eeefa0f5cb2",
++      "byte_count": 10960,
++      "current_sha256": "f98dff889c7ef1c63aa74ffe4838f10a66075623402f4cb5e2112eeefa0f5cb2",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
++      "sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
++      "byte_count": 23367,
++      "current_sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "1f46709ec9e682d8451eb7c678c34e5c8cf80ed4",
++      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
++      "byte_count": 68955,
++      "current_sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "7b93c4d733c681057eae0e5df33be88991022740",
++      "sha256": "d802d7e01092b3fdfa8995f569d97268e02933167d3b303760821ef7cc74db0e",
++      "byte_count": 15231,
++      "current_sha256": "d802d7e01092b3fdfa8995f569d97268e02933167d3b303760821ef7cc74db0e",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "203b3961c10a05a0798427d4100c234f4c16cad6",
++      "sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
++      "byte_count": 3330,
++      "current_sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "37056261a566bc46f963bdb92aef7b98ac29f4f3",
++      "sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc",
++      "byte_count": 3431,
++      "current_sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
++      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
++      "byte_count": 19220,
++      "current_sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
++      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
++      "byte_count": 241343,
++      "current_sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "99081f43140f8f59511d26666e19a6fa57544983",
++      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
++      "byte_count": 33582,
++      "current_sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/game_master_daemon.ps1",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0",
++      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
++      "byte_count": 401224,
++      "current_sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "1d935b485cc252904be6ce23b197c65d1b56cd72",
++      "sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
++      "byte_count": 121313,
++      "current_sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "e0ed469706453205397b5665b049b83db9431e6b",
++      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
++      "byte_count": 90294,
++      "current_sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
++      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
++      "byte_count": 93122,
++      "current_sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "7633ea207afb6236ac46e73a044a489235123f59",
++      "sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
++      "byte_count": 37410,
++      "current_sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "8b920d6026268123d80cc65e1e178eb558b7b075",
++      "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
++      "byte_count": 67034,
++      "current_sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "58f30ca196c88d2b0ef279993de7c058de135e99",
++      "sha256": "8864b4e44b0d4e104585d92f299e72c97f9f685e1279c4458cb6cbbc84758f49",
++      "byte_count": 17577,
++      "current_sha256": "8864b4e44b0d4e104585d92f299e72c97f9f685e1279c4458cb6cbbc84758f49",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "TaskGuides/CLI_Step_Main.txt",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "90363c67192cac05f8aedcbeddf459b29fb1bc08",
++      "sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
++      "byte_count": 189671,
++      "current_sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "Examples/E_CLI_Step_Main.txt",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "7dbe71d7402481de99ffa6f79172ed6eccea7bde",
++      "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3",
++      "byte_count": 108929,
++      "current_sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "OtherGuides/GM_Worker_Bridges.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "940a0e86269d47e5c0a82b59a7a46c21363ba562",
++      "sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
++      "byte_count": 45067,
++      "current_sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "Examples/example_validation_manifest.json",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "a55cc67dd7ca7f13965ba5a449d9fa38c257ab4f",
++      "sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572",
++      "byte_count": 186273,
++      "current_sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "1ffef998be387f0f4f7f8aaafa22968049f9d3c6",
++      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
++      "byte_count": 255057,
++      "current_sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "3d3866fe22ad0700e7078078fa2409d71c6e4aad",
++      "sha256": "70de1d2f89bca3a3d95d4c633145064a6f30dc220910ea97ce6026bc872253f1",
++      "byte_count": 52786,
++      "current_sha256": "70de1d2f89bca3a3d95d4c633145064a6f30dc220910ea97ce6026bc872253f1",
++      "current_matches_pinned": true
++    },
++    {
++      "path": "Examples/E_CLI_Afterlife_Turns.txt",
++      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
++      "git_blob": "b5fffd3589de0a20413f8c10f8ab4d9db210aa68",
++      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
++      "byte_count": 699288,
++      "current_sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
++      "current_matches_pinned": true
++    }
++  ],
++  "preserved_previous_artifacts": [
++    {
++      "path": "/tmp/t179pd-admission-cold-proof-design-20261016.md",
++      "sha256": "38d4d925026748391dc3b7b99aa8bbd5656516b479f0f6781f7ecec2c9316fb7",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-admission-cold-proof-design-20261016.json",
++      "sha256": "8129b2d77dfb2de95c06abcf97fd95bfb2d055c2da19089fd9e26aa44061e8c2",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-admission-history-location-design-20261016.md",
++      "sha256": "f5c91f653a79b651748d3b53128dd16126c6366efbf0cc94ab7da541d5dc3f60",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-admission-history-location-design-20261016.json",
++      "sha256": "2b2e852738154193cd5aee9d59eebdc637b641e6ee217b1181874475c34f27dd",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-original-observed-reader-design-20261016.md",
++      "sha256": "8666b7551e91adbee3a9776f42ee4115e841df03dd848d4ac9409ffa8b3ee435",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-original-observed-reader-design-20261016.json",
++      "sha256": "3d515af86d7059dc4402b331616acbb5be26c9038e23f9439a1b7c5c78354856",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-observed-reader-barrier-tdd-design-20261016.md",
++      "sha256": "dd0882ce46598099a9e6b3489087824c1742da2df5b63a47f7dc39514f0a504f",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-observed-reader-barrier-tdd-design-20261016.json",
++      "sha256": "9beaf926e73f903ed6bbfe24e81fed75078164c6991f2f74e3a26e0149c8e38d",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-output-read-closure-consult-20261016.md",
++      "sha256": "8e3b2c088ee84c7aade1be5b9209e2a5656133d67bc1957b9d5401d822bdddd8",
++      "preserved": true
++    },
++    {
++      "path": "/tmp/t179pd-output-read-closure-consult-20261016.json",
++      "sha256": "9b2e3f75d1e7f831ed623632a21219417082b19adbaabf946c635cf5143c9f2e",
++      "preserved": true
++    }
++  ],
++  "full_public_activation_gates": "OPEN; no F1/T179/T192/P0/T197/QTE/D4/guided/visual/Windows/D8 release"
++}
+diff --git a/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.md b/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.md
+new file mode 100644
+index 000000000..a37215959
+--- /dev/null
++++ b/specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-design-20261016.md
+@@ -0,0 +1,296 @@
++# T179-Pd pre-P0 admission-history recovery — 2026-10-16
++
++DESIGN PROPOSAL, NOT ACCEPTED IMPLEMENTATION. Assigned Astra/High; backend unknown. Historical source baseline 8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3; exact source/blob/SHA pins in JSON. Source claims use that historical baseline; JSON records each current-file comparison separately so parent metadata/source advancement is not mistaken for a new audit. Read-only repository; no build/discovery/tests/app/runtime/network/OS investigation/delegation. Only this new /tmp pair is written. Earlier reports remain immutable. All future checks are UNRUN.
++
++## Recommendation and exact limit
++
++The smallest candidate with durable pre-P0 HISTORY uses the existing pathname game_state/control/validation_repair_request.json, but promotes its existing client owner into an explicit VERSIONED admission/repair lifecycle. It must include non-dispatch states, an original-issued seed, preserved owner observations, native transition settlement, Ready consumption and a real worker-transaction companion. This is substantive schema/owner/lifecycle work requiring exact design acceptance; the pathname alone supplies no permission or proof.
++
++Keep final frozen admissionEvidence nested in existing M3 as already proposed. Do not introduce a new history pathname. Do not prepublish M as an informal journal. No source-backed necessity for an additional pathname is established.
++
++No COMPLETE all-cut recovery exists in current code. The proposed protocol can preserve issued history and committed observations, but still needs genuine worker cold-disposition integration, original-publication atomicity, repair-baseline settlement, and a separate decision for lost C/result/identity work. These are explicit engineering blockers below. Do not label retention-only HOLD as full lawful recovery or activate public F1 before they are closed.
++
++## Existing facts that rule out a metadata-only addition
++
++Source paths in this report are under BookOfEternityClient unless stated otherwise.
++
++- GameEngine.SessionAndSnapshots.cs:398–410 owns canonical original preparation; :514–569 creates actual manifest and detached authority, currently writes the two files sequentially under its lease. Snapshot artifacts are written earlier. There is no admission-history seed.
++- GameEngine.BrowserPlayerInput.cs:198–227 owns genuine browser staging: provisional request, actual manifest/authority capture, validated binding, actual PendingPlayerActionService staged publication and original seal. Browser preparation has its own transaction/recorder rules; ordinary PublishLocalFiles cannot blindly replace them.
++- LiveTurnPreparationService and six manifest DTO consumers must preserve any future original seed field in hash/serialization round trips. Already-issued originals stay immutable.
++- ValidationAndRepair.cs:354 samples repairStartedAtUtc BEFORE WaitForContractRepair. The raw loop samples separately at :674. The request's DetectedAtUtc is sampled later at :4078. They are not interchangeable.
++- Generic merged repair errors/start/fallback/boundary are locals at :369–389, recomputed at :251–269. Actual freshness predicates are :2688–2784. The policy can depend on missing/error/older-than-start metadata and an actual fallback sample, not only target bytes.
++- WriteValidationRepairRequestForSessionAsync :4048 deletes prior request/Ready/stall files; :4149 dispatches worker first; Applied returns at :4153–4163 before writing the legacy request at :4174. Current request presence cannot represent every repair branch.
++- WaitForContractRepairAsync :3322 restores the actual preturn baseline before request dispatch for applicable packets. That restoration is owned by SessionAndSnapshots.cs:2091–2127, with a special joint route and ordinary restore plus optional pending checkpoint. The history owner cannot treat “about to restore” as “restored”.
++- Ready acceptance at ValidationAndRepair.cs:3558–3567 appends diagnostics, deletes Ready separately and returns; the next caller computes freshness afterward. A crash between these points loses hot observations/continuation.
++- Invalid/mismatched Ready paths :3468–3547 can invoke another worker attempt. ReportRejectedRepairReadyAsync :8146–8169 replaces the transport request with Ready errors; it does not carry all earlier canonical repair errors. Persist transport-rewrite lineage separately from the actual owner repair state.
++- Generic success :304–308, cancellation :3447, protected refusal and other cleanup paths delete repair files. DeleteValidationRepairFiles :8290–8295 unconditionally deletes Ready/request/stall. They cannot remain unchanged under durable pre-P0 history.
++- GmWorkerApplyGate.cs:306 begins the actual whole worker B1 transaction, validates and checks ownership, commits at :375–376, then builds Accepted. Audit follows in ApplyReservedAsync :128–139, AFTER commit. Audit is not an atomic applied proof.
++- GmWorkerValidationRepairDelegator.cs:223 invokes the actual apply gate; :255 onward publishes Ready separately. Applied plus failed Ready is a real supported route; failure.Data retains hot task/proposal/decision only, not durable continuation.
++- GmWorkerDurableExecution.cs:7–9 explicitly says a replacement process does not mint the retained live authority. GmWorkerTaskRunResult.ExecutionAuthority/HasValidatedExecutionFor (Models.cs:458–468) is not reconstructed by deserializing public DTOs.
++- GmWorkerBridgePool.TryReserveTaskAsync :1270–1321 rejects existing task/inbox paths. “RunTaskAsync with the saved task” is not a valid cold resume design.
++- Worker task ID allocation occurs in Delegator.cs:417, latest-task write at :428–449, and actual reservation separately in BridgePool.cs:528–568/1270–1321. These cuts must be owned, not hidden by a task-id string in history.
++- Daemon Process-RepairRequestCore :6204–6219 treats an existing newly written request file as dispatchable; Read-CorrelatedValidationRepairRequest :4294–4312 accepts tuple correlation. Helper Complete-BoeValidationRepair :3233 onward reads root request fields and writes Ready. A non-dispatch checkpoint cannot be introduced without explicit gates.
++- ValidationService.BootstrapAndProtocol.cs:895–1024, PendingTurnSnapshotReader.cs:135–140/712 onward, ProgressionScheduleService.cs:1461 and GuardianPowerEventState.cs:555 have current repair context interpretations. They must not mistake a history-only record for a current GM repair.
++- InactiveSnapshotEvidence.cs:176–185 treats any request presence as an original-retention blocker. MortalJointTerminalCleanup.cs:247–253 requires current old request tuple and fullTurnResubmissionRequired=true. SaveLoadService.cs:69–76 excludes this pathname as ephemeral. Existing path reuse therefore still affects cleanup, inactive evidence and archive policy.
++
++These facts establish why the proposed contract is new. They do not prove an extra file is needed.
++
++## Proposed named owners and APIs
++
++Proposed names:
++- Core/GameEngine/GameEngine.AdmissionRepairHistory.cs: private IssuedAdmissionOrigin, OwnedAdmissionRepairHistory, live attempt and route transitions.
++- Services/AdmissionRepairControlState.cs: strict versioned DATA codec, pure state-transition checker and detached row shapes; no imported capability constructors.
++- Services/AdmissionRepairControlReader.cs: actual fs/lease/G/original-bound cold reader; issues distinct lease-local VerifiedRepairHistoryState after independent checks.
++- GmWorkers/GmWorkerApplyGate.AdmissionHistory.cs: fixed client-owned companion preparation and readback owned by the real apply gate, not ChangedFiles supplied by the worker.
++- Owner-specific original/restore/Ready/common/cleanup adapters in their existing files. No generic storage journal/service or caller-selected path registry.
++
++Private production methods:
++PrepareOrigin(actual original preparation) -> IssuedAdmissionOrigin;
++PrepareRepair(actual route, complete actual issues/packets/obligations, actual sampled start);
++PublishRepairBoundaryAsync(actual lease, prior exact control, prepared transition);
++CaptureSubmissionAsync(actual Ready or actual worker-owned result, source session);
++RecordObservation(actual validation invocation/role/order and physical observation);
++FreezeAdmissionAsync(actual original/read/source closure) -> frozen admissionEvidence;
++ReadRecoverableStateAsync(actual fs/lease/original) -> typed phase disposition;
++TransferToCommon(actual same candidate/plan/take) -> immutable evidence reference, NOT a new writer;
++RetireAfterVerifiedCompletionAsync(actual existing terminal/cleanup owner).
++
++No public methods accepting an upstreamAccepted boolean, an arbitrary evidence map, timestamps chosen by caller, parsed worker execution authority or a fake original seed. Live issuers validate exact source owners; cold issuers verify physical source/owner relations and issue DIFFERENT capabilities from live ones.
++
++The current observed-reader work is a prerequisite for original source capture only; it does not implement this history owner.
++
++## Original-issued durable seed without rewriting originals
++
++For NEW originals participating in this proposed version only, add a closed original field, for example:
++admissionHistoryOrigin = {version:1, ownerPolicy:"admission_repair_v1", generation, initialOrdinal:0}.
++
++This exact field name/layout is PROPOSED, not accepted. Include it before manifest hashing and detached authority creation. Original session/request/turn/request timestamp/source label remain their actual existing fields. The seed must be issued by actual original preparation, not added after parsing a current manifest. No new UUID is necessary: structural identity derives from actual G + original tuple.
++
++Avoid a hash cycle: original seed has no control-file hash or final manifest hash; the initial control record references the finished immutable original manifest/authority hashes. Publish original pair + seed control as a declared completion cohort of the ACTUAL original owner, with no GM dispatch until settlement. Previously prepared snapshot files remain subject to that owner's exact artifact proof and cleanup.
++
++Current source does NOT atomically issue this three-member cohort. Ordinary original preparation must acquire a real native/coordinated completion plan. Browser preparation must integrate the companion with its actual preparing/staged transaction and original record/recorder; do not call trusted-local publication through a lease for which UsesTrustedLocalWriter is false. All six manifest readers, actual helper producer and browser staged proof must round-trip the field exactly. Missing seed on an old original stays old dispatch, never upgraded in place.
++
++Cold origin proof checks actual original seed/version, actual G bytes/id, exact tuple/original pair, initial control origin relationship and legitimate current transition chain. Self-hash or a NoPreviousRepair boolean is not origin proof. A missing control on a versioned original is an incomplete/retired phase that needs actual original/terminal proof, not implicit empty history.
++
++## Existing request pathname: explicit closed version and phases
++
++Proposed new discriminator:
++{schemaVersion:1, kind:"admission_repair_control", ...}
++Existing unversioned request objects remain the OLD path. This is version-first dispatch, not permissive extra-field acceptance. Do not modify the old emitted contract until this complete new lifecycle is accepted and selected by an actually newly issued original.
++
++Proposed closed root:
++{schemaVersion,kind,policyVersion,binding,revision,phase,origin,route,sources,
++ observations,activeRepair,frozenAdmission,integrity}
++
++binding = actual {generation,sessionId,requestId,snapshotToken,turnNumber,realm,
++ originalManifestHash,originalAuthorityHash}.
++revision is a strictly increasing owner sequence, distinct from the existing revalidationAttempt. Invalid Ready retries may advance revision while keeping that actual attempt number.
++
++phase is exactly:
++original_issued | validating | repair_prepared | restoring |
++gm_waiting | worker_reserved | worker_applied | submitted |
++admission_frozen | terminal.
++
++No completed/validated boolean. Every phase has a strict required/null field table enforced by the codec and pure transition checker. These names define a proposed state machine; they do not grant phase authority on parse.
++
++activeRepair is null until an actual repair. Otherwise it contains:
++{ownerRoute,attemptOrdinal,revalidationAttempt,repairStartedObservation,
++ ownerIssueRefs,canonicalHistoryRefs,retryBasisRefs,transportRevision,
++ delivery,requestPayload,submission}.
++
++- ownerRoute is an actual closed route identity from the named caller, not any string caller can claim. It covers raw, baseline, post-seal/pending, canonical/general repair and exact special continuation owners when they become qualified.
++- requestPayload is the complete EXISTING GM request payload built by current owner logic, retaining packet fields, error order, diagnostic meaning, fullTurnResubmissionRequired, required paths and real DetectedAtUtc. It is null in history-only phases; no fake empty GameResponse/request.
++- delivery is none | gm | worker. Only phase gm_waiting with delivery=gm dispatches a GM repair. worker_reserved/worker_applied/original_issued/validating/admission_frozen do not.
++- submission is null, ordinary Ready evidence, or actual worker-applied evidence, never a fabricated Ready.
++- ownerIssueRefs preserve real original repair issue/context/packet facts. Rejected Ready transport errors do not erase them.
++- retryBasisRefs preserve actual specialized obligations/source checkpoints needed to reconstruct the correct retry authority; serialized obligation data alone cannot issue their old live capabilities.
++- exact input/output source image roles remain production-derived; no caller path imports.
++
++route/observations are ordered typed rows. Each row records actual owner operation and consumed source relationships; all samples carry purpose and invocation ordinal. Full generic history includes actual merged canonical issue state and exact start/fallback provenance, not only the last visible request. Receipt/event IDs already issued by owners are retained; no replacement IDs are manufactured cold.
++
++The actual turn may have arbitrarily many repair attempts under current policy. Do not impose a new retry limit or discard relevant earlier history to bound the file. Initial implementation may retain the complete finite history of the actual run; it must account for size/cost. A future compaction needs a proved policy-sufficient owner representation and independent checker; a saved “all earlier repairs checked” assertion or predecessor hash alone is insufficient.
++
++## Transition and publication contract
++
++Every transition uses an actual owner-prepared before/after record with exact G/original/source guards and existing native/coordinated atomic settlement. It is not a generic callback accepting desired JSON.
++
++1. Original issued -> validating:
++same actual original seed/control; only an actual validation pass can enter. Persist no synthetic upstream acceptance.
++
++2. Actual repair start:
++record repairStartedAtUtc at the EXISTING caller sampling point. Persist a repair_prepared transition BEFORE rollback, worker launch, GM request exposure or Ready consumption can make that start causally relevant. Later DetectedAtUtc remains separately sampled at its current request construction point. Additional IO may change elapsed wall time, but it must not substitute one clock role for another.
++
++3. Repair baseline restoration:
++restoring names the exact already-authorized restore owner, original/rollback sources and any private pending checkpoint. Its completed transition must be committed with the actual restore result, or recoverable from that exact owner's durable outcome/physical full-cohort proof. The present ordinary restore + optional pending write is not already such a combined history receipt. Never repeat a possibly completed restore because a history acknowledgement is absent. Joint specialized checkpoint/request preservation remains owned by its actual restoration branch.
++
++4. GM dispatch:
++same batch installs gm_waiting plus complete requestPayload and consumes only the prior owned Ready/stall evidence authorized by that transition. Daemon/helper version-first gates dispatch only this state. Do not delete the entire history on a request rewrite. Invalid Ready produces a new transport revision retaining the actual repair lineage and correct owner error basis.
++
++5. GM submission:
++read/validate actual Ready correlation and actual resubmission sources through live owners. Commit submitted + retained exact Ready evidence + necessary source capture in the SAME batch that consumes that exact Ready. On crash before commit, Ready remains owned input; after commit, submitted is the durable continuation. Do not accept a Ready whose data was never owner-validated, and do not infer submitted from an absent Ready.
++
++6. Observation recording:
++each actual metadata/UTC/volatile comparison observation becomes durable before the owner advances a stage that depends on it or destroys its supporting source. Preserve actual target selection, error handling, source path normalization, clock role, invocation order and max/fallback arithmetic. Store exact source bytes/absence and actual observed mtime/read-error category where relevant. Frozen validation UTC is not game time or elapsed action budget.
++
++7. Admission freeze:
++after all actual source/semantic checks, persist admission_frozen with exact immutable admissionEvidence and its source closure. No C reduction or accepted publication is authorized by this phase. On reentry, use frozen observation inputs and pure checkers; no resampling/allocator/source-work replay.
++
++8. Common transfer:
++prefer leaving the frozen control UNCHANGED as a sealed before-image/guard. The existing same-candidate common publisher includes admissionEvidence in M3, commits actual common+M3, and full readback checks the frozen control relation. A separate “transferred” control write is unnecessary: verified M3 itself establishes the owning handoff. The control may remain admission_frozen until the real existing terminal cleanup retires it. This avoids an extra common write member and a split marker/control acknowledgement.
++All source/control guards and nested evidence must enter before common input/prepared/cache seals. No after-take evidence attachment. If a design instead mutates this control in the common batch, that exact member/grant must be accepted and included before preparation/seals; existing pathname alone does not authorize expansion.
++
++9. Terminal/cleanup:
++generic DeleteValidationRepairFiles must dispatch by version. Old behavior stays old; new history survives while any repair/native/common/worker obligation needs it. Only actual terminal rollback/closure or verified common/cleanup ownership may delete it. Cancellation/protected refusal must settle their real restore/publication first; no unconditional cleanup as proof. Existing inactive-retention blocker remains conservative; final retirement must update it coherently rather than bypass it.
++
++## Worker: required real companion, not post-return bookkeeping
++
++Actual companion pathname is the SAME game_state/control/validation_repair_request.json. It is CLIENT-owned; workers cannot list it in proposal ChangedFiles or expand task permissions to author it.
++
++A proposed ApplyGate-owned PrepareAdmissionHistoryCompanionAsync derives its exact before/after from the actual reserved task, genuine live execution result, current history owner, proposal/scoped baselines and actual current G/original. It is prepared BEFORE BeginWorkerApplyTransactionAsync and participates in the SAME B1 intended set as every worker changed member.
++
++- Scope and proposal validation still concern the actual worker-controlled members. The fixed client companion is supplied only by the real apply owner and checked separately, never accepted from proposal input.
++- The companion describes the intended worker_applied state and exact task/proposal/source/after-image relation. Its physical staging is NOT proof of acceptance while B1 decision is pending.
++- Existing apply validation/ownership checks run; only their success commits the B1 decision. Failure rolls back both GM members and the control companion. No post-commit append tries to establish that the application happened.
++- A valid worker result with zero GM file changes still needs a genuine control transition. Current BeginWorkerApplyTransaction requires a nonempty set and current apply code skips it for zero changes. The fixed client companion can make this transition nonempty, but this is an explicit apply-owner extension requiring scope/validation review.
++- Normal Ready publication remains separate transport. It may fail without undoing committed worker_applied. Cold sees the exact committed control+worker output relation and revalidates the current submitted source; it never retries the apply or invents a Ready.
++- Audit remains diagnostic. It can be absent after a committed worker operation without losing lineage, because the actual native companion is the retained fact.
++
++The worker hot success gate must remain genuine. For cold verification of an ALREADY applied result, the new owner receipt establishes the actual application observation; cold independently checks exact task/proposal/context/scope/after-image relationship and the main submitted-source semantics. It does not create GmWorkerExecutionAuthority, rerun worker apply validation as a writer, or import the saved ApplyGateDecision as a live permit.
++
++Worker pre-apply cuts remain a separate exact obligation:
++- task preparation/ID/latest-task write/reservation/launch/proposal publication are currently separate;
++- the history must bind the actual task reservation BEFORE launch, with atomic or actual durable-owner-correlated transition;
++- a replacement process cannot mint the old live ExecutionAuthority or re-reserve an existing task;
++- existing worker root/ledger recovery must first settle/retire its actual execution and output-publication ownership.
++A cold published-but-unapplied proposal may be applied only through an expressly defined genuine cold apply admission, or retired without application followed by the existing lawful repair fallback under a NEW actual repair owner. Neither route is proved by current source. Do not choose rerun/re-reserve/DTO authority implicitly.
++
++This is an OPEN worker-owner contract, not a reason to add another history filename. Any fallback must preserve the same player action/turn, error/packet semantics and already committed effects; it cannot silently discard a lawful accepted repair or deliver duplicate work.
++
++## Version-first cold reader
++
++ReadRecoverableAdmissionRepairStateAsync(files, actual lease):
++1. Let genuine native/main/worker recovery owners settle known debt; do not run canonical/source validation while a pending decision is unresolved.
++2. Read actual existing G, original pair and current request/control bytes. Old unversioned request -> existing old route, no history authority. New discriminator -> strict closed parser; unknown/missing required fields -> retained conflict, no fallback upgrade.
++3. Verify actual new original-issued seed, tuple/G/original hashes, source label and exact control origin. No seed mint from absence/current Ready and no rewriting originals.
++4. Verify exact ordered transition grammar, current phase and source roles. Compare actual physical controls, Ready or worker task/proposal/outcome artifacts as applicable. Derive retries/merged canonical error applicability from actual rows and shared policy, never a serialized validated/no-previous-repair flag.
++5. Recompute all PURE classification/freshness/comparison consequences from independently bound sources and recorded actual owner observations. Historical clocks/read failures are trusted named-owner observations within the existing trusted-local model; they are not claimed current metadata and hashes do not replace semantic verification.
++6. Verify specialized restore/pending/worker/common owner relations. A parsed receipt with plausible fields is not a live reserve/take/release capability.
++7. If full verified M3 exists, select its retained P0 path; do not repeat pre-P0 work. If control is admission_frozen and no attempted common debt exists, issue a distinct cold source-history capability only after complete source proof and actual no-publication determination. It is not a deserialized C candidate.
++8. Recheck G/original/control/required cohort before returning the typed disposition. No new UTC, scheduler, source reduction or identity allocation in proof.
++
++Expected result variants are phase-specific: Legacy, OriginalReady, RepairDispatchReady, WaitingForGm, WorkerRecoveryRequired, SubmittedSourceReady, FrozenAdmissionReady, CommonP0Verified, TerminalSettlementRequired, NativeDebt, SourceConflict, MissingOwnerProof. These are proposed names, not proof that every resume path exists.
++
++## Which crash cuts are recoverable
++
++“After extension” below means only after the stated real owner protocol is implemented and qualified. Current source supplies no durable admission-history guarantee.
++
++| Cut | Sound action after extension | Remaining condition |
++|---|---|---|
++| Before original completion batch | Actual original owner resumes/rolls back preparation; no emitted turn authority | Three-member seed completion and browser adapter must exist |
++| Original completion committed, reply lost | Fresh original/control reader reconstructs issued origin without resampling request/seed IDs | Exact original/native settlement proof |
++| Repair start committed, before restore/dispatch | Reuse stored actual start and original issues; continue named stage | No earlier attempted restore/worker debt |
++| Restore attempted, ack missing | Recover actual restore decision and full pending/source cohort | Existing restore-history atomic/semantic adapter is OPEN |
++| gm_waiting committed | Resume waiting for same request/revision, no new action budget | Daemon/helper/all consumers honor non-dispatch states |
++| Ready exists, submission consume not committed | Validate actual Ready/source; exact atomic transition may run once | No inference from stale/foreign Ready |
++| submitted committed, reply lost | Resume subsequent pure admission stages using retained source/observations | Complete source relation and owner stage cursor |
++| Worker task reserved/launched | Enter genuine worker recovery, never re-reserve saved ID | Cold execution disposition is OPEN |
++| Worker proposal published, apply not begun | Preserve actual outputs; genuine cold admission or proven retirement/fallback | No current cold live-authority issuer; OPEN |
++| Worker B1 pending | Existing B1 recovery decides entire outputs+history companion together | Companion must be inside initial intended set |
++| Worker B1 committed, before audit/Ready | Verify durable worker_applied relation; do not reapply; revalidate submission | New apply outcome semantic verifier required |
++| Completed observation durably recorded | Reuse exact sample/metadata/volatile inputs and pure checker | Immutable source bindings and stage coverage |
++| Observation computed only in memory | No claim it was completed/accepted; phase still at prior durable cursor | See lost-work distinction below; no invented sample |
++| admission_frozen committed, before C | Reconstruct verified admission source, then follow actual new owned calculation admission | Actual no-common-publication/debt proof |
++| C completed hot, before durable whole result | History alone cannot reconstruct C or allocated IDs | Separate candidate/result recovery contract OPEN |
++| Common native attempt/commit | Existing common/native owner decides full cohort+M3; cold verifies actual complete P0 | No blanket retry/empty-marker inference |
++| Cleanup/terminal attempt | Actual terminal/native outcome decides retirement | All required original/worker/source proof retained until closure |
++
++## Irreducible lost-work distinction
++
++Do not claim “all instructions before P0 execute exactly once across crashes”. A value sampled or identity allocated in memory can be lost before any durable write. Adding a pathname cannot close that interval.
++
++The protocol can guarantee:
++- no external dependent mutation/dispatch/consumption happens before its prerequisite observation/state is durably committed;
++- completed durable observations and owner effects are reused without replay;
++- incomplete observational work grants no admission success.
++
++To resume an unfinished pure validation pass, the design must explicitly distinguish uncommitted observation work from completed owner work. Repeating an unfinished read-only validation pass may be a legitimate new validation attempt ONLY if its sources, policy and no-publication status are genuinely established and no frozen sample or source mechanic is overwritten. It must not be called replay of the original historical observation. This choice is NOT silently accepted here: retaining the exact sample without reexecution requires persisting it before any dependent stage, or a deterministic owner reservation of that sample.
++
++The same limitation is stronger for C: hot C can contain genuine allocated identities and completed mechanics. A durable admission-history file is not a serialized privately owned candidate or a cold result verifier. To recover without rerunning reduction/allocations, the actual C owner must durably preserve its prepared result/identity commitments under an accepted owner protocol and cold semantic checker, or the contract must expressly allow abandoning an uncommitted attempt with no effects while keeping correct identity/source semantics. Neither is solved here, and neither may be assumed from the existing request pathname.
++
++Likewise an absent M is not proof that publication was never attempted. Actual native debt/result/owner phase must be inspected. Do not let a new history revision rearm a foreign or uncertain reservation/take.
++
++## Alternatives and acceptance boundaries
++
++A. Recommended candidate: versioned existing request-control lifecycle + genuine new original seed + actual worker companion; final evidence in existing M3. No extra pathname, but all listed schema/publisher/dispatch/recovery changes require exact acceptance. This is the smallest coherent HISTORICAL observation route found.
++
++B. Preserve old request emission semantics, seed only in new original, final history only in M3: maintains current dispatch surfaces but cannot recover lost later repair observations before P0. Sound bounded internal HOLD only, not full lawful recovery.
++
++C. Store evolving history inside already-issued original: rejected. It destroys immutable original/source meaning. A NEW original version can contain the initial seed but cannot become a mutable historical ledger.
++
++D. Earlier staging state in existing M: avoids repurposing request transport but changes M's before-common lifecycle and requires a new explicit phase owner, cold dispatch and grant. No side-M write or use of completed v3 as a staging marker. Not necessary unless existing-control extension is concretely rejected.
++
++E. Existing worker task/audit files alone: insufficient across no-worker/GM routes and audit-after-commit gap; live execution authority cannot be recreated from them.
++
++F. Additional history pathname: offers no stronger semantic proof and does not solve worker/result/clock cuts. It would need a separate membership/retirement/dispatch design and explicit grant. No necessity is proved, so do not select it by default.
++
++The critical proposed changes are NOT authorized merely because D11 is broadly staged or a pathname already exists. The coordinator must review the concrete original seed/control lifecycle, worker companion and cold phase semantics as one proposal. No new permission question is posed by this consultation; it supplies the reviewable design and exact open decisions.
++
++## Consumer and documentation impact
++
++All uses of validation_repair_request must be assigned one explicit purpose: GM dispatch, actual current repair correlation, original retention, cleanup, archive exclusion, or frozen source. Update those consumers to version-first parsing; a history-only record is never an ordinary repair request.
++
++Source families found:
++- daemon Read-CorrelatedValidationRepairRequest/Process-RepairRequestCore/watch correlation/stall watchers;
++- Launcher/GM_Turn_Helper.ps1 Get/Complete repair paths and client-owned-write guards; generated launch instructions;
++- engine Wait/Write/Delete/Ready rejection/cancellation/terminal and original preparation/browser/late recovery;
++- PendingTurnSnapshotReader, ValidationService WorldReadPhase/BootstrapAndProtocol/accepted output and spiritual capture/continuation, GuardianPowerEventState, ProgressionScheduleService and MortalJoint input/basis readers;
++- CanonicalStateNormalizer soul/meta and afterlife entity current-context readers;
++- BrowserAfterlifeTurnRequestQueue, InactiveSnapshotEvidence, MortalJointTerminalCleanup and SaveLoadService.
++
++Do not make a history-only record metadataDiagnosticOnly=true to hide it: that flag has an existing sentinel/diagnostic meaning. Use the explicit new discriminator and delivery phase. Old unversioned behavior remains exact.
++
++Archive note: current SaveLoadService excludes both original and request evidence. This proposal concerns same-root process-crash recovery. It does NOT qualify in-flight distinct-root export/import; that remains its own open owner contract. Do not quietly add history to ordinary saves without its complete original/G/worker cohort.
++
++Same-change GM/documentation/example/source-guard updates required if emitted:
++TaskGuides/CLI_Step_Main.txt repair/full-resubmission rules;
++generated game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md and OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md, whose tracked producer is BookOfEternityClient/game_master_daemon.ps1:1629 and :1487;
++Examples/E_CLI_Step_Main.txt current request/Ready examples;
++OtherGuides/GM_Worker_Bridges.md worker Applied/Ready-failure behavior;
++Examples/example_validation_manifest.json;
++launcher/daemon prompt sources and helper API docs/source guards;
++OtherGuides/Afterlife_Contract_Matrix.md, Afterlife_Pending_Control_Surface_Inventory.json, Examples/E_CLI_Afterlife_Turns.txt and owning afterlife documentation/example tests for shared repair changes.
++Worked examples must show history-only idle state causing NO GM dispatch, ordinary GM repair, rejected Ready retaining owner history, worker apply committed with Ready failure, and final M3 handoff. GM cannot author the history/observation fields.
++Internal proposal/reader extraction alone has no emitted contract change; that limited no-update rationale does not cover this future durable protocol.
++
++## Finite future verification matrix — ALL UNRUN
++
++1. Actual console and browser new-original producer: seed/control completion cuts, unchanged old originals and six DTO round trips.
++2. No canonical repair history versus real severity-only correction, mixed raw and generic canonical histories; exact applicability/merge/error order.
++3. Different repairStarted/Detected/Ready timestamps; missing target, metadata error, too-old target, boundary equality, real fallback and output/source rewrites.
++4. Multiple attempts and same-attempt rejected Ready transport revisions retain exact original owner issues/packets.
++5. Same-source repair resubmission, foreign/stale Ready, diagnostic-only original loss and source/G replacement.
++6. Restore/pending-checkpoint atomic cuts; no repeated destructive restore on lost ack.
++7. Worker disabled/skipped/failure/timeout/rejected paths preserve actual fallback and no simultaneous GM/worker writer.
++8. Worker reservation/launch/proposal publication cold cuts; no live authority import or duplicate task reservation.
++9. Worker apply zero/nonzero changes, validation failure rollback, commit before audit/Ready, failed/uncertain Ready and same exact control companion.
++10. Daemon/helper request-only dispatch; no loop on history writes, no forged request/Ready or client-history mutation.
++11. Freeze/reentry without new clocks/IDs; source changed after observation/freeze; semantic tamper with recomputed hashes still rejected.
++12. Same genuine C/candidate/owner fences; separately prove lost-C strategy before full pre-P0 recovery claim.
++13. Common+M3 native cuts with unchanged frozen control guard and full cold source/cohort verification; no side-M/control ack.
++14. Success/cancel/terminal/cleanup cuts retain evidence until actual owner closure; inactive-retirement behavior.
++15. Actual platform storage admission, browser/worker fences, bounded selection/evidence review. No aggregate runs or Windows/visual claims from source/component checks.
++
++## Open prerequisites: do not call this complete recovery
++
++R01 Exact new original seed plus ordinary/browser preparation completion owner.
++R02 Exact closed control schema/phase transition codecs and version-first dispatch in ALL consumers.
++R03 Actual restore/pending checkpoint settlement relation.
++R04 Actual worker task/cold execution disposition and same-B1 fixed client companion, including zero changes.
++R05 Complete pure output/freshness/comparison/source and worker outcome relation checkers.
++R06 Exact uncommitted-observation and lost-C/result/identity retry-or-preservation policy, with no accepted work replay.
++R07 Actual no-publication/attempt/debt classification and common transfer/cleanup evidence.
++R08 Same-change GM/Mortal/afterlife docs/examples/guards and independent whole-proposal acceptance.
++
++Existing storage names make this proposal possible in principle, not implemented or already granted. No additional pathname or F2 is selected. No legal-outcome narrowing, T197 implementation or new QTE/player activation. Full F1/T179/T192, cold P0 and D4/guided/visual/Windows/D8 gates remain open.
++
++FINALSTOP.
+diff --git a/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.json b/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.json
+new file mode 100644
+index 000000000..94440d20b
+--- /dev/null
++++ b/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.json
+@@ -0,0 +1,1290 @@
++{
++  "report": "T197 original parent seal independent DESIGN review",
++  "created_utc": "2026-10-16T14:11:09.595194+00:00",
++  "candidate": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++  "direct_parent": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
++  "source_commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++  "prior_source_comparison_commit": "85464398184f388860921da873bb01440cca777c",
++  "observed_head_metadata_only": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
++  "publication": "coordinator reported pushed/readback; no reviewer fetch",
++  "reviewer_configuration": {
++    "model": "gpt-6-astra",
++    "reasoning_effort": "xhigh",
++    "fork_turns": "none at original separate spawn",
++    "configuration_evidence": "coordinator confirmed actual retained invocation",
++    "backend_telemetry": "UNKNOWN",
++    "authored_proposal": false
++  },
++  "author_configuration": {
++    "delegated": "Astra/High",
++    "backend_telemetry": "UNKNOWN"
++  },
++  "verdict": {
++    "conditional_discussion": "ACCEPTED_BOUNDED_CONDITIONAL_PARENT_SEAL_PROPOSAL",
++    "complete_engineering_contract": "NOT_ACCEPTED_BLOCKED",
++    "implementation_release": false,
++    "mode_selection": false,
++    "whole_parent_H_B02_closed": false,
++    "whole_GC_closed": false,
++    "transition_qualified": false,
++    "confirmed_material_defects": []
++  },
++  "semantic_scope": {
++    "paths": [
++      "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
++      "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
++      "specs/1536-complete-wound-materialization/plan.md",
++      "specs/1536-complete-wound-materialization/tasks.md"
++    ],
++    "shared_status_hunks": "T197 only",
++    "full_carrier_paths_identity_only": [
++      "specs/1536-complete-wound-materialization/plan.md",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-artifact-index.json",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-dotnet-test.log.gz",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-native-exit.json",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-plan.json",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-runner-stdout.log.gz",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-20261016-summary.json",
++      "specs/1536-complete-wound-materialization/recovery/t179pd-observed-barrier-initial-late-root-inspection-20261016.json",
++      "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
++      "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
++      "specs/1536-complete-wound-materialization/tasks.md"
++    ],
++    "excluded": "eight F1 barrier Late2 raw/index/inspection files and adjacent F1 status claims"
++  },
++  "diffs": [
++    {
++      "scope": "selected_four_path_carrier",
++      "argv": [
++        "git",
++        "diff",
++        "--binary",
++        "--full-index",
++        "--no-ext-diff",
++        "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
++        "76d545066137375fcfba38b026b4195e6bfe1ba2",
++        "--",
++        "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
++        "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
++        "specs/1536-complete-wound-materialization/plan.md",
++        "specs/1536-complete-wound-materialization/tasks.md"
++      ],
++      "sha256": "b594cd6f9622d576891e412b641fa4ded024783ab478a4864ca726d1fa09f721",
++      "bytes": 177440,
++      "diff_check_argv": [
++        "git",
++        "diff",
++        "--check",
++        "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
++        "76d545066137375fcfba38b026b4195e6bfe1ba2",
++        "--",
++        "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
++        "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
++        "specs/1536-complete-wound-materialization/plan.md",
++        "specs/1536-complete-wound-materialization/tasks.md"
++      ],
++      "diff_check_exit": 0
++    },
++    {
++      "scope": "full_twelve_path_identity_only",
++      "argv": [
++        "git",
++        "diff",
++        "--binary",
++        "--full-index",
++        "--no-ext-diff",
++        "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
++        "76d545066137375fcfba38b026b4195e6bfe1ba2",
++        "--"
++      ],
++      "sha256": "043d4107dbee66691dafa3ddf431bfd41ff94e9ff48dc3e1583fd03659b9122f",
++      "bytes": 6640813,
++      "diff_check_argv": [
++        "git",
++        "diff",
++        "--check",
++        "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
++        "76d545066137375fcfba38b026b4195e6bfe1ba2",
++        "--"
++      ],
++      "diff_check_exit": 0
++    }
++  ],
++  "document_pins": [
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "7689081abec0dc52792c42a22654ea418ab1d562",
++      "sha256": "97c214837dd06c88920ea164a81761c08e5dc790297b966e96f38d7d16624478",
++      "bytes": 60328,
++      "lines": 237
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "b30b4cc433b1050d974af984c0a419d22457d07d",
++      "sha256": "fec344f49475f1aead3ea4ea63adea009866646f99e7e9a077ef64b8e20b8547",
++      "bytes": 110780,
++      "lines": 882
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/plan.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "cb75ad8cb366000c48c4d61fc3a59495c36c3e81",
++      "sha256": "399ae3b92a3ad881b048d1408fbfe87295e78848f35ce4055d2611d82fc5b754",
++      "bytes": 2033013,
++      "lines": 22782
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/tasks.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "333149e5d4147e4f976c35b6121a80d2eb04847f",
++      "sha256": "0c200bfbfda5a7f932fa73beb12d705e8eab040bd403aa1a232005907961a42c",
++      "bytes": 1415909,
++      "lines": 14766
++    }
++  ],
++  "source_pins": [
++    {
++      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "e4f778864060557b6a9c783238c271fa88b63645",
++      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
++      "bytes": 5795,
++      "lines": 95,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "d4594f6b45086b9b40a805cf7a7a718c3658be41",
++      "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
++      "bytes": 470,
++      "lines": 16,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Program.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "4e10660f99b759b9454c4f59c5e643cbef7b0319",
++      "sha256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3",
++      "bytes": 16911,
++      "lines": 378,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
++      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
++      "bytes": 10951,
++      "lines": 244,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
++      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
++      "bytes": 294934,
++      "lines": 5166,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
++      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
++      "bytes": 10353,
++      "lines": 132,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
++      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
++      "bytes": 28648,
++      "lines": 442,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/StateManager.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "e61846fee2b796d41dd70048cd5de295bfc88acc",
++      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
++      "bytes": 28110,
++      "lines": 714,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
++      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
++      "bytes": 20796,
++      "lines": 316,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
++      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
++      "bytes": 23072,
++      "lines": 524,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
++      "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969",
++      "bytes": 782,
++      "lines": 32,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
++      "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
++      "bytes": 22909,
++      "lines": 319,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
++      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
++      "bytes": 24413,
++      "lines": 360,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
++      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
++      "bytes": 5388,
++      "lines": 97,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "65b0a9d5fda59a86213a7805968eea1b53db7445",
++      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df",
++      "bytes": 4982,
++      "lines": 75,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "26097c4405f6a171582deb579e19de8746a5fe45",
++      "sha256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b",
++      "bytes": 3009,
++      "lines": 47,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
++      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
++      "bytes": 4102,
++      "lines": 75,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
++      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
++      "bytes": 23738,
++      "lines": 410,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
++      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
++      "bytes": 10947,
++      "lines": 334,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "4e0a4ed2348738b309be07482038fb923bf9ee64",
++      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
++      "bytes": 901,
++      "lines": 20,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "54c3f6e35de12b70ff2eec31911e294aba63e354",
++      "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1",
++      "bytes": 8338,
++      "lines": 174,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservation.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "0af9a77bc6ec06c5dc024a86b5e7cf4b0294f377",
++      "sha256": "f06d6f533b1e237f905e76ac21e3dec01803ff154e669f7250a7b24b5a5cff6a",
++      "bytes": 1214,
++      "lines": 25,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "3f6d32096396ef7841074660f5774cabfb45ad59",
++      "sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
++      "bytes": 6978,
++      "lines": 90,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
++      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
++      "bytes": 10981,
++      "lines": 186,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "cf1161032cd7b8973f778a9e21bc64362496e3c4",
++      "sha256": "3d831a22f3fc3bacfbf51f6bc4126d2ff35e8b7a05f24abfe9b9e2e8a07fe884",
++      "bytes": 8520,
++      "lines": 127,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "cf04a81c0de629cd345ae0a5956076f12c3db648",
++      "sha256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4",
++      "bytes": 42854,
++      "lines": 1013,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "a175c87e3d3fd71144c100c7afcb6c9a473c0653",
++      "sha256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d",
++      "bytes": 25591,
++      "lines": 409,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "d53830e80bd6352ec43c06e23c06d8509cc5f560",
++      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
++      "bytes": 17677,
++      "lines": 309,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "6b8f39d13803a78343efb0d58a8f1b481ee333d7",
++      "sha256": "468216f874f91d79004d822ad772dfc3b3c9daaf13d3d6d1178e66e9a42a5783",
++      "bytes": 4980,
++      "lines": 127,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
++      "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
++      "bytes": 30336,
++      "lines": 651,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "e877134aabf7ad99e25ef079e121f4d82316e0ca",
++      "sha256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7",
++      "bytes": 941,
++      "lines": 25,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/AgentConsole/AgentConsoleApiHost.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "d00eaf3bad6bc8b9f1213dd2dcd11ff516a7f466",
++      "sha256": "c279232b0e136c140a5a562e321c8abc965627ea7dcb1e1635d885de9354dde9",
++      "bytes": 12309,
++      "lines": 317,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "be1c372f3407aa3f0737aae3fb23e0ace323440c",
++      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f",
++      "bytes": 42395,
++      "lines": 1096,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/Program.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
++      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
++      "bytes": 91410,
++      "lines": 2042,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/ConPtySession.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
++      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
++      "bytes": 16505,
++      "lines": 261,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "6371e66ac4cf20b1d8d46aa1826d7f53b7ab80c0",
++      "sha256": "388b54b4714db8f8a7ef5e73a96b73adb52970d05e12be21403060b8e0cfa942",
++      "bytes": 4945,
++      "lines": 90,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "34350bd4e07c6a8f69cddcad1730458964009415",
++      "sha256": "5092cd0dd68436d7f5338ffdd15cf54bba223696aa94625f519e8dc8e033949c",
++      "bytes": 2263,
++      "lines": 30,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "0e7a7d002419e59c87f2797feb8aeb63a443899c",
++      "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43",
++      "bytes": 9114,
++      "lines": 128,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "863a9a85f1831395bd8499bd05d66ce15e5d6732",
++      "sha256": "2e6318b45aae98237326879f4d5a29c63714684ebbcff3a4075d5433c86f694c",
++      "bytes": 4962,
++      "lines": 116,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "a42082ae86d2f1773d157d734471ba1cec7209c7",
++      "sha256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e",
++      "bytes": 20668,
++      "lines": 337,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "5f353743b0bf5a9937654fa961a64dd616b24bcc",
++      "sha256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1",
++      "bytes": 8337,
++      "lines": 119,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "664795caf6a400235a65fb62636f9664e7310605",
++      "sha256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c",
++      "bytes": 4389,
++      "lines": 78,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "2e733e167b0a979c3548e3e6cb8907e9881f6125",
++      "sha256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00",
++      "bytes": 10650,
++      "lines": 199,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
++      "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
++      "bytes": 167823,
++      "lines": 3455,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
++      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
++      "bytes": 112701,
++      "lines": 2456,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
++      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
++      "bytes": 503876,
++      "lines": 9016,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "2548c6fb821a60a0230cc035a48f6c0307a31e20",
++      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70",
++      "bytes": 22014,
++      "lines": 557,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
++      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
++      "bytes": 19220,
++      "lines": 350,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
++      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
++      "bytes": 33582,
++      "lines": 642,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
++      "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
++      "bytes": 7553,
++      "lines": 166,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
++      "sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
++      "bytes": 36016,
++      "lines": 670,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "f8a990edc821b0758b03145a4cacbf27710d1b93",
++      "sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
++      "bytes": 25187,
++      "lines": 557,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "4c48476debc4415525e62449f66e9bdacd48c16b",
++      "sha256": "f8c6db40f934bdafd08ff781b0aa657753c538b119dd6703a197bdff1f30141b",
++      "bytes": 8263,
++      "lines": 149,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d",
++      "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739",
++      "bytes": 27899,
++      "lines": 667,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
++      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
++      "bytes": 14216,
++      "lines": 400,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
++      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
++      "bytes": 6769,
++      "lines": 214,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
++      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
++      "bytes": 41585,
++      "lines": 1054,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "823f67f04f21021f9a08ee294585cb73169e80f2",
++      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1",
++      "bytes": 9227,
++      "lines": 214,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
++      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
++      "bytes": 61576,
++      "lines": 1448,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
++      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
++      "bytes": 93122,
++      "lines": 1906,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Services/QteSceneService.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
++      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
++      "bytes": 264036,
++      "lines": 6822,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "04aacf85244601da516466216ff565dfefb868ae",
++      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
++      "bytes": 17372,
++      "lines": 266,
++      "independently_verified": true,
++      "same_at_prior_source": true,
++      "same_at_candidate": true
++    }
++  ],
++  "source_projections": [
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "start_line": 1832,
++      "end_line": 1848,
++      "role": "seven transient deletion leaves with FileExists guard",
++      "projection_sha256": "c9b0a39b974180ccbb66415ac6c50737aa3f2b41c7c4ce9609cee26b1c9b810c",
++      "independently_verified": true,
++      "bytes": 539
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "start_line": 1900,
++      "end_line": 1954,
++      "role": "rollback physical-inventory selection and exclusions; not general target authority",
++      "projection_sha256": "d6b2bec0cd982568ac18c56ac0d18001c9bbd191a1a039731559e077398dbe05",
++      "independently_verified": true,
++      "bytes": 3752
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "start_line": 1018,
++      "end_line": 1087,
++      "role": "snapshot source precedence and pending cleanup",
++      "projection_sha256": "9476602d3e4a35fe9f7bca1c47c3126f609f4d13726f49127501c35afa8029f3",
++      "independently_verified": true,
++      "bytes": 3147
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
++      "start_line": 1526,
++      "end_line": 1564,
++      "role": "terminal cleanup and exact composite owner frontier",
++      "projection_sha256": "4b10722c4140cb3fffdabc0da0b126890456a8f289560ca1a80b369458aa17b7",
++      "independently_verified": true,
++      "bytes": 2424
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
++      "start_line": 1484,
++      "end_line": 1505,
++      "role": "ordinary root integration location",
++      "projection_sha256": "8f9aa5066b87e24f5ab08df514e1ef9434e4b1b304e3d6741ecaaf5991ebba5f",
++      "independently_verified": true,
++      "bytes": 1030
++    },
++    {
++      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
++      "start_line": 1745,
++      "end_line": 1971,
++      "role": "complete direct finalization branch frontier",
++      "projection_sha256": "17bc2603cf217a7ec47480ac3187fe26ad37c63d935f01c1e1f15370d420ccf6",
++      "independently_verified": true,
++      "bytes": 11139
++    },
++    {
++      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
++      "start_line": 292,
++      "end_line": 358,
++      "role": "actual stop and retirement conjunction",
++      "projection_sha256": "f5ccef012f04186346866a6aa226174405b8bd8f3e7bd7a54340ab1a51af2c52",
++      "independently_verified": true,
++      "bytes": 5033
++    }
++  ],
++  "context_pins": [
++    {
++      "path": "AGENTS.md",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
++      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
++      "bytes": 11662,
++      "lines": 199
++    },
++    {
++      "path": "docs/development-workflow.md",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
++      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
++      "bytes": 66432,
++      "lines": 493
++    },
++    {
++      "path": ".specify/memory/constitution.md",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
++      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
++      "bytes": 14081,
++      "lines": 264
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
++      "commit": "61e10b09122cdd0d3af4478214fdb3cef11864f4",
++      "blob": "0d58236f7c1ea6ca8149dd1ae6fe26fa6928f99b",
++      "sha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
++      "bytes": 72329,
++      "lines": 275
++    }
++  ],
++  "prior_immutable_artifact_pins": [
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "183c079de96d8939758371b900efaadd76470b04",
++      "sha256": "ec43864fec0f3800980989366744e4ca5a275d4c10374c9644d1f85c6a97cdcd",
++      "bytes": 69264,
++      "lines": 271,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "e077ba66e9332e70fa29ac351d33357d468de3aa",
++      "sha256": "25cef182df647d50e403714562b5c159018ac9a352598213cacd4ce3e7f5bfad",
++      "bytes": 84819,
++      "lines": 653,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "f644739f1b52263b542868f988f1189f46681752",
++      "sha256": "79a4573c629addccd7ca989b4387e2c5168405b222db475d459914f4a8f6fa64",
++      "bytes": 62771,
++      "lines": 423,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "2b243026bc850fb7d986623522cbe33e7183ed62",
++      "sha256": "80d578549d7bb1d9f175244769d7475afce4ddc9ae38d1f06cb2d39ec540fcef",
++      "bytes": 92481,
++      "lines": 1373,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-custodian-hosting-design-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "f2de8060638573d9a396189ac377135cbf058c88",
++      "sha256": "a575a601b6a4c7c69229920d96c242a128501703527e5301c7a908f718a36243",
++      "bytes": 64417,
++      "lines": 365,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-original-custodian-hosting-design-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "ecb0e6980bd926d6bea681fa619d143ba325e3df",
++      "sha256": "16dbfaaa9289ef8a6fce29c207af96fb820b30245553dae49bacbdf2e1de490f",
++      "bytes": 87870,
++      "lines": 1135,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-custodian-host-location-alternatives-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "e7a4a1ad59a8f8115598db70036ad5313e068dd0",
++      "sha256": "c9fb91fe1079557de0e05a4ffa75d5e51533bfc444d7e667f0ddb19fa7a4e0a1",
++      "bytes": 29616,
++      "lines": 138,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-custodian-host-location-alternatives-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "a1b7e627dbcc7a6df3f3d4b441df8b28390cff62",
++      "sha256": "f60866e399305106b764924bf60830d78a4cf0427a758a2d5492b149acb733e3",
++      "bytes": 42973,
++      "lines": 549,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-custodian-host-location-alternatives-independent-review-20261016.md",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "6f0dd5750e9f87ffe8c4e91c561c4d710b3666c1",
++      "sha256": "2a4d0894b844c7b0542ab18a0ac828e13d29143acb9277b6ef5f0f9c6bfc9c49",
++      "bytes": 15152,
++      "lines": 79,
++      "expected_digest_verified": true
++    },
++    {
++      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-custodian-host-location-alternatives-independent-review-20261016.json",
++      "commit": "76d545066137375fcfba38b026b4195e6bfe1ba2",
++      "blob": "3fca11623fd1936d466d615a7f63035d0215b632",
++      "sha256": "608aa50cb44fdd6fce876f62fc9a168c2dc9c9fb7cf175dfd1713f65faa1251f",
++      "bytes": 38050,
++      "lines": 909,
++      "expected_digest_verified": true
++    }
++  ],
++  "verification": {
++    "source_count": 62,
++    "mismatches": [],
++    "same_at_prior_source": 62,
++    "same_at_candidate": 62,
++    "projection_count": 7,
++    "section_body_matches": 11,
++    "direct_frontier_rows": 16,
++    "future_checks": 20,
++    "all_future_checks_UNRUN": true
++  },
++  "affected_semantic_reads": {
++    "BookOfEternityClient/Core/SessionOperationContext.cs": [
++      "1-310"
++    ],
++    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs": [
++      "1-180",
++      "225-255",
++      "286-316"
++    ],
++    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": [
++      "470-652",
++      "787-831",
++      "1360-1460",
++      "1484-1545",
++      "1560-1740",
++      "1744-1794",
++      "1960-2025",
++      "2325-2370"
++    ],
++    "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs": [
++      "1470-1503",
++      "2243-2275"
++    ],
++    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": [
++      "179-269"
++    ],
++    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": [
++      "216-340"
++    ],
++    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": [
++      "410-470",
++      "560-588",
++      "1520-1570",
++      "1832-1849",
++      "1900-2050",
++      "2435-2453"
++    ],
++    "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs": [
++      "1-55"
++    ]
++  },
++  "reuse_limit": "Source-identical earlier hosting/native/parent analyses reused within prior limits; hash verification is not exhaustive transitive semantic audit or runtime qualification.",
++  "confirmed_material_findings": [],
++  "precision_notes_and_open_dependencies": [
++    {
++      "id": "PS-O1",
++      "classification": "NONBLOCKING_SOURCE_SUMMARY_CORRECTION",
++      "location": "proposal MD line55 and matching JSON section",
++      "source": "GameEngine.TurnLifecycle.cs:616-639",
++      "fact": "Ordinary presentation/wait failures without Completed are rethrown; storage uncertainty preserved; remaining cancellation cases are distinct.",
++      "action": "Correct summary in new explanatory/correction carrier, preserving immutable pair.",
++      "blocks_conditional_discussion": false
++    },
++    {
++      "id": "PS-O2",
++      "classification": "REQUIRED_PRECODE_CONTRACT_PRECISION",
++      "location": "proposal MD lines32 and35",
++      "source": "SessionOperationContext.cs:97,124,248-270; MainRunFence.cs:70-75",
++      "fact": "Both owned outer and inner main admission frames are live at the pre-close barrier.",
++      "action": "Name exact retained owning frame set by reference and await descendant borrowers outside it; no magic one-reference predicate.",
++      "confirmed_material_defect": false,
++      "engineering_gate": true
++    },
++    {
++      "id": "PS-D1",
++      "classification": "OPEN_DEPENDENCY_SCHEDULE_NOT_OBSERVED_FAILURE",
++      "location": "proposal MD lines79,85-87,143",
++      "source": "FileSystemManager.MainRunFence.cs:298-299; GmSessionRunCoordinator.cs:292-312",
++      "fact": "Stopping metadata publication needs a canonical lease; retained attempt ownership may need an explicit noncircular stop/settlement schedule.",
++      "action": "Prove retained-lease/native-stop cut excluded or close safe original-owner ordering without guard weakening or inferred ACK.",
++      "confirmed_material_defect": false,
++      "engineering_gate": true
++    }
++  ],
++  "open_engineering_contracts": [
++    "Client-owned original host construction and all outer-root entry coverage",
++    "Complete transitive leaf/catch/input/cleanup adapters and original no-change/outcome witnesses",
++    "Exact native/preparation/recovery/callback enrollment and private settlement permission",
++    "External native/worker/helper writer exclusion and joins",
++    "Reference-exact owning/borrowed frame barrier and noncircular canonical-lease/native-stop/metadata schedule",
++    "Full finalization/retirement/normal shutdown integration",
++    "B03 strict codec/CAS/bounds/retention and B04 caller/data-retirement",
++    "Lawful continuation, FD/FT actual remaining-work owners, DEP-I/L/full target",
++    "Browser staged/idle/expected-G consumer and keeper-loss/cold/reboot/migration/platform qualification"
++  ],
++  "future_checks": [
++    {
++      "id": "PS01",
++      "title": "Root pre-invoke and synchronous throw",
++      "description": "Seal at lane wait, promise installation, synchronous prefix and Task binding; all real effects registered and no phantom no-change.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS02",
++      "title": "Nested actual caller",
++      "description": "MainMenu enclosing scope/in-place and recursive source entry borrow actual parent and pin; no lane reacquire/root pin minting; decline behavior is not recovery replay.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS03",
++      "title": "Actual pin/body retention",
++      "description": "Block actual child and native cleanup; RunOperation await and counted pin remain live; retaining only Access must fail the check.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS04",
++      "title": "Binding before-close order",
++      "description": "Join while original binding/lease exists; close only afterward; nested/caller-owned lease cases cannot bypass join.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS05",
++      "title": "Child registration race",
++      "description": "Task.Run/callback synchronous prefix cannot execute before registered promise; seal vs invocation outcome linearizable.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS06",
++      "title": "Native arm/release race",
++      "description": "Before process effects/held release registrations exist; seal-winning arm stops held scope without release; exec_pending remains counted.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS07",
++      "title": "Borrow race",
++      "description": "Retain vs seal and finalizer sees pending borrows; exact one-release; no reuse of exhausted Access.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS08",
++      "title": "Wait typed outcomes",
++      "description": "Seal vs ready, timeout, health failure and genuine Escape; no Cancelled/Completed substitution, harness write or later finalization.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS09",
++      "title": "Input and presentation join",
++      "description": "Blocked key input/render fault/callback/agent queue return exact joined outcomes; no prompt replay or cancellation-as-proof.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS10",
++      "title": "Catch and finally propagation",
++      "description": "Stage/backup/manifest/harness/cleanup/game-loop/menu paths exclude held signal; no rollback, deletion, error_log or next loop because of seal.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS11",
++      "title": "Before-intent side effects",
++      "description": "Directory preparation and pre-existing recovery are registered before effects; no active journal is not no debt.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS12",
++      "title": "Publication cuts",
++      "description": "Intent/member/commit/cleanup failures retain original attempt; committed after-images preserved, native uncommitted rollback exact; no fresh retry.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS13",
++      "title": "Private permission limits",
++      "description": "Closed ordinary write guard unchanged; exact debt permit rejects wrong parent/root/G/txn/member, recomputation, source replay and SessionFinalization write.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS14",
++      "title": "No double settlement",
++      "description": "Same journal referenced by story/rollback/cleanup counted once; leaf success with pending cleanup cannot retire parent.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS15",
++      "title": "Parent inventory guards",
++      "description": "Finite original backup/snapshot/transient/request paths and absence/valid-dice guards; composite OPEN adapters prevent release.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS16",
++      "title": "Split stop order",
++      "description": "No filesystem lock over unrelated joins; native stop and exact debt settlement precede actual parent drain; old five-second timeout not a receipt.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS17",
++      "title": "Actual retirement conjunction",
++      "description": "Real original proof/loops/input drain/metadata ACK/zero pins/late uncertainty and G checks; Lost external pin never cleared.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS18",
++      "title": "Custodian/failure domain",
++      "description": "Only viewer death with surviving original Client qualifies candidate; keeper loss/EOF/reboot/migration/distinct root remains unresolved.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS19",
++      "title": "Semantic preservation",
++      "description": "Already accepted n/action retained; genuine evaluation n+1 only through its existing owner; no redraw/reward/extra Mortal tick/child receipt as HC.",
++      "status": "UNRUN"
++    },
++    {
++      "id": "PS20",
++      "title": "Caller continuation and shutdown",
++      "description": "SealedSettled reaches every actual caller; no explorer refresh/new prompt/unowned app disposal; lawful continuation remains separately gated.",
++      "status": "UNRUN"
++    }
++  ],
++  "gates": {
++    "B01/A1": "OPEN/BLOCKED",
++    "B03": "OPEN/BLOCKED",
++    "B04": "OPEN/BLOCKED",
++    "G-C": "OPEN/BLOCKED",
++    "DEP-C": "OPEN/BLOCKED",
++    "DEP-I": "OPEN/BLOCKED",
++    "DEP-L": "OPEN/BLOCKED",
++    "full_target": "OPEN/BLOCKED",
++    "H2": "OPEN/BLOCKED",
++    "H3": "OPEN/BLOCKED",
++    "HQ": "OPEN/BLOCKED",
++    "new_QTE": "OPEN/BLOCKED"
++  },
++  "preserved_limits": [
++    "D4",
++    "guided",
++    "visual",
++    "Windows/Linux platform qualification",
++    "D8"
++  ],
++  "all_new_contracts": "PROPOSED_UNACCEPTED",
++  "constraints": {
++    "repo_writes": false,
++    "builds": false,
++    "tests": false,
++    "discovery": false,
++    "runtime_execution": false,
++    "application_native_OS_execution": false,
++    "network_access": false,
++    "fetch": false,
++    "push": false,
++    "delegation": false,
++    "prior_artifacts_modified": false,
++    "F2": false,
++    "life_evaluation_turn_suppression": false,
++    "source_replay_grant": false
++  },
++  "permitted_artifact_writes": [
++    "/tmp/t197-depc-original-parent-seal-independent-review-20261016.md",
++    "/tmp/t197-depc-original-parent-seal-independent-review-20261016.json"
++  ],
++  "final_stop": true,
++  "pending_writes_after_delivery": false,
++  "markdown_artifact": {
++    "path": "/tmp/t197-depc-original-parent-seal-independent-review-20261016.md",
++    "sha256": "a439b33960bdbc375eab2ed32ba0988f9ac2306a3b6519b1cc62063cd3557605",
++    "bytes": 17801
++  }
++}
+diff --git a/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.md b/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.md
+new file mode 100644
+index 000000000..85cc1c7bb
+--- /dev/null
++++ b/specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-independent-review-20261016.md
+@@ -0,0 +1,80 @@
++# T197 original parent/seal — independent DESIGN review
++
++**Accepted for conditional design discussion; NOT accepted as a complete engineering contract or implementation release.** No confirmed material defect blocks this bounded discussion. The source supports the original local parent, join-before-binding-close and split-stop direction. Two precision notes below must not be converted into undocumented implementation assumptions; all named transitive/ownership/permission/lifecycle gates remain open. All 20 future checks are **UNRUN**.
++
++Independent reviewer configuration actually retained from the coordinator-confirmed original separate spawn: `gpt-6-astra`, `xhigh`, `fork_turns:none`. Backend telemetry is **UNKNOWN**. The separate author is Astra/High. This reviewer did not author the proposal. AGENTS, workflow and constitution are pinned context; persistent user authorization is coordinator-provided context, not inferred from repository prose. This partial discussion acceptance does not satisfy the complete independently accepted engineering prerequisite for implementation.
++
++## Exact scope and identities
++
++Candidate `76d545066137375fcfba38b026b4195e6bfe1ba2`; direct parent `8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e`; historical source `61e10b09122cdd0d3af4478214fdb3cef11864f4`; prior source comparison `85464398184f388860921da873bb01440cca777c`. Published/pushed/readback is reported by the coordinator; no fetch was performed. Observed shared HEAD at report creation: `ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8`, metadata only. All semantic reads use pinned historical Git blobs.
++
++Review scope is the new original-parent/seal Markdown/JSON pair plus the T197 status bullets in plan/tasks. The full candidate has 12 documentation/evidence paths; its eight separate F1 barrier Late2 raw/index/inspection artifacts and adjacent F1 status claims are excluded. Full-carrier hashes identify bytes only and do not qualify tests, source, runtime, restoration or future F1 work.
++
++| Candidate document | Git blob | SHA-256 | Bytes |
++|---|---|---|---:|
++| `specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md` | `7689081abec0dc52792c42a22654ea418ab1d562` | `97c214837dd06c88920ea164a81761c08e5dc790297b966e96f38d7d16624478` | 60328 |
++| `specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json` | `b30b4cc433b1050d974af984c0a419d22457d07d` | `fec344f49475f1aead3ea4ea63adea009866646f99e7e9a077ef64b8e20b8547` | 110780 |
++| `specs/1536-complete-wound-materialization/plan.md` | `cb75ad8cb366000c48c4d61fc3a59495c36c3e81` | `399ae3b92a3ad881b048d1408fbfe87295e78848f35ce4055d2611d82fc5b754` | 2033013 |
++| `specs/1536-complete-wound-materialization/tasks.md` | `333149e5d4147e4f976c35b6121a80d2eb04847f` | `0c200bfbfda5a7f932fa73beb12d705e8eab040bd403aa1a232005907961a42c` | 1415909 |
++
++Exact ordered diff argv and results:
++
++```text
++git diff --binary --full-index --no-ext-diff 8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e 76d545066137375fcfba38b026b4195e6bfe1ba2 -- specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.md specs/1536-complete-wound-materialization/recovery/t197-depc-original-parent-seal-design-20261016.json specs/1536-complete-wound-materialization/plan.md specs/1536-complete-wound-materialization/tasks.md
++```
++
++selected_four_path_carrier: SHA-256 `b594cd6f9622d576891e412b641fa4ded024783ab478a4864ca726d1fa09f721`, 177440 bytes; diff-check exit 0.
++
++```text
++git diff --binary --full-index --no-ext-diff 8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e 76d545066137375fcfba38b026b4195e6bfe1ba2 --
++```
++
++full_twelve_path_identity_only: SHA-256 `043d4107dbee66691dafa3ddf431bfd41ff94e9ff48dc3e1583fd03659b9122f`, 6640813 bytes; diff-check exit 0.
++
++The four-path hash includes excluded adjacent F1 text in shared plan/tasks files. All 62 author source pins match blob IDs, SHA-256, bytes and line counts, and are identical at the prior source and candidate. Seven numbered source projections match their exact source ranges and projection hashes. All 11 JSON section bodies occur exactly in the Markdown. Its declared digest/size matches. The 16 P01–P16 frontier rows and PS01–PS20 are present; all twenty checks are UNRUN. All ten listed prior artifacts retain their expected candidate hashes. Complete pins/projection records are in the JSON. Hashing 62 files does not mean every transitive implementation was semantically audited; unchanged earlier hosting/native facts are reused within their previously reviewed limits.
++
++## Actual parent and closing behavior
++
++The proposed placement is grounded in the real ordinary path: `GameEngine.TurnLifecycle.cs:1484–1504` encloses Stage, agent waiting snapshot, terminal wait and Finalize in one participating callback. Browser preparation/idle/expected-G-finalization instead spans separate phases at1507–1554, so this ordinary wrapper is not accepted browser lifetime coverage. The source also has direct callers in MainMenu1493/2267, explorer-produced action1384, normal action1398, in-place service turn1447 followed by refresh1454, and existing decline recursion2357. MainMenu1493 is inside an already-started participating operation; explorer changes and selected-action consumption can precede this new root entry. The design expressly refuses to retroactively enroll them or reacquire an exclusive root lane from an actual nested parent. Their enclosing owner integration remains open. Existing recursion is descriptive source evidence, not permission for F1 replay: FD/FT still require their actual same-situation request owners, remaining work and budget.
++
++`GmSessionRunCoordinator.cs:126–130` creates a real OperationPin, enters Access and awaits the delegate inside the disposal scopes. Keeping a copied Access or child receipt cannot keep that root operation alive. `MainRunFence.cs:56–77,137–149,171–177,228–250` shows actual local/remote admission, retained borrowing and release; local CompleteAsync is a no-op while a remote close is a protocol action. The proposal correctly specifies a local-only original-parent sibling and denies remote/quiescent fallback, invented current G and new root authority from a data invocation.
++
++The new hook must precede actual binding closing, not use the existing closing hook: `SessionOperationContext.cs:121–155` retains an outer admission, calls RunBoundCore93–107 with its inner admission, then awaits RunBoundBody192–310. Nested bindings return through218–223; an outer binding starts main/state closing at257–258, before its read-only finalization lease at262–270. An existing caller-owned write lease follows a separate250–254 path. The proposal explicitly handles all these cases and places joins before closing. Captured semantic outcome is not a settlement hook. The actual parent body/pin must remain awaited until child, IO, storage and finalization obligations have genuine outcomes; failure or timeout cannot stand in for that exhaustion.
++
++## Typed seal and real effect ownership
++
++The terminal waiter currently starts the original wait Task at486, status callback at548 and key Task at553; its finally600–614 requests cancellation and awaits both actual tasks. Key reads at559 can still be synchronously blocked. Timeout/unavailable handling may publish `ready/turn_error.json` at509/523 through the handler787–831. Finalize tries joint reconciliation first at1756, before the ordinary Cancelled branch1759–1783 deletes protocol/output state and rolls back. A seal check placed only in Cancelled would miss the earlier effectful joint route.
++
++The proposed original-owned PresentationSealed result and private plain exception therefore address real hazards. They must bypass Stage broad rollback1672–1737, characteristic catch1629–1632, backup-capture cleanup1992–2019, baseline manifest cleanup569–583, CleanupBackup catch2443, game-loop logging1408–1440 and RunAsync logging/input/finally. Exceptions, CTS cancellation, EOF and observed Task status are not original held/settlement receipts. The proposal preserves true fault/uncertainty and secondary failures, stops the next semantic step before it runs, and requires actual input/render/callback joins. It explicitly leaves deep health/repair/normalizer catches and input adapters unclosed. This is a genuine engineering dependency; a new exception class alone would not make those paths safe.
++
++The promise-before-invocation and separate arm gate correctly distinguish registration, entered synchronous prefix, actual Task binding, native release and exact publication attempt. Seal winning before invocation can prove NeverInvoked; it cannot erase effects already entered. Arm winning admits only the frozen bounded attempt, not a successor computation, transaction retry, new member or semantic continuation. Runtime turn/response/snapshot mutations also require their own once-only effect boundary. The proposal does not infer original authority from metadata, IDs, paths, hashes or deserialization. Its parent/slot states and diagnostic schema remain proposed, not accepted persistent issuers.
++
++## Publication, frontier and stop ordering
++
++The storage source justifies lower native attempt ownership. `FileSystemManager.TrustedLocalStorage.cs:181–252` creates directories at205 and mutation tracking at207 before publisher intent, invokes hooks/guards, and can retry a rolled-back transient attempt at236–246. `TrustedLocalFilePublication.cs:234–307` recovers before a new attempt, creates a new transaction ID at268, records Prepared at272 and then stages/publishes journal and members. Committed success can be returned despite cleanup failure (`TrustedLocalStorage:255–264`). Accordingly, no active journal, no thrown error, a successful facade return or the story child receipt is sufficient to establish zero debt.
++
++The design distinguishes directory preparation, pre-existing recovery and exact file/namespace/deferred/frame attempts; demands original lease/parent/run/G/fence/member/transaction references; and forbids broad ordinary writes, new retry, recomputed after-images or SessionFinalization writes under a private settlement permission. Committed data stays committed while exact cleanup completes; native before-image rollback is distinct from semantic RestorePreTurnBackup. One real attempt has one settling owner and consumed receipt even when several semantic rows reference it. These are conditional requirements for a new exact issuer/adapter, not proof current closed guards permit that recovery. Actual scope of native/CLI writers and their shared-lock exclusions remains explicitly open.
++
++The direct P01–P16 frontier is useful without being a transitive grant. Checked source supports its observed rollback selection (`SessionAndSnapshots:1900–1954`), exact backup paths and overlay cleanup1957–2049, provisional versus projected request1643–1665, transient FileExists-gated deletes1832–1848, snapshot manifest/authority separate writes560–583, accepted cleanup and afterlife refresh/health owners1526–1564, and caught cleanup debt2435–2453. Runtime increment, joint proof validation, lifecycle/QTE/autosave and final cleanup are separate semantic owners. The empty cancelled-marker method atTurnLifecycle1984–1988 is currently a no-op and does not add a hidden cleanup grant. Composite rows expressly block full H-B02; finite observed backup names do not license arbitrary target writes. Browser and transitive realm/health/save/outer owners remain unqualified.
++
++The stop split addresses an actual cycle: BeginStop292–312 closes/publishes stopping and then waits active pins; Bridge StopShellCore612 calls it before native stop619. An active parent waiting for native cessation or debt settlement cannot wait for its own pin drain. The proposal separates close/publish from later pin-drain/lifecycle acquisition, keeps the actual original terminal and bound managed task set, then requires private exact debt settlement, source finalization and natural reference exhaustion before existing ConfirmSettledStop314–358. No Lost pin is cleared and uncertainty is not reset. Original proof object identity, genuine task/IO joins and disposal, root/authority checks, exact metadata ACK, late checks and zero real pins remain necessary. This is a proposed sequencing seam, not an existing successful stop/retirement route.
++
++## Findings and precise open contracts
++
++**Confirmed material engineering defects blocking conditional discussion: none.** No full A1/G-C, complete parent leaf catalog, browser/target acceptance or native qualification is claimed. The proposal repeatedly preserves complete-engineering release gates. The following distinctions must be carried forward faithfully.
++
++**PS-O1 — nonblocking source-summary correction.** Proposal line55 says presentation exceptions collapse toward Cancelled. The exact current logic is more specific: TurnLifecycle616–624 preserves storage uncertainty;629–630 preserves an original Completed result unless genuine Escape was observed;632–637 rethrows ordinary presentation/wait failure when no Completed result exists;639 returns Cancelled for the remaining case. The new held path is still required, but ordinary presentation failure is not generally converted to Cancelled. Correct this summary in a new explanatory/correction artifact without rewriting immutable author bytes. The design already calls for retaining real faults and avoiding logging/rollback, so this does not change the architectural verdict.
++
++**PS-O2 — admission-frame precision required before code.** Line32 correctly retains both outer and inner original main admissions; line35's exception for the finalizer's own expected admission is singular. The actual pre-close barrier has both owning frames live (SessionOperationContext124 and97; MainRunFence70–75). Neither can dispose before the body containing the barrier returns. The exact contract must identify the retained owning admission/frame set by reference and await only descendant borrowers outside that set; it must not use a magic one-reference predicate or try to close an owner early. Actual finalization borrowing and later disposal must then balance normally. The proposal is incomplete, and no one-reference implementation is accepted here. This is a concrete required precision of the open binding contract, not proof the conditional design requires an impossible one-frame count.
++
++**PS-D1 — canonical-lease versus stop-metadata ordering remains unresolved.** AcquireMainMetadataLeaseAsync itself takes the canonical lease (`MainRunFence:298–299`). Thus splitting BeginStop alone does not prove freedom from deadlock. Before code, specify the reachable cut where an already-armed attempt retains that lease while needing native writers stopped: either prove the cut excluded by exact attempt/owner locking, or define a safe original-owner sequence that can stop the relevant native work and settle/release that attempt without a circular wait on stopping metadata. Do not weaken guards or infer metadata ACK. The design's explicit native/CLI lock-inventory and private-permission OPEN clauses correctly prevent qualification today. This is a source-backed unresolved schedule to close, not an observed runtime failure or a demonstrated unconditionally reachable deadlock.
++
++Other engineering blockers remain: actual Client-owned birth/start/load/stop composition and all outer root entries; complete transitive leaf/catch/input/cleanup adapters for the composite frontier; exact native preparation/recovery and callback enrollment; genuine external writer exclusion/joins; full stop/finalization/normal shutdown integration; B03 strict durable codec/CAS/bounds/retention and B04 endpoint/caller/retirement contract; lawful continuation after source settlement; browser consumer/staged phases; keeper loss/cold/reboot/migration/distinct-root and platform qualification; DEP-I/L/full target.
++
++The smallest next DESIGN closure is the local-only sibling plus a reference-exact owning/borrowed admission state table, typed unwind propagation and split-stop/private-attempt schedule together. Include synchronous failure, pending borrow, retained canonical lease, seal versus native release, committed-cleanup debt, nested existing parent, caller-owned lease and late G/authority loss. Do not implement only a wrapper/exception and label the unresolved rest complete. Returning SealedSettled must reach every actual caller before refresh, next prompt, action or disposal; lawful FD/FT/death continuation remains separately constrained by its actual accepted source and target owners.
++
++## Final limits
++
++PS01–PS20 remain UNRUN. B01/A1, H-B02, B03/B04, G-C, DEP-C/I/L, full target, H2/H3/HQ/newQTE remain open/blocked. Client-owned placement remains a candidate for detachable GM viewer loss only while original Client survives; keeper death is different. D4, guided, visual, Windows/Linux platform limits and D8 remain preserved. No automatic F2, life-evaluation suppression, new G, replay/redraw, extra Mortal turn/dice/reward, child-as-parent receipt, target authority or activation follows. Safe HOLD is preservation, not a permanent accepted lawful-death outcome.
++
++No repository writes, build/test/discovery/runtime/application/native/OS execution, network access, fetch/push or delegation occurred. Only static pinned source/evidence examination and this new /tmp report pair were used. Prior artifacts remain unchanged. Separate F1 raw evidence/source/test work and shared restoration generations are outside this verdict. **FINALSTOP: no pending writes after delivery.** JSON carries the Markdown digest and all pins; its digest is delivered separately to avoid circular hashing.
+diff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md
+index 7956e3650..431f4f02c 100644
+--- a/specs/1536-complete-wound-materialization/tasks.md
++++ b/specs/1536-complete-wound-materialization/tasks.md
+@@ -1,3 +1,6 @@
++- PreP0 history proposal preserved41pins/10priorartifacts: versionedexistingrepairowner+actualworkeratomiccompanion, no newpath; fullatomicity/worker-cold/lostC/identity/semanticgatesOPEN, independentreviewpending/no release.
++- T197 parent-seal conditionalreview preserved80pins2diffs; PS-O1waiterrethrow correction, PS-O2bothretainedadmissionframes and PS-D1canonical/native-stop lockorder mandatorybeforecode; fullG-C/targetgatesOPEN.
++
+ - Pd.3a causalbarrierRED frozen: native1/charPASS1+solebarrierFAIL1 line36/7.325s/realoldreaderSuccess afterlateA mutation/6rawchains/2strictabsentroots/fourDLLsame. BothcausalREDsbeforeprodsuccesslogic; nextcomplete safeobservedvertical+meaningfulconformance/freshG5, no GREENrelease yet.
+ 
+ - Pd.3a barriercycle Late2EVIDENCE accepted; release onlycharPASS1 + causalbarrierRED1 line36 aftercontrols/cleanup. No prodsuccesslogic or GREEN/otheractualrelease.

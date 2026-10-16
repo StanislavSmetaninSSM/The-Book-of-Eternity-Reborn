@@ -1531,12 +1531,27 @@ public partial class FileSystemManager
         if (snapshot == null)
             return null;
 
-        using var stream = new MemoryStream(snapshot.Content, writable: false);
+        return DecodeFileBytes(snapshot.Content);
+    }
+
+    internal static string DecodeFileBytes(byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes, writable: false);
         using var reader = new StreamReader(
             stream,
             Encoding.UTF8,
             detectEncodingFromByteOrderMarks: true);
         return reader.ReadToEnd();
+    }
+
+    internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var snapshot = UsesTrustedLocalWriter(writeLease, relativePath)
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
+            : ReadFileSnapshotCore(relativePath);
+        EnsureValidCanonicalWriteLease(writeLease);
+        return snapshot?.Content;
     }
 
     internal byte[]? ReadFileBytesSync(string relativePath)

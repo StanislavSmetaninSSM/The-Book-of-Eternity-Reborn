@@ -295,7 +295,9 @@ This coherent next block follows bounded Pc acceptance. [Real engine/pre-seal co
 
 **GM/docs and limitations:** initially internal owner/evidence extraction is client-owned and unactivated; record no-update rationale only while no reachable GM-authored/player contract changes. Any new reachable schema/control/behavior must synchronize Mortal/afterlife guidance/examples/source guards in the same change. P0 internal integration is not usable player ACTIVE, full ordinary resolution, T197, allocator/guided/visual/Windows or D8 qualification. Do not stop after a ledger helper; continue source→actual sealed common→genuine M3/cold proof under the already-authorized staged scope. No automatic F2 or lawful-outcome refusal policy is introduced.
 
-#### T179-Pd.3a observed original-source reader — DESIGN accepted, causal TDD next
+#### T179-Pd.3a observed original-source reader — DESIGN accepted, causal REDs frozen, implementation WIP
+
+Current block: both genuine causal REDs are qualified and immutable (61e10b091/e312c78b3). The complete safe source-reader vertical, test-first conformance, actual browser rollback and affected storage/default selection are now WIP, UNBUILT/UNRUN. Fresh G5/source/firstLate2/separate EVIDENCE precede singleton GREEN. No active admission/S/M3 or full Pd acceptance follows from this helper. See current plan/tasks checkpoint.
 
 The [bounded reader contract](../recovery/t179pd-original-observed-reader-design-20261016.md) addresses independent [PD-D01](../recovery/t179pd-admission-design-independent-review-20261016.md);18 source pins and all future checks are in its JSON companion. This is a prerequisite of step3's real engine source, not full admission/M3 or a terminal helper-only outcome. No code/tests/runtime changed in this design correction. Both prerequisites are now met: [bounded ledger acceptance](../recovery/t179pd-ledger-independent-final-stage-review-20261016.md) and [affected independent PD-D01 closure](../recovery/t179pd-original-observed-reader-corrected-independent-review-20261016.md). Proceed with causal TDD/fresh G5 under existing authorization; full admission/M3 remains gated.
 

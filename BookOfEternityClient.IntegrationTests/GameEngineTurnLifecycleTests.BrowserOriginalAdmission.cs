@@ -159,39 +159,64 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition()
     {
-        var (_, staged) = await PrepareBrowserInputStagingAsync();
-        var assembly = typeof(GameEngine).Assembly;
-        var types = new[]
+        try
         {
-            typeof(GameEngine.PendingTurnSnapshotManifest),
-            typeof(LiveTurnPendingSnapshotManifest),
-            assembly.GetType("BookOfEternityClient.Services.CanonicalStateNormalizer+PendingTurnSnapshotAuthorityManifest")!,
-            assembly.GetType("BookOfEternityClient.Services.ValidationService+ValidationPendingTurnSnapshotManifest")!,
-            assembly.GetType("BookOfEternityClient.Services.GuardianPowerEventState+PendingTurnSnapshotManifest")!,
-            assembly.GetType("BookOfEternityClient.WebUi.BrowserAfterlifeTurnRequestQueue+BrowserPendingTurnSnapshotManifest")!
-        };
-        var originalManifest = GameEngine.ValidateDetachedBrowserBinding(staged);
-        foreach (var type in types)
-        {
-            Assert.NotNull(type);
-            var decoded = JsonSerializer.Deserialize(staged.ManifestJson, type, LiveTurnPreparationService.ManifestJsonOptions)!;
-            var hashProperty = type.GetProperty("ManifestPayloadHash")!;
-            var computed = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(decoded,
-                LiveTurnPreparationService.ManifestHashJsonOptions,
-                value => (string)hashProperty.GetValue(value)!, (value, hash) => hashProperty.SetValue(value, hash));
-            Assert.Equal(originalManifest.ManifestPayloadHash, computed);
-            Assert.Equal(originalManifest.BrowserOriginalMainCondition,
-                type.GetProperty("BrowserOriginalMainCondition")!.GetValue(decoded));
+            var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+            var assembly = typeof(GameEngine).Assembly;
+            var types = new[]
+            {
+                typeof(GameEngine.PendingTurnSnapshotManifest),
+                typeof(LiveTurnPendingSnapshotManifest),
+                assembly.GetType("BookOfEternityClient.Services.CanonicalStateNormalizer+PendingTurnSnapshotAuthorityManifest")!,
+                assembly.GetType("BookOfEternityClient.Services.ValidationService+ValidationPendingTurnSnapshotManifest")!,
+                assembly.GetType("BookOfEternityClient.Services.GuardianPowerEventState+PendingTurnSnapshotManifest")!,
+                assembly.GetType("BookOfEternityClient.WebUi.BrowserAfterlifeTurnRequestQueue+BrowserPendingTurnSnapshotManifest")!
+            };
+            var originalManifest = GameEngine.ValidateDetachedBrowserBinding(staged);
+            foreach (var type in types)
+            {
+                Assert.NotNull(type);
+                var decoded = JsonSerializer.Deserialize(staged.ManifestJson, type, LiveTurnPreparationService.ManifestJsonOptions)!;
+                var hashProperty = type.GetProperty("ManifestPayloadHash")!;
+                var computed = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(decoded,
+                    LiveTurnPreparationService.ManifestHashJsonOptions,
+                    value => (string)hashProperty.GetValue(value)!, (value, hash) => hashProperty.SetValue(value, hash));
+                Assert.Equal(originalManifest.ManifestPayloadHash, computed);
+                Assert.Equal(originalManifest.BrowserOriginalMainCondition,
+                    type.GetProperty("BrowserOriginalMainCondition")!.GetValue(decoded));
+            }
+            var before = OriginalAdmissionTree();
+            await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                var result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+                Assert.True(result.Success, string.Join(";", result.Issues.Select(issue => issue.Code + ":" + issue.Actual)));
+                Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(originalManifest.Files["game_state/meta/soul_state.json"])),
+                    result.Snapshot!.ReadRequiredBytes("game_state/meta/soul_state.json"));
+                var observed = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+                Assert.True(observed.Success, JsonSerializer.Serialize(observed.Issues));
+                Assert.Equal(result.Snapshot.ReadRequiredBytes("game_state/meta/soul_state.json"),
+                    observed.Snapshot!.ReadRequiredBytes("game_state/meta/soul_state.json"));
+                observed.Evidence!.RequireCurrent(_fs, lease, observed.Snapshot);
+                var rollbackRows = observed.Evidence.ExportDiagnosticData()["operations"]!.AsArray()
+                    .Where(row => row!["role"]!.GetValue<string>() == "RollbackArtifact").ToArray();
+                Assert.NotEmpty(originalManifest.RollbackBackups);
+                Assert.Equal(originalManifest.RollbackBackups.Count, rollbackRows.Length);
+                Assert.Equal(originalManifest.RollbackBackups.Select(pair => (pair.Key, pair.Value)),
+                    rollbackRows.Select(row => (row!["logicalPath"]!.GetValue<string>(), row["path"]!.GetValue<string>())));
+            }
+            AssertOriginalAdmissionTree(before);
         }
-        var before = OriginalAdmissionTree();
-        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        finally
         {
-            var result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
-            Assert.True(result.Success, string.Join(";", result.Issues.Select(issue => issue.Code + ":" + issue.Actual)));
-            Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(originalManifest.Files["game_state/meta/soul_state.json"])),
-                result.Snapshot!.ReadRequiredBytes("game_state/meta/soul_state.json"));
+            Exception? failure = null;
+            try { if (Directory.Exists(_rootPath)) Directory.Delete(_rootPath, recursive: true); }
+            catch (Exception error) { failure = error; }
+            Assert.NotNull(_directGachaOutput);
+            _directGachaOutput!.WriteLine(JsonSerializer.Serialize(new { CleanupOwnedRoot = _rootPath,
+                OwnedFixtureRemoved = !Directory.Exists(_rootPath), CleanupFailure = failure?.ToString() }));
+            Assert.Null(failure);
+            Assert.False(Directory.Exists(_rootPath));
         }
-        AssertOriginalAdmissionTree(before);
     }
 
     [Fact]
