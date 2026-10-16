@@ -2,59 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-active-prefix-lifecycle-evidence",
-      "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+      "category": "fr063-observed-original-reader",
+      "reason": "One genuine original/current/G/default-reader control followed by missing observed API causal RED; no production success logic. Strict per-test finally cleanup and raw control diagnostics.",
       "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
       ]
     },
     {
       "category": "fr063-joint-late-completion",
-      "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+      "reason": "Mandatory G5 first actual after any test/catalog/selection correction; exact existing v2 full union/story/progression/inert repeat/strict cleanup. Freeze and separate EVIDENCE before reader causal RED.",
       "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-joint-retained-common-calculation",
-      "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-common-calculation-regression",
-      "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-common-resource-continuation",
-      "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-common-qte-consumers",
-      "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-joint-active-tail",
-      "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
-      ]
-    },
-    {
-      "category": "fr063-joint-c1-common-mixed-guard",
-      "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
-      "contracts": [
-        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
       ]
     }
   ]

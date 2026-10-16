@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-observed-original-reader",
+  "responsibility": "T179-Pd.3a actual original-source reader: genuine LiveTurnPreparationService original, changed live root, existing G and successful default reader before causal missing observed API assertion; then exact original bytes, privately issued evidence and current same lease recheck. Initial one-case causal RED; success implementation absent.",
+  "excludes": "No submitted-output admission, S/C/B/M3/take/cold authority, new QTE/F1/T197, Windows or visual qualification; no manufactured primary authority or caller source injection.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderTests.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs"
+  ],
+  "related": [
+    {
+      "id": "pending-turn-authority",
+      "when": "Assess actual default original-reader changes after production wiring; not automatically selected for test-only causal RED."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-active-prefix-lifecycle-evidence",
   "responsibility": "T179-Pd/T192b actual first-pass lifecycle evidence: three causal RED controls plus ten roster/exclusion/expiry/source-bound/time/NPC/order/multi-target cases and two owner/missing-first-pass negatives. Genuine old planner/common completion precedes evidence assertions. Private issuance, both real passes, raw ordinals/rosters/outcomes/transition refs, detached copies and unchanged identity/projection counts. This finite unit owner does not authenticate engine ACTIVE source or P0.",
   "excludes": "No engine submitted-output admission, action capability, active S/C/B seal, M3/common publication, cold closure, new QTE/F1/T197 or visual/platform qualification. This finite unit owner is a first step of the coherent P0 stage, not completion.",
