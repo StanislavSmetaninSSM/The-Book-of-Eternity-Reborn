@@ -2,7 +2,7 @@
 
 - T197 DEP-C supplemental lifecycle proposal: DESIGN-only UNACCEPTED; independent review conditional-discussion scope no material defects,24source/contextpins12futureUNRUNcases. O1canonicalclarification independentreadback PASS; DEP-C/I/L/fulltarget gates remain OPEN, no runtime authorization.
 
-- T179-Pb/T182 WIP fromd13aab44: test-first20caseRED preserved; shared story row calculator now wired into existingv2 owner, WIP/unverified. Exact stage selection and first-Late2/EVIDENCE gates recorded in plan. Initial unchangedLate2 accepted; post-wiring runtime/review and full task closure pending.
+- T179-Pb/T182 fromd13aab44: shared pure story row calculator reused by actualv2 owner; correctedGREEN20, actualstory-owner5 and retained-storyfreshPID1 all PASS after correction-cycle firstLate2/EVIDENCE release. Failed18/20 firstGREEN preserved; exact one-assertion subtype correction separately reviewed. Full raw packets preserved; final independent stage EVIDENCE acceptance pending. FullT179/T182 remain unchecked.
 
 ## Implementation authorization reconciled — 2026-10-16
 
