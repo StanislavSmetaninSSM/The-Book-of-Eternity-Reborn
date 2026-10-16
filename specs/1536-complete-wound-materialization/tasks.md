@@ -1,3 +1,21 @@
+## FR063-D5-F1-R2 DESIGN WIP — 2026-10-16
+
+- Source/recovery base `e7f86f590892e4c335ad29ece88c265ad94b8138`, branch `1536-wound-b2-cloud-20261012`; sole writer. Пользователь разрешил дальнейший DESIGN и независимое review: без лишнего tick из-за decline, полный lawful ordinary outcome. Implementation/code/tests/runtime tools/build/discovery/GM/client/visual/OS runs не разрешены и **UNRUN**.
+- [R2 contract, source inventory, alternatives and R201–R218](./design/lawful-active-joint-tail-b-ordinary-outcomes.md) supersedes historical first-F1 n+1/three-family limitation below. New requestId/token, same game action/turn n; shared genuine action/event/time budget in accept/decline preserves real elapsed/operation effects without повторного owner_turn_end, costs or committed consequences.
+- 182-name source inventory: 169 top-level DTO + 176 mapped / 83 primary paths, 13 mapping-only names distinguished; mapping is not authority. Complete pure typed ordinary family composition must preserve movement/items/quests/XP/NPC/factions/world/meta/misc and eligible TriggerLifeEnd target handoff; no lawful-reply refusal/drop/QTE reoffer. This expands e7 F1 substantially; D9–D11 are explicit proposed grants, not implicit authorization.
+- [Canonical B](./design/lawful-active-joint-tail-b.md) and [affected plan](./design/lawful-active-joint-tail-b-implementation-plan.md) retain existing M, source/request/FD/FT/dedup/repair/Empty/cleanup proofs. T178–T191 refined; T192–T198 future dependency tasks added, all unchecked. LifeEvaluation exact durable target receipt/cohorts remain explicit design dependency T197 before activation. No proof of F1 impossibility; F2 not selected.
+- Static document checks: `git diff --check`; exact literal union independently recalculated by read-only Python (182 rows/169 DTO/176 mapped/83 paths/13 raw-only); 18 unique R2 matrix IDs, 21 unique unchecked T178–T198, 7 source pins and current local links valid. Diff confined to six Markdown documents; production/tests/tools/catalog/governance unchanged. No runtime execution.
+- Independent Astra/XHigh R2 review pending. Earlier first-F1 reports immutable/historical, not evidence for R2. WIP must be pushed/read back before review; final remote SHA/GitHub-only clean document restore checked before handoff. Static doc verification only, no runtime PASS. D4 allocator, guided US5 T113/T119/T127–129, actual DOM/visual/platform qualification and D8 narrow payload/earned-XP scope remain OPEN. Main/merge/force-push/branches/secrets/issues untouched; #1557 frozen, #1558/#1559 not started.
+- [ ] R2 independent review/corrections and final remote/recovery verification, then **STOP for discussion; no implementation**.
+
+- [ ] T192 [US7] R2 Shared action-boundary/event/time owner D9 and accept/decline parity, exact files/APIs in canonical implementation plan.
+- [ ] T193 [US7] R2 Full lawful input/result inventory and typed ordinary owner registry D10; lossless parse/disposition/source catalogs.
+- [ ] T194 [US7] R2 Pure location/item/quest family plans with real identities/storage/reward companions.
+- [ ] T195 [US7] R2 Pure NPC/faction/world/meta/misc family plans and exact realm/source eligibility.
+- [ ] T196 [US7] R2 Ordinary XP/stats, complete Plan|ValidatedEmpty take/compositor, same-turn story/readers and full repair D11.
+- [ ] T197 [US7] R2 Exact MortalDeath→LifeEvaluation durable target handoff design/receipt/cohorts, then separately authorized implementation/qualification.
+- [ ] T198 [US7] R2 Full lawful outcome universe/composite/action-time/accept-decline qualification; finite future owners and actual client/OS evidence.
+
 ## FR063-D5-F1 готов к обсуждению; реализация не разрешена — 2026-10-16
 
 - Восстановлен source checkpoint `c4dde0629cc17aad75196ec509d2cdaf621945a3` из GitHub, ветка `1536-wound-b2-cloud-20261012`; sole writer, старый исполнитель завершён. User authorizes только DESIGN F1, future matrix, уточнение T178–T191 и независимое review. Не менялись code/tests/catalog/selection/active GM contracts/runtime tools; build/test/discovery/runtime/GM/client/visual/platform проверки **UNRUN**.

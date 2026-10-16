@@ -36,23 +36,27 @@ The existing offer-turn/ordinary-follow-up contract conflicts with generic no-fo
 [plan Q-D5](./design/lawful-active-joint-tail-b-implementation-plan.md) is a blocking new decision
 before new joint QTE admission. D4 allocator/guided-US5 and D8 narrow terminal restrictions remain.
 
-## D5 / F1 design clarification — 2026-10-16
+## D5 / F1-R2 design clarification — 2026-10-16
 
-Recovered c4dde062 and the current user instruction authorize F1 DESIGN/independent review only.
-[B §8.5](./design/lawful-active-joint-tail-b.md#85-d5--f1-обязательное-ordinary-resolution-в-существующем-m)
-proposes mandatory ordinary-resolution units from the accepted offer, client-derived committed
-source ledger, one obligation in existing M, atomic transfer through current request/original
-owners, child n+1 accepted ordinary mechanics and completion before KF1 release. The original
-action and committed source operations are never replayed; structural source coordinates are client-bound before common, while GM narrative/causal judgments remain GM-authored (no prose oracle). Ordinary child wound publication retains
-parent M rather than replacing it with schema1; repair uses the post-prefix child baseline.
-The first F1 family is the existing accepted Mortal common wound/effect/resource cohort, with a new ordinary Plan|ValidatedEmpty issuer/ack and narrowly named output/time overlay;
-unsupported remainder is refused before common. Real ordinary result is mandatory: intention,
-notification or Ready alone never completes it. F2 is not selected without demonstrated F1 obstacle.
-These schemas/grants/turn policy and the affected T178–T191 plan await written acceptance and
-separate implementation authorization. D4, guided US5, frontend visual qualification and D8
-remain unchanged; no new runtime evidence or accepted ACTIVE contract is created.
+The user authorized further DESIGN and independent review, without implementation. Source base
+`e7f86f590892e4c335ad29ece88c265ad94b8138`. [R2 contract/inventory/matrix](./design/lawful-active-joint-tail-b-ordinary-outcomes.md)
+supersedes the first F1 n+1/three-family limitation: new request, same game action/turn n, no
+extra owner-turn tick, synthetic time/cost or repeated committed consequence solely for decline.
+Actual elapsed time and actual operations retain their normal effects. Accept/decline share a
+proposed source-bound event/time owner; D8 raw payload/earned-XP scope remains narrow.
 
-Corrected F1 DESIGN/affected-plan review on `564424a92469555a807f0f77f53002ff1f7e621f` is [ready for discussion](./recovery/lawful-active-f1-independent-design-corrected-20261016-review.md), with F1-D01–D05 resolved. This status does not accept grants or authorize implementation.
+Every currently lawful ordinary Mortal outcome (including movement, quests, ordinary XP and
+eligible life-end handoff) requires genuine complete typed owners, lossless input/result coverage,
+Plan|ValidatedEmpty, full composite+M action/ack and exact source/request/dedup/repair/story/cleanup.
+No refusal/drop/QTE reoffer substitutes for a lawful ordinary result. This is substantially wider
+than e7: proposed D9–D11 and future T192–T198 are explicit dependencies, not accepted grants.
+[Detailed B plan](./design/lawful-active-joint-tail-b-implementation-plan.md) keeps T178–T191
+unchecked and adds these unchecked dependencies. F2 only for a proven F1 obstacle.
+
+First F1 [corrected review](./recovery/lawful-active-f1-independent-design-corrected-20261016-review.md)
+on 564424a9 remains historical; R2 independent review pending. D4 allocator, guided US5,
+frontend visual and platform qualifications stay OPEN. All runtime/build/test/discovery checks
+UNRUN; no implementation or active GM contract change authorized. STOP for discussion after review.
 
 ## Clarifications
 
