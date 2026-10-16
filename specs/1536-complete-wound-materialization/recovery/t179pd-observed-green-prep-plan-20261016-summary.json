@@ -1,0 +1,126 @@
+{
+  "Categories": [
+    "fr063-joint-late-completion",
+    "fr063-observed-original-reader",
+    "fr063-observed-original-barrier",
+    "fr063-observed-original-conformance",
+    "fr063-observed-original-default",
+    "portable-ordinary-readers",
+    "fr063-observed-original-browser"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "G5 FIRST actual only, fresh BOTH binaries: exact current v2 union/source/request/G/story/turn/progression/inert/strictcleanup; freeze and independent EVIDENCE before any other singleton.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-reader",
+      "reason": "One genuine missing-API causal RED now designated GREEN: actual original/current/live distinction, no writes, private evidence/current lease.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-barrier",
+      "reason": "Genuine two-case old default positive and observed already-read original drift refusal. Causal RED frozen e312c78b3; GREEN must use actual API.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-conformance",
+      "reason": "Finite real-owner closure/negative/BOM/absence/priority and frozen evidence cases with strict per-test roots.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-default",
+      "reason": "Shared validation core/default read ordering and exact authority rollback normalization/factoring affected; finite unit compatibility/negative subset.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "Explicit sync bytes and shared pure existing BOM decoder affect ordinary storage surfaces: exact bytes/absence/BOM, real lease admission, hard-link input, FIFO/open controls. Existing finite coherent category, no Windows pass claimed.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    },
+    {
+      "category": "fr063-observed-original-browser",
+      "reason": "Actual engine browser original WITH rollback exercises legacy physical dispatch and complete real callback coverage; six manifest DTO hashes preserved, strict cleanup.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release."
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.062265,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0485493,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1416989,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.004862,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:08.9937059",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 8,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 115,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "fr063-joint-late-completion-integration-001",
+      "fr063-observed-original-barrier-unit-002",
+      "fr063-observed-original-browser-integration-003",
+      "fr063-observed-original-conformance-unit-004",
+      "fr063-observed-original-default-unit-005",
+      "fr063-observed-original-reader-unit-006",
+      "portable-ordinary-readers-integration-007",
+      "portable-ordinary-readers-unit-008"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,22 @@
+{
+  "source_sha": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+  "phase": "Pd.3a full safe observed reader fresh BOTH catalog+PlanOnly; zero actual tests",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "1ced6ca7d331810413901942c4abf4ab216a7e741149d576bf4608c2bd47ccf1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "59eff8b8f398ad36e03a99c0709ac82b11d23b7b38a10940a0835b1f38fdd0f4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "1ced6ca7d331810413901942c4abf4ab216a7e741149d576bf4608c2bd47ccf1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "56f27163889545278704742894c6a51046fd36bccb62214b83abe016b986c92a"
+    }
+  ]
+}
