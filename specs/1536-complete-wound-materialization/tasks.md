@@ -1,3 +1,5 @@
+- T179-Pb/T182 WIP fromd13aab44: test-first shared story row calculation scaffold is unwired; exact stage selection and first-Late2/EVIDENCE gates recorded in plan. No runtime/review acceptance or full task closure.
+
 ## Implementation authorization reconciled — 2026-10-16
 
 Coordinator confirms explicit07:01:11UTC user approval, message Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”: continue staged F1-R2/D9–D11 independently from9baccdfb5; prior DESIGN-only handoff superseded for independent stages. T197/newQTE remains blocked on DEP-C/I/L/full target qualification. T192a is not liveF1. Next: T179/B01 pre-seal dependency integration with TDD/category-only/per-stage independent review; all full task checkboxes remain evidence-gated.

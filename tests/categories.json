@@ -1,6 +1,45 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "fr063-joint-story-calculation",
+  "responsibility": "T179-Pb/T182 detached exact Mortal joint story row calculation shared with the actual v2 story owner: frozen coordinates/UTC, Unicode and normalization, existing path/location/tag/label policies, conditional named source reads and immutable results.",
+  "excludes": "No genuine S/history/artifact capture, M3, common seal, new publication capability, active F1/QTE, death handoff, browser visual or OS qualification. Unit data calculations own zero roots.",
+  "changeHints": [
+    "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+    "BookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "Actual joint story owner changes: fresh BOTH builds and independent SOURCE/FIXTURE/SELECTION precede first actual Late2; freeze and independent EVIDENCE release before stage or negative owner actuals."
+    },
+    {
+      "id": "fr063-joint-story-owner",
+      "when": "Shared calculation is wired into the actual v2 story owner; retain exact current original/output/history refusal and publication uncertainty behavior."
+    },
+    {
+      "id": "fr063-joint-retained-story",
+      "when": "Shared row calculation changes: retain actual appended-row recognition through a fresh process with no second append."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.*"
+      ]
+    }
+  ]
+} ,
     {
       "id": "fr063-automatic-calculation",
       "responsibility": "T179-Pa/T180a complete detached pure automatic training/level-award calculation required before M3 common sealing; exact three after-images and one real existing training-owner semantic control.",
