@@ -393,6 +393,10 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             npcEvent["effectId"] = npc["effectId"]!.DeepClone();
             npcEvent["target"] = npc["target"]!.DeepClone();
             events["lifecycleEvents"]!.AsArray().Add(npcEvent);
+            var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect, npc);
+            var npcHistory = identity["entries"]![1]!["transitions"]![0]!;
+            npcHistory["transitionId"] = npc["chronology"]!["lastTransitionId"]!.DeepClone();
+            npcHistory["eventRef"] = npc["chronology"]!["createdEventRef"]!.DeepClone();
             return rebuilt with
             {
                 TargetAuthority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
@@ -406,7 +410,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
                         ["NPCId"] = "npc_test_healer", ["activeEffects"] = new JsonArray(npc.DeepClone())
                     })
                 } },
-                PreTurnIdentityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effect, npc)
+                PreTurnIdentityIndex = identity
             };
         }
         if (scenario != "npc_advance") return rebuilt;

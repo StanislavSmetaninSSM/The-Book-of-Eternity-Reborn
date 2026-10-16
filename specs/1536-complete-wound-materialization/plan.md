@@ -1,3 +1,7 @@
+## T179-Pd multi-target fixture identity preflight correction, 2026-10-16
+
+- Independent static fixture review identified CreateIdentityIndex helper uses one constant initial transition ID. The new NPC effect already had a distinct chronology; its actual initial identity history now receives the same distinct transition ID and created-event ref. Existing helper/shared callers unchanged. This prevents a collision precondition failure; no corrected build/discovery/runtime executed yet. Fresh preparation follows this final fixture correction, not6e43 source.
+
 ## T179-Pd Pd-R1 correction WIP — fresh preparation required, 2026-10-16
 
 - Replaced per-event full-catalog retention with one actual full starting roster captured at the first valid event of each pass. Each ordered event keeps exact target/effect-filter matches before causal/mode exclusions and actual scheduler outcomes. Absent/empty/no valid events explicitly retain null initialRoster/ref; no global empty roster inferred. Final pass captures its own actual starting roster after intervening owner work. Future cold verifier remains unimplemented/unqualified.
