@@ -356,11 +356,11 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 ### T189 / B11 — terminal cleanup и cold current-owner admission
 
 **Files:** engine terminal cleanup/active completion/QteTail; integration `.JointActiveCleanup.cs`, `.JointActiveNative.cs`; extend actual child fixture `GameEngineTurnLifecycleTests.SpiritualWorkerFixture.cs` only with bounded scenarios/args.
-**Interfaces:** named CompleteMortalJointActiveCleanupAsync and fresh physical reader. D5 follow-up transfer/cleanup uses only separately accepted exact boundary.
+**Interfaces:** no-offer/accepted-QTE use `CompleteMortalJointActiveCleanupAsync` and their fresh physical proofs; declined F1 uses `ReadF1CompletedCleanupAsync` → `F1CompletedCleanupCapability` → `CompleteMortalJointOrdinaryCleanupAsync`, exact KF1 after actual completion.
 **Owner:** proposed `fr063-active-b-cleanup`, `fr063-active-b-native-admission` (separate coherence/budget).
 
 - [ ] RED `Cleanup_ExactSignedKAndMReleaseEveryMemberCut`, `Cleanup_ActivePausedWaveDebtOrOrdinaryRemainderNeverReleasesEarly`, `Cold_InitiallyBadAuthorityBeforePidCannotMintAdmission`, `Cold_ReleasedObservationNeverGrantsReplayOrRestore`.
-- [ ] Require terminal receipt + post-auto/projection + genuine QTE/history/wave closure and no publisher debt; decline additionally proves mandatory ordinary resolution or accepted genuine transfer boundary. This dependency cannot be replaced with state=declined.
+- [ ] Branch-specific release: no-offer requires genuine P1–P4 completion; ACCEPT requires D8 terminal receipt + post-auto/projection + QTE/history/wave closure; DECLINE requires F1CompletedCleanupCapability from actual ordinary completionReceipt and exact KF1. Every branch requires no publisher debt. Transfer alone or state=declined never permits release; F1 does not need accepted-QTE terminal proof.
 - [ ] Atomic K+M (decline: KF1+M only after F1 completion) release, no recreation original/backups after commit. Fresh after-release reader only observes completion; any new follow-up mutation authority must come from accepted Q-D5 genuine owner protocol, not released marker alone.
 - [ ] Before-launch corrupt real authority/header/G namespace in parent, record full raw files/directories, then actual child constructor/entrypoint/PID; include existing early JsonException shape where applicable. Same/different root durable-only cold resume, no warm parent admission or shared mutable cache.
 - [ ] G + conditional exact initial9/P6/phase-refusal owners and Late2. **Accept:** no partial/zero-receipt cleanup PASS; unchanged corruption namespace, exact source-binary pins and actual root absence. Covers C01–C03/R02/Q04/Q08/Review Focus 2/5.
