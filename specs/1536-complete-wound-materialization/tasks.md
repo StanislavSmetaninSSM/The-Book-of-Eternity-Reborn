@@ -1,3 +1,9 @@
+## T179-Pd.3b R01 CLOSED — FIRST Late2 conditional release (2026-10-16)
+
+- [x] Independent fullcurrenttree recovery acceptsbc719:54149exacttrackedfiles/3556631142bytes/36391uniqueGitblobs/modes/clean/noalts/nosparse;197requiredpaths/17omissions covered. Root60pins/threediffs/11tmprefs/threeprojections/197rawrows; fullreceipt/native0/366.287599s/supports preserved. F01 SOURCE/d474fourDLLs/12prepartifacts retainedunchanged. No restoredruntime/history/externaldepclaim; noactuals.
+- [ ] Push/readback/recover THIS acceptancecheckpoint; verifyclean source/DLLcontinuity, then ONLYFIRSTprotectedLate2singleton2/5m. Freeze/push/recover/separateEVIDENCE before anyReady3. No aggregate/hiddenretry/priorREDor131replay; allremaining3b/HS02–16/S/B/M3/F1/T197/activation/allpriorlimitsOPEN.
+- [ ] T179-Pd.3e nextdebug_logs/Fullreasoning engineeringDESIGN consultation: actualordinary kernels+consumers/closedHOTsources/conditionalIO/catches/volatile/history, allfuturechecksUNRUN. Readonlyauthornow; preserve+independentlyreview before any3e sourceimplementation. Doesnotgateaccepted3b.
+
 ## T179-Pd.3b recovery R01 BLOCKED — full-tree correction WIP (2026-10-16)
 
 - [x] Preserve recoveryBLOCKED HS-RED2-R01, root43pins/threediffs/12tmprefs/threeprojections. Five145-path reportscope/all1348files correct but17later fixture/caller dependencies absent. F01 SOURCE remainsaccepted; FIRSTLate2HELD/noactuals.
