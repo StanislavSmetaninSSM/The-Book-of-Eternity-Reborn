@@ -1,3 +1,5 @@
+- Pd.3a firstLate2EVIDENCE accepted; release onlycausalRED1 missingAPI line80 aftergenuinecontrols. Futureguardedtest-only missingbarrier RED consulted6pins; separate freshG5/source/Late2/EVIDENCE required, no prodsuccesslogic yet.
+
 - Pd.3a firstcorrectedLate2 native0/2PASS/207.161s/6rawchains/2strictabsentroots/fourDLLfixeddb655 frozen; rootfullsemantics verified. SeparateEVIDENCE pending beforecausalRED1; no production successlogic.
 - T197 Client-owned original main/native host alternative preserved43pins/10futureUNRUN; sameGMpresentation-loss event only, keeperloss explicit, affectedreviewpending/no mode selection or G-C release.
 

@@ -1,0 +1,70 @@
+{
+  "inspected_head": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+  "completion_head": "5439a8881281b3bc9fe3ccd8623e1461914482c7",
+  "repo": "/workspace/The-Book-of-Eternity-Reborn",
+  "status_porcelain": "",
+  "working_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "3458cb0a92d340cc5e6d16469e4b2fe3a74fcc41",
+      "sha256": "f25d63483fb7284f3dd3d99ac06f5f40cf071f7569d5c3dccbbe206e392f4b22",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "commit": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "git_blob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "current_worktree_matches": true
+    }
+  ],
+  "report": "/tmp/t179pd-observed-reader-barrier-tdd-design-20261016.md",
+  "report_sha256": "dd0882ce46598099a9e6b3489087824c1742da2df5b63a47f7dc39514f0a504f",
+  "configuration": {
+    "assigned_model": "gpt-6-astra",
+    "assigned_reasoning": "high",
+    "backend": "unknown"
+  },
+  "prior_observed_reader_pair_sha256": {
+    "/tmp/t179pd-original-observed-reader-design-20261016.md": "8666b7551e91adbee3a9776f42ee4115e841df03dd848d4ac9409ffa8b3ee435",
+    "/tmp/t179pd-original-observed-reader-design-20261016.json": "3d515af86d7059dc4402b331616acbb5be26c9038e23f9439a1b7c5c78354856"
+  },
+  "prior_pair_unchanged": true,
+  "recommendation": "Guarded TEST-ONLY fallback is sound causal missing-barrier RED; actual observed API presence unconditionally required for GREEN; no unsafe temporary production issuer",
+  "expected_absent_api_red": "Success remains true after late B hook changes already-read A; Assert.False fails after setup/injection checks",
+  "checks_run": [
+    "Read-only source/Git/hash inspection"
+  ],
+  "future_checks": "ALL new cases UNRUN; existing Late2/RED1 evidence not released by consultation",
+  "scope": "No repo writes/build/discovery/tests/app/runtime/network/OS investigation/delegation; only new /tmp pair"
+}
