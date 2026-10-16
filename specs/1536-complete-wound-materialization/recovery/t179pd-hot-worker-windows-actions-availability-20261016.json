@@ -1,0 +1,51 @@
+{
+  "scope": "Harmless read-only current Actions availability; no settings/enable/rerun/dispatch mutation or product runtime. Per-workflow disabled states do not establish global Actions disabled. Global settings denied403. No blanket future CI ban inferred from issue1553 owner decision.",
+  "source": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+  "observations": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows"
+      ],
+      "startedUtc": "2026-10-16T22:55:30.728222+00:00",
+      "endedUtc": "2026-10-16T22:55:31.237446+00:00",
+      "nativeExit": 0,
+      "stdout": "{\"total_count\":2,\"workflows\":[{\"id\":280957256,\"node_id\":\"W_kwDORoVJtc4QvxFI\",\"name\":\".NET CI\",\"path\":\".github/workflows/dotnet-ci.yml\",\"state\":\"disabled_manually\",\"created_at\":\"2026-05-21T14:24:07.000Z\",\"updated_at\":\"2026-10-08T02:51:40.000Z\",\"url\":\"https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows/280957256\",\"html_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/main/.github/workflows/dotnet-ci.yml\",\"badge_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/workflows/.NET%20CI/badge.svg\"},{\"id\":374267479,\"node_id\":\"W_kwDORoVJtc4WTt5X\",\"name\":\"Portable load selected Linux qualification\",\"path\":\".github/workflows/portable-load-linux.yml\",\"state\":\"disabled_manually\",\"created_at\":\"2026-10-04T00:15:47.000Z\",\"updated_at\":\"2026-10-08T03:00:46.000Z\",\"url\":\"https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows/374267479\",\"html_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/main/.github/workflows/portable-load-linux.yml\",\"badge_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/workflows/Portable%20load%20selected%20Linux%20qualification/badge.svg\"}]}",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/permissions"
+      ],
+      "startedUtc": "2026-10-16T22:55:30.728837+00:00",
+      "endedUtc": "2026-10-16T22:55:31.234368+00:00",
+      "nativeExit": 1,
+      "stdout": "{\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/actions/permissions#get-github-actions-permissions-for-a-repository\",\"status\":\"403\"}",
+      "stderr": "gh: Resource not accessible by integration (HTTP 403)\n"
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs?branch=1536-wound-b2-cloud-20261012&per_page=2"
+      ],
+      "startedUtc": "2026-10-16T22:55:30.729199+00:00",
+      "endedUtc": "2026-10-16T22:55:31.216826+00:00",
+      "nativeExit": 0,
+      "stdout": "{\"total_count\":0,\"workflow_runs\":[]}",
+      "stderr": ""
+    }
+  ],
+  "priorOwnerDecision": {
+    "commit": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+    "path": "specs/1553-portable-local-storage/final-readiness.md",
+    "first_line": 60,
+    "last_line": 76,
+    "text": "Current state: independent design/source PASS at20bdeb6c/0be9c979; minimal runner preparation correction design PASS. Final unique30/30PASS: guide3 + launcher/profile9 + canonical/managed18, all selections complete/cleanup complete. Fresh unit/integration builds passed, warning budgets29/158 and22/158. PlanOnly28estimated cases/5descriptors executed0; guide expands to3 executed assertions. Historical ENOSPC1failed case and fixture-context7failed cases remain preparation failures, not gameplay RED; explicit-root diagnostic7PASS is separate from corrected ordinary-runner18PASS. Catalog435categories/11194identities valid, executed0; exact current CI plan5entries/1Ubuntu group/no Windows. [Qualification](recovery/final-readiness-qualification.json) stores hashes/counts/cleanup and historical failures. Independent final source/evidence PASS at5a7fb8d1 with the named relay24+reviewed-runner delta metadata correction applied. Writer verified118stored/expanded artifact records and75current source pins. Separate actual Sol6.1/xhigh metadata PASS atc104e5b2, no required corrections. Only bounded T052 closes. Source/evidence/metadata are ready for parent integration gates; exact final-tip hosted CI/readback/GitHub-only recovery is confirmed separately in writer delivery. Classic protection/review requirements remain inaccessible and require parent/maintainer confirmation before merge. No merge or full#1553/platform qualification follows. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.\n\n## Historical observed integration gates after draft PR creation\n\n[Draft PR1555](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555) targets main. At observed head72ffde8c, GitHub reports MERGEABLE but BLOCKED/REVIEW_REQUIRED and no checks. `.NET CI` workflow280957256 is `disabled_manually`; no selected hosted result observed; no attached checks. Existing portable-load workflow is active but its fixed filesystem selection is not changed or replayed. Read-only Actions permissions GET returns403 Resource not accessible by integration, as does detailed main protection. Actor/reason for workflow disabling is not inferred.\n\nAt that initial snapshot, no workflow enablement, permission/protection change or merge was performed. Parent/maintainer must resolve required review and the hosted-CI gate under the owner's settings policy before integration; no CI PASS or absence of protection is claimed. Native Windows remains postmerge; systemd S2/S3/backend-off remains owner-approved deferral. Final exact-tip remote/readback/GitHub-only restore is separate writer delivery evidence.\n\n## Current owner integration decision\n\nOwner2026-10-08 explicitly requests disabling GitHub CI and merging PR1555 into the actual default branch main. This supersedes the earlier hosted-green and other-human-review delivery gates; it does not turn any failed check into PASS. Accepted local final30 and reviewed causalCI21 remain separate bounded evidence.\n\nWorkflow280957256 was enabled by earlier authorization. Its initial startup37718428447 refused setup-node under repository policy. Minimal reviewed sourcec7afc4ea eliminates that action using conditional installed Node22.12+ refusal, without installer/allowlist/permissions changes. Local internal19PASS/2RED then21GREEN, catalog435/11194 valid/discovery0; original5selection entries plus affectedCI category preserved. Actual PR run37719162311 atc7af reaches selected verification and FAILS; final gate also FAILS. Hosted cause/counts/cleanup are unknown. Available annotations only provide exit code1; official logs and test artifact downloads are forbidden on results-receiver.actions.githubusercontent.com and productionresultssa9.blob.core.windows.net. No retry, transfer workaround or guessed runtime fix followed. [Current CI qualification and safe receipts](recovery/ci-pr-enable/qualification.json).\n\nOn the new explicit instruction, both existing CI workflows (280957256 and374267479) are confirmed disabled_manually. Current integration is viewer StanislavSmetaninSSM, repository ADMIN, viewerCanMergeAsAdmin=true. The ordinary admin merge path uses these existing rights; no fictitious self-approval or protection/permissions/network change. Mainf6dc2a1 is ancestor of sourcec7af. This source checkpoint records authorization before the actual merge; exact published/merged SHA, byte readback and fresh GitHub-only recovery accompany final delivery. Native Windows remains AFTER merge in \u00ab\u041b\u043e\u0440\u0438\u0430\u043d-Codex bridge\u00bb; actual systemd S2/S3/backend-off, production workers closed and desktop/provider/cold boundaries remain unchanged. No full#1553/platform qualification claim.\n\nMerge method preserves the no-issue-closure contract: three historical messages contain Fix#1553 while issue1553 is open. Supported GitHub squash merge with explicit Refs-only text avoids carrying those closing-keyword messages onto main. Original working branch and every source commit remain preserved; no history rewrite, branch deletion or issue mutation. The final merged tree must equal the reviewed published source exactly.\n",
+    "sha256": "0017c0b8f9e56ef1de7afc2f76cd2e3d7c234192ae768679c093b5348ad0a85c",
+    "bytes": 5285
+  }
+}
