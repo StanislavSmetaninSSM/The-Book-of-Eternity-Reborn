@@ -1,0 +1,407 @@
+{
+  "decision": "CLARIFIED_ONE_GUARDED_RELEASE_PUSH_UNDER_UNCHANGED_SETTINGS",
+  "reviewedSource": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+  "observedHead": "b3b12801e3c4f098fc0c035005c779f38fabf27a",
+  "documentaryOnlyDelta": [
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-windows-prepared-delta-recovery-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-windows-source-review-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-windows-source-review-20261016.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-actions-availability-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-bounded-20261016.diff",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-bounded-20261016.diff.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-compiled-continuity-20261016.diff",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-compiled-continuity-20261016.diff.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-fixture-20261016.diff",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-fixture-20261016.diff.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-v2-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-v3-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-v4-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-v5-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspect-v6-20261016.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-inspection-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-production-continuity-20261016.diff",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-source-production-continuity-20261016.diff.gz",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "priorSourceReview": [
+    {
+      "path": "/tmp/t179pd-hot-custody-worker-windows-source-review-20261016.md",
+      "sha256": "4b296c8b0318017e91442ad0df6a0451bc7a64ae15963ec2991ae5c5ed7003ae",
+      "bytes": 10873
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-worker-windows-source-review-20261016.json",
+      "sha256": "fd5dbe79fd801210b91c17965b4b0da21020fbcc7dd7fdde13583a1ee802ab48",
+      "bytes": 668286
+    }
+  ],
+  "markdownSha256": "2b1234c135d19d5abffb91c4c1f9641dd90ac93fb323ec42c6277320d7fc1435",
+  "configuration": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "actualConfigured": "coordinator-confirmed retained configuration",
+    "backendTelemetry": "unavailable",
+    "independentReviewer": "/root/t179pc_independent_review"
+  },
+  "scope": "Availability clarification only; original SOURCE report unchanged; no additional actual grant",
+  "oneExistingGrantPushPermitted": true,
+  "additionalRoutineUserAuthorizationRequiredForThatPush": false,
+  "globalActionsEnabled": "unknown",
+  "currentAllowlist": "unknown",
+  "newWorkflowAvailability": "unproven",
+  "settingsOrEnablementAuthorized": false,
+  "fallbackDispatchOrRetryAuthorized": false,
+  "stopConditions": [
+    "No admitted run / unavailable platform",
+    "Authorization/access barrier",
+    "Required native evidence retrieval unavailable",
+    "First unexpected actual outcome"
+  ],
+  "rootReadOnlyApiReceipt": {
+    "path": "/tmp/t179pd-hot-worker-windows-actions-availability-20261016.json",
+    "sha256": "a8d1171e2a6d4f68cbd424460cd98447295350e66579bf5c3acae3f9796c93d0",
+    "bytes": 8658,
+    "reviewerNetworkRecheck": false,
+    "contents": {
+      "scope": "Harmless read-only current Actions availability; no settings/enable/rerun/dispatch mutation or product runtime. Per-workflow disabled states do not establish global Actions disabled. Global settings denied403. No blanket future CI ban inferred from issue1553 owner decision.",
+      "source": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "observations": [
+        {
+          "argv": [
+            "gh",
+            "api",
+            "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows"
+          ],
+          "startedUtc": "2026-10-16T22:55:30.728222+00:00",
+          "endedUtc": "2026-10-16T22:55:31.237446+00:00",
+          "nativeExit": 0,
+          "stdout": "{\"total_count\":2,\"workflows\":[{\"id\":280957256,\"node_id\":\"W_kwDORoVJtc4QvxFI\",\"name\":\".NET CI\",\"path\":\".github/workflows/dotnet-ci.yml\",\"state\":\"disabled_manually\",\"created_at\":\"2026-05-21T14:24:07.000Z\",\"updated_at\":\"2026-10-08T02:51:40.000Z\",\"url\":\"https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows/280957256\",\"html_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/main/.github/workflows/dotnet-ci.yml\",\"badge_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/workflows/.NET%20CI/badge.svg\"},{\"id\":374267479,\"node_id\":\"W_kwDORoVJtc4WTt5X\",\"name\":\"Portable load selected Linux qualification\",\"path\":\".github/workflows/portable-load-linux.yml\",\"state\":\"disabled_manually\",\"created_at\":\"2026-10-04T00:15:47.000Z\",\"updated_at\":\"2026-10-08T03:00:46.000Z\",\"url\":\"https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows/374267479\",\"html_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/main/.github/workflows/portable-load-linux.yml\",\"badge_url\":\"https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/workflows/Portable%20load%20selected%20Linux%20qualification/badge.svg\"}]}",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "gh",
+            "api",
+            "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/permissions"
+          ],
+          "startedUtc": "2026-10-16T22:55:30.728837+00:00",
+          "endedUtc": "2026-10-16T22:55:31.234368+00:00",
+          "nativeExit": 1,
+          "stdout": "{\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/actions/permissions#get-github-actions-permissions-for-a-repository\",\"status\":\"403\"}",
+          "stderr": "gh: Resource not accessible by integration (HTTP 403)\n"
+        },
+        {
+          "argv": [
+            "gh",
+            "api",
+            "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs?branch=1536-wound-b2-cloud-20261012&per_page=2"
+          ],
+          "startedUtc": "2026-10-16T22:55:30.729199+00:00",
+          "endedUtc": "2026-10-16T22:55:31.216826+00:00",
+          "nativeExit": 0,
+          "stdout": "{\"total_count\":0,\"workflow_runs\":[]}",
+          "stderr": ""
+        }
+      ],
+      "priorOwnerDecision": {
+        "commit": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "path": "specs/1553-portable-local-storage/final-readiness.md",
+        "first_line": 60,
+        "last_line": 76,
+        "text": "Current state: independent design/source PASS at20bdeb6c/0be9c979; minimal runner preparation correction design PASS. Final unique30/30PASS: guide3 + launcher/profile9 + canonical/managed18, all selections complete/cleanup complete. Fresh unit/integration builds passed, warning budgets29/158 and22/158. PlanOnly28estimated cases/5descriptors executed0; guide expands to3 executed assertions. Historical ENOSPC1failed case and fixture-context7failed cases remain preparation failures, not gameplay RED; explicit-root diagnostic7PASS is separate from corrected ordinary-runner18PASS. Catalog435categories/11194identities valid, executed0; exact current CI plan5entries/1Ubuntu group/no Windows. [Qualification](recovery/final-readiness-qualification.json) stores hashes/counts/cleanup and historical failures. Independent final source/evidence PASS at5a7fb8d1 with the named relay24+reviewed-runner delta metadata correction applied. Writer verified118stored/expanded artifact records and75current source pins. Separate actual Sol6.1/xhigh metadata PASS atc104e5b2, no required corrections. Only bounded T052 closes. Source/evidence/metadata are ready for parent integration gates; exact final-tip hosted CI/readback/GitHub-only recovery is confirmed separately in writer delivery. Classic protection/review requirements remain inaccessible and require parent/maintainer confirmation before merge. No merge or full#1553/platform qualification follows. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.\n\n## Historical observed integration gates after draft PR creation\n\n[Draft PR1555](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555) targets main. At observed head72ffde8c, GitHub reports MERGEABLE but BLOCKED/REVIEW_REQUIRED and no checks. `.NET CI` workflow280957256 is `disabled_manually`; no selected hosted result observed; no attached checks. Existing portable-load workflow is active but its fixed filesystem selection is not changed or replayed. Read-only Actions permissions GET returns403 Resource not accessible by integration, as does detailed main protection. Actor/reason for workflow disabling is not inferred.\n\nAt that initial snapshot, no workflow enablement, permission/protection change or merge was performed. Parent/maintainer must resolve required review and the hosted-CI gate under the owner's settings policy before integration; no CI PASS or absence of protection is claimed. Native Windows remains postmerge; systemd S2/S3/backend-off remains owner-approved deferral. Final exact-tip remote/readback/GitHub-only restore is separate writer delivery evidence.\n\n## Current owner integration decision\n\nOwner2026-10-08 explicitly requests disabling GitHub CI and merging PR1555 into the actual default branch main. This supersedes the earlier hosted-green and other-human-review delivery gates; it does not turn any failed check into PASS. Accepted local final30 and reviewed causalCI21 remain separate bounded evidence.\n\nWorkflow280957256 was enabled by earlier authorization. Its initial startup37718428447 refused setup-node under repository policy. Minimal reviewed sourcec7afc4ea eliminates that action using conditional installed Node22.12+ refusal, without installer/allowlist/permissions changes. Local internal19PASS/2RED then21GREEN, catalog435/11194 valid/discovery0; original5selection entries plus affectedCI category preserved. Actual PR run37719162311 atc7af reaches selected verification and FAILS; final gate also FAILS. Hosted cause/counts/cleanup are unknown. Available annotations only provide exit code1; official logs and test artifact downloads are forbidden on results-receiver.actions.githubusercontent.com and productionresultssa9.blob.core.windows.net. No retry, transfer workaround or guessed runtime fix followed. [Current CI qualification and safe receipts](recovery/ci-pr-enable/qualification.json).\n\nOn the new explicit instruction, both existing CI workflows (280957256 and374267479) are confirmed disabled_manually. Current integration is viewer StanislavSmetaninSSM, repository ADMIN, viewerCanMergeAsAdmin=true. The ordinary admin merge path uses these existing rights; no fictitious self-approval or protection/permissions/network change. Mainf6dc2a1 is ancestor of sourcec7af. This source checkpoint records authorization before the actual merge; exact published/merged SHA, byte readback and fresh GitHub-only recovery accompany final delivery. Native Windows remains AFTER merge in «Лориан-Codex bridge»; actual systemd S2/S3/backend-off, production workers closed and desktop/provider/cold boundaries remain unchanged. No full#1553/platform qualification claim.\n\nMerge method preserves the no-issue-closure contract: three historical messages contain Fix#1553 while issue1553 is open. Supported GitHub squash merge with explicit Refs-only text avoids carrying those closing-keyword messages onto main. Original working branch and every source commit remain preserved; no history rewrite, branch deletion or issue mutation. The final merged tree must equal the reviewed published source exactly.\n",
+        "sha256": "0017c0b8f9e56ef1de7afc2f76cd2e3d7c234192ae768679c093b5348ad0a85c",
+        "bytes": 5285
+      }
+    }
+  },
+  "sourcePins": [
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1553-portable-local-storage/final-readiness.md",
+      "gitBlob": "c84e4e4f238b30b2a33edc9c1e62bac34d136603",
+      "mode": "100644",
+      "bytes": 13553,
+      "sha256": "e6a92e02f83addf7be12792bc6f86ef8e73f40f444feae86642e1d601abcd77e"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1553-portable-local-storage/tasks.md",
+      "gitBlob": "0ad15cbd3b214ec5cf2b91992e48db978abb491f",
+      "mode": "100644",
+      "bytes": 160127,
+      "sha256": "41bf15a3ddde3f153fc4d0f426a364c3aabd416a8abf9526d5c2ae06eb7241ba"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "gitBlob": "e230c98501adc2506ba64894e39e6062737fb200",
+      "mode": "100644",
+      "bytes": 2212114,
+      "sha256": "cda86f8ec7b823394f0803049eab9866b8a72a3babf1ce6f75bf0ea7b56ca937"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/fr063-hot-worker-windows.yml",
+      "gitBlob": "443431270aeacae7a62fd95b740fc3a0534d3fdc",
+      "mode": "100644",
+      "bytes": 17738,
+      "sha256": "e2a7332bc16d694cca9044381f226946b285721407b58902833c73913c1bc538"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/dotnet-ci.yml",
+      "gitBlob": "0b1e75f391aa6dfb7c4d81bdceecc51a6e182a0e",
+      "mode": "100644",
+      "bytes": 4649,
+      "sha256": "5d33e5bf08ec81264d583566544b3ceb7e716686d014d09799814440ac379bfe"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/portable-load-linux.yml",
+      "gitBlob": "bf54fa1b9eca928bb6f66c2d16e7e75eeecc38c5",
+      "mode": "100644",
+      "bytes": 4018,
+      "sha256": "d338537993ba063c99283610e5b02d741d4e80a761ba382ca2cb75d0e6aa14c9"
+    }
+  ],
+  "projections": [
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1553-portable-local-storage/final-readiness.md",
+      "firstLine": 60,
+      "lastLine": 76,
+      "bytes": 5285,
+      "sha256": "0017c0b8f9e56ef1de7afc2f76cd2e3d7c234192ae768679c093b5348ad0a85c",
+      "text": "Current state: independent design/source PASS at20bdeb6c/0be9c979; minimal runner preparation correction design PASS. Final unique30/30PASS: guide3 + launcher/profile9 + canonical/managed18, all selections complete/cleanup complete. Fresh unit/integration builds passed, warning budgets29/158 and22/158. PlanOnly28estimated cases/5descriptors executed0; guide expands to3 executed assertions. Historical ENOSPC1failed case and fixture-context7failed cases remain preparation failures, not gameplay RED; explicit-root diagnostic7PASS is separate from corrected ordinary-runner18PASS. Catalog435categories/11194identities valid, executed0; exact current CI plan5entries/1Ubuntu group/no Windows. [Qualification](recovery/final-readiness-qualification.json) stores hashes/counts/cleanup and historical failures. Independent final source/evidence PASS at5a7fb8d1 with the named relay24+reviewed-runner delta metadata correction applied. Writer verified118stored/expanded artifact records and75current source pins. Separate actual Sol6.1/xhigh metadata PASS atc104e5b2, no required corrections. Only bounded T052 closes. Source/evidence/metadata are ready for parent integration gates; exact final-tip hosted CI/readback/GitHub-only recovery is confirmed separately in writer delivery. Classic protection/review requirements remain inaccessible and require parent/maintainer confirmation before merge. No merge or full#1553/platform qualification follows. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.\n\n## Historical observed integration gates after draft PR creation\n\n[Draft PR1555](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555) targets main. At observed head72ffde8c, GitHub reports MERGEABLE but BLOCKED/REVIEW_REQUIRED and no checks. `.NET CI` workflow280957256 is `disabled_manually`; no selected hosted result observed; no attached checks. Existing portable-load workflow is active but its fixed filesystem selection is not changed or replayed. Read-only Actions permissions GET returns403 Resource not accessible by integration, as does detailed main protection. Actor/reason for workflow disabling is not inferred.\n\nAt that initial snapshot, no workflow enablement, permission/protection change or merge was performed. Parent/maintainer must resolve required review and the hosted-CI gate under the owner's settings policy before integration; no CI PASS or absence of protection is claimed. Native Windows remains postmerge; systemd S2/S3/backend-off remains owner-approved deferral. Final exact-tip remote/readback/GitHub-only restore is separate writer delivery evidence.\n\n## Current owner integration decision\n\nOwner2026-10-08 explicitly requests disabling GitHub CI and merging PR1555 into the actual default branch main. This supersedes the earlier hosted-green and other-human-review delivery gates; it does not turn any failed check into PASS. Accepted local final30 and reviewed causalCI21 remain separate bounded evidence.\n\nWorkflow280957256 was enabled by earlier authorization. Its initial startup37718428447 refused setup-node under repository policy. Minimal reviewed sourcec7afc4ea eliminates that action using conditional installed Node22.12+ refusal, without installer/allowlist/permissions changes. Local internal19PASS/2RED then21GREEN, catalog435/11194 valid/discovery0; original5selection entries plus affectedCI category preserved. Actual PR run37719162311 atc7af reaches selected verification and FAILS; final gate also FAILS. Hosted cause/counts/cleanup are unknown. Available annotations only provide exit code1; official logs and test artifact downloads are forbidden on results-receiver.actions.githubusercontent.com and productionresultssa9.blob.core.windows.net. No retry, transfer workaround or guessed runtime fix followed. [Current CI qualification and safe receipts](recovery/ci-pr-enable/qualification.json).\n\nOn the new explicit instruction, both existing CI workflows (280957256 and374267479) are confirmed disabled_manually. Current integration is viewer StanislavSmetaninSSM, repository ADMIN, viewerCanMergeAsAdmin=true. The ordinary admin merge path uses these existing rights; no fictitious self-approval or protection/permissions/network change. Mainf6dc2a1 is ancestor of sourcec7af. This source checkpoint records authorization before the actual merge; exact published/merged SHA, byte readback and fresh GitHub-only recovery accompany final delivery. Native Windows remains AFTER merge in «Лориан-Codex bridge»; actual systemd S2/S3/backend-off, production workers closed and desktop/provider/cold boundaries remain unchanged. No full#1553/platform qualification claim.\n\nMerge method preserves the no-issue-closure contract: three historical messages contain Fix#1553 while issue1553 is open. Supported GitHub squash merge with explicit Refs-only text avoids carrying those closing-keyword messages onto main. Original working branch and every source commit remain preserved; no history rewrite, branch deletion or issue mutation. The final merged tree must equal the reviewed published source exactly.\n"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1553-portable-local-storage/tasks.md",
+      "firstLine": 567,
+      "lastLine": 571,
+      "bytes": 2630,
+      "sha256": "f450d82ca274833706aebed6d72cd87121170f8252ea2807d35068c63cba8760",
+      "text": "- [x] T043-RELAY-GM-BOUNDED: bounded r3 one genuinely model-generated action accepted/applied with original input and complete stop/I/O, collected without restart after orchestration interruption. Independent final Sol6.1/xhigh source/evidence/metadata PASS259fc8e5; repair3/3, artifact-stall7/7, BOM driver6/6 sufficient/no reruns. Final metadata carrier publication/readback and exact-tip fresh GitHub restoration required before delivery. [Plan](relay-gm-bounded-plan.md), [handoff](relay-gm-bounded-handoff.md). Separate r2 real application1 retains raw counter0/client cleanup failure; historical Uncertain unchanged. Test relay only; OpenCode access/systemd/native Windows remain open.\n- [x] T052-CI-PLATFORM-SELECTION Source #1553/#1505: explicit catalog CI hosts and exact selection-preserving job groups replace fixed Windows binding; stable final check requires success of all groups. Frozen source3464cd24; causal RED→GREEN28/28, catalog434/11193 and PlanOnly2files/2descriptors execute0; independent actual Sol6.1/xhigh design/source/evidence/metadataPASS (metadatafcf7fbf3). Exact final-carrier remote/readback/freshGitHubrestore proof accompanies delivery. No runtime cohorts, hosted Actions/native Windows qualification, systemd activation or merge. Whole-branch selection/protection and systemd deferral remain parent gates. [Handoff](ci-platform-selection.md).\n- [x] T052-CI-PR-ENABLE Source #1553, owner2026-10-08: enable only existing .NET CI and obtain exact-head PR1555 hosted results. Startup37718428447 at9fde6801 refused disallowed setup-node@v4 before jobs; independent Sol6.1/xhigh design PASS for frontend-only preinstalled Node22.12+ guard, no installer/allowlist/permissions change, original five selected contracts plus affected CI contracts. Preserve actual failure, causal narrow verification, exact remote/readback and current integration permission evidence; parent alone handles merge. Native Windows after merge; systemd S2/S3 disabled/deferred.\n\n- [ ] T052-OWNER-MERGE Source #1553, owner explicitly supersedes hosted-green gate2026-10-08: disable both GitHub CI workflows, preserve actual failed37719162311/unknown runtime cause and transfer denials, accept bounded local30+CI21/independentreviews, publish reviewed metadata and ordinary admin PR1555 merge into verified main. Verify exact merged SHA/readback/GitHub-only restore. No fictitious self-approval, protection/permissions changes, force-push, branch deletion or issue closure. Native Windows only AFTER merge; actual systemd S2/S3 remain disabled/deferred. CI-PR-ENABLE closes on owner-accepted terminal result, not hosted PASS.\n"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "firstLine": 1,
+      "lastLine": 32,
+      "bytes": 9661,
+      "sha256": "42fbb4b4f742f708dfceec75317406310a2fcc263d08045baa9d22fd4ac358b1",
+      "text": "## Current execution authority — autonomous bounded 3b continuation (2026-10-16)\n\nThe new direct coordinator delegation resumes autonomous implementation from remote `745b8581275bd4b5fe25f01cb1bf6ea899492314`: continue the accepted bounded T179-Pd.3b sequence, obtain engineering reviews, use causal TDD and implement the accepted custody contract without another routine user gate. It explicitly supersedes the discussion STOP of the completed DESIGN-only pass below. Earlier immutable design/review/evidence records remain unchanged.\n\nAt resume, the missing executable step was separate EVIDENCE review of already frozen FIRST Late2 actual93a/compiledd474, carried by2ab; SOURCE/F01 and full-recovery/R01 had released only that completed FIRST Late2. [Separate independent EVIDENCE acceptance](recovery/t179pd-hot-custody-red2-owned-late-evidence-independent-review-20261016.md) now accepts that packet atf0df, no finding. Root74Git-pin entries/7exactprojections/threeemptycontinuitydiffs/fourtemporaryreferences/embeddedverifier checked; reviewer independently verified sixactual+twelveprepchains, fourliveDLLs and complete raw semantic/strict-cleanup union. Immutable MD SHA256 `23191936c7f14b1a08f1c36cb789a5de25e141241f53af87e65aed390c07e0e5`, JSON `df4c9a95f1cf814ea758e82186bc00419c8079bc0c8f956225d25ba9d5a3e0f4`. No tests repeated.\n\nAccepted EVIDENCE checkpoint `2e16e392d26cd93416f3d521fccef67286643611` was pushed/read back and [new GitHub document recovery](recovery/t179pd-hot-custody-red2-late-evidence-accepted-recovery-20261016.json) verified43exactfiles/all38documentary changes sincefull2ab. Clean d474source/fourDLL continuity and exact recovered review pair were checked before the sole released Ready3 actual.\n\nFIRST Ready3 actual at clean2e16/compiledd474 returnednative1: exactly3planned/completed, **2legacyPASS+one sole absent-export RED at ReadyDrift.cs228**, no skip/duplicate/underfill/timeout. Wall19.286766s/category13.6961064s≤5m. All3strictownedroots removed, scopedprefixbefore/afterempty/no newresidue, sourceHEAD/clean/fourDLLunchanged. The full sixraw/local/stored chains, nativeargv/timestamps/stdout/log/TRX/plan/summary and [root causal inspector result](recovery/t179pd-hot-custody-red2-owned-controls-root-inspection-20261016.json) are frozen under `recovery/t179pd-hot-custody-red2-owned-controls-red-20261016-*`. Full genuine Stage43/turn42/original/request/G, old Wait true/physicalReady replacement→latermanifest read-order→actualdelete,17sourceimages/correlated-onlyledger assertions precede the intended missing feature. No custody implementation or SourceChanged barrier is claimed from this RED; Selection.Complete=true is execution completeness, not GREEN.\n\nThe firstRED cc8 checkpoint is pushed/readback/recovered and independent causal qualification is accepted below. After persisting that classification implement the previously accepted bounded3b custody/attempt/observed-reader/owned-close contract, with genuine source barrier before positive issuance and the required next SOURCE/fresh-preparation/EVIDENCE/GREEN gates. No other actual is currently released. No aggregate, hidden retry or repetition of unchanged Late2/HS01/reader131; F1 and completed design are not redesigned.\n\nPreserve and independently qualify any causal RED before success implementation. Continue accepted finite 3b custody/source/attempt/owned-close work and meaningful checks; settle concrete engineering gaps through focused design and independent review. Full S/B/M3/F1, complete ordinary owners, T197, new-QTE activation and all D4/guided/DOM/visual/Windows/D8 gates remain open. F2 is not selected. Sole writer, category budgets, native/cleanup/source evidence and non-force task-branch persistence remain mandatory; main/merge/force-push/branch deletion/secrets/issue closure stay prohibited.\n\n\n## T179-Pd.3b Windows preparation/CI guards saved — affected SOURCE pending (2026-10-16)\n\nLogger/platform/initial inert workflow sourcea09272e91b379adb792450cd9e9d4f2a928d8a9b was pushed/readback and NEWGitHub exact148files/all145changedpaths recovered against full7acd base. FIRST fresh Linux BOTH/catalog native0: runner126.2165481s/integration98.1892055s/unit15.7810066s, existing133+35warnings/0errors, valid777owners/11725methods-files/no unmapped/stale. Singleton PlanOnly native0/5.4915584s runner, EXACT1integrationexclusive descriptor/2cases/5m/frontendfalse/ZEROexecutions. All12raw/local/stored preparation chains/fourfresh a092DLLs/helpertexts/source recovery are frozen under recovery/t179pd-hot-custody-worker-windows-*; no actual run or hidden retry.\n\n[Independent Windows engineering consultation](recovery/t179pd-hot-worker-windows-ci-engineering-consultation-20261016.md) confirms the existing ordinary WindowsJob route is source-feasible, no production admission change. Root28Gitpins/16projections/4diffs/3tmprefs verified; MDc4454dfb57b53ba8ee3068657a57e937edd9cdfea912fd81ebd16bceb4a974ab/JSONb43023f93adcbfe0e7820931070de61b58d1bd3ceb14e4520f04e14d4744bf50 immutable. Static tree audit finds no Windows-invalid names/collisions/symlinks, but379char relative paths require precheckout longpaths; actual checkout remainsUNRUN. Consultation grants no run.\n\nAfter both preparation commands completed at clean a092, ONLY workflow guards were corrected: exactly-one-parent release commit; hashed review JSON must explicitly bind reviewedSource, matching markdownSha256, decision and sole FIRST_NATIVE_WINDOWS_ONLY grant(category/expectedCases2/budget5/platformWindows); corresponding distinct .md/.json paths; exact current-source preparation/actual revisions; actual Windows strict per-case receipt roots are checked physically on their owning host with non-absence IO errors preserved, and results archived even on a failing native result. Empty prefix arrays serialize explicitly. Required report machine fields are an execution guard, not an instruction to reviewers to accept. No C#/project/build-input/category/selection change after a092; its fresh DLL provenance is retained without meaningless recompilation. Corrected YAML and embedded PowerShell syntax parser native0; CI metadata planner native0 puts only worker2 onWindows and seven other selections onLinux, with ZEROexecution.\n\nThis concrete CI-only correction and saved preparation carrier require NEWGitHub complete delta and independent affected SOURCE before any release-file addition. Dedicated release file remainsABSENT, so no source/prep push runs CI. Actual release set isEMPTY. If accepted later, release only FIRSTnativeWindows worker2 after acceptance-parent push/readback/recovery; preserve/download/verify its first raw outcome, then separate EVIDENCE/final bounded integration. Prior13PASS/initial2LinuxFAIL remain immutable with original platform/source; no protectedLate2/old131/causalRED replay. No general Windows/Linux/visual/F1 acceptance from syntax or source feasibility. All full3b/S/B/M3/F1/T197/newQTE/D4/guidedUS5/DOM/visual/D8 gates remainOPEN; F2 not selected.\n\n## T179-Pd.3b worker Windows correction — source WIP, NO release file (2026-10-16)\n\nTracked HS-WORKER-F01/O02 correction is test/configuration only: existing SpiritualLifecycleTestLogger is passed through the existing CreateGameEngine logger parameter; settled diagnostics retain bounded Engine messages, actual OS and selected executable. Worker category now names native WindowsJob and routes ciRunner=windows-latest, retaining the two actual process/apply oracles and five-minute budget. Ordinary LinuxRelease remains intentionally closed. Global selection retains the full intended3b history; its worker entry explains this affected-only correction. Production/other fixtures/runner scripts are unchanged; previous13PASS remain with original provenance and are not replayed.\n\nNew `.github/workflows/fr063-hot-worker-windows.yml` uses only existing allowlisted checkout/setup-dotnet/upload-artifact, contents:read, windows-latest and25m protective outer job budget. It triggers ONLY a first added `tests/selections/1536-hot-worker-windows.json` on the exact task branch; that release file DOES NOT EXIST in this WIP, so this source push releases/executes nothing. No PR/main/workflow_dispatch or schedule is created. Actual release requires a separately accepted affected SOURCE decision, saved/recovered acceptance-parent and an explicit single-child release-file-only commit. The pinned release JSON will carry schemaVersion1, decision=ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2, reviewedSource SHA, acceptedCheckpoint SHA, sourceReview.md/json path+SHA256 and one explicit worker selection/reason/contracts. File first-addition/direct-parent/source-review raw hashes/ancestry/code continuity/run_attempt1 are checked before preparation; no unchanged workflow retry or later file edit can reuse the grant. Git core.autocrlf=false/core.longpaths=true apply before materialization; bounded pinned history is fetched, no shallow assumption.\n\nThe prospective native Windows sequence is fresh BOTH/catalog discovery (ZEROexecutions), exact singleton PlanOnly(1descriptor/2cases/5m/ZEROexecutions), then ONLY worker2 -NoBuild if every prior gate succeeds. Native argv/timestamps/stdout, full result directories/TRX, four fresh Windows DLL pins, source/clean continuity and actual Windows GetTempPath scoped prefix before/after are archived always; Linux-built DLLs/foreign-host path checks are not used as Windows proof. Separate downloaded raw semantic/strict-root evidence and final independent bounded review remain mandatory. Any first failure is preserved, not retried. Category positive source/body success and hosted execution remain UNRUN.\n"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/fr063-hot-worker-windows.yml",
+      "firstLine": 89,
+      "lastLine": 125,
+      "bytes": 4380,
+      "sha256": "85635b824c2a16db9c5bb08a02588a2c3eaddf64f2743fcf0edf0d712f53875e",
+      "text": "          Require ([OperatingSystem]::IsWindows()) 'Positive ordinary worker qualification requires native WindowsJob.'\n          Require ($env:GITHUB_EVENT_NAME -ceq 'push' -and $env:GITHUB_REF -ceq 'refs/heads/1536-wound-b2-cloud-20261012') 'Wrong release event or branch.'\n          Require ($env:GITHUB_RUN_ATTEMPT -ceq '1') 'No workflow/job retry is released.'\n          $head = GitValue @('rev-parse', 'HEAD')\n          Require ($head -ceq $env:GITHUB_SHA) 'Checkout differs from event SHA.'\n          Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Checkout is not clean.'\n          Require (((GitValue @('rev-list', '--parents', '-n', '1', 'HEAD')) -split ' ').Count -eq 2) 'Release commit must have exactly one parent.'\n          $release = Get-Content -LiteralPath $releasePath -Raw | ConvertFrom-Json -AsHashtable\n          Require ($release.schemaVersion -eq 1 -and $release.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2') 'No exact first-worker release.'\n          Require ($release.reviewedSource -cmatch '^[0-9a-f]{40}$' -and $release.acceptedCheckpoint -cmatch '^[0-9a-f]{40}$') 'Release source pins are invalid.'\n          Require ((GitValue @('rev-parse', 'HEAD^')) -ceq $release.acceptedCheckpoint) 'Release is not directly after the saved SOURCE acceptance.'\n          Require (@(GitValue @('ls-tree', '-r', '--name-only', $release.acceptedCheckpoint, '--', $releasePath)).Count -eq 0) 'Release file must be a first addition.'\n          $releaseDiff = @(GitValue @('diff', '--name-status', $release.acceptedCheckpoint, 'HEAD'))\n          Require ($releaseDiff.Count -eq 1 -and $releaseDiff[0] -ceq \"A`t$releasePath\") 'Release commit must add only the dedicated release file.'\n          # Explicit bounded pinned history; absence of the ancestor fails closed.\n          & git fetch --no-tags --depth=32 origin $release.reviewedSource $release.acceptedCheckpoint\n          Require ($LASTEXITCODE -eq 0) 'Cannot recover reviewed pinned history.'\n          & git merge-base --is-ancestor $release.reviewedSource $release.acceptedCheckpoint\n          Require ($LASTEXITCODE -eq 0) 'Reviewed source is not a proved ancestor.'\n          $changed = @(GitValue @('diff', '--name-only', $release.reviewedSource, $release.acceptedCheckpoint))\n          foreach ($path in $changed) {\n            Require ($path -cmatch '^specs/1536-complete-wound-materialization/(spec\\.md|plan\\.md|tasks\\.md|design/[^/]+\\.md|recovery/.+)$') \"Unreviewed source/configuration change: $path\"\n          }\n          foreach ($kind in @('md', 'json')) {\n            $pin = $release.sourceReview[$kind]\n            Require ($pin.path -cmatch ('^specs/1536-complete-wound-materialization/recovery/[^/\\\\]+\\.' + $kind + '$') -and $pin.sha256 -cmatch '^[0-9a-f]{64}$') 'Invalid review artifact pin.'\n            Require ((Get-FileHash -LiteralPath $pin.path -Algorithm SHA256).Hash.ToLowerInvariant() -ceq $pin.sha256) 'Raw SOURCE review bytes differ.'\n          }\n          $sourceReview = Get-Content -LiteralPath $release.sourceReview.json.path -Raw | ConvertFrom-Json -AsHashtable\n          Require ($sourceReview.reviewedSource -ceq $release.reviewedSource -and $sourceReview.markdownSha256 -ceq $release.sourceReview.md.sha256 -and $sourceReview.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2' -and @($sourceReview.releasedActuals).Count -eq 1) 'Review does not grant this exact source and singleton actual.'\n          $grant = $sourceReview.releasedActuals[0]\n          Require ($grant.category -ceq $category -and $grant.expectedCases -eq 2 -and $grant.budgetMinutes -eq 5 -and $grant.platform -ceq 'windows-latest' -and $grant.attempt -ceq 'FIRST_NATIVE_WINDOWS_ONLY') 'Review grants a different platform, attempt, category or bound.'\n          Require (@($release.selections).Count -eq 1 -and $release.selections[0].category -ceq $category) 'Only the worker category is released.'\n          Import-Module ./scripts/testing/TestCategoryCatalog.psm1\n          $catalog = Read-TestCategoryCatalog ./tests/categories.json\n          $owner = @($catalog.categories | Where-Object id -CEQ $category)\n          Require ($owner.Count -eq 1 -and $owner[0].requirements.ciRunner -ceq 'windows-latest' -and $owner[0].requirements.exclusive -and -not $owner[0].requirements.frontendBuild -and $owner[0].timeoutMinutes -eq 5) 'Worker catalog host/exclusivity/budget differs.'\n"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/dotnet-ci.yml",
+      "firstLine": 1,
+      "lastLine": 30,
+      "bytes": 602,
+      "sha256": "1a74b224cb42fdd2ae74cedac7e00025a0f1661d70f5e356ece11a8db1dda963",
+      "text": "name: .NET CI\n\non:\n  push:\n    branches:\n      - main\n  pull_request:\n    branches:\n      - main\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  plan:\n    name: Plan explicit category hosts\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    outputs:\n      matrix: ${{ steps.selection.outputs.matrix }}\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      - name: Plan only the reviewed selection\n        id: selection\n        shell: pwsh\n        run: ./scripts/plan-test-ci.ps1 -SelectionFile tests/selection.json -GitHubOutput $env:GITHUB_OUTPUT\n\n  selected-tests:\n"
+    },
+    {
+      "revision": "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+      "path": ".github/workflows/portable-load-linux.yml",
+      "firstLine": 1,
+      "lastLine": 35,
+      "bytes": 929,
+      "sha256": "748f001591c829f3f96260bb43784c6a4682b111d907343bdbb099ada5fc43cd",
+      "text": "name: Portable load selected Linux qualification\n\n# Deliberately trigger only an edited filesystem selection or this workflow.\n# The repository permits only the three actions referenced below.\n\non:\n  push:\n    branches:\n      - codex/1553-load-filesystem\n    paths:\n      - .github/workflows/portable-load-linux.yml\n      - tests/selections/1553-load-linux.json\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: portable-load-linux-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  selected-filesystem:\n    name: Selected load filesystem contracts\n    runs-on: ubuntu-24.04\n    timeout-minutes: 25\n    env:\n      DOTNET_CLI_TELEMETRY_OPTOUT: '1'\n      POWERSHELL_TELEMETRY_OPTOUT: '1'\n      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'\n      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'\n      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'\n      DOTNET_PROCESSOR_COUNT: '1'\n      GenerateDocumentationFile: 'true'\n      NoWarn: '1591'\n\n"
+    }
+  ],
+  "readOnlyGitCommands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdoutSha256": "98e1396c32c9b7a3b585348c348a48f5bf099b1756d9d011d68b222798d10d63",
+      "stdoutBytes": 41
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "b3b12801e3c4f098fc0c035005c779f38fabf27a"
+      ],
+      "exit": 0,
+      "stdoutSha256": "b24783ed9762517fdb90a0bd71a53844fcee10c3ccf269c3531d461000042670",
+      "stdoutBytes": 2220
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:specs/1553-portable-local-storage/final-readiness.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e6a92e02f83addf7be12792bc6f86ef8e73f40f444feae86642e1d601abcd77e",
+      "stdoutBytes": 13553
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        "specs/1553-portable-local-storage/final-readiness.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0ce399de6f0cdbd7b42a213c09471ef0ac3177cf1028747c6ab0116c17bc4ffb",
+      "stdoutBytes": 106
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:specs/1553-portable-local-storage/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "41bf15a3ddde3f153fc4d0f426a364c3aabd416a8abf9526d5c2ae06eb7241ba",
+      "stdoutBytes": 160127
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        "specs/1553-portable-local-storage/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "baea021d00a3490ed27a644151958c3d15f74054fafb2ec028e704304b466d93",
+      "stdoutBytes": 96
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "cda86f8ec7b823394f0803049eab9866b8a72a3babf1ce6f75bf0ea7b56ca937",
+      "stdoutBytes": 2212114
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        "specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9f010992f89f03d426fe10c75a15d605992051b30b941f703f8f19db1f29b7ce",
+      "stdoutBytes": 103
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:.github/workflows/fr063-hot-worker-windows.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e2a7332bc16d694cca9044381f226946b285721407b58902833c73913c1bc538",
+      "stdoutBytes": 17738
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        ".github/workflows/fr063-hot-worker-windows.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "1a3f2fee665b1ad326db1d73ae6850f0df063133fcb0930b4fdb7a2f64862788",
+      "stdoutBytes": 100
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:.github/workflows/dotnet-ci.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "5d33e5bf08ec81264d583566544b3ceb7e716686d014d09799814440ac379bfe",
+      "stdoutBytes": 4649
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        ".github/workflows/dotnet-ci.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e67eb74c5b389a51fef7331fef2d942308338782127bf43f628dc0eee9c23214",
+      "stdoutBytes": 85
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c:.github/workflows/portable-load-linux.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "d338537993ba063c99283610e5b02d741d4e80a761ba382ca2cb75d0e6aa14c9",
+      "stdoutBytes": 4018
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        ".github/workflows/portable-load-linux.yml"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9adf0899c8615b1847f022e93dc4fb13fc0d7e888f62edc44c6fd02c33938917",
+      "stdoutBytes": 95
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+        "--",
+        "tests/selections/1536-hot-worker-windows.json"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 0
+    }
+  ],
+  "reviewerRuntimeNetworkDelegationRepoWrites": false,
+  "releaseFileAbsent": true,
+  "createdUtc": "2026-10-16T22:57:14.723933+00:00",
+  "finalStop": true
+}
