@@ -254,16 +254,15 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
         await using var fixture = new OriginalFixture(output, hooks);
         await fixture.PrepareAsync();
         await using (var baseline = await fixture.Files.AcquireCanonicalWriteLeaseAsync()) fixture.ReadValid(baseline);
-        if (failure is "manifest" or "authority")
-            File.WriteAllText(fixture.Files.ResolvePath(failure == "manifest"
-                ? LiveTurnPreparationService.PendingTurnSnapshotManifestPath : PendingTurnSnapshotAuthority.AuthorityPath), "{");
+        if (failure == "authority")
+            File.WriteAllText(fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath), "{");
         else if (failure == "contexts")
         {
             // Secondary malformed inputs, never a manufactured primary context.
             File.WriteAllText(fixture.Files.ResolvePath(Repair), "{");
             File.WriteAllText(fixture.Files.ResolvePath(Ready), "{");
         }
-        else
+        else if (failure == "stale_request")
         {
             var request = JsonNode.Parse(File.ReadAllText(fixture.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath)))!;
             request["requestId"] = "stale-request";
@@ -272,8 +271,19 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
         var before = fixture.Tree();
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
+            if (failure == "manifest")
+            {
+                // Real admission must inspect the genuine original before this
+                // reader-only malformed-input check. Keep that admission guard.
+                var manifestPath = fixture.Files.ResolvePath(
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+                File.WriteAllText(manifestPath, "{");
+                before[Path.GetRelativePath(fixture.Root, manifestPath)] = Encoding.UTF8.GetBytes("{");
+            }
             var old = PendingTurnSnapshotReader.ReadCurrent(fixture.Files, lease, [First, Second]);
             Assert.False(old.Success);
+            if (failure == "manifest")
+                Assert.Contains(old.Issues, issue => issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
             tracing = true;
             var observed = PendingTurnSnapshotReader.ReadObservedCurrent(fixture.Files, lease, [First, Second]);
             tracing = false;
