@@ -39,8 +39,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         });
         var reduction = AcceptedMechanicsPlanner.ReduceAcceptedPlan(fixture.Input,
             AcceptedMechanicsPlanFingerprints.ComputePlanningInput(fixture.Input));
-        Assert.Equal(AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
-            reduction.Kind);
+        Assert.True(reduction.Kind == AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
+            reduction.Kind + ": " + DescribeOrdinaryReductionIssues(reduction.Issues));
         var completed = Assert.IsType<AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction>(reduction.Completed);
         Assert.True(completed.Resources.IsValid);
         Assert.True(completed.Resources.EffectBoundaryTranscript!.IsComplete);
@@ -114,7 +114,17 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.True(owned.IsComplete);
         Assert.True(owned.MatchesInitialPlan(fixture.Input.PlanningContext!.EffectPlan!));
         Assert.Equal(0, fixture.Effects.EffectCalls);
-        Assert.Equal(scenario == "advance" ? 1 : 0, fixture.Effects.TransitionCalls);
+        Assert.Equal(scenario == "advance" ? 2 : 0, fixture.Effects.TransitionCalls);
+        if (scenario == "advance")
+        {
+            var newIds = completed.Effects.AllocatedTransitionIds.ToHashSet(StringComparer.Ordinal);
+            var actual = completed.Effects.IdentityIndexAfterImage["entries"]!.AsArray()
+                .SelectMany(entry => entry!["transitions"]!.AsArray())
+                .Where(row => newIds.Contains(row!["transitionId"]!.GetValue<string>())).ToArray();
+            Assert.Equal(new[] { "trigger", "consume" }, actual.Select(row => row!["kind"]!.GetValue<string>()));
+            Assert.Equal(actual[1]!["transitionId"]!.GetValue<string>(),
+                Assert.Single(finalEvent["subjects"]!.AsArray())!["transitionRefs"]![0]!.GetValue<string>());
+        }
     }
 
     [Theory]
@@ -131,7 +141,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     public void LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(string scenario)
     {
         var fixture = CreateOrdinaryReductionFixture(effects: true,
-            configureEffectInput: input => ConfigureLifecycleLedgerScenario(input, scenario));
+            configureEffectInput: input => ConfigureLifecycleLedgerScenario(input, scenario),
+            includeConfiguredCarrierBeforeImages: scenario is "npc_advance" or "multi_target");
         var completed = ReduceLifecycleLedgerFixture(fixture);
         var initial = fixture.Input.PlanningContext!.EffectPlan!;
         var ledger = Assert.IsType<EffectLifecycleExecutionLedger>(completed.Effects!.LifecycleExecutionLedger);
@@ -203,6 +214,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
                 {
                     Assert.Null(subject["schedulerEvent"]!["currentTime"]);
                     Assert.Empty(subject["transitionRefs"]!.AsArray());
+                    Assert.Equal(50L, subject["afterImage"]!["lifetime"]!["deadline"]!.GetValue<long>());
                 }
                 if (scenario == "npc_advance")
                 {
@@ -250,6 +262,13 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             }
         }
         Assert.Equal(0, fixture.Effects.EffectCalls);
+        if (scenario is "npc_advance" or "multi_target")
+        {
+            var actualBefore = fixture.Input.BeforeImages[EffectCarrierCatalog.NpcPath];
+            Assert.True(actualBefore.Existed);
+            Assert.Equal(initial.CarrierBeforeImages[EffectCarrierCatalog.NpcPath]!.ToJsonString(),
+                System.Text.Encoding.UTF8.GetString(actualBefore.Bytes!));
+        }
         Assert.Equal(scenario == "multi_target" ? 2 : scenario is "turn_expire" or "bound_expire" or "npc_advance" or "ordered_events" ? 1 : 0,
             fixture.Effects.TransitionCalls);
         var copy = EffectAcceptedTurnPlan.DetachedCopyOf(completed.Effects);
@@ -308,7 +327,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     {
         var reduction = AcceptedMechanicsPlanner.ReduceAcceptedPlan(fixture.Input,
             AcceptedMechanicsPlanFingerprints.ComputePlanningInput(fixture.Input));
-        Assert.Equal(AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction, reduction.Kind);
+        Assert.True(reduction.Kind == AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
+            reduction.Kind + ": " + DescribeOrdinaryReductionIssues(reduction.Issues));
         var completed = Assert.IsType<AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction>(reduction.Completed);
         Assert.True(completed.Resources.IsValid);
         Assert.True(completed.Resources.EffectBoundaryTranscript!.IsComplete);
@@ -349,7 +369,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
                 ["mode"] = "until_time", ["duration"] = 5,
                 ["timeAuthority"] = EffectSourceDefinitionContract.CanonicalWorldTimeAuthority
             };
-            effect["lifetime"] = new JsonObject { ["mode"] = "until_time", ["deadline"] = 50 };
+            effect["lifetime"] = new JsonObject { ["mode"] = "until_time", ["deadline"] = 50L };
         }
         if (scenario == "uses_mode")
         {

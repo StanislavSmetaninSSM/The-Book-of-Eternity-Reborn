@@ -1,3 +1,6 @@
+- T179-Pd unexpected15 diagnosis preserved; narrow unit fixture/assertion corrections UNRUN. Fresh BOTH/catalog/PlanOnly/SOURCE/firstLate2/EVIDENCE mandatory before retry; prior remaining-category release stopped.
+- T197 targeted G-C/A4 independent conditional review complete, no material defect; six exact engineering closures and28UNRUN checks remain. Next DESIGN: one actual source executor/capability/pre-effect enrollment/publication-leaf vertical contract; no implementation release or target activation.
+
 - T197 targetedG-C/A4 proposal preserved:27historicalpins/28futureUNRUNchecks, L1/W1 per-run originalcustodian bridge-loss route conditionalonactualsurvival; exactA1/source-debt/coldcustodyinterfaces stillOPEN. IndependentAstra/XHighreview pending, noG-Cimplementation/native qualification/OSchange. FullDEP-C/I/L/T197/newQTE remainblocked; F1continues.
 
 - T179-Pd staticPd-R1 correction: one actual full initial roster perpass + per-event matched roster/outcomes; true multi-target scenario added, expected15unit/42selected cases pending discovery. All corrected prep/actualsUNRUN; independent affectedSOURCE/firstLate2/EVIDENCE required.

@@ -1,0 +1,1227 @@
+{
+  "report": "t197-depc-a4-targeted-independent-review-20261016",
+  "date_utc": "2026-10-16T12:18:16.499983+00:00",
+  "review_type": "independent targeted DESIGN only",
+  "reviewer_configuration": {
+    "requested": "gpt-6-astra / xhigh",
+    "actual_configured": "gpt-6-astra / xhigh",
+    "configuration_provenance": "coordinator explicitly confirmed original separate collaboration.spawn_agent invocation with fork_turns:none",
+    "backend_telemetry": "UNKNOWN",
+    "design_author_separate": true
+  },
+  "scope": {
+    "candidate_commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+    "direct_parent": "f9a40eb843e18f82a0abb961fcd0d74d62884a41",
+    "historical_source_commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+    "observed_head_metadata_only": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+    "repository": "/workspace/The-Book-of-Eternity-Reborn",
+    "full_changed_paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "remote_publication": "parent-confirmed clean/pushed/readback; reviewer performed no remote operation",
+    "excluded": "later moving code and all unrelated ordinary-ledger code/test/runtime acceptance"
+  },
+  "verdict": {
+    "conditional_discussion": "REVIEWABLE_CONDITIONAL_PROPOSAL",
+    "exact_complete_engineering_release": "NOT_ACCEPTED_INCOMPLETE",
+    "new_authority_accepted": false,
+    "implementation_released": false,
+    "transition_qualified": false,
+    "confirmed_material_findings_count": 0
+  },
+  "confirmed_material_findings": [],
+  "required_engineering_closures": [
+    {
+      "id": "B01",
+      "classification": "declared engineering dependency, not new confirmed defect",
+      "proposal_lines": [
+        37,
+        38,
+        49,
+        53,
+        55,
+        59,
+        196
+      ],
+      "decision": "Concrete A1 source executor, capability transport and exhaustive pre-effect enrollment",
+      "scenario_consequence": "A bridge can be gone while an external managed participant, timer or CLI writer remains active. Current nested/refcounted access is not proof those writers are exhausted. A dedicated runner is safe only if all real source effects are within its original scope or separately owned and joined. Missing helper APIs alone do not create new principled authority.",
+      "required_before_release": "Name actual source entry point, owner capabilities and transfers, all task/native/IO/publication/finalization edges, exclusive-lane admission and seal races; choose one actual runner or joinable executor variant."
+    },
+    {
+      "id": "B02",
+      "classification": "declared engineering dependency, not new confirmed defect",
+      "proposal_lines": [
+        144,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        155,
+        157,
+        159,
+        197
+      ],
+      "decision": "Actual finite source publication leaf/owner adapters",
+      "scenario_consequence": "D0–D5 enumerate kinds, not every reachable member, guard, rollback artifact, namespace and cleanup owner. A dead runner with a serialized PlannedWrite cannot settle an original-storage transaction. Lock acquisition or absence of active.json alone cannot prove no debt.",
+      "required_before_release": "Instantiate exact transaction identities, authority-bearing before/after/original artifacts, no-change/absence witnesses and native IO completion for one real source operation and then all required lawful operations. Preserve D1 committed cleanup versus uncommitted rollback, D2 distinct physical semantics, D3 original owner, D4 worker conjuncts and D5 deduplication."
+    },
+    {
+      "id": "B03",
+      "classification": "declared storage/protocol dependency with detailed acceptance questions",
+      "proposal_lines": [
+        98,
+        100,
+        102,
+        104,
+        106,
+        108,
+        110,
+        112,
+        120,
+        122,
+        124,
+        136,
+        138,
+        140,
+        198
+      ],
+      "decision": "Executable strict codec, main-schema fence, metadata and retirement linearization",
+      "scenario_consequence": "The named fields/state arrows do not define enough bytes/types, reader decisions or commit ordering to implement recovery. Ambiguous pendingMetadata or terminal/main cross-record interpretation can acknowledge a partial state or lose a retained proof. The text currently forbids that, so this is an unresolved contract, not a demonstrated allowed bad transition.",
+      "required_before_release": "Specify non-recursive pending-CAS envelope/image references; canonical value encodings, bounds, physical namespace validation, owner receipt/reference lifetimes; exact terminal decision/main-Stopped ordering including lease-release debt and pin disposal; every before/after/ACK crash cut and old-reader/new-version refusal."
+    },
+    {
+      "id": "B04",
+      "classification": "declared endpoint/protocol dependency; necessity of crypto not established",
+      "proposal_lines": [
+        104,
+        114,
+        116,
+        138,
+        140,
+        174,
+        175,
+        198
+      ],
+      "decision": "Peer binding, query protocol and separate mutating-command authorization",
+      "scenario_consequence": "A signed nonce response can authenticate possession of the original in-memory key under the trusted manifest assumption. It does not establish that the requester may seal, settle, release references or issue a mutation, and it is not native/work/debt proof. OS peer UID/PID is also not sufficient original-run identity. No unauthorized command is actually granted by this proposal, whose framing remains open.",
+      "required_before_release": "Choose and justify OS-bound local endpoint versus additional ephemeral-key proof; define caller rights, query versus mutations, replay/idempotency, canonical signature transcript/domain separation and receipt sequence semantics. Retain the original live objects as the issuer. No external credential, credential store, service or security-policy change is authorized."
+    },
+    {
+      "id": "B05",
+      "classification": "explicit full-coverage design dependency, not new defect",
+      "proposal_lines": [
+        61,
+        65,
+        67,
+        71,
+        73,
+        75,
+        116,
+        177,
+        178,
+        179,
+        180,
+        181,
+        191,
+        195
+      ],
+      "decision": "Custodian death, cold terminal consumption, reboot/migration/distinct-root authority",
+      "scenario_consequence": "L1/W1 can preserve the original issuer through frontend loss only while the keeper survives. Last-close kill, EOF cleanup, copied retirement JSON or a different boot tuple cannot supply the missing original-domain proof to a fresh process. Safe HOLD preserves evidence but does not complete a lawful death.",
+      "required_before_release": "Coordinator must close the required recovery policy and exact original-domain issuer/IO/publication provenance contract. A narrower supported guarantee requires explicit accepted design; this review does not accept a reduced lawful-outcome set or authorize services/security changes."
+    },
+    {
+      "id": "B06",
+      "classification": "preserved global engineering/qualification dependencies",
+      "proposal_lines": [
+        189,
+        191,
+        199,
+        200,
+        206,
+        233,
+        235,
+        239
+      ],
+      "decision": "Platform evidence and dependent target/handoff acceptance",
+      "scenario_consequence": "No actual Linux or Windows route, browser or console flow has been exercised here. Source retirement cannot accept target remaining work, discharge a later H3/HQ close, create G or activate a joint QTE.",
+      "required_before_release": "Complete exact design and independent acceptance first, then TDD and repository-approved bounded native/runtime qualification. DEP-C/I/L, full target/EP/E1, H2/H3/HQ, new QTE, D4/guided/visual/Windows/D8 remain open/blocked; no automatic F2."
+    }
+  ],
+  "optional_observations": [
+    {
+      "id": "O1",
+      "classification": "optional wording precision; not material",
+      "proposal_line": 27,
+      "source": "native/linux/boe-lineage-supervisor.c:411–440",
+      "note": "The summary that EOF latches owner-lost, emits terminal Uncertain and the helper exits should explicitly say terminal output/exit occurs only after the same stopping + actual empty reap + no-pending-exec condition. EOF itself is not an immediate exit guarantee; the loop can remain alive and uncertain. The proposal elsewhere preserves that distinction and never uses EOF as success. No semantic correction is required for discussion."
+    }
+  ],
+  "full_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "f9a40eb843e18f82a0abb961fcd0d74d62884a41",
+      "e4a729e04380f6c380d7e56f048628c66d782248",
+      "--"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+    "scope": "entire candidate versus its direct parent; exactly five documentation/evidence paths",
+    "sha256": "0ce66f0c96906355aadf260284eb5908cf490a494bd03edbb9e29037dfdf0d18",
+    "bytes": 165711
+  },
+  "diff_check": {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "f9a40eb843e18f82a0abb961fcd0d74d62884a41",
+      "e4a729e04380f6c380d7e56f048628c66d782248",
+      "--"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "meaning": "static documentation whitespace check only"
+  },
+  "document_pins": [
+    {
+      "commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "blob": "9ad8dc01ff1db7af47d22ea7d6a4dd1430835167",
+      "sha256": "0cceae962b55a33f03c15f9aeae4ef1a5c2c04ad3307c6b3d23604cacb95ecb0",
+      "bytes": 70466,
+      "lines": 273
+    },
+    {
+      "commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "blob": "2f288cda901082896e9349fd51e56d8078876876",
+      "sha256": "7e5abfa3c8359fda89f69d4d3fd53c54fa30878ed77e91a385520b6efead3e31",
+      "bytes": 1986298,
+      "lines": 22614
+    },
+    {
+      "commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
+      "blob": "e077ba66e9332e70fa29ac351d33357d468de3aa",
+      "sha256": "25cef182df647d50e403714562b5c159018ac9a352598213cacd4ce3e7f5bfad",
+      "bytes": 84819,
+      "lines": 653
+    },
+    {
+      "commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
+      "blob": "183c079de96d8939758371b900efaadd76470b04",
+      "sha256": "ec43864fec0f3800980989366744e4ca5a275d4c10374c9644d1f85c6a97cdcd",
+      "bytes": 69264,
+      "lines": 271
+    },
+    {
+      "commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "blob": "1bbe03be8f5509b292d60ebae6da1cd74d60a34f",
+      "sha256": "ab749691efa3978f0ca19d11322fc226c57f394caa5e06dcdcb3a307ab015624",
+      "bytes": 1409725,
+      "lines": 14722
+    }
+  ],
+  "historical_source_pins": [
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "AGENTS.md",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "lines": 199,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "docs/development-workflow.md",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "lines": 493,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": ".specify/memory/constitution.md",
+      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "lines": 264,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "blob": "02c79252eb95551168a0e210a3ea53650a72c382",
+      "sha256": "7b871f3e3518660a64cf702d06e8cf43d1b72091d5970f4933c2317dc8603201",
+      "bytes": 1974251,
+      "lines": 22562,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "2f288cda901082896e9349fd51e56d8078876876",
+      "unchanged_at_candidate": false
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "blob": "699a661ec3f750a2fe669e9584a2d6749f1eb5e7",
+      "sha256": "6e0aafb3f6a57dbdf5ece5d16f11777f43a7cefd00bbf44fba41928736832ab2",
+      "bytes": 69121,
+      "lines": 271,
+      "author_examined_ranges": [
+        [
+          94,
+          145
+        ],
+        [
+          215,
+          269
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "9ad8dc01ff1db7af47d22ea7d6a4dd1430835167",
+      "unchanged_at_candidate": false
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "blob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+      "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+      "bytes": 22799,
+      "lines": 101,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "blob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+      "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+      "bytes": 14010,
+      "lines": 319,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "author_examined_ranges": [
+        [
+          28,
+          84
+        ],
+        [
+          125,
+          186
+        ],
+        [
+          292,
+          367
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "author_examined_ranges": [
+        [
+          1,
+          109
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "blob": "4797cd481bffc8b9f46d31af9f30e6b0ffdab017",
+      "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14",
+      "bytes": 8221,
+      "lines": 146,
+      "author_examined_ranges": [
+        [
+          1,
+          135
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "4797cd481bffc8b9f46d31af9f30e6b0ffdab017",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "blob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63",
+      "bytes": 5526,
+      "lines": 105,
+      "author_examined_ranges": [
+        [
+          1,
+          110
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "blob": "a3f8602314cf5fb4ee2f1713dbc98712fcc987bb",
+      "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "bytes": 10516,
+      "lines": 181,
+      "author_examined_ranges": [
+        [
+          1,
+          185
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "a3f8602314cf5fb4ee2f1713dbc98712fcc987bb",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343,
+      "lines": 6231,
+      "author_examined_ranges": [
+        [
+          564,
+          584
+        ],
+        [
+          3711,
+          3850
+        ],
+        [
+          3994,
+          4070
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "author_examined_ranges": [
+        [
+          1,
+          110
+        ],
+        [
+          139,
+          170
+        ],
+        [
+          201,
+          250
+        ],
+        [
+          300,
+          318
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "author_examined_ranges": [
+        [
+          24,
+          180
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "blob": "65b0a9d5fda59a86213a7805968eea1b53db7445",
+      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df",
+      "bytes": 4982,
+      "lines": 75,
+      "author_examined_ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "65b0a9d5fda59a86213a7805968eea1b53db7445",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "lines": 75,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "lines": 410,
+      "author_examined_ranges": [
+        [
+          1,
+          226
+        ],
+        [
+          240,
+          416
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "blob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+      "bytes": 24566,
+      "lines": 446,
+      "author_examined_ranges": [
+        [
+          20,
+          95
+        ],
+        [
+          137,
+          197
+        ],
+        [
+          338,
+          447
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "bytes": 10947,
+      "lines": 334,
+      "author_examined_ranges": [
+        [
+          78,
+          240
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "lines": 261,
+      "author_examined_ranges": [
+        [
+          1,
+          200
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "blob": "b186c1c96c8c46937b47950809ec6b25a0151593",
+      "sha256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c",
+      "bytes": 5104,
+      "lines": 78,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "b186c1c96c8c46937b47950809ec6b25a0151593",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs",
+      "blob": "37e4860f4bf2e6b153836183af916265cb141d90",
+      "sha256": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59",
+      "bytes": 3516,
+      "lines": 54,
+      "author_examined_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "37e4860f4bf2e6b153836183af916265cb141d90",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "blob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
+      "sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
+      "bytes": 23367,
+      "lines": 396,
+      "author_examined_ranges": [
+        [
+          1,
+          170
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "author_examined_ranges": [
+        [
+          1,
+          196
+        ],
+        [
+          395,
+          483
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "blob": "544ee7a0fccf3530473ba04b35e7d03b060e5bd1",
+      "sha256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805",
+      "bytes": 72348,
+      "lines": 1910,
+      "author_examined_ranges": [
+        [
+          1,
+          170
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "544ee7a0fccf3530473ba04b35e7d03b060e5bd1",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "author_examined_ranges": [
+        [
+          1,
+          185
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "unchanged_at_candidate": true
+    }
+  ],
+  "source_pin_verification": {
+    "matched": 27,
+    "mismatched": 0,
+    "unchanged_at_candidate": 25,
+    "changed_expected_document_paths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    ],
+    "claim": "hash verification of all pins; semantic review bounded to proposal and relevant actual owner ranges, not every line of every pinned file"
+  },
+  "actual_semantic_source_reads": [
+    {
+      "topic": "Original Lost, close retention and stop owner",
+      "sources": [
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+          "ranges": [
+            [
+              1,
+              97
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+          "ranges": [
+            [
+              292,
+              360
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "Main metadata, schema and main/lifecycle/canonical fence",
+      "sources": [
+        {
+          "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+          "ranges": [
+            [
+              1,
+              181
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+          "ranges": [
+            [
+              5,
+              25
+            ],
+            [
+              105,
+              145
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+          "ranges": [
+            [
+              1,
+              65
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+          "ranges": [
+            [
+              18,
+              110
+            ],
+            [
+              201,
+              222
+            ],
+            [
+              246,
+              251
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "ranges": [
+            [
+              3711,
+              3765
+            ],
+            [
+              3994,
+              4037
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+          "ranges": [
+            [
+              93,
+              171
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "Original Linux/native owner and controlled systemd alternative",
+      "sources": [
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+          "ranges": [
+            [
+              18,
+              75
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+          "ranges": [
+            [
+              141,
+              226
+            ],
+            [
+              295,
+              410
+            ]
+          ]
+        },
+        {
+          "path": "native/linux/boe-lineage-supervisor.c",
+          "ranges": [
+            [
+              27,
+              31
+            ],
+            [
+              137,
+              174
+            ],
+            [
+              338,
+              446
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+          "ranges": [
+            [
+              18,
+              78
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "Windows original job, ConPTY and IO settlement",
+      "sources": [
+        {
+          "path": "BookOfEternityGMBridge/ConPtySession.cs",
+          "ranges": [
+            [
+              35,
+              261
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+          "ranges": [
+            [
+              78,
+              242
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "Real publication and worker debt kinds, not a completed leaf inventory",
+      "sources": [
+        {
+          "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+          "ranges": [
+            [
+              95,
+              115
+            ],
+            [
+              419,
+              487
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "ranges": [
+            [
+              38,
+              65
+            ],
+            [
+              91,
+              145
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+          "ranges": [
+            [
+              15,
+              185
+            ]
+          ]
+        },
+        {
+          "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+          "ranges": [
+            [
+              15,
+              110
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "md_json_section_check": {
+    "section_count": 14,
+    "all_json_section_bodies_exactly_present_in_md": true
+  },
+  "future_checks": [
+    {
+      "id": "F01",
+      "title": "Original launch custody",
+      "description": "Kill only the bridge at each held/released boundary; verify the same custodian/native owner remains and child release never occurs without original ACK.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F02",
+      "title": "Lost pin positive route",
+      "description": "One genuine active source op loses its original channel; actual work/native/debts settle; exactly one RetiredAfterExhaustion receipt and one actual pin disposal, no ClosedObserved fabrication.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F03",
+      "title": "Lost normal close ACK",
+      "description": "Original close accepted then reply lost; same immutable normal close returned without retirement or replay.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F04",
+      "title": "Managed descendants",
+      "description": "Task/callback/timer continuation attempts post-seal registration; deny before side effect; a previously registered delayed task keeps retirement pending.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F05",
+      "title": "Hung in-process work",
+      "description": "Cancellation requested but task/thread stays alive; no timeout or task-count snapshot grants exhaustion.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F06",
+      "title": "Dedicated runner death",
+      "description": "Kill enrolled original runner at each frozen/armed/native publication cut; only qualified exact journal recovery runs, otherwise remain blocked.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F07",
+      "title": "Unrelated activity",
+      "description": "Another operation/helper/source grant present before lane or appears unexpectedly; no one-operation retirement of it and no unauthorized scope kill.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F08",
+      "title": "Linux descendants",
+      "description": "Original fork/double-fork/setsid, rapid fork during stop and all reaper turns; no /proc absence promoted to ECHILD proof.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F09",
+      "title": "Linux scope breach",
+      "description": "Namespace divergence, proc restriction, pidfd failure, 128-child overflow, helper/status loss; all remain uncertain.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F10",
+      "title": "Linux custodian crash",
+      "description": "Original owner dies; native EOF cleanup does not become proof to a fresh bridge; copied journal cannot reopen native authority.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F11",
+      "title": "Windows original job",
+      "description": "Suspended assignment, no release before registration, child/nested job behavior, same original query and root wait, no numeric PID reuse.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F12",
+      "title": "Windows escaped launch",
+      "description": "Breakaway/WMI/external broker or incompatible outer job; no claimed complete scope retirement.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F13",
+      "title": "Windows ConPTY drain",
+      "description": "Bridge disappears under full output/backpressure and final close frame; original keeper pumps and close task must really settle.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F14",
+      "title": "Windows custodian death",
+      "description": "Kill keeper; kill-on-last-close is not acknowledged operation retirement; no named-job reconstruction.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F15",
+      "title": "Native I/O",
+      "description": "Long outstanding request, cancellation racing success, shared mapping/external submitter; actual completion owner required before locks/settlement succeed.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F16",
+      "title": "Canonical/lifecycle lock order",
+      "description": "Lost while original native publication holds canonical lease; recovery waits outside leases then lifecycle→canonical under same main custody; no lock inversion or guard reacquire.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F17",
+      "title": "Metadata CAS faults",
+      "description": "Every stage/write/flush/rename/readback and dependent main Stopped ACK cut; exact pending bytes retained and retried without source/native replay.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F18",
+      "title": "Publication outcomes",
+      "description": "D1 committed cleanup versus uncommitted rollback, D2 native markers/physical identities, D3 original owner; preserve committed data and reject missing/extra evidence.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F19",
+      "title": "Unarmed phase exclusion",
+      "description": "Reserved but unarmed next phase, including H3/HQ, is never executed by settlement; no after-image/callback recomputation.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F20",
+      "title": "Whole debt inventory",
+      "description": "Extra journal, stale commit.tmp, unknown cleanup file, armed ticket without matching journal or absent target with real source debt refuses before effects.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F21",
+      "title": "Identity/replay",
+      "description": "Cross-root, cross-G/run/epoch/boot, copied JSON, stale challenge/sequence, same PID reuse and wrong original key cannot recover/continue.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F22",
+      "title": "Concurrent recovery",
+      "description": "Two frontends plus old delayed message request recovery; one original custodian state machine and immutable terminal reply only.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F23",
+      "title": "Bounds/retention",
+      "description": "All proposed bounds checked before admission; referenced old closes survive more than 32 unrelated historical closes; no eviction or truncation.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F24",
+      "title": "Reboot/cold receipt/migration",
+      "description": "Changed boot, new PID namespace, restored container/VM, different host or distinct-root copy with terminal JSON but no original-domain proof remains blocked; old source may still run. No live consumer authority is reconstructed until a separately accepted genuine issuer/load contract supplies it.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F25",
+      "title": "Same-G handoff",
+      "description": "Actual retirement plus genuine H2 allows only HC binding; target request/original/source proof mismatch refuses. No new G or old-pin resurrection.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F26",
+      "title": "H3/HQ own close debt",
+      "description": "Each later operation has distinct exact owner/close; old source receipt cannot discharge later Lost; target originals remain protected.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F27",
+      "title": "Browser/console behavior",
+      "description": "Reload/new frontend shows retained transition, composer blocked, accepted narrative not rerun, no extra tick/dice/reward.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F28",
+      "title": "Backend availability and global gate",
+      "description": "Missing Linux/Windows prerequisites fail before release; source-level or one-platform pass cannot promote full DEP-C/I/L/H2/H3/new-QTE activation.",
+      "status": "UNRUN"
+    }
+  ],
+  "primary_os_sources": [
+    {
+      "url": "https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html",
+      "supports": "Subreaper adoption is tied to a living ancestor; wait/reaping belongs to that original process. This does not create a replacement custody issuer.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "supports": "Membership/descendant migration, recursive populated and cgroup.kill semantics support the stronger conditional alternative; they do not prove external escaped work or storage settlement.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects",
+      "supports": "Ordinary child inheritance has WMI/breakaway exceptions; notifications generally are not guaranteed; last-handle kill is not an application receipt.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session",
+      "supports": "Host owns IO channels; ConPTY close can emit final output and needs concurrent draining to avoid deadlock.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess",
+      "supports": "Termination request is asynchronous; actual process termination waits for pending IO completion/cancellation.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex",
+      "supports": "Cancellation request does not wait and can race successful completion; actual completion must be observed.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://man7.org/linux/man-pages/man7/unix.7.html",
+      "supports": "Peer credentials and actual SCM_RIGHTS transfer have different roles; pathname/abstract socket access differs. UID or numeric PID alone does not establish original run identity.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getnamedpipeserverprocessid",
+      "supports": "Named-pipe server PID can be queried, but numeric PID is not by itself original native custody.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-security-and-access-rights",
+      "supports": "Pipe DACL/access checks are separate from server proof; defaults and broad generic rights must not be assumed to authorize only the intended client.",
+      "accessed_utc_date": "2026-10-16",
+      "use": "read-only API-semantics verification; no installed platform qualification"
+    }
+  ],
+  "authorization_provenance": {
+    "source": "explicit coordinator delegation plus preserved author record; not inferred solely from repository text",
+    "record": {
+      "targeted_design": "2026-10-16T11:44:14Z Sentinel_6315f3c4625c81919005f154b82b6227 Да",
+      "subsequent_coordinator_instruction": "11:48 UTC autonomous implementation after exact independently ACCEPTED contract and TDD/bounded qualification",
+      "assignment": "READ_ONLY_DESIGN_ONLY",
+      "repeat_user_permission_required_for_agreed_application_work": false,
+      "os_service_security_rights_changes_authorized": false
+    },
+    "review_effect": "No acceptance of incomplete interfaces and no additional external OS/security/service/credential permission. No repeated user permission requested for agreed ordinary application work."
+  },
+  "gates": {
+    "DEP-C": "BLOCKED",
+    "DEP-I": "BLOCKED",
+    "DEP-L": "BLOCKED",
+    "fulltarget": "BLOCKED",
+    "H2": "BLOCKED",
+    "H3": "BLOCKED",
+    "new_joint_QTE": "BLOCKED"
+  },
+  "preserved_open": [
+    "full target/EP/E1 and target originals",
+    "H3/HQ distinct operation/close/dequeue",
+    "D4",
+    "guided",
+    "visual",
+    "Windows qualification",
+    "D8",
+    "custodian-loss/cold/reboot/migration/distinct-root original issuer"
+  ],
+  "runtime_evidence": {
+    "all_T197_future_checks": "UNRUN",
+    "builds": false,
+    "tests": false,
+    "test_discovery": false,
+    "native_execution": false,
+    "platform_qualification": false,
+    "unrelated_ordinary_evidence_used": false,
+    "automatic_F2": false
+  },
+  "mutations": {
+    "repository": false,
+    "code": false,
+    "tests": false,
+    "runtime": false,
+    "OS_services_security_credentials": false,
+    "fetch_push": false,
+    "subagents": false,
+    "only_outputs": [
+      "/tmp/t197-depc-a4-targeted-independent-review-20261016.md",
+      "/tmp/t197-depc-a4-targeted-independent-review-20261016.json"
+    ]
+  },
+  "markdown_report": {
+    "path": "/tmp/t197-depc-a4-targeted-independent-review-20261016.md",
+    "sha256": "693d1987affa688ac284b60320e1b2ea48544b0981ac3b7a21c58d2f58ac4a34",
+    "bytes": 19051
+  },
+  "json_self_hash": "Delivered out-of-band after final serialization; omitted internally to avoid a circular self-hash.",
+  "final_stop": true,
+  "pending_writes": false
+}

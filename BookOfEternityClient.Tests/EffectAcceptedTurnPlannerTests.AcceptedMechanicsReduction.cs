@@ -198,7 +198,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         bool effects, bool bounded = false, bool createDefinition = false, int ordinaryCount = 0,
         ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false,
         Func<EffectAcceptedTurnInput, EffectAcceptedTurnInput>? configureEffectInput = null,
-        Func<EffectAcceptedTurnPlan, EffectAcceptedTurnPlan>? configureEffectPlan = null)
+        Func<EffectAcceptedTurnPlan, EffectAcceptedTurnPlan>? configureEffectPlan = null,
+        bool includeConfiguredCarrierBeforeImages = false)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 41, 10, 10, 10, 10, 10);
         Assert.True(bootstrap.IsValid, DescribeOrdinaryReductionIssues(bootstrap.Issues));
@@ -290,6 +291,19 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             ResourcePendingResolutionState.PendingPath
         })
             beforeImages[path] = new CanonicalBeforeImage(false, null);
+        if (includeConfiguredCarrierBeforeImages && effectPlan is not null)
+        {
+            // New nonplayer fixtures must supply their actual input carrier;
+            // the common plan's real path-coverage guard remains mandatory.
+            var carriersBefore = effectPlan.CarrierBeforeImages;
+            foreach (var path in effectPlan.TouchedPaths.Where(path => !beforeImages.ContainsKey(path)))
+            {
+                Assert.True(carriersBefore.TryGetValue(path, out var root),
+                    "The fixture lacks an actual input before-image: " + path);
+                beforeImages.Add(path, new CanonicalBeforeImage(root is not null,
+                    root is null ? null : System.Text.Encoding.UTF8.GetBytes(root.ToJsonString())));
+            }
+        }
         fixture.Input = new AcceptedMechanicsInput(
             "session_effect_reaction", "request_reduction", "snapshot_effect_reaction", "mortal_world", 42,
             events, commands.Root, effectCommands, new JsonObject(), new JsonObject(),
