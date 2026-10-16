@@ -1,0 +1,59 @@
+[
+  {
+    "path": "t197-stage-preparation-transitive-inventory-independent-review-20261016-author_pair.diff.gz",
+    "raw_sha256": "a96f1557935108630715035190fa4149543b0fcb8777db0767f6ed9b16809f75",
+    "raw_bytes": 265447,
+    "stored_sha256": "bcf9fd9fef34d6e9c4b4aeec724ed9983a6a2f96e97dda8037ab1baf600ebc5e",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "bb7c538c870f0e96de0b21605dd82eb62a83c55c",
+      "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.json"
+    ]
+  },
+  {
+    "path": "t197-stage-preparation-transitive-inventory-independent-review-20261016-selected_four.diff.gz",
+    "raw_sha256": "9f654c92e2af2a55102a0c3ae3862e6f7c1d3c45af5959e094d94bff0be9faa3",
+    "raw_bytes": 271387,
+    "stored_sha256": "6da79fd8653f1bfa0b2169d4b230eb024eb407740e0d6a4f2fb88847a8c0a5e6",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "bb7c538c870f0e96de0b21605dd82eb62a83c55c",
+      "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.json",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  },
+  {
+    "path": "t197-stage-preparation-transitive-inventory-independent-review-20261016-full_carrier.diff.gz",
+    "raw_sha256": "31193c2ad1f9bc3be82d7c8316d75ac2f7037ad0d0027863e28df4f82d322a5a",
+    "raw_bytes": 8099454,
+    "stored_sha256": "1a7a1c98f2878d331a882a5b2920ce235026a0225f4de9a04389542351bb90ff",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "bb7c538c870f0e96de0b21605dd82eb62a83c55c",
+      "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "--"
+    ]
+  }
+]
