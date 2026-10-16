@@ -1,3 +1,12 @@
+## FR063-D5-F1 DESIGN WIP — 2026-10-16
+
+- Recovery/source checkpoint `c4dde0629cc17aad75196ec509d2cdaf621945a3`, remote branch `1536-wound-b2-cloud-20261012` verified on GitHub; clean before edits. Единственный writer; старый исполнитель завершён. User authorizes only DESIGN F1, future-check matrix, T178–T191 clarification and independent review; code/tests/catalog/selection/runtime tools unchanged, runtime/build/discovery UNRUN.
+- [F1 §8.5](./design/lawful-active-joint-tail-b.md#85-d5--f1-обязательное-ordinary-resolution-в-существующем-m): mandatory nonempty GM-authored remainder + client-derived committed ledger; FD obligation in existing M; FT atomic child original/request through current owners; current G→child original→frozen FD→retained parent evidence; actual ordinary typed wound/effect/resource resolution with child phase acks in same M; completion before KF1 cleanup. Source action never resubmitted. Proposed n parent/n+1 child policy consumes only remaining time/cost, child lifecycle once. Unsupported families refuse before common, never drop an accepted remainder.
+- F1 is the requested design direction, not an accepted schema/write/cleanup grant. F2 is not selected; no proven F1 impossibility. Current destructive/sequential request/snapshot helpers and ordinary schema1 marker replacement require explicit F1 adapters, not unchanged calls. D4 allocator, guided US5 T113/T119/T127–129, actual frontend visual qualification and D8 narrow terminal/earned-XP limits remain OPEN.
+- [Affected plan](./design/lawful-active-joint-tail-b-implementation-plan.md): all T178–T191 unchecked; B08a FD/source/dedup, B08b atomic transfer/cold proof, B08c actual ordinary result/repair/completion. F101–F110 future matrix all UNRUN. New joint QTE refuses before common until written F1/grants/plan acceptance, separate implementation authorization and qualified decline. No no-offer implementation inferred.
+- Static verification and independent Astra/XHigh review pending. Existing initial/corrected DESIGN/PLAN recovery reports remain immutable and cover only their historical SHAs. Actual source restoration occurred by GitHub fetch to c4dde062; separate clean `git clone` attempts could not read GitHub username (no interactive credentials), so final recovery will use permitted exact GitHub blob API into a new directory and verify bytes/blob SHA for enumerated documents. This is limited document recovery, not a fresh full checkout/build.
+- Next: finish static checks, WIP commit/push/readback, independent F1 review, correct findings and return for discussion. **STOP before implementation.** Main/merge/force-push/branch deletion/secrets/issue closure untouched; #1557/#1558/#1559 not started.
+
 ## FR063-ACTIVE-PLAN-B готов к обсуждению; Q-D5 BLOCKED — 2026-10-16
 
 - [Подробный implementation plan](./design/lawful-active-joint-tail-b-implementation-plan.md): 14 последовательных этапов T178–T191. База `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, ветка `1536-wound-b2-cloud-20261012`; actual remote/clean/ancestry проверены. Пользователь выбрал B для planning/review, **без реализации**. Main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` не изменён.
@@ -13,7 +22,7 @@
 
 ### Future implementation task index — все UNRUN, не разрешены к исполнению
 
-- [ ] T178 B00 Закрыть contract/authorization и Q-D5 gate в `design/lawful-active-joint-tail-b-implementation-plan.md`.
+- [ ] T178 B00 Written F1 §8.5/grants/turn policy/plan acceptance и отдельный implementation gate в `design/lawful-active-joint-tail-b-implementation-plan.md`.
 - [ ] T179 [US7] B01 Strict marker3/original/G capture в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointActiveTail.cs` и engine source.
 - [ ] T180 [US2] B02 Atomic automatic action+ack в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticPublication.cs`.
 - [ ] T181 [US2] B03 Actual projection+ack в `BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs`.
@@ -21,10 +30,10 @@
 - [ ] T183 [US2] B05 No-offer vertical completion/D4 entry guards в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и exact UI consumers из плана.
 - [ ] T184 [US7] B06 QTE grammar/capture/retirement в `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs`; BLOCKED Q-D5.
 - [ ] T185 [US7] B07 Atomic accept/retention в `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs`; activation paired with mandatory decline.
-- [ ] T186 [US7] B08 Mandatory ordinary decline continuation в accepted Q-D5 appendix и known consumers; новый mechanism/schema/authority **не выбран/не выдан**.
+- [ ] T186 [US7] B08a FD/source/dedup → B08b atomic FT/cold original → B08c actual ordinary result/repair/completion в existing M, exact registry/owners в плане. F1 спроектирован, grants/implementation **не приняты/не разрешены**.
 - [ ] T187 [US2] B09 Atomic selected-terminal D8 в `BookOfEternityClient/Services/QteSceneService.MortalJointTerminal.cs`.
 - [ ] T188 [US2] B10 Post-QTE auto/projection/two-chain proof в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs`.
-- [ ] T189 [US7] B11 Exact terminal cleanup/cold admission в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и native fixture.
+- [ ] T189 [US7] B11 Exact terminal/F1 KF1 cleanup и relocated-parent cold admission в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и native fixture.
 - [ ] T190 [US5] B12 Console/browser/GM qualification в exact UI/docs/test paths из плана; guided US5/allocator/visual dependencies не закрываются автоматически.
 - [ ] T191 B13 Linux/Windows finite connected acceptance/recovery в `.JointActiveNative.cs`, exact expanded path и 12 cases/OS заданы в плане.
 

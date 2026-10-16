@@ -9,11 +9,11 @@
 **Доказательства:** все новые runtime/crash/platform проверки ниже **UNRUN**. Принятые 96 cases
 относятся к readonly US5-RO2 на `737092c39`, а не к этому проекту ACTIVE.
 
-**Уточнение 2026-10-16:** пользователь выбрал B как основу implementation planning, пока без кода.
+**Уточнение 2026-10-16:** пользователь выбрал B для planning, затем разрешил DESIGN F1 и независимое review, без кода.
 D4/D8 сохраняются. D5 пересмотрен в §8.5: подтверждённый ordinary/GM contract требует
 не терять обязательное разрешение ситуации; новый follow-up schema/authority остаётся
 отдельным предложением, не выданным grant. Исторический corrected DESIGN review a8479c86d
-относится к прежним bytes; текущий D5 delta независимо проверен вместе с планом: ready for discussion, Q-D5 blocked/ungranted.
+относится к прежним bytes; прежний D5 delta проверен с планом на f8ab919a. Новый F1 ниже — WIP до отдельного independent review; все grants unaccepted.
 
 ## 1. Результат и границы
 
@@ -81,11 +81,12 @@ Unchanged members остаются точными guards; actual write set — �
 | **PROJECTION** | `game_state/player/computed_characteristics.json`, M | Существующий named derived owner, связанный с applied automatic capability. Не вызывает normal refresh/repair или `AddStatPoints`. |
 | **STORY** | `stories/mortal_life_{i}.jsonl`, i=original incarnation>0, иначе existing fallback1; единственный `StoryService.GetStoryPath`, M | Named joint story writer. Только точный signed prefix + один deterministic row; `chat_log.json` не новый writer. |
 | **QTE ACCEPT** | `game_state/control/qte_runtime.json`, `game_state/control/qte_deferred_effect_continuation.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Named QTE handoff publisher. runtime/continuation устанавливаются вместе, offer/Ready становятся absent. `turn_error` должен быть absent, а не стёрт как конфликт. |
-| **QTE DECLINE base (недостаточен для revised D5)** | `game_state/control/qte_runtime.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Устанавливает existing `lastDeclinedQteId/lastDeclinedAtTurn`, обнуляет pending/active только при доказанной пустоте исходного runtime, consumes только свои offer/Ready. Prior terminal continuation остаётся unchanged. Этот base cohort не сохраняет обязательное ordinary continuation: Q-D5 обязан принять дополнительный exact handoff до activation; одного base receipt недостаточно. |
+| **QTE DECLINE base (недостаточен для revised D5)** | `game_state/control/qte_runtime.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M | Устанавливает existing `lastDeclinedQteId/lastDeclinedAtTurn`, обнуляет pending/active только при доказанной пустоте исходного runtime, consumes только свои offer/Ready. Prior terminal continuation остаётся unchanged. FD добавляет в тот же M pending F1 obligation/source capsule (§8.5); base receipt без F1 obligation/FT/actual ordinary completion недостаточен для D5. Все grants proposed. |
 | **QTE TERMINAL PREPARE** | M | Named QTE selected-terminal owner фиксирует только уже известный selected outcome и exact terminal before/after plan (§8.6); не будущий выбор в P0. |
 | **QTE TERMINAL COMMIT** | Existing genuine deferred plan owned data set + `game_state/player/experience.json`, `game_state/player/status_changes.json`, `game_state/history/qte_history.json`, `game_state/control/qte_runtime.json`, `game_state/control/qte_deferred_effect_continuation.json`, `output/narrative_response.json`, три exact QTE wave controls из guard table, M | Proposed selected-terminal publisher: complete outcome action+terminal ack, без прямого ordinary distributor/normalizer writer. Новый source amount не выдаётся, earned XP берётся только из выбранного authored outcome. Не XP compensation. D8. |
 | **QTE AUTOMATIC / PROJECTION** | Тот же four-member AUTOMATIC и two-member PROJECTION, отдельные phase IDs | Обрабатывает только новые stats/level после genuine QTE terminal, с новым terminal-bound frozen basis; P2 никогда не переигрывается. |
-| **CLEANUP** | Только K ниже плюс M | Existing terminal cleanup owner с новым typed terminal capability и atomic release ack. Не обычный cleanup helper по флагу/голому списку из JSON. |
+| **F1 TRANSFER / CHILD** | Existing original/snapshot/request owner inventories + M; child exact accepted common/progression/automatic/projection/story cohorts (§8.5) | Named current owners с новым closed F1 adapter; parent artifacts retained, no recursive originalAction, no generic path grants. |
+| **CLEANUP** | Только K (для F1 — KF1 §8.5) плюс M | Existing terminal cleanup owner с новым typed terminal capability и atomic release ack. Не обычный cleanup helper по флагу/голому списку из JSON. |
 
 ### K: замкнутая cleanup membership
 
@@ -243,7 +244,7 @@ Closed `activeTail` fields:
 - `priorTerminal`: null либо compact terminal identity/closure descriptor §8.4, не snapshot старого marker.
 - `automatic`, `projection`, `story`: `{state, receipt}`, state `pending|applied`;
   pending имеет null receipt, applied — closed owner receipt.
-- `qte`: `{state, choice, decisionReceipt, transfer, terminal}`; state `none|offered|active|declined|terminal`.
+- `qte`: `{state, choice, decisionReceipt, transfer, terminal, followUp}`; state `none|offered|active|declined|terminal`.
   `choice` null до действия, иначе closed `{decision,generation,sessionId,requestId,snapshotToken,turn,qteId,offerFingerprint,basisFingerprint}`; decision=`accept|decline`.
   `decisionReceipt` — null iff none/offered, иначе required closed phase receipt ниже:
   qte_accept maps имеют ровно runtime/continuation/offer/turn_complete/turn_error data keys §4;
@@ -251,7 +252,7 @@ Closed `activeTail` fields:
   M исключён из maps. Choice и receipt публикуются одной decision transaction с action;
   phaseId/operationId, tuple, basis, before/after digests обязаны согласоваться. Receipt
   сохраняется unchanged при active→terminal→released, доказывает только собственный consumed Ready.
-  `transfer` только для accepted handoff. `terminal` null до реального selected-terminal capture,
+  `followUp` — только declined F1 (§8.5), иначе null. `transfer` только для accepted handoff. `terminal` null до реального selected-terminal capture,
   затем `{basis,receipt,automatic,projection}`: receipt=null до terminal COMMIT;
   `automatic` — `{basis,state,receipt}`, `projection` — `{state,receipt}`.
   Nested state=`pending|applied`; pending receipt=null. Automatic basis=null до отдельного
@@ -289,22 +290,22 @@ automaticPlan,projectionReadPaths,encoderVersion}`. Это тот же strict P2
 `T070-MORTAL-QTE-JOINT-TERMINAL-TAIL-V1\n`; phase receipt `basisFingerprint` у P7b связывает именно его,
 а `terminalResultFingerprint` связывает terminal outcome. Initial P2/P3/P4/P6 receipts связывают
 immutable activeTail.basis. Phase IDs закрыты: `progression|automatic|projection|story|qte_accept|
-qte_decline|qte_terminal|qte_automatic|qte_projection|cleanup`; PREPARE не выдаёт applied receipt.
+qte_decline|f1_transfer|f1_mechanics|f1_progression|f1_automatic|f1_projection|f1_story|f1_complete|qte_terminal|qte_automatic|qte_projection|cleanup`; PREPARE не выдаёт applied receipt.
 Один deterministic operationId на named phase, а не общий ID всех transactions turn.
 
 Фазовые invariants: automatic applied требует progression applied; projection applied требует
 active automatic applied; story applied требует projection applied. Offered в P0 означает только
 наличие declared offer: UI допускается лишь после story applied. Active/declined требует
 P1–P4 и choice; terminal требует actual terminal COMMIT receipt. Released требует всех
-предшествующих фаз, а после QTE ещё terminal automatic/projection applied. Нарушенные
+предшествующих фаз, для declined ещё F1 completionReceipt, а после QTE ещё terminal automatic/projection applied. Нарушенные
 combinations не исправляются default значениями.
-None/offered требуют null choice/decisionReceipt/transfer/terminal; none также null offer.
-Active требует accept choice/receipt и transfer; terminal PREPARE допускает non-null terminal
-с null terminal receipt при active. Declined требует decline choice/receipt, null transfer/terminal.
-Terminal требует сохранённые accept choice/decisionReceipt/transfer и committed terminal receipt.
+None/offered требуют null choice/decisionReceipt/transfer/terminal/followUp; none также null offer.
+Active требует accept choice/receipt, transfer и null followUp; terminal PREPARE допускает non-null terminal
+с null terminal receipt при active. Declined требует decline choice/receipt, non-null followUp и null transfer/terminal.
+Terminal требует сохранённые accept choice/decisionReceipt/transfer, committed terminal receipt и null followUp.
 Cleanup reason согласуется с none/declined/terminal; released не удаляет decisionReceipt.
 Declined/decisionReceipt сами не дают cleanup authority: revised D5 требует accepted genuine
-ordinary-resolution/transfer proof, schema которого пока не принят (Q-D5); до него new QTE admission blocked.
+ordinary-resolution/transfer proof, proposed F1 schema задана в §8.5; до её принятия/реализации new QTE admission blocked.
 
 ### 6.2. Continuation schema 2 для joint source
 
@@ -347,7 +348,7 @@ Physical-injury source остаётся genuine existing source capture; нов�
 | P6 ACCEPT / DECLINE | ACCEPT cohort §4 + M ack; DECLINE base недостаточен без отдельно принятого Q-D5 handoff | Нового award/story/common take нет. Duplicate decision сохраняет/resumes то же mandatory ordinary obligation, не объявляет его resolved. Conflicting choice HOLD. |
 | P7a QTE TERMINAL PREPARE/COMMIT | Selected-terminal basis фиксируется в M; terminal outcome/history/runtime/continuation + M ack публикуются одним exact cohort | Already committed не вызывает повтор XP/distribution/history. Paused/wave debt не terminal. |
 | P7b QTE AUTOMATIC/PROJECTION | Один дополнительный AUTOMATIC slot по terminal-known basis, затем актуальная computed projection с отдельным receipt | Только новые QTE-earned stats/level, watermark уже включает P2; никакого второго P2/story/turn. |
-| P8 CLEANUP | K deletions + M released ack atomically | Partial cleanup/debt не completion. Released observation даёт **никакой** новой mutation/replay authority. |
+| P8 CLEANUP | K (F1: KF1 после actual ordinary completion) deletions + M released ack atomically | Partial cleanup/debt не completion. Released observation даёт **никакой** новой mutation/replay authority. |
 
 P2 intentionally объединяет stats и award в один four-member logical cohort. Нет окна
 «stat +1, command ещё не consumed» или «+5 points, watermark старый».
@@ -467,42 +468,229 @@ Actual old bytes нужны fresh **до замены**, но после verifie
 Current-turn mechanical H snapshots могут быть велики, но не содержат predecessor blobs;
 новый общий архив/каталог не создаётся. Это существенный review focus для cold proof.
 
-### 8.5. D5 пересмотрен: ordinary resolution нельзя потерять
+### 8.5. D5 / F1: обязательное ordinary resolution в существующем M
 
-Обязательное требование пользователя 2026-10-16 00:01 UTC:
-«Если отказываемся от QTE, то ситуация должна разрешаться стандартными механиками».
-Это подтверждение игровой семантики, не новый schema/authority grant.
+**DESIGN-only F1, 2026-10-16; recovery/source base c4dde0629cc17aad75196ec509d2cdaf621945a3.**
+Пользователь разрешил разработать и независимо проверить F1, не реализацию и не новые
+runtime grants. Это уточнение заменяет прежний unchosen F1/F2 gate. F1 — выбранный предмет
+дизайна; written acceptance контракта и implementation authorization ещё отсутствуют.
+F2 не выбран: source препятствия ниже требуют расширения текущих owners, но не доказывают
+невозможность F1. Новый pathname/journal/service здесь не предлагается.
 
-Пользователь уточнил: отказ отменяет только QTE-механизм, **не** игровую сцену и уже
-committed последствия. Исходное действие не выполняется повторно. Это не разрешение
-стереть обязательное продолжение. Прежнее предложение «decline → P8 без follow-up»
-не задаёт корректный generic contract и заменено этим planning gate.
+Отказ отменяет только QTE-механизм. Та же ещё не решённая ситуация **обязательно получает
+реальный результат стандартных механик**. Ни scene cancellation, ни повтор исходного
+действия, ни «отказ записан», ни durable intent сами по себе не являются разрешением.
+Common/stats/award/story/turn родителя уже committed и сохраняются.
 
-Source conflict подтверждён на planning base ccb8eed3:
-`GameEngine.TurnLifecycle.cs:2345–2361` после decline вызывает ProcessPlayerTurn с исходной
-строкой и QTE_DECLINED reminder; `Rules/Block_CLI_QTE.txt:19–28` QTE Offer Protocol,
-`CLI_API_Specification.md:1240–1250` и `Examples/E_CLI_QTE_Offer.txt:7–9` запрещают normal
-state resolution той же ситуации в offer-turn и требуют ordinary resolution после отказа.
-`QteOffer` не содержит machine-readable optional/mandatory remainder discriminator;
-`declineHint` — UI text, не authority. Совместимость joint common mechanics с этим GM
-no-same-situation rule также должна быть явно определена, а не исключена молча.
+#### 8.5.1. Source findings и необходимые owner changes
 
-Неизменные ограничения выбранного смысла:
+Все строки — статический анализ c4dde062; это не наблюдённый runtime PASS.
 
-- Decline допускается только из offered, до accepted scene. Active/terminal scene не
-  отменяется этим действием; pause/abort не очищает original и не откатывает последствия.
-- Committed common/stats/award/story/turn не откатываются и не публикуются снова.
-- Обязательный **remaining ordinary resolution** должен сохраниться и быть исполнен один
-  раз с учётом уже committed effects; нельзя ни blind replay source action, ни silently drop.
-- Existing ordinary decline/follow-up сохраняется для обычного контура. Новый joint branch
-  не вызывает этот helper unchanged и не стирает prior active runtime.
+| Current source / exact owner | Ограничение; F1 design response |
+|---|---|
+| `GameEngine.TurnLifecycle.cs:1484–1666,2345–2361` | Console decline вызывает `ProcessPlayerTurn(originalAction,reminder)`. Staging генерирует request/timestamp/dice, делает backup, snapshot и clear outputs отдельными шагами. В F1 этот путь unchanged запрещён; нужен named continuation entry без player action submission. |
+| `GameEngine.SessionAndSnapshots.cs:410–422,514–568` | Snapshot owner сначала очищает старый original, затем отдельно пишет manifest/authority. F1 использует его pure capture/encoding/validation, но не вызывает destructive helper. Передача старого→нового original должна быть одним batch с M. |
+| `Models/TurnRequest.cs`; `GameEngine.PrivateImplementation.cs:24–58` | Нет typed ordinary-remainder binding. Предлагается closed request/manifest member, связанный с parent и obligation; reminder/PlayerAction не authority. Engine Frame остаётся private. |
+| `LiveTurnPreparationService.cs:86–90,195–213` | Live helper тоже очищает prepared artifacts и последовательно пишет headers/request. Это consumer нового shared preparation contract; не независимый issuer F1, не cold-recovery shortcut. |
+| `MortalQteDecisionPublication.cs:16,91,210–216` | Один M используется ordinary schema1 и joint schema2. Child ordinary wound publication не вправе заменить retained parent M на v1. Нужен named child contribution внутри единственного `followUp`, не второй marker и не запрещение legitimate ordinary wounds. |
+| `PendingTurnSnapshotAuthority.cs:11–15,428–431,967–989`; `PendingTurnSnapshotReader.cs:193–216` | Supported portable authority использует exact payload/hash integrity и физические original artifacts; это не anti-owner signature. Новый reader должен заново проверить G, оба headers, source artifacts и closed chain; JSON/hash/copy signing key не mint authority. |
+| `QteWebInteractionService.cs:267–283`; `BrowserPlayerActionService.cs:78–113` | Browser decline сейчас лишь clears/notifies, composer создаёт новое player action. Оба клиента должны вызывать тот же F1 resume/submit owner; browser composer queue не используется для remainder. |
+| `Rules/Block_CLI_QTE.txt:19–28`; CLI specification QTE Offer; QTE example | Existing ordinary offer запрещает same-situation state changes и требует ordinary follow-up. Нужна явная joint-only exception: committed **prefix**, но unresolved **remainder**; весь исход не может быть объявлен уже решённым. Ordinary offer contract вне joint не меняется. |
+| `Rules/Block_12.txt` ordinary action-check algorithm; accepted Mortal wound/resource/effect owners | Remainder исполняется обычными check/dice/typed mechanical owners. QTE score/terminal selection не заменяют ordinary check. Новый closed audit связывает существующий расчёт с unresolved unit; формулы не меняются. |
 
-Существующий package B не выдавал durable follow-up intent, writer нового request/original
-или новый consumer acknowledgement. Конкретные альтернативы и необходимые новые grants
-перечисляет [implementation plan](./lawful-active-joint-tail-b-implementation-plan.md), Q-D5.
-До решения **new joint offer admission запрещён до P0/common take**. No-offer automatic
-часть можно планировать независимо; new-QTE capability и full FR063 acceptance не выдаются.
-Это сохраняет unresolved situation/evidence, а не объявляет её успешно отменённой.
+#### 8.5.2. Откуда берётся unresolved ситуация и что именно дедуплицируется
+
+До P0 genuine GM offer обязан содержать новый **proposed**, joint-only closed
+`ordinaryResolution={version:1,situationId,unresolvedUnits}`. `situationId` — local nonblank
+ID внутри exact original/offer; это не global ID и не authority. `unresolvedUnits` — непустой
+ordered список `{unitId,description,ruleRefs,targetRefs,consequenceSlots}`. `unitId` уникален,
+`ruleRefs` ссылаются только на существующие обычные правила (например Block_12), targetRefs
+разрешаются точно по текущему realm/incarnation. Slot задаёт `{slotId,family,sourceEventRef}`;
+family — закрытый `wound|effect|resource` existing accepted Mortal common family. Это descriptor
+ещё не решённого вопроса, не выбранный outcome, не canonical after-image и не arbitrary path.
+Все units должны быть исполнимы этими обычными owners; unsupported family, ambiguous target,
+empty remainder или уже resolved unit — refusal **до common**, а не успешный decline.
+Расширение на quest/location/general GameResponse families требует отдельного design delta.
+
+GM авторитативно описывает игровой вопрос в accepted offer; клиент не извлекает его из
+cinematic prose/declineHint и не придумывает после отказа. Admission связывает descriptor с
+source player-driven original, accepted response и common plan **до их seals**, как §5/B01.
+Source action хранится только как context. Новый исполнимый текст запроса: «Разреши оставшиеся
+units … обычными механиками с учётом committed prefix»; source PlayerAction не переотправляется.
+GM не пишет M, obligationId, transfer/receipt или client-derived committed ledger.
+
+Named source owner строит `committedLedger` из настоящих common/treatment/occurrence/resource/
+effect histories и P1–P4 receipts. Для каждой строки фиксируются family, original source tuple,
+source event/opportunity/command coordinate, target, instance/transition/receipt IDs и exact
+before→after evidence. Award/progression/story включаются как client-owned operations, а не
+как новые GM commands. Ledger хранит также **semantic source coordinate**, поэтому новое
+woundId/eventId/перефразирование не позволяет повторить already committed consequence.
+Unit/slot coordinates дизъюнктны committed coordinates; equality/confusable alias — pre-P0 refusal.
+
+Для child normalizer/composer обязателен source gate: каждый новый typed contribution имеет
+ровно один unresolved unit/slot из sealed descriptor, existing ordinary authority и новую
+source occurrence только для этого remainder. Reference на parent committed instance допускается
+как read/context, но повтор create/treat/spend/award запрещён; legitimate later operation на той
+же ране требует отдельного unresolved slot и existing lifecycle authority. Не переписывать
+history, не вычитать/компенсировать prefix и не доверять GM-списку «already applied».
+Raw child state writes вне projected supported plan должны попасть в existing validation/repair,
+а не расширять cohort. Подмена ID при том же source event отвергается до publication.
+
+#### 8.5.3. Closed M field, binding и ациклическая передача current original
+
+Proposed `qte.followUp` null для none/offered/accept/terminal; non-null для decline:
+`{version,state,obligationId,source,remaining,committedLedger,sourceHeaders,target,transferReceipt,
+child,completionReceipt}`. `version=1`; state=`pending|transferred|resolved|released`.
+`source` — parent Binding/G + qteId/offerFingerprint/basisFingerprint/decline operationId.
+`remaining` — exact admitted ordinaryResolution; `sourceHeaders` — exact bytes обоих parent
+headers, captured fresh при decline, **без секретов/keys**; referenced parent snapshot/backups
+остаются физически на месте. Только один parent и один child, без nested M/continuation blobs.
+`obligationId` privately deterministic из domain `T070-JOINT-ORDINARY-F1-V1`, source и remaining;
+он не основан на UI click/UTC, повторный decline получает тот же ID.
+
+`target` null до TRANSFER; затем closed `{binding,requestImage,manifestImage,authorityImage,
+requestTimestamp,dicePool,baselineMarkerDigest}`. Binding child имеет тот же physical G,
+session/realm/incarnation, новый deterministic requestId из obligationId, один frozen timestamp,
+новый snapshot token (hash exact child manifest). Дайсы выделяются существующим dice owner
+один раз для этой obligation и сохраняются в exact target request/manifest; не reroll при retry.
+Новые proposed request/manifest members: `requestKind="mortal_joint_ordinary_resolution"`,
+`jointOrdinaryResolution={version,obligationId,parentBinding,qteId,remainingFingerprint,
+committedLedgerFingerprint,baselineMarkerDigest}`. В request дополнительно safe remaining/ledger
+projection; hashes — correlation, не capability. Ready/repair должны echo exact child tuple
+и obligation binding. Accepted original source label — отдельный closed F1 kind, не поддельный
+`console_turn`/`browser_turn`; QTE offer запрещён на таком system continuation.
+
+Named existing engine original/request owner работает в следующем ациклическом порядке:
+
+1. **FD DECLINE**: fresh physical parent/G/P1–P4/offer proofs; один existing decline base
+   cohort (§4) + M сохраняет choice, decisionReceipt и pending obligation/sourceHeaders/ledger.
+   Parent pair/request/artifacts сохранены. Runtime не становится active, prior terminal unchanged.
+2. **FT TRANSFER**: под lease проверить FD снова, построить exact child baseline **после prefix**.
+   Child snapshot захватывает FD marker как immutable original image M (и прочие existing
+   inventory roots); FD ещё не содержит target/transferReceipt. Child artifacts получают distinct
+   snapshot/backups paths текущего owner, не пересекаются с parent artifacts. Snapshot artifacts,
+   child manifest/authority/request, consumption только parent-bound Ready/repair/offer controls,
+   и M transferred+target+transferReceipt публикуются **одним PublishLocalFilesAsync**. Все paths
+   определены original/snapshot owner inventories и source manifests, не произвольной JSON map.
+   Старый physical header/request slot заменяется только в этом batch; parent artifacts не удаляются.
+   Никакой CleanPending/Load/init/ordinary staging между этими шагами.
+3. **Cold read after FT**: сначала current physical G и child original pair/request, затем
+   immutable FD image M из child snapshot → parent header capsule → retained parent artifacts →
+   common/P1–P4/decline/ledger/remaining proof. Current M обязан быть ровно разрешённым overlay
+   над FD плюс child phases. Новый named reader получает relocated-parent read authority только
+   этой цепочкой; ordinary reader по одному parsed capsule или released M её не выдаёт.
+   Отсутствующий/foreign child, parent artifact или несовпавший FD — HOLD без resnapshot/reseal.
+4. Child request отправляется ordinary GM transport после committed FT. Повтор доставки — тот
+   же exact request/obligation/dice, не новое действие, новый original или второй запрос. Новый
+   mutable M не участвует в child snapshot hash: FD → child manifest/token → FT receipt → M;
+   self-hash/цикла нет. Completion receipts исключают M из data digest maps, как §6.
+
+Target artifact inventory — existing snapshot owner output, включая exact present/absent
+baseline/rollback/validation artifacts; F1 даёт новый **operation grant** подготовки их after-images,
+а не grant писать произвольный path. Точные owner enumerators и transitive consumers перечислены
+в B08. Обычный `CreateCanonicalBaselineSnapshotAsync` и live-test PrepareAsync unchanged непригодны;
+их pure extraction/atomic adapter — обязательная работа реализации, не уже существующий API.
+
+#### 8.5.4. Реальное ordinary выполнение и completion, включая single M collision
+
+Child идёт через existing ordinary GM request/Ready/validation/repair и accepted Mortal
+wound/effect/resource common planner, с новым named F1 adapter. Не вызывать QTE terminal/D8
+или legacy full ordinary finalizer unchanged. Proposed response member
+`ordinaryResolutionResult={version:1,obligationId,units}` содержит ровно исходные unitIds;
+каждая строка `{unitId,outcome,checkAudit,contributionRefs}`. Outcome — `success|failure|mixed`;
+checkAudit связывает applicable existing Rule12 inputs, ordered dice source indices/selection,
+modifiers, critical calculation и итог; client adapter заново проверяет rule arithmetic и
+соответствие narrative/typed contributions. Ни `pending`, ни пустой result, ни notification
+не исполняют unit. Для no-check existing rule указывается её exact deterministic evidence;
+GM не может объявить contested unit no-check. Все slots учтены materialized contribution либо
+explicit no-consequence outcome, допустимым исходным rule; blanket empty success не принимается.
+
+`child` null до FT, затем `{acceptedBasis,mechanics,progression,automatic,projection,story}`; acceptedBasis null до validated response, phase slots `{state,receipt}` с `pending|applied` и null receipt iff pending. Это фиксированные slots
+внутри **того же M**, не recursive activeTail и не общий operations journal. Accepted basis
+фиксирует только уже полученный и validated ordinary result, child original/G/Ready/response,
+existing composed plan inputs/results, exact before/after cohort и UTC. Child wound publisher
+вместо замены M schema1 предоставляет свой обычный typed contribution этому adapter; parent
+common/basis/decision остаются immutable. Wound/resource/effect formulas/ownership прежние.
+
+Каждый child phase публикует свой accepted owner cohort + M ack атомарно, по тем же action+ack
+правилам P1–P4; mechanics первым использует existing accepted-mechanics common cohort, без
+generic StateDistributor/NormalizerRollbackTrackedFiles allowlist. Source/normalizer readers
+проверяют **child original→prefix baseline→child phase overlays**, не stale parent final equality.
+Child progression/stat/projection/story имеют отдельные operation IDs/inputs от parent; no P2/P4
+replay. Схема F1 не принимает arbitrary GameResponse: raw XP grants, quest/location/afterlife,
+новый QTE и third turn запрещены. Existing ordinary XP/stat **из самого typed supported plan**
+допускаются только если такой owner contribution уже имеет принятый atomic contract; иначе
+такая authored unit несовместима с F1 и refuses до P0. D8 не даёт child XP authority.
+
+`completionReceipt` выпускает current ordinary completion owner только после mechanics,
+progression, automatic, projection и story applied, полного source/slot resolution, exact
+current after-images и отсутствия publisher/repair debt. Receipt связывает obligationId,
+parent и child Bindings, accepted result fingerprint, все phase receipts и one child story row.
+Запись result/Ready сама по себе не completion. Повтор после принятия возвращает ExistingApplied
+без GM re-execution/награды/переброса. Потерянный ответ до acceptance redelivers тот же request;
+после mechanics commit перед receipt crash восстанавливает publisher/phase ack, не выполняет
+действие снова. Validation repair сохраняет obligation/request/dice и восстанавливает только
+child baseline **после committed prefix**, не parent pre-common состояние.
+
+#### 8.5.5. Turn/time, cleanup, crash и клиенты
+
+Parent остаётся accepted turn **n**, child — **n+1**, системное продолжение той же ситуации,
+не новая команда игрока. FD/FT/staging/redelivery не увеличивают turn, не запускают progression,
+не расходуют ресурсы и не меняют world time. Child n+1 публикуется/reconciles один раз только
+с его story receipt; crash допускает runtime n или n+1, но не n−1/n+2.
+Parent time/cost/turn-based recovery остаются consumed. Child uses current post-prefix baseline,
+собственный ordinary progression control и **только remaining** duration/cost. Нулевая длительность
+допустима по ordinary rule; elapsed time не берётся повторно из source action. Child per-turn
+lifecycle выполняется один раз для n+1 по существующему ordinary contract (даже при нулевом
+elapsed), не переигрывает n. Dice pool новый для unresolved units, а consumed parent dice остаются
+в ledger; source checks не повторяются. UI не запрашивает заново действие/оплату для отправки.
+Это явное proposed turn policy, подлежащее written acceptance, не скрытая оптимизация времени.
+
+P8 для decline разрешён **после completionReceipt**, не после transfer. Cleanup inventory
+`KF1 = parent artifact-only K ∪ child K`, deduplicated exact paths: reused header/request/Ready/
+repair slots принадлежат только текущему child и удаляются один раз при proof его tuple.
+Parent artifact-only K берётся из validated parent payload Files.Values/RollbackBackups.Values
+и exact local-turn marker keys; excludes reused current header/request/control slots. Member
+overlap child artifacts/parent artifacts или механические roots — HOLD. Parent Ready/repair
+были consumed только own-bound FT receipt; чужой error/stall/protocol failure — HOLD. M не
+удаляется: atomic KF1+M released ack сохраняет оба completion/source bindings. Никаких output,
+story/history/mechanics deletions, parent restore или re-creation original после release.
+До завершения source artifacts retained, allocation D4 и прочий ordinary input заблокированы.
+После release M только наблюдаем; он не mint новый request/replay/cleanup capability.
+
+| Crash cut | Допустимое восстановление |
+|---|---|
+| До/после FD, lost UI return | All-before offered либо all-after pending той же obligation; повтор/conflicting accept не создаёт иной путь. |
+| Во время FT artifact/header/request/M publication | Existing publisher сначала решает debt: целый parent pending или целый child transferred; mixed namespace HOLD. Нет side delete/нового request. |
+| FT committed, до dispatch/после GM read/до Ready | Resume same request; durable obligation не потеряна, нет второго child original/dice pool. |
+| Child validation/repair либо любой phase/ack cut | Complete before/after named phase или HOLD; repair baseline post-prefix, exact old ledger сохраняется. |
+| Child mechanics/story committed, lost caller/completion ack | Phase-aware reconstruction до completion; не blind resubmit source action или ordinary mechanics. |
+| KF1 cleanup/released cut | Atomic before/after/debt, partial deletion не completion; released read observational. |
+
+Console, browser и agent dispatch вызывают один engine F1 owner через existing session/main
+participation. Browser decline получает «Событие продолжается обычным ходом», видит ожидание,
+repair/held либо **реальный ordinary результат** и после reload/restart тот же статус. Browser
+не посылает originalAction в composer. Console не вызывает recursive ProcessPlayerTurn.
+UI polling не создаёт запросы/ack; resume dispatcher запускает pending/transferred работу при
+легитимном owner admission. Смена G/session/incarnation удерживает source, не rebinding автоматически.
+Один действующий owner/lease; транспорт и UI ожидания вне lease. Actual console/browser/agent
+integration, frontend DOM/visual и Linux/Windows crash checks остаются UNRUN.
+
+**Worked future oracle:** parent n материализовал новую царапину W1, выполнил genuine treatment
+T1 другой раны и начислил +5; unresolved unit U — исход опасного прохода под балкой, отличный
+от already committed impact. После decline child n+1 GM выполняет обычный Rule12 check U с
+сохранёнными дайсами; failure legitimately materializes **новую** травму W2/resource damage
+по U-slot, success закрывает U с проверенным no-consequence outcome. Проверка должна увидеть
+actual check/result + W2/damage в failure, one child story row и completion, W1/T1/их spends/+5
+ровно один раз. Перефразированное повторное создание W1 с новым ID отвергается. Это будущая
+проверка обычного результата, не запуск игры в этой документационной сессии.
+
+**Gate:** F1 предлагает точный источник remaining, source→request→ordinary completion и bounded
+owner extension; current helpers этого не реализуют. До written acceptance F1/grants/плана и
+отдельной реализации+qualification new joint offers продолжают refuse **до common**. Даже
+no-offer этапы не разрешены этим DESIGN. F2 можно открыть только с конкретным доказательством,
+что этот closed owner/slot/atomic handoff нельзя реализовать в F1; добавление отдельного path
+само по себе не устраняет ни semantic dedup, ни source/ordinary completion проблемы.
 
 ### 8.6. Terminal, abort и следующая original
 
@@ -569,7 +757,7 @@ C может быть лучше. Если D8/ограниченный subset н
 combinations остаётся blocker: один безопасный acceptance handoff не закрывает FR063.
 Успех/ошибка показа интерфейса не terminal proof.
 Если existing QTE abort не имеет принятого terminal protocol, B остаётся held/resumable;
-не изобретать стирание original на cancel. New original допускается только после P8 released.
+не изобретать стирание original на cancel. Новый original допускается после P8 released либо только exact F1 FT (§8.5); accepted-QTE branch не использует F1.
 
 ### 8.7. Initial story и terminal narrative — отдельные exact proofs
 
@@ -671,7 +859,7 @@ admission блокирует изменение frozen stats/projection. Пол�
 | D2 | Strict existing initialized stats/points/watermark; никакого heuristic init в tail | При отсутствии baseline отказ до common; отдельный initializer до original. |
 | D3 | P2 объединяет stats+award; P3 computed после award | Final projection содержит current points; две existing level priorities не объединяются; no XP writer. |
 | D4 | Distribution deferred до P8; allocation safety отдельно | Player flow и explicit guided US5 dependency; не объявлять обычный allocator crash-safe. |
-| D5 | Отказ только от QTE, без отмены сцены/committed effects, повторного source action и потери обязательного ordinary resolution | Q-D5 planning gate: durable remaining-resolution handoff и совместимость GM offer-turn rules требуют отдельного решения; new joint QTE blocked до common. |
+| D5 | Отказ только от QTE, без отмены сцены/committed effects, повторного source action и потери обязательного ordinary resolution | F1 §8.5: one obligation, atomic parent→child original/request, actual ordinary result и KF1 cleanup; proposed grants/turn policy требуют written acceptance. New joint QTE blocked до common. |
 | D6 | Continuation2/joint story witness, compact prior retirement, physical actual-pair proof, original retention до QTE terminal | Новый reader/schema/issuer/cleanup handoff §8 и строгий post-handoff composition proof. |
 | D7 | Pre-release schema cutover без migration незавершённых v2 в ACTIVE | Existing v1/v2 recovery только их прежние contours; schema3 только новый common publication после accepted design и implementation. |
 | D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact responseFragment subset §8.6 | Atomic terminal/XP/history/closure cohort, terminal-derived basis и initial-story/terminal-output proof §8.7; расширение payload families отдельно, no implicit legacy crash-safety. |
@@ -712,6 +900,16 @@ fresh selected BOTH подготовка, catalog/Plan (zero execution), bounded
 | Q13 | Every authored responseFragment: allowed keys/nulls/types, unknown:null, forbidden definition/capacity even null, wrong resource operation/target/source/eventRef, physical sibling | Exact §8.6 grammar before common; no broad GameResponse/normalizer writes. Nonblank response takes precedence, blank/null uses finalNarrative; score/UTC deterministic. |
 | Q14 | Cold crash/repeat P7a→P7b→P8 with lawful changed terminal narrative; corrupt/rehashed initial binding, terminal output, original story/labels | Original P4 story reconstructed unchanged from authenticated initial inputs; separate exact terminal after-image. No stale live==initial refusal, no output waiver/story rewrite. |
 | Q09 revised | Decline once/repeated/conflicting; crash/restart до/после decision/intent/request/original/ordinary completion | Mandatory actual standard-mechanics resolution; no lost remainder or duplicate source action/wound/treatment/award. Same obligation/request identity on redelivery, console/browser parity; accepted scene cannot decline. Q-D5 grants required. |
+| F101 | Missing/empty/prose-only remainder, already resolved unit, source/target/slot alias, unsupported family | Refuse before P0; no inference from declineHint, no fabricated obligation. |
+| F102 | Genuine FD with committed acquisition+treatment/spend/+5 and disjoint unresolved U | Client-derived ledger exact; same semantic source with new IDs cannot replay prefix. |
+| F103 | Every FT artifact/header/authority/request/M cut; fresh process before constructor | Whole parent FD or whole child FT after publisher recovery; retained source and no mint/G init. |
+| F104 | Child snapshot FD anchoring, changed capsule/ledger/remaining/target/Ready, rehashed current M, lost artifact | Fresh G→child original→FD→parent artifact/common proof; mismatches HOLD without reseal. |
+| F105 | Real ordinary GM success/failure/mixed, Rule12 dice/critical audit; new W2/damage vs attempted W1 replay | Actual permitted ordinary result once; all units/slots closed, old W1/T1/spend/+5 once; no intent-only PASS. |
+| F106 | Child ordinary wound publication and validation repair while parent occupies M | One M retains parent core; child common typed contribution never overwrites with schema1; repair only post-prefix baseline. |
+| F107 | Lost dispatch/GM response/Ready/completion, duplicate/conflicting decline, second browser tab/agent | One obligation/request/dice/child original; resume actual resolution, no source action submission or auto-cancel. |
+| F108 | Parent n/time/cost consumed, child n+1 with zero/nonzero remaining duration, repeated child phases | No staging turn/time/cost, no parent progression/award replay; child lifecycle once, runtime n/n+1 reconciliation. |
+| F109 | Child mechanics→story→completion→KF1 cuts, foreign controls, artifact overlap, partial cleanup | Old artifacts retained until actual ordinary completion, child slot deleted once, full before/after or HOLD, released observation no authority. |
+| F110 | Console/browser/agent decline→waiting→repair/restart→ordinary result, allocation/input blocked; real DOM | Same actual mechanics/obligation/state; browser notification alone fails; visual qualification separately recorded. |
 | Q10 | Old prior capsule + next + third accepted QTE | No recursively nested predecessor marker/continuation growth; current terminal/source lineage still reconstructs. |
 | C01 | K absent/present exactly, foreign Ready/repair controls, stall/protocol failure | Only authenticated K paths; no whole-directory deletion, source-G crossing or arbitrary optionality. |
 | C02 | Crash each deletion/M release; recovery/debt; all before/all after/partial K | Actual journal recovery, exact fixed member readback, partial!=completion, no recreated old original after release. |
@@ -770,7 +968,7 @@ stats/level/QTE authoring, видит понятный repair/hold contract и �
 1. Независимый DESIGN reviewer проверяет exact ownership, phase/receipt DAG, frozen source roles,
    post-handoff genuine proof, retirement/cleanup membership и полноту matrix.
 2. B выбран пользователем для planning; mandatory D5 семантика уточнена 2026-10-16.
-   Q-D5 follow-up schema/authority и implementation plan ещё требуют отдельного обсуждения.
+   F1 follow-up schema/authority (§8.5) и implementation plan требуют written acceptance; реализация не разрешена.
 3. Только после written-design approval возможен отдельный implementation plan/selection,
    его review и разрешение реализации. Никаких production/test/runtime-tools edits в этой задаче.
 4. Full FR063/T070/#1536, ACTIVE runtime PASS и Windows acceptance остаются открытыми.

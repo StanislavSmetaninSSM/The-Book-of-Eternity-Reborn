@@ -4,13 +4,13 @@
 
 **Goal:** Завершить lawful ACTIVE stats/level-up/new-QTE joint tail без повторных эффектов, потери ordinary resolution, преждевременного cleanup или ослабления genuine original/G proof.
 
-**Architecture:** Сохранить existing common publisher и coordinated storage; добавить fixed owner phases в marker3, atomic action+ack и named phase-aware proof. Automatic award отделён от interactive allocation. QTE acceptance/terminal сохраняют original; revised D5 требует отдельного ещё не принятого durable remaining-resolution handoff.
+**Architecture:** Сохранить existing common publisher и coordinated storage; добавить fixed owner phases в marker3, atomic action+ack и named phase-aware proof. Automatic award отделён от interactive allocation. QTE acceptance/terminal сохраняют original; D5/F1 задаёт one-obligation ordinary continuation в том же M с atomic parent→child request/original transfer и actual accepted result; grants ещё не приняты.
 
 **Tech Stack:** C#/.NET 8, SDK 10.0.401 baseline, PowerShell 7.6.6 baseline, JSON file state, Spectre.Console, existing loopback browser/React/TypeScript. Linux/Windows — отдельные native qualifications; новые зависимости/storage services не нужны.
 
 **Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).
 
-**Planning base:** `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **READY FOR USER DISCUSSION; Q-D5 BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
+**F1 recovery/source base:** `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1 DESIGN WIP; independent review pending; Q-D5 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
 
 ## Global Constraints
 
@@ -35,30 +35,34 @@
 4. UI submits после generation/offer change либо после accept: no cancellation of accepted scene, no lease over UI, no allocation bypass через browser/agent (B05/B07/B12).
 5. Partial publication/cleanup и lost caller receipt: actual native outcome, complete before/after or HOLD, original/debt retained, ненулевые cleanup receipts (каждый этап, B11/B13).
 
-## Q-D5: существенное противоречие, решение до new-QTE реализации
+## Q-D5 / F1 design gate — механизм спроектирован, grants ещё не приняты
 
-Пользователь 2026-10-16 00:01 UTC: «Если отказываемся от QTE, то ситуация должна разрешаться стандартными механиками». Это обязательная игровая семантика, не новый schema/authority grant.
+Пользователь разрешил **DESIGN F1 и независимое review**, не реализацию. Canonical contract:
+[B §8.5](./lawful-active-joint-tail-b.md#85-d5--f1-обязательное-ordinary-resolution-в-существующем-m).
+F1 сохраняет обязательное продолжение в существующем M; F2 рассматривается только при
+доказанной невозможности F1. Current console blind resubmit и browser notification-only gap
+не принимаются. Исторические PLAN reviews c4dde062 не проверяли новые F1 bytes.
 
-Source facts на ccb8eed3 (Core/Services/WebUi paths ниже внутри `BookOfEternityClient/`):
-
-| Source | Факт / следствие |
+| Решение F1 (всё PROPOSED) | Реализационный долг / future proof |
 |---|---|
-| `Core/GameEngine/GameEngine.TurnLifecycle.cs:2345–2361` | Ordinary console decline записывает отказ, удаляет Ready и вызывает ProcessPlayerTurn(originalAction,QTE_DECLINED). Это повторное обращение для разрешения ситуации; перенести helper unchanged в committed joint tail нельзя. |
-| `Rules/Block_CLI_QTE.txt:19–28`; `CLI_API_Specification.md:1240–1250`; `Examples/E_CLI_QTE_Offer.txt:7–9` | Offer-turn не разрешает normal state changes той же ситуации; decline требует ordinary GM resolution. Удалить follow-up значит потенциально потерять сам исход. Literal «обычные game_state untouched» также требует явного joint-only contract delta, прежде чем разрешать joint mechanics+offer. |
-| `Services/QteSceneService.cs:6402–6441` | В QteOffer нет optional/mandatory remainder field. DeclineHint/cinematic prose не machine authority, отсутствие поля не доказывает отсутствие обязательств. |
-| `WebUi/QteWebInteractionService.cs:267–283` | Existing browser decline только records/clears offer, notification прямо отличает console follow-up. Это текущая parity gap; не выдавать её за корректный shared implementation. |
+| GM `ordinaryResolution` до common, client-derived committedLedger | Exact source admission до seals; semantic source coordinates, no prose inference/новых IDs для replay. Непустые supported units и disjoint typed slots. |
+| FD: decline+pending obligation/sourceHeaders одним batch в M | Same deterministic obligation; parent original/artifacts retained; no accepted-scene decline. |
+| FT: existing snapshot/request owner atomic adapter | FD→child snapshot FD image→child original token/request→M transferReceipt. Child post-prefix baseline, one frozen request/dice; no destructive old helper. |
+| Current G→child original→frozen FD→parent headers/artifacts→common proof | Новый named relocated-source reader; actual physical child admission и точные overlays. Ни rehashed M, ни capsule/readback released не authority. |
+| Child accepted ordinary common/progression/automatic/projection/story slots в M | Реальное Rule12/deterministic ordinary resolution, actual wound/effect/resource result; ordinary wound publisher не заменяет parent M schema1. No arbitrary GameResponse/recursive QTE/afterlife grants. |
+| n parent, n+1 child, remaining-only time/cost | Staging/dispatch не turn. Child lifecycle один раз по ordinary contract, parent n не повторяется. Explicit zero-duration behavior и no action re-submission. |
+| completionReceipt→KF1 release | Old artifacts сохраняются до actual accepted result; reused headers/request/controls принадлежат child и удаляются один раз. Repair baseline после prefix. |
+| One shared engine dispatcher для console/browser/agent | Same request/obligation after reload/restart; actual result, UI ждёт вне lease; notification не PASS. |
 
-**Требуемый исход:** exact decline receipt + сохранённое remaining-resolution обязательство → один lawful ordinary resolution → подтверждение исполнения. Already committed common/stats/award/story и QTE waves не откатываются и не становятся новыми commands. Повторная доставка возвращает status того же обязательства/решения; новый original/request не mint повторно. Accepted/active QTE отклонить нельзя.
+F1 первой версии ограничивает ordinary contributions существующим accepted Mortal common
+wound/effect/resource cohort; unsupported families/непредставимый остаток запрещают новый joint
+offer **до common**. Не превращать это в поздний отказ разрешить уже принятую ситуацию.
+Для расширения family заранее менять DESIGN с конкретным owner/grant. D8 не авторизует
+ordinary child XP; D4/guided US5/frontend/platform gates остаются прежними.
 
-| Предложение для обсуждения | Необходимый новый contract / риск |
-|---|---|
-| **F1 — рассмотреть первым:** fixed joint follow-up handoff в существующем M, через existing original/request owners | Proposed `activeTail.qte.followUp` (новое closed поле, **не принято**): version, state, source tuple/G/qteId/offer/basis/decision operation binding, immutable remaining-resolution specification, client-derived committed-effect receipt bindings, target request/original binding и completion receipt. Нужны новый named issuer/consumer, связь old→new genuine original и atomic cleanup/staging boundary. Released-marker observation сейчас nonauthorizing: нельзя превратить её в mint authority простым hash check. Viability доказать отдельным DESIGN. |
-| **F2:** owner-specific durable continuation, ограниченный вариант C | Отдельный ordinary-continuation owner/receipt и, возможно, новый proposed path `game_state/control/mortal_joint_qte_followup.json`. Тот же once-only/restart/source proof, больше schema/member/cleanup coordination. Path — только кандидат; ни writer, ни deletion/rollback grant не выданы. |
-| **Временная безопасная граница, не решение D5:** оставить new-joint-QTE refusal | До принятия F1/F2/иного полного решения B01–B05 no-offer могут планироваться отдельно; B06–B11/QTE activation заблокированы. Нельзя выдавать HOLD/refusal за успешный decline или завершение FR063. |
-
-До выбора должны быть письменно закрыты: кто авторитативно описывает **remaining** ситуацию и уже applied effects; exact IDs/dedup; связь GM offer-turn rule с joint publication; staging next original/request; logical turn/time/progression policy; source retention до acknowledged transfer; fail/uncertain/cleanup boundaries; console/browser/agent parity. Текст originalAction можно сохранить как context, но не выдать повторно как новый исполнимый player command. Новые effects ordinary resolution законны только для remainder, без повторного применения committed wound/treatment/awards.
-
-Новый механизм сейчас не выбран и не проектируется как уже выданный grant. B08 — gated task; implementation plan в целом возвращается для обсуждения с этим конкретным blocker.
+B00 получает written acceptance именно F1/turn policy/source relocation/child M composition и
+этого уточнённого плана, затем отдельное implementation authorization. До этих решений
+все T178–T191 остаются unchecked/UNRUN. No-offer реализация также не разрешена.
 
 ## Очередность этапов
 
@@ -66,15 +70,15 @@ Source facts на ccb8eed3 (Core/Services/WebUi paths ниже внутри `Boo
 
 | Task | Stage / результат | Зависит от |
 |---|---|---|
-| T178 | B00 contract/selection preparation и Q-D5 decision gate | plan approval + implementation authorization |
+| T178 | B00 contract/selection и written F1/grant gate | plan approval + implementation authorization |
 | T179 | B01 marker3/source capture/strict admission | B00 |
 | T180 | B02 automatic action+ack | B01 |
 | T181 | B03 projection action+ack | B02 |
 | T182 | B04 original story/turn action+ack | B03 |
 | T183 | B05 no-offer vertical completion, D4 entry guards | B04 |
-| T184 | B06 QTE grammar/capture/retirement | B05 + accepted Q-D5 subdesign |
+| T184 | B06 QTE grammar/capture/retirement | B05 + accepted F1 §8.5 contract |
 | T185 | B07 QTE accept/choice handoff | B06 |
-| T186 | B08 mandatory ordinary decline continuation | B06 + accepted exact follow-up grants; activation paired with B07 |
+| T186 | B08 FD/FT + actual ordinary child resolution в M | B06 + accepted F1 grants; activation paired with B07 |
 | T187 | B09 selected-terminal atomic outcome D8 | B07 |
 | T188 | B10 post-QTE auto/projection and two-chain/output proof | B09 |
 | T189 | B11 QTE terminal cleanup/cold admission | B08+B10 |
@@ -107,10 +111,15 @@ Integration shorthand `.JointActiveX.cs` означает
 | `BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs` (modify) | Named overload `WriteMortalJointActiveProjectionAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>` и read-only `VerifyMortalJointActiveProjectionAsync` с той же сигнатурой. Current phase определяет initial/post-QTE slot; caller не выбирает произвольный source mode. Existing v2 overload остаётся точным. |
 | `BookOfEternityClient/Services/StoryService.MortalJointRepair.cs`; `Core/GameEngine/GameEngine.MortalJointStoryTurn.cs` (modify) | `WriteMortalJointActiveStoryAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; `ReadMortalJointActiveStoryProofAsync` → `Task<MortalJointStoryProof>`. Story+M ack atomic, frozen initial inputs; runtime n−1/n reconcile. |
 | `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs` (new); `QteDeferredEffectContinuation.cs`, `StoryService.AcceptedStoryAppend.cs` (modify) | Сделать existing static continuation class partial; strict schema2/joint story variant, guard-only capture inventory, named genuine retirement reader. `ReadPriorMortalJointTerminalRetirementAsync(F,L,Binding)` → `Task<PriorQteTerminalRetirementProof?>`; proof private issuer внутри continuation owner. Existing v1 shape/source guards сохраняются. |
-| `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs` (new); `Core/GameEngine/GameEngine.MortalJointQteTail.cs` (new) | `BeginAcceptedMortalJointSceneAsync(L,M.JointActiveTailCapability,M.JointQteChoice)` → `Task<M.JointTailApplyResult>`. Choice — value, not authority; exact decisionReceipt, no original cleanup. Decline continuation API намеренно не объявлен как accepted: см. Q-D5/B08. |
+| `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs` (new); `Core/GameEngine/GameEngine.MortalJointQteTail.cs` (new) | `BeginAcceptedMortalJointSceneAsync(L,M.JointActiveTailCapability,M.JointQteChoice)` → `Task<M.JointTailApplyResult>`. Choice — value, not authority; exact decisionReceipt, no original cleanup. Proposed F1 decline/transfer/completion APIs — следующие строки; это не accepted API. |
+| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointOrdinaryResolution.cs` (new); `GameEngine.SessionAndSnapshots.cs`, `GameEngine.TurnLifecycle.cs` (modify); `Services/LiveTurnPreparationService.cs` (consumer verify) | Engine-private `PrepareMortalJointOrdinaryTransferAsync(L,M.JointOrdinaryResolutionCapability)` → `Task<M.JointOrdinaryTransferPlan>`; `ResumeMortalJointOrdinaryResolutionAsync()` → `Task<M.JointTailApplyResult>`. Pure original capture/encoding uses current owner inventory, не вызывает destructive create/cleanup; one shared current-G dispatch, no player action staging. |
+| `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointOrdinaryResolution.cs` (new); `QteSceneService.MortalJointHandoff.cs` (modify) | Internal privately issued `JointOrdinaryResolutionCapability`, immutable `JointOrdinaryTransferPlan`/`JointOrdinaryAcceptedBasis` value types. `DeclineMortalJointOfferAsync(L,M.JointActiveTailCapability,M.JointQteChoice)` → `Task<M.JointTailApplyResult>`; `ReadJointOrdinaryResolutionAsync(F,L,Binding parent)` → `Task<JointOrdinaryResolutionCapability>`; `PublishJointOrdinaryTransferAsync(F,L,JointOrdinaryResolutionCapability,JointOrdinaryTransferPlan)` → `Task<JointTailApplyResult>`. Values не выдают authority. |
+| `Models/TurnRequest.cs`, `Core/GameEngine/GameEngine.PrivateImplementation.cs`, `Services/PendingTurnSnapshotAuthority.cs`, `PendingTurnSnapshotReader.cs`, `PendingTurnStateService.cs` (modify, under `BookOfEternityClient/`) | Closed F1 request/manifest/result binding и FD original-image anchor. Named reader проверяет relocated parent через current child original, actual source artifacts/G; general readers не получают hash/capsule shortcut. Frame stays private. Snapshot exclusion/capture rule для M и distinct parent/child artifacts проверяется явно. |
+| `Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs`, `MortalQteDecisionPublication.cs`, `WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs`, `AcceptedMechanicsPlan.cs` (under `BookOfEternityClient/`; narrowly modify/verify forwarding) | `PrepareJointOrdinaryAcceptedBasisAsync(F,L,JointOrdinaryResolutionCapability,AcceptedMechanicsPlan)` → `Task<JointOrdinaryAcceptedBasis>` в M owner; `PublishJointOrdinaryMechanicsAsync(F,L,JointOrdinaryResolutionCapability,JointOrdinaryAcceptedBasis)` → `Task<JointTailApplyResult>`. Existing common planner supplies only previously accepted typed wound/effect/resource contributions. F1 adapter puts ack in child.mechanics of parent M; ordinary schema1 replacement forbidden. |
+| `Services/MortalQteDecisionPublication.MortalJointOrdinaryResolution.cs`, engine ordinary partial, existing named progression/automatic/projection/story owners (modify) | `CompleteJointOrdinaryResolutionAsync(F,L,JointOrdinaryResolutionCapability)` → `Task<JointTailApplyResult>` only after exact fixed child phase receipts. Shared pure phase calculations reused with child Binding/frozen basis; dispatch slot derived from fresh capability, never caller-selected. Completion before KF1; no parent P2/P4 or D8 invocation. |
 | `BookOfEternityClient/Services/QteSceneService.MortalJointTerminal.cs` (new); `QteSceneService.cs`, `QteDeferredAcceptedMechanicsPlanner.cs` (modify) | `PrepareMortalJointTerminalAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; `CommitMortalJointTerminalAsync` с теми же arguments/result. Only persisted selected outcome/resolved wave. Pure XP/history/runtime/narrative after-images, exact existing typed plan contributions. |
 | `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs` (new); `Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs` (modify) | `ReadMortalJointQteTailPhaseAsync(F,L,Binding)` → `Task<JointActiveTailCapability>`: original→H→current, initial story vs current terminal output; `PrepareMortalJointTerminalTailAsync(F,L,JointActiveTailCapability)` → `Task<JointTailApplyResult>` freezes terminal-known auto basis. |
-| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` (modify) | `CompleteMortalJointActiveCleanupAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; K+M release atomic. Q-D5 may require separate accepted cleanup/staging boundary; не добавить follow-up paths в K молча. |
+| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` (modify) | `CompleteMortalJointActiveCleanupAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; K+M release atomic. F1 FT/KF1 boundary задана §8.5; no ordinary cleanup before child completion. |
 | `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`, `.AgentConsole.cs`; `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`, `QteWebInteractionService.cs`, `BrowserPlayerActionService.cs` (modify) | Actual retained-tail admission для allocation/ordinary input; joint UI dispatch к одному named owner. Separate ordinary browser allocator уже имеет coordinator wrapper: не объявлять его crash-unsafe только по console implementation и не расширять его contract этим планом. |
 
 ### B01 pre-seal dependency и fingerprint DAG
@@ -159,7 +168,7 @@ M=`game_state/wounds/mortal_qte_decision_publication.json`. Exhaustive approved-
 | B04 | One `stories/mortal_life_{i}.jsonl` from genuine original/GetStoryPath, M. |
 | B05/B11 | Only exact K from signed original + M released ack. No wildcard directory deletion. |
 | B07 | `game_state/control/qte_runtime.json`, `game_state/control/qte_deferred_effect_continuation.json`, `output/qte_offer.json`, `ready/turn_complete.json`, `ready/turn_error.json`, M; error must already be absent. |
-| B08 | B decision cohort is insufficient for mandatory ordinary handoff. Any followUp/new request/original writer, logical turn/time and cleanup changes are **ungranted Q-D5 proposals**; no executable writer set is assumed. |
+| B08 | PROPOSED F1: FD existing decline base cohort+M; FT exact existing snapshot/backups owner outputs + `game_state/control/pending_turn_snapshot.json`, `game_state/control/pending_turn_snapshot.authority.json`, `input/turn_request.json`, own Ready/repair/offer consumption + M. Child existing accepted Mortal common wound/effect/resource cohort, then named progression/automatic/projection/story cohorts+M; no arbitrary path list, schema1 overwrite or new D8 XP grant. |
 | B09 | M-only selected-terminal PREPARE, then exact existing supported deferred plan set + `game_state/player/experience.json`, `game_state/player/status_changes.json`, `game_state/history/qte_history.json`, runtime/continuation, `output/narrative_response.json`, `input/qte_effect_resolution_request.json`, `output/qte_effect_resolution_receipts.json`, `ready/qte_effect_resolution_complete.json`, M. No broader NormalizerRollbackTrackedFiles membership. |
 | B10 | M-only terminal auto basis PREPARE, then separate B02/B03 data cohorts + M for terminal slots. |
 
@@ -213,10 +222,10 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 ### T178 / B00 — contract baseline и Q-D5 gate
 
 **Files:** modify `specs/1536-complete-wound-materialization/{spec.md,plan.md,tasks.md,contracts/mortal-wound-treatment.md}`, DESIGN/этот план; при принятии Q-D5 — связанный closed contract appendix в том же feature. Пока только последующая разрешённая подготовка contract delta, не runtime.
-**Consumes:** approved plan и отдельное permission-to-implement; **produces:** точная source-pinned contract/task/selection basis, accepted Q-D5 subdesign до B06 activation.
+**Consumes:** approved plan и отдельное permission-to-implement; **produces:** точная source-pinned contract/task/selection basis, accepted F1 §8.5 contract до B06 activation.
 
 - [ ] Зафиксировать current actual remote SHA, ancestry/clean, AGENTS/workflow/constitution, required setup из tracked recovery, версии/недоступные ОС; старые machine paths не использовать.
-- [ ] Разнести B/D1–D8 planning approval и implementation authorization. Для Q-D5 выбрать/спроектировать F1/F2, independent DESIGN review до code: exact schema/member/issuer/old→new binding/remaining spec/turn-time policy/uncertain/cleanup; нельзя закрыть gate словами «reuse ordinary handler».
+- [ ] Разнести B/D1–D8 planning approval и implementation authorization. Для Q-D5 проверить F1 §8.5 и его independent DESIGN review; получить written acceptance exact schema/member/issuer/old→new binding/remaining spec/n→n+1 policy/uncertain/KF1 cleanup. F2 не выбирать без доказанного F1 blocker; «reuse ordinary handler» не closure.
 - [ ] Синхронизировать accepted contract delta и новые task IDs. B00 не считается закрытым для new-QTE, пока Q-D5 не принят. No-offer B01–B05 разрешать только явно в границах отдельного slice.
 - [ ] Gate: отсутствие contradictory D5/no-follow-up clauses, no new implicit grants, source contract/example позволяют GM authored flow без implementation. Commit/push/readback.
 
@@ -229,7 +238,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 - [ ] RED `M3_RejectsUnknownFieldsIllegalPhaseAndCyclicSeals`, `M3_SourceRolesRequireExactOriginalSubmittedCommonGuards`, `JointActive_MissingInitializerRefusesBeforeCommon`, `JointActive_BadAuthorityBeforeFreshProcessAdmissionPreservesNamespace`, `JointActive_SourceChangeBeforeSealOrTakeRefuses`, `JointActive_AfterSealAttachmentIsRejected`, `JointActive_SourceAndRawBasisReachPlanningAndPreparedSeals`:  exact schema/roles/digests and no writes/G mint on refusal.
 - [ ] Capture P before common, strict present/absent/BOM/duplicate/path policy, distinct training/award inputs, offer/old-control exclusions and storyPlan. Bind source/raw basis before CommonAuthority/input/cache sealing; final M basis fingerprint only after immutable common proof core. Publish v3 through actual prepared/taken publisher; retain existing v2 inactive constraints and family dispatch.
 - [ ] Reconcile actual reader catalogs with P and permitted overlaps; new dependency without frozen capture refuses. New offer stays refused before common until Q-D5 implementation is approved and complete.
-- [ ] G; conditional regression `fr063-joint-output-basis`, `fr063-joint-initial-header-refusal`, `fr063-joint-generation-admission` + related `fr063-joint-generation-refusal` when touched dispatch/admission; first-Late2/EVIDENCE gate precedes these actuals, exact case plan before run. **Accept:** M3 common receipt+whole union genuine, no ACTIVE-v2 migration, no changed/stale/foreign draft acceptance. Covers A02/A05/A08/R02/V01.
+- [ ] G; conditional regression `fr063-joint-output-basis`, `fr063-joint-initial-header-refusal`, `fr063-joint-generation-admission` + related `fr063-joint-generation-refusal` when touched dispatch/admission; first-Late2/EVIDENCE gate precedes these actuals, exact case plan before run. **Accept:** M3 common receipt+whole union genuine, no ACTIVE-v2 migration, no changed/stale/foreign draft acceptance. Covers A02/A05/A08/R02/V01; F101/F104 source descriptors до seals.
 
 ### T180 / B02 — atomic automatic action+ack
 
@@ -277,7 +286,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 
 ### T184 / B06 — QTE wire grammar, capture и prior terminal retirement
 
-**Gate:** accepted Q-D5 schema/authority/GM joint-only rule before new-offer activation; tests may not smuggle that grant through fixtures.
+**Gate:** written acceptance F1 §8.5 schema/authority/turn policy/GM joint-only rule before new-offer activation; tests may not smuggle that grant through fixtures.
 **Files:** new continuation joint partial, existing continuation declaration/dispatch, StoryService.AcceptedStoryAppend, QteSceneService; new unit `MortalJointQteGrammarTests.cs`, integration `.JointActiveQteCapture.cs`. Update owning source scanner literal for new partial declaration without removing inventory/assertions.
 **Interfaces:** strict continuation2/clientStoryAppend2, genuine `PriorQteTerminalRetirementProof`, common-basis offer capture.
 **Owner:** proposed `fr063-active-b-qte-capture`.
@@ -298,17 +307,22 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 - [ ] Same deterministic transfer/continuation operation identity, retained request/original/backups; ordinary next input/allocation blocked. Do not expose offered UI in production until B08 mandatory decline path is complete; an unimplemented decline button/HOLD after click is not product acceptance.
 - [ ] G + Late2, affected exact generation-token browser tests. **Accept:** repeat read-only same result, wrong G/choice fails, no already-accepted cancellation. Covers Q02–Q04/Q08/Review Focus 4.
 
-### T186 / B08 — обязательное ordinary resolution после decline (BLOCKED Q-D5)
+### T186 / B08 — F1 FD/FT и actual ordinary resolution (grants BLOCKED)
 
-**Files:** exact future follow-up owner/schema files определяются только accepted Q-D5 subdesign; known consumers `GameEngine.MortalJointQteTail.cs`, `GameEngine.TurnLifecycle.cs`, `LiveTurnPreparationService.cs`, `WebUi/QteWebInteractionService.cs`, `BrowserPlayerActionService.cs`. Test file `.JointActiveQteDecline.cs`; contract/`Rules/Block_CLI_QTE.txt`/CLI/QTE example + manifest/source guards must move together, including finite owning PromptDocumentationCoverageTests methods.
-**Interfaces:** не выдавать invented follow-up API за accepted B. Approved Q-D5 appendix обязан до code назвать producer/consumer signatures, exact maps, receipt/IDs и source/target original admission; отсутствующий appendix — STOP этого этапа.
-**Owner:** proposed `fr063-active-b-qte-decline` after Q-D5 closure.
+**Files:** exact five F1 registry rows above, `GameEngine.MortalJointQteTail.cs`, `QteSceneService.MortalJointHandoff.cs`, existing `GameEngine.MortalJointTerminalCleanup.cs`, `WebUi/QteWebInteractionService.cs`, `BrowserPlayerActionService.cs`, `.AgentConsole.cs`. Tests new `.JointActiveQteDecline.cs`, `.JointActiveOrdinaryTransfer.cs`, `.JointActiveOrdinaryResolution.cs`; actual full paths follow the integration prefix defined above. Contract/Block_CLI_QTE/CLI/QTE worked example/manifest/finite source guards change together. No new durable pathname.
+**Interfaces:** `DeclineMortalJointOfferAsync`→FD; engine prepare/value→`PublishJointOrdinaryTransferAsync`→FT; actual request/Ready/repair→`PrepareJointOrdinaryAcceptedBasisAsync`→`PublishJointOrdinaryMechanicsAsync`→child named phases→`CompleteJointOrdinaryResolutionAsync`→KF1. Read capabilities freshly, no private Frame in Services.
+**Owners:** proposed `fr063-active-b-qte-decline` (FD/source/dedup), `fr063-active-b-ordinary-transfer` (FT/cold original), `fr063-active-b-ordinary-resolution` (actual result/repair/completion). These are three independently reviewable subgates of one sequential T186, not new implementation authorization. Each has its own bounded RED/GREEN/checkpoint; no offered UI before all three qualify.
 
-- [ ] RED `Decline_CommittedJointEffectsRemainAndOrdinaryRemainderResolves`, `Decline_CrashBeforeAfterDecisionTransferRequestCompletionNeverLosesObligation`, `Decline_RedeliveryAndRestartDoNotDuplicateEffectsOrMintSecondRequest`, `Decline_ConsoleBrowserAgentHaveSameOrdinaryResolution`, `Decline_AcceptedSceneCannotBeCancelled`.
-- [ ] Fixture starts with genuine committed acquisition+treatment/stat award, an explicitly unresolved ordinary situation and offered QTE. Ordinary test GM must actually produce/commit a distinct permitted remainder result. Assert exact once-only old wound/treatment/resource/history/award and once-only new remainder result; recording intent/notification alone is not PASS.
-- [ ] Implement **only** separately accepted handoff schema/authority. Preserve ordinary game meaning, no blind ProcessPlayerTurn(originalAction) replay, no copied operation IDs, no source cleanup until authoritative transfer/recovery boundary. Unsupported/ambiguous remainder before common refuses; accepted unresolved tail retains recoverable obligation.
-- [ ] Exercise native process death before/after each decision/intent/request/original/cleanup/completion boundary, same-root restart and distinct-root durable-only recovery; repeated identical and conflicting delivery, changed G/remaining payload. Actual GM response loss/delayed receipt cannot silently mark done.
-- [ ] G + Late2 + scoped ordinary decline regression; **accept:** mandatory standard-mechanics outcome is observed, no lost work/double effects, exact chosen turn/time policy, no cleanup of active source. Until then B07 offered UI/new-joint-QTE release and full FR063 remain blocked. Covers revised Q09 and explicit D5 requirement.
+- [ ] **B08a RED** `Decline_RequiresSealedNonemptyDisjointOrdinaryUnitsBeforeCommon`, `Decline_LedgerUsesSemanticSourceNotNewIds`, `Decline_FDAtomicallyRetainsOneObligationAndParentHeaders`, `Decline_ActiveSceneCannotBeCancelled`. Genuine acquisition+treatment/spend/+5 fixture, unsupported family/prose-only/empty remainder refuses before P0. Prove no amount/identity/state writes on refusal.
+- [ ] Implement only accepted §8.5 FD/source ledger/descriptor schema; freeze sourceHeaders and operation identity with decision+ack. No inference from hint, broad DTO paths, recursive ProcessPlayerTurn or source command replay. Repeated click same obligation, conflicting choice holds.
+- [ ] **B08b RED** `OrdinaryTransfer_EveryArtifactHeaderRequestMarkerCutIsParentOrChildOrHeld`, `OrdinaryTransfer_ColdChildOriginalAuthenticatesFrozenFDAndParentArtifacts`, `OrdinaryTransfer_ChangedCapsuleOrRehashedMarkerCannotMintAuthority`, `OrdinaryTransfer_LostDispatchRetainsExactRequestDice`. Damage authority before child PID/constructor; genuine baseline positive before negative variants.
+- [ ] Extract pure preparation from current original/request owners; named FT atomic publisher includes distinct target snapshot/backups, pair/request/M and only own-bound control consumption. Existing create/prepare functions first delete originals or write sequentially and **must not** be called unchanged. FD→snapshot(FD)→child token→FT/M order; original target baseline includes FD M; M frozen-input image is not a nested predecessor chain. Child manifest excludes final FT digest/self-reference. Fresh transfer reader reconstructs current G/child→FD→retained parent proof and rejects debt/partial/foreign images.
+- [ ] G + impact-required Late2/initial-original/generation/output regressions with their independent prerequisites; freeze/checkpoint/independent review B08b before execution subgate. No native repetition beyond changed/failed concerns.
+- [ ] **B08c RED** `OrdinaryRemainder_RealRule12FailurePublishesNewWoundDamageOnce`, `OrdinaryRemainder_SuccessClosesUnitWithValidatedNoConsequence`, `OrdinaryRemainder_ChildWoundPublicationKeepsParentMarker`, `OrdinaryRemainder_RepairRestoresPostPrefixOnly`, `OrdinaryRemainder_LostCompletionReconstructsWithoutReplay`, `OrdinaryRemainder_TurnNPlusOneAndRemainingTimeAreOnceOnly`.
+- [ ] Use real ordinary GM transport/Ready/validator/common planner, existing action-check rules and exact typed wound/effect/resource source contributions. New result adapter verifies every unit/check/dice/slot; common owner supplies genuine AcceptedMechanicsPlan. New child slots in M prevent ordinary schema1 from replacing parent. Publish child mechanics/phase ack atomically; named child progression/automatic/projection/story use child frozen inputs and separate operation IDs; completion only after actual applied result/full proof/debt-free state. Legacy full finalizer, QTE terminal, arbitrary GameResponse/XP/family grants forbidden.
+- [ ] Fixture actually resolves dangerous passage U through ordinary check failure with new W2/resource damage; assert one W2/result/child story, original W1/T1/spends/+5 unchanged/count one. Success and mixed branches separately prove allowed slot closure. Changed ID replay of parent consequence refuses, while a distinct lawful U-slot operation is allowed. Notification, intent, Ready or parser result alone fails acceptance.
+- [ ] Actual crashes before/after FD/FT/GM-read/Ready, every child phase member/ack, validation/repair, completion and KF1; lost reply, exact/conflicting redelivery, same-root/fresh process/distinct-root durable-only recovery. Parent artifacts retained until completion; child rollback post-prefix; runtime parent n or completed child n+1, no staging time/cost/turn, ordinary lifecycle once per child.
+- [ ] G + scoped ordinary decline/accepted common regressions and finite real console/browser/agent scenario: shared owner dispatch, pending/repair/result after reload, no composer resubmit; no lease across UI/transport. **Accept:** actual ordinary mechanics result and completion, one request/dice/obligation, exact semantic dedup/source proof, KF1 after actual resolution. Covers Q09/F101–F110. Keep B07 activation blocked until B08a/b/c plus B11 cold/cleanup proofs qualify.
 
 ### T187 / B09 — selected-terminal D8 atomic outcome
 
@@ -342,9 +356,15 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 
 - [ ] RED `Cleanup_ExactSignedKAndMReleaseEveryMemberCut`, `Cleanup_ActivePausedWaveDebtOrOrdinaryRemainderNeverReleasesEarly`, `Cold_InitiallyBadAuthorityBeforePidCannotMintAdmission`, `Cold_ReleasedObservationNeverGrantsReplayOrRestore`.
 - [ ] Require terminal receipt + post-auto/projection + genuine QTE/history/wave closure and no publisher debt; decline additionally proves mandatory ordinary resolution or accepted genuine transfer boundary. This dependency cannot be replaced with state=declined.
-- [ ] Atomic K+M release, no recreation original/backups after commit. Fresh after-release reader only observes completion; any new follow-up mutation authority must come from accepted Q-D5 genuine owner protocol, not released marker alone.
+- [ ] Atomic K+M (decline: KF1+M only after F1 completion) release, no recreation original/backups after commit. Fresh after-release reader only observes completion; any new follow-up mutation authority must come from accepted Q-D5 genuine owner protocol, not released marker alone.
 - [ ] Before-launch corrupt real authority/header/G namespace in parent, record full raw files/directories, then actual child constructor/entrypoint/PID; include existing early JsonException shape where applicable. Same/different root durable-only cold resume, no warm parent admission or shared mutable cache.
 - [ ] G + conditional exact initial9/P6/phase-refusal owners and Late2. **Accept:** no partial/zero-receipt cleanup PASS; unchanged corruption namespace, exact source-binary pins and actual root absence. Covers C01–C03/R02/Q04/Q08/Review Focus 2/5.
+
+F1-specific B11 oracle: `Cleanup_F1RequiresActualChildCompletionAndExactKF1`,
+`Cold_F1ChildOriginalRelocatedParentProofRejectsMixedNamespace`,
+`Cleanup_F1PartialDeletionNeverRecreatesParentOriginal`. KF1 derives parent artifact-only K plus
+child K; deletes reused slot once under child tuple, retains all evidence until actual completion.
+F103/F104/F106/F109 входят в этот owner; no released-marker mutation authority.
 
 ### T190 / B12 — player parity и GM-facing qualification
 
@@ -356,7 +376,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 - [ ] Console/browser/agent actual entrypoints: available choice, wrong/stale/session token response, retained-state message, reload/restart, no duplicate click execution; accepted scene never has offered decline action. No technical details/hidden wounds/diagnosis blanket reveal gate.
 - [ ] Worked GM examples: offer vs committed joint contribution vs **remaining** ordinary resolution, decline once with no repeated wound/treatment, accepted terminal damage/XP, crash/hold/retry. GM can complete request from explicit safe packet/guidance, not implementation reading. No prompt-only fix for missing durable guarantee.
 - [ ] Run scoped documentation/source guards and selected component interactions; then actual app console/browser flows with captured output/screenshots/input/reload. Backend service PASS/static React-text checks do not qualify DOM/visual runtime. Unavailable browser/OS remains explicit UNRUN, not simulated PASS.
-- [ ] G + only impacted existing readonly status guards. **Accept:** semantic parity and actual interaction evidence for this joint contour. Full guided US5 aliases/providers/quotes/confirmation/staging and ordinary allocator remain separate gates, not closed by this task. Covers GM01/U01/U02/Q02/Q09.
+- [ ] G + only impacted existing readonly status guards. **Accept:** semantic parity and actual interaction evidence for this joint contour. Full guided US5 aliases/providers/quotes/confirmation/staging and ordinary allocator remain separate gates, not closed by this task. Covers GM01/U01/U02/Q02/Q09/F110; actual decline→ordinary result, not notification.
 
 ### T191 / B13 — bounded connected Linux/Windows acceptance и handoff
 
@@ -364,7 +384,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 **Interfaces:** existing test-csharp category runner + actual native app entrypoints; final evidence references immutable stage SHAs/binaries, not rewritten historical packets.
 **Owners:** proposed `fr063-active-b-connected-{linux|windows}-{no-offer|accept|decline}`; по 4 theory rows на family. Это planned новые owners, не существующие IDs/catalog changes.
 
-- [ ] Добавить `JointActive_ConnectedNoOffer`, `JointActive_ConnectedAccept`, `JointActive_ConnectedMandatoryDecline`, каждый с 4 literal rows `stats|level|both|none`: **12 новых connected cases на ОС**, finite exact theory membership. В accept rows закрепить `stats=deferred wave`, `level=QTE-earned additional level`, `both=physical`, `none=nonphysical`; в каждом decline row actual ordinary remainder result обязателен. Exact expected +1/+5/watermark/charge/history/story/turn/request counts вычисляются из genuine fixture before-images, не из результата проверяемого writer.
+- [ ] Добавить `JointActive_ConnectedNoOffer`, `JointActive_ConnectedAccept`, `JointActive_ConnectedMandatoryDecline`, каждый с 4 literal rows `stats|level|both|none`: **12 новых connected cases на ОС**, finite exact theory membership. В accept rows закрепить `stats=deferred wave`, `level=QTE-earned additional level`, `both=physical`, `none=nonphysical`; в каждом decline row actual ordinary remainder result обязателен: `stats=failure/W2+damage`, `level=success/no-consequence with checked audit`, `both=repair+same child retry`, `none=lost completion+restart`. Assert FD/FT/child source chain, one request/dice/obligation and n→n+1; это не добавляет/уменьшает 12 planned connected cases. Exact expected +1/+5/watermark/charge/history/story/turn/request counts вычисляются из genuine fixture before-images, не из результата проверяемого writer.
 - [ ] Earlier stage evidence покрывает duplicates/caps/resolver conflicts/prior terminal/phase crash/restart/repeat/corruption. На Linux не повторять прошедшие owners без relevant change; на Windows исполнить ещё не квалифицированные затронутые native fault bodies узкими owners. Не выдавать 12 connected smoke cases за полную fault matrix и не запускать весь repository catalog.
 - [ ] Linux actual native exit/child PID/lease sharing/rename/recovery/cleanup + real console/browser interactions. Windows actual equivalent with replace/sharing/case/path alias semantics and PowerShell7/.NET8/SDK10 supported setup; CI metadata/compile is not Windows run. Нет privileged ACL/service/security-setting changes.
 - [ ] For every selected descriptor record planned/completed counts/method IDs/full TRX, native exit, source/binary pins, raw cleanup receipts/absent roots. Exactly before/after/uncertain/held and actual ordinal/transaction IDs; no failure overwritten by retry, no zero-receipt PASS.
@@ -381,7 +401,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 | Q01/Q05/Q06/Q10/Q13 | B06: all branch grammar before common, actual retirement/current source, no nested blobs; B09 terminal supported payload. |
 | Q02–Q04/Q08 | B07/B11/B12: UI lease released, same chosen handoff once, source retained until terminal, actual PID and debt. |
 | Q07/Q11/Q12/Q14 | B09/B10: one terminal action/XP/history, one post-QTE award; initial story/current output separate proofs. |
-| **Q09 revised / D5 mandatory** | B08: actual ordinary remainder resolution, every transfer/request/completion crash, repeat delivery, same console/browser result, committed effects byte/count unchanged. Earlier no-follow-up oracle superseded. |
+| **Q09 revised / D5 mandatory; F101–F110** | B00/B01/B06 pre-common source + B08a/b/c/B11/B12/B13: actual ordinary remainder resolution, every transfer/request/completion crash, repeat delivery, same console/browser result, committed effects byte/count unchanged. Earlier no-follow-up oracle superseded. |
 | C01–C03/R01–R03/V01 | B01/B04/B10/B11: exact K/headers/G/output/story/cold-current proof, no V2 upgrade/released authority. |
 | U01/U02/GM01 | B05/B12: retained-tail allocation blocked all routes, safe UI and worked GM flow, ordinary allocator dependency explicit. |
 | OS01/OS02 | B13 + each stage's fault controls: real OS native process/cleanup; neither inferred from the other. |
@@ -393,7 +413,7 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 
 ## Separate dependencies и открытые вопросы
 
-- **Q-D5 — blocking new joint QTE:** выбрать и независимо спроектировать durable mandatory ordinary continuation (F1/F2 or equivalent), exact source/target schema/authority, no duplicate effects, logical turn/time policy и joint-only GM offer rule. Existing ordinary browser parity gap зафиксирован, broader rewrite вне этого плана.
+- **Q-D5 / F1 — blocking new joint QTE:** §8.5 now designs remainder authority, closed M schema, FD/FT/source relocation, child common collision, semantic dedup, n/n+1 time policy, actual ordinary completion and KF1. Written acceptance/new grants and implementation/qualification still pending; F2 only on demonstrated F1 obstacle, no automatic selection.
 - **D4 ordinary allocator:** console `CharacteristicsService.DistributePointsAsync` имеет separate writes; browser ApplyStatDistribution имеет existing coordinator wrapper, но ни он, ни B не доказывают full submit-id/crash/repeat allocation contract. Нужен отдельный accepted owner contract/verification до guided allocation; не вносить allocator redesign скрытно в B05.
 - **D8 terminal limits:** only exact responseFragment/damage/physical subset, frozen earned XP; unsupported branches fail before common. Новая payload family или required normalization write root → отдельное решение, не broad legacy normalizer fallback.
 - **Guided US5:** readonly RO1/RO2 не закрывают T113/T119/T127–129. Target/provider discovery, same-name/stale reachability, quote/confirmation/staging, US2/US4 resource/course/time owners и allocator — самостоятельные принятые/будущие dependencies.
@@ -406,8 +426,9 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 - [x] Проверить все existing file paths и ссылки; new paths явно пометить proposed/create. Никакой генерации setup-plan поверх существующего history, agent-context или scaffold edits: manual SpecKit reconciliation; extension hooks здесь optional.
 - [x] Type scan registry↔stage consumes/produces; capabilities только private issuers, no unused/unowned proposed public API.
 - [x] Проверить tasks.md IDs T178–T191 уникальны, все implementation tasks unchecked, plan/spec/DESIGN/front status согласованы; no [P] при одном writer и shared storage state.
-- [x] Независимое Astra/XHigh plan review, source-backed corrections, final immutable reports после FINALSTOP; remote SHA/clean GitHub recovery до handoff.
+- [x] Историческое Astra/XHigh plan review на f8ab919a; не покрывает новые F1 bytes.
+- [ ] Новое независимое Astra/XHigh F1 DESIGN/affected-plan review, corrections, immutable final report; remote SHA + clean document recovery перед handoff.
 
 После review вернуть документ, короткую очередность, Q-D5 и зависимости; остановиться. #1557 frozen2601fd6, #1558/#1559 не запускать.
 
-Planning closeout: [corrected independent PLAN review](../recovery/lawful-active-b-corrected-independent-plan-20261016T002709Z-review.md) на f8ab919aae3f5a62841704e37fe63b3fce020a32 закрыл P-F1–P-F4; Q-D5 по-прежнему blocked/ungranted. Итоговый carrier меняет здесь только status/review metadata; никакого implementation release.
+Historical planning closeout: [corrected independent PLAN review](../recovery/lawful-active-b-corrected-independent-plan-20261016T002709Z-review.md) на f8ab919aae3f5a62841704e37fe63b3fce020a32 закрыл P-F1–P-F4; тот прежний Q-D5 был blocked/ungranted. Новый F1 DESIGN здесь требует отдельного review/acceptance. Итоговый carrier меняет здесь только status/review metadata; никакого implementation release.

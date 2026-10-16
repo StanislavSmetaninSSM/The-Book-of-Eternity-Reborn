@@ -36,6 +36,22 @@ The existing offer-turn/ordinary-follow-up contract conflicts with generic no-fo
 [plan Q-D5](./design/lawful-active-joint-tail-b-implementation-plan.md) is a blocking new decision
 before new joint QTE admission. D4 allocator/guided-US5 and D8 narrow terminal restrictions remain.
 
+## D5 / F1 design clarification — 2026-10-16
+
+Recovered c4dde062 and the current user instruction authorize F1 DESIGN/independent review only.
+[B §8.5](./design/lawful-active-joint-tail-b.md#85-d5--f1-обязательное-ordinary-resolution-в-существующем-m)
+proposes mandatory ordinary-resolution units from the accepted offer, client-derived committed
+source ledger, one obligation in existing M, atomic transfer through current request/original
+owners, child n+1 accepted ordinary mechanics and completion before KF1 release. The original
+action and committed consequences are never replayed. Ordinary child wound publication retains
+parent M rather than replacing it with schema1; repair uses the post-prefix child baseline.
+The first F1 family is the existing accepted Mortal common wound/effect/resource cohort;
+unsupported remainder is refused before common. Real ordinary result is mandatory: intention,
+notification or Ready alone never completes it. F2 is not selected without demonstrated F1 obstacle.
+These schemas/grants/turn policy and the affected T178–T191 plan await written acceptance and
+separate implementation authorization. D4, guided US5, frontend visual qualification and D8
+remain unchanged; no new runtime evidence or accepted ACTIVE contract is created.
+
 ## Clarifications
 
 ### Session 2026-09-22 — T081-C Durable Spiritual Decision Contract Approved
