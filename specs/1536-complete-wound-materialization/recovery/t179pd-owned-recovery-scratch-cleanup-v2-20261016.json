@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-16T18:17:38.901071+00:00",
+  "reason": "retire reconstructable task-only copies after SOURCE review to keep tmp capacity before next fresh recovery/native category",
+  "removed": [
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-prepared-github-20261016",
+      "head": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "count": 1028,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-prepared-recovery-20261016.json",
+      "receipt_sha256": "bd315230d06bbf60461b904643b90194fa451a897a1805524fb426b574fb2606",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-absence-source-retry-github-20261016",
+      "head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "count": 1044,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-wip-selected-recovery-20261016.json",
+      "receipt_sha256": "9d4678efd62df7d82a65b23016cfa922c36e321f3389ed3a788da2a391dad496",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "removed": true
+    }
+  ],
+  "preserved": "all receipts/reports/raw test evidence/writer/9186prepared1067clone/3fdacceptedreaderclone; all remote refs",
+  "no_product_or_security_change": true,
+  "no_remote_branch_deletion": true
+}

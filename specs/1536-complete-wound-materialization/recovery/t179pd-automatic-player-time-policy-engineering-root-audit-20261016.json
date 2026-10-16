@@ -1,0 +1,574 @@
+{
+  "task": "T179-Pd.3c DESIGN WIP supporting source audit",
+  "source": "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+  "completionHead": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+  "sourcePinsVerified": 43,
+  "exactProjectionsVerified": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 58,
+      "end": 82,
+      "sha256": "004c898099b32fb7fb0ed2668f3d624557fd221ba4e99dbca40921c04e61ab53"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 3592,
+      "end": 3720,
+      "sha256": "a1677f7700d5b652d2877b30b6e4dfc995646f3ddf5fe74febc0ebf571cee782"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 3721,
+      "end": 3759,
+      "sha256": "25ac30ed31a74c221660f5f163ccd9e5a55ad19e4d062662f9a59e4a8095217a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 3796,
+      "end": 3872,
+      "sha256": "143cfea82898ea1474426a60616f82eae7dcf66e8f10cd5cc16eddb78977ca0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 6797,
+      "end": 6812,
+      "sha256": "78f8f0fab484f3e586d38d801b09556191a1850d5f6c7f5113fe164044634a0f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 7091,
+      "end": 7192,
+      "sha256": "83847628b3e671bb0148b9b72e3f103361e118b8d275ad649fb14b0689485694"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 7373,
+      "end": 7381,
+      "sha256": "eaf2d1ebf424ec495b9cdf28b8588678070bfff5aecbb42c8f9df8315f62ec04"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "start": 7901,
+      "end": 7940,
+      "sha256": "6fb015576f65a65073bc40b6e4fb69299d3d1008ceb5c1b6b0830fecb50d1a5c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "start": 1796,
+      "end": 1995,
+      "sha256": "77a47f59e0faec0ec67146ee7e1b020199c5d8e1dc6a4b9f590eba4b8e108eb2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "start": 2146,
+      "end": 2180,
+      "sha256": "e99e592f7554f7a48bfcf96ec36e4232e452330893693fe909f373b6bc7bcae5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "start": 2368,
+      "end": 2384,
+      "sha256": "0ef12048c2dd9d5c2aecffb52ac304579e5cdce001794129ce4a2f3a0849d885"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "start": 2429,
+      "end": 2467,
+      "sha256": "da7f35c2e4ffdc6c3d285036e28f8c4beb3c0fe2111be9b0869ff5ff4a544662"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "start": 2519,
+      "end": 2585,
+      "sha256": "08f13b40b4a87dd18ce6debe251849e1e563cc301b3eff79e04475f9a962da4c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "start": 4888,
+      "end": 4916,
+      "sha256": "0bd1a0602bfd94fa6930853a695d5fb36101a8d431693284e1566278b03fdaec"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "start": 8143,
+      "end": 8185,
+      "sha256": "10cb4c5707b2b91ff7e62fa20cb1de0a8902ab29c2549dc27e929b7df7757c61"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "start": 760,
+      "end": 831,
+      "sha256": "b002874e2375b4a8b7b38e13afa679e801b3fa773ce8037459759208e45c3c7d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "start": 937,
+      "end": 1001,
+      "sha256": "a98ef724c25191949ddea5a8fee68c8d9afe793e577a569ce90d639b582ff0bc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "start": 129,
+      "end": 157,
+      "sha256": "5c2c0a181a0151aeda197468978a2b0beee8ce8d65bd61381a203606f830ce5f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "start": 7734,
+      "end": 7831,
+      "sha256": "348bd78c9c9550f82465c7fbf3193758a955ef91ee6a08c28f40bdfaa74dec52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "start": 55,
+      "end": 130,
+      "sha256": "124fe6f3e6233802b3ae0c467f9fc24dfe5190a59131ea803aab108565bc6eac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "start": 528,
+      "end": 548,
+      "sha256": "2a7b38f6c55075c1b41204ba669a2b9908ffab8b2544b26a3e640169b43c4409"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "start": 676,
+      "end": 704,
+      "sha256": "042e45c5273029a7c70175a7ac06784effd614d9c61078fd3e09643aa44219ed"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs",
+      "start": 1,
+      "end": 35,
+      "sha256": "5145f9f37710a2bf82924472d1de24e96b47e1da04702463a1badc56a0b9cbdc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "start": 60,
+      "end": 90,
+      "sha256": "c4d2e505bbf9ea61525378f07977e371772def4a614d97c8154402d59ae3b178"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "start": 133,
+      "end": 175,
+      "sha256": "a0d5b99c3484df9e7fc3e9eee6ab3923815a2b9c3585d80eb7bca16cc2c38b67"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "start": 1,
+      "end": 70,
+      "sha256": "038de5104334950e166854968b483c71a841695576a0bd3891bddb8fec5fc072"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "start": 106,
+      "end": 155,
+      "sha256": "40cde1745972f3d29fc6ac82a5b2e47110b460d7760df3e698cb1030e9261b4b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "start": 12,
+      "end": 24,
+      "sha256": "080443af22523aa9233b2213ab061a1c26e24a32cbe2c0931e8ee7835a79644b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "start": 55,
+      "end": 82,
+      "sha256": "d3cb69f7703d66edd72db9252b144e0de96feadb94695ff2c24d68077da1d951"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "start": 141,
+      "end": 241,
+      "sha256": "664a5ae33240d65569fe6a7633bde24999e1142031c45cebee454aa31f19e1d1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "start": 246,
+      "end": 399,
+      "sha256": "6cd995f54156d2b29edbf84dfee66700b271c3c5e83ca5731d49ced18c54ba0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "start": 873,
+      "end": 924,
+      "sha256": "bbaf605884fe018fa2f94c8a09366461a8b858e47920425933a190719ca490f9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "start": 13,
+      "end": 124,
+      "sha256": "f7db403c0bb88e2c5fd5988eb9a6d3d9eced86fe6fd797684937daf758007238"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "start": 15,
+      "end": 70,
+      "sha256": "e8840cb7c9ace61e6ff9996bd4eef26ba18e5438897da3779be39dae22d35403"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "start": 93,
+      "end": 124,
+      "sha256": "f21b2796a050ad4e993b3a6b8398911b5669c2905ca4df1506f6bc53e967690d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 2409,
+      "end": 2605,
+      "sha256": "7e784eff63b8e5acf5b5e64bae1aa556597f127e05590b3168d850ced8420be9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "start": 458,
+      "end": 515,
+      "sha256": "404b0b4755b9203190b3855442514838a399ceabd727ae12f83958d6b656174d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "start": 685,
+      "end": 705,
+      "sha256": "09e889f6c6973dd4b739898a13df344dc7a2fa220531d3b9f0e1743d2c5f7840"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "start": 18,
+      "end": 95,
+      "sha256": "13757ea2583294bcee2498e4a8e2e665e11ac37986be807b36aaf6bbac24bbe2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "start": 87,
+      "end": 151,
+      "sha256": "f67a3cce9aa6a2be6c41d35a8d203bfdc80566324589002528e5b6fdd43b0c05"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1442,
+      "end": 1458,
+      "sha256": "f652cc364c6cbd3c744aba9c012e3f9c1f8370f79d4d97e6733b29c085b8678b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1529,
+      "end": 1545,
+      "sha256": "f5c871fb7af7019bb1339f9591a909ab9f35856122ec41219c2e549937a8db1c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "start": 150,
+      "end": 225,
+      "sha256": "a54a5345a9a7da7207a448d2483e7f253dd8acd1b51d97ae64d425cd63cf01f2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "start": 1577,
+      "end": 1650,
+      "sha256": "cedfd8bb9b0e2d942257a5e09485652b328153b25a09934eab70e155cc753156"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "start": 155,
+      "end": 187,
+      "sha256": "9225f3a4a57a4593315b4c77b78dffde3e80a4bc5c084f258d1ebf9421e4a006"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "start": 707,
+      "end": 749,
+      "sha256": "bd938a51c543ffb621a8393ac820d34cbbcb6a12731030005e8a7ddb04549fb6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "start": 10,
+      "end": 35,
+      "sha256": "895cab823fbd9d2ecc5e72599bfde2e08920cfa0e4cec702888a689b21700ff0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "start": 97,
+      "end": 134,
+      "sha256": "03c90a3c5ac62ead873b237111a729ed24cb5f01b236d6c9952b54b7a68e4fc7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "start": 661,
+      "end": 713,
+      "sha256": "77427af539bd09e0e7b40dfe6e813e2a94aafdbabfe3e7b39d9fa55f8e18133f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "start": 52,
+      "end": 127,
+      "sha256": "f0ede95bfcbc38d65b60402f066bbfb698f6dc3ec615ce63ae0675da32ab8a98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "start": 406,
+      "end": 442,
+      "sha256": "e7ec1f6377277506682607d686334282433c3548a92f3082b0bcd601a7c3ef49"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "start": 316,
+      "end": 399,
+      "sha256": "2a8aef714cf78f77c426ca1903e491e65d8c88613d0d63cff360e9a41ad4e8d7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "start": 9,
+      "end": 48,
+      "sha256": "aed8e37b62e207bf9df37818bf012343034173b45f8ca2801d6081645aec6e44"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "start": 955,
+      "end": 1005,
+      "sha256": "1bf145d7b03d67ea2771ebaf589fa033ffaaa5b6b4117b3a0f21bf801bf01781"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+      "start": 175,
+      "end": 202,
+      "sha256": "4a09606f05bb4d188d0426b3eeb0e99737f523d6cbf37136785e3ddf39c411ca"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "start": 332,
+      "end": 356,
+      "sha256": "f0c8ffd8dcfd1f7f40f14f01d8659622992f26066f774301d2534fa95b4c0a13"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "start": 378,
+      "end": 408,
+      "sha256": "ab2ffb60867e9e0548af63f2b81166ab6292569dc2e8cec3c0a61b2d99662b56"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 280,
+      "end": 331,
+      "sha256": "3cfbd5a921426f02d6ec37e086ab824abc61f091a61a51756a6287ccf096ff5c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalLevelUpMaterializationValidationTests.cs",
+      "start": 29,
+      "end": 74,
+      "sha256": "7961b6d42b592b7fa5e119c5474b05a71cec5978913c09fa18dafbfa5e606083"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/CharacteristicsServiceTests.cs",
+      "start": 1,
+      "end": 58,
+      "sha256": "93e9b1ef058d25ec1bdc7e1c547d93c716424c2be3bcdace61f2f9d7084a914e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ProgressionScheduleServiceTests.cs",
+      "start": 603,
+      "end": 659,
+      "sha256": "d0d2660476f1a88bd493fde2abd561c30355552f61cf608897ac319a7ee2bb02"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "start": 1,
+      "end": 100,
+      "sha256": "9464125ded808f48ce713ec7aa6b662e065d10e6cbd795753b4991949b063f61"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "start": 112,
+      "end": 201,
+      "sha256": "0b6365b4e1d3f97d045cbcff51fcdabf437ca3557fb433c6892b4902361d8103"
+    },
+    {
+      "path": "tests/categories.json",
+      "start": 393,
+      "end": 450,
+      "sha256": "b9b8784f7c69a2294c226fb9c14a8d3f344726fcbce36fa480d232b128d23fdb"
+    }
+  ],
+  "workingComparisons": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "AGENTS.md",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/CharacteristicsServiceTests.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalLevelUpMaterializationValidationTests.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ProgressionScheduleServiceTests.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "docs/testing.md",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "workingMatchesFrozen": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "workingMatchesFrozen": true
+    },
+    {
+      "path": "tests/categories.json",
+      "workingMatchesFrozen": false
+    }
+  ],
+  "priorImmutableReportsVerified": {
+    "/tmp/t179pd-hot-submitted-admission-engineering-design-20261016.md": "90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f",
+    "/tmp/t179pd-hot-submitted-admission-engineering-design-20261016.json": "5429971dec24f96a022c3820c478a23884bf85a1982fde89408216d46e470d08",
+    "/tmp/t179pd-hot-custody-red1-optional-absence-source-addendum-20261016.md": "b9f0254620c7a26c99f8e01f08f4a2867c24b24512b7a4530f52b1f0b6d7dbba"
+  },
+  "productionTestsCatalogScriptsDiffFromCompiled473": "empty",
+  "newChecks": "FUTURE_UNRUN",
+  "independentReview": "PENDING"
+}
