@@ -264,6 +264,8 @@ Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidan
 
 #### T179-Pc — retained v2 common calculation prerequisite (authorized staged execution)
 
+**Bounded Pc ACCEPTED (2026-10-16):** [final independent review](../recovery/t179pc-independent-final-stage-20261016-review.md) atc31dc84 confirms37/37selectedPASS,12distinctcleanedroots and285exactGitHub-restoredfiles. Production9258/compiled901435; onlyretained-v2C/outputpreservation. FullB01/T179/S/B/M3/F1 remainopen; nextactualactiveinterfaceobligationsbelowareundischarged.
+
 This bounded slice follows accepted T179-Pa/Pb and the pinned [shared-kernel consultation](../recovery/t179-preseal-common-kernel-20261016.md). A focused Astra/High seam consultation further separated the v2 prerequisite from active S/B admission: no existing joint fixture exposes a live resource owner between C and sealing. The existing post-common observer can establish actual retained-v2 reuse, never that missing cut. FullT179/B01 remains unchecked.
 
 **Files:** new `Services/AcceptedMechanicsPlanner.CommonCalculation.cs` and owner-private joint calculation partial; modify `AcceptedMechanicsPlanner.cs`, joint common input composer, resource/common owner and named cache assembly. Add exact boundary tests in partial `ResourcePendingResolutionTests` and `EffectAcceptedTurnPlannerTests`; one integration Fact in new `.JointRetainedCommon.cs`, extending existing `RunJointCompletionControlAsync` only with an optional read-only common-plan observer. Catalog/selection and this existing ledger own the change. No new runtime hook, public candidate-import API, caller-supplied C/map/factory, marker schema or gameplay output.
