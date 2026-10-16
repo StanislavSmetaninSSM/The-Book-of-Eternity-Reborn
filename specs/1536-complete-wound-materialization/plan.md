@@ -13,6 +13,12 @@ The firstRED cc8 checkpoint is pushed/readback/recovered and independent causal 
 Preserve and independently qualify any causal RED before success implementation. Continue accepted finite 3b custody/source/attempt/owned-close work and meaningful checks; settle concrete engineering gaps through focused design and independent review. Full S/B/M3/F1, complete ordinary owners, T197, new-QTE activation and all D4/guided/DOM/visual/Windows/D8 gates remain open. F2 is not selected. Sole writer, category budgets, native/cleanup/source evidence and non-force task-branch persistence remain mandatory; main/merge/force-push/branch deletion/secrets/issue closure stay prohibited.
 
 
+## T179-Pd.3b ordered GREEN 6/7 browser2 PASS — actual staging owner boundary (2026-10-16)
+
+Owner-refusal checkpointac073a34fb70424e2cfb48b08481e4e98e835e11 pushed/readback/NEWGitHub119files/all113delta; cleanfreshf9bcfourDLLs before soleorderedbrowser2. Native0/exact2PASS/native23.805952s/eachcategory≤5m; strict2rootsremoved/noresidue/sourceHEADfourDLLunchanged. Sixchains/rootaudit/exacthelpers/priorownerrecovery frozen under `recovery/t179pd-hot-custody-implementation-green-browser2-20261016-*`.
+
+Raw genuine queued-browser/ProcessPlayerTurn route shows successack Staged/actualStageCompleted at TerminalWaitStarted onlyafteractual outerawait; matching request/G comparison is executedsourceassertion. Faultcase uses existing owning SessionOperationClosing callback at AwaitingStagingOwnerReturn, cuts1/terminalWait0/noack/Ended+Unavailable; originalIOerror remainsvisible. Four physicalpending/action/request/manifest/authority bytes remainexact by executedsourceassertions, with fourcapturedpaths retainedraw (not a raw afterimage set). NoS/B/M3; no browserDOM/visual, remoteComplete/Dispose or isolatedLdRelease fault qualification. Currentselected13/15PASS/finalreviewpending. Save/readback/recover then ONLYorderedworker2 next; full3b/priorlimitsOPEN.
+
 ## T179-Pd.3b ordered GREEN 5/7 owner-refusal1 PASS — genuine refusal probes (2026-10-16)
 
 Active-tail checkpointb5d2a8d466a047cb7ecc2110a31d5d72a1235b77 pushed/readback/NEWGitHub107files/all101delta; cleanfreshf9bcfourDLLs before soleorderedowner-refusal1. Native0/exact1PASS/category105.6623639s≤5m/native111.132517s; BOTHactual+foreign strictrootsremoved/prefixbeforeafterempty/sourceHEADfourDLLunchanged. Sixchains/rootaudit/strongfullunion+bindingcheck/results/exacthelpertexts/prioractive-tailrecovery frozen under `recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-*`.
