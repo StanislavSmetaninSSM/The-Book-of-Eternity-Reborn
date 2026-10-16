@@ -46,6 +46,9 @@ New direct delegation resumes implementation from745b and supersedes the complet
 - [x] OrderedGREEN4 active-tail3 native0/exact3PASS/54.7899141scat≤5m/strict3roots/noresidue/sourcefourDLLunchanged; raw pendingstats/level/newQTE refusal, turn42/heldunion/no common/exact canonicalpreservation+originalscheduleQTErestore/oneboundedledger verified. Sixchains/helpers/live recovery saved; currentselected10/15PASS/finalreviewpending.
 - [ ] Save/readback/recover active-tail3 packet then ONLYorderedowner-refusal1, browser2, worker2; existing per-singleton recovery/stopFIRSTunexpected/no replay/full3b+priorlimitsOPEN.
 
+- [x] OrderedGREEN5 owner-refusal1 native0/exact1PASS/105.6623639scat≤5m/BOTHstrictroots/noresidue/sourcefourDLLunchanged; genuine notreserved/foreign/reentry/delegated probes and subsequent fullnativecommon/inertrepeat union verified. Sixchains/strongraw+bindings/exacthelpers/active-tailrecovery saved; currentselected11/15PASS/finalreviewpending.
+- [ ] Save/readback/recover owner-refusal packet then ONLYorderedbrowser2, worker2; finalboundedreview after15distinctcases. Existing stopFIRSTunexpected/no replay/full3b+priorlimitsOPEN.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
