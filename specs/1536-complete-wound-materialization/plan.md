@@ -13,6 +13,12 @@ The firstRED cc8 checkpoint is pushed/readback/recovered and independent causal 
 Preserve and independently qualify any causal RED before success implementation. Continue accepted finite 3b custody/source/attempt/owned-close work and meaningful checks; settle concrete engineering gaps through focused design and independent review. Full S/B/M3/F1, complete ordinary owners, T197, new-QTE activation and all D4/guided/DOM/visual/Windows/D8 gates remain open. F2 is not selected. Sole writer, category budgets, native/cleanup/source evidence and non-force task-branch persistence remain mandatory; main/merge/force-push/branch deletion/secrets/issue closure stay prohibited.
 
 
+## T179-Pd.3b ordered GREEN 3/7 live1 PASS — nonzero actual ProcessPlayerTurn (2026-10-16)
+
+HS01 checkpointfe80e68f92b79f244330780d49cdda84cede9d42 pushed/readback/NEWGitHub85files/all79delta, cleanf9bcfourDLLs before soleorderedlive1. Native0/exact1PASS/category103.2938515s≤5m/native109.983625s; strictrootremoved/noresidue/sourceHEADfourDLLunchanged. Sixrawchains/genericaudit/strongrawunion+fullbindings/results/exacthelpertexts/priorHS01recovery preserved under `recovery/t179pd-hot-custody-implementation-green-live1-20261016-*`.
+
+Independent root read-only strongchecker confirms real ProcessPlayerTurn returned/liveWaitentered, fullactualrequest/G/source42→original43/66snapshot+66rollback hashes, commonCREATE2/TREAT3/charge2/damage3, exact691byte story, nonzero1report consumption with distinct8member baseline+3member native transactions, inert84images/142cleanup paths/strictroot. No actualtest repeated; explicit livecaller handled=null, not a latecaller outcome. Currentselected7/15PASS/finalreviewpending. After saving/readback/recovery ONLYorderedactive-tail3 next; full3b/priorlimitsOPEN.
+
 ## T179-Pd.3b ordered GREEN 2/7 HS01 PASS — actual positive custody/owned close (2026-10-16)
 
 Ready3 checkpointb4beb774f9e6980bc00ab111350b28cdb9731686 pushed/readback/NEWGitHub75files/all69delta; unchangedfreshf9bcfourDLLs/clean source before sole orderedHS01. Native0/exact1PASS/category25.9052853s≤5m/native31.288341s; strictrootremoved/noresidue/sourceHEADfourDLLunchanged. Sixrawchains/rootaudit/exacthelpertexts/priorReady3 recovery preserved under `recovery/t179pd-hot-custody-implementation-green-hs01-20261016-*`.

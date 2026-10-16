@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-live-completion"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fe80e68f92b79f244330780d49cdda84cede9d42",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.7365295,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-live-completion-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-live-completion",
+      "Categories": [
+        "fr063-joint-live-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualLivePlayerTurnCompletesNonzeroJointRepairExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualLivePlayerTurnCompletesNonzeroJointRepairExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
