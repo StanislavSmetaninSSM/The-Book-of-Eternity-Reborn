@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-joint-late-completion",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "9bbcc7af7a3ed711df1676a1e1340a6bfc13aa62",
+  "compiled_source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "category": "fr063-joint-late-completion",
+  "started_utc": "2026-10-16T16:28:53.623563+00:00",
+  "ended_utc": "2026-10-16T16:32:30.788005+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}
