@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -20,6 +19,10 @@ public partial class CharacteristicsService
         var experience = ReadAutomaticRoot(inputs, M.JointAutomaticInputs.ExperiencePath);
         var player = ReadAutomaticRoot(inputs, M.JointAutomaticInputs.PlayerStatusPath);
         var soul = ReadAutomaticRoot(inputs, M.JointAutomaticInputs.SoulPath);
+        RejectAutomaticCaseAliases(changes, "statsIncreased");
+        RejectAutomaticCaseAliases(points, "unspentStatPoints", "levelUpStatPointsAwardedThroughLevel");
+        RejectAutomaticCaseAliases(experience, "level", "playerLevel");
+        RejectAutomaticCaseAliases(player, "level"); RejectAutomaticCaseAliases(soul, "level");
         var names = Characteristics.All.ToArray();
         var baseStats = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var name in names) baseStats.Add(name, AutomaticInteger(stats, name));
@@ -93,8 +96,11 @@ public partial class CharacteristicsService
         {
             var strict = new JsonSerializerOptions(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
             { PropertyNameCaseInsensitive = true };
-            return StrictJsonAuthority.Deserialize<JsonNode>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), strict, path)
-                as JsonObject ?? throw new InvalidDataException("Automatic source must be a non-null object: " + path);
+            // Case-insensitive uniqueness detects aliases in duplicate pairs, but
+            // must not make subsequent JsonObject field lookup case-insensitive.
+            var element = StrictJsonAuthority.Deserialize<JsonElement>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes), strict, path);
+            return element.Deserialize<JsonObject>(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ??
+                throw new InvalidDataException("Automatic source must be a non-null object: " + path);
         }
         catch (JsonException failure) { throw new InvalidDataException("Malformed automatic source: " + path, failure); }
     }
@@ -107,5 +113,12 @@ public partial class CharacteristicsService
         var level = AutomaticInteger(root, field);
         return level > 0 ? level : throw new InvalidDataException("Invalid automatic level: " + field);
     }
-    private static byte[] EncodeAutomaticRoot(JsonObject root) => Encoding.UTF8.GetBytes(root.ToJsonString(JsonOpts));
+    private static void RejectAutomaticCaseAliases(JsonObject? root, params string[] names)
+    {
+        if (root is null) return;
+        foreach (var row in root)
+            if (names.Any(name => name != row.Key && string.Equals(name, row.Key, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidDataException("Noncanonical automatic field alias: " + row.Key);
+    }
+    private static byte[] EncodeAutomaticRoot(JsonObject root) => FileSystemManager.EncodeUtf8WithPreamble(root.ToJsonString(JsonOpts));
 }
