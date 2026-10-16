@@ -10,7 +10,7 @@
 
 **Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).
 
-**F1-R2 source base:** `e7f86f590892e4c335ad29ece88c265ad94b8138`; original recovery `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1-R2 DESIGN WIP; F1-R2-D01 corrected, affected independent re-review pending; D9–D11 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
+**F1-R2 source base:** `e7f86f590892e4c335ad29ece88c265ad94b8138`; original recovery `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1-R2 READY FOR USER DISCUSSION; corrected independent review complete; D9–D11 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
 
 ## Global Constraints
 
@@ -540,4 +540,4 @@ Historical planning closeout: [corrected independent PLAN review](../recovery/la
 
 Historical first-F1 closeout: [corrected independent DESIGN/PLAN review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f`, F1-D01–D05 resolved, no material findings. Все T178–T191 остаются unchecked/UNRUN, F1 grants/turn policy/plan не приняты. STOP перед реализацией.
 
-R2 status: DESIGN WIP, initial F1-R2-D01 corrected; affected re-review pending; T178–T198 unchecked/UNRUN. STOP for written contract/grant/implementation discussion.
+R2 status: [corrected independent review](../recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md) on bddf930414b12944b5383ec2857404c26f7b01a9 READY FOR USER DISCUSSION; F1-R2-D01 resolved, no material findings in correction scope. O03 shared-composer qualification precision belongs to future T192. T178–T198 unchecked/UNRUN; T197 exact handoff design and D9–D11 grants remain prerequisites. Carrier status/report metadata only; STOP for written contract/grant/implementation discussion.

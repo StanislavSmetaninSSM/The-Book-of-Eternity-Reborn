@@ -14,7 +14,7 @@ D4/D8 сохраняются. D5 пересмотрен в §8.5: подтвер
 не терять обязательное разрешение ситуации; новый follow-up schema/authority остаётся
 отдельным предложением, не выданным grant. Исторический corrected DESIGN review a8479c86d
 относится к прежним bytes; прежний D5 delta проверен с планом на f8ab919a. Первый F1 независимо проверен на 564424a9; его n+1/three-family policy superseded R2.
-R2: одна игровая граница, полный lawful ordinary outcome; новый independent review pending. Все grants/implementation unaccepted.
+R2: одна игровая граница, полный lawful ordinary outcome; independent corrected review на bddf93041: READY FOR USER DISCUSSION. Все grants/implementation unaccepted.
 
 ## 1. Результат и границы
 
@@ -939,4 +939,10 @@ stats/level/QTE authoring, видит понятный repair/hold contract и �
 Текущая выдача — проект документа. Исторический 96-PASS readonly checkpoint сохранён,
 новый DESIGN не добавляет к нему ни одного runtime PASS.
 
-Historical first-F1 closeout: [corrected independent review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f` закрыл F1-D01–D05. Тот historical carrier добавлял только review/status metadata; R2 выше требует нового review; written acceptance и implementation authorization отсутствуют. STOP для обсуждения.
+Historical first-F1 closeout: [corrected independent review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f` закрыл F1-D01–D05. Тот historical carrier добавлял только review/status metadata; R2 independently reviewed на bddf93041; written acceptance и implementation authorization отсутствуют. STOP для обсуждения.
+
+R2 closeout: [corrected independent review](../recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md)
+on `bddf930414b12944b5383ec2857404c26f7b01a9` is READY FOR USER DISCUSSION, F1-R2-D01 resolved,
+no material findings in correction scope. D9–D11 and T197 exact target protocol remain proposed
+and unapproved; T178–T198 unchecked/UNRUN. Metadata carrier does not change reviewed design
+semantics. STOP for contract/plan/implementation discussion.

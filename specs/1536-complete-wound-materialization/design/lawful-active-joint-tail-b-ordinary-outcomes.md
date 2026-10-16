@@ -1,6 +1,6 @@
 # F1-R2: одна игровая граница, полноценный ordinary outcome
 
-**Статус:** PROPOSED DESIGN; initial independent review F1-R2-D01 corrected, affected re-review pending. Source/recovery base
+**Статус:** PROPOSED DESIGN; independently reviewed, READY FOR USER DISCUSSION; grants/implementation unapproved. Source/recovery base
 `e7f86f590892e4c335ad29ece88c265ad94b8138`, branch `1536-wound-b2-cloud-20261012`.
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070.
 Пользователь согласовал дальнейший DESIGN-only: убрать лишний tick только из-за decline и
@@ -636,3 +636,15 @@ source catalog roots are reconciled per family; no direct story/receipt/G author
 | `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs` | `486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753` |
 | `BookOfEternityClient/Services/EffectLifecycleScheduler.cs` | `f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86` |
 | `BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs` | `8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f` |
+
+## 11. Independent review and discussion boundary
+
+[Corrected R2 review](../recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md)
+on `bddf930414b12944b5383ec2857404c26f7b01a9`: READY FOR USER DISCUSSION; F1-R2-D01 resolved,
+O01/O02 addressed, no material findings in correction scope. O03 is nonblocking precision work
+for T192 shared composer caller/known wave-source qualification. Actual configured/requested
+Astra/XHigh, backend telemetry unavailable. Reports immutable after FINALSTOP; hashes and remote/
+recovery procedure in [plan journal](../plan.md). This carrier changes only status/review metadata.
+Written D9–D11/source/catalog/handoff grants and implementation authorization remain open;
+T197 exact target protocol, all T178–T198 implementation/qualification, D4/guided/visual/platform
+remain future. D8 raw payload limits retained. **STOP for discussion; no runtime PASS.**
