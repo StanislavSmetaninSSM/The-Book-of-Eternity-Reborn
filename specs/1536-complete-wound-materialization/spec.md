@@ -54,7 +54,8 @@ than e7: proposed D9–D11 and future T192–T198 are explicit dependencies, not
 unchecked and adds these unchecked dependencies. F2 only for a proven F1 obstacle.
 
 First F1 [corrected review](./recovery/lawful-active-f1-independent-design-corrected-20261016-review.md)
-on 564424a9 remains historical; R2 independent review pending. D4 allocator, guided US5,
+on 564424a9 remains historical; R2 initial review F1-R2-D01 corrected: lawful calendar-only setWorldTime remains an accepted
+unresolved/fail-open result, no forced numeric interval/repair; affected re-review pending. D4 allocator, guided US5,
 frontend visual and platform qualifications stay OPEN. All runtime/build/test/discovery checks
 UNRUN; no implementation or active GM contract change authorized. STOP for discussion after review.
 

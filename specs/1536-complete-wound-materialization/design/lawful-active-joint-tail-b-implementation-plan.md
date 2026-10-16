@@ -1,6 +1,6 @@
 # Lawful ACTIVE fixed joint-tail B Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans` после отдельного разрешения реализации. Один Sol writer, отдельный обязательный Astra/XHigh reviewer на каждый связный этап. Checkboxes описывают будущую работу, не выдают разрешение её начинать.
+> **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans` после отдельного разрешения реализации. Один writer, отдельный обязательный Astra/XHigh reviewer на каждый связный этап. Checkboxes описывают будущую работу, не выдают разрешение её начинать.
 
 **Goal:** Завершить lawful ACTIVE stats/level-up/new-QTE joint tail без повторных эффектов, потери ordinary resolution, преждевременного cleanup или ослабления genuine original/G proof.
 
@@ -10,7 +10,7 @@
 
 **Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).
 
-**F1-R2 source base:** `e7f86f590892e4c335ad29ece88c265ad94b8138`; original recovery `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1-R2 DESIGN WIP; new independent review pending; D9–D11 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
+**F1-R2 source base:** `e7f86f590892e4c335ad29ece88c265ad94b8138`; original recovery `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1-R2 DESIGN WIP; F1-R2-D01 corrected, affected independent re-review pending; D9–D11 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
 
 ## Global Constraints
 
@@ -427,10 +427,12 @@ MortalJoint input/basis/planning partials; proposed `Services/MortalJointActionB
 `PrepareActionEventsAsync` returns closed event/time contribution bound to actual complete result.
 No raw caller skip flag. M schema3 activeTail.version2 adds actionBoundary; typed continuation
 refs avoid collisions with old accepted_turn refs. Data events + closure/time ack compose in same
-owning phase batch, no early budget consumption without mechanics.
+owning phase batch, no early budget consumption without mechanics. Raw source enters explicit
+basis.actionBoundarySource before S/B/C seals; sibling mutable acknowledgements are overlays,
+no final-marker hash backedge. Cold reader reconstructs immutable source and every named overlay.
 
 - [ ] Extract actual closure/roster/time provenance from common accepted contribution before seals. Same n/new request source accepted by Ready/original/daemon/repair readers only under complete F1 proof.
-- [ ] RED R201–R204/R214: pending/consumed boundary, new targets/effects after prefix, genuine elapsed/operation events, replay strict scheduler, foreign proof/crash. No blanket lifecycle array removal or fake history. Preserve actual prefix/remainder interval boundaries and scene/source/condition/realm semantics.
+- [ ] RED R201–R204/R214: pending/consumed boundary, new targets/effects after prefix, genuine elapsed/operation events, replay strict scheduler, foreign proof/crash. No blanket lifecycle array removal or fake history. Preserve actual prefix/remainder resolved/unresolved time projections and scene/source/condition/realm semantics. RED `Time_CalendarOnlySetWorldTimeAcceptedFailOpenOnce`, `Time_NumericAbsoluteJumpOrRewindPreservesOwnerPolicy`, genuine elapsed positive control. Calendar-only without currentTimeInMinutes stays lawful: exact raw source, actual progression fallback/report/control and nullable effect time, no forced interval/repair or implicit calendar converter.
 - [ ] Pure composer D9 contribution shared by accepted terminal and ordinary result. D8 raw responseFragment unchanged; exact additional time/event union cohort requires written grant and all typed companions before activation. Qualify equivalent event traces and different real outcomes separately.
 
 ### T193 — full lawful input/result inventory and OrdinaryOutcomeOwnerRegistry (D10)
@@ -439,7 +441,7 @@ owning phase batch, no early budget consumption without mechanics.
 BuildGameResponseFromFiles, all canonical normalizer/catalog validators; proposed
 `Services/OrdinaryOutcomeOwnerRegistry.cs`. Input inventory is R2 §10, not a new write allowlist.
 
-- [ ] RED R208/R216: all 182 names, 169 DTO vs 13 mapping-only fields, 83 primary files, output/client routes, nested PlayerStatus and canonical-only/generated roots. Every currently lawful ordinary field has lossless actual parse path, source eligibility, owner/disposition, exact plan contribution and derived companion inventory. Mapper-only afterlife fields remain source/realm restricted.
+- [ ] RED R208/R216: all 182 names, 169 DTO vs 13 mapping-only fields, 83 primary files, output/client routes, nested PlayerStatus and canonical-only/generated roots including owner-covered signed complete catalog absence versus merely declared/missing keys. Named OrdinaryGeneratedPathSourceAuthority requires actual original catalog coverage/confinement, not caller map. Every currently lawful ordinary field has lossless actual parse path, source eligibility, owner/disposition, exact plan contribution and derived companion inventory. Mapper-only afterlife fields remain source/realm restricted.
 - [ ] Registry code-owned and immutable. Preserve null/merge/order/UTC/control semantics, special StateDistributor wrappers and typed validators. No generic unknown skip, DTO roundtrip loss or arbitrary namespace writer. Missing adapter is release failure, never valid-reply rejection/drop or a successful HOLD.
 
 ### T194 — pure location/item/quest owner contributions
@@ -458,7 +460,7 @@ SarefMainStory/QuestsAndRivals and existing NPC/faction/activity/vehicle/storage
 exact actual source inventories reconciled at T193.
 
 - [ ] RED R207–R210/R216: mixed legal NPC/faction/location/effect operations, activities/scene closures/world/weather/rival flags, lawful meta/misc commands, raw-only routes. Wrong-realm afterlife/Guardian writers stay rejected; narrow guardianQuestProgress existing exception preserved.
-- [ ] Pure full family after-images and source/target exports; no side-effecting sequential normalizer or last-writer merge. Conditional companion paths have owner-issued exact membership and source before/after proof; existing world-time resolver semantics preserved via T192.
+- [ ] Pure full family after-images and source/target exports; no side-effecting sequential normalizer or last-writer merge. Conditional companion paths have owner-issued exact membership and source before/after proof; resolved/unresolved world-time semantics preserved via T192. Calendar-only lawful setWorldTime is accepted fail-open, not repaired for absent minutes.
 
 ### T196 — ordinary XP/stats and complete take/Empty/compositor/story (D11)
 
@@ -510,7 +512,7 @@ consumers. Category IDs/budgets/membership are proposed later, not added to cata
 | **R201–R218** | T192–T198 plus B08/B09/B11/B12/B13; all ordinary families, shared action/time, empty result, atomic composite, lifecycle handoff and real parity. |
 | Review Focus 1–5 | B08; B01/B11; B10; B05/B07/B12; G+B11/B13 respectively. |
 
-**Planning proportion:** 14 original stages + 7 explicit R2 dependency tasks, одна canonical implementation plan; существующий plan.md/tasks.md содержат только status/index links, а не копии этого body. Execution method уже выбран: один Sol writer + independent Astra/XHigh, не свежий implementation subagent на каждый task.
+**Planning proportion:** 14 original stages + 7 explicit R2 dependency tasks, одна canonical implementation plan; существующий plan.md/tasks.md содержат только status/index links, а не копии этого body. Execution method уже выбран: один writer + independent Astra/XHigh, не свежий implementation subagent на каждый task.
 
 **Stage closure:** actual RED→GREEN and independent corrected/EVIDENCE gates + verified remote checkpoint; checkbox is not proof. **B no-offer acceptance** only after B05 evidence; **new-QTE acceptance** requires accepted Q-D5/D9–D11 + T192–T198 + B06–B11; **player/platform acceptance** requires B12/B13 actual observations. Static schema/source checks never become runtime PASS. Existing 96 readonly cases retain original737092c39 pins; this plan adds no test result.
 
@@ -538,4 +540,4 @@ Historical planning closeout: [corrected independent PLAN review](../recovery/la
 
 Historical first-F1 closeout: [corrected independent DESIGN/PLAN review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f`, F1-D01–D05 resolved, no material findings. Все T178–T191 остаются unchecked/UNRUN, F1 grants/turn policy/plan не приняты. STOP перед реализацией.
 
-R2 status: DESIGN WIP, independent review pending; T178–T198 unchecked/UNRUN. STOP for written contract/grant/implementation discussion.
+R2 status: DESIGN WIP, initial F1-R2-D01 corrected; affected re-review pending; T178–T198 unchecked/UNRUN. STOP for written contract/grant/implementation discussion.

@@ -1,6 +1,6 @@
 # F1-R2: одна игровая граница, полноценный ordinary outcome
 
-**Статус:** PROPOSED DESIGN; independent review pending. Source/recovery base
+**Статус:** PROPOSED DESIGN; initial independent review F1-R2-D01 corrected, affected re-review pending. Source/recovery base
 `e7f86f590892e4c335ad29ece88c265ad94b8138`, branch `1536-wound-b2-cloud-20261012`.
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070.
 Пользователь согласовал дальнейший DESIGN-only: убрать лишний tick только из-за decline и
@@ -52,12 +52,26 @@ original/main participation и все accepted source readers проверяют
 - ownerTurnClosure — `{state,rosterFingerprint,receipt}`, state=`pending|consumed`. Roster и receipt
   derive из реального prefix common lifecycle contribution/history, не user JSON. Если P0 уже
   consumed n, R2 фиксирует это, не откатывает и не доставляет closure новым effects/targets;
-- timeSegments — fixed prefix и one remainder slot `{state,from,to,sourceEventRefs,receipt}`;
-  measured game time, не UTC запроса. Prefix already accepted interval frozen, remainder
-  появляется из actual selected/ordinary accepted result; неизвестная duration не выбирается в P0;
+- timeSegments — fixed prefix и one remainder slot `{state,projection,sourceEventRefs,receipt}`;
+  projection is the explicit resolved/unresolved owner union in §3, never a mandatory interval.
+  Prefix actual owner results frozen; remainder появляется из actual selected/ordinary result,
+  неизвестная duration или calendar-to-minutes conversion не выбирается в P0;
 - eventReceipts — closed immutable prefix plus bounded remainder owner-produced event set
   (не append-unbounded log). Structural operation keys от source/unit/owner ordinal независимы
   от request retry и human labels. Data cohorts включают M ack; hashes не authority.
+
+**Immutable seal map (O01 precision):** engine capture S includes detached
+`actionBoundarySource={binding,sourceRoster,closureInputRefs,prefixTimeInputs,encoderVersion}`,
+where every ref/image is derived from actual original/current submitted/common planned source
+roles. These fields enter raw B as `basis.actionBoundarySource` **before** CommonAuthority(S,B,C),
+input/prepared/cache/take seals. C supplies actual planned closure/event/time contribution, not
+caller maps. After take, common immutable proof core authenticates those plan inputs/results;
+`basisFingerprint` covers this source member and common proof core, excludes mutable phase acks.
+Sibling actionBoundary is only the deterministic initial projection + permitted action/ack overlays.
+Cold read reconstructs S/B/C from genuine child→FD→parent originals/retained artifacts and owner
+plans, rederives initial roster/closure/time, then verifies every fixed prefix/remainder receipt.
+No mutable ack, M/root/basis fingerprint or final common digest is fed back into earlier seals.
+Unknown future remainder data enters only its later acceptedBasis/terminal.basis, never P0 seals.
 
 Source owner выдаёт `ActionEventPlan` из capability и complete accepted result. Event classes:
 `owner_turn_end`, `elapsed_interval`, `accepted_operation`, `source_condition_target_change`,
@@ -76,21 +90,57 @@ New accepted operations внутри того же действия имеют �
 
 ## 3. Время, реальные действия и accept/decline
 
-Prefix время [T0,T1] и затраты уже consumed. Remainder owner принимает только новое [T1,T2]
-по ordinary rules/actual selected scene trace. До FD/FT/Ready/repair/retry elapsed=0; request UTC
-не источник игрового времени. timeChange и setWorldTime сохраняют обычную валидность и календарь;
-absolute override не превращается в guessed delta. Новый owner нормализует canonical [from,to]
-и captured ordinary resolver result (включая unresolved-absolute policy) до публикации; когда
-обычный контракт не позволяет вычислить interval, сохраняется его явная validation/repair
-семантика, а не молчаливое T2=T1. Результат не отбрасывается из-за выбранного QTE-механизма.
+Prefix accepted time/cost already consumed. FD/FT/Ready/repair/retry/request UTC create no
+game time. Actual elapsed duration, a resolved absolute setting and an accepted calendar-only
+setting are different source results. No absolute jump is automatically a duration or tick.
 
-Until-time expiry, real elapsed-periodic thresholds, source/target/condition loss, usage/on-hit
-и scene-close выполняются по фактической последовательности once с causal receipts. Интервалы
-делятся без overlap: уже processed T≤T1 не повторяется, due T1<deadline≤T2 сохраняются; interval
-boundary conditions повторяют owning scheduler. Turn-based poison/remainingTurns не получает
-вторую owner-turn delivery от decline. Снятие location-bound effect при реальном перемещении
-сохраняется и при нулевой длительности. Новое попадание/использование ресурса — новое законное
-событие, а не повтор source action. Для новой команды игрока требуется обычная отдельная граница.
+Closed `projection` union (same in prefix/remainder; pending remainder projection=null):
+
+- `resolved_incremental={kind,sourceRefs,deltaMinutes,canonicalBeforeMinutes,canonicalAfterMinutes,
+  effectCurrentTime,progressionResult}`. Kind literal=`resolved_incremental`; delta from actual
+  validated timeChange/elapsed-operation evidence, not UTC or an absolute date difference.
+  Both canonical minute coordinates and effectCurrentTime remain nullable according to their
+  real owning readers; ordinary timeChange-only is accepted even without an absolute epoch.
+  Progression still uses its genuine fallback+delta/control/report rules. A numeric interval
+  exists only when both endpoints are actually resolved; no missing-epoch repair/guess.
+- `resolved_numeric={kind,sourceRefs,canonicalBeforeMinutes,canonicalAfterMinutes,
+  effectCurrentTime,progressionResult}`. Kind literal=`resolved_numeric`; canonicalBeforeMinutes
+  nullable only when original actual numeric time unresolved, never guessed from report/UTC;
+  after/effect values follow their actual canonical readers; progression is separately preserved,
+  not forced equal to the effect coordinate. `progressionResult` is exact
+  owning schedule/control/report result, not an independently minted time authority. Only an
+  actual elapsed operation with numeric endpoints yields [from,to]; endpoint changes alone
+  do not prove elapsed. Numeric absolute forward jumps/rewinds use existing owner policies.
+- `unresolved_absolute={kind,sourceRefs,calendarImage,hasUnresolvedAbsoluteOverride,
+  effectCurrentTime,progressionResult}`. Kind literal=`unresolved_absolute`, flag=true,
+  effectCurrentTime=null, calendarImage is exact accepted raw/calendar before/after source
+  binding. **This is an accepted ordinary result**, not malformed/unsupported or repair because
+  minutes are absent. Progression preserves existing fallback/max(report/control) handling;
+  numeric fallback is not promoted to elapsed/canonical effect time. Genuine effect owner
+  preserves nullable CurrentTime behavior (until_time no_change), no invented zero interval.
+
+For ordinary no new time command, carry the exact post-prefix owner state/source, not the old
+incremental timeChange again. Absent/unresolved baseline retains its owning fallback/null policy;
+no new time operation is emitted. Every projection source is retained as exact images and real
+owner plan refs in the accepted basis, not merely a self-declared number/hash.
+
+Source evidence: `ValidationService.QuestsRivalsFactionsAndWorld.cs:1831–1875` explicitly allows
+calendar-only setWorldTime; `.MortalJointInputs.cs:84–91,125–142` skips numeric validation and
+applies unresolved fallback/report/control max; `.MortalJointBasis.cs:167–186` preserves the flag.
+`EffectAcceptedTurnInputComposer.cs:707–737` yields null and `EffectLifecycleScheduler.cs:770–787`
+no_change for until_time without CurrentTime. `Rules/Block_23.A.txt:19–40`/`Block_2.txt:668–679`
+permit plot/calendar skips and time travel. Their existing syntax/realm validation remains;
+**absence of currentTimeInMinutes is never a new validation/repair reason**. A stronger calendar
+conversion/elapsed interpretation would require a separate explicit design/grant, not D9 silently.
+
+Real until-time expiry, periodic due work, source/target/condition loss, usage/on-hit and
+scene-close still run by actual owning source events once with causal receipts. On a genuinely
+resolved forward elapsed interval, consumed T≤T1 is not replayed and actual due work after T1
+is preserved, with exact owning boundary semantics. On resolved absolute/rewind use the current
+owner's endpoint/cycle policy; on accepted unresolved use current fail-open/null policy. No extra
+owner-turn closure from decline, no blanket lifecycle suppression. Real zero-duration movement
+still removes location-bound effects. New authorized hit/use is a new event; source action is
+not resubmitted. Only a new real player action after release creates the next action boundary.
 
 | Одна ситуация / одинаковый actual event trace | Accept (D8 branch) | Decline (ordinary branch) |
 |---|---|---|
@@ -98,6 +148,8 @@ boundary conditions повторяют owning scheduler. Turn-based poison/remai
 | prefix n owner-turn closure consumed | не emits повторно | не emits повторно, request.turnNumber=n |
 | zero remaining duration, no new operation | no extra turn/timed ticks | то же, valid empty result accepted |
 | real +5min, expiry due within interval | time owner обрабатывает due interval once | тот же time owner/interval policy |
+| calendar-only/plot setWorldTime without numeric minutes | separately granted D9 projection follows existing fail-open/null owner behavior | lawful ordinary result accepted once, same fail-open/null policy; no forced interval/repair |
+| resolved absolute jump/rewind | existing endpoint/cycle policy, no guessed elapsed | same policy and source proof, no transport duration |
 | real on-hit/use/target/source change | existing typed causal owner once | existing typed causal owner once |
 | effect появился после consumed prefix closure | не retro-tick старую границу | то же; eligible следующая настоящая граница |
 | исход/время реально различаются из-за выбора | actual authored trace, реальные расходы | actual ordinary trace, реальные расходы; различие не transport penalty |
@@ -160,6 +212,23 @@ read/write/source inventories (world profiles, item text content, definitions et
 unchecked namespace keys. Client-owned histories/receipts/computed state/signing/G files stay
 owner-produced/guard-only. Future literal owner inventory reconciliation is required for each
 family, including dynamic generated paths under its existing confinement validator.
+
+**Reply-dependent generated paths (O02 precision):** PendingTurnSnapshotReader:648–669,
+961–968 separates selected bytes, authenticated absence and mere declaration. A missing map key
+or current candidate is never absence authority. T193 extends genuine original source capture
+for applicable owners: before FT, each owner freezes a complete finite domain catalog of actual
+members/digests + exact confinement-contract version into signed child snapshot artifacts.
+Named proposed `OrdinaryGeneratedPathSourceAuthority` privately derives a reply-selected path
+from a validated owner command and that actual signed catalog: existing member requires selected
+original bytes; a new member requires owner-proven complete catalog coverage and nonmembership
+under its confinement validator. No generic namespace/wildcard write grant: only that genuine
+owner's exact accepted plan may introduce the particular generated path. An uncovered path has
+no proof; before feature activation all currently legal generated-path forms must have a real
+owner catalog/selected-absence adapter. This is new proposed D10 original/read-absence authority,
+not an assumption that current declaredOriginalLogicalPaths already grants it. Cold readers
+reconstruct it from signed original artifacts/G; foreign, incomplete, merely declared or edited
+catalogs fail. Snapshot original owner supplies artifact membership/encoding in the same FT;
+no new storage service, wildcard journal or keys from GM decide membership.
 
 ## 5. Minimum reliable architecture and alternatives
 
@@ -341,12 +410,12 @@ Return for written contract/plan/grant discussion after independent review; **ST
 |---|---|
 | R201 | Same source/action, accept vs decline, zero duration with per-turn poison/remainingTurns; old and newly born effects/NPC targets. Exactly one owner-turn closure n, no extra damage/expiry, no synthetic n+1. |
 | R202 | Boundary pending vs consumed; missing/forged/foreign receipt, changed roster/G before child constructor. Genuine one close or HOLD, never caller skip flag/fake processed history. |
-| R203 | T0→T1 prefix + T1→T2 real elapsed; until_time/periodic boundary exactly T1/T2; usage/on-hit/scene/condition/source loss. Preserve real due effects once, no blanket lifecycle suppression; equivalent event traces same mechanics. |
+| R203 | T0→T1 prefix + T1→T2 genuine elapsed; numeric absolute jumps/rewinds and lawful calendar-only unresolved command; until_time/periodic boundaries; usage/on-hit/scene/condition/source loss. Preserve real due effects once, no blanket lifecycle suppression; equivalent event traces same mechanics. Calendar-only accepted with actual fallback/null effects; no forced minutes/repair/guessed delta. |
 | R204 | New requestId/token, same turn n; lost Ready/dispatch/FD/FT rollback, same/distinct-root cold recovery. One action/obligation, same dice/UTC, stale parent signal cannot bind child. |
 | R205 | Real movement plus location identities/storage transfer, location-bound effect expiry at zero duration. Actual canonical location changes, every companion/source edge valid, no extra turn. |
 | R206 | Quest-only progress/completion/quest history and lawful item/currency/XP reward; repeat/crash. Actual ordinary outcome accepted, reward claimed once; parent reward/time unchanged. |
 | R207 | XP jump, stats increase/decrease/extraordinary allowed set, NPC/faction/item/meta combined result. Ordinary semantics/source authority retained, parent watermark not re-awarded, final projection agrees, D4 allocation blocked. |
-| R208 | Every 182-name inventory row has exact disposition/schema/actual source eligibility; DTO-missing/raw-file commands, nested PlayerStatus, canonical-only derived/dynamic companion roots. No silent field loss or FileMapping write grant; realm-forbidden examples remain rejected. |
+| R208 | Every 182-name inventory row has exact disposition/schema/actual source eligibility; DTO-missing/raw-file commands, nested PlayerStatus, canonical-only derived/dynamic companion roots. New generated path proves selected original bytes or genuine owner-covered signed complete catalog absence; mere declared/missing key/current candidate fails. No silent loss or FileMapping grant; realm-forbidden examples stay rejected. |
 | R209 | Same multi-family response under different field order; two owner plans overlap root; dependent location/item/quest/NPC/effect exports. Identical allowed DAG result or explicit ownership error, no last-writer winner. |
 | R210 | Pure extraction negative controls (no IO), every complete outcome batch member/M cut and lost caller return. Complete accepted before/after or publisher HOLD, never sequential partial PASS or caught-exception compensation claim. |
 | R211 | ValidatedEmpty ordinary answer at same n; complete unit/check/explicit no-consequence proof, empty/null plan or notification alone. Valid result accepted and story appended once; no forced wound/XP/time. |

@@ -180,7 +180,11 @@ Crash до common не оставляет accepted tail: исходники ос
    Bound offer строится в памяти; до выбора не вызывать отдельный disk-writing BindOffer.
 6. Prior terminal continuation descriptor и его actual byte digest; old continuation/runtime/history
    и story prefix проверяются как в §8.4. До ACCEPT actual old file остаётся для fresh проверки.
-7. Fixed encoder/version и captured `preparedAtUtc`; все after-image bytes/serialization,
+7. R2 actionBoundarySource (binding/actual source roster/closure inputs/prefix time inputs/encoder)
+   captured in S and raw B before CommonAuthority/input/prepared/cache seals; actual C provides
+   planned event/closure results. Immutable source enters basisFingerprint, mutable sibling acks
+   excluded. Exact cold reconstruction/DAG in R2 §2; reply-dependent original absence in R2 §4.
+8. Fixed encoder/version и captured `preparedAtUtc`; все after-image bytes/serialization,
    UTC и arithmetic policy воспроизводимы. После crash не подставлять новый UTC.
 
 Ни player allocations, ни accept/decline, ни неизвестный будущий QTE action/grade/outcome
@@ -221,7 +225,7 @@ Closed `activeTail` fields:
 `version=2`, `policy="fixed_tail_b_v2"`; дополнительно closed `actionBoundary` по R2 §2, captured before P0.
 
 - `basis`: closed `{binding, preparedAtUtc, inputImages, sourceRoles, automaticPlan,
-  storyPlan, offer, priorTerminal, projectionReadPaths, encoderVersion}`.
+  storyPlan, offer, priorTerminal, projectionReadPaths, encoderVersion, actionBoundarySource}`.
 - `binding` — ровно tuple из §5.1. `inputImages` — exact production-derived finite path map
   P **без M, runtime/offer/prior-continuation control trio**; offer.rawImage хранится отдельно,
   а control digests/retirement descriptor проверяются fresh из actual controls до handoff;
@@ -270,7 +274,7 @@ Member maps содержат **точный data cohort без M**: нельзя
 внутрь самого marker. `previousMarkerDigest` — прошлый marker, без self-reference.
 `operationId` privately deterministic из G/original tuple/basis/phase ordinal.
 Root fingerprint покрывает marker; стабильный `basisFingerprint` покрывает canonical basis
-и immutable common proof core (progression calculation **без mutable phase**, existing immutable
+и immutable common proof core (including immutable actual action/closure/time plan results; progression calculation **без mutable phase**, existing immutable
 receipt/output fields), но исключает сам `basisFingerprint`, root fingerprint и phase receipts.
 Хеши — corruption/correlation checks; права выдаёт §5.2, а не совпавшая строка.
 
@@ -483,6 +487,8 @@ Decline preserves mandatory same-situation resolution and committed prefix, thro
 ordinary request in the **same game action/turn n**. No recursive originalAction resubmit,
 second IncrementTurn, owner-turn-end delivery, guessed elapsed time or repeated cost/reward.
 Actual elapsed time/new operations retain their normal consequences once, in accept and decline.
+Calendar-only setWorldTime is an accepted unresolved/fail-open time projection, not forced to
+a numeric interval or repair; resolved absolute jumps/rewinds preserve actual owner policy (R2 §3).
 Full currently lawful ordinary Mortal outcomes (movement, items, quests, XP, NPC/factions,
 world/meta/misc and eligible life-end handoff) require genuine full-family typed owners.
 No supported-family refusal/drop/reoffer may substitute for valid ordinary resolution.
