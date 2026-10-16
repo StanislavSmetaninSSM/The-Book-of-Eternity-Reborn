@@ -1,3 +1,11 @@
+## FR063-ACTIVE-PLAN-B: разрешена только подготовка implementation plan — 2026-10-16
+
+- База/actual remote `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, clean; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` неизменён. Пользователь согласился с B как основой следующего планирования и уточнил D5: отказ только от QTE, без отмены сцены/последствий, повторного исходного действия или потери обязательного ordinary resolution. Разрешены только документы + независимое review + commit/push/readback; code/tests/runtime tools/main/merge запрещены.
+- **Подтверждённое противоречие D5:** ordinary `GameEngine.TurnLifecycle.cs:2355–2357`, `Rules/Block_CLI_Operations.txt` QTE Offer Flow и CLI/пример требуют ordinary resolution после decline; offer-turn не должен уже разрешать ту же ситуацию. Поэтому прежнее «decline → cleanup без follow-up» не принимается как generic gameplay contract. Новый durable remaining-resolution handoff требует отдельного решения schema/authority; пока new joint QTE admission остаётся blocked до common. Остальные B/D4/D8 ограничения сохраняются.
+- [ ] FR063-ACTIVE-PLAN-B/document: подробный [план](./design/lawful-active-joint-tail-b-implementation-plan.md), точные этапы/paths/interfaces, тесты до кода, Linux/Windows, checkpoints и зависимости. Пишется; все implementation/runtime проверки UNRUN.
+- [ ] FR063-ACTIVE-PLAN-B/review: independent Astra/XHigh review плана и D5 causal delta; сохранить immutable финальную пару после FINALSTOP.
+- [ ] FR063-ACTIVE-PLAN-B/discussion: вернуть последовательность и конкретные открытые решения; STOP до принятия плана/разрешения реализации.
+
 ## FR063-ACTIVE-DESIGN-B готов к обсуждению; реализация не разрешена — 2026-10-15
 
 - [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070. Только DESIGN по разрешению пользователя/координатора, база `10611c69aa0d25683b9d74de04d1f96482f87d59`, ветка `1536-wound-b2-cloud-20261012`; подтверждены clean status/ancestry от 79e6. Main remote `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` не изменён.

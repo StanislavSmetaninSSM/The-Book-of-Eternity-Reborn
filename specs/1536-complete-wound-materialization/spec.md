@@ -25,6 +25,15 @@ awaiting user discussion. Independent corrected DESIGN review on a8479c86d is re
 it does not accept the proposed grants. The accepted INACTIVE contour remains
 unchanged; no implementation or ACTIVE runtime acceptance follows from this link.
 
+## ACTIVE implementation planning clarification — 2026-10-16
+
+The user selected B for detailed planning and independent plan review only. No implementation
+or runtime grant follows. D5 means declining the QTE mechanism while preserving the scene,
+committed consequences and mandatory ordinary resolution, without replaying the source action.
+The existing offer-turn/ordinary-follow-up contract conflicts with generic no-follow-up decline;
+[plan Q-D5](./design/lawful-active-joint-tail-b-implementation-plan.md) is a blocking new decision
+before new joint QTE admission. D4 allocator/guided-US5 and D8 narrow terminal restrictions remain.
+
 ## Clarifications
 
 ### Session 2026-09-22 — T081-C Durable Spiritual Decision Contract Approved

@@ -9,6 +9,12 @@
 **Доказательства:** все новые runtime/crash/platform проверки ниже **UNRUN**. Принятые 96 cases
 относятся к readonly US5-RO2 на `737092c39`, а не к этому проекту ACTIVE.
 
+**Уточнение 2026-10-16:** пользователь выбрал B как основу implementation planning, пока без кода.
+D4/D8 сохраняются. D5 пересмотрен в §8.5: подтверждённый ordinary/GM contract требует
+не терять обязательное разрешение ситуации; новый follow-up schema/authority остаётся
+отдельным предложением, не выданным grant. Исторический corrected DESIGN review a8479c86d
+относится к прежним bytes; текущий D5 delta проходит независимое review вместе с планом.
+
 ## 1. Результат и границы
 
 После genuine совместной публикации QTE-раны/guaranteed treatment клиент должен один раз
@@ -459,19 +465,38 @@ Actual old bytes нужны fresh **до замены**, но после verifie
 Current-turn mechanical H snapshots могут быть велики, но не содержат predecessor blobs;
 новый общий архив/каталог не создаётся. Это существенный review focus для cold proof.
 
-### 8.5. DECLINE — продуктовая развилка D5
+### 8.5. D5 пересмотрен: ordinary resolution нельзя потерять
 
-**Предлагается:** joint исходный accepted turn уже завершён, поэтому decline отменяет лишь
-новую optional QTE сцену, сохраняет common/stats/award/story/turn, записывает existing decline
-markers и идёт к P8. Не вызывает автоматически `ProcessPlayerTurn(originalAction)` ещё раз.
-После cleanup обычный следующий запрос проходит normal fresh admission; этот turn не replay.
+Пользователь уточнил: отказ отменяет только QTE-механизм, **не** игровую сцену и уже
+committed последствия. Исходное действие не выполняется повторно. Это не разрешение
+стереть обязательное продолжение. Прежнее предложение «decline → P8 без follow-up»
+не задаёт корректный generic contract и заменено этим planning gate.
 
-Обычный current handler сейчас reissues ту же action с QTE_DECLINED reminder. Перенести это
-в joint branch без решения нельзя: это может повторить уже совершённую механику.
-Если продукт требует обязательного ordinary переразрешения той же ситуации, нужен отдельный
-closed durable follow-up intent/request ownership (с точным новым original/request ID и recovery)
-или вариант C; такой input-write/outbox grant **в B сейчас не включён**.
-До D5 нельзя считать full new-QTE combinations спроектированными для implementation release.
+Source conflict подтверждён на planning base ccb8eed3:
+`GameEngine.TurnLifecycle.cs:2345–2361` после decline вызывает ProcessPlayerTurn с исходной
+строкой и QTE_DECLINED reminder; `Rules/Block_CLI_Operations.txt` QTE Offer Flow,
+`CLI_API_Specification.md:1240–1250` и `Examples/E_CLI_QTE_Offer.txt:7–9` запрещают normal
+state resolution той же ситуации в offer-turn и требуют ordinary resolution после отказа.
+`QteOffer` не содержит machine-readable optional/mandatory remainder discriminator;
+`declineHint` — UI text, не authority. Совместимость joint common mechanics с этим GM
+no-same-situation rule также должна быть явно определена, а не исключена молча.
+
+Неизменные ограничения выбранного смысла:
+
+- Decline допускается только из offered, до accepted scene. Active/terminal scene не
+  отменяется этим действием; pause/abort не очищает original и не откатывает последствия.
+- Committed common/stats/award/story/turn не откатываются и не публикуются снова.
+- Обязательный **remaining ordinary resolution** должен сохраниться и быть исполнен один
+  раз с учётом уже committed effects; нельзя ни blind replay source action, ни silently drop.
+- Existing ordinary decline/follow-up сохраняется для обычного контура. Новый joint branch
+  не вызывает этот helper unchanged и не стирает prior active runtime.
+
+Существующий package B не выдавал durable follow-up intent, writer нового request/original
+или новый consumer acknowledgement. Конкретные альтернативы и необходимые новые grants
+перечисляет [implementation plan](./lawful-active-joint-tail-b-implementation-plan.md), Q-D5.
+До решения **new joint offer admission запрещён до P0/common take**. No-offer automatic
+часть можно планировать независимо; new-QTE capability и full FR063 acceptance не выдаются.
+Это сохраняет unresolved situation/evidence, а не объявляет её успешно отменённой.
 
 ### 8.6. Terminal, abort и следующая original
 
@@ -640,12 +665,12 @@ admission блокирует изменение frozen stats/projection. Пол�
 | D2 | Strict existing initialized stats/points/watermark; никакого heuristic init в tail | При отсутствии baseline отказ до common; отдельный initializer до original. |
 | D3 | P2 объединяет stats+award; P3 computed после award | Final projection содержит current points; две existing level priorities не объединяются; no XP writer. |
 | D4 | Distribution deferred до P8; allocation safety отдельно | Player flow и explicit guided US5 dependency; не объявлять обычный allocator crash-safe. |
-| D5 | Joint decline отменяет optional scene без автоматического replay action | Если нужны ordinary follow-up semantics — новый отдельно обсуждённый durable intent или C, не скрытый callback. |
+| D5 | Отказ только от QTE, без отмены сцены/committed effects, повторного source action и потери обязательного ordinary resolution | Q-D5 planning gate: durable remaining-resolution handoff и совместимость GM offer-turn rules требуют отдельного решения; new joint QTE blocked до common. |
 | D6 | Continuation2/joint story witness, compact prior retirement, physical actual-pair proof, original retention до QTE terminal | Новый reader/schema/issuer/cleanup handoff §8 и строгий post-handoff composition proof. |
 | D7 | Pre-release schema cutover без migration незавершённых v2 в ACTIVE | Existing v1/v2 recovery только их прежние contours; schema3 только новый common publication после accepted design и implementation. |
 | D8 | Fixed selected-terminal PREPARE/COMMIT + post-QTE automatic/projection; exact responseFragment subset §8.6 | Atomic terminal/XP/history/closure cohort, terminal-derived basis и initial-story/terminal-output proof §8.7; расширение payload families отдельно, no implicit legacy crash-safety. |
 
-Документ рекомендует согласовать D1–D8 как package B с отдельным обсуждением D4/D5/D8.
+Документ рекомендует согласовать D1–D8 как package B с отдельным обсуждением D4/D5/D8; уточнение D5 в §8.5 открыло новый обязательный planning gate.
 Несогласованный пункт означает конкретный blocker; никакой fallback «сам решит implementation».
 Даже согласование DESIGN не заменяет следующий implementation plan и его review/authorization.
 
@@ -730,7 +755,7 @@ aliases/provider discovery/quotes/confirmation/staging, не закрывает 
 `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/E_CLI_QTE_Offer.txt`,
 `Examples/example_validation_manifest.json` и owning documentation/source guards.
 Новые marker/continuation receipts — client-owned, GM их не пишет; GM продолжает existing
-stats/level/QTE authoring, видит понятный repair/hold contract и D5 decline policy.
+stats/level/QTE authoring, видит понятный repair/hold contract и пересмотренный D5 ordinary-resolution contract.
 Сейчас runtime/GM authoring contract **не изменён**, поэтому active GM prompts/examples
 не переписываются на неутверждённое предложение.
 
