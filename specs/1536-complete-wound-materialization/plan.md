@@ -1,3 +1,9 @@
+## T179-Pd lifecycle causal RED3 preserved, 2026-10-16
+
+- Released singleton fr063-active-prefix-lifecycle-evidence on clean08f2f1fe7 / compiledcf95c6091: native1, **3/3 executed FAIL solely missing LifecycleExecutionLedger Assert.NotNull line59**, after genuine old effect cache/common reduction/completed resources/transcript/one projection/final assembly success. Exact advance/no_change/no_eligible rows, complete1descriptor/3cases, no timeout/skip/duplicate/underfill; cleanup complete, unit fixture owns no disk roots. Wall6.9870210s.
+- Full immutable recovery/t179pd-lifecycle-red-20261016* contains runner stdout/log/fullTRX/plan/summary/nativeexit and deterministic raw/stored hash index. Root verified every failure message/stack, exact per-case count, five raw/stored/local chains and all four unchanged DLLs. This is expected causal semantic RED, not a compile/bootstrap/precondition failure.
+- Next: implement privately issued immutable first-pass ledger and carry through actual final completion/copy/C, preserving v2 grammar, scheduler/mutation/history/ID behavior. Add meaningful exhaustive wired cases and affected finite selection; fresh G5 preparation/SOURCE/firstLate2/EVIDENCE before any new actual. Continue coherent genuine active admission/S/C/B/M3/P0 work; a ledger helper is not full stage acceptance. Full T179/T192/F1/T197 and activation remain open.
+
 ## T179-Pd initial Late2 EVIDENCE gate — causal RED3 only, 2026-10-16
 
 - Separate independent configured Astra/XHigh [review](./recovery/t179pd-initial-late-evidence-review-20261016.md) of frozen c1eff0c66: LATE2_EVIDENCE_ACCEPTED_RELEASE_CAUSAL_LIFECYCLE_RED3_ONLY, no blocking findings. Root verified 54 historical pins, 3 exact diffs, 7 derived artifact hashes and four current DLLs; report pair preserved byte-exact. Complete Late2 raw semantic evidence checked independently.

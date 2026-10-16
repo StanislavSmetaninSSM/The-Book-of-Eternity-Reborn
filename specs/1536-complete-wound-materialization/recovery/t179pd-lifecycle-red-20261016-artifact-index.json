@@ -1,0 +1,105 @@
+{
+  "source_sha": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories",
+  "native_exit_code": 1,
+  "artifacts": [
+    {
+      "path": "t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/dotnet-test.log",
+      "raw_bytes": 1699244,
+      "raw_sha256": "4777abcffcee39f47d3a171832aa27a7bd9a8082a45891c054c45ac4ecfa7873",
+      "stored_sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8"
+    },
+    {
+      "path": "t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/fr063-active-prefix-lifecycle-evidence-unit-001.trx",
+      "raw_bytes": 11992,
+      "raw_sha256": "adc43706449b1a8e7b52172be23eb7245d0d57df0e4917d109a547a01113fd7e",
+      "stored_sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb"
+    },
+    {
+      "path": "t179pd-lifecycle-red-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/plan.json",
+      "raw_bytes": 1187,
+      "raw_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+      "stored_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7"
+    },
+    {
+      "path": "t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/runner-stdout.log",
+      "raw_bytes": 5066,
+      "raw_sha256": "98600b697923120543514e30e69d979c42f4f871c5bf758c91665691e8cf68fa",
+      "stored_sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616"
+    },
+    {
+      "path": "t179pd-lifecycle-red-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/summary.json",
+      "raw_bytes": 1387,
+      "raw_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+      "stored_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-active-prefix-lifecycle-evidence"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-active-prefix-lifecycle-evidence",
+        "Seconds": 3.0620934,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0561552,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0538966,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1321316,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:06.9870210",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 0,
+      "Failed": 3
+    },
+    "DuplicateTests": []
+  }
+}
