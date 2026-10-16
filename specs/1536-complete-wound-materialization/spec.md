@@ -43,9 +43,9 @@ Recovered c4dde062 and the current user instruction authorize F1 DESIGN/independ
 proposes mandatory ordinary-resolution units from the accepted offer, client-derived committed
 source ledger, one obligation in existing M, atomic transfer through current request/original
 owners, child n+1 accepted ordinary mechanics and completion before KF1 release. The original
-action and committed consequences are never replayed. Ordinary child wound publication retains
+action and committed source operations are never replayed; structural source coordinates are client-bound before common, while GM narrative/causal judgments remain GM-authored (no prose oracle). Ordinary child wound publication retains
 parent M rather than replacing it with schema1; repair uses the post-prefix child baseline.
-The first F1 family is the existing accepted Mortal common wound/effect/resource cohort;
+The first F1 family is the existing accepted Mortal common wound/effect/resource cohort, with a new ordinary Plan|ValidatedEmpty issuer/ack and narrowly named output/time overlay;
 unsupported remainder is refused before common. Real ordinary result is mandatory: intention,
 notification or Ready alone never completes it. F2 is not selected without demonstrated F1 obstacle.
 These schemas/grants/turn policy and the affected T178–T191 plan await written acceptance and
