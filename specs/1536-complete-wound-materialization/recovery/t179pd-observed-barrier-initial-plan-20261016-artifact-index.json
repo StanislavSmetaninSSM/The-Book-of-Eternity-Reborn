@@ -1,0 +1,122 @@
+{
+  "source_sha": "9aa339141ec8ebec301b18679aa021d018250b0f",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-barrier-initial-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories/dotnet-test.log",
+      "raw_bytes": 3377537,
+      "raw_sha256": "a5f5a1192f2019eefaf5ddfea51f773478000e286ffb7d767a2644c6ffbecbaa",
+      "stored_sha256": "3911f32ede472de1c92de53e332a2c364f097e4e1fc8b72645bbd7f4ab921cf0"
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-plan-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories/native-exit.json",
+      "raw_bytes": 165,
+      "raw_sha256": "b1f2897132aba7eb10d5c2d63522064a7ea4beb4de1f3fefec1adaf1df9bd9b1",
+      "stored_sha256": "b1f2897132aba7eb10d5c2d63522064a7ea4beb4de1f3fefec1adaf1df9bd9b1"
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories/plan.json",
+      "raw_bytes": 4370,
+      "raw_sha256": "807491b27461633a0afe069762b4a443193464d4e8dc2c403237b3c0ce2daa93",
+      "stored_sha256": "807491b27461633a0afe069762b4a443193464d4e8dc2c403237b3c0ce2daa93"
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-plan-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories/runner-stdout.log",
+      "raw_bytes": 2698,
+      "raw_sha256": "d5a83c49b494b4fd8d11f32f0222fa88ed35dd526ce413d27838ac8a0bb3f4df",
+      "stored_sha256": "0aab14da9568fa488d2010c523da40d9a03063163d93a7e667fa599384d5fd94"
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-135336-108-106296-21d243fe8c224c1e9b87f6a7070c5275-categories/summary.json",
+      "raw_bytes": 3071,
+      "raw_sha256": "686c88f15e33224dcf153f29841079ab5db46c9e309ab37a533c9b44ea4acead",
+      "stored_sha256": "686c88f15e33224dcf153f29841079ab5db46c9e309ab37a533c9b44ea4acead"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-barrier",
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-observed-original-barrier",
+        "reason": "Two independent genuine A/B originals. Old default positively characterizes already captured bytes after late physical A drift; missing-feature test-only adapter must causally RED on Success=true, and can never GREEN without actual observed API. Strict per-test cleanup and complete only-A-change/G/read-order controls.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 mandatory first actual after new test/catalog/selection changes, using fresh BOTH binaries; exact existing v2 fullunion/source/request/story/turn/progression/inert/strictcleanup before separate EVIDENCE release for barrier pair.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "9aa339141ec8ebec301b18679aa021d018250b0f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1203983,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.052391,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1452582,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0044064,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 13,
+    "WallTime": "00:00:06.8954112",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 4,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-late-completion-integration-001",
+        "fr063-observed-original-barrier-unit-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

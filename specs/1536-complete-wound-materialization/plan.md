@@ -1,3 +1,7 @@
+## T179-Pd.3a barrier zero-execution preparation frozen — 2026-10-16
+
+- Clean compiled9aa339141ec8ebec301b18679aa021d018250b0f fresh BOTH/catalog native0,128.8685290s,11705methods/769categories valid/no stale/unmapped; exactPlanOnly native0,6.8954112s,2descriptors4cases (Late2 + independent legacycharacterization1/barrierREDspec1), zero actual execution in both. Full t179pd-observed-barrier-initial-{catalog,plan,binaries}-20261016* raw/nativeargv/audit/plan/summaries/fourDLLpins frozen; root12raw/local/stored chains verified. Independent SOURCE preflight found no materialfixture/adapterdefect; formal frozenprep review pending. FirstactualONLY Late2 after release, then frozen separateEVIDENCE before barrierpair. All newactualsUNRUN; original API absence/productionunchanged; no success logic or active/common/M3/activation grant.
+
 ## T179-Pd.3a causal barrier tests — WIP / fresh checks UNRUN, 2026-10-16
 
 - Initial missing-API RED1 frozen/pushed/readback61e10b09122cdd0d3af4478214fdb3cef11864f4 before this test-only block. New per-test fixture creates genuine A/B original through actual LiveTurnPreparationService and existingG, proves unchanged default success/exact signed bytes/full settled tree, then arms existing B post-open hook to directly mutate already-readA. Readorder A→B, one injection, unchangedG/B/allotherretainedfiles and exactAafterimage are required before result assertions. Whole-tree reads occur outside leases; strict finally cleanup always emits receipt. No primary authority/map rewrite, new production hook or success logic.
