@@ -1,3 +1,6 @@
+- Pd.3a firstcorrectedLate2 native0/2PASS/207.161s/6rawchains/2strictabsentroots/fourDLLfixeddb655 frozen; rootfullsemantics verified. SeparateEVIDENCE pending beforecausalRED1; no production successlogic.
+- T197 Client-owned original main/native host alternative preserved43pins/10futureUNRUN; sameGMpresentation-loss event only, keeperloss explicit, affectedreviewpending/no mode selection or G-C release.
+
 - Pd.3a corrected initial SOURCE accepted/OR-F01resolved; release onlyfirstLate2. CausalreaderRED1 and allwiredactualsUNRUN untilseparate frozenLateEVIDENCE; no prodsuccesslogic.
 
 - T197 original-hosting conditional independent review preserved/root74pins2diffs; no materialfinding, H-B01–05/fullG-C/target remainOPEN,18checksUNRUN. Lower-coupling Client-host alternative under source comparison, not selected/granted.

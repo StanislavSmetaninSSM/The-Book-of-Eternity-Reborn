@@ -1,0 +1,549 @@
+{
+  "report": "T197 custodian host location alternatives",
+  "status": "CONDITIONAL_RECOMMENDATION_FOR_REVIEW_NOT_MODE_SELECTION",
+  "source_commit": "80a707a54767f595fc44a3f323f82339382de287",
+  "prior_source_comparison_commit": "85464398184f388860921da873bb01440cca777c",
+  "observed_head_metadata_only": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+  "author_configuration": {
+    "configured": "Astra/High retained per coordinator",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "recommendation": "Prefer Client-owned original custody for affected review of the named detachable GMBridge-presentation-loss guarantee; no automatic mode choice or narrower outcome accepted.",
+  "guarantee_equivalence": "Only if the original Client keeper survives; death of that process is keeper loss, not successfully recovered frontend loss.",
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "bytes": 5795,
+      "lines": 95,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "d4594f6b45086b9b40a805cf7a7a718c3658be41",
+      "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+      "bytes": 470,
+      "lines": 16,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Program.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "4e10660f99b759b9454c4f59c5e643cbef7b0319",
+      "sha256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3",
+      "bytes": 16911,
+      "lines": 378,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "bytes": 10951,
+      "lines": 244,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "bytes": 10353,
+      "lines": 132,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "bytes": 28648,
+      "lines": 442,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "e61846fee2b796d41dd70048cd5de295bfc88acc",
+      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+      "bytes": 28110,
+      "lines": 714,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+      "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969",
+      "bytes": 782,
+      "lines": 32,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
+      "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+      "bytes": 22909,
+      "lines": 319,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "65b0a9d5fda59a86213a7805968eea1b53db7445",
+      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df",
+      "bytes": 4982,
+      "lines": 75,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "26097c4405f6a171582deb579e19de8746a5fe45",
+      "sha256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b",
+      "bytes": 3009,
+      "lines": 47,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "lines": 75,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "lines": 410,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "bytes": 10947,
+      "lines": 334,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "4e0a4ed2348738b309be07482038fb923bf9ee64",
+      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "bytes": 901,
+      "lines": 20,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "54c3f6e35de12b70ff2eec31911e294aba63e354",
+      "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1",
+      "bytes": 8338,
+      "lines": 174,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservation.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "0af9a77bc6ec06c5dc024a86b5e7cf4b0294f377",
+      "sha256": "f06d6f533b1e237f905e76ac21e3dec01803ff154e669f7250a7b24b5a5cff6a",
+      "bytes": 1214,
+      "lines": 25,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "3f6d32096396ef7841074660f5774cabfb45ad59",
+      "sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
+      "bytes": 6978,
+      "lines": 90,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
+      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
+      "bytes": 10981,
+      "lines": 186,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "cf1161032cd7b8973f778a9e21bc64362496e3c4",
+      "sha256": "3d831a22f3fc3bacfbf51f6bc4126d2ff35e8b7a05f24abfe9b9e2e8a07fe884",
+      "bytes": 8520,
+      "lines": 127,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "cf04a81c0de629cd345ae0a5956076f12c3db648",
+      "sha256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4",
+      "bytes": 42854,
+      "lines": 1013,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "a175c87e3d3fd71144c100c7afcb6c9a473c0653",
+      "sha256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d",
+      "bytes": 25591,
+      "lines": 409,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "d53830e80bd6352ec43c06e23c06d8509cc5f560",
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "bytes": 17677,
+      "lines": 309,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "6b8f39d13803a78343efb0d58a8f1b481ee333d7",
+      "sha256": "468216f874f91d79004d822ad772dfc3b3c9daaf13d3d6d1178e66e9a42a5783",
+      "bytes": 4980,
+      "lines": 127,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
+      "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
+      "bytes": 30336,
+      "lines": 651,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "e877134aabf7ad99e25ef079e121f4d82316e0ca",
+      "sha256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7",
+      "bytes": 941,
+      "lines": 25,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleApiHost.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "d00eaf3bad6bc8b9f1213dd2dcd11ff516a7f466",
+      "sha256": "c279232b0e136c140a5a562e321c8abc965627ea7dcb1e1635d885de9354dde9",
+      "bytes": 12309,
+      "lines": 317,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "be1c372f3407aa3f0737aae3fb23e0ace323440c",
+      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f",
+      "bytes": 42395,
+      "lines": 1096,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+      "bytes": 91410,
+      "lines": 2042,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "lines": 261,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "6371e66ac4cf20b1d8d46aa1826d7f53b7ab80c0",
+      "sha256": "388b54b4714db8f8a7ef5e73a96b73adb52970d05e12be21403060b8e0cfa942",
+      "bytes": 4945,
+      "lines": 90,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "34350bd4e07c6a8f69cddcad1730458964009415",
+      "sha256": "5092cd0dd68436d7f5338ffdd15cf54bba223696aa94625f519e8dc8e033949c",
+      "bytes": 2263,
+      "lines": 30,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "0e7a7d002419e59c87f2797feb8aeb63a443899c",
+      "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43",
+      "bytes": 9114,
+      "lines": 128,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "863a9a85f1831395bd8499bd05d66ce15e5d6732",
+      "sha256": "2e6318b45aae98237326879f4d5a29c63714684ebbcff3a4075d5433c86f694c",
+      "bytes": 4962,
+      "lines": 116,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "a42082ae86d2f1773d157d734471ba1cec7209c7",
+      "sha256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e",
+      "bytes": 20668,
+      "lines": 337,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "5f353743b0bf5a9937654fa961a64dd616b24bcc",
+      "sha256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1",
+      "bytes": 8337,
+      "lines": 119,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "664795caf6a400235a65fb62636f9664e7310605",
+      "sha256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c",
+      "bytes": 4389,
+      "lines": 78,
+      "matches_prior_source_commit": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "commit": "80a707a54767f595fc44a3f323f82339382de287",
+      "blob": "2e733e167b0a979c3548e3e6cb8907e9881f6125",
+      "sha256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00",
+      "bytes": 10650,
+      "lines": 199,
+      "matches_prior_source_commit": true
+    }
+  ],
+  "prior_immutable_artifacts": [
+    {
+      "path": "/tmp/t197-depc-original-custodian-hosting-design-20261016.md",
+      "sha256": "a575a601b6a4c7c69229920d96c242a128501703527e5301c7a908f718a36243",
+      "bytes": 64417,
+      "role": "immutable prior proposal; not rewritten"
+    },
+    {
+      "path": "/tmp/t197-depc-original-custodian-hosting-design-20261016.json",
+      "sha256": "16dbfaaa9289ef8a6fce29c207af96fb820b30245553dae49bacbdf2e1de490f",
+      "bytes": 87870,
+      "role": "immutable prior proposal; not rewritten"
+    },
+    {
+      "path": "/tmp/t197-depc-a1-source-vertical-design-20261016.md",
+      "sha256": "79a4573c629addccd7ca989b4387e2c5168405b222db475d459914f4a8f6fa64",
+      "bytes": 62771,
+      "role": "immutable prior proposal; not rewritten"
+    },
+    {
+      "path": "/tmp/t197-depc-a1-source-vertical-design-20261016.json",
+      "sha256": "80d578549d7bb1d9f175244769d7475afce4ddc9ae38d1f06cb2d39ec540fcef",
+      "bytes": 92481,
+      "role": "immutable prior proposal; not rewritten"
+    }
+  ],
+  "sections": [
+    {
+      "title": "Recommendation for review, not a selected mode",
+      "text": "**Yes: making the original per-run Client process the custodian can provide the same specified GMBridge-presentation-loss guarantee with less client-UI coupling.** Keep the actual GameEngine/FileSystemManager/StoryService and console/agent presentation where they already live. Construct original main coordinator/native owners in that same process before the protected run starts. Make the separate GMBridge process a detachable terminal presentation/input client. For that failure case, the old renderer/input remoting proposal is unnecessary; only the GM terminal boundary needs transport.\n\nRecommend this **Client-owned candidate for affected architectural review before expanding the earlier GMBridge-owned renderer seam**. This is a conditional recommendation, not an automatic mode choice or implementation release. The previous hosting and story/A4 pairs remain immutable and unaccepted as complete contracts. The new comparison does not change the required user outcome or accept a permanently unresolved lawful death.\n\nEquivalence has an exact condition: the original Client keeper survives. In the earlier GMBridge-custodian proposal, a separate game-console frontend could die while its graph survived in the keeper. In the Client-owned candidate, killing the console Client process kills the keeper. Thus the candidates are equivalent for **loss of the detachable GM terminal frontend**, not automatically for loss of every UI process. If survival of the game-console process is itself a requirement, retain a distinct keeper or design another approved lifetime boundary; do not silently narrow the promise. Keeper loss/cold/reboot/container or host migration/distinct-root recovery remains unsolved in both candidates. HOLD is preservation, not successful ordinary-death resolution.\n\nAll new APIs/locations remain PROPOSED/UNACCEPTED. Whole B01/A1, source closure, B03/B04, platform qualification, DEP-C/I/L/full target/H2/H3/HQ/new QTE remain open/blocked. D4/guided/visual/Windows/D8 are preserved. No new G, source replay, extra Mortal turn/dice/reward, target acceptance or child receipt retiring a parent."
+    },
+    {
+      "title": "Source-backed location comparison",
+      "text": "Exact historical source: `80a707a54767f595fc44a3f323f82339382de287`. Every production blob in this report equals its earlier `85464398184f388860921da873bb01440cca777c` blob; current HEAD is metadata only. The JSON pins each file's Git blob, SHA256, bytes and lines.\n\n| Concern | Current source fact | Client-owned candidate versus earlier GMBridge-owned keeper |\n|---|---|---|\n| Existing client graph | Program.cs:122–310 registers38 console services; :336–337 resolves GameEngine/awaits RunAsync. GameEngine.cs:107–161 retains actual FS/Story/State/GameLoop and UI services. | Keep the existing graph and local Console/AnsiConsole/IConsoleInputSource. Earlier host location needed to move it and introduce a remote game renderer/input boundary. Both still need parent task/seal integration. |\n| Assembly dependency | GMBridge.csproj:13 references Client. Client.csproj:60–61 grants GMBridge internal access. Client does not reference GMBridge. | Client cannot directly call current BridgeHost/ConPtySession by adding a reverse reference. Move narrowly owned runtime code downward into Client/Services/GmRuntime (already shared with Bridge), or extract a genuinely shared lower library. The cycle is a concrete refactoring constraint, not impossibility. |\n| Main and Linux native | GmSessionRunCoordinator, OwnedTerminalSessionFactory, LinuxOwnedTerminalSession and NativeLineageOwner already reside in Client. | No source capability transfer is necessary to construct these beside GameEngine. Original coordinator/guard/terminal/pins still must be created and retained before effects. Location alone grants no Access or recovery permit. |\n| Windows adapter | ConPtySession.cs (including FaultStream and ConPtyNativeMethods) is in GMBridge; WindowsJobProcessTree already resides in Client/GmWorkers. | Move the ConPTY adapter and its contained helpers into Client/GmRuntime; preserve original suspended creation→Job assignment→single resume and exact close/drain rules. Bridge-specific config/window/input code does not need to enter the client renderer. |\n| Bridge work | Program.cs:474–545 and596–695 own launch, pumps, status and stop; MainOperations/PipePins serve external writers; PromptDispatch/status/draft work are real runtime owners. | Extract authority-bearing launch/stop/pump/status/prompt/control into a Client-owned OriginalMainRuntime. Bridge keeps only local keyboard/resize/presentation and its transport lifetime. Moving only coordinator fields while retaining native pumps/control in the failed bridge is insufficient. |\n| Local UI | GameEngine.RunAsync directly touches Console/AnsiConsole, font/audio; AgentConsole API/input share that same process. | Those can remain local for the named bridge-loss case. No general player-console remoting is needed. Blocking local input, error logging and shutdown must still honor source seal; avoiding renderer transport does not complete their lifetime audit. |\n| Browser | LocalWebUiHost:52–89 has30 registrations, eager bootstrap:95, but **no GameEngine/StoryService registration**. BrowserPlayerActionService writes input/pending_player_action.json; GameEngine.BrowserPlayerInput.cs selects it through actual pending/original owners. | Keep browser web services in the actual per-run Client owner graph or attach them to that graph deliberately. Existing --web branch alone is not a complete hosted GameEngine consumer. No request may create an ad-hoc replacement engine to consume a DTO. |\n| Load/restart | GmLoadSessionOperation owns one retained connection and requires operations outside filesystem scopes; BridgeHost.LoadSession keeps actual original references and a one-use restart decision. | Relocate original server owner into Client; add a typed in-process route for its own caller or retain a separately serviced channel. Do not self-call a server blocked behind the same source lane. Stop old run before replacement; installed G and fresh launch remain existing owner decisions. |\n| Independent helpers | Program.cs:19–80 special helper/worker/prepare modes; gm_main_operation.ps1:14–28 starts another Client process; GmMainParticipatingControl:77–124 owns a separate pin/writer. | Main application custody does not make these other Client processes joinable children. Their genuine native scope, publication debts and close/EOF outcomes still require closure; no permission from executable name. |\n\nA shared lower library is an alternative when component dependency cleanup is desired. It would have to contain coherent interfaces/native dependencies rather than reference both executables back upward. For this bounded source question, placing the existing Bridge-only ConPTY adapter and extracted runtime owner into the **already shared Client assembly** avoids a new project and the cycle. That is the smaller source move; exact module extraction/packaging and review are still required."
+    },
+    {
+      "title": "Exact proposed construction and invocation seams",
+      "text": "1. **Client composition and lifetime.** Add `Client/Services/GmRuntime/OriginalMainRuntime.cs` and `Client/Core/OriginalClientRunLifetime.cs` as proposed original owners. Program's existing DI constructs exactly one run-lifetime service using the same FileSystemManager/StateManager; GameEngine and StoryService remain the existing singletons. Native constructor/IO/work registrations are installed before effects. Do not invoke the Client executable again or instantiate another GameEngine from request bytes.\n2. **Bootstrap before main acquisition.** Preserve StateManager.BootstrapLocalStorageAsync and current health/startup decisions. An explicit initialization boundary in GameEngine.RunAsync around198–211 is needed so the owner can start a main run with the actual established G before admitting protected player actions, without replaying bootstrap. The startup ticket covers constructor/bootstrap/health effects. Do not hold the main guard then recursively enter bootstrap's ordinary main admission. Start timing relative to menu/new-game/load requires the actual run-lifetime state machine; this comparison does not declare one native run for the whole multi-session application. Replacements still stop the old run and use the actual load/current-G owners.\n3. **Native launch from the actual Client owner.** `OriginalMainRuntime.StartOriginalAsync` calls current OpenProductionAsync/Windows startup observation and Launch methods. Original coordinator acquires main guard and production worker conjunction, prepares exact metadata and native owner, checks current G and releases the held child once. Insert the same pre-effect promise registration and before-release task-binding seams required in the prior hosting report. Default source APIs are not themselves exhaustive enrollment.\n4. **Real local Access.** At actual source admission (ordinary ProcessPlayerTurn before1495; late reconciliation before888), the run lifetime reserves the parent lane/registry and invokes `coordinator.RunOperationAsync` around the existing SessionOperationContext body. That creates the real local pin and ambient Access. MainRunFence can then borrow it without contacting the owner's endpoint or reacquiring its physical main guard. Root equality, same process or a DI singleton alone is not Access. Preserve nested lease/refcount/outcome/finalization rules and the story child boundary.\n5. **Terminal presentation extraction.** Keep original PTY input writer, native output reader/drain, terminal screen/readiness observer, prompt tasks and status writer in OriginalMainRuntime. The detachable bridge receives terminal display frames and offers typed input/resize requests; it cannot own native streams, handles, main pins or original close receipts. The owner validates current input lifetime and registers actual IO before effects. No raw input stream handed to a reconnecting process. It must keep draining native output when the bridge stalls/dies, independently of frontend capacity. Readiness facts used for prompt dispatch must come from the owner's actual original terminal observation, not an untrusted frontend screenshot/status DTO.\n6. **Server ownership.** Extract BridgeHost.MainOperations and the runtime-facing load/stop/dispatch handlers into the same original Client run owner. External helper pin transport must terminate at that owner, not through the detachable bridge. Otherwise bridge loss still drops all external pins before their work is known stopped. The current pipeName/status-based discovery and strict close frames need the outstanding B04 endpoint/caller contract; do not invent a new endpoint/key or treat that status as proof. Console, agent API and browser read views remain data consumers.\n7. **Loss and shutdown.** GM presentation loss triggers the reviewed source-seal/join policy while the Client keeps original tasks/leases/native authority. It must not become player Escape, terminal wait Cancelled, deletion/rollback, canonical error log or reissued prompt. Current source cancellation branches and parent guards still need exact changes. Explicit application quit, native exit and process death remain different events. Program's existing finally disposes audio/input/API and GameEngine.RunAsync finally stops audio; an actual run-lifetime shutdown must finish genuine main/native/parent settlement before normal exit. A killed Client loses original authority; no restart rehydrates it.\n\n**What changes less:** no movement of the38-service console graph, no player-console output-over-IPC protocol, no input transport for ordinary local console keys, no new game renderer abstraction just to survive GMBridge presentation loss. **What still changes:** ownership extraction from BridgeHost; Windows native adapter location; terminal-only transport; startup/stop/load timing; exact registration/seal integration; helper/server authority; publication permission after seal. This is less coupling, not a claim of a tiny or already authorized implementation."
+    },
+    {
+      "title": "Linux, Windows, browser and failure equivalence",
+      "text": "| Scenario | Client-owned original keeper | GMBridge-owned original keeper from earlier proposal |\n|---|---|---|\n| Detachable GM terminal process dies; keeper alive | Original GameEngine, main/native owners, real tasks and debts remain. Same required bridge-presentation-loss case is possible after qualification. | Same conditional result if original graph and native pumps were hosted there from birth. |\n| Game-console Client process dies | Keeper dies; no successful recovery from saved hashes/IDs/PIDs. | A genuinely separate player frontend could die while original keeper survives, provided its renderer/input transport was implemented. |\n| Agent caller disconnects | Agent API/queue and graph remain in Client; transport loss is not source close/cancel. | Conditional on remotely hosted input/presentation integration. |\n| Browser tab dies | Web/process owner can remain; staged phase/source owner retained through real interfaces. | Same if full actual owning graph remains in keeper; a tab is not a canonical writer owner. |\n| Actual per-run keeper/native supervisor loses authority | Existing uncertainty/HOLD; no new retirement from process absence. | Same unresolved class; keeper location does not close it. |\n| Explicit shutdown/load/new run | Genuine original stop/parent settlement then existing replacement/start owner. No frontend EOF shortcut. | Same obligations; exact integration differs. |\n\n**Linux:** the current launcher requires a foreground visible GM bridge (bookofeternity.ps1:711–716), but production native creation is already in Client's GmRuntime/GmWorkers code and consumes configured NativeLineage/OwnedTerminal prerequisites. With Client as keeper, local game console can remain foreground and the GM viewer is a separate attachable presentation process. This removes the need to detach the whole game UI merely to make it outlive that viewer. It does **not** prove survival of terminal hangup, login/session manager termination, parent-job policy, container death or the game-console process. The Client must be outside the GM child native scope; do not launch it under the scope it must stop. Actual ordinary-user launcher/topology/package/session qualification remains OPEN. No service/systemd/lingering/namespace/security change is selected.\n\n**Windows:** native Job implementation is already in Client; ConPTY adapter extraction is the concrete dependency seam. Client creates/owns suspended child, original Job/HPCON/streams and actual drain/close tasks from birth. GM viewer receives no duplicate native handles and its death cannot close the original Job/HPCON. Outer job policy may still kill both or disallow intended assignment; no breakaway/elevation change is implied. WindowsStartupObservationProbe also stays in the owner, including actual PowerShell/WMI process and stdout/stderr/exit settlement; its timestamp is not old-run restart authority. Cloud/source inspection cannot qualify Windows. The native EOF O1 rule and all original uncertainty remain unchanged.\n\n**Browser:** source proves that --web currently builds a web-only graph while the GameEngine cooperative consumer lives elsewhere. Therefore a “web Client is keeper” declaration is not enough. Proposed composition must keep the actual BrowserPlayerActionService/BrowserLocalWriteCoordinator and the **one actual GameEngine source consumer** in the supported per-run owning arrangement from birth, with shared original services/serialized relevant state and exact staged→idle→expected-G-finalize boundaries. Existing LocalWebUiHost.Build must not create a second FS/StateManager and bootstrap beside an active owner. A Build-with-existing-services seam is a concrete candidate; standalone web lifecycle/noninteractive source-loop entry is still an unresolved implementation interface, not solved by constructing an engine per HTTP request. If console+web are concurrently available, define one authoritative original consumer and exact request/phase lanes; do not silently choose a product mode or suppress a supported action.\n\nNeither location closes direct native CLI writes, external daemon/helper processes, worker inventory, escaped/service-submitted work or arbitrary callback IO. They must be enrolled/owned before a legal source outcome, with exact publication and stop receipts. Moving the server to Client prevents presentation loss from being the pin transport loss; it does not prove already-lost external work completed. Source-child receipt remains subordinate; same-G retirement still requires original whole-parent and native proof. No new OS guarantee is asserted beyond the prior read-only official-source analysis; no network access or platform probe was performed in this follow-up."
+    },
+    {
+      "title": "Remaining engineering contracts and bounded recommendation",
+      "text": "For the named bridge-presentation-loss objective, the Client-owned direction removes a broad game-renderer remoting requirement and uses the existing shared layer. It is the preferred next candidate for independent review **if the accepted failure requirement is that named event with original Client survival**. The event comparison above must remain visible; this report does not accept a narrower user outcome or choose a final mode.\n\nBefore code release, close these concrete contracts:\n\n* Original run start/stop/load composition around actual bootstrap/G and menu/source entry; retention through normal app shutdown, with no second graph or recursive main-guard acquisition.\n* Exact extracted native/bridge-runtime ownership: Windows adapter/helpers, terminal observation/readiness, PTY pumps, status/prompt/draft work, external main-operation and Load handlers. Pre-effect enrollment precedes native launch and all async synchronous prefixes.\n* Genuine source parent registration and complete finite writer/debt inventory, including other Client helper processes/daemon/CLI/worker/browser owners. Existing current-G/Lost/worker guards and no extra semantic work after seal remain mandatory.\n* Exact post-seal permission and native attempt/recovery interception from prior SV-B02/SV-B03; host location supplies none. Stop ordering must not deadlock a source waiting on GM, nor use timeout as receipt.\n* B03 strict durable codec/CAS/version/bounds/terminal retention and B04 endpoint/caller/data-retirement authorization. Terminal display and legacy main pin protocol must be separate in authority even if one owner serves them.\n* Browser actual source-loop/graph integration and separately qualified Linux/Windows launch/stop/IO behavior. Keeper-loss/cold/reboot/migration/distinct-root issuer, DEP-I/L/full target/H2/H3/HQ remain OPEN.\n\nThe comparison changes only the proposed placement recommendation. It is not a rewrite or acceptance of the prior immutable design, a permanent runtime refusal policy, an implementation plan release, a new lifecycle/gameplay/OS/service grant or F2 activation."
+    },
+    {
+      "title": "Future checks and stop",
+      "text": "* **L01 Original-reference custody — UNRUN:** Kill only GM presentation while original Client lives; preserve actual engine/files/story/main/native references and exact child/parent debts.\n* **L02 Failure-domain difference — UNRUN:** Kill game-console Client in Client-owned variant; require keeper-loss/HOLD, never claim same successful frontend-only recovery.\n* **L03 Dependency/native extraction — UNRUN:** No Client→GMBridge cycle; exact ConPTY/Job/suspended-release/partial-owner/IO-close semantics survive extraction.\n* **L04 Bootstrap/start/load ordering — UNRUN:** No duplicate graph/bootstrap, nested physical guard or self-IPC deadlock; actual established G and original load stop/restart receipts retained.\n* **L05 Real main Access — UNRUN:** Registered actual source invocation creates local original pin and nested borrows; same process/DTO does not grant Access or whole-parent completion.\n* **L06 Frontend native-drain separation — UNRUN:** Viewer EOF/backpressure cannot close native owner, block final ConPTY output or supply readiness/stop proof; input/resize sealed before effects.\n* **L07 External writer authority — UNRUN:** Helpers/daemon/CLI/worker and browser requests reach actual owner or remain unqualified before source effects; old Lost pin never zeroed/rebound.\n* **L08 Browser original consumer — UNRUN:** One genuine consumer/graph; pending selection and staged idle/finalization remain original-owner actions, no engine per request or DTO acceptance.\n* **L09 Source seal not cancellation — UNRUN:** No rollback/deletion/error-log write/turn increment/cleanup/prompt replay from frontend loss; exact already-armed debt settlement only.\n* **L10 Global preserved limits — UNRUN:** Keeper/native authority loss/reboot/new host/distinct root, platform prerequisites and full T197 gates remain explicit; no extra tick/dice/reward/new G.\n\nFINALSTOP. Source-only comparison, no implementation/build/test/discovery/application/native/OS/network/credential/settings/service changes, fetch/push or delegation. New /tmp pair only; prior pairs unchanged. No pending writes after delivery."
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "L01",
+      "title": "Original-reference custody",
+      "description": "Kill only GM presentation while original Client lives; preserve actual engine/files/story/main/native references and exact child/parent debts.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L02",
+      "title": "Failure-domain difference",
+      "description": "Kill game-console Client in Client-owned variant; require keeper-loss/HOLD, never claim same successful frontend-only recovery.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L03",
+      "title": "Dependency/native extraction",
+      "description": "No Client→GMBridge cycle; exact ConPTY/Job/suspended-release/partial-owner/IO-close semantics survive extraction.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L04",
+      "title": "Bootstrap/start/load ordering",
+      "description": "No duplicate graph/bootstrap, nested physical guard or self-IPC deadlock; actual established G and original load stop/restart receipts retained.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L05",
+      "title": "Real main Access",
+      "description": "Registered actual source invocation creates local original pin and nested borrows; same process/DTO does not grant Access or whole-parent completion.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L06",
+      "title": "Frontend native-drain separation",
+      "description": "Viewer EOF/backpressure cannot close native owner, block final ConPTY output or supply readiness/stop proof; input/resize sealed before effects.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L07",
+      "title": "External writer authority",
+      "description": "Helpers/daemon/CLI/worker and browser requests reach actual owner or remain unqualified before source effects; old Lost pin never zeroed/rebound.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L08",
+      "title": "Browser original consumer",
+      "description": "One genuine consumer/graph; pending selection and staged idle/finalization remain original-owner actions, no engine per request or DTO acceptance.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L09",
+      "title": "Source seal not cancellation",
+      "description": "No rollback/deletion/error-log write/turn increment/cleanup/prompt replay from frontend loss; exact already-armed debt settlement only.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "L10",
+      "title": "Global preserved limits",
+      "description": "Keeper/native authority loss/reboot/new host/distinct root, platform prerequisites and full T197 gates remain explicit; no extra tick/dice/reward/new G.",
+      "status": "UNRUN"
+    }
+  ],
+  "all_new_contracts": "UNACCEPTED",
+  "engineering_release": false,
+  "whole_source_closure": false,
+  "gates": {
+    "DEP-C": "BLOCKED",
+    "DEP-I": "BLOCKED",
+    "DEP-L": "BLOCKED",
+    "fulltarget": "BLOCKED",
+    "H2": "BLOCKED",
+    "H3": "BLOCKED",
+    "HQ": "BLOCKED",
+    "newQTE": "BLOCKED"
+  },
+  "preserved_open": [
+    "D4",
+    "guided",
+    "visual",
+    "Windows",
+    "D8"
+  ],
+  "runtime_execution": false,
+  "builds": false,
+  "tests": false,
+  "discovery": false,
+  "network_access": false,
+  "repo_writes": false,
+  "subagents": false,
+  "final_stop": true,
+  "markdown_artifact": {
+    "filename": "t197-depc-custodian-host-location-alternatives-20261016.md",
+    "sha256": "c9fb91fe1079557de0e05a4ffa75d5e51533bfc444d7e667f0ddb19fa7a4e0a1",
+    "bytes": 29616
+  }
+}
