@@ -1,3 +1,8 @@
+## T179-Pd.3b corrected RED2 preparation — SOURCE decision pending (2026-10-16)
+
+- [x] Corrected d474 fresh BOTH/catalog native0,133.5684122s/774owners11722methods/no unmappedstale/35+133warnings0errors; PlanOnly native0,4.1835481s/exact2descriptors5cases/ZEROexecution. Twelve raw/local/storedchains/fourd474DLLs/rootaudit/1230newGitHub-onlycleanselectedrecovery preserved. Initialf71BLOCKEDreport and preparation remainhistorical.
+- [ ] Push/readback/newcleanexpandedselectedrecovery and affected independent SOURCE/FIXTURE/SELECTION of task ownership/F01/dependencies. Current releaseEMPTY, no actualLate2/newReady. Only acceptedSOURCE→FIRSTprotectedLate2→freeze/push/recovery→separateEVIDENCE→specificallyreleasednewReady3. No aggregate/hiddenretry/oldHS01REDrepeat/fullstageclaim; allremaining3b/HS02–16/S/B/M3/F1/T197/activation/priorlimitsOPEN.
+
 ## T179-Pd.3b HS-RED2-F01 correction WIP — allactuals HELD (2026-10-16)
 
 - [x] Preserve initial independent SOURCE BLOCKED report and full f71 zero-execution preparation/recovery: one confirmed task-lifetime defect, no other materialfinding. Root43pins/fivediffs/10tmprefs/13projections; twelvechains/fourDLLs/exact2descriptors5cases/1213recoveredfiles. Old NotNull187 is historical f71, not currentsource.
