@@ -124,6 +124,22 @@ public sealed class MortalJointActionBoundaryTests
     }
 
     [Fact]
+    public void NoTimeCommand_RejectsAChangedTimeSourceInsteadOfInventingAnUnchangedProjection() =>
+        Assert.Throws<InvalidDataException>(() => MortalJointActionBoundary.DescribeTime(
+            Bytes("{\"currentTimeInMinutes\":100}"), Bytes("{\"currentTimeInMinutes\":200}"),
+            MortalJointTimeCommand.None, new(100, false)));
+
+    [Fact]
+    public void NoTimeCommand_AbsentWorldSourceRetainsActualUnresolvedBaseline()
+    {
+        var result = MortalJointActionBoundary.DescribeTime(null, null, MortalJointTimeCommand.None, new(170, true));
+        Assert.Equal(MortalJointTimeKind.Unchanged, result.Kind);
+        Assert.Equal(new WorldTimeResolutionResult(170, true), result.Progression);
+        Assert.Null(result.EffectCurrentTime);
+        Assert.Null(result.ElapsedMinutes);
+    }
+
+    [Fact]
     public void IncrementalTime_WithoutAbsoluteEpochKeepsRealDeltaAndNullableEffectTime()
     {
         var result = MortalJointActionBoundary.DescribeTime(Bytes("{}"), Bytes("{\"timeChange\":5}"), MortalJointTimeCommand.Incremental, new(100, false));
