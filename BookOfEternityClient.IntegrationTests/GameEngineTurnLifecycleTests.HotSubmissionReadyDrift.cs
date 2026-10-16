@@ -88,7 +88,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             path => files.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
         Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
         await files.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
-        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), settings =>
+        var input = new QueuedConsoleInputSource([]);
+        var engine = CreateGameEngine(input, settings =>
         { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; }, fileSystem: files);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_hot_ready_custody", 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
@@ -121,34 +122,74 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Null(await files.ReadFileBytesAsync(lease, readyPath));
                 foreach (var path in sourcePaths) sourceImages.Add(path, await files.ReadFileBytesAsync(lease, path));
             }
-            var gmRepair = Task.Run(async () =>
+            using var publisherStop = new CancellationTokenSource();
+            using var deadlineStop = new CancellationTokenSource();
+            Task? gmRepair = null;
+            Task<bool>? repairWait = null;
+            var failures = new List<Exception>();
+            var accepted = false;
+            try
             {
-                var deadline = DateTime.UtcNow.AddSeconds(10);
-                while (true)
+                var deadline = Task.Delay(TimeSpan.FromSeconds(30), deadlineStop.Token);
+                gmRepair = Task.Run(async () =>
                 {
-                    var text = await files.ReadFileAsync(repairPath);
-                    if (text?.Contains(issueCode, StringComparison.Ordinal) == true) break;
-                    Assert.True(DateTime.UtcNow < deadline, "The real repair request was not published.");
-                    await Task.Delay(25);
-                }
-                gmReadyPublication.Value = true;
-                armed = true;
-                try
-                {
-                    await files.WriteFileAtomicAsync(readyPath, JsonSerializer.Serialize(new
+                    var requestDeadline = DateTime.UtcNow.AddSeconds(10);
+                    while (true)
                     {
-                        sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
-                        updatedAtUtc = "2026-10-16T00:00:00Z", note = "Initial public Ready."
-                    }));
+                        publisherStop.Token.ThrowIfCancellationRequested();
+                        var text = await files.ReadFileAsync(repairPath);
+                        if (text?.Contains(issueCode, StringComparison.Ordinal) == true) break;
+                        Assert.True(DateTime.UtcNow < requestDeadline, "The real repair request was not published.");
+                        await Task.Delay(25, publisherStop.Token);
+                    }
+                    publisherStop.Token.ThrowIfCancellationRequested();
+                    gmReadyPublication.Value = true;
+                    armed = true;
+                    try
+                    {
+                        await files.WriteFileAtomicAsync(readyPath, JsonSerializer.Serialize(new
+                        {
+                            sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                            updatedAtUtc = "2026-10-16T00:00:00Z", note = "Initial public Ready."
+                        }));
+                    }
+                    finally { gmReadyPublication.Value = false; }
+                });
+                repairWait = InvokePrivateAsync<bool>(engine, "WaitForContractRepairAsync", "обработки хода",
+                    new List<ValidationIssue> { new("output/interface_updates.json", IssueSeverity.Error,
+                        "Source-custody fixture repair; no semantic acceptance is claimed.", code: issueCode) },
+                    1, backup, generation);
+                var first = await Task.WhenAny(gmRepair, repairWait, deadline);
+                // Surface a publisher fault immediately; finally requests actual
+                // Wait cancellation through its existing console input owner.
+                if (first == gmRepair) await gmRepair;
+                if (first == deadline || await Task.WhenAny(repairWait, deadline) != repairWait)
+                    throw new TimeoutException("The real repair Wait exceeded the fixture's protective 30s bound.");
+                accepted = await repairWait;
+            }
+            catch (Exception failure) { failures.Add(failure); }
+            finally
+            {
+                await publisherStop.CancelAsync();
+                await deadlineStop.CancelAsync();
+                if (repairWait is { IsCompleted: false }) input.Enqueue(Key(ConsoleKey.Escape));
+                // Never dispose the participation/root while either task can
+                // still read or publish. Cancellation cannot abandon an in-flight write.
+                try { if (gmRepair is not null) await gmRepair; }
+                catch (OperationCanceledException failure) when (failure.CancellationToken == publisherStop.Token) { }
+                catch (Exception failure)
+                {
+                    if (!failures.Contains(failure)) failures.Add(failure);
                 }
-                finally { gmReadyPublication.Value = false; }
-            });
-            var accepted = await InvokePrivateAsync<bool>(engine, "WaitForContractRepairAsync", "обработки хода",
-                new List<ValidationIssue> { new("output/interface_updates.json", IssueSeverity.Error,
-                    "Source-custody fixture repair; no semantic acceptance is claimed.", code: issueCode) },
-                1, backup, generation);
-            await gmRepair;
-            armed = false;
+                try { if (repairWait is not null) await repairWait; }
+                catch (Exception failure)
+                {
+                    if (!failures.Contains(failure)) failures.Add(failure);
+                }
+                armed = false;
+            }
+            if (failures.Count == 1) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+            if (failures.Count > 1) throw new AggregateException("Real repair fixture and task cleanup both failed.", failures);
             Assert.True(accepted); Assert.True(readyOpened);
             Assert.Equal(replaceReady ? 1 : 0, replacements);
             Assert.NotNull(observedReady); Assert.NotNull(readyBeforeDelete);

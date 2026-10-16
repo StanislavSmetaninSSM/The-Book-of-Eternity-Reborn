@@ -1,3 +1,14 @@
+## T179-Pd.3b HS-RED2-F01 correction WIP — allactuals HELD (2026-10-16)
+
+- [x] Preserve initial independent SOURCE BLOCKED report and full f71 zero-execution preparation/recovery: one confirmed task-lifetime defect, no other materialfinding. Root43pins/fivediffs/10tmprefs/13projections; twelvechains/fourDLLs/exact2descriptors5cases/1213recoveredfiles. Old NotNull187 is historical f71, not currentsource.
+- [ ] Publish/recover corrected test-only task ownership: actual queued Escape, cancellable publisher polling, 30s protective supervisor, both tasks awaited before root/participation cleanup, primary and distinct secondary errors retained. No fake owner/authority/cancel hook. Missing diagnostic target228 after same genuine source/drift/legacy oracles. Existing bodies/Late2/category3/selection5/budgets/product unchanged. Fresh BOTH/catalog+PlanOnly0execution/affected SOURCE precede FIRSTLate2; frozen separateEVIDENCE before newReady3. Current releaseEMPTY; no actualrun on f71 or correctedsource.
+- [ ] Remaining3b source barriers/finite genuine owner fixtures/implementation/GREEN and fullHS02–16/S/B/M3/F1/T197/activation/allpriorlimits stayOPEN. Preserve qualified473HS01RED and reader131 provenance withoutreplay; continueautonomously. Currentfbc1213recovery and verified historical4e/f13retentionaudit2290files are preserved.
+
+## T179-Pd.3d narrative/interface engineering DESIGN WIP (2026-10-16)
+
+- [x] Preserve author contract/sourceevidence:21Gitpins/40exactprojections, no productiondiff. Keep actual ordinary narrative-before-interface order, one-pass projector and actual single UTC/write/close observations; ambient timestamp parser distinct from deterministic leaves. No final-byte retroproof, new ordinary rejection or fullS grant.
+- [ ] Separate independent DESIGN review/corrections before this family sourceengineering. Actual owner-pass/source adapter/history join/cold equivalence and all future finite checks UNRUN. Accepted3b continues separately; fullS/B/M3/F1/T197/D4/guided/visual/Windows/D8 remainOPEN.
+
 ## T179-Pd.3b RED2 fresh preparation saved — actuals0/SOURCE pending (2026-10-16)
 
 - [x] f71TEST-ONLY fresh BOTH/catalog native0,127.8312534s,774categories/11722methods,no unmapped/stale;35unit/133integrationwarnings retained/0errors. Exact PlanOnly native0,4.3987315s,2descriptors/5cases/ZEROexecution. Twelve raw/native/storedchains/fourf71DLLs/exact5methods and1192-file newGitHub-only expanded clean/noalternates/mainunchanged/no restoredruntime recovery are preserved. Supporting prep/audit/retention artifacts saved. This is preparation, not SOURCE or runtime acceptance.
