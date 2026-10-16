@@ -1,3 +1,9 @@
+## T179-Pd corrected first Late2 frozen — EVIDENCE pending, 2026-10-16
+
+- First corrected-source actual on clean59e05adb1 / compiled56e2efa13, fr063-joint-late-completion: native0, **2/2PASS**, complete1descriptor/2cases, wall201.6469865s, no timeout/skip/duplicate/underfill; runtime/tree cleanup complete. Full immutable recovery/t179pd-ledger-corrected-late-20261016* retains complete rawstdout/log/TRX/plan/summary/nativeexit/hashindex. Four DLL/source/fixture/catalog/selection pins unchanged.
+- Root independently checked five raw/stored/local chains, exact source42→original43 request/token/G, CREATE2/TREAT3, damage3/charge2 once, signed zero/nonzero schedule arithmetic/named native transaction images, exact story, inert84-image repeat,142cleanup paths percase and two strict removed/noerror/physicallyabsent roots. This is unchanged v2 behavior control, not ledger15GREEN or active qualification.
+- Next separate independent EVIDENCE decision before ordered ledger15, retainedC1 and exact affected regressions. All remainUNRUN. Unexpectedfailure/evidence uncertainty freezes execution; full coherent Pd S/C/B/M3/coldP0/F1/T197/activation remainopen.
+
 ## T179-Pd corrected ledger SOURCE gate — first Late2 only, 2026-10-16
 
 - Independent configured Astra/XHigh [review](./recovery/t179pd-ledger-wired-source-review-20261016.md) at f5f208c59 / compiled56e2: READY_FOR_FIRST_UNCHANGED_LATE2_ONLY; Pd-R1/Pd-R2 resolved, no outstanding blockers. Root76 historical source/context/evidence pins, 6 exact diffs and four current DLLs verified; immutable report pair byte-exact. Fresh BOTH/valid catalog/exact8desc42case PlanOnly executes0tests.
