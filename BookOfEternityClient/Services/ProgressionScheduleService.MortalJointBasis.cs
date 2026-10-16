@@ -164,7 +164,7 @@ public partial class ProgressionScheduleService
         }
         catch (Exception error) when (error is JsonException or InvalidOperationException) { return string.Empty; }
     }
-    private static WorldTimeResolutionResult ResolveFrozenWorldTime(byte[]? bytes, int fallback)
+    internal static WorldTimeResolutionResult ResolveFrozenWorldTime(byte[]? bytes, int fallback)
     {
         if (bytes is null) return new(fallback, true);
         var json = CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
