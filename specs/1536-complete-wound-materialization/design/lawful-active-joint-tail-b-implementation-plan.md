@@ -1,5 +1,7 @@
 # Lawful ACTIVE fixed joint-tail B Implementation Plan
 
+> **Current execution authority, 2026-10-16:** coordinator confirms explicit user approval07:01:11UTC (Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”) for staged F1-R2/D9–D11 implementation and independent reviews from9baccdfb5. Historical DESIGN-only/STOP text below is superseded for independent stages. T197 remains DESIGN-only until complete accepted protocol; DEP-C/I/L/full target/newQTE gates remain. Full task checkboxes require actual evidence.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans` после отдельного разрешения реализации. Один writer, отдельный обязательный Astra/XHigh reviewer на каждый связный этап. Checkboxes описывают будущую работу, не выдают разрешение её начинать.
 
 **Goal:** Завершить lawful ACTIVE stats/level-up/new-QTE joint tail без повторных эффектов, потери ordinary resolution, преждевременного cleanup или ослабления genuine original/G proof.

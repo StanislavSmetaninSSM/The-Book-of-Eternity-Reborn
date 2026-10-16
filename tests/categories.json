@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-automatic-calculation",
+      "responsibility": "T179-Pa/T180a complete detached pure automatic training/level-award calculation required before M3 common sealing; exact three after-images and one real existing training-owner semantic control.",
+      "excludes": "No genuine source/G/M3 capability, common cache/take/publication, progression/story, allocator, QTE/F1 activation, death handoff, browser/visual or OS qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-action-boundary-calculation",
       "responsibility": "T192a detached same-action/request coordinates, consumed owner-turn admission calculation and resolved/unresolved time projections; real lifetime scheduler controls. No source/phase publication authority or live F1 activation.",
       "excludes": "Genuine original/G/M3 issuer and durable action+ack, FD/FT, full ordinary outcomes, death handoff, browser/visual and OS qualification; these remain future gates.",
