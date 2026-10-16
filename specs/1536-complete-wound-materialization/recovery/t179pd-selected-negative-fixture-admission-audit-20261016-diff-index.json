@@ -1,0 +1,61 @@
+[
+  {
+    "path": "t179pd-selected-negative-fixture-admission-audit-source-to-current-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-selected-negative-fixture-admission-audit-source-to-current-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "ad5859121253d7972dca51ced6f77927e9e953b4",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-selected-negative-fixture-admission-audit-resolved-conformance-fixture-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-selected-negative-fixture-admission-audit-resolved-conformance-fixture-20261016.diff",
+    "raw_sha256": "da1037a3cd2566b11ea1ea1fe558b94d248c05183f83606074500ea7e0819633",
+    "raw_bytes": 2978,
+    "stored_sha256": "33af37db2e394458017bcfc93bede58621378ce046960170b6123aa66e435a44",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--",
+      "BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-selected-negative-fixture-admission-audit-default-fixture-unchanged-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-selected-negative-fixture-admission-audit-default-fixture-unchanged-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "e522102735317eedc04e42ea1e0b892f73983871",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "--",
+      "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs"
+    ]
+  }
+]
