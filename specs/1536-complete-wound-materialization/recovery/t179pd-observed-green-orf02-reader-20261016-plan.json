@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-observed-original-reader"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "109671cb955885e1bda13e467f97572cdc6fd919",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.551069,
+  "Descriptors": [
+    {
+      "Name": "fr063-observed-original-reader-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-observed-original-reader",
+      "Categories": [
+        "fr063-observed-original-reader"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
