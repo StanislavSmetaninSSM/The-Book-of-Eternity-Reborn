@@ -3,7 +3,8 @@
 New direct delegation resumes implementation from745b and supersedes the completed discussion STOP below. Follow [current execution authority](plan.md); accepted F1 is not redesigned, routine user approval is not a new gate.
 
 - [x] Verify745b remote/clean/main and compiled d474/fourDLL continuity; locate frozen93a FIRST Late2/2ab carrier and confirm its separate EVIDENCE acceptance is absent. Recheck six chains/full semantic+strict-cleanup union without runtime repetition.
-- [ ] Preserve/push/readback/recover continuation; independent FIRST Late2 EVIDENCE before any Ready3. Only explicitly released Ready3 singleton may run; freeze/preserve every actual outcome and qualify causal RED independently before implementing accepted bounded custody. Full3b/S/B/M3/F1/T197/newQTE and prior D4/guided/visual/Windows/D8 gates remain open.
+- [x] Separate saved FIRST Late2 EVIDENCE accepted atf0df, zero findings; immutable review/data preserved. Root74pinentries/7projections/threeexactemptydiffs/fourtmprefs/embeddedverifier; sixactual+twelveprepchains/fourDLLs/full raw union/strict2roots accepted without replay.
+- [ ] Publish/readback/recover decisioncheckpoint, verify clean d474/fourDLLs, then ONLY released Ready3 singleton3/5m. Expected2legacyPASS+solemissingexportRED228, strict3roots; freeze/preserve first outcome and independently qualify causal RED before custody success implementation. Stop/freeze unexpectedtargetPASS/earlierfailure/timeout/skipdupunderfill/source/DLL/cleanup/evidencefault, no hiddenretry/aggregate/otheractual/GREEN release. Full3b/S/B/M3/F1/T197/newQTE and prior D4/guided/visual/Windows/D8 gates remain open.
 
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
