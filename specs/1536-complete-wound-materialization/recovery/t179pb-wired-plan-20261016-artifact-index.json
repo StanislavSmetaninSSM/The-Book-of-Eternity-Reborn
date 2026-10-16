@@ -1,0 +1,126 @@
+{
+  "source_sha": "68db745c69b7e128c2799f5f3c9cbf1f39165f05",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-085608-765-26782-378942475b3a4c2bb3dc48d602b0d626-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pb-wired-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-085608-765-26782-378942475b3a4c2bb3dc48d602b0d626-categories/dotnet-test.log",
+      "raw_bytes": 3373119,
+      "raw_sha256": "fc0971afbf3b5390f444d717af41b3fda0c72da14c3370d11c98593b4fa453f9",
+      "stored_sha256": "886880bde159db5a85edced7a6753b25a9d58ad66c8ad025382ed8dd273c8c5b"
+    },
+    {
+      "path": "t179pb-wired-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-085608-765-26782-378942475b3a4c2bb3dc48d602b0d626-categories/plan.json",
+      "raw_bytes": 8978,
+      "raw_sha256": "efb789b7cb2b169a748e8207cdc9bcaf6712baab1651ac5c71f6004be0cff94c",
+      "stored_sha256": "efb789b7cb2b169a748e8207cdc9bcaf6712baab1651ac5c71f6004be0cff94c"
+    },
+    {
+      "path": "t179pb-wired-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-085608-765-26782-378942475b3a4c2bb3dc48d602b0d626-categories/summary.json",
+      "raw_bytes": 3527,
+      "raw_sha256": "64fece84d5381fc10f6410c9f282074f5ea5c759b1dde8a91dcc396555ba9836",
+      "stored_sha256": "64fece84d5381fc10f6410c9f282074f5ea5c759b1dde8a91dcc396555ba9836"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-story-calculation",
+      "fr063-joint-late-completion",
+      "fr063-joint-story-owner",
+      "fr063-joint-retained-story"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-story-calculation",
+        "reason": "T179-Pb/T182 pure row calculation shared by the actual v2 story writer: exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Semantic RED preserved before success logic; post-wiring first Late2/EVIDENCE precedes calculator GREEN.",
+        "contracts": [
+          "#1536 T179/B01 storyPlan calculation prerequisite; T182/B04 existing v2 story owner. Not complete source/history/artifact storyPlan authority."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "First actual gate before all story stage actuals after fresh BOTH preparation and independent SOURCE/FIXTURE/SELECTION. Freeze raw Late2, independent EVIDENCE release before calculator RED/GREEN or other actuals. Existing original/checkpoint fixture is unchanged.",
+        "contracts": [
+          "Actual staged43 Late zero/nonzero full union, charge/history/story/turn/cleanup and inert repeat; exact original/G/source protections."
+        ]
+      },
+      {
+        "category": "fr063-joint-story-owner",
+        "reason": "After calculator is wired: five existing actual signed-prefix/committed-row narrative/G/append/readback failure controls; no new checkpoint/source fixture or owner membership change.",
+        "contracts": [
+          "Current original/output/history/source checks and retained applied union/debt on uncertain story publication."
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-story",
+        "reason": "After calculator is wired: actual appended row/readback failure then fresh PID durable-only recognition, no second append and exact turn/cleanup.",
+        "contracts": [
+          "Same exact row serialization and existing private current proof; durable replay remains owner-derived."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "68db745c69b7e128c2799f5f3c9cbf1f39165f05",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0632512,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0474756,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1817134,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0044837,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.2856130",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 28,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-late-completion-integration-001",
+        "fr063-joint-retained-story-integration-002",
+        "fr063-joint-story-calculation-unit-003",
+        "fr063-joint-story-owner-integration-004"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}
