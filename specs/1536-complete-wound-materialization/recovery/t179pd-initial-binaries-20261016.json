@@ -1,0 +1,22 @@
+{
+  "source_sha": "cf95c60916542ab422fad5ac836dca74add72f89",
+  "phase": "T179-Pd T192b initial test-first fresh BOTH; zero actual tests",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "5aa16d0ee44832e791a157eeb497c10b3ed834f66068f86a669c3ea7281b7ea6"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "8d26908ea3ca997300164b7dd98e47a7c1ca1316f7632cd905a1f6ce7eb36bde"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "5aa16d0ee44832e791a157eeb497c10b3ed834f66068f86a669c3ea7281b7ea6"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "0c1f6213a6b7d061926c21283df364c454ae9dc86940ab95026570f8d41c58bc"
+    }
+  ]
+}
