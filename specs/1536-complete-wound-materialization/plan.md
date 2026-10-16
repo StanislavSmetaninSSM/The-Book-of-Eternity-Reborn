@@ -1,3 +1,8 @@
+## T179-Pd/T192b initial SOURCE gate — first Late2 only, 2026-10-16
+
+- Independent configured Astra/XHigh [review](./recovery/t179pd-initial-source-review-20261016.md) of cf95c6091 source / 6ee0ca0c4 preparation: READY_FOR_FIRST_UNCHANGED_LATE2_ONLY, no blocking finding. Root independently verified 48 historical source/context/evidence pins, four exact diffs, 8 raw/stored/local chains and four current DLL hashes; report pair preserved byte-for-byte. Preparation executes zero tests.
+- Next permitted actual is only fr063-joint-late-completion -NoBuild, 2 existing cases. Freeze and push/read back complete raw native/plan/TRX/owner/arithmetic/story/inert-repeat/strict cleanup evidence, then separate independent EVIDENCE review before any new lifecycle RED3. Stop on unexpected failure; no success implementation yet. Payload/allocation observation idempotence does not prove cross-version preservation; exhaustive ledger and real active S/C/B/M3/P0 obligations remain under the coherent Pd plan. Full T179/T192/F1/T197 and activation gates stay open.
+
 ## T179-Pd/T192b initial fresh preparation — SOURCE gate pending, 2026-10-16
 
 - Clean source/compiled `cf95c60916542ab422fad5ac836dca74add72f89`: fresh BOTH build and catalog exit0 in122.9640290s, valid11,699methods/767categories, no unmapped/stale selectors, **0 tests executed**. Exact PlanOnly -SelectionFile -NoBuild exit0 in7.2845645s: **2 descriptors/5 cases**, new ledgerTheory3 plus unchangedLate2, **0 executed**. Full immutable recovery/t179pd-initial-{catalog,plan,binaries}-20261016* stores complete build/discovery/plan logs and four fresh DLL hashes. Root summary/revision and raw/stored/local hash chains match. Discovery is not runtime qualification or expectedRED evidence.
