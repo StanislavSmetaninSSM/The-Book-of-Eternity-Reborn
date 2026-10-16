@@ -1,6 +1,6 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
-> Current bounded3b custody source is UNCOMPILED/UNRUN/UNREVIEWED WIP. Fresh source preparation/recovery/independent SOURCE must precede any new actual; no full3b/S/B/M3/F1/T197/new-QTE activation is claimed.
+> Current bounded3b source f9bc is compiled and SOURCE-reviewed. Selected15cases executed:13PASS+2workerFAIL; independent causal review confirms ordinaryLinux worker route unavailable. Worker-positive/final bounded acceptance and further actual release remain BLOCKED. See current [plan](plan.md). Full3b/S/B/M3/F1/T197/new-QTE and prior limits remain open.
 
 > Ready3 causal RED is independently qualified atcc8; accepted bounded3b implementation may continue after decision persistence, with fresh source/evidence gates and no additional actual/GREEN release. See [current plan](plan.md).
 
