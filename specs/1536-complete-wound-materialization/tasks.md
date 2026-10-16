@@ -7,7 +7,7 @@
 - Ruling: continue in current dedicated task branch/workspace as explicitly requested, no extra branch/worktree. Use existing canonical plan journal for durable execution ledger; cloud skill helper scripts unavailable locally, no duplicate scaffold/plan. Repository category-only checks and per-stage independent Astra/XHigh reviews supersede skill full-suite/final-only defaults. No merge/main/force-push/deletion/issues.
 - Interface preflight: T179 supplies genuine S/B/C+M3 to full T192; T192a supplies detached arithmetic/coordinates only (no capability impersonation). T193–T196 consume those real source and complete owner plans, T197 supplies separate durable life-end takeover before KF1; T198/B11–B13 gate activation. No circular activation dependency is hidden by foundation acceptance.
 - Client-owned calculation foundation has no reachable GM-authored field, pending schema or player behavior yet: no active prompt/example update for this slice; same-change synchronization mandatory when real issuer/request/accepted gameplay is connected. D4/guided/visual/Windows/D8 not closed.
-- Next: compile test-first missing-API preflight, obtain actual runtime RED, implement minimal calculation, bounded GREEN, WIP push/readback, independent stage review and fixes.
+- T192a detached calculation independent [review](./recovery/t192a-independent-stage-20261016-review.md) on62c404507: no material findings; existing24/24 GREEN, prior RED and discovery-only evidence verified, no new runtime execution. Full T192 remains unchecked; actual source/M3/common/cold integration is future work. Current DESIGN-only delegation versus recovered later implementation approval is being reconciled; continue only documents/read-only reviews until clarified. Next: T197 corrected DESIGN and affected independent rereview; do not repeat completed passing checks without new impact.
 
 ## FR063-D5-F1-R2 готов к обсуждению; реализация не разрешена — 2026-10-16
 
@@ -28,7 +28,7 @@
 - [ ] T194 [US7] R2 Pure location/item/quest family plans with real identities/storage/reward companions.
 - [ ] T195 [US7] R2 Pure NPC/faction/world/meta/misc family plans and exact realm/source eligibility.
 - [ ] T196 [US7] R2 Ordinary XP/stats, complete Plan|ValidatedEmpty take/compositor, same-turn story/readers and full repair D11.
-- [ ] T197 [US7] R2 Exact MortalDeath→LifeEvaluation durable target handoff design/receipt/cohorts, then separately authorized implementation/qualification.
+- [ ] T197 [US7] R2 Corrected MortalDeath→LifeEvaluation DESIGN R1–R5, independent rereview, DEP-I successor/DEP-L restore contract decisions; then separately authorized exact H0–HQ/EP–E4K implementation/qualification. H2/H3/activation blocked until complete lawful target ownership qualifies.
 - [ ] T198 [US7] R2 Full lawful outcome universe/composite/action-time/accept-decline qualification; finite future owners and actual client/OS evidence.
 
 ## FR063-D5-F1 готов к обсуждению; реализация не разрешена — 2026-10-16

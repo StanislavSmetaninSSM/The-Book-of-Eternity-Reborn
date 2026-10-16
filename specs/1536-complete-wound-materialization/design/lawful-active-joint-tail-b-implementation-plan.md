@@ -477,14 +477,17 @@ source/request/action/G/owner DAG and exact cohort. Existing specialized takes r
 ### T197 — lawful MortalDeath→LifeEvaluation target handoff (D11 dependency)
 
 **Files:** GameEngine CheckLifeTransitions, session/snapshot/source owners, SoulRealmTransition
-publication owner, LifeEvaluationRewardAnalyzer and target pending/cleanup/return-guard owners.
-**Design deliverable before implementation:** exact per-phase cohorts/target receipt schema and
-current-generation proof for this transition (R2 §7 source inventory), reviewed separately.
-Current multi-write death/story/realm/control/request handler is not an existing durable ack.
+publication owner, LifeEvaluationRewardAnalyzer, target normalizer/accepted owner, progression,
+browser pending/original/main admission, cleanup/return-guard and daemon request consumers.
+**Canonical proposed contract:** [corrected T197 design](./lawful-active-joint-tail-b-death-handoff.md).
+R1–R5 correction is pending independent rereview; no transition implementation or qualification.
+H0–HQ / EP–E4K are fixed future phases, not existing APIs. Current sequential handler is not a receipt.
 
-- [ ] RED R213 plus eligible source tests: real authoritative TriggerLifeEnd result; persist target acceptance of remaining LifeEvaluation work before KF1 source cleanup. No raw flag/redirect completion; exact crash/retry/foreign target/current G/cleanup cuts, UI outside lease.
-- [ ] Preserve actual target LifeEvaluation turn/progression/rewards/return guard under its own genuine authority. No new Mortal tick for transport, no suppression of lawful destination turn. Incarnation/Ascension stay ineligible on Mortal source; no afterlife write grant from mapper.
-- [ ] If exact target contract remains unresolved, new-QTE activation remains blocked. Do not silently skip lawful death, fall back to sequential handler or select F2 without actual F1 obstacle proof.
+- [ ] Accept exact DESIGN/owner catalogs after affected independent review. H0 reservation; H1 realm/resource/reset/init/marker; HP real progression-schedule preparation; H2 target install/acceptance only under a fully qualified remaining-work owner; HC genuine original/main close; H3 source artifact-only release; HQ browser dequeue/dispatch. Routine target path/issuer extraction is a D11 specialization, not a fresh per-path grant.
+- [ ] Resolve **DEP-I** eligible evaluation→incarnation successor acceptance and **DEP-L** supported distinct-root save/load/stop contract before H2/H3/activation. The corrected proposal explicitly blocks H2 globally while any lawful reachable branch lacks that contract; a no-incarnation fixture cannot qualify the universe. No automatic new principled grant, F2 choice, unsupported/drop/reoffer, sequential fallback or fabricated old-G rebind.
+- [ ] RED R213/H01–H18 through real authoritative Death and Voluntary results and full target owner DAG; retain source validation evidence separately from post-H1/HP evaluation repair baseline. EP freezes actual known target contribution plans; E1 commits complete taken result + M, preserving specialized pending/take/debt. No reward-only whitelist, normalizer mutation wrapper or null=empty.
+- [ ] Implement/qualify separate immutable E2P progression, E2S evaluation story/runtime, E3 archive/guard, E4C actual terminal pending maintenance and E4I/R/K successor/cleanup. Source child remains same n; target is genuine Chaos Sea n+1 with its own time/progression/rewards. Incarnation/Ascension remain ineligible on Mortal source; no D8 payload expansion.
+- [ ] Qualify current-G/actual original/main close, every native before/after/uncertain/readback/close cut, same-root fresh PID and actual supported distinct-root restore. Browser handoffPending→sourceTransferred→dequeue has named outer admission/parser/recovery semantics. Shared daemon/console/browser dispatch requires HC/H3/HQ and debt-free target proof; UI waits outside lease. Real DOM/visual and Linux/Windows remain separate gates.
 
 ### T198 — full ordinary universe/composite and accept-decline qualification
 
