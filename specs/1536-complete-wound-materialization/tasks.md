@@ -17,6 +17,9 @@ New direct delegation resumes implementation from745b and supersedes the complet
 - [x] Source7acd fresh BOTH/catalog native0/777owners11725methods/no newwarnings; exact PlanOnly8desc15cases/ZEROtests;12chains/fourDLLs and NEWfull54267files/3627920233bytes GitHub recovery preserved. No actual release. Historical WIP entries above retain their then-current status.
 - [ ] Preserve affected SOURCE BLOCKED pair for worker nested-ledger oracle and unsupervised fallback wait; correct ONLY new worker fixture, fresh BOTH/catalog/PlanOnly0/recovery and affected SOURCE before FIRSTLate2. Join actual Wait/Escape/guard before cleanup; no abandoned owner, fabricated result or unsupported seam. Full3b and prior gates remainOPEN.
 
+- [x] Affected7acd SOURCE BLOCKED C01/C02 frozen: root146pins/41projections/6diffs/8tmprefs, MD3c5e0c2f/JSON3611f5cb; initial F01/F02 static corrections and12prepchains/fourDLLs/full54267base/29docs verified. No production/runtime acceptance or actual release.
+- [ ] After BLOCKED preservation/recovery, worker-only C01/C02 correction, fresh BOTH/catalog/PlanOnly0 and affected independent SOURCE. Full verified7acd base+ALL exact newcommit GitHub delta; FIRSTLate2 and subsequent separate EVIDENCE/GREEN gates remainheld.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
