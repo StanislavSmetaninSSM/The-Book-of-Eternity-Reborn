@@ -1,0 +1,164 @@
+{
+  "actualHead": "8ffe29bccad64d6510f6978dcadf3b9997fb8c85",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-hot-joint-ready-custody-drift",
+  "artifactChains": 6,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource",
+      "stdoutSha256": "dbcd51ccd7c04f17a46cacb6b08acabb1b30dc0a6adb4080ab64d1040c209533",
+      "boundaries": [
+        "fr063_hot_ready_real_legacy_control_before_new_diagnostic"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f73dc606baa94293acc125880ae444bf",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "legacyAccepted": true,
+        "replaceReady": true,
+        "newNegativeExportSourceAssertionsExecuted": false,
+        "negativeExportRetainedRaw": false,
+        "original": {
+          "SessionId": "session_hot_ready_custody",
+          "RequestId": "fffc43a4d6d7450faf63ee25ae1c501a",
+          "SnapshotToken": "8A91F08550AD842416E1ACD740521AF31A99921953AC138FF609349879692299",
+          "TurnNumber": 43
+        },
+        "generation": "e0db9bcb2f8b4ba888432b1aa980c653",
+        "sourceImages": 17,
+        "currentTurn": 42
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage",
+      "stdoutSha256": "75b2145351f5281cd3d31935bdbdd18f9d9fcd18ff8c436427c24e512afe6080",
+      "boundaries": [
+        "fr063_hot_ready_real_legacy_control_before_new_diagnostic"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fe63d845c0d64a1d9e6c0b3b0b35762c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "legacyAccepted": true,
+        "replaceReady": false,
+        "newNegativeExportSourceAssertionsExecuted": false,
+        "negativeExportRetainedRaw": false,
+        "original": {
+          "SessionId": "session_hot_ready_custody",
+          "RequestId": "235614877b9f46ac84db781dfd1fa901",
+          "SnapshotToken": "369247343720EB710822EE2C8DE1E3B28B24EA1DD0EF3B3814F377EC172818E2",
+          "TurnNumber": 43
+        },
+        "generation": "3fbc2a4b23fb47efb523d90fc10a063d",
+        "sourceImages": 17,
+        "currentTurn": 42
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody",
+      "stdoutSha256": "840b11d44eb4278c1e327a5086c8c613c5814c53877a3d3ae96bb0e68048bc14",
+      "boundaries": [
+        "fr063_hot_ready_real_legacy_control_before_new_diagnostic"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fa41af0a9b384f3594e1137d6ea2d2ed",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "legacyAccepted": true,
+        "replaceReady": true,
+        "newNegativeExportSourceAssertionsExecuted": true,
+        "negativeExportRetainedRaw": false,
+        "original": {
+          "SessionId": "session_hot_ready_custody",
+          "RequestId": "c3f7aeea211c494585e5f95745f677d2",
+          "SnapshotToken": "8A83C9E3D20B45D1D1B63C9B3B83270D257D64CF917F832C42C4E132D9D12408",
+          "TurnNumber": 43
+        },
+        "generation": "6fd85956591a4fd39f5587b7b6493afd",
+        "sourceImages": 17,
+        "currentTurn": 42
+      }
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-joint-ready-custody-drift"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "8ffe29bccad64d6510f6978dcadf3b9997fb8c85",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-hot-joint-ready-custody-drift",
+        "Seconds": 14.6220672,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0674499,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0510653,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1496996,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004997,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:19.1096051",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourceAssertionsAndRawDataAreDistinct": true
+}
