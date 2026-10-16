@@ -151,24 +151,51 @@ public sealed class MortalJointAutomaticCalculationTests(ITestOutputHelper outpu
     }
 
     [Fact]
-    public async Task RealExistingTrainingOwner_ControlHasSameOrderedCapResult()
+    public void ChangedThreeRootPlan_UsesTheExistingOwnersUtf8Preamble()
     {
-        var stats = Stats(); stats["strength"] = 3; stats["dexterity"] = 100;
-        var input = Inputs(stats, "{\"statsIncreased\":[\"strength\",\"strength\",\"dexterity\"]}", Points(1, 0), "{\"level\":2}");
+        var plan = CharacteristicsService.CalculateMortalJointAutomatic(Inputs(Stats(),
+            "{\"statsIncreased\":[\"strength\"]}", Points(1, 0), "{\"level\":2}"));
+        foreach (var image in plan.AfterImages.Values)
+            Assert.True(image.Bytes!.AsSpan().StartsWith(Encoding.UTF8.GetPreamble()));
+    }
+
+    [Theory]
+    [InlineData("experience")]
+    [InlineData("playerLevel")]
+    [InlineData("points")]
+    [InlineData("changes")]
+    public void LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt(string alias)
+    {
+        var input = Inputs(Stats(), alias == "changes" ? "{\"StatsIncreased\":[\"strength\"]}" : null,
+            alias == "points" ? "{\"UnspentStatPoints\":0,\"LevelUpStatPointsAwardedThroughLevel\":1}" : Points(1, 0),
+            alias == "experience" ? "{\"Level\":3}" : alias == "playerLevel" ? "{\"PlayerLevel\":3}" : null);
+        Assert.Throws<InvalidDataException>(() => CharacteristicsService.CalculateMortalJointAutomatic(input));
+    }
+
+    [Theory]
+    [InlineData(2, 3, 4)]
+    [InlineData(100, 99, 100)]
+    public async Task RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(int level, int strengthBefore, int expectedStrength)
+    {
+        var stats = Stats(); stats["strength"] = strengthBefore; stats["dexterity"] = 100;
+        var experience = "{\"level\":" + level + "}";
+        var input = Inputs(stats, "{\"statsIncreased\":[\"strength\",\"strength\",\"dexterity\"]}", Points(level, 0), experience);
         var plan = CharacteristicsService.CalculateMortalJointAutomatic(input);
         var root = Path.Combine(Path.GetTempPath(), "boe-joint-automatic-control-" + Guid.NewGuid().ToString("N"));
         try
         {
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance); files.EnsureDirectoryStructure();
             await files.WriteFileAtomicAsync(M.JointAutomaticInputs.CharacteristicsPath, stats.ToJsonString());
-            await files.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":2}");
+            await files.WriteFileAtomicAsync("game_state/player/experience.json", experience);
             var manager = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
             var owner = new CharacteristicsService(files, manager, NullLogger<CharacteristicsService>.Instance);
             var actual = await owner.ApplyStatsIncreasedAsync(["strength", "strength", "dexterity"]);
             Assert.Equal(["strength"], actual.applied); Assert.Equal(["strength", "dexterity"], actual.blocked);
             Assert.Equal(plan.AppliedStats, actual.applied); Assert.Equal(plan.BlockedStats, actual.blocked);
             var current = JsonNode.Parse((await files.ReadFileAsync(M.JointAutomaticInputs.CharacteristicsPath))!)!;
-            Assert.Equal(4, current["strength"]!.GetValue<int>()); Assert.Equal(100, current["dexterity"]!.GetValue<int>());
+            Assert.Equal(expectedStrength, current["strength"]!.GetValue<int>()); Assert.Equal(100, current["dexterity"]!.GetValue<int>());
+            Assert.Equal(plan.AfterImages[M.JointAutomaticInputs.CharacteristicsPath].Bytes,
+                await files.ReadFileBytesAsync(M.JointAutomaticInputs.CharacteristicsPath));
         }
         finally
         {
@@ -185,5 +212,6 @@ public sealed class MortalJointAutomaticCalculationTests(ITestOutputHelper outpu
     private static JsonObject Stats() => new(Characteristics.All.Select(name => new KeyValuePair<string, JsonNode?>(name, JsonValue.Create(1))));
     private static string Points(int through, int unspent) => "{ \"unspentStatPoints\":" + unspent + ", \"levelUpStatPointsAwardedThroughLevel\":" + through + " }";
     private static byte[] Bytes(string text) => Encoding.UTF8.GetBytes(text);
-    private static JsonObject Read(M.JointAutomaticPlan plan, string path) => JsonNode.Parse(plan.AfterImages[path].Bytes!)!.AsObject();
+    private static JsonObject Read(M.JointAutomaticPlan plan, string path) =>
+        JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(plan.AfterImages[path].Bytes!))!.AsObject();
 }
