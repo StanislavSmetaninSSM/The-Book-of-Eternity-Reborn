@@ -1,0 +1,13 @@
+{
+  "source_sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+  "raw_path": "/tmp/t179pd-hot-custody-implementation-final-full-recovery-20261016.json",
+  "raw_bytes": 20013632,
+  "raw_sha256": "0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0",
+  "stored_path": "t179pd-hot-custody-implementation-final-full-recovery-20261016.json.gz",
+  "stored_sha256": "abca175e87fceb22697b6c1055822e59644804b0d7736a5d2dd0da001d1490aa",
+  "native_exit": 0,
+  "count": 54267,
+  "tracked_bytes": 3627920233,
+  "scope": "ALL tracked current-tree files, modes and raw bytes verified against writer and exact Git blobs; shallow history only, no build/runtime or external dependency qualification",
+  "restoredBuildOrRuntime": false
+}

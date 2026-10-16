@@ -1,0 +1,22 @@
+{
+  "source_sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+  "phase": "Fresh BOTH/catalog and exact PlanOnly; ZERO tests. Bounded custody implementation source WIP, independent source review pending; no actual release.",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "d7b470ad9a357ca73a9627bc7d3421be00b4b1acba7510f6b50c4e928e384413"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "75ffe44f92dcf4c7400dfdf4fb1fd3098d2847f745c12000663c629a13e75b00"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "d7b470ad9a357ca73a9627bc7d3421be00b4b1acba7510f6b50c4e928e384413"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "de2958f4aa1fa99cce02cec09557c0a22738c2da480f83132565a5d4582c0c64"
+    }
+  ]
+}

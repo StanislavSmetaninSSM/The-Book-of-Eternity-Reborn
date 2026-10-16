@@ -1,0 +1,134 @@
+{
+  "Categories": [
+    "fr063-joint-late-completion",
+    "fr063-hot-joint-ready-custody-drift",
+    "fr063-hot-joint-attempt-ownership",
+    "fr063-joint-live-completion",
+    "fr063-joint-active-tail",
+    "fr063-hot-joint-owner-refusals",
+    "fr063-hot-browser-stage-lifetime",
+    "fr063-hot-worker-ready-disposition"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "FIRST protected unchanged Late2 after bounded HOT Stage/Ready custody, canonical attempt, observed mechanical consumer and registry-owned predelegation close. Preserve full v2 owner/request/G/native/story/progression/inert/strictcleanup union; separate EVIDENCE before specifically released GREEN.",
+      "contracts": [
+        "#1536 T179-Pd.3b accepted custody only; no S/B/M3/fullF1/newQTE. Fresh BOTH/catalog/PlanOnly and independent SOURCE precede FIRST Late2 singleton; freeze/push/readback/full-source recovery and separate EVIDENCE before GREEN. No aggregate, hidden retry or unchanged131/oldRED replay."
+      ]
+    },
+    {
+      "category": "fr063-hot-joint-ready-custody-drift",
+      "reason": "Three genuine Stage/Wait cases: unchanged and replaced Ready retain existing ordinary behavior; actual source barrier must classify replaced Ready Unavailable(SourceChanged), preserve positive delete/release observations and detached diagnostics.",
+      "contracts": [
+        "#1536 T179-Pd.3b Ready source drift regression/GREEN: actual ordinary original/request/G, earlier Ready replaced on later manifest open. Existing qualified absenceRED preserved; new production changed. No current actual release until SOURCE/FIRSTLate2/separateEVIDENCE."
+      ]
+    },
+    {
+      "category": "fr063-hot-joint-attempt-ownership",
+      "reason": "HS01 genuine positive GREEN after qualified causalRED: actual ProcessPlayerTurn/Stage43, public post-original stats/level, matching Ready consumption, Lp source recheck and registry-owned no-native close at the unchanged uncovered-status_changes v2 refusal. Excludes an always-Unavailable/stub implementation.",
+      "contracts": [
+        "#1536 T179-Pd.3b actual Stage lineage/custody/attempt/owned close; same held union/request/G/turn42/no new effect. Source/S/B/M3/full3b/HS02-16/native/worker/browser/release-fault/fullF1 remain separate open gates. Execute this singleton only when explicitly released after frozen FIRSTLate2 EVIDENCE."
+      ]
+    },
+    {
+      "category": "fr063-joint-live-completion",
+      "reason": "Affected successful actual ProcessPlayerTurn/Stage43 nonzero joint continuation after HOT lineage/MC/attempt changes; full accepted union/report/story/turn/cleanup and inert repeat.",
+      "contracts": [
+        "#1536 T179-Pd.3b HS-IMPL-F03 affected regressions explicitly required by accepted engineering design. Keep existing bounded five-minute owner; no unchanged131/full-suite/aggregate run. Actual remains HELD pending corrected source preparation/recovery/SOURCE and protectedLate2/separateEVIDENCE."
+      ]
+    },
+    {
+      "category": "fr063-joint-active-tail",
+      "reason": "Affected before-original stats/level/newQTE INACTIVE refusal boundaries after observed mechanical consumer and registry close changes; preserve actual held union and no common take.",
+      "contracts": [
+        "#1536 T179-Pd.3b HS-IMPL-F03 affected regressions explicitly required by accepted engineering design. Keep existing bounded five-minute owner; no unchanged131/full-suite/aggregate run. Actual remains HELD pending corrected source preparation/recovery/SOURCE and protectedLate2/separateEVIDENCE."
+      ]
+    },
+    {
+      "category": "fr063-hot-joint-owner-refusals",
+      "reason": "#1536 T179-Pd.3b HS-IMPL-F03: Actual prior42→ProcessPlayerTurn/Stage43→corrected joint publication. At real pre-reservation/reserved read and delegated native mutation cuts inspect the actual attempt/lease/frame/capture only; refuse not-reserved, independent foreign FS/lease, same-engine Begin reentry and delegated close without receipt/slot change. Real original flow must still commit its full union once; retained diagnostics expire.",
+      "contracts": [
+        "#1536 T179-Pd.3b HS-IMPL-F03 genuine affected owner/route coverage; all new controls UNRUN. Existing hook/actual owner only, no private issuer/field seeding. Keep category five-minute bounds; no SOURCE/actual release inferred. FIRST protected Late2/separate frozen EVIDENCE precede individually released GREEN; exact failed-Begin and isolated Ld/native seams remain OPEN."
+      ]
+    },
+    {
+      "category": "fr063-hot-browser-stage-lifetime",
+      "reason": "#1536 T179-Pd.3b HS-IMPL-F03: Two actual QueueBrowserInput→ProcessPlayerTurn cases: Staged acknowledgement is observed at real TerminalWaitStarted only after outer Stage operation returned; a one-shot existing SessionOperationClosing fault while AwaitingStagingOwnerReturn yields Ended/unavailable, no wait/ack and exact retained staged original/request/browser slot. Positive correlated terminal error settles ordinary cleanup.",
+      "contracts": [
+        "#1536 T179-Pd.3b HS-IMPL-F03 genuine affected owner/route coverage; all new controls UNRUN. Existing hook/actual owner only, no private issuer/field seeding. Keep category five-minute bounds; no SOURCE/actual release inferred. FIRST protected Late2/separate frozen EVIDENCE precede individually released GREEN; exact failed-Begin and isolated Ld/native seams remain OPEN."
+      ]
+    },
+    {
+      "category": "fr063-hot-worker-ready-disposition",
+      "reason": "#1536 T179-Pd.3b HS-IMPL-F03: Two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
+      "contracts": [
+        "#1536 T179-Pd.3b HS-IMPL-F03 genuine affected owner/route coverage; all new controls UNRUN. Existing hook/actual owner only, no private issuer/field seeding. Keep category five-minute bounds; no SOURCE/actual release inferred. FIRST protected Late2/separate frozen EVIDENCE precede individually released GREEN; exact failed-Begin and isolated Ld/native seams remain OPEN."
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0624043,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0511618,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1387851,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.004832,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:04.3329287",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 8,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 15,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "fr063-hot-browser-stage-lifetime-integration-001",
+      "fr063-hot-joint-attempt-ownership-integration-002",
+      "fr063-hot-joint-owner-refusals-integration-003",
+      "fr063-hot-joint-ready-custody-drift-integration-004",
+      "fr063-hot-worker-ready-disposition-integration-005",
+      "fr063-joint-active-tail-integration-006",
+      "fr063-joint-late-completion-integration-007",
+      "fr063-joint-live-completion-integration-008"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
