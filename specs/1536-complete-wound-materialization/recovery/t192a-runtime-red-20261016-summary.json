@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "fr063-action-boundary-calculation"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a3c96dfb990c28f6cae2e76ae419ce4ca3dd2de0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "fr063-action-boundary-calculation",
+      "Seconds": 2.8420017,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.06346,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0541582,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1334401,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.9666052,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:47.6574455",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 22,
+    "CompletedCases": 22,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 22,
+    "Executed": 22,
+    "Passed": 6,
+    "Failed": 16
+  },
+  "DuplicateTests": []
+}
