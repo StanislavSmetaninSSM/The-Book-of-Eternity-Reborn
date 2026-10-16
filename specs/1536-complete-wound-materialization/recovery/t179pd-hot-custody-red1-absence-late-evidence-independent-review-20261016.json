@@ -1,0 +1,1499 @@
+{
+  "date": "2026-10-16",
+  "review": "Separate independent EVIDENCE gate after corrected HS01 SOURCE acceptance",
+  "verdict": "ACCEPTED_FIRST_PROTECTED_LATE2_EVIDENCE_RELEASE_HS01_CAUSAL_RED_ONLY",
+  "findings": [],
+  "reviewer": {
+    "role": "independent reviewer; not author/implementer",
+    "requested_model": "gpt-6-astra",
+    "requested_reasoning_effort": "xhigh",
+    "actual_configured_model": "gpt-6-astra",
+    "actual_configured_reasoning_effort": "xhigh",
+    "configuration_basis": "coordinator original spawn receipt for /root/t179pc_independent_review",
+    "backend_telemetry": "unavailable; configured model is not backend attestation"
+  },
+  "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "actual_clean_head": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+  "frozen_evidence_carrier": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+  "observed_final_clean_head": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+  "source_continuity": {
+    "production_tests_catalog_selection_scripts_unchanged": true,
+    "actual_to_carrier_change_scope": "specs/1536-complete-wound-materialization only",
+    "accepted_source_reports_unchanged": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-source-independent-review-20261016.md",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 5464,
+        "sha256": "c4887407270ab4470ac2768e9517d4642c4b5b31c66006d634295199e1234c48",
+        "git_blob": "019c04e2378123894d896c601aacae722ca04382"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-source-independent-review-20261016.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 54701,
+        "sha256": "f3745671b520b2ab627950bedf4cfe569c3c1e139110fe0fe767a8f0fd831a04",
+        "git_blob": "4d573d19617768072316c93eddc0119be84e1e2b"
+      }
+    ],
+    "production_export_absent": true,
+    "hs01_expected_line": 172,
+    "no_weakened_protected_assertions": true,
+    "separate_3c_design": "excluded; current plan/tasks correctly keep it DESIGN pending and HS01 held before this verdict"
+  },
+  "actual_run": {
+    "native": {
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "fr063-joint-late-completion",
+        "-NoBuild"
+      ],
+      "native_exit": 0,
+      "actual_head": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "category": "fr063-joint-late-completion",
+      "started_utc": "2026-10-16T18:18:46.225009+00:00",
+      "ended_utc": "2026-10-16T18:22:10.750526+00:00",
+      "binaries_unchanged": true,
+      "scoped_temp_prefixes_before": {
+        "boe-gameengine-turnlifecycle-": []
+      },
+      "scoped_temp_prefixes_after": {
+        "boe-gameengine-turnlifecycle-": []
+      },
+      "new_scoped_temp_residue": {
+        "boe-gameengine-turnlifecycle-": []
+      },
+      "post_head_unchanged": true,
+      "post_git_clean": true
+    },
+    "summary": {
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "fr063-joint-late-completion",
+          "Seconds": 198.6041064,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0762624,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0503718,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1363424,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0041845,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:03:23.5418711",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "plan": {
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [],
+      "Revision": {
+        "Head": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 4.2015341,
+      "Descriptors": [
+        {
+          "Name": "fr063-joint-late-completion-integration-001",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "trx_counters": {
+      "total": "2",
+      "executed": "2",
+      "passed": "2",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "expected_methods": [
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce"
+    ],
+    "distinct_cases": 2,
+    "native_exit": 0,
+    "passed": 2,
+    "failed": 0,
+    "wall_seconds": 203.5418711,
+    "category_seconds": 198.6041064,
+    "category_budget_minutes": 5,
+    "skip_duplicate_underfill_timeout": false
+  },
+  "semantic_assessment": {
+    "source_original_binding": "Real QTE/source42 and distinct actual original43 share session but have distinct request/token; full held treatment request, attempt/operation/wound, generation and original tuple remain equal across command, pending request, retained TreatmentResult, history and marker. Real original authority payload hash/envelope fields and 66 snapshot plus 66 rollback bodies per case match recorded hashes.",
+    "genuine_owner": "Actual ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync entered, no owner/observer failure, final turn43. HandledByActualLateCaller=false is the source-defined successful completion result; it is not a failure or a held owner.",
+    "repair": "One genuine severity III refusal/construct_wound repair, same original correlation and complete resubmission with corrected severity II and Ready last. Source assertions prevent automatic extra repair or fabricated canonical inputs.",
+    "common_union": "Full canonical wound/effect/resource validation executed by the test before the union diagnostic. CREATE ordinal2 then TREAT ordinal3, separate wound IDs; full treatment request retained. Prior wound/resource history prefix rows preserved. Resource damage3 health5\u21922 precedes charge2 energy2\u21920; exactly two new resource transitions, two new wound transitions, stabilized treated wound and severityII created wound.",
+    "v2_marker_and_progression": "Schema2 marker and binding/original quartet/42-member published footprint agree with raw images. Unapplied\u2192applied changes only phase and fingerprint; all prepared progression basis/afterimages are preserved. Recomputed original-control arithmetic for both zero and one world-cycle cases; report final absence. Nonzero has two distinct actual named native transactions: 8-member original_baseline_restore and 3-member progression_consumption, with all before/after member hashes, five original-restored roots and the exact schedule/report/marker cohort. Zero case has no report-removal transaction.",
+    "story_and_repeat": "Exact actual scene/player/request/generation/turn/time story row reconstructed against raw prefix; final story691 bytes per case. Actual current turn43; repeat false with all84 images unchanged and exact generation retained.",
+    "cleanup": "142 owned snapshot/rollback/control cleanup paths verified per case; two distinct real fixture roots have strict removed=true/no-error receipts and are physically absent at inspection. Native wrapper reports no new scoped residue; runtime and owned-tree cleanup completed.",
+    "raw_case_checks": [
+      {
+        "case": {
+          "executionId": "f3cc6ead-83ff-4b9d-bf5e-9a915498b0d5",
+          "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:32.3042709",
+          "startTime": "2026-10-16T18:22:09.8501783+00:00",
+          "endTime": "2026-10-16T18:22:09.8501787+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f3cc6ead-83ff-4b9d-bf5e-9a915498b0d5"
+        },
+        "stdout_sha256": "df4f9933c2bb019b9dac95e444e50a91fcd3d6c729d063290b5a418625c1c25f",
+        "prior_wound_history_preserved": 1,
+        "prior_resource_history_preserved": 4,
+        "new_wound_transitions": 2,
+        "new_resource_transitions": 2,
+        "joint_treatment_matches_full_request": true,
+        "exact_consumed_paths": true,
+        "hot_hs01_not_executed": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b8e88e4bdcdd4360a89dd720616cbc7f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "case": {
+          "executionId": "9c33d8e8-62d2-4582-b31a-4462e7c18633",
+          "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:42.7690602",
+          "startTime": "2026-10-16T18:20:37.5374973+00:00",
+          "endTime": "2026-10-16T18:20:37.5375446+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "9c33d8e8-62d2-4582-b31a-4462e7c18633"
+        },
+        "stdout_sha256": "0fa83ac3bf7d085d1bb592363d516bcf9d8d00e8969111650c51cfa594410ae3",
+        "prior_wound_history_preserved": 1,
+        "prior_resource_history_preserved": 4,
+        "new_wound_transitions": 2,
+        "new_resource_transitions": 2,
+        "joint_treatment_matches_full_request": true,
+        "exact_consumed_paths": true,
+        "hot_hs01_not_executed": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-99ee7338ef7c4327918ce2c362d360c3",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "semantic_recomputation": [
+      {
+        "case": {
+          "executionId": "f3cc6ead-83ff-4b9d-bf5e-9a915498b0d5",
+          "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:32.3042709",
+          "startTime": "2026-10-16T18:22:09.8501783+00:00",
+          "endTime": "2026-10-16T18:22:09.8501787+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f3cc6ead-83ff-4b9d-bf5e-9a915498b0d5"
+        },
+        "source": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "70b77702d2da4b5c9cf250a5e4539cbd",
+          "SnapshotToken": "FA08E4B2B96EDE5DCEBD646A81F2EDCB209379D2A6D6D5CBBAC294F2A0F6472A",
+          "TurnNumber": 42
+        },
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "6024f09d331d4d03af85120e79e0992d",
+          "SnapshotToken": "83D82CD3D9DE2BC8B1CD81DA8141B1E621EB8C56220EDD7F55F6E8AED6806FD2",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "5225b0ea8ef1449ca4d940f912a338cf",
+        "nonzeroProgression": false,
+        "actualTurn": 43,
+        "handled": false,
+        "create": {
+          "ordinal": 2,
+          "transitionId": "wound_transition_80303fd4fe5a9684ce0253bcdbbaf29cade7626838ce5a77ece4aec745bc5abe",
+          "woundId": "wound_2c4a9920d21307cafb9c17df594b1f8b735fe12ac99c1afffb75ca7567a5657d"
+        },
+        "treat": {
+          "ordinal": 3,
+          "transitionId": "wound_transition_cb19efb2f378cb82c1aabbe170d39127c57311fde0f546c2477461d1d7b4cc6d",
+          "woundId": "wound_test_torn_side"
+        },
+        "charge": {
+          "amount": 2,
+          "before": 2,
+          "after": 0
+        },
+        "damage": {
+          "amount": 3,
+          "before": 5,
+          "after": 2
+        },
+        "publishedFootprintCount": 42,
+        "rawMilestoneImageCounts": [
+          221,
+          221,
+          221
+        ],
+        "manifestSnapshotHashesVerified": 66,
+        "cleanupPathsVerified": 142,
+        "inertRepeatImages": 84,
+        "storyReconstructedBytes": 691,
+        "storySha256": "12716060405e41f0f470e12c8e3ecd20c7e70b6c640d3dae248da1243ecd341a",
+        "namedTransactions": [],
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b8e88e4bdcdd4360a89dd720616cbc7f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        "stdoutSha256": "df4f9933c2bb019b9dac95e444e50a91fcd3d6c729d063290b5a418625c1c25f",
+        "progressionControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 0,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": false,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "phaseFingerprint": "sha256:570425337cf7e2027955c3f31c9f502e21d50b63add988cb9e28788f2e938fde"
+      },
+      {
+        "case": {
+          "executionId": "9c33d8e8-62d2-4582-b31a-4462e7c18633",
+          "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:42.7690602",
+          "startTime": "2026-10-16T18:20:37.5374973+00:00",
+          "endTime": "2026-10-16T18:20:37.5375446+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "9c33d8e8-62d2-4582-b31a-4462e7c18633"
+        },
+        "source": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "c86c3b8b0b3845a283c22a1e56e77af2",
+          "SnapshotToken": "D34633C4C981F02BDCC26FA3D94EA006C13928F5DF34F676A4D19E17118C3081",
+          "TurnNumber": 42
+        },
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "d840f63539944e5dabf4239651765a03",
+          "SnapshotToken": "01E72703ACC14D6E7A67EE14A9CB73114111E6C18A560F0BBC7637B805A4EABA",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "c54ab780cfb6473a97b84fee0e4f2570",
+        "nonzeroProgression": true,
+        "actualTurn": 43,
+        "handled": false,
+        "create": {
+          "ordinal": 2,
+          "transitionId": "wound_transition_fdc35fbf63ff4988d906cbcc96159acd7f4bb453ae165d05747087bf866d64ae",
+          "woundId": "wound_150f97c91641512a474d70a8416e13aa27893d46599525c1d83745e37c6fc02a"
+        },
+        "treat": {
+          "ordinal": 3,
+          "transitionId": "wound_transition_5f849e4f14c1457501d0c2171a744d17bb04e84f92a0aea014804263b696b13b",
+          "woundId": "wound_test_torn_side"
+        },
+        "charge": {
+          "amount": 2,
+          "before": 2,
+          "after": 0
+        },
+        "damage": {
+          "amount": 3,
+          "before": 5,
+          "after": 2
+        },
+        "publishedFootprintCount": 42,
+        "rawMilestoneImageCounts": [
+          221,
+          221,
+          221
+        ],
+        "manifestSnapshotHashesVerified": 66,
+        "cleanupPathsVerified": 142,
+        "inertRepeatImages": 84,
+        "storyReconstructedBytes": 691,
+        "storySha256": "4967a57de477b6190ecb0e5caf792dd3c3856a330a1cee8110047f1b5c2900d1",
+        "namedTransactions": [
+          {
+            "role": "original_baseline_restore",
+            "id": "aab73279d96647f49c1a5c89b0fe9d5e",
+            "memberCount": 8
+          },
+          {
+            "role": "progression_consumption",
+            "id": "b8203ccd036248b2bb34e0bbcc462395",
+            "memberCount": 3
+          }
+        ],
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-99ee7338ef7c4327918ce2c362d360c3",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        "stdoutSha256": "0fa83ac3bf7d085d1bb592363d516bcf9d8d00e8969111650c51cfa594410ae3",
+        "progressionControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1500,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 1,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": true,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "phaseFingerprint": "sha256:bcbae2fdc9b0fc9a3bd8194cd1f55ea569797c16e82a3ef22c3e9a94c31116a3"
+      }
+    ],
+    "full_binding_recomputation": [
+      {
+        "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "treatmentRequestFullValueEquality": true,
+        "sourceOriginalEnvelopeAndRollbackHashesVerified": 66,
+        "outputCreateBinding": true,
+        "nonzeroBaselineRestoredOriginalPaths": [],
+        "requestFingerprint": "sha256:248eb8291f0f7207d88ebec89338c370a75d2cad75f3f1e1c69ba74db4a25545",
+        "originalTuple": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "6024f09d331d4d03af85120e79e0992d",
+          "SnapshotToken": "83D82CD3D9DE2BC8B1CD81DA8141B1E621EB8C56220EDD7F55F6E8AED6806FD2",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "5225b0ea8ef1449ca4d940f912a338cf",
+        "progressionArithmetic": {
+          "nonzero": false,
+          "originalSchedule": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1260,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "hasAuthoritativeWorldTimeBaseline": true,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "pendingWorldCycles": 0,
+            "pendingFactionCycles": 0,
+            "currentChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "pendingChaosSeaCycles": 0,
+            "pendingGuardianProjectCycles": 0,
+            "pendingResidentAgencyCycles": 0,
+            "pendingShiningAbodeCycles": 0,
+            "pendingShiningFactionCycles": 0,
+            "pendingShiningTradeCycles": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "afterlifeCatchupCycleEquivalentMinutes": 1440,
+            "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+            "hasAfterlifeCatchupWorldTimeBaseline": true,
+            "lastUpdatedUtc": "2026-10-16T18:20:42.3011138Z"
+          },
+          "actualControl": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1260,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "worldCyclesAlreadyPendingBeforeTurn": 0,
+            "factionCyclesAlreadyPendingBeforeTurn": 0,
+            "mustEvaluateWorldProgression": false,
+            "mustEvaluateFactionProgression": false,
+            "currentChaosSeaTurnOrdinal": 0,
+            "nextChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "nextGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "nextResidentAgencyCycleOrdinal": 0,
+            "nextShiningAbodeCycleOrdinal": 0,
+            "nextShiningFactionCycleOrdinal": 0,
+            "nextShiningTradeCycleOrdinal": 0,
+            "chaosSeaCyclesExpectedThisTurn": 0,
+            "guardianProjectCyclesExpectedThisTurn": 0,
+            "residentAgencyCyclesExpectedThisTurn": 0,
+            "shiningAbodeCyclesExpectedThisTurn": 0,
+            "shiningFactionCyclesExpectedThisTurn": 0,
+            "shiningTradeCyclesExpectedThisTurn": 0,
+            "mustEvaluateChaosSeaProgression": false,
+            "mustEvaluateGuardianProjectProgression": false,
+            "mustEvaluateResidentAgencyProgression": false,
+            "mustEvaluateShiningAbodeProgression": false,
+            "mustEvaluateShiningFactionProgression": false,
+            "mustEvaluateShiningTradeProgression": false,
+            "afterlifeCatchupRequired": false,
+            "afterlifeCatchupElapsedCycles": 0,
+            "afterlifeCatchupPressureTier": "none",
+            "afterlifeCatchupSummaryEventsRequired": 0,
+            "afterlifeCatchupContours": []
+          },
+          "afterSchedule": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1260,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "hasAuthoritativeWorldTimeBaseline": true,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "pendingWorldCycles": 0,
+            "pendingFactionCycles": 0,
+            "currentChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "pendingChaosSeaCycles": 0,
+            "pendingGuardianProjectCycles": 0,
+            "pendingResidentAgencyCycles": 0,
+            "pendingShiningAbodeCycles": 0,
+            "pendingShiningFactionCycles": 0,
+            "pendingShiningTradeCycles": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "afterlifeCatchupCycleEquivalentMinutes": 1440,
+            "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+            "hasAfterlifeCatchupWorldTimeBaseline": true,
+            "lastUpdatedUtc": "2026-10-16T18:20:55.2861705Z"
+          }
+        }
+      },
+      {
+        "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "treatmentRequestFullValueEquality": true,
+        "sourceOriginalEnvelopeAndRollbackHashesVerified": 66,
+        "outputCreateBinding": true,
+        "nonzeroBaselineRestoredOriginalPaths": [
+          "game_state/control/progression_schedule.json",
+          "game_state/control/qte_runtime.json",
+          "output/debug_logs.json",
+          "output/interface_updates.json",
+          "output/narrative_response.json"
+        ],
+        "requestFingerprint": "sha256:811e02f1f7595c0599a1e5ad840c7317a3f4fe159956f57c1c3e0139b4cd945d",
+        "originalTuple": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "d840f63539944e5dabf4239651765a03",
+          "SnapshotToken": "01E72703ACC14D6E7A67EE14A9CB73114111E6C18A560F0BBC7637B805A4EABA",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "c54ab780cfb6473a97b84fee0e4f2570",
+        "progressionArithmetic": {
+          "nonzero": true,
+          "originalSchedule": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1260,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "hasAuthoritativeWorldTimeBaseline": true,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "pendingWorldCycles": 0,
+            "pendingFactionCycles": 0,
+            "currentChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "pendingChaosSeaCycles": 0,
+            "pendingGuardianProjectCycles": 0,
+            "pendingResidentAgencyCycles": 0,
+            "pendingShiningAbodeCycles": 0,
+            "pendingShiningFactionCycles": 0,
+            "pendingShiningTradeCycles": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "afterlifeCatchupCycleEquivalentMinutes": 1440,
+            "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+            "hasAfterlifeCatchupWorldTimeBaseline": true,
+            "lastUpdatedUtc": "2026-10-16T18:19:04.1395288Z"
+          },
+          "actualControl": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1500,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "worldCyclesAlreadyPendingBeforeTurn": 1,
+            "factionCyclesAlreadyPendingBeforeTurn": 0,
+            "mustEvaluateWorldProgression": true,
+            "mustEvaluateFactionProgression": false,
+            "currentChaosSeaTurnOrdinal": 0,
+            "nextChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "nextGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "nextResidentAgencyCycleOrdinal": 0,
+            "nextShiningAbodeCycleOrdinal": 0,
+            "nextShiningFactionCycleOrdinal": 0,
+            "nextShiningTradeCycleOrdinal": 0,
+            "chaosSeaCyclesExpectedThisTurn": 0,
+            "guardianProjectCyclesExpectedThisTurn": 0,
+            "residentAgencyCyclesExpectedThisTurn": 0,
+            "shiningAbodeCyclesExpectedThisTurn": 0,
+            "shiningFactionCyclesExpectedThisTurn": 0,
+            "shiningTradeCyclesExpectedThisTurn": 0,
+            "mustEvaluateChaosSeaProgression": false,
+            "mustEvaluateGuardianProjectProgression": false,
+            "mustEvaluateResidentAgencyProgression": false,
+            "mustEvaluateShiningAbodeProgression": false,
+            "mustEvaluateShiningFactionProgression": false,
+            "mustEvaluateShiningTradeProgression": false,
+            "afterlifeCatchupRequired": false,
+            "afterlifeCatchupElapsedCycles": 0,
+            "afterlifeCatchupPressureTier": "none",
+            "afterlifeCatchupSummaryEventsRequired": 0,
+            "afterlifeCatchupContours": []
+          },
+          "afterSchedule": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1500,
+            "lastWorldSimulationTimeInMinutes": 1500,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "hasAuthoritativeWorldTimeBaseline": true,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "pendingWorldCycles": 0,
+            "pendingFactionCycles": 0,
+            "currentChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "pendingChaosSeaCycles": 0,
+            "pendingGuardianProjectCycles": 0,
+            "pendingResidentAgencyCycles": 0,
+            "pendingShiningAbodeCycles": 0,
+            "pendingShiningFactionCycles": 0,
+            "pendingShiningTradeCycles": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "afterlifeCatchupCycleEquivalentMinutes": 1440,
+            "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+            "hasAfterlifeCatchupWorldTimeBaseline": true,
+            "lastUpdatedUtc": "2026-10-16T18:19:19.3744842Z"
+          }
+        }
+      }
+    ],
+    "methodology": "Reviewed pinned C# assertions and both committed read-only semantic inspectors, recomputed their assertions with only output redirection/existence guards to new reviewer-owned files, and independently checked provenance, native/TRX/method completeness, raw history prefixes/joint marker/consumed roots, source continuity, fresh binaries and every recovered file. Root derived JSON is supporting evidence, not a replacement for the raw TRX and source."
+  },
+  "artifacts": {
+    "actual_raw_local_stored_git_chains": [
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-dotnet-test.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/dotnet-test.log",
+        "raw_bytes": 1684033,
+        "raw_sha256": "7844a83ed1f9da2e3adab42f2d251d4ed6d53ee12897f8996127abf617bf9163",
+        "stored_sha256": "4d2688a734d549b696be5b92de846f99f2447b62fc39322c9c8c394d1f617ff5",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-dotnet-test.log.gz",
+        "git_blob": "193c05ce112e6305bfea1db7045da83f70ca6d29",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/fr063-joint-late-completion-integration-001.trx",
+        "raw_bytes": 13976960,
+        "raw_sha256": "23fad2b8b3a1e292ac346825ddea98a391b64c261cd15203cf84ff553c4a0511",
+        "stored_sha256": "af628e466bc596aae050033a57dde73e7996efefc456a3eee794adaff5f7c589",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "git_blob": "688ed46ae0d54abaa054f09d193b9de1f013fa40",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-native-exit.json",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/native-exit.json",
+        "raw_bytes": 793,
+        "raw_sha256": "82d891f0d5bbf291363ecf7de94a8bef818adab5784569798545eac6f1b9c97d",
+        "stored_sha256": "82d891f0d5bbf291363ecf7de94a8bef818adab5784569798545eac6f1b9c97d",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-native-exit.json",
+        "git_blob": "8ce675c93828019025d246f93fee87662ea95971",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-plan.json",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/plan.json",
+        "raw_bytes": 1533,
+        "raw_sha256": "c18336b2761a14344573266ed26c0ca12e52d0315169c94b32bc2a8e431bf070",
+        "stored_sha256": "c18336b2761a14344573266ed26c0ca12e52d0315169c94b32bc2a8e431bf070",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-plan.json",
+        "git_blob": "0d514403a509d7443f9c85cd4e931b10260eee24",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-stdout.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/stdout.log",
+        "raw_bytes": 2247,
+        "raw_sha256": "07411178f6d4ef645a194626f8ffdecf67dcfdfe3a5c4d44c1a3c49ff6e2f2ee",
+        "stored_sha256": "716e02704991b172e2adfbf83d7f8fde33f50d0018d2005b8ec4288fa65fc08b",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-stdout.log.gz",
+        "git_blob": "8c875a60651c191dae7a6dedcf68c012193fe769",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-first-late-20261016-summary.json",
+        "raw_path": "TestResults/test-categories/20261016-181847-144-205136-6e9bc80a09bc4d0990133fc92eee388a-categories/summary.json",
+        "raw_bytes": 1464,
+        "raw_sha256": "8ff118a1f474405d91739b78deb8a7b1cb19c3601fdfac6be63944dfb27cc31f",
+        "stored_sha256": "8ff118a1f474405d91739b78deb8a7b1cb19c3601fdfac6be63944dfb27cc31f",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-summary.json",
+        "git_blob": "7a70fdfe947f5946ffb5fe0b03f215ade80738e2",
+        "raw_local_stored_git_equal": true
+      }
+    ],
+    "actual_chain_count": 6,
+    "preparation_raw_local_stored_git_chains": [
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/Build-integration.log",
+        "raw_bytes": 119991,
+        "raw_sha256": "894f1bae5c9145f63974618f4bf6ac22eee166712a1571dc468c4bd6f3ffb8b2",
+        "stored_sha256": "9d4ceedb61aaa3d9f08c3c31439c70645725adb934d02170ddd7f92772cd8edd",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "git_blob": "aec5a6f23708cfe4e2547342e95c9170b09c57fc",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/Build-unit.log",
+        "raw_bytes": 26198,
+        "raw_sha256": "0e2b50729bced2911b1ad844134e133e8781db08f5d05ac3ba983a634c186eb3",
+        "stored_sha256": "117e9321391b3ba2a9e2300c3ae872f16bfbe8f26382c1953f695ad944a5e049",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "git_blob": "f348007f508f3eefb7320eca6824b9fc47817745",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/catalog-audit.json",
+        "raw_bytes": 103,
+        "raw_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+        "stored_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+        "git_blob": "a7d254b5da65ba7acacac90d5c9c8cd18af2f12c",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/dotnet-test.log",
+        "raw_bytes": 3531068,
+        "raw_sha256": "a89f975f94ed3666eaca8729f4afe904de03ed9dc97cc59812767b51d1a22939",
+        "stored_sha256": "b26572e758e0ed92dcc3764a3b58808d58bb218a101a45fa2489238164605a73",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+        "git_blob": "7942f7e3b43793ccab8baece237d828973561e4e",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/native-exit.json",
+        "raw_bytes": 527,
+        "raw_sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+        "stored_sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+        "git_blob": "de342fff13186693ad830f1d93c68fd722e8ab7f",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/stdout.log",
+        "raw_bytes": 714,
+        "raw_sha256": "bbc7b349583eb408f0165ec52fab6f7ad23043e17c591f8d179ba483f6bb7703",
+        "stored_sha256": "25f87b9cbb3438c41351850523fde9e6be73381f5be40bb1cdeb6a84cd93bda4",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+        "git_blob": "ef7d5cbca00666b52cdb622624d50100de4cf054",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/summary.json",
+        "raw_bytes": 1600,
+        "raw_sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+        "stored_sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+        "git_blob": "e340f5d775c20ad1b4fe22a9e742461fdab72ac6",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/dotnet-test.log",
+        "raw_bytes": 1683096,
+        "raw_sha256": "e5603c6c7ed13e10f485fa87141f0462d839789b014bb6cfca4d58ed6d23a351",
+        "stored_sha256": "17cdcb498e42af8f7bd19cdde046ca62ca8f1dc4d0bc48a26aad137369747a55",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+        "git_blob": "cc0e5b6aec1b1c0a32846beceadf69e80573c537",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/native-exit.json",
+        "raw_bytes": 586,
+        "raw_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+        "stored_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+        "git_blob": "ebcf3584735831831a09cfb80907b87c193e0e04",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/plan.json",
+        "raw_bytes": 4408,
+        "raw_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+        "stored_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+        "git_blob": "22f47c8917e67409cf3ce4c40fe8d7f8425a68f5",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/stdout.log",
+        "raw_bytes": 2415,
+        "raw_sha256": "39fe34e383a869f52452df2771fc207a866cd0b21fa630e81013c5f72cfbbc0a",
+        "stored_sha256": "3f6e9105b0e59c9de9fedccd45ff493e0bba09860cc4a6b84f72cafd2dabed7d",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+        "git_blob": "c59dfc0666a65cb9466bee4dac56b3ab072aebb3",
+        "unchanged": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/summary.json",
+        "raw_bytes": 3446,
+        "raw_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+        "stored_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+        "git_blob": "27d7aee548d49ccc3196e78e676892f337d1e3a0",
+        "unchanged": true
+      }
+    ],
+    "preparation_chain_count": 12,
+    "binaries": {
+      "source_sha": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "phase": "Pd.3b HS01 corrected TEST-ONLY ordinary-optional/uncovered post-original custody fixture; fresh BOTH/catalog/PlanOnly; ZERO actual, missing-owner causal RED not yet run",
+      "binaries": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "9d15ef1899974319732d6008ff46b7cacd8c3e9b6ba23dde25bd2c50a0322488"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "02da7a3ebd79dafa1b9ce15417d6770ea7a0024a18a49d8aeeb4bafc69f0f399"
+        }
+      ]
+    },
+    "four_current_hashes_rechecked_at_finalization": true,
+    "pins": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-artifact-index.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 4546,
+        "sha256": "d76f674ae008c9c151aa41c60741594c55a778152d245c934f1918cb441f870b",
+        "git_blob": "a9076d91e3be7d9287b6007ae0f9436110d23428"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-dotnet-test.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 187239,
+        "sha256": "4d2688a734d549b696be5b92de846f99f2447b62fc39322c9c8c394d1f617ff5",
+        "git_blob": "193c05ce112e6305bfea1db7045da83f70ca6d29"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 4832086,
+        "sha256": "af628e466bc596aae050033a57dde73e7996efefc456a3eee794adaff5f7c589",
+        "git_blob": "688ed46ae0d54abaa054f09d193b9de1f013fa40"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-native-exit.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 793,
+        "sha256": "82d891f0d5bbf291363ecf7de94a8bef818adab5784569798545eac6f1b9c97d",
+        "git_blob": "8ce675c93828019025d246f93fee87662ea95971"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-plan.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1533,
+        "sha256": "c18336b2761a14344573266ed26c0ca12e52d0315169c94b32bc2a8e431bf070",
+        "git_blob": "0d514403a509d7443f9c85cd4e931b10260eee24"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-stdout.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 824,
+        "sha256": "716e02704991b172e2adfbf83d7f8fde33f50d0018d2005b8ec4288fa65fc08b",
+        "git_blob": "8c875a60651c191dae7a6dedcf68c012193fe769"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-first-late-20261016-summary.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1464,
+        "sha256": "8ff118a1f474405d91739b78deb8a7b1cb19c3601fdfac6be63944dfb27cc31f",
+        "git_blob": "7a70fdfe947f5946ffb5fe0b03f215ade80738e2"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-artifact-index.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 5388,
+        "sha256": "6313c78c9acf6038db9e253e9c2afa81d73d6a0232b38ed88cdd070be2976e13",
+        "git_blob": "8ba5a6353429ccede251c5310460ab971095d6a6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 9216,
+        "sha256": "9d4ceedb61aaa3d9f08c3c31439c70645725adb934d02170ddd7f92772cd8edd",
+        "git_blob": "aec5a6f23708cfe4e2547342e95c9170b09c57fc"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1702,
+        "sha256": "117e9321391b3ba2a9e2300c3ae872f16bfbe8f26382c1953f695ad944a5e049",
+        "git_blob": "f348007f508f3eefb7320eca6824b9fc47817745"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 103,
+        "sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+        "git_blob": "a7d254b5da65ba7acacac90d5c9c8cd18af2f12c"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 386398,
+        "sha256": "b26572e758e0ed92dcc3764a3b58808d58bb218a101a45fa2489238164605a73",
+        "git_blob": "7942f7e3b43793ccab8baece237d828973561e4e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 527,
+        "sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+        "git_blob": "de342fff13186693ad830f1d93c68fd722e8ab7f"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 394,
+        "sha256": "25f87b9cbb3438c41351850523fde9e6be73381f5be40bb1cdeb6a84cd93bda4",
+        "git_blob": "ef7d5cbca00666b52cdb622624d50100de4cf054"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1600,
+        "sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+        "git_blob": "e340f5d775c20ad1b4fe22a9e742461fdab72ac6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-artifact-index.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 6234,
+        "sha256": "d336a2dfcdee19fb03badb1d8b37a70f7ef7ced5cae4f33b61879e4f03d2a7f8",
+        "git_blob": "79ac6d967dbd987dded40a82a70eccdda0c63790"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 186970,
+        "sha256": "17cdcb498e42af8f7bd19cdde046ca62ca8f1dc4d0bc48a26aad137369747a55",
+        "git_blob": "cc0e5b6aec1b1c0a32846beceadf69e80573c537"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 586,
+        "sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+        "git_blob": "ebcf3584735831831a09cfb80907b87c193e0e04"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 4408,
+        "sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+        "git_blob": "22f47c8917e67409cf3ce4c40fe8d7f8425a68f5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 762,
+        "sha256": "3f6e9105b0e59c9de9fedccd45ff493e0bba09860cc4a6b84f72cafd2dabed7d",
+        "git_blob": "c59dfc0666a65cb9466bee4dac56b3ab072aebb3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 3446,
+        "sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+        "git_blob": "27d7aee548d49ccc3196e78e676892f337d1e3a0"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-binaries-20261016.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1039,
+        "sha256": "6df66ee19703aed217c48f411f55e172d9edf2065bc76fb221ab554ca41e916e",
+        "git_blob": "f1b7cbef963cd822506d1434e60d035dd0a83ae1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-source-independent-review-20261016.md",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 5464,
+        "sha256": "c4887407270ab4470ac2768e9517d4642c4b5b31c66006d634295199e1234c48",
+        "git_blob": "019c04e2378123894d896c601aacae722ca04382"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-source-independent-review-20261016.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 54701,
+        "sha256": "f3745671b520b2ab627950bedf4cfe569c3c1e139110fe0fe767a8f0fd831a04",
+        "git_blob": "4d573d19617768072316c93eddc0119be84e1e2b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 83709,
+        "sha256": "b4d5114085a2a98997dc6f7546af448fc9c9345e2d5debf3116ba267e9cd7b42",
+        "git_blob": "22d60fe030dec80162add49bf0da93c50da4a521"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 14797,
+        "sha256": "8a4855fdd971076f5afeddac703040b95677ef62ba92ffbc96bf427cd7b7cbe7",
+        "git_blob": "90e23a73665aa2ebc1355faad1d3ffddeccb02d1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 15676,
+        "sha256": "8129b3c90d713a7f888da2dc968e72da7a846ff5a02f17aabb68a12ac0e88a5b",
+        "git_blob": "dcfcc5cb015306883202e03a3237d38cbd1981b7"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 7722,
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+        "git_blob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 10799,
+        "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+        "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65"
+      },
+      {
+        "path": "tests/categories.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1960050,
+        "sha256": "80a4b8e19b0e4c93185cd7fd63d5e67145fde98ae7fc7982f7f48404b2da517f",
+        "git_blob": "ac29f90f41fd0f6ae8f62eb18777843755e18ebc"
+      },
+      {
+        "path": "tests/selection.json",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 2014,
+        "sha256": "3b16e48efb80d1668791e417d13c6ca30b7eb067c4ccfbad98ca3398433463e2",
+        "git_blob": "e6b2bd0c4e535b296760c00d19daee86954e138e"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 81688,
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+        "git_blob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-run-hot-custody-red1-absence-singleton.py",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 2601,
+        "sha256": "f2893159691a254295f038383be352bf9cc9fab72043fd0231279aab7802139d",
+        "git_blob": "bf7488da49ab8c79fb837c401a40db93bc8deebb"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-inspect-hot-custody-red1-absence-first-late.py",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 16296,
+        "sha256": "754507cbbc059e2670129d6d39de51cc91c84f955534398f56f8c6b770f310e1",
+        "git_blob": "0783e2fdc70561b736698265ae2abcf04d4731ec"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-inspect-hot-custody-red1-absence-late-root-bindings.py",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 5135,
+        "sha256": "33c2236ed915d7101d1f417f49fdfea05e68b4d8c386933e7f9dd64b16e21214",
+        "git_blob": "680d7513043a7def798e88bff40e925ecbb7763a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 2128678,
+        "sha256": "6efe2ace30214a635d600bb4451431e80bb3fb8a44cf2f79038592ba1a2c75f2",
+        "git_blob": "ea9e75216e8a1ca7e1c83946708100a45b0022f5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+        "bytes": 1506076,
+        "sha256": "0e48a4cc2ce74a49bcb1242456fbf4c67211fba053dcb9072fd159709eef1fe2",
+        "git_blob": "45c0d1ce5e530f3ffa5ac745928e43ce859f6408"
+      }
+    ],
+    "diffs": [
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-compiled-to-actual-20261016.diff",
+        "argv": [
+          "git",
+          "diff",
+          "--binary",
+          "47364c47f5788427fa6360d99c4babdce8f2d717",
+          "1a5ec68f90fec0834c460e4519508abaa57017a2",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests",
+          "scripts"
+        ],
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-actual-to-carrier-20261016.diff",
+        "argv": [
+          "git",
+          "diff",
+          "--binary",
+          "1a5ec68f90fec0834c460e4519508abaa57017a2",
+          "bab89b7034951cac436ca692a3439dd2a7fecf51",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests",
+          "scripts"
+        ],
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-accepted-source-to-carrier-20261016.diff",
+        "argv": [
+          "git",
+          "diff",
+          "--binary",
+          "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+          "bab89b7034951cac436ca692a3439dd2a7fecf51",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests",
+          "scripts"
+        ],
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-status-20261016.diff",
+        "argv": [
+          "git",
+          "diff",
+          "--binary",
+          "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+          "bab89b7034951cac436ca692a3439dd2a7fecf51",
+          "--",
+          "specs/1536-complete-wound-materialization/plan.md",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "bytes": 10332,
+        "sha256": "9cc7326f2cf972023828f0766cca7cc2cc8fdb31e6737bae6dda0c97cd045476"
+      }
+    ],
+    "source_projections": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 14,
+        "end": 49,
+        "text": "public sealed partial class GameEngineTurnLifecycleTests\n{\n    [Fact]\n    public Task GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression() =>\n        RunJointCompletionControlAsync(nonzeroProgression: false);\n\n    [Fact]\n    public Task GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce() =>\n        RunJointCompletionControlAsync(nonzeroProgression: true);\n\n    private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,\n        string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,\n        bool useLiveCaller = false, bool recoverRetainedStoryRow = false, bool normalizeNarrativeBeforeCheckpoint = false,\n        Action<AcceptedMechanicsPlan?>? observeSettledCommonPlan = null,\n        bool postOriginalAutomaticSubmission = false)\n    {\n        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));\n        IDisposable? sourceInput = null;\n        QteStoryRun source;\n        try\n        {\n            source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2,\n                retainLiveInput: input => sourceInput = input,\n                configureBeforePreparation: ConfigureJointCompletionWorldBeforeOriginalAsync);\n        }\n        finally { sourceInput?.Dispose(); }\n        Assert.Null(source.Failure);\n        Assert.True(source.ActionObserved);\n        Assert.NotNull(source.Source);\n        await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.\n        var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);\n        var priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);\n        var jointOriginalTail = activeTailScenario is null ? priorLifecycleTail :\n            await AuthorJointActiveTailBeforeOriginalAsync(activeTailScenario, priorLifecycleTail);\n        // Detached expectations only: the real owner must consume the reminder\n        // INSIDE Stage43, after backup. Never pre-consume or recapture expected bytes.\n",
+        "sha256": "cb29faa4370a4fd61eec5858c75cc3b527f773b7e028eaf90e9c3b7fc5d21b61"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 303,
+        "end": 360,
+        "text": "        var publications = new List<object>();\n        var repairReplies = 0;\n        var reportDeletions = 0;\n        string? baselineReportRemovalTransaction = null;\n        string? progressionReportConsumptionTransaction = null;\n        var reportRemovalHistory = new List<object>();\n        var milestones = new List<(string Path, string Raw, Dictionary<string, byte[]?> Images)>();\n        Exception? observerFailure = null;\n        _consolePublicationObserver = ObserveActualRepair;\n        Exception? failure;\n        var handled = false;\n        var liveCallerReturned = false;\n        try\n        {\n            failure = await Record.ExceptionAsync(async () =>\n            {\n                if (useLiveCaller)\n                {\n                    await InvokePrivateTaskAsync(engine, \"ProcessPlayerTurn\", \"\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0443\u0448\u0438\u0431.\", null);\n                    liveCallerReturned = true;\n                }\n                else handled = await InvokePrivateAsync<bool>(engine, \"ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync\");\n            });\n        }\n        finally { _consolePublicationObserver = null; }\n        WriteJointInMemoryOwnerSnapshot(engine);\n        var after = await CaptureMortalArchiveImagesAsync(_fs, before.Keys.Where(path => path != \"$sessionGeneration\"));\n        WritePhysicalInjuryDiagnostic(\"fr063_joint_completion_actual_owner_outcome\", new\n        {\n            nonzeroProgression, ActualCaller = useLiveCaller ? \"ProcessPlayerTurn\" : \"ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync\",\n            entered, HandledByActualLateCaller = useLiveCaller ? (bool?)null : handled,\n            liveCallerReturned, liveWaitEntered, jointOriginalAuthored,\n            Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), EngineDiagnostics = logger.Describe(),\n            ActualTurn = GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber, InputKeyAvailable = input.KeyAvailable,\n            Publications = publications, ReportRemovalHistory = reportRemovalHistory,\n            Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,\n                Images = m.Images.ToDictionary(pair => pair.Key, pair => pair.Value is null ? null : Convert.ToBase64String(pair.Value)) }),\n            After = MortalArchiveDigests(after)\n        });\n        if (postOriginalAutomaticSubmission)\n        {\n            Assert.True(liveCallerReturned);\n            await AssertHotJointPostOriginalCustodyAsync(engine, original, request, finalization,\n                before, signedOriginalSchedule, Assert.IsType<byte[]>(jointOriginalTail[QteSceneService.QteRuntimePath]),\n                heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure,\n                Assert.IsType<HotJointSubmissionFixture>(hotSubmission));\n            return;\n        }\n        if (activeTailScenario is not null)\n        {\n            await AssertJointActiveTailRefusalAsync(activeTailScenario, engine, original, request, finalization,\n                before, signedOriginalSchedule, Assert.IsType<byte[]>(jointOriginalTail[QteSceneService.QteRuntimePath]),\n                heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure);\n            return;\n        }\n        Assert.Null(observerFailure);\n        Assert.Null(failure);\n        Assert.True(entered);\n",
+        "sha256": "4992e7c2d662326782b2e249e7d51680d0d7695e2417257d19a2d9c0116b26e1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 431,
+        "end": 452,
+        "text": "        await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);\n        await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, signedOriginalSchedule, before, milestones);\n        Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);\n        Assert.Equal(nonzeroProgression, baselineReportRemovalTransaction is not null);\n        Assert.Equal(nonzeroProgression, progressionReportConsumptionTransaction is not null);\n        if (useLiveCaller) Assert.True(liveCallerReturned);\n        else Assert.False(handled); // Actual caller completion follows the strict full-union oracles.\n        Dictionary<string, byte[]?> complete;\n        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())\n            complete = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);\n        var repeat = await InvokePrivateAsync<bool>(engine, \"ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync\");\n        Dictionary<string, byte[]?> repeated;\n        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())\n        {\n            repeated = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);\n            await AssertConfirmedClaimReadImagesAsync(_fs, lease, complete);\n        }\n        WritePhysicalInjuryDiagnostic(\"fr063_joint_completion_inert_repeat\", new\n        { repeat, Turn = GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber,\n            Before = MortalArchiveDigests(complete), After = MortalArchiveDigests(repeated), FullBytesEqual = true });\n        Assert.False(repeat);\n        Assert.Equal(43, GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber);\n",
+        "sha256": "03dc881f7fd753eb1a40763064b467e54fc8d0154b2e47b3537e5acbc8152e56"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 455,
+        "end": 575,
+        "text": "        {\n            if (!jointOriginalAuthored || phase != TrustedLocalPublicationPhase.Committed || observerFailure is not null) return;\n            try\n            {\n                using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(_fs.RuntimeRootPath,\n                    \"trusted-local-publication-v1\", \"active.json\")));\n                foreach (var member in journal.RootElement.GetProperty(\"Members\").EnumerateArray().Where(row =>\n                             row.GetProperty(\"Path\").GetString() == _fs.ResolvePath(repairPath) ||\n                             row.GetProperty(\"Path\").GetString() == _fs.ResolvePath(diagnosticPath) ||\n                             row.GetProperty(\"Path\").GetString() == _fs.ResolvePath(MortalQteDecisionPublication.StatePath) ||\n                             row.GetProperty(\"Path\").GetString() == _fs.ResolvePath(ProgressionScheduleService.ReportPath)))\n                {\n                    Assert.Equal(1, journal.RootElement.GetProperty(\"Format\").GetInt32());\n                    Assert.True(journal.RootElement.GetProperty(\"Committed\").GetBoolean());\n                    var path = member.GetProperty(\"Path\").GetString()!;\n                    var image = member.GetProperty(\"After\");\n                    var exists = image.GetProperty(\"Exists\").GetBoolean();\n                    var declared = image.GetProperty(\"Bytes\").ValueKind == JsonValueKind.Null ? null : image.GetProperty(\"Bytes\").GetBytesFromBase64();\n                    publications.Add(new { Path = path, Exists = exists, DeclaredBytesLength = declared?.LongLength,\n                        Sha256 = image.GetProperty(\"Sha256\").GetString(), TransactionId = journal.RootElement.GetProperty(\"TransactionId\").GetString() });\n                    if (!exists)\n                    {\n                        Assert.Null(declared); Assert.Equal(JsonValueKind.Null, image.GetProperty(\"Sha256\").ValueKind);\n                        if (path == _fs.ResolvePath(ProgressionScheduleService.ReportPath) && member.GetProperty(\"Before\").GetProperty(\"Exists\").GetBoolean())\n                        {\n                            Assert.Equal(before[ProgressionScheduleService.ReportPath], member.GetProperty(\"Before\").GetProperty(\"Bytes\").GetBytesFromBase64());\n                            ObserveReportRemoval(journal.RootElement, member);\n                        }\n                        continue;\n                    }\n                    var bytes = File.ReadAllBytes(path);\n                    Assert.Equal(declared, bytes);\n                    Assert.Equal(declared!.LongLength, bytes.LongLength);\n                    Assert.Equal(image.GetProperty(\"Sha256\").GetString(), Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)));\n                    // Physical evidence only inside the publisher callback: no new lease/registry authority or pending writer.\n                    var images = before.Keys.Where(key => key != \"$sessionGeneration\").ToDictionary(key => key,\n                        key => File.Exists(_fs.ResolvePath(key)) ? File.ReadAllBytes(_fs.ResolvePath(key)) : null, StringComparer.Ordinal);\n                    images[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] = File.Exists(_fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))\n                        ? File.ReadAllBytes(_fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)) : null;\n                    foreach (var progressionPath in new[] { ProgressionScheduleService.SchedulePath, ProgressionScheduleService.ReportPath })\n                        images[progressionPath] = File.Exists(_fs.ResolvePath(progressionPath)) ? File.ReadAllBytes(_fs.ResolvePath(progressionPath)) : null;\n                    var relative = path == _fs.ResolvePath(repairPath) ? repairPath :\n                        path == _fs.ResolvePath(MortalQteDecisionPublication.StatePath) ? MortalQteDecisionPublication.StatePath :\n                        path == _fs.ResolvePath(ProgressionScheduleService.ReportPath) ? ProgressionScheduleService.ReportPath : diagnosticPath;\n                    milestones.Add((relative, Encoding.UTF8.GetString(bytes), images));\n                    if (relative == repairPath)\n                    {\n                        using var actual = JsonDocument.Parse(Encoding.UTF8.GetString(bytes).TrimStart('\\uFEFF'));\n                        var root = actual.RootElement;\n                        Assert.True(root.GetProperty(\"fullTurnResubmissionRequired\").GetBoolean());\n                        Assert.Contains(root.GetProperty(\"errors\").EnumerateArray(), error =>\n                            error.GetProperty(\"code\").GetString() == \"wound_severity_above_opportunity\");\n                        var packet = Assert.Single(root.GetProperty(\"harnessRepairPackets\").EnumerateArray()\n                            .Where(row => row.TryGetProperty(\"candidateKind\", out _)));\n                        Assert.Equal(\"construct_wound\", packet.GetProperty(\"candidateKind\").GetString());\n                        Assert.Equal(original.SnapshotToken, packet.GetProperty(\"snapshotToken\").GetString());\n                        Assert.Equal(0, repairReplies++); // Unexpected extra repair is a failure, never automatic retry.\n                        var authoredDecision = ParseJsonObjectBytes(authoredPublicOutputs[MortalWoundOpportunityAdapter.DecisionPath]);\n                        Assert.True(JsonNode.DeepEquals(decision, authoredDecision));\n                        var corrected = authoredDecision.DeepClone().AsObject();\n                        corrected[\"proposal\"]![\"severity\"] = \"II\";\n                        var resubmittedPublicOutputs = authoredPublicOutputs.ToDictionary(\n                            pair => pair.Key, pair => pair.Value.ToArray(), StringComparer.Ordinal);\n                        if (normalizeNarrativeBeforeCheckpoint)\n                        {\n                            var initialPublicScene = ParseJsonObjectBytes(authoredPublicOutputs[\"output/narrative_response.json\"]);\n                            Assert.Equal(scene.Replace(\"\\n\", \"`n\", StringComparison.Ordinal), initialPublicScene[\"response\"]!.GetValue<string>());\n                            var checkpoint = ParseJsonObjectBytes(Assert.IsType<byte[]>(\n                                images[WoundAcceptedTurnSnapshotContract.PendingResolutionPath]))[\"jointRepairCheckpoint\"]!;\n                            var capturedBytes = Convert.FromBase64String(checkpoint[\"narrativeBase64\"]!.GetValue<string>());\n                            Assert.Equal(MortalArchiveHash(capturedBytes), checkpoint[\"narrativeHash\"]!.GetValue<string>());\n                            Assert.False(AcceptedTurnOutputProjector.ProjectNarrative(CanonicalJsonUtf8.DecodeOneOptionalBom(capturedBytes)).Changed);\n                            // The genuine FIRST checkpoint is an oracle only. Public reply\n                            // fields come from the initial GM input and the known scene.\n                            var expectedFirstScene = initialPublicScene.DeepClone().AsObject();\n                            expectedFirstScene[\"response\"] = scene;\n                            Assert.True(JsonNode.DeepEquals(expectedFirstScene, ParseJsonObjectBytes(capturedBytes)));\n                            var reply = expectedFirstScene.DeepClone().AsObject();\n                            var firstTimestamp = initialPublicScene[\"timestamp\"]!.GetValue<string>();\n                            reply[\"timestamp\"] = DateTimeOffset.Parse(firstTimestamp, System.Globalization.CultureInfo.InvariantCulture)\n                                .AddSeconds(1).ToString(\"O\", System.Globalization.CultureInfo.InvariantCulture);\n                            Assert.NotEqual(firstTimestamp, reply[\"timestamp\"]!.GetValue<string>());\n                            correctedNarrativeForBinding = Encoding.UTF8.GetBytes(reply.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));\n                            resubmittedPublicOutputs[\"output/narrative_response.json\"] = correctedNarrativeForBinding;\n                        }\n                        // Offline MAIN-GM resubmits the COMPLETE actual43 public turn\n                        // after real baseline restore. The normalized positive additionally\n                        // exercises the permitted pre-seal timestamp-only scene correction.\n                        // Never copy canonical/private command, pending, source or seal roots.\n                        foreach (var publicOutput in resubmittedPublicOutputs)\n                        {\n                            if (publicOutput.Key == MortalWoundOpportunityAdapter.DecisionPath) continue;\n                            File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);\n                        }\n                        File.WriteAllText(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath),\n                            corrected.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed), new UTF8Encoding(false));\n                        if (nonzeroProgression)\n                            File.WriteAllBytes(_fs.ResolvePath(ProgressionScheduleService.ReportPath),\n                                Assert.IsType<byte[]>(authoredProgressionReport));\n                        foreach (var publicOutput in resubmittedPublicOutputs)\n                        {\n                            if (publicOutput.Key != MortalWoundOpportunityAdapter.DecisionPath)\n                                Assert.Equal(publicOutput.Value, File.ReadAllBytes(_fs.ResolvePath(publicOutput.Key)));\n                        }\n                        if (nonzeroProgression)\n                            Assert.Equal(authoredProgressionReport, File.ReadAllBytes(_fs.ResolvePath(ProgressionScheduleService.ReportPath)));\n                        var actualCorrected = ParseJsonObjectBytes(File.ReadAllBytes(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath)));\n                        Assert.True(JsonNode.DeepEquals(corrected, actualCorrected));\n                        var severityReverted = actualCorrected.DeepClone().AsObject();\n                        severityReverted[\"proposal\"]![\"severity\"] = \"III\";\n                        Assert.True(JsonNode.DeepEquals(authoredDecision, severityReverted));\n                        Assert.Equal(scene, ParseJsonObjectBytes(resubmittedPublicOutputs[\"output/narrative_response.json\"])[\"response\"]!.GetValue<string>());\n                        // Correlated repair Ready is LAST, after complete public readback.\n                        File.WriteAllText(_fs.ResolvePath(\"game_state/control/validation_repair_ready.json\"),\n                            JsonSerializer.Serialize(new { sessionId = original.SessionId, requestId = original.RequestId,\n                                turnNumber = original.TurnNumber, updatedAtUtc = DateTime.UtcNow.ToString(\"O\"),\n                                note = \"\u041f\u043e\u043b\u043d\u044b\u0439 \u0438\u0441\u0445\u043e\u0434\u043d\u044b\u0439 \u0445\u043e\u0434 \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u043e \u043f\u0440\u0435\u0434\u0441\u0442\u0430\u0432\u043b\u0435\u043d; \u0442\u043e\u043b\u044c\u043a\u043e \u0440\u0430\u0437\u0440\u0435\u0448\u0451\u043d\u043d\u0430\u044f \u0442\u044f\u0436\u0435\u0441\u0442\u044c \u0438\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0430 \u043d\u0430 II.\" }), new UTF8Encoding(false));\n                    }\n                }\n            }\n            catch (Exception error) { observerFailure = error; input.Enqueue(Key(ConsoleKey.Escape)); }\n",
+        "sha256": "33825ec57a0d15d1fb40c2a7e5b2d0a752006c88746ae3c7053b1a4212c429d7"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 578,
+        "end": 649,
+        "text": "        void ObserveReportRemoval(JsonElement journal, JsonElement reportMember)\n        {\n            Assert.True(nonzeroProgression);\n            var transactionId = Assert.IsType<string>(journal.GetProperty(\"TransactionId\").GetString());\n            Assert.NotEmpty(transactionId);\n            var members = journal.GetProperty(\"Members\").EnumerateArray().ToArray();\n            var paths = members.Select(member => member.GetProperty(\"Path\").GetString()!).ToArray();\n            var isProgressionPhase = paths.ToHashSet(StringComparer.Ordinal).SetEquals(new[]\n            {\n                _fs.ResolvePath(ProgressionScheduleService.SchedulePath),\n                _fs.ResolvePath(ProgressionScheduleService.ReportPath),\n                _fs.ResolvePath(MortalQteDecisionPublication.StatePath)\n            });\n            // Keep both real transactions. A pre-dispatch baseline removal is\n            // distinct from consuming the resubmitted report in the exact phase.\n            reportRemovalHistory.Add(new { TransactionId = transactionId,\n                Role = isProgressionPhase ? \"progression_consumption\" : \"original_baseline_restore\",\n                Members = members.Select(member => member.Clone()).ToArray() });\n            Assert.False(File.Exists(_fs.ResolvePath(ProgressionScheduleService.ReportPath)));\n            if (!isProgressionPhase)\n            {\n                Assert.Null(baselineReportRemovalTransaction);\n                Assert.Null(progressionReportConsumptionTransaction);\n                Assert.Equal(0, repairReplies);\n                Assert.DoesNotContain(milestones, milestone => milestone.Path == repairPath ||\n                    milestone.Path == MortalQteDecisionPublication.StatePath);\n                Assert.False(File.Exists(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath)));\n                Assert.True(JsonNode.DeepEquals(heldCommand, ParseJsonObjectBytes(\n                    File.ReadAllBytes(_fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)))));\n                baselineReportRemovalTransaction = transactionId;\n                return;\n            }\n\n            Assert.Equal(3, members.Length);\n            Assert.NotNull(baselineReportRemovalTransaction);\n            Assert.NotEqual(baselineReportRemovalTransaction, transactionId);\n            Assert.Null(progressionReportConsumptionTransaction);\n            Assert.Equal(1, repairReplies);\n            var marker = Assert.Single(members, member => member.GetProperty(\"Path\").GetString() ==\n                _fs.ResolvePath(MortalQteDecisionPublication.StatePath));\n            var markerBeforeBytes = marker.GetProperty(\"Before\").GetProperty(\"Bytes\").GetBytesFromBase64();\n            var markerAfterBytes = marker.GetProperty(\"After\").GetProperty(\"Bytes\").GetBytesFromBase64();\n            Assert.Equal(Encoding.UTF8.GetBytes(Assert.Single(milestones,\n                milestone => milestone.Path == MortalQteDecisionPublication.StatePath).Raw), markerBeforeBytes);\n            var markerBefore = ParseJsonObjectBytes(markerBeforeBytes);\n            var markerAfter = ParseJsonObjectBytes(markerAfterBytes);\n            Assert.Equal(2, markerBefore[\"schemaVersion\"]!.GetValue<int>());\n            Assert.Equal(original.SessionId, markerBefore[\"sessionId\"]!.GetValue<string>());\n            Assert.Equal(original.RequestId, markerBefore[\"requestId\"]!.GetValue<string>());\n            Assert.Equal(original.SnapshotToken, markerBefore[\"snapshotToken\"]!.GetValue<string>());\n            Assert.Equal(original.TurnNumber, markerBefore[\"turn\"]!.GetValue<int>());\n            Assert.Equal(\"unapplied\", markerBefore[\"progression\"]![\"phase\"]!.GetValue<string>());\n            Assert.Equal(\"applied\", markerAfter[\"progression\"]![\"phase\"]!.GetValue<string>());\n            Assert.NotEmpty(markerBefore[\"fingerprint\"]!.GetValue<string>());\n            Assert.NotEmpty(markerAfter[\"fingerprint\"]!.GetValue<string>());\n            markerBefore[\"progression\"]![\"phase\"] = \"applied\";\n            markerBefore.Remove(\"fingerprint\");\n            markerAfter.Remove(\"fingerprint\");\n            Assert.True(JsonNode.DeepEquals(markerBefore, markerAfter));\n            var schedule = Assert.Single(members, member => member.GetProperty(\"Path\").GetString() ==\n                _fs.ResolvePath(ProgressionScheduleService.SchedulePath));\n            Assert.Equal(Convert.FromBase64String(markerBefore[\"progression\"]![\"scheduleBefore\"]![\"bytes\"]!.GetValue<string>()),\n                schedule.GetProperty(\"Before\").GetProperty(\"Bytes\").GetBytesFromBase64());\n            var scheduleAfter = schedule.GetProperty(\"After\").GetProperty(\"Bytes\").GetBytesFromBase64();\n            Assert.Equal(Convert.FromBase64String(markerBefore[\"progression\"]![\"scheduleAfter\"]![\"bytes\"]!.GetValue<string>()), scheduleAfter);\n            Assert.Equal(scheduleAfter, File.ReadAllBytes(_fs.ResolvePath(ProgressionScheduleService.SchedulePath)));\n            Assert.Equal(markerAfterBytes, File.ReadAllBytes(_fs.ResolvePath(MortalQteDecisionPublication.StatePath)));\n            Assert.Equal(Convert.FromBase64String(markerBefore[\"progression\"]![\"reportBefore\"]![\"bytes\"]!.GetValue<string>()),\n                reportMember.GetProperty(\"Before\").GetProperty(\"Bytes\").GetBytesFromBase64());\n            Assert.False(markerBefore[\"progression\"]![\"reportAfter\"]![\"exists\"]!.GetValue<bool>());\n            Assert.Equal(0, reportDeletions++);\n            progressionReportConsumptionTransaction = transactionId;\n",
+        "sha256": "b0ca51ea27c35d569a99ba524359e3c54c471edf28ed5cb71ac266478ecbc9c1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 860,
+        "end": 958,
+        "text": "    private async Task AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original,\n        MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary<string, byte[]?> before,\n        string scene, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones)\n    {\n        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Assert.Equal(before[\"$sessionGeneration\"], _fs.ReadLocalGenerationSnapshot(lease).Bytes);\n        var definitions = ResourceDefinitionCatalog.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);\n        Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));\n        var resources = ResourceStateContract.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), definitions.Catalog!, false);\n        var resourceHistory = ResourceHistoryState.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.HistoryPath), definitions.Catalog!, false);\n        Assert.True(resources.IsValid, DescribeValidationIssues(resources.Issues));\n        Assert.True(resourceHistory.IsValid, DescribeValidationIssues(resourceHistory.Issues));\n        Assert.Empty(resourceHistory.History!.ValidateStateAgreement(resources.Ledger!));\n        var spend = Assert.Single(resourceHistory.History.Transitions, row => row.Turn == 43 &&\n            row.Coordinate.ResourceKey == \"energy\" && row.Operation == ResourceTransitionOperation.Spend);\n        Assert.Equal(ResourceMutationPhase.RegisteredSystemOutcome, spend.Phase);\n        Assert.Equal(2m, spend.RequestedAmount); Assert.Equal(2m, spend.AppliedAmount);\n        Assert.Equal(2m, spend.BeforeState!.Current); Assert.Equal(0m, spend.AfterState!.Current);\n        Assert.Equal(0m, Assert.Single(resources.Ledger!.Entries, row => row.Coordinate.ResourceKey == \"energy\").Current);\n        var damage = Assert.Single(resourceHistory.History.Transitions, row => row.Turn == 43 && row.Coordinate.ResourceKey == \"health\");\n        Assert.Equal(ResourceMutationPhase.EffectTrigger, damage.Phase);\n        Assert.Equal(ResourceTransitionOperation.Damage, damage.Operation);\n        Assert.Equal(\"effect_component\", damage.SourceEvidence.SourceKind);\n        Assert.Equal(3m, damage.AppliedAmount); Assert.Equal(5m, damage.BeforeState!.Current); Assert.Equal(2m, damage.AfterState!.Current);\n        Assert.Equal(2m, Assert.Single(resources.Ledger.Entries, row => row.Coordinate.ResourceKey == \"health\").Current);\n        Assert.Equal(2, resourceHistory.History.Transitions.Count(row => row.Turn == 43));\n        var prior = WoundHistoryState.Parse(MortalArchiveText(before[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);\n        var history = WoundHistoryState.Parse(await _fs.ReadFileAsync(lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);\n        Assert.True(prior.IsValid, DescribeValidationIssues(prior.Issues)); Assert.True(history.IsValid, DescribeValidationIssues(history.Issues));\n        foreach (var previous in prior.State!.Transitions)\n            Assert.Equal(JsonSerializer.Serialize(previous, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),\n                JsonSerializer.Serialize(Assert.Single(history.State!.Transitions, current => current.Ordinal == previous.Ordinal),\n                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));\n        var union = history.State!.Transitions.Skip(prior.State.Transitions.Count).ToArray();\n        Assert.Equal(2, union.Length);\n        Assert.Equal(\"create\", union[0].Kind); Assert.Equal(prior.State.NextOrdinal, union[0].Ordinal);\n        Assert.Equal(\"treat\", union[1].Kind); Assert.Equal(prior.State.NextOrdinal + 1, union[1].Ordinal);\n        Assert.All(union, row => Assert.Equal(43, row.Turn));\n        Assert.Equal(request.Coordinates.WoundId, union[1].WoundId); Assert.NotEqual(union[0].WoundId, union[1].WoundId);\n        var result = Assert.IsType<MortalWoundTreatmentPersistedResult>(union[1].TreatmentResult);\n        Assert.Equal(request.RequestFingerprint, result.Request.RequestFingerprint);\n        Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request),\n            WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(result.Request)));\n        var wounds = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, WoundCarrierCatalog.PlayerPath)))[\"activeWounds\"]!.AsArray();\n        Assert.Equal(2, wounds.Count);\n        var treated = Assert.Single(wounds.OfType<JsonObject>(), wound => wound[\"woundId\"]!.GetValue<string>() == request.Coordinates.WoundId);\n        Assert.Equal(\"stabilized\", treated[\"care\"]![\"state\"]!.GetValue<string>());\n        var acquired = Assert.Single(wounds.OfType<JsonObject>(), wound => wound[\"woundId\"]!.GetValue<string>() == union[0].WoundId);\n        var severity = Assert.IsType<JsonObject>(acquired[\"severity\"]);\n        Assert.Equal(new[] { \"lastChangeEventRef\", \"maximumAtCreation\", \"rank\", \"value\" },\n            severity.Select(field => field.Key).OrderBy(key => key, StringComparer.Ordinal));\n        Assert.Equal(\"II\", severity[\"value\"]!.GetValue<string>());\n        Assert.Equal(2, severity[\"rank\"]!.GetValue<int>());\n        Assert.Equal(\"II\", severity[\"maximumAtCreation\"]!.GetValue<string>());\n        Assert.Equal(union[0].EventRef, severity[\"lastChangeEventRef\"]!.GetValue<string>());\n        var receipts = MortalWoundOpportunityReceiptState.Parse(await _fs.ReadFileAsync(lease, MortalWoundOpportunityReceiptState.StatePath), MortalWoundOpportunityReceiptState.StatePath);\n        Assert.True(receipts.IsValid, DescribeValidationIssues(receipts.Issues));\n        var receipt = Assert.Single(receipts.State!.Receipts);\n        Assert.Equal(original.SessionId, receipt.SessionId); Assert.Equal(original.RequestId, receipt.RequestId);\n        Assert.Equal(original.SnapshotToken, receipt.SnapshotToken); Assert.Equal(43, receipt.Turn); Assert.Equal(\"materialize\", receipt.Decision);\n        Assert.Equal(occurrence.OccurrenceId, receipt.OpportunityId);\n        var pending = MortalWoundOccurrenceState.Parse(await _fs.ReadFileAsync(lease, MortalWoundOccurrenceState.StatePath), MortalWoundOccurrenceState.StatePath);\n        Assert.True(pending.IsValid, DescribeValidationIssues(pending.Issues)); Assert.Empty(pending.State!.Occurrences);\n        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);\n        Assert.Empty(await validator.ValidateAcceptedTurnCanonicalWoundMaterializationAsync(lease));\n        Assert.Empty(await validator.ValidateAcceptedTurnCanonicalEffectMaterializationAsync(lease));\n        Assert.Empty(await validator.ValidateAcceptedTurnCanonicalResourceMaterializationAsync(lease));\n        var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath)));\n        Assert.Equal(2, marker[\"schemaVersion\"]!.GetValue<int>()); Assert.Equal(\"applied\", marker[\"progression\"]![\"phase\"]!.GetValue<string>());\n        Assert.Equal(original.SessionId, marker[\"sessionId\"]!.GetValue<string>()); Assert.Equal(original.RequestId, marker[\"requestId\"]!.GetValue<string>());\n        Assert.Equal(original.SnapshotToken, marker[\"snapshotToken\"]!.GetValue<string>());\n        var phaseRows = milestones.Where(m => m.Path == MortalQteDecisionPublication.StatePath).Select(m => ParseJsonObjectBytes(Encoding.UTF8.GetBytes(m.Raw))).ToArray();\n        Assert.Contains(phaseRows, row => row[\"progression\"]?[\"phase\"]?.GetValue<string>() == \"unapplied\");\n        Assert.Single(phaseRows, row => row[\"progression\"]?[\"phase\"]?.GetValue<string>() == \"applied\");\n        var actualStory = Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, QteStoryPath));\n        var originalStory = Assert.IsType<byte[]>(before[QteStoryPath]);\n        Assert.True(actualStory.AsSpan().StartsWith(originalStory));\n        var suffix = Encoding.UTF8.GetString(actualStory.AsSpan(originalStory.Length)).Split('\\n', StringSplitOptions.RemoveEmptyEntries);\n        var row = StrictJsonAuthority.Deserialize<StoryEntry>(Assert.Single(suffix), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"actual joint story suffix\");\n        Assert.NotNull(row); Assert.Equal(43, row!.Turn); Assert.Equal(\"\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0443\u0448\u0438\u0431.\", row.Player); Assert.Equal(scene, row.Narrative);\n        Assert.Equal(43, GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber);\n        Assert.True((bool)typeof(GameEngine).GetField(\"_inGame\", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(engine)!);\n        Assert.Equal(scene, GetPrivateField<GameResponse>(engine, \"_lastResponse\").Response);\n        foreach (var path in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,\n                     MortalWoundOpportunityAdapter.DecisionPath, \"input/turn_request.json\", \"ready/turn_complete.json\",\n                     \"game_state/control/validation_repair_request.json\", \"game_state/control/validation_repair_ready.json\",\n                     LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })\n            Assert.Null(await _fs.ReadFileBytesAsync(lease, path));\n        var manifest = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[LiveTurnPreparationService.PendingTurnSnapshotManifestPath]));\n        var ownedSnapshots = Assert.IsType<JsonObject>(manifest[\"files\"]).Select(pair => pair.Value!.GetValue<string>());\n        var ownedBackups = Assert.IsType<JsonObject>(manifest[\"rollbackBackups\"]).Select(pair => pair.Value!.GetValue<string>());\n        foreach (var path in ownedSnapshots.Concat(ownedBackups).Distinct(StringComparer.Ordinal))\n            Assert.Null(await _fs.ReadFileBytesAsync(lease, path));\n        Assert.Null(await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));\n        WritePhysicalInjuryDiagnostic(\"fr063_joint_complete_union\", new\n        { original.SessionId, original.RequestId, original.SnapshotToken, OriginalTurn = original.TurnNumber,\n            RequestFingerprint = request.RequestFingerprint, receipt, Create = union[0], Treat = union[1], spend, damage,\n            Marker = marker, ExactStorySuffix = row, FullOwnerCanonicalValidation = true,\n            ActualTurn = GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber });\n",
+        "sha256": "9bd0023a24d43f9c4d6f91e8005ac928976a701f8c45d68257f5b1e0f0f1c09a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 991,
+        "end": 1049,
+        "text": "    private async Task AssertJointProgressionReportOutcomeAsync(bool nonzeroProgression, PendingTurnSnapshotReadAuthority original,\n        byte[] signedOriginalSchedule, IReadOnlyDictionary<string, byte[]?> before, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones)\n    {\n        var request = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before[\"input/turn_request.json\"]!),\n            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"actual progression source request\");\n        Assert.NotNull(request); Assert.NotNull(request!.ProgressionControl);\n        var control = request.ProgressionControl!;\n        Assert.Equal(nonzeroProgression ? 1 : 0, control.WorldCyclesAlreadyPendingBeforeTurn);\n        var phases = milestones.Where(m => m.Path == MortalQteDecisionPublication.StatePath)\n            .Select(m => (Marker: ParseJsonObjectBytes(Encoding.UTF8.GetBytes(m.Raw)), m.Images)).ToArray();\n        var unapplied = Assert.Single(phases, row => row.Marker[\"progression\"]![\"phase\"]!.GetValue<string>() == \"unapplied\");\n        var applied = Assert.Single(phases, row => row.Marker[\"progression\"]![\"phase\"]!.GetValue<string>() == \"applied\");\n        var initial = Assert.IsType<JsonObject>(unapplied.Marker[\"progression\"]);\n        var final = Assert.IsType<JsonObject>(applied.Marker[\"progression\"]);\n        Assert.True(JsonNode.DeepEquals(initial[\"sourceGuards\"], final[\"sourceGuards\"]));\n        Assert.True(JsonNode.DeepEquals(initial[\"scheduleBefore\"], final[\"scheduleBefore\"]));\n        Assert.True(JsonNode.DeepEquals(initial[\"reportBefore\"], final[\"reportBefore\"]));\n        Assert.True(JsonNode.DeepEquals(initial[\"scheduleAfter\"], final[\"scheduleAfter\"]));\n        Assert.True(JsonNode.DeepEquals(initial[\"reportAfter\"], final[\"reportAfter\"]));\n        Assert.Equal(initial[\"mutationFingerprint\"]!.GetValue<string>(), final[\"mutationFingerprint\"]!.GetValue<string>());\n        var preRepairCurrentSchedule = Assert.IsType<byte[]>(before[ProgressionScheduleService.SchedulePath]);\n        var scheduleBefore = signedOriginalSchedule;\n        Assert.Equal(scheduleBefore, unapplied.Images[ProgressionScheduleService.SchedulePath]);\n        Assert.Equal(scheduleBefore, Convert.FromBase64String(final[\"scheduleBefore\"]![\"bytes\"]!.GetValue<string>()));\n        var expectedAfter = Convert.FromBase64String(final[\"scheduleAfter\"]![\"bytes\"]!.GetValue<string>());\n        Assert.Equal(expectedAfter, applied.Images[ProgressionScheduleService.SchedulePath]);\n        var expectedSchedule = ParseJsonObjectBytes(scheduleBefore);\n        expectedSchedule[\"currentWorldTimeInMinutes\"] = control.CurrentWorldTimeInMinutes;\n        expectedSchedule[\"lastWorldSimulationTimeInMinutes\"] = checked(control.LastWorldSimulationTimeInMinutes +\n            control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes);\n        expectedSchedule[\"lastFactionSimulationTimeInMinutes\"] = control.LastFactionSimulationTimeInMinutes;\n        expectedSchedule[\"pendingWorldCycles\"] = 0; expectedSchedule[\"pendingFactionCycles\"] = 0;\n        expectedSchedule[\"lastUpdatedUtc\"] = final[\"preparedAtUtc\"]!.GetValue<string>();\n        Assert.True(JsonNode.DeepEquals(expectedSchedule, ParseJsonObjectBytes(expectedAfter)),\n            \"Actual schedule afterimage disagrees with independent original-control arithmetic/preserved fields.\");\n        var reportBefore = before.TryGetValue(ProgressionScheduleService.ReportPath, out var report) ? report : null;\n        if (nonzeroProgression)\n        {\n            Assert.NotNull(reportBefore);\n            Assert.Equal(reportBefore, unapplied.Images[ProgressionScheduleService.ReportPath]);\n            Assert.Equal(reportBefore, Convert.FromBase64String(final[\"reportBefore\"]![\"bytes\"]!.GetValue<string>()));\n            var body = ParseJsonObjectBytes(reportBefore!)[\"progressionProcessingReport\"]!;\n            Assert.Equal(original.SessionId, body[\"sessionId\"]!.GetValue<string>());\n            Assert.Equal(original.RequestId, body[\"requestId\"]!.GetValue<string>());\n            Assert.Equal(original.TurnNumber, body[\"turnNumber\"]!.GetValue<int>());\n            Assert.Equal(1, body[\"worldCyclesProcessed\"]!.GetValue<int>());\n        }\n        else Assert.Null(reportBefore);\n        Assert.False(final[\"reportAfter\"]![\"exists\"]!.GetValue<bool>());\n        Assert.Null(applied.Images[ProgressionScheduleService.ReportPath]);\n        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Assert.Equal(expectedAfter, await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath));\n        Assert.Null(await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));\n        WritePhysicalInjuryDiagnostic(\"fr063_joint_progression_phase_report_arithmetic\", new\n        { nonzeroProgression, original.SessionId, original.RequestId, OriginalTurn = original.TurnNumber,\n            ActualOriginalControl = control, Unapplied = initial, Applied = final,\n            SignedOriginalScheduleBefore = Convert.ToBase64String(scheduleBefore),\n            PreRepairCurrentSchedule = Convert.ToBase64String(preRepairCurrentSchedule), ReportBefore = reportBefore is null ? null : Convert.ToBase64String(reportBefore),\n            ExactScheduleAfter = Convert.ToBase64String(expectedAfter), ReportAfterAbsent = true });\n",
+        "sha256": "1c659b3a26d7d70d55ced8b810a42b85718327954cf3a6fd601ce317c357e469"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 129,
+        "end": 173,
+        "text": "    private async Task AssertHotJointPostOriginalCustodyAsync(GameEngine engine,\n        PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request,\n        MortalWoundTreatmentResourceFinalization finalization, IReadOnlyDictionary<string, byte[]?> before,\n        byte[] signedOriginalSchedule, byte[] signedOriginalQteRuntime, JsonObject heldCommand,\n        IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones,\n        int repairReplies, bool entered, bool handled, Exception? failure, Exception? observerFailure,\n        HotJointSubmissionFixture fixture)\n    {\n        var firstChanged = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths\n            .Concat(GameEngine.MortalJointInactiveTailPaths).Distinct(StringComparer.Ordinal)\n            .First(fixture.AuthoredPublicInputs.ContainsKey);\n        Assert.Equal(\"game_state/player/status_changes.json\", firstChanged);\n        Assert.Equal(new[] { firstChanged }, fixture.UncoveredOriginalPaths.Order(StringComparer.Ordinal));\n        Assert.Null(fixture.OriginalInputs[firstChanged]);\n        Assert.NotNull(fixture.CurrentInputs[firstChanged]);\n        await AssertJointActiveTailRefusalAsync(\"post_original_stats_level\", engine, original, request, finalization,\n            before, signedOriginalSchedule, signedOriginalQteRuntime, heldCommand, milestones,\n            repairReplies, entered, handled, failure, observerFailure,\n            useLiveCaller: true, mechanicalChangedPath: firstChanged);\n\n        // The existing owner must first have retained the exact submitted inputs,\n        // original/request/G, full held union, turn42 and one correlated repair.\n        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())\n        {\n            Assert.Equal(fixture.Generation, _fs.ReadLocalGenerationSnapshot(lease).Binding.Id);\n            foreach (var image in fixture.CurrentInputs)\n                Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));\n            Assert.Null(await _fs.ReadFileBytesAsync(lease, \"game_state/control/validation_repair_ready.json\"));\n            Assert.Equal(before[\"input/turn_request.json\"], await _fs.ReadFileBytesAsync(lease, \"input/turn_request.json\"));\n            Assert.Equal(before[LiveTurnPreparationService.PendingTurnSnapshotManifestPath],\n                await _fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));\n            Assert.Equal(before[PendingTurnSnapshotAuthority.AuthorityPath],\n                await _fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath));\n        }\n        WritePhysicalInjuryDiagnostic(\"fr063_hot_custody_existing_owner_oracles_before_missing_result\", new\n        { ActualOriginalTurn = original.TurnNumber, ActualCurrentTurn = 42, fixture.Generation,\n            HeldRequestFingerprint = request.RequestFingerprint, ExistingRefusalPath = firstChanged,\n            RepairReplies = repairReplies, NewCommonPublication = false, ChangedInputsRetained = true });\n\n        // Intended absent-feature RED: inspection only, after the actual owner\n        // and physical facts above. There is no fallback that could qualify GREEN.\n        var export = typeof(GameEngine).GetMethod(\"ExportMortalJointPublicationAttemptDiagnostic\",\n            BindingFlags.Instance | BindingFlags.NonPublic, binder: null, Type.EmptyTypes, modifiers: null);\n        Assert.NotNull(export);\n        var diagnostic = Assert.IsType<JsonObject>(export!.Invoke(engine, null));\n",
+        "sha256": "d989ddaf454bca82d91fcbc9a2f1e03f899960dd412df1bd04dafd17955d4add"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 72,
+        "end": 151,
+        "text": "    private async Task AssertJointActiveTailRefusalAsync(string scenario, GameEngine engine,\n        PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request,\n        MortalWoundTreatmentResourceFinalization finalization, IReadOnlyDictionary<string, byte[]?> before,\n        byte[] signedOriginalSchedule, byte[] signedOriginalQteRuntime,\n        JsonObject heldCommand, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones,\n        int repairReplies, bool entered, bool handled, Exception? failure, Exception? observerFailure,\n        bool useLiveCaller = false, string? mechanicalChangedPath = null)\n    {\n        // Capture physical evidence before assertions. This supported reader\n        // inspects the existing confirmed agreement; it creates no publication\n        // lineage, request/claim or accepted treatment authority.\n        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        var after = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);\n        var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(_fs, lease, request, finalization);\n        var outcome = typeof(GameEngine).GetField(\"_mortalJointRepairCanonicalRefresh\",\n            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(engine);\n        var disposition = outcome?.GetType().GetProperty(\"Disposition\")?.GetValue(outcome)?.ToString();\n        var issues = outcome?.GetType().GetProperty(\"Issues\")?.GetValue(outcome) as IReadOnlyList<ValidationIssue>;\n        var hasCommon = AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease);\n        WritePhysicalInjuryDiagnostic(\"fr063_joint_active_tail_actual_refusal\", new\n        {\n            scenario, ActualCaller = useLiveCaller ? \"ProcessPlayerTurn\" : \"ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync\", entered, handled,\n            Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), disposition, Issues = issues,\n            ActualTurn = GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber, hasCommon, repairReplies,\n            ConfirmedValid = confirmed.IsValid, ConfirmedState = confirmed.State, ConfirmedIssues = confirmed.Issues,\n            Before = before, After = after, SignedOriginalSchedule = signedOriginalSchedule,\n            SignedOriginalQteRuntime = signedOriginalQteRuntime,\n            Milestones = milestones.Select(row => new { row.Path, row.Raw, row.Images })\n        });\n        Assert.Null(observerFailure); Assert.Null(failure); Assert.True(entered); Assert.Equal(!useLiveCaller, handled);\n        Assert.Equal(\"PublicationUncertain\", disposition);\n        Assert.NotNull(issues);\n        var expected = scenario switch\n        {\n            \"pending_stats\" => \"The first joint contour cannot own pending statsIncreased work.\",\n            \"unprocessed_level\" => \"The first joint contour cannot own an unprocessed level-up or stat-point initialization/award.\",\n            \"new_qte_offer\" => \"The first joint contour cannot own a new QTE offer for its decision turn.\",\n            \"post_original_stats_level\" => \"Uncovered joint mechanical input is present: \" + Assert.IsType<string>(mechanicalChangedPath),\n            _ => throw new InvalidDataException(\"Unknown bounded active-tail assertion.\")\n        };\n        var refusal = Assert.Single(issues!);\n        Assert.Equal(\"mortal_joint_repair_admission_refused\", refusal.Code);\n        Assert.Equal(\"acceptedTurn.wounds\", refusal.FilePath);\n        Assert.Equal(IssueSeverity.Error, refusal.Severity);\n        Assert.Equal(expected, refusal.Message);\n        Assert.False(hasCommon);\n        Assert.Equal(42, GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber);\n        Assert.True(confirmed.IsValid, DescribeValidationIssues(confirmed.Issues));\n        Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, confirmed.State);\n        Assert.Equal(request.RequestFingerprint, confirmed.RequestFingerprint); Assert.Null(confirmed.GenerationFingerprint);\n        Assert.Equal(1, repairReplies);\n        var dispatch = Assert.Single(milestones.Where(row => row.Path == \"game_state/control/validation_repair_request.json\"));\n        using var repair = JsonDocument.Parse(dispatch.Raw.TrimStart('\\uFEFF'));\n        Assert.True(repair.RootElement.GetProperty(\"fullTurnResubmissionRequired\").GetBoolean());\n        Assert.Contains(repair.RootElement.GetProperty(\"errors\").EnumerateArray(), row => row.GetProperty(\"code\").GetString() == \"wound_severity_above_opportunity\");\n        Assert.Equal(original.SnapshotToken, Assert.Single(repair.RootElement.GetProperty(\"harnessRepairPackets\").EnumerateArray()\n            .Where(row => row.TryGetProperty(\"candidateKind\", out _))).GetProperty(\"snapshotToken\").GetString());\n        var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(after[WoundAcceptedTurnSnapshotContract.PendingResolutionPath]));\n        Assert.True(WoundRepairPacketBuilder.IsValidPersistedRepairWave(JsonSerializer.SerializeToElement(pending[\"repairPackets\"]),\n            JsonSerializer.SerializeToElement(pending[\"repairReceipts\"]), original.SessionId, original.RequestId, original.SnapshotToken));\n        var submitted = Assert.IsType<JsonObject>(Assert.Single(pending[\"submittedTreatmentRequests\"]!.AsArray()));\n        Assert.Equal(request.RequestFingerprint, submitted[\"requestFingerprint\"]!.GetValue<string>());\n        Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), submitted[\"request\"]));\n        Assert.True(JsonNode.DeepEquals(heldCommand, ParseJsonObjectBytes(Assert.IsType<byte[]>(after[AcceptedMechanicsPlan.WoundCommandPath]))));\n        Assert.Equal(\"II\", ParseJsonObjectBytes(Assert.IsType<byte[]>(after[MortalWoundOpportunityAdapter.DecisionPath]))[\"proposal\"]![\"severity\"]!.GetValue<string>());\n        // Repair restores these two canonical images to the genuine signed\n        // original, not the post-Stage43/pre-owner current images. Both detached\n        // expectations were checked against original/rollback before this owner.\n        var expectedAfter = before.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);\n        expectedAfter[ProgressionScheduleService.SchedulePath] = signedOriginalSchedule;\n        expectedAfter[QteSceneService.QteRuntimePath] = signedOriginalQteRuntime;\n        const string ledgerPath = \"game_state/control/gm_trajectory_ledger.jsonl\";\n        Assert.False(before.ContainsKey(ledgerPath)); // Known absent BEFORE owner.\n        AssertJointActiveTailRepairLedger(original, Assert.IsType<byte[]>(after[ledgerPath]),\n            useLiveCaller ? \"\u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0438 \u0445\u043e\u0434\u0430\" : \"late response GM\");\n        // The one strictly qualified client diagnostic append is separate from\n        // canonical preservation; it is not a blanket ledger exclusion.\n        var canonicalAfter = after.Where(row => row.Key != ledgerPath)\n            .ToDictionary(row => row.Key, row => row.Value, StringComparer.Ordinal);\n        var repairOwned = new HashSet<string>(StringComparer.Ordinal)\n",
+        "sha256": "8fcb591ade6f1c9881dd67c928ae902786c0d3869dfde16bc927c9651cdafb83"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "start": 131,
+        "end": 141,
+        "text": "internal sealed class CleanupOwnedFixture(string root, Action<string> output) : IDisposable\n{\n    public void Dispose()\n    {\n        Exception? failure = null;\n        try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }\n        catch (Exception error) { failure = error; }\n        output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = !Directory.Exists(root), CleanupFailure = failure?.ToString() }));\n        Assert.Null(failure);\n        Assert.False(Directory.Exists(root));\n    }\n",
+        "sha256": "c7927d074653801d07e16360eb43fdb5750bdf4a4be4c8f5c82931ce8ec457b1"
+      }
+    ],
+    "support": [
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-provenance-20261016.json",
+        "bytes": 467797,
+        "sha256": "1913ce8254bdbbbfb9c10bbf31cc335b1912e8ea4a2d5513bc77bf2aa73a5e87"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-provenance-20261016.py",
+        "bytes": 13180,
+        "sha256": "da6a27f3aa843552e4dd6ed3d2f8fb8f85409b30d59227cbabf208c8f7e2c2ea"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-semantic-20261016.py",
+        "bytes": 16730,
+        "sha256": "9d24e63108905d51aa16aed6a83015237281b26c0c55422dc5e984d9e94a6937"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-semantic-20261016.json",
+        "bytes": 21357,
+        "sha256": "909c0f4c460b44492e4a0c3b47146c8239f2e354d06327149adff69292e153d2"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-bindings-20261016.py",
+        "bytes": 5508,
+        "sha256": "76b9da7fead8071aa009867ec3466dfe65f803907b2ff8b4ea46a42167fcf91e"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-bindings-20261016.json",
+        "bytes": 10701,
+        "sha256": "b15a5e55854f95c1cc466434cbeeb2a7d05d9f2e759fc3abaf8ee7de3c83a493"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-helper-adaptation-20261016.json",
+        "bytes": 1437,
+        "sha256": "ca015e25a5e7a76b6fb5cfcd84b2d100a1a63aa3669b5915131e4d0b2c318e8c"
+      },
+      {
+        "path": "/tmp/t179pd-hot-custody-red1-absence-first-late-recovery-20261016.json",
+        "bytes": 271590,
+        "sha256": "e48e66670cfb4bb2e54d135faae8589385cb7ea52261d1a3282a07c51e75ba15"
+      }
+    ]
+  },
+  "recovery": {
+    "receipt_path": "/tmp/t179pd-hot-custody-red1-absence-first-late-recovery-20261016.json",
+    "receipt_sha256": "e48e66670cfb4bb2e54d135faae8589385cb7ea52261d1a3282a07c51e75ba15",
+    "directory": "/tmp/f1-r2-hot-custody-red1-absence-first-late-github-20261016",
+    "head": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+    "selected_files": 1098,
+    "all_selected_writer_git_blob_receipt_bytes_match": true,
+    "clean": true,
+    "no_alternates": true,
+    "transport_provenance": "Root receipt; no reviewer network or restored runtime",
+    "remote_main_from_root_receipt": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+    "restored_runtime": "not run"
+  },
+  "release": {
+    "category": "fr063-hot-joint-attempt-ownership",
+    "expected_descriptor_count": 1,
+    "expected_case_count": 1,
+    "expected_method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+    "budget_minutes": 5,
+    "permitted_selector": [
+      "-Category",
+      "fr063-hot-joint-attempt-ownership",
+      "-NoBuild"
+    ],
+    "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+    "binaries_must_equal": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "9d15ef1899974319732d6008ff46b7cacd8c3e9b6ba23dde25bd2c50a0322488"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "02da7a3ebd79dafa1b9ce15417d6770ea7a0024a18a49d8aeeb4bafc69f0f399"
+      }
+    ],
+    "expected_causal_failure": "The sole missing ExportMortalJointPublicationAttemptDiagnostic Assert.NotNull at HotSubmissionCustody.cs172, after successful actual old-owner/held/source/refusal/original/request/G/turn/no-common-consequence/physical-input/Ready oracles, with strict successful root cleanup. This assertion failure is expected feature RED, not PASS or stage qualification.",
+    "frozen_source_condition": "No production, fixture, assertions, catalog, selection, budget, or binary drift. Metadata-only report/evidence checkpoint is permitted before the clean actual.",
+    "stop_conditions": [
+      "Unexpected failure before or instead of the exact missing-export assertion",
+      "Unexpected PASS, extra failures, skips, duplicates, underfill or timeout",
+      "Missing cleanup receipt, cleanup error/residual root, incomplete raw/native evidence",
+      "Source or binary drift"
+    ],
+    "after_run": "Freeze and checkpoint/push/readback the complete raw/native/TRX/plan/summary/source/DLL/cleanup packet and its recovery. Preserve expected failures unchanged; no hidden retry or implementation before causal classification.",
+    "aggregate_selection_actual_released": false,
+    "other_categories_released": false,
+    "production_implementation_or_green_released": false
+  },
+  "limits": [
+    "This is a separate Late2 EVIDENCE acceptance, not the SOURCE gate or final bounded integration verdict.",
+    "HS01 has not run; the protected two tests do not qualify the actual ProcessPlayerTurn HOT custody owner.",
+    "No full Pd, HS02\u201316, semantic S/C/B/M3, actual admission/history/cold P0/F1/T197, activation, Windows, visual, D4/guidedUS5/D8 or task closure.",
+    "No reviewer build/discovery/test/application/network/repository write/OS change/delegation; only read-only evidence/source analysis and new /tmp artifacts.",
+    "Current test-only work changes no public/GM schema. Parallel 3c design remains outside this evidence verdict."
+  ],
+  "stop": "FINALSTOP"
+}

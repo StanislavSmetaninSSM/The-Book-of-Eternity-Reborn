@@ -1,0 +1,20 @@
+[
+  {
+    "upstream_commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+    "upstream_path": "specs/1536-complete-wound-materialization/recovery/t179pd-inspect-hot-custody-red1-absence-first-late.py",
+    "upstream_sha256": "754507cbbc059e2670129d6d39de51cc91c84f955534398f56f8c6b770f310e1",
+    "adapted_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-semantic-20261016.py",
+    "adapted_sha256": "9d24e63108905d51aa16aed6a83015237281b26c0c55422dc5e984d9e94a6937",
+    "output": "/tmp/t179pd-hot-custody-red1-absence-late-independent-semantic-20261016.json",
+    "changes": "Only output destination/existence guard, read-only Git environment, and concise print; semantic assertions unchanged."
+  },
+  {
+    "upstream_commit": "bab89b7034951cac436ca692a3439dd2a7fecf51",
+    "upstream_path": "specs/1536-complete-wound-materialization/recovery/t179pd-inspect-hot-custody-red1-absence-late-root-bindings.py",
+    "upstream_sha256": "33c2236ed915d7101d1f417f49fdfea05e68b4d8c386933e7f9dd64b16e21214",
+    "adapted_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-bindings-20261016.py",
+    "adapted_sha256": "76b9da7fead8071aa009867ec3466dfe65f803907b2ff8b4ea46a42167fcf91e",
+    "output": "/tmp/t179pd-hot-custody-red1-absence-late-independent-bindings-20261016.json",
+    "changes": "Only output destination/existence guard, read-only Git environment, and concise print; semantic assertions unchanged."
+  }
+]

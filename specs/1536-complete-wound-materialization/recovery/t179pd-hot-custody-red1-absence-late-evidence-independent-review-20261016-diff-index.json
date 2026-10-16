@@ -1,0 +1,79 @@
+[
+  {
+    "path": "t179pd-hot-custody-red1-absence-late-independent-compiled-to-actual-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-compiled-to-actual-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-late-independent-actual-to-carrier-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-actual-to-carrier-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "bab89b7034951cac436ca692a3439dd2a7fecf51",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-late-independent-accepted-source-to-carrier-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-accepted-source-to-carrier-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bab89b7034951cac436ca692a3439dd2a7fecf51",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-late-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-late-independent-status-20261016.diff",
+    "raw_sha256": "9cc7326f2cf972023828f0766cca7cc2cc8fdb31e6737bae6dda0c97cd045476",
+    "raw_bytes": 10332,
+    "stored_sha256": "688cf209f960622bff57f29952f96fc2746c0cfaf8a9d10c7e833c70cd18b7d7",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bab89b7034951cac436ca692a3439dd2a7fecf51",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  }
+]
