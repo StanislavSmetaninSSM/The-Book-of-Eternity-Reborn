@@ -2,6 +2,8 @@
 
 Coordinator confirms explicit07:01:11UTC user approval, message Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”: continue staged F1-R2/D9–D11 independently from9baccdfb5; prior DESIGN-only handoff superseded for independent stages. T197/newQTE remains blocked on DEP-C/I/L/full target qualification. T192a is not liveF1. Next: T179/B01 pre-seal dependency integration with TDD/category-only/per-stage independent review; all full task checkboxes remain evidence-gated.
 
+- T179-Pa/T180a pure automatic prerequisite independently accepted (f679source/407evidence):39/39GREEN, priorRED33 and regressionRED7 preserved; bothreviewfindings resolved. FullT179/T180 remain unchecked. Next T179-Pb/T182 shared story calculation reused by actualv2 writer, followed by genuine source/C/B/M3 integration; apply firstLate2/EVIDENCE gate for live story owner.
+
 ## F1-R2 staged implementation authorized — T178 / T192a WIP, 2026-10-16
 
 - User approved staged F1-R2/D9–D11 implementation after d43d6f3a9ee151e9e7742c5328e6281dd8af3528 and parallel T197 DESIGN. Existing branch exact remote/clean verified; one repository writer. T197 transition implementation waits for accepted independent DESIGN review; new principled grants beyond R2 go to coordinator, independent stages continue. New joint QTE activation stays blocked until T197/full ordinary qualification/all gates.
