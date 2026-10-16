@@ -1,0 +1,555 @@
+{
+  "schemaVersion": 1,
+  "task": "T179-Pd-AUDIT-SBM",
+  "reviewKind": "AFFECTED_SBM_D01_DOCUMENTARY_VERIFICATION_ONLY",
+  "decision": "ACCEPTED_AFFECTED_DOCUMENTARY_CORRECTION",
+  "reviewedSource": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+  "baseline": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+  "reviewer": {
+    "agent": "/root/t179pc_independent_review",
+    "role": "Independent non-author; root is sole repository writer",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Retained coordinator-confirmed actual spawn/configuration receipt",
+    "backendTelemetry": "UNAVAILABLE"
+  },
+  "resolvedFindings": [
+    {
+      "id": "SBM-D01",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "line": 414,
+      "correction": "No active B/seal/take currently implemented. Capture/freeze S while Capturing, then irrevocably CloseCapture before preparation; the future genuine prepare/seal split binds retained S/C/raw B and the source-guard union before seals. No after-seal attachment or v2 promotion.",
+      "verification": "Matches unchanged SBM02/V05 and actual irreversible CloseCapture before CreateJointRepairPreparation/RetainStage; no stage or product changes."
+    }
+  ],
+  "remainingMaterialFindings": [],
+  "hypotheses": [],
+  "releasedActuals": [],
+  "implementationRelease": false,
+  "schemaIssuerAcceptance": false,
+  "authority": {
+    "scope": "Documentary audit only",
+    "windowsPermission": "UNANSWERED",
+    "failedHoldDeliveryOrTechnicalReviewIsUserPermission": false,
+    "windowsEvidence": "WIN-E01 remains BLOCKED; hosted JOBsuccess is not accepted worker2 raw-case evidence",
+    "retainedLocalEvidence": "Prior13PASS and first2LinuxFAIL retain original f9bc provenance; not rerun or requalified"
+  },
+  "sourcePins": [
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "gitBlob": "9690efd23358b3f6f33c1b5f3f0533bf7eac68dc",
+      "bytes": 155207,
+      "sha256": "efc198912dbff9ac88c5300693b67df0e4b2c3ca97e81d445723544170ce5356"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "gitBlob": "fce479f40baf3de746a85a0166fcbb704779ce47",
+      "bytes": 2227646,
+      "sha256": "885ff846baeb9e3ffa92018681f399dc309bd26f40726e5f966e6111d05f245d"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json",
+      "gitBlob": "01baf85c00870c6f45653301ddff0ec428756386",
+      "bytes": 192176,
+      "sha256": "76912d6a5facd64adcf35013a898ccd63da631975327ca64b8af7b343fe46827"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.json",
+      "gitBlob": "3e751a72c0bd1e0331c815a5692aac2174993ee1",
+      "bytes": 104287,
+      "sha256": "0eae1cd4cea602bfbc02a2e4487e0cbeafb099d169a6b43f64eead486f0276e2"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.md",
+      "gitBlob": "5c1771e26a89d7ae714496a5e8d12abf390f1216",
+      "bytes": 7022,
+      "sha256": "42877fcae6a823a2de36971fa271652203d96b05b7befcdd39624c852a4783a6"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-initial-review-root-inspection-20261016.json",
+      "gitBlob": "e1ea95f057e6fd4f984d2032021e9e92fa6fb0c5",
+      "bytes": 5044,
+      "sha256": "e033996b7016c77ca52dcd99aacf15fef65c31d829f8d326707a40faae4b8b92"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-root-inspection-20261016.json",
+      "gitBlob": "5929c7e4a6393c08961e5ce013047a8afca02063",
+      "bytes": 911,
+      "sha256": "9a5d412b153f07d4436864ae28937c8d39eb0e7c58964fc56190663171950345"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "gitBlob": "84a4096aa0f6e46878ff074718a9bf9c07298607",
+      "bytes": 1542811,
+      "sha256": "fb077bd5e5270ac812099f29e62a09aa984a68ae8fe342c4f1727219374a367e"
+    },
+    {
+      "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "gitBlob": "1e97cee68edfd0eed0dd0960d8edfcd208636bbb",
+      "bytes": 154628,
+      "sha256": "22c7d8840dca512998403e4c73553ee6479870358e4726eb60675bccfe6351fb"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "gitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+      "bytes": 10987,
+      "sha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "gitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+      "bytes": 10347,
+      "sha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-audit-20261016.json",
+      "gitBlob": "ff6032741ce00b93fea2ba23996b93455fc9dcd5",
+      "bytes": 190587,
+      "sha256": "3ce3c1ca1e315464196b798e3d1ef852d71f7717ef7e4500e095056446c14de9"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "gitBlob": "bbba4aa2a8390fa3c0af263b706945600f9071c8",
+      "bytes": 231787,
+      "sha256": "bde056ed5081c9e49b49937ba40a860f7c4c533c65452e3f1da7463d0da08dd8"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "gitBlob": "0d17781fa0ca2a9d1870548b2cde91b70af2575d",
+      "bytes": 109932,
+      "sha256": "4e172f3b3658ceb9d5ae99d8553850199265f129edb56d7ebb258b289dc34a02"
+    }
+  ],
+  "projections": [
+    {
+      "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "firstLine": 414,
+      "lastLine": 414,
+      "sha256": "d9cdf48c2c27c6768e123cea930e83ae745b0098c9ec24116348ad3eebf89251",
+      "text": "| S→C→raw B / T179-Pd.5 + T192 | Full S, genuine once-retained C, actual D9/event/time owner, same reservation/candidate/fence and pre-seal source union | No active B/seal/take currently implemented. Need new genuine prepare/seal boundary before closing capture; no after-seal attachment or v2 promotion. |\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "firstLine": 395,
+      "lastLine": 395,
+      "sha256": "23adbc7ce00252338114a4dd849b1e7bb47f5ab98164cb31fcbf66c0b1853785",
+      "text": "| SBM02 | `Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs:53–87,126–177` and `GameEngine.MortalJointRepairCanonicalPublication.cs:43–47`: actual attempt checks private frame/capture/lease; CaptureCurrentHotCustody closes capture before preparation. Export explicitly hasS/hasB/hasM3=false. | Future HOT family adapters and source freeze must complete while this SAME real attempt remains Capturing, before CloseCapture/preparation. Calling an adapter after current CaptureCurrentHotCustody returns would be too late; a new wrapper/ordering must preserve ordinary v2 behavior. No success/null-custody shortcut may issue S. |\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "firstLine": 414,
+      "lastLine": 414,
+      "sha256": "29ff657bffc5fed10dd2426c28710a1a38a1649ab01848ef5596dd0a2b9afb5a",
+      "text": "| S→C→raw B / T179-Pd.5 + T192 | Full S, genuine once-retained C, actual D9/event/time owner, same reservation/candidate/fence and pre-seal source union | No active B/seal/take currently implemented. Capture/freeze S while Capturing, then irrevocably CloseCapture before preparation; the future genuine prepare/seal split binds retained S/C/raw B and the source-guard union before seals. No after-seal attachment or v2 promotion. |\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "firstLine": 427,
+      "lastLine": 427,
+      "sha256": "29793ad4dc6bd55f2d198bb0a00c624a24d5145f7c304fe38cbecf000a768f2a",
+      "text": "| SBM-V05 / UAD04, T179-Pd.5 | Genuine attempt stays Capturing through source freeze; drift after C/before seal, two real owner/reservation pairs, source/B mutation, repeated seal, reentry and after-seal attachment. Same S/C/B→input/prepared/cache→take candidate/fence or refusal with exact own unattempted close; no rearm/native-debt abort. |\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "firstLine": 439,
+      "lastLine": 439,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "text": "\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 83,
+      "lastLine": 95,
+      "sha256": "1fbc0e4194d2befd41ad3f3cfc9b27bfb2d9a131f00bf222b961f8afe31db4b4",
+      "text": "        internal void CloseCapture(object issuer, JsonObject custody)\n        {\n            RequireIssuer(issuer); RequireActualOwner(_files, _lease);\n            if (!_capturing || _phase != \"Capturing\") throw new InvalidOperationException(\"Joint capture cannot reopen.\");\n            _custody = custody.DeepClone().AsObject(); _capturing = false; _phase = \"PreparationStarted\";\n        }\n        internal void RetainStage(object issuer, JointAttemptStage stage, object actualResult)\n        {\n            RequireIssuer(issuer); RequireActualOwner(_files, _lease);\n            if (_capturing || _delegated || _close is not null || (int)stage != _stages.Count || !_stages.TryAdd(stage, actualResult))\n                throw new InvalidOperationException(\"Joint stage must be retained once before delegation.\");\n            _phase = stage is JointAttemptStage.Common or JointAttemptStage.Preflight ? \"V2CommonSealed\" : \"Building\";\n        }\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 159,
+      "lastLine": 177,
+      "sha256": "187ba026d2228218f9e18879cc4213ff36dcbf7c65f2e07018731499751246a4",
+      "text": "    private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,\n        FileSystemManager.CanonicalWriteLease lease)\n    {\n        var read = _hotRepairReady;\n        if (read is { Faulted: false, Status: \"ConsumedReadyMatched\", ReadyDeleteReturned: true, ReadyReleaseReturned: true })\n        {\n            try\n            {\n                await RecheckHotReadySourceAsync(lease, read, requireReadyAbsent: true);\n                read.CurrentSourceRecheckSucceeded = true;\n                attempt.RetainHotSource(JointAttemptIssuer, read.Source!.Snapshot, read.Source.Evidence);\n            }\n            catch (Exception error)\n            {\n                read.Fail(IsOptionalHotFailure(error) ? \"SourceChanged\" : \"OwnerFailure\");\n                if (!IsOptionalHotFailure(error)) throw;\n            }\n        }\n        attempt.CloseCapture(JointAttemptIssuer, HotCustodyDiagnostic(read));\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "firstLine": 43,
+      "lastLine": 53,
+      "sha256": "1e7ee3d8a3012a264f4a12a070cc99ebb52761e7680fa7f7986e33d2965d881c",
+      "text": "            var capture = await ReadCurrentJointRejectedCaptureAsync(lease, _mortalJointRepairCheckpoint!.ToJsonObject());\n            attempt = BeginCurrentJointAttempt(lease, frame, capture);\n            try\n            {\n                await CaptureCurrentHotCustodyAsync(attempt, lease);\n                var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);\n                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preparation, preparation);\n                if (!preparation.IsValid) return Refused(preparation.Issues);\n                var continuation = preparation.Authority!;\n                attempt.RetainContinuation(JointAttemptIssuer, continuation);\n                var reservation = await AcceptedTurnAuthorityRegistry.ReserveMortalJointRepairPublicationAsync(_fs, lease, continuation);\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "firstLine": 1,
+      "lastLine": 13,
+      "sha256": "0eb3f9a5a85dc382227d1576d6b317c354dad47fe1d6b7528b28e5c608ede593",
+      "text": "## Current delegation — independent S→B→M3 static audit; Windows hold (2026-10-16)\n\nCoordinator continuation from verified remote `f87aa544bd60897a2a60d5623a751589fc78c896` explicitly allows independent source/design audit or a separately agreed rules-splitting task. Selected tracked item **T179-Pd-AUDIT-SBM** is the static S→B→M3 dependency boundary, because checking existing source, proposed codecs and task dependencies does not require accepting Windows worker2. It introduces no behavior or implementation grant. Source thread: `01a118b2-51cc-732e-9138-6474686600eb`.\n\n**Current authority:** the user has NOT answered the coordinator's Windows CI permission request. Earlier technical SOURCE/availability reviews are immutable historical evidence, not user permission. Prior hold-message delivery failed with service errors/unconfirmed delivery; a failed message is not approval. No rerun, download through another tool/route, log fallback, CI/permission/settings change, workflow enablement or release/catalog edit is allowed. Preserve the existing run as history; do not infer retrospective authorization from job success. Commit/push/readback and GitHub source recovery of this documentary block are allowed; main/merge/force-push/branch deletion/secrets/issues remain untouched.\n\n**Evidence boundary:** prior13 distinct PASS and first2 Linux FAIL retain their actual f9bc provenance. Run38978917195/attempt1/job117234913253 at53a reports hosted JOBsuccess; raw Windows worker2/case/native/binding/DLL/physical-cleanup evidence remains absent and NOT accepted. WIN-E01 remains: artifact12080975497,811881bytes, SHA256 `fa0992a149fc0cc3dc8af767b9ca54e6e26658ca67813aca81e5c87dac82f292`, expiry2026-11-15T23:08:12Z; first official ZIP accessForbidden. This block attempts no transfer, CI status polling or runtime. Existing terminal blocker review remains immutable.\n\n**Deliverable and dependency decision:** use the [canonical implementation-plan audit](design/lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87) and its [exact source packet](recovery/t179pd-sbm-static-dependency-audit-20261016.json). The packet separates observed production seams, proposed contracts and FUTURE_UNRUN checks; it is not S/admission/M3 proof. 3c/3d/3e ordinary shared-kernel A and source/read/history analysis have no data dependency on the Windows ZIP; their HOT-B integration needs the real still-Capturing 3b owner, and its acceptance remains held. Therefore \"all implementation necessarily depends on Windows\" would be too broad. The current choice is documentary audit only, with no unfinished-code mixing, automatic rules split or new implementation started.\n\n**Next handoff:** the map names the actual capture-close boundary, ordinary-consumed kernels, complete history/read-source adapters, exact row codecs, cold semantic checkers and pre-P0 recovery obligations. Future implementation, if separately selected within current authority, must first specify one coherent dependency-satisfied slice and its causal checks; no runtime is released by this audit. Windows qualification can resume only after an explicit applicable permission/access decision, authentic existing raw bytes and separate EVIDENCE review. Do not ask a repeated broad permission question or treat an artifact outage as a mechanical F1 obstacle/F2 choice. Full T179/T192/F1/T197, real ordinary decline resolution, new QTE and D4 allocator/guided US5/actual DOM+visual/general Linux+Windows/D8 gates remain OPEN. Initial [independent audit review](recovery/t179pd-sbm-static-dependency-independent-review-20261016.md) at96bd requires only SBM-D01, the capture/preparation ordering sentence. Root verified43wholepins/55exactprojections/8diffs/12local read-only Gitrecords and220+222file recoveries; immutable reports/root inspection and WIP recovery receipt are preserved. The single dependency-row wording is corrected without changing source or stages; affected verification/final persistence pending. No completed full-stage claim.\n\nAll following authority/release/STOP entries are chronological history for their pinned checkpoints. Where they call themselves \"current\" or \"permitted\", this delegation controls new actions. Historical reports and runtime outcomes are not rewritten.\n"
+    },
+    {
+      "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "firstLine": 1,
+      "lastLine": 12,
+      "sha256": "6370325c526c1fa95704372e3473e2331f58f4edf11587a16a649dd817973fd4",
+      "text": "## Current delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)\n\nLatest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a751589fc78c896` for independent source/design work. Windows CI permission question is unanswered; unsuccessful delivery of hold messages is not permission. Earlier technical SOURCE/availability decisions are historical evidence, not user authorization. This block edits documents only; no runtime, tests, build/discovery, CI/settings/release/catalog changes, artifact transfer/retry or new QTE. See [current authority and audit](plan.md).\n\n- [x] Verify clean f87 task branch and remote SHA; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` unchanged. Read governance, current design/plans and actual source owners; select the dependency audit because static source/history/cold-proof analysis does not consume Windows runtime qualification.\n- [x] T179-Pd-AUDIT-SBM static map/matrix prepared for review: document exact implemented/proposed boundaries, concrete dependency map, future verification matrix and T178–T191/T192–T198 handoff. Distinguish structural data prerequisites from acceptance/scheduling holds; do not assert every pure-kernel implementation needs Windows worker evidence. No code or new design/implementation grant.\n- [x] WIP96bd6acbfa0a403c3c6bf53c9cdcadddedc69899 pushed/readback/new GitHub222files/all219changedpaths/no deletions before independent Astra/XHigh review. Initial review confirms only SBM-D01; immutable pair/root43pins55projections8diffs12localrecords and220+222recoveries verified/preserved.\n- [ ] Single SBM-D01 wording correction now records capture/freeze → irreversible CloseCapture → preparation/seals, binding S/C/raw B before seals. Save/readback/recover corrected documentary carrier, then affected independent verification; no source/order/authority change.\n- [ ] Save final documentary review/result, verify task remote SHA and clean GitHub recovery. Audit completion alone closes no full T179/F1/T197/new-QTE gate. Retain prior13PASS+first2LinuxFAIL, Windows JOBsuccess separately, raw worker2 qualification BLOCKED WIN-E01.\n\nThe sections below are immutable chronological authority/evidence history. Their earlier \"current\", \"permitted\" or continuation wording is superseded by this section and the current plan for this delegation; it cannot authorize a Windows action.\n\n"
+    }
+  ],
+  "exactDiffs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "nativeExit": 0,
+      "bytes": 4904,
+      "sha256": "0523b3497b6f564a7aa5031cdf4f9df1934a37f4864f2b2fd896e1d967f1d1d4",
+      "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\nindex 1e97cee68edfd0eed0dd0960d8edfcd208636bbb..9690efd23358b3f6f33c1b5f3f0533bf7eac68dc 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n@@ -411,7 +411,7 @@ Tracked document-only audit from `f87aa544bd60897a2a60d5623a751589fc78c896`; [ma\n | 3c/3d/3e HOT-B adapters | Real 3b original/attempt while Capturing plus actual ordinary-consumed kernels and finite source observations | ZIP is an acceptance dependency of the current 3b sequence, not an argument to a pure kernel. Current HOT integration/qualification held; never substitute mocks/DTOs for real attempt. |\n | Admission history/finite submitted reader | SBM03–06 genuine original-issued lineage, all conditional callbacks/reads/errors/metadata/comparisons, actual worker-direct route | Static codec/owner-gap analysis is independent and completed here; implementation still unimplemented. Existing reader and custody are only prerequisites; some observations need capture at their original event, not at late P0. |\n | Full semantic S / T179-Pd.3–4 | All actual raw/domain/automatic/source families, full history/source closure, same-owner rechecks; initialized originals | Not supplied by Windows PASS or empty diagnostics. No active source issue until every applicable source family/history join is real and reviewed. |\n-| S→C→raw B / T179-Pd.5 + T192 | Full S, genuine once-retained C, actual D9/event/time owner, same reservation/candidate/fence and pre-seal source union | No active B/seal/take currently implemented. Need new genuine prepare/seal boundary before closing capture; no after-seal attachment or v2 promotion. |\n+| S→C→raw B / T179-Pd.5 + T192 | Full S, genuine once-retained C, actual D9/event/time owner, same reservation/candidate/fence and pre-seal source union | No active B/seal/take currently implemented. Capture/freeze S while Capturing, then irrevocably CloseCapture before preparation; the future genuine prepare/seal split binds retained S/C/raw B and the source-guard union before seals. No after-seal attachment or v2 promotion. |\n | Nested M3/P0 / T179-Pd.6–7 | Strict evidence/phase codecs + complete pure cold owner semantics + source/history/projection equivalence; existing exact native batch | Store in existing M only. Every native cut/readback/lost reply and genuine fresh-process/distinct-root proof required; hot retention alone cannot release publication. |\n | Full pre-P0 restart / activation | Qualified recovery for history lost before committed M3, existing owner/version/lifecycle design | Hot-only HOLD is a stated limitation, not final ordinary resolution. Must close before activation, never replay committed action or silently create history. |\n | T180–T191/T192–T198 | Full B01 and each named ordinary/event/tail/target owner; actual platform/UI evidence | Remain OPEN. WIN-E01 is one qualification blocker, not their only missing implementation or a proved F1 impossibility. |\n@@ -437,7 +437,7 @@ Tracked document-only audit from `f87aa544bd60897a2a60d5623a751589fc78c896`; [ma\n \n **GM/source synchronization:** this audit changes no production/schema/request/Ready/original/v2 bytes, public capability or GM-authored behavior, so Mortal/afterlife prompts/examples/manifests/source guards need no update in this document-only block. Future emitted M3/repair/original/shared afterlife contract changes still require same-change synchronization under AGENTS. No live documentation is taught an unimplemented path or field.\n \n-Audit independent review and final persistence are tracked in the current plan/tasks. Only this bounded documentary item may close after actual review and source/diff/recovery inspection; all gameplay/platform evidence above remains UNRUN or retained with its original provenance.\n+[Initial independent documentary review](../recovery/t179pd-sbm-static-dependency-independent-review-20261016.md) of96bd found one confirmed material wording defect SBM-D01 in the S→C→raw B dependency row. Root verified43wholepins/55exactprojections/8diffs/12local read-only Gitrecords and both220/222file recoveries. That row is now corrected to capture/freeze → irreversible close → preparation/seals, preserving source/stage ordering; affected independent verification and final persistence remain pending in current plan/tasks. Only this bounded documentary item may close after actual review and source/diff/recovery inspection; all gameplay/platform evidence above remains UNRUN or retained with its original provenance.\n \n ### T180 / B02 — atomic automatic action+ack\n \n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "nativeExit": 0,
+      "bytes": 3769,
+      "sha256": "5413fe263f21944f1b5c6cdabb4ca3866581f4950b2a6511920acc5fadb2c4ca",
+      "text": "diff --git a/specs/1536-complete-wound-materialization/plan.md b/specs/1536-complete-wound-materialization/plan.md\nindex eb4e36754f0e29f6ee91cf308319573d85070411..fce479f40baf3de746a85a0166fcbb704779ce47 100644\n--- a/specs/1536-complete-wound-materialization/plan.md\n+++ b/specs/1536-complete-wound-materialization/plan.md\n@@ -8,7 +8,7 @@ Coordinator continuation from verified remote `f87aa544bd60897a2a60d5623a751589f\n \n **Deliverable and dependency decision:** use the [canonical implementation-plan audit](design/lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87) and its [exact source packet](recovery/t179pd-sbm-static-dependency-audit-20261016.json). The packet separates observed production seams, proposed contracts and FUTURE_UNRUN checks; it is not S/admission/M3 proof. 3c/3d/3e ordinary shared-kernel A and source/read/history analysis have no data dependency on the Windows ZIP; their HOT-B integration needs the real still-Capturing 3b owner, and its acceptance remains held. Therefore \"all implementation necessarily depends on Windows\" would be too broad. The current choice is documentary audit only, with no unfinished-code mixing, automatic rules split or new implementation started.\n \n-**Next handoff:** the map names the actual capture-close boundary, ordinary-consumed kernels, complete history/read-source adapters, exact row codecs, cold semantic checkers and pre-P0 recovery obligations. Future implementation, if separately selected within current authority, must first specify one coherent dependency-satisfied slice and its causal checks; no runtime is released by this audit. Windows qualification can resume only after an explicit applicable permission/access decision, authentic existing raw bytes and separate EVIDENCE review. Do not ask a repeated broad permission question or treat an artifact outage as a mechanical F1 obstacle/F2 choice. Full T179/T192/F1/T197, real ordinary decline resolution, new QTE and D4 allocator/guided US5/actual DOM+visual/general Linux+Windows/D8 gates remain OPEN. Audit independent review/persistence pending below; no completed full-stage claim.\n+**Next handoff:** the map names the actual capture-close boundary, ordinary-consumed kernels, complete history/read-source adapters, exact row codecs, cold semantic checkers and pre-P0 recovery obligations. Future implementation, if separately selected within current authority, must first specify one coherent dependency-satisfied slice and its causal checks; no runtime is released by this audit. Windows qualification can resume only after an explicit applicable permission/access decision, authentic existing raw bytes and separate EVIDENCE review. Do not ask a repeated broad permission question or treat an artifact outage as a mechanical F1 obstacle/F2 choice. Full T179/T192/F1/T197, real ordinary decline resolution, new QTE and D4 allocator/guided US5/actual DOM+visual/general Linux+Windows/D8 gates remain OPEN. Initial [independent audit review](recovery/t179pd-sbm-static-dependency-independent-review-20261016.md) at96bd requires only SBM-D01, the capture/preparation ordering sentence. Root verified43wholepins/55exactprojections/8diffs/12local read-only Gitrecords and220+222file recoveries; immutable reports/root inspection and WIP recovery receipt are preserved. The single dependency-row wording is corrected without changing source or stages; affected verification/final persistence pending. No completed full-stage claim.\n \n All following authority/release/STOP entries are chronological history for their pinned checkpoints. Where they call themselves \"current\" or \"permitted\", this delegation controls new actions. Historical reports and runtime outcomes are not rewritten.\n \n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json"
+      ],
+      "nativeExit": 0,
+      "bytes": 194461,
+      "sha256": "71992fb46ebec0b483e6bb57a9755d0a9f64a9376834c95fc49b3efc4463aeb0"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.json"
+      ],
+      "nativeExit": 0,
+      "bytes": 106124,
+      "sha256": "75ecb65caa247a16168168decdf6f95a8c004ebdfde646bf6b0eaf1b4da26307"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.md"
+      ],
+      "nativeExit": 0,
+      "bytes": 7559,
+      "sha256": "83cbdf588d28facf1f7f3c0cb689128cdc57b7ad478a0b323a5a86f68913f19d"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-initial-review-root-inspection-20261016.json"
+      ],
+      "nativeExit": 0,
+      "bytes": 5579,
+      "sha256": "9ecfefdb86be7aba590e8ee7afed2d6c40c3da17b76673330b00d323ae0a9308"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-root-inspection-20261016.json"
+      ],
+      "nativeExit": 0,
+      "bytes": 1389,
+      "sha256": "7826859c355ed5fc6f526de0fb9533503edf66a175c6ab148784a04a1abccce8"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "nativeExit": 0,
+      "bytes": 2383,
+      "sha256": "030f9980d88bbb0ecd5e671e5fbffe8467508a80a8c8a2e464389a19f0c27456",
+      "text": "diff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md\nindex b3c8e1b0bd91cafc49a225d03a665cc95321368c..84a4096aa0f6e46878ff074718a9bf9c07298607 100644\n--- a/specs/1536-complete-wound-materialization/tasks.md\n+++ b/specs/1536-complete-wound-materialization/tasks.md\n@@ -4,7 +4,8 @@ Latest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a\n \n - [x] Verify clean f87 task branch and remote SHA; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` unchanged. Read governance, current design/plans and actual source owners; select the dependency audit because static source/history/cold-proof analysis does not consume Windows runtime qualification.\n - [x] T179-Pd-AUDIT-SBM static map/matrix prepared for review: document exact implemented/proposed boundaries, concrete dependency map, future verification matrix and T178–T191/T192–T198 handoff. Distinguish structural data prerequisites from acceptance/scheduling holds; do not assert every pure-kernel implementation needs Windows worker evidence. No code or new design/implementation grant.\n-- [ ] Preserve WIP/push/readback/new exact GitHub recovery before independent Astra/XHigh review; fix confirmed findings and inspect supporting source pins/diff.\n+- [x] WIP96bd6acbfa0a403c3c6bf53c9cdcadddedc69899 pushed/readback/new GitHub222files/all219changedpaths/no deletions before independent Astra/XHigh review. Initial review confirms only SBM-D01; immutable pair/root43pins55projections8diffs12localrecords and220+222recoveries verified/preserved.\n+- [ ] Single SBM-D01 wording correction now records capture/freeze → irreversible CloseCapture → preparation/seals, binding S/C/raw B before seals. Save/readback/recover corrected documentary carrier, then affected independent verification; no source/order/authority change.\n - [ ] Save final documentary review/result, verify task remote SHA and clean GitHub recovery. Audit completion alone closes no full T179/F1/T197/new-QTE gate. Retain prior13PASS+first2LinuxFAIL, Windows JOBsuccess separately, raw worker2 qualification BLOCKED WIN-E01.\n \n The sections below are immutable chronological authority/evidence history. Their earlier \"current\", \"permitted\" or continuation wording is superseded by this section and the current plan for this delegation; it cannot authorize a Windows action.\n"
+    }
+  ],
+  "wholeDiff": {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--full-index",
+      "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+      "80b6212e7057bb5b49ec1eac92ad2d2d669c3437"
+    ],
+    "nativeExit": 0,
+    "bytes": 326168,
+    "sha256": "f1669f157a425a9cb3eb9738eabcc1042f1c0e90a2a50bc2e4c574e307d28b38"
+  },
+  "readOnlyCommands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "nativeExit": 0,
+      "stdout": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437\n",
+      "stdoutSha256": "03125f956679599e2028fa04fbffff3ca9b2836527cfd0cf4285ca4f754a2625",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "nativeExit": 0,
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "nativeExit": 0,
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts",
+        ".github",
+        "AGENTS.md",
+        "docs",
+        ".specify"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "nativeExit": 0,
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+      "nativeExit": 0,
+      "stdout": "7acd4a960fa273e0df2dd83e4998baef79ba94d5\n",
+      "stdoutSha256": "ed2d1e5546dc48f9aaac3701e7c215d828d47e275621ba0e008ec000a8726a3b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+      "nativeExit": 0,
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "initialReviewPreserved": {
+    "markdownSha256": "42877fcae6a823a2de36971fa271652203d96b05b7befcdd39624c852a4783a6",
+    "jsonSha256": "0eae1cd4cea602bfbc02a2e4487e0cbeafb099d169a6b43f64eead486f0276e2",
+    "committedPins": [
+      {
+        "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.md",
+        "gitBlob": "5c1771e26a89d7ae714496a5e8d12abf390f1216",
+        "bytes": 7022,
+        "sha256": "42877fcae6a823a2de36971fa271652203d96b05b7befcdd39624c852a4783a6"
+      },
+      {
+        "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.json",
+        "gitBlob": "3e751a72c0bd1e0331c815a5692aac2174993ee1",
+        "bytes": 104287,
+        "sha256": "0eae1cd4cea602bfbc02a2e4487e0cbeafb099d169a6b43f64eead486f0276e2"
+      }
+    ],
+    "bytesCompared": "Exact Git bytes equal unchanged original /tmp reports",
+    "rootSummaryCounts": "43 pins /55 projections /8 diffs /12 local records match preserved report metadata; prior whole audit not repeated"
+  },
+  "scopeProof": {
+    "changedFiles": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-independent-review-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-initial-review-root-inspection-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-root-inspection-20261016.json",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "protectedScopeDiff": "EMPTY",
+    "substantiveAuditChange": "Exactly line414; all other audit lines385–438 unchanged",
+    "authorityNotices": "Unchanged current restrictions; only correction/preservation status added",
+    "futureChecks": [
+      "SBM-V01",
+      "SBM-V02",
+      "SBM-V03",
+      "SBM-V04",
+      "SBM-V05",
+      "SBM-V06",
+      "SBM-V07",
+      "SBM-V08",
+      "SBM-V09",
+      "SBM-V10",
+      "SBM-V11",
+      "SBM-V12"
+    ],
+    "futureChecksStatus": "FUTURE_UNRUN",
+    "mainT178ToT191": "14 unique unchecked",
+    "currentClean": true
+  },
+  "recovery": {
+    "receiptPath": "/tmp/t179pd-sbm-static-audit-corrected-delta-recovery-20261016.json",
+    "receiptBytes": 196290,
+    "receiptSha256": "ea1644f4a5abe49bf09fc3bde5507c0cdd0b52b656a3a5ae8d1cdd23f87bb5c1",
+    "sha": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+    "directory": "/workspace/f1-r2-sbm-static-audit-corrected-delta-github-20261016",
+    "filesVerified": 227,
+    "allChangedPaths": 224,
+    "deletions": [],
+    "verification": "Every local recovered byte, mode, length, SHA256 and Git blob matched exact candidate and writer; all base-to-current changed paths covered",
+    "recordedRemoteReadback": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+    "transportLimit": "Transport/remote facts read from retained receipt, no network reexecution",
+    "inventorySha256": "28e40e4466ec2c4821e9119387a115d92b4ecba26cc5b9e07ed60bde26d4432e",
+    "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification.",
+    "retainedFullBase": {
+      "sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+      "directory": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+      "receiptSha256": "0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0",
+      "historicallyVerifiedFiles": 54267,
+      "currentIdentityAndCleanRechecked": true,
+      "noAlternates": true,
+      "noSparse": true,
+      "newFullByteScan": false
+    }
+  },
+  "limits": [
+    "No runtime/build/discovery/tests/application/network/CI/transfer/settings/catalog/release/delegation or repository edit",
+    "No new schema/issuer/implementation/fullS/B/M3/F1/T197/newQTE acceptance",
+    "Windows permission remains unanswered and WIN-E01 raw-evidence block remains",
+    "D4/guidedUS5/DOMvisual/Windows/D8 and other original open obligations unchanged",
+    "Only corrected documentary audit can proceed to final persistence; no gameplay/platform gates closed"
+  ],
+  "inspectionUtc": "2026-10-16T23:38:33.492921+00:00",
+  "finalStop": true,
+  "checkerText": "import pathlib,subprocess,json,hashlib,os,stat,re,datetime\nR=pathlib.Path('/workspace/The-Book-of-Eternity-Reborn')\nB='96bd6acbfa0a403c3c6bf53c9cdcadddedc69899';C='80b6212e7057bb5b49ec1eac92ad2d2d669c3437';F='7acd4a960fa273e0df2dd83e4998baef79ba94d5'\nS='specs/1536-complete-wound-materialization/';env=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0')\ndef h(b):return hashlib.sha256(b).hexdigest()\nrecords=[]\ndef run(args,cwd=R,record=True):\n q=subprocess.run(args,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE);assert q.returncode==0,(args,q.stderr)\n if record:records.append(dict(argv=args,cwd=str(cwd),nativeExit=q.returncode,stdout=q.stdout.decode(),stdoutSha256=h(q.stdout),stderrSha256=h(q.stderr)))\n return q.stdout\ndef git(*args):return run(['git',*args],record=False)\ncache={}\ndef blob(sha,p):\n if (sha,p) not in cache:cache[sha,p]=git('show',sha+':'+p)\n return cache[sha,p]\ndef pin(sha,p):\n b=blob(sha,p);oid=git('rev-parse',sha+':'+p).decode().strip();assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest()==oid\n return dict(sha=sha,path=p,gitBlob=oid,bytes=len(b),sha256=h(b))\ndef projection(sha,p,a,b):\n raw=b''.join(blob(sha,p).splitlines(keepends=True)[a-1:b]);return dict(sha=sha,path=p,firstLine=a,lastLine=b,sha256=h(raw),text=raw.decode())\nassert run(['git','rev-parse','HEAD']).decode().strip()==C\nassert run(['git','status','--porcelain=v1'])==b''\nrun(['git','merge-base','--is-ancestor',B,C])\nnames=git('diff','--name-only',B,C).decode().splitlines()\nassert len(names)==8 and all(p.startswith(S) and p.endswith(('.md','.json')) for p in names)\nprotected=['BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','tests','scripts','.github','AGENTS.md','docs','.specify']\nassert run(['git','diff','--exit-code',B,C,'--',*protected])==b''\nip=S+'design/lawful-active-joint-tail-b-implementation-plan.md'\nold=blob(B,ip).decode().splitlines();new=blob(C,ip).decode().splitlines()\noldrow=old[413];newrow=new[413]\nassert 'prepare/seal boundary before closing capture' in oldrow\nexact='No active B/seal/take currently implemented. Capture/freeze S while Capturing, then irrevocably CloseCapture before preparation; the future genuine prepare/seal split binds retained S/C/raw B and the source-guard union before seals. No after-seal attachment or v2 promotion.'\nassert exact in newrow\n# The substantive audit is unchanged apart from that exact row.\nassert old[384:438][:29]==new[384:438][:29]\nfor n in range(384,438):\n if n!=413:assert old[n]==new[n],n+1\nassert 'before CloseCapture/preparation' in new[394] and 'Capturing through source freeze' in new[426]\nap='BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs';pp='BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs'\nfor p in [ap,pp]:assert blob(B,p)==blob(C,p)\nassert '_capturing = false; _phase = \"PreparationStarted\"' in blob(C,ap).decode()\nassert 'if (_capturing || _delegated' in blob(C,ap).decode()\npublisher=blob(C,pp).decode();assert publisher.index('await CaptureCurrentHotCustodyAsync(attempt, lease)')<publisher.index('await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync')\n# Immutable review and WIP recovery are exact, not rewritten.\nmdsha='42877fcae6a823a2de36971fa271652203d96b05b7befcdd39624c852a4783a6';jsha='0eae1cd4cea602bfbc02a2e4487e0cbeafb099d169a6b43f64eead486f0276e2'\nprior=[]\nfor ext,expected in [('md',mdsha),('json',jsha)]:\n p=S+'recovery/t179pd-sbm-static-dependency-independent-review-20261016.'+ext\n local=pathlib.Path('/tmp/t179pd-sbm-static-dependency-independent-review-20261016.'+ext)\n assert blob(C,p)==local.read_bytes() and h(blob(C,p))==expected\n prior.append(pin(C,p))\ninitial=json.loads(blob(C,S+'recovery/t179pd-sbm-static-dependency-independent-review-20261016.json'))\nassert initial['decision']=='BLOCKED_DOCUMENTARY_CORRECTION_REQUIRED' and [v['id'] for v in initial['findings']]==['SBM-D01']\nrp=S+'recovery/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json';assert h(blob(C,rp))=='76912d6a5facd64adcf35013a898ccd63da631975327ca64b8af7b343fe46827'\naudit=S+'recovery/t179pd-sbm-static-dependency-audit-20261016.json';assert blob(B,audit)==blob(C,audit)\nri=json.loads(blob(C,S+'recovery/t179pd-sbm-static-initial-review-root-inspection-20261016.json'));v=initial['verification']\nassert ri['wholePins']==len(v['currentDocumentPins'])+len(v['verifiedSourcePins'])==43\nassert ri['exactProjections']==sum(len(v[k]) for k in ['verifiedSourceProjections','currentDocumentProjections','findingProjections'])==55\nassert ri['exactDiffs']==len(v['exactDiffs'])+1==8 and ri['markdownSha256']==mdsha and ri['jsonSha256']==jsha\nassert ri['readOnlyGitCommandsReproduced']==len(v['actualCommands'])+sum(x['argv'][1]!='ls-remote' for x in v['verifiedHistoricalCommands'])==12\nfor p in [S+'spec.md',S+'design/lawful-active-joint-tail-b.md']:assert blob(B,p)==blob(C,p)\nfor p in [ip,S+'plan.md',S+'tasks.md']:\n before=blob(B,p).decode().splitlines();after=blob(C,p).decode().splitlines()\n n={'specs/1536-complete-wound-materialization/plan.md':10,'specs/1536-complete-wound-materialization/tasks.md':6}.get(p,4)\n assert before[:n]==after[:n]\nids=re.findall(r'^\\| (SBM-V\\d\\d) /',blob(C,ip).decode(),re.M);assert ids==[f'SBM-V{i:02}' for i in range(1,13)]\ntaskText=blob(C,S+'tasks.md').decode()\nfor i in range(178,192):assert len(re.findall(r'^\\s*-\\s+\\[ \\]\\s+T'+str(i)+r'\\s',taskText,re.M))==1\n# Current complete delta, locally verified without any network.\nreceiptPath=pathlib.Path('/tmp/t179pd-sbm-static-audit-corrected-delta-recovery-20261016.json');raw=receiptPath.read_bytes();d=json.loads(raw)\nassert d['sha']==C and d['base_full_tree']==F and d['count']==227 and len(d['files'])==227 and d['changed_count']==224 and d['deleted_paths']==[] and d['runtime']=='NOT_RUN'\nns=git('diff','--name-status',F,C).decode();assert ns==d['name_status']\nassert git('diff','--summary',F,C).decode()==d['mode_change_summary']\nchanged={line.split('\\t')[-1] for line in ns.splitlines()};rows={x['path'] for x in d['files']};assert len(changed)==224 and len(rows)==227 and changed<=rows\nfor row in d['files']:\n p=row['path'];b=blob(C,p);local=pathlib.Path(d['directory'])/p\n assert local.read_bytes()==b==(R/p).read_bytes() and len(b)==row['bytes'] and h(b)==row['sha256']\n assert git('rev-parse',C+':'+p).decode().strip()==row['git_blob']\n assert git('ls-tree',C,'--',p).decode().split(None,1)[0]==row['mode']\n assert stat.S_IMODE(local.stat().st_mode)==(0o755 if row['mode']=='100755' else 0o644)\nassert d['remoteReadback']==C+'\\trefs/heads/1536-wound-b2-cloud-20261012\\n'+'d0241e71e349fbe2020e4a41b6be7c627c81cbb4\\trefs/heads/main\\n'\nfullp=pathlib.Path(d['base_full_tree_receipt']);fb=fullp.read_bytes();assert h(fb)=='0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0'\nfull=json.loads(fb);fd=pathlib.Path(full['directory']);assert full['sha']==F\nassert run(['git','rev-parse','HEAD'],cwd=fd).decode().strip()==F\nassert run(['git','status','--porcelain=v1','--untracked-files=all'],cwd=fd)==b''\nassert not (fd/'.git/objects/info/alternates').exists() and not (fd/'.git/info/sparse-checkout').exists()\ndiffs=[]\nfor p in names:\n argv=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C,'--',p];b=run(argv,record=False)\n entry=dict(argv=argv,nativeExit=0,bytes=len(b),sha256=h(b))\n if p in [ip,S+'plan.md',S+'tasks.md']:entry['text']=b.decode()\n diffs.append(entry)\nargv=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C];whole=run(argv,record=False)\nprojections=[projection(B,ip,414,414),projection(C,ip,395,395),projection(C,ip,414,414),projection(C,ip,427,427),projection(C,ip,439,439),projection(C,ap,83,95),projection(C,ap,159,177),projection(C,pp,43,53),projection(C,S+'plan.md',1,13),projection(C,S+'tasks.md',1,12)]\nreport=dict(schemaVersion=1,task='T179-Pd-AUDIT-SBM',reviewKind='AFFECTED_SBM_D01_DOCUMENTARY_VERIFICATION_ONLY',decision='ACCEPTED_AFFECTED_DOCUMENTARY_CORRECTION',reviewedSource=C,baseline=B,reviewer=dict(agent='/root/t179pc_independent_review',role='Independent non-author; root is sole repository writer',configuredModel='gpt-6-astra',configuredReasoningEffort='xhigh',configurationEvidence='Retained coordinator-confirmed actual spawn/configuration receipt',backendTelemetry='UNAVAILABLE'),resolvedFindings=[dict(id='SBM-D01',path=ip,line=414,correction=exact,verification='Matches unchanged SBM02/V05 and actual irreversible CloseCapture before CreateJointRepairPreparation/RetainStage; no stage or product changes.')],remainingMaterialFindings=[],hypotheses=[],releasedActuals=[],implementationRelease=False,schemaIssuerAcceptance=False,authority=dict(scope='Documentary audit only',windowsPermission='UNANSWERED',failedHoldDeliveryOrTechnicalReviewIsUserPermission=False,windowsEvidence='WIN-E01 remains BLOCKED; hosted JOBsuccess is not accepted worker2 raw-case evidence',retainedLocalEvidence='Prior13PASS and first2LinuxFAIL retain original f9bc provenance; not rerun or requalified'),sourcePins=[pin(C,p) for p in names]+[pin(B,ip),pin(C,ap),pin(C,pp),pin(C,audit),pin(C,S+'spec.md'),pin(C,S+'design/lawful-active-joint-tail-b.md')],projections=projections,exactDiffs=diffs,wholeDiff=dict(argv=argv,nativeExit=0,bytes=len(whole),sha256=h(whole)),readOnlyCommands=records,initialReviewPreserved=dict(markdownSha256=mdsha,jsonSha256=jsha,committedPins=prior,bytesCompared='Exact Git bytes equal unchanged original /tmp reports',rootSummaryCounts='43 pins /55 projections /8 diffs /12 local records match preserved report metadata; prior whole audit not repeated'),scopeProof=dict(changedFiles=names,protectedScopeDiff='EMPTY',substantiveAuditChange='Exactly line414; all other audit lines385–438 unchanged',authorityNotices='Unchanged current restrictions; only correction/preservation status added',futureChecks=ids,futureChecksStatus='FUTURE_UNRUN',mainT178ToT191='14 unique unchecked',currentClean=True),recovery=dict(receiptPath=str(receiptPath),receiptBytes=len(raw),receiptSha256=h(raw),sha=C,directory=d['directory'],filesVerified=227,allChangedPaths=224,deletions=[],verification='Every local recovered byte, mode, length, SHA256 and Git blob matched exact candidate and writer; all base-to-current changed paths covered',recordedRemoteReadback=d['remoteReadback'],transportLimit='Transport/remote facts read from retained receipt, no network reexecution',inventorySha256=h(json.dumps(d['files'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()),scope=d['scope'],retainedFullBase=dict(sha=F,directory=str(fd),receiptSha256=h(fb),historicallyVerifiedFiles=full['count'],currentIdentityAndCleanRechecked=True,noAlternates=True,noSparse=True,newFullByteScan=False)),limits=['No runtime/build/discovery/tests/application/network/CI/transfer/settings/catalog/release/delegation or repository edit','No new schema/issuer/implementation/fullS/B/M3/F1/T197/newQTE acceptance','Windows permission remains unanswered and WIN-E01 raw-evidence block remains','D4/guidedUS5/DOMvisual/Windows/D8 and other original open obligations unchanged','Only corrected documentary audit can proceed to final persistence; no gameplay/platform gates closed'],inspectionUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),finalStop=True)\nprint(json.dumps(report,ensure_ascii=False))\n",
+  "markdownPath": "/tmp/t179pd-sbm-static-dependency-sbmd01-verification-20261016.md",
+  "markdownSha256": "c02ce3a34b653ee3aa446bf2728130c1e2f28220b8ae232d66abc408f8e08bbd"
+}
