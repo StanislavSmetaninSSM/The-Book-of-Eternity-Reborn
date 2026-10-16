@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-retained-common-calculation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5fda7126714942e20a4d71fe2e98147b36eb350f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8632609,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-retained-common-calculation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-retained-common-calculation",
+      "Categories": [
+        "fr063-joint-retained-common-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
