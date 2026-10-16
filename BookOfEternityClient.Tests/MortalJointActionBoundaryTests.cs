@@ -118,7 +118,7 @@ public sealed class MortalJointActionBoundaryTests
         var source = Bytes("{\"timeChange\":40}");
         var result = MortalJointActionBoundary.DescribeTime(source, source, MortalJointTimeCommand.None, new(140, false));
         Assert.Equal(MortalJointTimeKind.Unchanged, result.Kind);
-        Assert.Equal(140, result.Progression.Minutes);
+        Assert.Equal(140, result.ProgressionResolution.Minutes);
         Assert.Null(result.ElapsedMinutes);
         Assert.Null(result.EffectCurrentTime);
     }
@@ -134,7 +134,7 @@ public sealed class MortalJointActionBoundaryTests
     {
         var result = MortalJointActionBoundary.DescribeTime(null, null, MortalJointTimeCommand.None, new(170, true));
         Assert.Equal(MortalJointTimeKind.Unchanged, result.Kind);
-        Assert.Equal(new WorldTimeResolutionResult(170, true), result.Progression);
+        Assert.Equal(new WorldTimeResolutionResult(170, true), result.ProgressionResolution);
         Assert.Null(result.EffectCurrentTime);
         Assert.Null(result.ElapsedMinutes);
     }
@@ -144,8 +144,8 @@ public sealed class MortalJointActionBoundaryTests
     {
         var result = MortalJointActionBoundary.DescribeTime(Bytes("{}"), Bytes("{\"timeChange\":5}"), MortalJointTimeCommand.Incremental, new(100, false));
         Assert.Equal(MortalJointTimeKind.Incremental, result.Kind);
-        Assert.Equal(105, result.Progression.Minutes);
-        Assert.False(result.Progression.HasUnresolvedAbsoluteOverride);
+        Assert.Equal(105, result.ProgressionResolution.Minutes);
+        Assert.False(result.ProgressionResolution.HasUnresolvedAbsoluteOverride);
         Assert.Equal(5, result.ElapsedMinutes);
         Assert.Null(result.CanonicalBeforeMinutes);
         Assert.Null(result.EffectCurrentTime);
@@ -159,7 +159,7 @@ public sealed class MortalJointActionBoundaryTests
         var result = MortalJointActionBoundary.DescribeTime(Bytes("{\"currentTimeInMinutes\":100}"),
             Bytes($"{{\"setWorldTime\":{{\"currentTimeInMinutes\":{minutes}}}}}"), MortalJointTimeCommand.Absolute, new(100, false));
         Assert.Equal(MortalJointTimeKind.NumericAbsolute, result.Kind);
-        Assert.Equal(minutes, result.Progression.Minutes);
+        Assert.Equal(minutes, result.ProgressionResolution.Minutes);
         Assert.Equal(minutes, result.EffectCurrentTime);
         Assert.Equal(100L, result.CanonicalBeforeMinutes);
         Assert.Null(result.ElapsedMinutes);
@@ -172,7 +172,7 @@ public sealed class MortalJointActionBoundaryTests
         var after = Bytes("{\"setWorldTime\":{\"year\":10,\"monthName\":\"Moon\",\"dayOfMonth\":2,\"timeOfDay\":\"night\"}}");
         var result = MortalJointActionBoundary.DescribeTime(before, after, MortalJointTimeCommand.Absolute, new(170, false));
         Assert.Equal(MortalJointTimeKind.UnresolvedAbsolute, result.Kind);
-        Assert.Equal(new WorldTimeResolutionResult(170, true), result.Progression);
+        Assert.Equal(new WorldTimeResolutionResult(170, true), result.ProgressionResolution);
         Assert.Null(result.EffectCurrentTime);
         Assert.Null(result.ElapsedMinutes);
         var timed = EffectMaterializationTestFixture.CreateCanonicalEffect();
@@ -194,8 +194,8 @@ public sealed class MortalJointActionBoundaryTests
         var result = MortalJointActionBoundary.DescribeTime(null,
             Bytes("{\"currentTimeInMinutes\":450,\"setWorldTime\":{\"year\":10,\"monthName\":\"Moon\",\"dayOfMonth\":2,\"timeOfDay\":\"night\"}}"),
             MortalJointTimeCommand.Absolute, new(100, false));
-        Assert.Equal(450, result.Progression.Minutes);
-        Assert.False(result.Progression.HasUnresolvedAbsoluteOverride);
+        Assert.Equal(450, result.ProgressionResolution.Minutes);
+        Assert.False(result.ProgressionResolution.HasUnresolvedAbsoluteOverride);
         Assert.Null(result.EffectCurrentTime);
         Assert.Null(result.ElapsedMinutes);
     }

@@ -20,12 +20,12 @@ internal sealed class MortalJointTimeProjection
     internal MortalJointTimeProjection(MortalJointTimeKind kind, WorldTimeResolutionResult progression,
         int? elapsedMinutes, long? canonicalBeforeMinutes, long? effectCurrentTime, byte[]? before, byte[]? after)
     {
-        Kind = kind; Progression = progression; ElapsedMinutes = elapsedMinutes;
+        Kind = kind; ProgressionResolution = progression; ElapsedMinutes = elapsedMinutes;
         CanonicalBeforeMinutes = canonicalBeforeMinutes; EffectCurrentTime = effectCurrentTime;
         _before = before?.ToArray(); _after = after?.ToArray();
     }
     internal MortalJointTimeKind Kind { get; }
-    internal WorldTimeResolutionResult Progression { get; }
+    internal WorldTimeResolutionResult ProgressionResolution { get; }
     internal int? ElapsedMinutes { get; }
     internal long? CanonicalBeforeMinutes { get; }
     internal long? EffectCurrentTime { get; }
@@ -104,7 +104,11 @@ internal static class MortalJointActionBoundary
         var beforeMinutes = ReadEffectTime(before);
         var effectTime = ReadEffectTime(after);
         if (command == MortalJointTimeCommand.None)
+        {
+            if (before is null ? after is not null : after is null || !before.AsSpan().SequenceEqual(after))
+                throw Invalid("unchanged time has changed source images");
             return new(MortalJointTimeKind.Unchanged, postPrefix, null, beforeMinutes, effectTime, before, after);
+        }
 
         var progression = ProgressionScheduleService.ResolveFrozenWorldTime(after, postPrefix.Minutes);
         if (command == MortalJointTimeCommand.Absolute)
