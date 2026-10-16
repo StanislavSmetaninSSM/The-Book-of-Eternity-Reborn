@@ -87,7 +87,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var shell = (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator)
             .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)
             ?? throw new InvalidOperationException("PowerShell 7 fixture executable is unavailable.");
-        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), settings =>
+        var input = new QueuedConsoleInputSource([]);
+        var engine = CreateGameEngine(input, settings =>
         {
             InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;
             settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
@@ -104,9 +105,60 @@ public sealed partial class GameEngineTurnLifecycleTests
             var generation = Assert.IsType<string>(preparation.GetType().GetProperty("Generation")!.GetValue(preparation));
             var before = await files.ReadFileBytesAsync(weatherPath);
             armed = true;
-            var accepted = await InvokePrivateAsync<bool>(engine, "WaitForContractRepairAsync", "hot actual worker control",
-                new List<ValidationIssue> { new(weatherPath, IssueSeverity.Error, "Synthetic weather repair owner control.",
-                    code: "normalized_weather_missing_description") }, 1, backup, generation);
+            using var deadlineStop = new CancellationTokenSource();
+            var deadline = Task.Delay(TimeSpan.FromSeconds(40), deadlineStop.Token);
+            Task<bool>? repairWait = null;
+            var failures = new List<Exception>();
+            var accepted = false;
+            var guardFired = false;
+            try
+            {
+                repairWait = InvokePrivateAsync<bool>(engine, "WaitForContractRepairAsync", "hot actual worker control",
+                    new List<ValidationIssue> { new(weatherPath, IssueSeverity.Error, "Synthetic weather repair owner control.",
+                        code: "normalized_weather_missing_description") }, 1, backup, generation);
+                if (await Task.WhenAny(repairWait, deadline) != repairWait)
+                {
+                    guardFired = true;
+                    throw new TimeoutException("Actual worker repair Wait exceeded the fixture's protective 40s bound.");
+                }
+                accepted = await repairWait;
+            }
+            catch (Exception failure) { failures.Add(failure); }
+            finally
+            {
+                await deadlineStop.CancelAsync();
+                if (repairWait is { IsCompleted: false }) input.Enqueue(Key(ConsoleKey.Escape));
+                // A worker fallback enters the real ordinary Ready/Escape loop.
+                // Join that owner and the guard before participation/root disposal.
+                try { if (repairWait is not null) await repairWait; }
+                catch (Exception failure)
+                {
+                    if (!failures.Contains(failure)) failures.Add(failure);
+                }
+                try { await deadline; }
+                catch (OperationCanceledException failure) when (failure.CancellationToken == deadlineStop.Token) { }
+                catch (Exception failure)
+                {
+                    if (!failures.Contains(failure)) failures.Add(failure);
+                }
+                armed = false;
+            }
+            // Retain the actual worker result even when fallback/launch/apply fails;
+            // a diagnostic failure must not replace the primary owner failure.
+            try
+            {
+                WritePhysicalInjuryDiagnostic("fr063_hot_actual_worker_settled_before_oracles", new
+                {
+                    failReadyPublication, guardFired, accepted, readyCuts, appliedTaskAtCut,
+                    WaitSettled = repairWait?.IsCompleted, GuardSettled = deadline.IsCompleted,
+                    Audit = await new GmWorkerAuditLog(files).ReadEventsAsync(),
+                    LatestTask = await files.ReadFileAsync(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath),
+                    Failures = failures.Select(failure => failure.ToString()).ToArray(), request.RequestId, generation
+                });
+            }
+            catch (Exception failure) { failures.Add(failure); }
+            if (failures.Count == 1) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+            if (failures.Count > 1) throw new AggregateException("Actual worker fixture and settled diagnostics failed.", failures);
             Assert.True(accepted); Assert.Equal(failReadyPublication ? 1 : 0, readyCuts);
             var audit = await new GmWorkerAuditLog(files).ReadEventsAsync();
             var applied = Assert.Single(audit, row => row.EventType == "proposal-applied");
@@ -121,8 +173,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Null(await files.ReadFileBytesAsync("game_state/control/validation_repair_request.json"));
             var ledger = (await files.ReadFileAsync("game_state/control/gm_trajectory_ledger.jsonl"))!
                 .Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(line => JsonNode.Parse(line)!.AsObject()).ToArray();
-            Assert.Contains(ledger, row => row["requestId"]?.GetValue<string>() == request.RequestId &&
-                row["acceptanceScope"]?.GetValue<string>() == (failReadyPublication ? "worker_apply_gate_accepted" : "correlated_repair_ready"));
+            var acceptedRow = Assert.Single(ledger, row => row["requestId"]?.GetValue<string>() == request.RequestId &&
+                row["sessionId"]?.GetValue<string>() == request.SessionId && row["turnNumber"]?.GetValue<int>() == 43 &&
+                row["validation"]?["acceptanceScope"]?.GetValue<string>() ==
+                    (failReadyPublication ? "worker_apply_gate" : "correlated_repair_ready"));
+            Assert.Equal(failReadyPublication ? "worker_apply_gate_accepted" : "validation_repair_ready",
+                acceptedRow["terminal"]!["kind"]!.GetValue<string>());
+            Assert.False(acceptedRow["validation"]!["fullCanonicalStateAccepted"]!.GetValue<bool>());
             var diagnostic = InvokePrivateValue<JsonObject>(engine, "ExportHotOrdinarySubmissionDiagnostic");
             Assert.True(diagnostic["binding"]!["actualStageCompleted"]!.GetValue<bool>());
             Assert.Equal("Unavailable", diagnostic["custody"]!["status"]!.GetValue<string>());
