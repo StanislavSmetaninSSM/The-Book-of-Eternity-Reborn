@@ -1,0 +1,6 @@
+52f20c26a4a1745915bb59ff5cdc00f5ae97ca6506f89658927f5341d81222cb  /tmp/t179pd-automatic-policy-apd01-verification-20261016.md
+2082d7090eca7936a0c77a7775b15990c48f1851ce702ee154b3bb0d047bbdb6  /tmp/t179pd-automatic-policy-apd01-verification-20261016.json
+270cc60fc82c7beacaff8acf2721b17b077769f71ef77fc86570e263941a8936  /tmp/t179pd-automatic-policy-apd01-verification-20261016-scoped.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-automatic-policy-apd01-verification-20261016-production-continuity.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-automatic-policy-apd01-verification-20261016-immutable-author-and-helper-continuity.diff
+1afc0955a9f1ea1a411775cc213136bb003e14871d119affc8ecd643bb6abcbd  /tmp/t179pd-automatic-policy-apd01-verification-20261016-helper-scope.diff

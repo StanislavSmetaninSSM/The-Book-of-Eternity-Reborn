@@ -1,0 +1,36 @@
+{
+  "observed_head": "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+  "frozen_carrier": "f13fba34c73c61eedff413c32723d2703d95fc55",
+  "source_continuity_diff": {
+    "path": "/tmp/t179pd-hot-custody-hs01-causal-red-independent-observed-continuity-20261016.diff",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "f13fba34c73c61eedff413c32723d2703d95fc55",
+      "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ],
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checkpoint_sections": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "frozen_sha256": "3beb4821ae671e4b4b021013c0cb2d2d1897c6ac4ec65a5701a724b0ee786b55",
+      "observed_sha256": "8b3894e0fd2bbeac6bfd34d26445181239d2514cc2526db60dbb252a065b0351",
+      "hs01_checkpoint_section_unchanged": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "frozen_sha256": "1cca6f7e0fbe130ed67febf38df0f4a7ba5ceb3cadac173f9e9fa44ccb6cd694",
+      "observed_sha256": "1d4854d975b4eb012c80a18dbc1a3e1c1acea09efe6701024d590a8cf3b50814",
+      "hs01_checkpoint_section_unchanged": true
+    }
+  ]
+}

@@ -1,3 +1,9 @@
+## T179-Pd.3b RED qualified; AP-D01 closed; finite fixtures next (2026-10-16)
+
+- [x] Independent HS01causalRED review qualifies preserved real-owner NotNull172/native1/strictcleanup prerequisite for subsequent accepted3b implementation. Root38pinentries/fivediffs/12tmprefs/eightprojections verified; sixrawchains/fourDLLs/1124f13files accepted, nofixturefault. No implemented custody/barrier/registryreceipt or GREEN/furtheractual/fullstage grant.
+- [x] AP-D01 affected verification closes both IO-before-try clarifications; root114pinentries/threeGitdiffs/sixtmprefs/fiveprojections verified, no newfinding. Expanded4e newGitHub selected recovery1166files/all52reviewdependencies; independent52scopeverification/no fulltreeorrestoredruntime claim. Allimmutablepairs preserved. Future changedsource dependencies need affected scope.
+- [ ] Finish genuine finite Stage→Wait unchanged/replacedReady controls and optionalcustody SourceChanged target using actual existinghooks, then newsourceWIP/G5/SOURCE/FIRSTLate2/separateEVIDENCE before releasedcontrols/RED2. Never treat ordinaryWaittrue as custodyauthority, outeroperationclose ascanonicalLd-release, or injectprivateissuer/leasefields. FullHS02–16/AP01–14/sourceS/B/M3/F1/T197/activation/remainingqualification stayOPEN. Productionstillabsent; continueauthorizedwork.
+
 ## T179-Pd.3c DESIGN accepted; precise AP-D01 correction (2026-10-16)
 
 - [x] Separate independent3cDESIGN accepts bounded A+B engineering, zero materialblockers; root98pinentries/fivediffs/seventmprefs/82exactprojections verified. Immutable review/source/staticdiff/hash/finalreadback artifacts preserved; actual production unchanged. No runtime release; B requires actual3b owner, AP01–14 allFUTURE/UNRUN.

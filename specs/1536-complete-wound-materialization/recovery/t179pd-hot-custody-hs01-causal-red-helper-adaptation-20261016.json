@@ -1,0 +1,8 @@
+{
+  "upstream_commit": "f13fba34c73c61eedff413c32723d2703d95fc55",
+  "upstream_path": "specs/1536-complete-wound-materialization/recovery/t179pd-inspect-hot-custody-red1-absence-hs01-red.py",
+  "upstream_sha256": "7abff33d591fea160c8ed5c2391dc452a391052760c212df88e55b0615cbbab5",
+  "adapted_path": "/tmp/t179pd-hot-custody-hs01-causal-red-independent-semantics-20261016.py",
+  "adapted_sha256": "421946e73adce42b188748dc7f954b47d4a86f4f7d4f8cbe524775be2446b268",
+  "changes": "Output destination and read-only Git environment only; all audited source/raw semantic assertions retained."
+}

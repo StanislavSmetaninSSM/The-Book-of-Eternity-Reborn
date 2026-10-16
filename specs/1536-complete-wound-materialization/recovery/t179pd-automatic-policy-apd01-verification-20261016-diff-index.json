@@ -1,0 +1,57 @@
+[
+  {
+    "path": "t179pd-automatic-policy-apd01-verification-20261016-scoped.diff.gz",
+    "raw_path": "/tmp/t179pd-automatic-policy-apd01-verification-20261016-scoped.diff",
+    "raw_sha256": "270cc60fc82c7beacaff8acf2721b17b077769f71ef77fc86570e263941a8936",
+    "raw_bytes": 10691,
+    "stored_sha256": "eb5348360a0a0755da13511a4e2c37208bef5c627951ee5349fabc4b2345abd9",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "f13fba34c73c61eedff413c32723d2703d95fc55",
+      "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  },
+  {
+    "path": "t179pd-automatic-policy-apd01-verification-20261016-production-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-automatic-policy-apd01-verification-20261016-production-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "bab89b7034951cac436ca692a3439dd2a7fecf51",
+      "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-automatic-policy-apd01-verification-20261016-immutable-author-and-helper-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-automatic-policy-apd01-verification-20261016-immutable-author-and-helper-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "bab89b7034951cac436ca692a3439dd2a7fecf51",
+      "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-fresh-github-selected-restore-v2-20261016.py"
+    ]
+  }
+]
