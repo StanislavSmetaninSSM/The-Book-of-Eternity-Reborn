@@ -1,0 +1,133 @@
+{
+  "source_sha": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-Build-integration.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/Build-integration.log",
+      "raw_bytes": 120171,
+      "raw_sha256": "8dbfb19324c733b9f7756b8cd726230a837b2de50f45fe08a1b387e16d6409c2",
+      "stored_sha256": "1b389cb465351f48b32f9ff0a2a1de43a5115b21824b523f39e6f907c17d9c36"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-Build-unit.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/Build-unit.log",
+      "raw_bytes": 26198,
+      "raw_sha256": "3da6a0f3eca9759640fc5abd6ce0e8e67f4a1a72f824882128de1d6713f05107",
+      "stored_sha256": "9d76819608e1d79b9d474110ad50f703399a287471040744df34d6d85fa6032e"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-catalog-audit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/catalog-audit.json",
+      "raw_bytes": 103,
+      "raw_sha256": "2156f686e0c5f16d99f0823c72cc7b82ceeb43fc3f918bda460e30802323e439",
+      "stored_sha256": "2156f686e0c5f16d99f0823c72cc7b82ceeb43fc3f918bda460e30802323e439"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/dotnet-test.log",
+      "raw_bytes": 3532336,
+      "raw_sha256": "4d6031fdb6586e591f9b22af272bd9f7e0f9f72a9a888df7692c72bfe49ec1f2",
+      "stored_sha256": "824a345a38c8ecd29b3463f7841fa6e0362f555e2cb11a0b4b15666e16938e04"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/native-exit.json",
+      "raw_bytes": 638,
+      "raw_sha256": "8bc1b33b1e672adf9e2a223fe533d0e0c383544d4253f1de257ba4576fb2562f",
+      "stored_sha256": "8bc1b33b1e672adf9e2a223fe533d0e0c383544d4253f1de257ba4576fb2562f"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/stdout.log",
+      "raw_bytes": 714,
+      "raw_sha256": "9e620f3c8239cf95b9396f43e2af572159d7487bfcad44d589e5a522a3c988c4",
+      "stored_sha256": "28257f1902b2631aed776bfb11a5add2063aa7d800c1eb92c4fcca5341abc234"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-catalog-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224122-186-266267-d0e24fca42444f3ab5c475bb048e6ac4-categories/summary.json",
+      "raw_bytes": 1599,
+      "raw_sha256": "822e57d0987bda44fa095a2b40aae0f8bca345f746f212e00c1e59cfe0572e04",
+      "stored_sha256": "822e57d0987bda44fa095a2b40aae0f8bca345f746f212e00c1e59cfe0572e04"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11725,
+      "Categories": 777,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0717629,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0649548,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1469941,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 98.1892055,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 15.7810066,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004368,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:02:06.2165481",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

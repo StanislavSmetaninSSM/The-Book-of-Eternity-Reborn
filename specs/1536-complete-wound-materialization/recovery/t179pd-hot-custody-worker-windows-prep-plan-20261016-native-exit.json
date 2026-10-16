@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-hot-worker-ready-disposition",
+    "-PlanOnly",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "compiled_source": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "started_utc": "2026-10-16T22:43:53.830205+00:00",
+  "ended_utc": "2026-10-16T22:44:00.329979+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b HS-WORKER-F01/O02 test-only logger and existing Windows host/CI correction. Fresh BOTH/catalog and exact singleton PlanOnly; ZERO actual tests; no Linux worker repeat or Windows actual release."
+}

@@ -1,0 +1,1094 @@
+{
+  "verdict": "FEASIBLE_EXISTING_WINDOWS_ROUTE_WITH_REQUIRED_CONCRETE_RELEASE_GUARDS_NO_ACTUAL_RELEASE",
+  "configuration": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "backendTelemetry": "UNAVAILABLE"
+  },
+  "checkpoint": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "savedWip": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "observedHead": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "observedWorktreeStatus": "",
+  "materialProtocolCorrections": [
+    {
+      "id": "WIN-C01",
+      "finding": "Validate hashed review JSON binds reviewedSource and explicit Windows singleton release; hash equality alone is insufficient.",
+      "status": "REQUIRED_IN_CONCRETE_SOURCE"
+    },
+    {
+      "id": "WIN-C02",
+      "finding": "Require exactly one parent; HEAD^ alone permits a merge release commit.",
+      "status": "REQUIRED_IN_CONCRETE_SOURCE"
+    }
+  ],
+  "verifiedCheckoutInventory": {
+    "revision": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+    "trackedFiles": 54404,
+    "invalidComponents": [],
+    "symlinks": [],
+    "caseFoldCollisions": [],
+    "longestRelativePath": "specs/1553-portable-local-storage/recovery/evidence/worker-r3-publication-preparation-failure/process-evidence/publication-initial/6d1a2d2b766e4b4dace783d5db672672/state-copy/native-runtime/.worker_runtime/cc67db1ce00f6e911654c3f9/restart_r3_original-c181ec5304f942f995f77db9cb032dbd/game_session/worker_proposals/worker_proposal_restart_r3_original/game_state/world/weather.json",
+    "maximumRelativeCharacters": 379,
+    "pathsOver180Characters": 12361,
+    "scope": "Static Windows filename constraints; not actual Windows checkout or filesystem qualification."
+  },
+  "gitPins": [
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": ".github/workflows/portable-load-linux.yml",
+      "blob": "bf54fa1b9eca928bb6f66c2d16e7e75eeecc38c5",
+      "bytes": 4018,
+      "sha256": "d338537993ba063c99283610e5b02d741d4e80a761ba382ca2cb75d0e6aa14c9"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": ".github/workflows/dotnet-ci.yml",
+      "blob": "0b1e75f391aa6dfb7c4d81bdceecc51a6e182a0e",
+      "bytes": 4649,
+      "sha256": "5d33e5bf08ec81264d583566544b3ceb7e716686d014d09799814440ac379bfe"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/test-csharp.ps1",
+      "blob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "blob": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/tests/test-ci-platform.tests.ps1",
+      "blob": "6d075aff300bb94caabfabbbe0ff0aec4d3ff846",
+      "bytes": 16852,
+      "sha256": "decd3d893899f87cfa7abefc94c7fb5d5e3c00e88830a13241772a48446f3782"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "blob": "855114bfafa9981c76cb2f15c04accaffc7629c7",
+      "bytes": 2990,
+      "sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "blob": "1f46709ec9e682d8451eb7c678c34e5c8cf80ed4",
+      "bytes": 68955,
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "blob": "1f46709ec9e682d8451eb7c678c34e5c8cf80ed4",
+      "bytes": 68955,
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "blob": "7336881118fcbeb0268db2eca36ebed3dd73deb5",
+      "bytes": 4602,
+      "sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "bytes": 10947,
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "blob": "1649315c04d082a4abcca8498da409e2e72da972",
+      "bytes": 36511,
+      "sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "blob": "16b91defd789624b70382974d689a29d0203e223",
+      "bytes": 29080,
+      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "blob": "16b91defd789624b70382974d689a29d0203e223",
+      "bytes": 29080,
+      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+      "blob": "0b5a019debd7607561ce6dc6f072c2bd191df9a1",
+      "bytes": 13831,
+      "sha256": "ca038678ef8832732b2efbe0157f45d8d2f88927113ec67de1f1d92e96c7f2b7"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "blob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "tests/categories.json",
+      "blob": "cd4c76a51dc66b26fcc11bc3bdd31f55ae30ceb6",
+      "bytes": 1967214,
+      "sha256": "2907c10a7305d26ced7fe5fd69d8ae3fb3d58215dfd2238a123ef85c7a7975f9"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "AGENTS.md",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "docs/development-workflow.md",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "docs/testing.md",
+      "blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "specs/1553-portable-local-storage/recovery/.gitattributes",
+      "blob": "2f2ab00e45f33b072314e702d62de1b7de082b09",
+      "bytes": 130,
+      "sha256": "0227e43e46919abd0f0a3e652ccb08ae3af301b8bc4d2f9533064a14f52c65f1"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "blob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "blob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "blob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md",
+      "blob": "46258a02d5b2c10e65aa9769e9a93d254112071e",
+      "bytes": 9591,
+      "sha256": "fcb71dd6db6e64d587e088b1a766fd8ac188b280f49f0cd96d92048b305fe099"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json",
+      "blob": "63619b0752d7731d780828aa0ae6cda5651d7286",
+      "bytes": 647157,
+      "sha256": "723a3f38082695a3bde617b6f04e07b8fc661b46fac122f02b9f179a9b92d6fb"
+    }
+  ],
+  "projections": [
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": ".github/workflows/portable-load-linux.yml",
+      "start": 1,
+      "end": 98,
+      "sha256": "d338537993ba063c99283610e5b02d741d4e80a761ba382ca2cb75d0e6aa14c9",
+      "text": "name: Portable load selected Linux qualification\n\n# Deliberately trigger only an edited filesystem selection or this workflow.\n# The repository permits only the three actions referenced below.\n\non:\n  push:\n    branches:\n      - codex/1553-load-filesystem\n    paths:\n      - .github/workflows/portable-load-linux.yml\n      - tests/selections/1553-load-linux.json\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: portable-load-linux-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  selected-filesystem:\n    name: Selected load filesystem contracts\n    runs-on: ubuntu-24.04\n    timeout-minutes: 25\n    env:\n      DOTNET_CLI_TELEMETRY_OPTOUT: '1'\n      POWERSHELL_TELEMETRY_OPTOUT: '1'\n      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'\n      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'\n      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'\n      DOTNET_PROCESSOR_COUNT: '1'\n      GenerateDocumentationFile: 'true'\n      NoWarn: '1591'\n\n    steps:\n      - name: Checkout exact source\n        uses: actions/checkout@v4\n\n      - name: Setup compiler and target runtime\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: |\n            8.0.x\n            10.0.x\n\n      - name: Validate selection and record native environment\n        shell: pwsh\n        run: |\n          $ErrorActionPreference = 'Stop'\n          if (-not [OperatingSystem]::IsLinux()) { throw 'Native Linux qualification requires Linux.' }\n          $revision = git rev-parse HEAD\n          if ($LASTEXITCODE -ne 0 -or $revision -cne $env:GITHUB_SHA) { throw 'Checkout source differs from run SHA.' }\n          Import-Module ./scripts/testing/TestCategoryCatalog.psm1\n          $catalog = Read-TestCategoryCatalog ./tests/categories.json\n          $selection = Get-Content ./tests/selections/1553-load-linux.json -Raw | ConvertFrom-Json\n          if (@($selection.selections).Count -eq 0) { throw 'An explicit nonempty selection is required.' }\n          foreach ($entry in $selection.selections) {\n            $category = @($catalog.categories | Where-Object id -CEQ $entry.category)\n            if ($category.Count -ne 1) { throw \"Unknown selected category: $($entry.category)\" }\n            if ($category[0].requirements.frontendBuild -or @($category[0].selectors | Where-Object project -EQ frontend).Count) {\n              throw 'This filesystem qualification job does not prepare frontend artifacts.'\n            }\n          }\n          New-Item -ItemType Directory -Path TestResults -Force | Out-Null\n          @(\n            \"source=$revision\"\n            \"os=$([Runtime.InteropServices.RuntimeInformation]::OSDescription)\"\n            \"architecture=$([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)\"\n            \"powershell=$($PSVersionTable.PSVersion)\"\n            \"selection=tests/selections/1553-load-linux.json\"\n            \"categories=$(@($selection.selections.category) -join ',')\"\n          ) | Set-Content TestResults/portable-load-linux-environment.txt\n          dotnet --info | Tee-Object -FilePath TestResults/portable-load-linux-dotnet.txt\n          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n\n      - name: Build and inspect selected discovery\n        shell: pwsh\n        run: |\n          ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -PlanOnly -Parallelism 1 -TimeoutMinutes 15\n          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n\n      - name: Execute only selected contracts\n        shell: pwsh\n        run: |\n          ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -NoBuild -Parallelism 1 -TimeoutMinutes 15\n          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n\n      - name: Preserve source-specific results\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: portable-load-linux-${{ github.sha }}\n          path: |\n            TestResults/test-categories/\n            TestResults/portable-load-linux-*.txt\n          if-no-files-found: warn\n          retention-days: 30\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": ".github/workflows/dotnet-ci.yml",
+      "start": 1,
+      "end": 90,
+      "sha256": "4e096718b706ff0ee68e9c04ab78e8b19f1b60989c1e380151e5fb87da33b590",
+      "text": "name: .NET CI\n\non:\n  push:\n    branches:\n      - main\n  pull_request:\n    branches:\n      - main\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  plan:\n    name: Plan explicit category hosts\n    runs-on: ubuntu-24.04\n    timeout-minutes: 5\n    outputs:\n      matrix: ${{ steps.selection.outputs.matrix }}\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      - name: Plan only the reviewed selection\n        id: selection\n        shell: pwsh\n        run: ./scripts/plan-test-ci.ps1 -SelectionFile tests/selection.json -GitHubOutput $env:GITHUB_OUTPUT\n\n  selected-tests:\n    name: Selected contracts (${{ matrix.platform }})\n    needs: plan\n    strategy:\n      fail-fast: false\n      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}\n    runs-on: ${{ matrix.runner }}\n    timeout-minutes: 35\n\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Validate actual host and materialize exact group\n        shell: pwsh\n        env:\n          BOE_CI_SELECTION: ${{ toJSON(matrix.selection) }}\n          BOE_CI_RUNNER: ${{ matrix.runner }}\n        run: |\n          $ErrorActionPreference = 'Stop'\n          Import-Module ./scripts/testing/TestCategoryCatalog.psm1\n          $catalog = Read-TestCategoryCatalog ./tests/categories.json\n          $selection = $env:BOE_CI_SELECTION | ConvertFrom-Json -AsHashtable\n          $plan = Get-TestCategoryCiMatrix $catalog $selection\n          if ($plan.include.Count -ne 1 -or $plan.include[0].runner -cne $env:BOE_CI_RUNNER) {\n            throw 'Matrix group differs from the exact catalog selection.'\n          }\n          if (($env:BOE_CI_RUNNER -ceq 'ubuntu-24.04' -and -not [OperatingSystem]::IsLinux()) -or\n              ($env:BOE_CI_RUNNER -ceq 'windows-latest' -and -not [OperatingSystem]::IsWindows())) {\n            throw 'Selected native host differs from the actual operating system.'\n          }\n          New-Item -ItemType Directory -Path TestResults -Force | Out-Null\n          $selection | ConvertTo-Json -Depth 20 | Set-Content TestResults/ci-selection.json -Encoding utf8NoBOM\n\n      - name: Verify preinstalled frontend Node\n        if: matrix.frontend\n        shell: pwsh\n        run: |\n          $ErrorActionPreference = 'Stop'\n          $nodeVersion = & node --version\n          if ($LASTEXITCODE -ne 0 -or $nodeVersion -isnot [string] -or\n              $nodeVersion -notmatch '^v22\\.(\\d+)\\.\\d+$' -or [int]$Matches[1] -lt 12) {\n            throw 'Frontend CI requires preinstalled Node.js 22.12+ (major 22); no installer or fallback is used.'\n          }\n          Write-Host \"Using runner Node.js $nodeVersion\"\n\n      - name: Restore browser frontend dependencies\n        if: matrix.frontend\n        run: npm ci --prefix BookOfEternityClient.WebFrontend\n\n      - name: Setup current compiler and target runtime\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: |\n            8.0.x\n            10.0.x\n\n      - name: Verify explicitly selected contracts\n        shell: pwsh\n        run: |\n          ./scripts/test-csharp.ps1 -SelectionFile TestResults/ci-selection.json\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/test-csharp.ps1",
+      "start": 1,
+      "end": 95,
+      "sha256": "3c3736e71b6f9c9d315877f04c89095b3069181feb27488eb5f05a55b3567cb0",
+      "text": "[CmdletBinding(DefaultParameterSetName = 'Categories')]\nparam(\n    [Parameter(ParameterSetName = 'Categories')][string[]]$Category,\n    [Parameter(Mandatory, ParameterSetName = 'List')][switch]$ListCategories,\n    [Parameter(Mandatory, ParameterSetName = 'Audit')][switch]$ValidateCatalog,\n    [Parameter(Mandatory, ParameterSetName = 'Selection')][string]$SelectionFile,\n    [Parameter(ParameterSetName = 'Categories')]\n    [Parameter(ParameterSetName = 'Selection')]\n    [Parameter(ParameterSetName = 'Audit')]\n    [ValidateRange(0, 30)][int]$TimeoutMinutes = 0,\n    [Parameter(ParameterSetName = 'Categories')]\n    [Parameter(ParameterSetName = 'Selection')]\n    [ValidateRange(1, 4)][int]$Parallelism = 2,\n    [Parameter(ParameterSetName = 'Categories')]\n    [Parameter(ParameterSetName = 'Selection')]\n    [Parameter(ParameterSetName = 'Audit')][switch]$NoBuild,\n    [Parameter(ParameterSetName = 'Categories')]\n    [Parameter(ParameterSetName = 'Selection')][switch]$PlanOnly,\n    [Parameter(Mandatory, ParameterSetName = 'Retired')][string]$Lane,\n    [Parameter(ParameterSetName = 'Retired')][string]$Filter,\n    [Parameter(ParameterSetName = 'Retired')][string]$FocusedProject,\n    [Parameter(Mandatory, ParameterSetName = 'SelfTest', DontShow)]\n    [ValidateSet('NpmStartup', 'ResultDirectory', 'TrxSummary',\n        'OwnedPostStartFailure', 'OwnedPostStartCleanupRetry', 'RuntimeCleanupDeadline',\n        'OwnedExitedRootDescendant', 'OwnedBatchExitedRootDescendant')]\n    [string]$SelfTest,\n    [Parameter(ParameterSetName = 'SelfTest', DontShow)][string]$SelfTestTrxDirectory\n)\n\nSet-StrictMode -Version Latest\n$ErrorActionPreference = 'Stop'\nif ($PSVersionTable.PSVersion.Major -lt 7) { throw 'This runner requires PowerShell 7.' }\nif ($PSCmdlet.ParameterSetName -eq 'Retired') {\n    throw \"Lane '$Lane' is retired. Use -ListCategories, then -Category with explicit domain categories. No tests were started.\"\n}\n$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))\n$isSelfTest = $PSCmdlet.ParameterSetName -eq 'SelfTest'\nif (-not $isSelfTest -and -not $ListCategories -and -not $ValidateCatalog -and\n    [string]::IsNullOrWhiteSpace($SelectionFile) -and ($null -eq $Category -or $Category.Count -eq 0)) {\n    Write-Host @\"\nSelect verification by affected contract; there is no default or complete suite.\n  ./scripts/test-csharp.ps1 -ListCategories\n  ./scripts/test-csharp.ps1 -Category category-id -PlanOnly\n  ./scripts/test-csharp.ps1 -Category category-id\n  ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json\n  ./scripts/test-csharp.ps1 -ValidateCatalog   # discovery only, no tests\nSee docs/testing.md and tests/categories.json.\n\"@\n    exit 0\n}\nImport-Module (Join-Path $PSScriptRoot 'testing/TestCategoryCatalog.psm1') -Force\n$catalog = $null\n$selectionReasons = @()\n$selectedCategories = @()\n$effectiveTimeoutMinutes = 0\nif (-not $isSelfTest) {\n    $catalog = Read-TestCategoryCatalog -Path (Join-Path $repoRoot 'tests/categories.json')\n    if ($ListCategories) {\n        $catalog.categories | Select-Object id, responsibility, excludes, changeHints, related, timeoutMinutes, expectedSeconds |\n            ConvertTo-Json -Depth 8\n        exit 0\n    }\n    if (-not [string]::IsNullOrWhiteSpace($SelectionFile)) {\n        $request = Get-Content -LiteralPath $SelectionFile -Raw | ConvertFrom-Json -AsHashtable\n        if ($request.schemaVersion -ne 1 -or @($request.selections).Count -eq 0) {\n            throw 'Selection file requires schemaVersion 1 and explicit selections with reasons.'\n        }\n        foreach ($entry in $request.selections) {\n            if ([string]::IsNullOrWhiteSpace($entry.category) -or\n                [string]::IsNullOrWhiteSpace($entry.reason) -or @($entry.contracts).Count -eq 0) {\n                throw 'Each selection requires a category, reason and affected contracts.'\n            }\n        }\n        $Category = @($request.selections | ForEach-Object category)\n        $selectionReasons = @($request.selections)\n    }\n    foreach ($id in $Category) {\n        $matches = @($catalog.categories | Where-Object { $_.id -ceq $id })\n        if ($matches.Count -ne 1) { throw \"Unknown category '$id'. Use -ListCategories; no workload started.\" }\n        $selectedCategories += $matches[0]\n    }\n    if (-not $ValidateCatalog -and $selectedCategories.Count -eq 0) {\n        throw 'Choose at least one explicit category.'\n    }\n    $budget = if ($ValidateCatalog) { 10 } else {\n        [Math]::Min(30, 5 + ($selectedCategories | Measure-Object timeoutMinutes -Sum).Sum)\n    }\n    $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) { $TimeoutMinutes } else { [int]$budget }\n}\n$effectiveLane = 'Categories'\n$Lane = 'Categories'\n$OwnedCleanupPassLimit = 2\n$fastTestProject = Join-Path $repoRoot 'BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj'\n$integrationTestProject = Join-Path $repoRoot 'BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj'\nfunction New-UniqueResultDirectory {\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "start": 90,
+      "end": 125,
+      "sha256": "11065f9c7a4607ed185dda9a12c287b4fe4cc20f2ba23bf1985457b377f8045a",
+      "text": "        ($Selection.schemaVersion -isnot [int] -and $Selection.schemaVersion -isnot [long]) -or\n        $Selection.schemaVersion -ne 1 -or\n        -not $Selection.Contains('selections') -or $Selection.selections -isnot [array] -or\n        $Selection.selections.Count -eq 0) {\n        throw 'CI requires schemaVersion 1 and explicit nonempty selections; there is no default suite.'\n    }\n    $groups = [ordered]@{}\n    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)\n    foreach ($entry in $Selection.selections) {\n        if ($entry -isnot [Collections.IDictionary]) { throw 'Invalid CI selection entry.' }\n        foreach ($field in @('category', 'reason')) { Assert-CatalogText $entry[$field] \"selection.$field\" }\n        if (-not $seen.Add($entry.category)) { throw \"Duplicate selected category '$($entry.category)'.\" }\n        if (-not $entry.Contains('contracts') -or $entry.contracts -isnot [array] -or $entry.contracts.Count -eq 0) {\n            throw 'Each CI selection requires explicit affected contracts.'\n        }\n        foreach ($contract in $entry.contracts) { Assert-CatalogText $contract 'selection.contracts' }\n        $category = @($Catalog.categories | Where-Object { $_.id -ceq $entry.category })\n        if ($category.Count -ne 1) { throw \"Unknown selected category '$($entry.category)'.\" }\n        # Absent metadata retains this workflow's existing Windows convention.\n        # It does not certify that an unannotated category is portable.\n        $runner = if ($category[0].requirements.Contains('ciRunner')) { $category[0].requirements.ciRunner } else { 'windows-latest' }\n        if ($runner -isnot [string] -or $runner -cnotin @('ubuntu-24.04', 'windows-latest')) {\n            throw 'Unsupported CI runner; no runnable matrix emitted.'\n        }\n        if (-not $groups.Contains($runner)) {\n            $groups[$runner] = [ordered]@{\n                runner = $runner; platform = $(if ($runner -ceq 'ubuntu-24.04') { 'linux' } else { 'windows' })\n                frontend = $false; selection = @{ schemaVersion = 1; selections = @() }\n            }\n        }\n        $group = $groups[$runner]\n        $group.selection.selections += $entry\n        $group.frontend = $group.frontend -or $category[0].requirements.frontendBuild -or\n            @($category[0].selectors | Where-Object { $_.project -ceq 'frontend' }).Count -gt 0\n    }\n    return @{ include = @($groups.Values) }\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "scripts/tests/test-ci-platform.tests.ps1",
+      "start": 43,
+      "end": 54,
+      "sha256": "420d0afb6d23e056faa448c4ef42842edb4731b693e1b348892c01e80b2f4e7d",
+      "text": "}\ntry {\n    Test-Case 'Workflow uses only actions permitted by the observed repository policy' {\n        $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw\n        $allowed = @('actions/checkout@v4', 'actions/setup-dotnet@v4', 'actions/upload-artifact@v4')\n        $actions = [regex]::Matches($workflow, '(?m)^\\s*uses:\\s*(\\S+)\\s*$')\n        Assert-That ($actions.Count -gt 0) 'Workflow action inventory is missing.'\n        foreach ($action in $actions) {\n            Assert-That ($action.Groups[1].Value -cin $allowed) \"Disallowed action prevents all jobs: $($action.Groups[1].Value)\"\n        }\n    }\n    Test-Case 'Actual frontend prerequisite accepts installed Node22.12+ and refuses unavailable incompatible or failed capability' {\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "start": 24,
+      "end": 43,
+      "sha256": "ff150f4192ded62e07363cc4e108e2bcbfdbe770a24b3b754cddaa3d782c5d88",
+      "text": "    internal static GmWorkerBackendSelection Select(GmWorkerBackendRequest request,\n        GmWorkerRequiredCapability capability, bool windows, bool linux)\n    {\n        GmWorkerBackendSelection Unavailable(GmWorkerBackendAvailability state, string reason) =>\n            new(request, capability, GmWorkerBackend.None, state, \"none\", reason,\n                GmWorkerBackendAvailability.NotImplemented);\n        if (!Enum.IsDefined(request) || !Enum.IsDefined(capability))\n            return Unavailable(GmWorkerBackendAvailability.Unsupported, \"Unknown owned-launch request.\");\n        if (capability == GmWorkerRequiredCapability.SyntheticWorkerRelease)\n            return Unavailable(GmWorkerBackendAvailability.NotQualified, \"Synthetic worker Release requires an explicit internal fixture admission.\");\n        if (windows && request == GmWorkerBackendRequest.Auto)\n            return new(request, capability, GmWorkerBackend.WindowsJob, GmWorkerBackendAvailability.Available,\n                \"windows-job\", \"Existing Windows Job path.\", GmWorkerBackendAvailability.NotImplemented);\n        if (!linux)\n            return Unavailable(GmWorkerBackendAvailability.Unsupported, \"Requested backend is unsupported on this platform.\");\n        if (request == GmWorkerBackendRequest.SystemdUser)\n            return Unavailable(GmWorkerBackendAvailability.NotImplemented, \"systemd-user adapter is not implemented or qualified in this build.\");\n        if (capability == GmWorkerRequiredCapability.WorkerRelease)\n            return Unavailable(GmWorkerBackendAvailability.NotQualified, \"Linux worker Release requires typed pool/quarantine and durable admission; no process was launched.\");\n        return new(request, capability, GmWorkerBackend.NativeLineage, GmWorkerBackendAvailability.PreflightRequired,\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "start": 795,
+      "end": 867,
+      "sha256": "a20ea9169e659f8bc4975aab90ba3db027c5b95eec94622bc2859fb8d99d6599",
+      "text": "            var workspaceHooks =\n                _hooks?.AfterQuarantineAuditTempCreatedAsync == null && _hooks?.AfterQuarantineAuditPublishedAsync == null && _hooks?.BeforeWorkspaceFileCreateAsync == null\n                    ? null\n                    : new GmWorkerExecutionWorkspaceHooks\n                    {\n                        BeforeWorkspaceFileCreateAsync = _hooks?.BeforeWorkspaceFileCreateAsync,\n                        AfterQuarantineAuditTempCreatedAsync =\n                            _hooks?.AfterQuarantineAuditTempCreatedAsync,\n                        AfterQuarantineAuditPublishedAsync = _hooks?.AfterQuarantineAuditPublishedAsync\n                    };\n            if (_nativeAdmission?.Durable == true)\n            {\n                workspace = GmWorkerExecutionWorkspace.PlanCreation(_fs, task, workspaceHooks, _nativeAdmission.RuntimeBase);\n                await using (var preparedLease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken: lifecycleCancellation.Token))\n                {\n                    if (!_fs.IsCurrentSessionGeneration(preparedLease, task.SessionGeneration))\n                        throw new InvalidOperationException(\"Worker generation changed before Prepared.\");\n                    durableExecution = await rootExecutionLease!.Context.PrepareAsync(rootExecutionLease, task, taskBytes, workspace);\n                    rootExecutionLease.RetainForCleanup();\n                    await durableExecution.EnsurePreparedAsync();\n                    _fs.EnsureCanonicalWriteLeaseActive(preparedLease);\n                }\n                await workspace.CreateRetainingAuthorityAsync(_fs, task, lifecycleCancellation.Token);\n            }\n            else\n                workspace = await GmWorkerExecutionWorkspace.CreateAsync(_fs, task, lifecycleCancellation.Token,\n                    workspaceHooks, _nativeAdmission?.RuntimeBase);\n            Track(WorkerBridgeState.Starting, ready: false);\n            var workerStartInfo = CreateWorkerStartInfo(profile, workspace.GameSessionPath);\n            workerStartInfo.Environment[TaskPathEnvironmentVariable] = workspace.TaskPath;\n            workerStartInfo.Environment[ProposalPathEnvironmentVariable] = workspace.ProposalPath;\n            workerStartInfo.Environment[SessionPathEnvironmentVariable] = workspace.GameSessionPath;\n            processHostLaunch = GmWorkerProcessHostLaunch.Create(\n                workerStartInfo,\n                Path.GetDirectoryName(workspace.GameSessionPath)!);\n\n            try\n            {\n                void BindOwner(GmWorkerOwnedLaunch owner)\n                {\n                    ownedLaunch = owner;\n                    executionAuthority = durableExecution?.BindOwner(owner) ?? new GmWorkerExecutionAuthority(owner.Identity, task, taskBytes);\n                    launchedProcessId = owner.AdmittedHostProcessId;\n                }\n                try\n                {\n                    IGmWorkerOwnedLauncher launcher = _nativeAdmission == null\n                        ? new GmWorkerWindowsOwnedLauncher(_processTreeFactory, _hooks?.BeforeProcessTreeAttachAsync)\n                        : new GmWorkerNativeLineageLauncher(_nativeAdmission.PackageDirectory, _nativeAdmission, durableExecution);\n                    if (durableExecution != null) await durableExecution.PlanLaunchAsync();\n                    BindOwner(await processHostLaunch.PrepareOwnedAsync(launcher,\n                        backend.Requested, backend.Capability, lifecycleCancellation.Token, _nativeAdmission));\n                }\n                catch (GmWorkerOwnedLaunchException ex)\n                {\n                    BindOwner(ex.Owner);\n                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw();\n                    throw;\n                }\n                _hooks?.AfterOwnerBound?.Invoke(ownedLaunch!);\n                _hooks?.AfterHostPrepared?.Invoke(processHostLaunch);\n                if (_hooks?.BeforeWorkerReleaseAsync != null)\n                {\n                    await _hooks.BeforeWorkerReleaseAsync()\n                        .WaitAsync(lifecycleCancellation.Token);\n                }\n                if (durableExecution == null) await processHostLaunch.ReleaseAsync(lifecycleCancellation.Token);\n                else\n                {\n                    await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync(\n                        cancellationToken: lifecycleCancellation.Token, workerPurpose: durableExecution.ReleasePurpose());\n                    await durableExecution.PlanReleaseAsync(_fs, releaseLease);\n                    await processHostLaunch.ReleaseAsync(lifecycleCancellation.Token, durableExecution, releaseLease);\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "start": 1000,
+      "end": 1105,
+      "sha256": "be3bd693955faaa1bfa6461059ebb8b76df28cfbb0edbdc96e1575aa7051a90f",
+      "text": "    public static ProcessStartInfo CreateWorkerStartInfo(WorkerBridgeProfile profile, string workingDirectory)\n    {\n        var validation = GmWorkerContractValidator.ValidateProfile(profile);\n        if (!validation.IsValid)\n            throw new ArgumentException(string.Join(Environment.NewLine, validation.Errors), nameof(profile));\n\n        var command = SplitCommandLine(profile.LaunchCommand);\n        if (command.Count == 0)\n            throw new ArgumentException(\"Worker launchCommand must contain an executable.\", nameof(profile));\n\n        var startInfo = new ProcessStartInfo\n        {\n            FileName = command[0],\n            WorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory)\n                ? Environment.CurrentDirectory\n                : workingDirectory,\n            UseShellExecute = false,\n            CreateNoWindow = true,\n            WindowStyle = ProcessWindowStyle.Hidden,\n            RedirectStandardInput = true,\n            RedirectStandardOutput = true,\n            RedirectStandardError = true,\n            StandardOutputEncoding = Encoding.UTF8,\n            StandardErrorEncoding = Encoding.UTF8\n        };\n\n        for (var i = 1; i < command.Count; i++)\n            startInfo.ArgumentList.Add(ResolveLaunchArgument(command, i, workingDirectory));\n\n        return startInfo;\n    }\n\n    private static string ResolveLaunchArgument(IReadOnlyList<string> command, int index, string workingDirectory)\n    {\n        if (index <= 0 || !string.Equals(command[index - 1], \"-File\", StringComparison.OrdinalIgnoreCase))\n            return command[index];\n\n        var path = command[index];\n        if (Path.IsPathRooted(path))\n            return path;\n\n        foreach (var candidateRoot in EnumerateLaunchPathRoots(workingDirectory))\n        {\n            var candidate = Path.GetFullPath(Path.Combine(candidateRoot, path));\n            if (File.Exists(candidate))\n                return candidate;\n        }\n\n        return path;\n    }\n\n    private static IEnumerable<string> EnumerateLaunchPathRoots(string workingDirectory)\n    {\n        if (!string.IsNullOrWhiteSpace(workingDirectory))\n            yield return workingDirectory;\n\n        yield return Environment.CurrentDirectory;\n\n        foreach (var root in EnumerateAncestors(AppContext.BaseDirectory))\n            yield return root;\n    }\n\n    private static IEnumerable<string> EnumerateAncestors(string path)\n    {\n        var directory = new DirectoryInfo(Path.GetFullPath(path));\n        while (directory != null)\n        {\n            yield return directory.FullName;\n            directory = directory.Parent;\n        }\n    }\n\n    internal static IReadOnlyList<string> SplitCommandLine(string commandLine)\n    {\n        var result = new List<string>();\n        if (string.IsNullOrWhiteSpace(commandLine))\n            return result;\n\n        var current = new StringBuilder();\n        var inQuotes = false;\n        for (var i = 0; i < commandLine.Length; i++)\n        {\n            var ch = commandLine[i];\n            if (ch == '\\\\' && i + 1 < commandLine.Length && commandLine[i + 1] == '\"')\n            {\n                current.Append('\"');\n                i++;\n                continue;\n            }\n\n            if (ch == '\"')\n            {\n                inQuotes = !inQuotes;\n                continue;\n            }\n\n            if (char.IsWhiteSpace(ch) && !inQuotes)\n            {\n                AddCurrent();\n                continue;\n            }\n\n            current.Append(ch);\n        }\n\n        AddCurrent();\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "start": 1,
+      "end": 99,
+      "sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056",
+      "text": "using System.Diagnostics;\n\nnamespace BookOfEternityClient.Services.GmWorkers;\n\ninternal sealed class GmWorkerWindowsOwnedLauncher(IGmWorkerProcessTreeFactory factory, Func<Task>? beforeAttach) : IGmWorkerOwnedLauncher\n{\n    public async Task<GmWorkerOwnedLaunch> StartAsync(GmWorkerProcessHostLaunch host,\n        GmWorkerBackendSelection selection, CancellationToken cancellationToken)\n    {\n        if (!OperatingSystem.IsWindows() || selection.Backend != GmWorkerBackend.WindowsJob)\n            throw new PlatformNotSupportedException(\"Windows owned launch requires the Windows Job backend.\");\n        var owner = new GmWorkerWindowsOwnedLaunch(host.StartInfo);\n        try\n        {\n            owner.Start();\n            if (beforeAttach != null) await beforeAttach().WaitAsync(cancellationToken);\n            owner.Attach(factory);\n            return owner;\n        }\n        catch (Exception ex) { throw new GmWorkerOwnedLaunchException(\"Windows host start retains its original owner.\", owner, ex); }\n    }\n}\n\ninternal sealed class GmWorkerWindowsOwnedLaunch : GmWorkerOwnedLaunch\n{\n    private readonly Process _process;\n    private IGmWorkerProcessTree? _tree;\n    private bool _started, _disposed;\n    private readonly string _run = Guid.NewGuid().ToString(\"N\");\n    private Task? _hostExit;\n    private Task<string>? _output, _error;\n    private GmWorkerStopEvidence? _stop;\n    private GmWorkerOwnedOutputs? _outputs;\n    private readonly SemaphoreSlim _stopGate = new(1);\n\n    internal GmWorkerWindowsOwnedLaunch(ProcessStartInfo start) =>\n        _process = new Process { StartInfo = start, EnableRaisingEvents = true };\n    internal void Start()\n    {\n        if (!_process.Start()) throw new InvalidOperationException(\"Worker process did not start.\");\n        _started = true;\n        _hostExit = _process.WaitForExitAsync();\n        _output = GmWorkerBridgePool.CaptureProcessOutputAsync(_process.StandardOutput);\n        _error = GmWorkerBridgePool.CaptureProcessOutputAsync(_process.StandardError);\n    }\n    internal void Attach(IGmWorkerProcessTreeFactory factory) => _tree = factory.Attach(_process);\n    internal override GmWorkerExecutionIdentity Identity => new(_run, GmWorkerBackend.WindowsJob, \"windows-job\");\n    internal override int HostProcessId => _process.Id;\n    internal override int SupervisorProcessId => _process.Id;\n    internal override int? AdmittedHostProcessId => _started ? _process.Id : null;\n    internal override Task HostExited => _hostExit ?? Task.CompletedTask;\n    internal override bool RetainsAssignedWindowsJob => !_disposed && _tree is WindowsJobProcessTree { HasRetainedAuthority: true };\n    internal override Task WaitUntilReadyAsync(GmWorkerProcessHostLaunch host, CancellationToken token) => host.WaitUntilReadyAsync(_process, token);\n    internal override Task<int> WaitForWorkerCompletionAsync(GmWorkerProcessHostLaunch host, CancellationToken token) => host.WaitForWorkerCompletionAsync(_process, token);\n    internal override Task WaitForDiagnosticDrainAsync(GmWorkerProcessHostLaunch host, CancellationToken token) => host.WaitForOutputDrainAsync(_process, token);\n\n    internal override async Task<GmWorkerStopEvidence> StopAndObserveAsync()\n    {\n        await _stopGate.WaitAsync();\n        try\n        {\n            if (_stop != null) return _stop;\n            if (_started)\n            {\n                if (_tree != null) await _tree.StopAndWaitAsync();\n                else await GmWorkerBridgePool.StopUnattachedProcessTreeAsync(_process);\n            }\n            return _stop = new(_run, GmWorkerBackend.WindowsJob, \"windows-job\", GmWorkerStopState.StoppedWithinScope,\n                \"windows-stop\", true, false, _started ? _process.ExitCode : null);\n        }\n        finally { _stopGate.Release(); }\n    }\n\n    internal override async Task<GmWorkerOwnedOutputs> SettleOutputsAsync()\n    {\n        if (_stop == null) throw new InvalidOperationException(\"Windows outputs require confirmed original Job stop.\");\n        if (_outputs != null) return _outputs;\n        if (!_started) return _outputs = new(\"\", \"\");\n        await Task.WhenAll(_output!, _error!).WaitAsync(TimeSpan.FromSeconds(5));\n        return _outputs = new(await _output!, await _error!);\n    }\n\n    public override async ValueTask DisposeAsync()\n    {\n        if (_disposed) return;\n        if (_stop == null || _outputs == null) throw new InvalidOperationException(\"Original Windows owner retains unsettled execution.\");\n        if (_tree != null) { await _tree.DisposeAsync(); _tree = null; }\n        _process.Dispose();\n        _disposed = true;\n    }\n}\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "start": 46,
+      "end": 112,
+      "sha256": "00835004536ecd0f0fd62d8de9475a1ae8352b415a823105ae72db35e10e88e1",
+      "text": "\ninternal sealed class GmWorkerProcessTreeFactory : IGmWorkerProcessTreeFactory\n{\n    private readonly Func<bool> _isWindows;\n    private readonly Func<Process, IGmWorkerProcessTree> _windowsFactory;\n\n    internal static GmWorkerProcessTreeFactory Instance { get; } = new(\n        OperatingSystem.IsWindows,\n        process => new WindowsJobProcessTree(process));\n\n    internal GmWorkerProcessTreeFactory(\n        Func<bool> isWindows,\n        Func<Process, IGmWorkerProcessTree> windowsFactory)\n    {\n        _isWindows = isWindows ?? throw new ArgumentNullException(nameof(isWindows));\n        _windowsFactory = windowsFactory ?? throw new ArgumentNullException(nameof(windowsFactory));\n    }\n\n    public IGmWorkerProcessTree Attach(Process process)\n    {\n        ArgumentNullException.ThrowIfNull(process);\n        if (!_isWindows())\n        {\n            throw new PlatformNotSupportedException(\n                \"GM worker execution requires a Windows Job Object complete-process-tree boundary. \" +\n                \"This platform is not supported and the worker command was not released.\");\n        }\n\n        return _windowsFactory(process);\n    }\n}\n\ninternal sealed class WindowsJobProcessTree : IGmWorkerProcessTree\n{\n    internal bool HasRetainedAuthority { get { lock (_sync) return !_disposed && !_job.IsClosed && !_job.IsInvalid; } }\n    private const uint JobObjectLimitKillOnJobClose = 0x00002000;\n    private readonly Process _rootProcess;\n    private readonly SafeJobHandle _job;\n    private readonly TimeSpan _processTreeExitTimeout;\n    private readonly object _sync = new();\n    private Task? _stopTask;\n    private bool _disposed;\n\n    internal WindowsJobProcessTree(\n        Process process,\n        TimeSpan? processTreeExitTimeout = null)\n    {\n        _rootProcess = process;\n        _processTreeExitTimeout = processTreeExitTimeout ?? ProcessTreeTerminationConfirmation.DefaultTimeout;\n        if (_processTreeExitTimeout <= TimeSpan.Zero)\n            throw new ArgumentOutOfRangeException(nameof(processTreeExitTimeout));\n        _job = NativeMethods.CreateJobObject(IntPtr.Zero, null);\n        if (_job.IsInvalid)\n            throw LastWin32Exception(\"Could not create the worker process job object.\");\n\n        try\n        {\n            ConfigureKillOnClose();\n            if (!NativeMethods.AssignProcessToJobObject(_job, process.SafeHandle))\n                throw LastWin32Exception(\"Could not attach the worker process to its job object.\");\n        }\n        catch\n        {\n            _job.Dispose();\n            throw;\n        }\n    }\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "start": 320,
+      "end": 398,
+      "sha256": "debc919ca21ead9f069f84ad597d6ca303d83ff88ece320168c4e2a7bdc04c8e",
+      "text": "    internal static GmWorkerProcessHostLaunch Create(\n        ProcessStartInfo workerStartInfo,\n        string launchDirectory)\n    {\n        ArgumentNullException.ThrowIfNull(workerStartInfo);\n        ArgumentException.ThrowIfNullOrWhiteSpace(launchDirectory);\n        Directory.CreateDirectory(launchDirectory);\n\n        NamedPipeServerStream? controlPipe = null;\n        NamedPipeServerStream? statusPipe = null;\n        try\n        {\n            var launchNonce = Guid.NewGuid().ToString(\"N\");\n            var endpointNonce = Guid.NewGuid().ToString(\"N\");\n            var controlPipeName = $\"boe-gm-worker-control-{endpointNonce}\";\n            var statusPipeName = $\"boe-gm-worker-status-{endpointNonce}\";\n            const PipeOptions pipeOptions = PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly;\n            controlPipe = new NamedPipeServerStream(\n                controlPipeName,\n                PipeDirection.Out,\n                maxNumberOfServerInstances: 1,\n                PipeTransmissionMode.Byte,\n                pipeOptions);\n            statusPipe = new NamedPipeServerStream(\n                statusPipeName,\n                PipeDirection.In,\n                maxNumberOfServerInstances: 1,\n                PipeTransmissionMode.Byte,\n                pipeOptions);\n            var payload = GmWorkerProcessHostPayload.Capture(workerStartInfo);\n            var assemblyPath = typeof(GmWorkerProcessHost).Assembly.Location;\n            var appHostPath = Path.Combine(\n                Path.GetDirectoryName(assemblyPath)!,\n                Path.GetFileNameWithoutExtension(assemblyPath) +\n                (OperatingSystem.IsWindows() ? \".exe\" : \"\"));\n            var hostStartInfo = new ProcessStartInfo\n            {\n                FileName = File.Exists(appHostPath) ? appHostPath : ResolveDotnetExecutable(),\n                WorkingDirectory = workerStartInfo.WorkingDirectory,\n                UseShellExecute = false,\n                CreateNoWindow = true,\n                WindowStyle = ProcessWindowStyle.Hidden,\n                RedirectStandardOutput = true,\n                RedirectStandardError = true,\n                StandardOutputEncoding = Encoding.UTF8,\n                StandardErrorEncoding = Encoding.UTF8\n            };\n            if (!File.Exists(appHostPath))\n                hostStartInfo.ArgumentList.Add(assemblyPath);\n            hostStartInfo.ArgumentList.Add(ModeSwitch);\n            hostStartInfo.ArgumentList.Add(controlPipeName);\n            hostStartInfo.ArgumentList.Add(statusPipeName);\n            hostStartInfo.ArgumentList.Add(launchNonce);\n\n            var launch = new GmWorkerProcessHostLaunch(\n                hostStartInfo,\n                controlPipe,\n                statusPipe,\n                launchNonce,\n                payload);\n            controlPipe = null;\n            statusPipe = null;\n            return launch;\n        }\n        finally\n        {\n            controlPipe?.Dispose();\n            statusPipe?.Dispose();\n        }\n    }\n\n    private static string ResolveDotnetExecutable()\n    {\n        if (!OperatingSystem.IsLinux()) return \"dotnet\";\n        var current = Environment.ProcessPath;\n        if (current != null && Path.GetFileName(current) == \"dotnet\" && Path.IsPathFullyQualified(current)) return current;\n        var root = Environment.GetEnvironmentVariable(\"DOTNET_ROOT\");\n        if (root != null && Path.IsPathFullyQualified(root) && File.Exists(Path.Combine(root, \"dotnet\"))) return Path.Combine(root, \"dotnet\");\n        foreach (var directory in (Environment.GetEnvironmentVariable(\"PATH\") ?? \"\").Split(Path.PathSeparator))\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "start": 245,
+      "end": 277,
+      "sha256": "6625e49425fdc18626cd12e9ad5e614a427b165052ce2a38a4bddc64d3782b23",
+      "text": "            {\n                Outcome = GmWorkerValidationRepairOutcome.ApplyRejected,\n                Task = task,\n                RunResult = run,\n                ApplyDecision = decision,\n                FallbackReason = decision.RejectionReasons.Count == 0\n                    ? $\"Apply gate result: {decision.Result}.\"\n                    : string.Join(Environment.NewLine, decision.RejectionReasons)\n            };\n        }\n\n        try\n        {\n            if (_hooks?.BeforeReadyPublicationAsync != null)\n                await _hooks.BeforeReadyPublicationAsync();\n            var readyPublication = await TryWriteReadySignalAsync(\n                boundTask,\n                run.Proposal,\n                readyBefore);\n            return new GmWorkerValidationRepairDispatchResult\n            {\n                Outcome = readyPublication.SessionReplaced\n                    ? GmWorkerValidationRepairOutcome.SessionReplaced\n                    : GmWorkerValidationRepairOutcome.Applied,\n                Task = task,\n                RunResult = run,\n                ApplyDecision = decision,\n                ReadySignalCreated = readyPublication.Created,\n                FallbackReason = readyPublication.Diagnostic\n            };\n        }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "start": 495,
+      "end": 600,
+      "sha256": "241c611cfbfe2fd8b1ff8a8e72772f34c63d99014360c7a80493c960f36a24ff",
+      "text": "    private async Task<(bool Created, string Diagnostic, bool SessionReplaced)> TryWriteReadySignalAsync(\n        WorkerTaskPacket task,\n        WorkerProposal proposal,\n        byte[]? readyBefore)\n    {\n        var sourceTurn = task.SourceTurn;\n        var sessionGeneration = task.SessionGeneration;\n        var ready = new ValidationRepairReadySignal\n        {\n            SessionId = sourceTurn.SessionId,\n            RequestId = sourceTurn.RequestId,\n            TurnNumber = sourceTurn.TurnNumber,\n            UpdatedAtUtc = DateTimeOffset.UtcNow.ToString(\"O\"),\n            Note = $\"GM worker proposal {proposal.ProposalId} accepted by apply gate.\",\n            SpiritualWoundContinuation = proposal.SpiritualWoundContinuation\n        };\n\n        var readyCreated = false;\n        try\n        {\n            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n            Exception? publicationUncertainty = null;\n            try\n            {\n                if (!_fs.IsCurrentSessionGeneration(writeLease, sessionGeneration))\n                {\n                    return (\n                        false,\n                        \"Worker repair belonged to a replaced game session generation; no ready signal was published.\",\n                        true);\n                }\n\n                if (task.SpiritualWoundContinuation is not null)\n                {\n                    var issues = await _applyGate.ValidateSpiritualContinuationAfterApplyAsync(proposal, task, writeLease);\n                    if (issues.Count != 0)\n                        return (false, \"Continuation changed before Ready publication: \" + string.Join(\"; \", issues), false);\n                    var result = await _fs.CompareExchangeFileBytesAsync(writeLease, ValidationRepairReadyPath,\n                        readyBefore, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(ready)));\n                    if (result == CanonicalFileMutationResult.Conflict)\n                        return (false, \"A newer Ready response was preserved after worker apply.\", false);\n                }\n                else\n                {\n                    await _fs.WriteFileAtomicAsync(writeLease, ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));\n                }\n\n                readyCreated = true;\n                await _auditLog.AppendEventAsync(writeLease, new WorkerAuditEvent\n                {\n                    EventId = GmWorkerAuditEventIdGenerator.Create(),\n                    EventType = \"validation-repair-ready-created\",\n                    WorkerId = proposal.WorkerId,\n                    TaskId = proposal.TaskId,\n                    ProposalId = proposal.ProposalId,\n                    TimestampUtc = DateTimeOffset.UtcNow.ToString(\"O\"),\n                    Summary = \"Created validation_repair_ready.json after accepted GM worker repair proposal.\",\n                    Details = new Dictionary<string, IReadOnlyList<string>>\n                    {\n                        [\"readyPath\"] = [ValidationRepairReadyPath]\n                    }\n                });\n            }\n            catch (CoordinatedStatePublicationUncertainException failure)\n            {\n                publicationUncertainty = failure;\n                throw;\n            }\n            finally\n            {\n                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);\n            }\n        }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            RetainReadyPublicationFacts(failure, task, proposal, readyCreated);\n            throw;\n        }\n        catch (SessionReplacedException ex)\n        {\n            return (\n                false,\n                $\"Worker repair belonged to a replaced game session generation; no ready signal was published: {ex.Message}\",\n                true);\n        }\n        catch (Exception ex)\n        {\n            var diagnostic = $\"Worker repair was applied, but ready signal publication failed: {ex.Message}\";\n            try\n            {\n                await TryRecordPostApplyDiagnosticAsync(\n                    \"validation-repair-ready-failed\",\n                    proposal,\n                    sessionGeneration,\n                    diagnostic);\n            }\n            catch (CoordinatedStatePublicationUncertainException publicationFailure)\n            {\n                RetainReadyPublicationFacts(publicationFailure, task, proposal, readyCreated);\n                publicationFailure.Data[\"GmWorkerOriginalFailure\"] = ex;\n                throw;\n            }\n            return (false, diagnostic, false);\n        }\n\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+      "start": 24,
+      "end": 195,
+      "sha256": "bf962da9b48cc78b5e2c301c5019aeec2d551dbb4f354a888c3b0a82ab55a0a8",
+      "text": "        var readyCuts = 0; var armed = false;\n        string? appliedTaskAtCut = null;\n        FileSystemManager? files = null;\n        files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,\n            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks\n            {\n                BeforeCanonicalMutationAsync = path =>\n                {\n                    if (!armed || !failReadyPublication || readyCuts != 0 || path != readyPath)\n                        return Task.CompletedTask;\n                    var auditPath = files!.ResolvePath(GmWorkerAuditLog.AuditLogPath);\n                    if (!File.Exists(auditPath)) return Task.CompletedTask;\n                    var applied = File.ReadAllLines(auditPath).Where(line => !string.IsNullOrWhiteSpace(line))\n                        .Select(line => GmWorkerJson.Deserialize<WorkerAuditEvent>(line))\n                        .Where(row => row?.EventType == \"proposal-applied\").ToArray();\n                    if (applied.Length == 0) return Task.CompletedTask;\n                    appliedTaskAtCut = Assert.Single(applied)!.TaskId;\n                    readyCuts++;\n                    // Real accepted apply has returned. This existing physical\n                    // mutation hook is before Ready publisher/temp creation.\n                    throw new IOException(\"Actual accepted worker apply; Ready publication did not begin.\");\n                }\n            });\n        CopyDirectory(TestRepoPaths.BaseSessionRoot, files.GameSessionPath);\n        await files.WriteFileAtomicAsync(\"game_state/misc/characteristics.json\", JsonSerializer.Serialize(\n            Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));\n        await files.WriteFileAtomicAsync(\"game_state/player/experience.json\",\n            \"{\\\"level\\\":1,\\\"experience\\\":0,\\\"experienceForNextLevel\\\":100}\");\n        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 42, 20, 20, 20, 20, 20);\n        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());\n        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions,\n            path => files.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);\n        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));\n        await files.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);\n        await files.WriteFileAtomicAsync(weatherPath, \"{\\\"tendency\\\":\\\"NO_CHANGE\\\",\\\"description\\\":\\\"Погода не меняется.\\\"}\");\n        var scriptPath = Path.Combine(_rootPath, \"hot-custody-worker.ps1\");\n        await File.WriteAllTextAsync(scriptPath, \"\"\"\n            $ErrorActionPreference = 'Stop'\n            $task = Get-Content -Raw -LiteralPath $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json\n            $weather = @($task.contextFiles | Where-Object { $_.path -eq 'game_state/world/weather.json' })[0]\n            if ($null -eq $weather) { throw 'Missing actual weather context.' }\n            $proposalId = 'worker_proposal_hot_custody'\n            $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'\n            $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef\n            New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null\n            Copy-Item -LiteralPath (Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state/world/weather.json') -Destination $contentPath\n            $proposal = [ordered]@{\n                schemaVersion = 1; proposalId = $proposalId; taskId = $task.taskId; workerId = $task.workerId\n                status = 'completed'; summary = 'Actual no-op weather repair for HOT route control.'\n                changedFiles = @([ordered]@{\n                    path = 'game_state/world/weather.json'; changeKind = 'replace'; beforeSha256 = $weather.sha256\n                    afterSha256 = (Get-FileHash -LiteralPath $contentPath -Algorithm SHA256).Hash.ToLowerInvariant()\n                    contentRef = $contentRef\n                })\n                findings = @(); selfCheck = [ordered]@{ scopeReviewed = $true; validationExpectedToPass = $true; notes = @() }\n                createdAtUtc = [DateTime]::UtcNow.ToString('O')\n            }\n            $proposal | ConvertTo-Json -Depth 40 | Set-Content -LiteralPath $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8\n            \"\"\", Encoding.UTF8);\n        var executable = OperatingSystem.IsWindows() ? \"pwsh.exe\" : \"pwsh\";\n        var shell = (Environment.GetEnvironmentVariable(\"PATH\") ?? \"\").Split(Path.PathSeparator)\n            .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)\n            ?? throw new InvalidOperationException(\"PowerShell 7 fixture executable is unavailable.\");\n        var input = new QueuedConsoleInputSource([]);\n        var engine = CreateGameEngine(input, settings =>\n        {\n            InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;\n            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with\n                { Enabled = true, LaunchCommand = $\"\\\"{shell}\\\" -NoLogo -NoProfile -File \\\"{scriptPath}\\\"\", TimeoutSeconds = 15 });\n        }, fileSystem: files);\n        GetPrivateField<GameLoop>(engine, \"_gameLoop\").SetSession(\"session_hot_actual_worker\", 42);\n        await GetPrivateField<StateManager>(engine, \"_stateManager\").RefreshGameStateAsync();\n        await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>\n        {\n            var preparation = Assert.IsAssignableFrom<object>(await InvokePrivateTaskNullableResultAsync(\n                engine, \"StagePlayerTurnAsync\", \"Спокойно осмотреться.\", null, null));\n            var request = Assert.IsType<TurnRequest>(preparation.GetType().GetProperty(\"Request\")!.GetValue(preparation));\n            var backup = preparation.GetType().GetProperty(\"Backup\")!.GetValue(preparation)!;\n            var generation = Assert.IsType<string>(preparation.GetType().GetProperty(\"Generation\")!.GetValue(preparation));\n            var before = await files.ReadFileBytesAsync(weatherPath);\n            armed = true;\n            using var deadlineStop = new CancellationTokenSource();\n            var deadline = Task.Delay(TimeSpan.FromSeconds(40), deadlineStop.Token);\n            Task<bool>? repairWait = null;\n            var failures = new List<Exception>();\n            var accepted = false;\n            var guardFired = false;\n            try\n            {\n                repairWait = InvokePrivateAsync<bool>(engine, \"WaitForContractRepairAsync\", \"hot actual worker control\",\n                    new List<ValidationIssue> { new(weatherPath, IssueSeverity.Error, \"Synthetic weather repair owner control.\",\n                        code: \"normalized_weather_missing_description\") }, 1, backup, generation);\n                if (await Task.WhenAny(repairWait, deadline) != repairWait)\n                {\n                    guardFired = true;\n                    throw new TimeoutException(\"Actual worker repair Wait exceeded the fixture's protective 40s bound.\");\n                }\n                accepted = await repairWait;\n            }\n            catch (Exception failure) { failures.Add(failure); }\n            finally\n            {\n                await deadlineStop.CancelAsync();\n                if (repairWait is { IsCompleted: false }) input.Enqueue(Key(ConsoleKey.Escape));\n                // A worker fallback enters the real ordinary Ready/Escape loop.\n                // Join that owner and the guard before participation/root disposal.\n                try { if (repairWait is not null) await repairWait; }\n                catch (Exception failure)\n                {\n                    if (!failures.Contains(failure)) failures.Add(failure);\n                }\n                try { await deadline; }\n                catch (OperationCanceledException failure) when (failure.CancellationToken == deadlineStop.Token) { }\n                catch (Exception failure)\n                {\n                    if (!failures.Contains(failure)) failures.Add(failure);\n                }\n                armed = false;\n            }\n            // Retain the actual worker result even when fallback/launch/apply fails;\n            // a diagnostic failure must not replace the primary owner failure.\n            try\n            {\n                WritePhysicalInjuryDiagnostic(\"fr063_hot_actual_worker_settled_before_oracles\", new\n                {\n                    failReadyPublication, guardFired, accepted, readyCuts, appliedTaskAtCut,\n                    WaitSettled = repairWait?.IsCompleted, GuardSettled = deadline.IsCompleted,\n                    Audit = await new GmWorkerAuditLog(files).ReadEventsAsync(),\n                    LatestTask = await files.ReadFileAsync(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath),\n                    Failures = failures.Select(failure => failure.ToString()).ToArray(), request.RequestId, generation\n                });\n            }\n            catch (Exception failure) { failures.Add(failure); }\n            if (failures.Count == 1) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();\n            if (failures.Count > 1) throw new AggregateException(\"Actual worker fixture and settled diagnostics failed.\", failures);\n            Assert.True(accepted); Assert.Equal(failReadyPublication ? 1 : 0, readyCuts);\n            var audit = await new GmWorkerAuditLog(files).ReadEventsAsync();\n            var applied = Assert.Single(audit, row => row.EventType == \"proposal-applied\");\n            var task = GmWorkerJson.Deserialize<WorkerTaskPacket>((await files.ReadFileAsync(\n                GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath))!)!;\n            Assert.Equal(task.TaskId, applied.TaskId); Assert.Equal(request.SessionId, task.SourceTurn.SessionId);\n            Assert.Equal(request.RequestId, task.SourceTurn.RequestId); Assert.Equal(43, task.SourceTurn.TurnNumber);\n            Assert.Equal(generation, task.SessionGeneration);\n            if (failReadyPublication) Assert.Equal(task.TaskId, appliedTaskAtCut);\n            Assert.Equal(before, await files.ReadFileBytesAsync(weatherPath));\n            Assert.Null(await files.ReadFileBytesAsync(readyPath));\n            Assert.Null(await files.ReadFileBytesAsync(\"game_state/control/validation_repair_request.json\"));\n            var ledger = (await files.ReadFileAsync(\"game_state/control/gm_trajectory_ledger.jsonl\"))!\n                .Split('\\n', StringSplitOptions.RemoveEmptyEntries).Select(line => JsonNode.Parse(line)!.AsObject()).ToArray();\n            var acceptedRow = Assert.Single(ledger, row => row[\"requestId\"]?.GetValue<string>() == request.RequestId &&\n                row[\"sessionId\"]?.GetValue<string>() == request.SessionId && row[\"turnNumber\"]?.GetValue<int>() == 43 &&\n                row[\"validation\"]?[\"acceptanceScope\"]?.GetValue<string>() ==\n                    (failReadyPublication ? \"worker_apply_gate\" : \"correlated_repair_ready\"));\n            Assert.Equal(failReadyPublication ? \"worker_apply_gate_accepted\" : \"validation_repair_ready\",\n                acceptedRow[\"terminal\"]![\"kind\"]!.GetValue<string>());\n            Assert.False(acceptedRow[\"validation\"]![\"fullCanonicalStateAccepted\"]!.GetValue<bool>());\n            var diagnostic = InvokePrivateValue<JsonObject>(engine, \"ExportHotOrdinarySubmissionDiagnostic\");\n            Assert.True(diagnostic[\"binding\"]![\"actualStageCompleted\"]!.GetValue<bool>());\n            Assert.Equal(\"Unavailable\", diagnostic[\"custody\"]![\"status\"]!.GetValue<string>());\n            Assert.Equal(\"WorkerDispositionNotIntegrated\", diagnostic[\"custody\"]![\"reason\"]!.GetValue<string>());\n            Assert.Equal(!failReadyPublication, diagnostic[\"custody\"]![\"readyDeleteReturned\"]!.GetValue<bool>());\n            Assert.Equal(!failReadyPublication, diagnostic[\"custody\"]![\"readyReleaseReturned\"]!.GetValue<bool>());\n            foreach (var key in new[] { \"hasS\", \"hasB\", \"hasM3\" }) Assert.False(diagnostic[key]!.GetValue<bool>());\n            WritePhysicalInjuryDiagnostic(\"fr063_hot_actual_worker_disposition\", new\n                { failReadyPublication, readyCuts, appliedTaskAtCut, applied, task, diagnostic, request.RequestId, generation });\n            return true;\n        });\n    }\n}\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "start": 131,
+      "end": 145,
+      "sha256": "29322a0c7c9835c95d3bbfc35df129b181d74369b744174636922d3d0eab367f",
+      "text": "internal sealed class CleanupOwnedFixture(string root, Action<string> output) : IDisposable\n{\n    public void Dispose()\n    {\n        Exception? failure = null;\n        try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }\n        catch (Exception error) { failure = error; }\n        output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = !Directory.Exists(root), CleanupFailure = failure?.ToString() }));\n        Assert.Null(failure);\n        Assert.False(Directory.Exists(root));\n    }\n}\n"
+    },
+    {
+      "revision": "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+      "path": "tests/categories.json",
+      "start": 63,
+      "end": 90,
+      "sha256": "ec3d5c6b39b52f490ee0186685aa9731ad5a0ac3a36165f76839dd6bcdae2770",
+      "text": "  \"id\": \"fr063-hot-worker-ready-disposition\",\n  \"responsibility\": \"#1536 T179-Pd.3b HS-IMPL-F03: Two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.\",\n  \"excludes\": \"No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.\",\n  \"changeHints\": [\n    \"BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\"\n  ],\n  \"related\": [\n    {\n      \"id\": \"fr063-joint-late-completion\",\n      \"when\": \"FIRST protected Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE; separate frozen EVIDENCE before specifically released new GREEN singleton. No aggregate.\"\n    }\n  ],\n  \"requirements\": {\n    \"frontendBuild\": false,\n    \"exclusive\": true,\n    \"ciRunner\": \"ubuntu-24.04\"\n  },\n  \"timeoutMinutes\": 5,\n  \"expectedSeconds\": null,\n  \"selectors\": [\n    {\n      \"project\": \"integration\",\n      \"tests\": [\n        \"BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody\"\n      ]\n    }\n  ]\n},\n"
+    }
+  ],
+  "worktreeSnapshots": [
+    {
+      "revision": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+      "path": ".github/workflows/fr063-hot-worker-windows.yml",
+      "bytes": 13761,
+      "sha256": "242e95680cbe60a38466a2448da4b25a63192f0aa8d4753fad8ff13db5710f61",
+      "text": "name: FR063 bounded ordinary worker Windows qualification\n\n# Source/preparation pushes do not execute this job. Add the release file once,\n# only after the independent affected SOURCE decision is saved and recovered.\non:\n  push:\n    branches: [1536-wound-b2-cloud-20261012]\n    paths: [tests/selections/1536-hot-worker-windows.json]\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: fr063-hot-worker-windows-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  first-worker2:\n    runs-on: windows-latest\n    timeout-minutes: 25\n    env:\n      DOTNET_CLI_TELEMETRY_OPTOUT: '1'\n      POWERSHELL_TELEMETRY_OPTOUT: '1'\n      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'\n      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'\n      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'\n      DOTNET_PROCESSOR_COUNT: '1'\n      GenerateDocumentationFile: 'true'\n      NoWarn: '1591'\n      # Apply before checkout materializes files; hashes below are raw bytes.\n      GIT_CONFIG_COUNT: '2'\n      GIT_CONFIG_KEY_0: core.autocrlf\n      GIT_CONFIG_VALUE_0: 'false'\n      GIT_CONFIG_KEY_1: core.longpaths\n      GIT_CONFIG_VALUE_1: 'true'\n    steps:\n      - name: Recover exact source from GitHub\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 2\n\n      - name: Setup current compiler and target runtime\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: |\n            8.0.x\n            10.0.x\n\n      - name: Require reviewed first release, prepare and execute only worker2\n        shell: pwsh\n        run: |\n          $ErrorActionPreference = 'Stop'\n          $PSNativeCommandUseErrorActionPreference = $false\n          $releasePath = 'tests/selections/1536-hot-worker-windows.json'\n          $category = 'fr063-hot-worker-ready-disposition'\n          $evidence = 'TestResults/fr063-hot-worker-windows'\n          New-Item -ItemType Directory -Path $evidence -Force | Out-Null\n          function Require([bool]$Condition, [string]$Message) {\n            if (-not $Condition) { throw $Message }\n          }\n          function GitValue([string[]]$GitArgs) {\n            $value = & git @GitArgs\n            Require ($LASTEXITCODE -eq 0) \"Git read failed: $($GitArgs -join ' ')\"\n            return $value\n          }\n          function DllPins {\n            @('BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll',\n              'BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll',\n              'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll',\n              'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll') | ForEach-Object {\n              [ordered]@{ Path = $_; Bytes = (Get-Item -LiteralPath $_).Length; Sha256 = (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash }\n            }\n          }\n          function OwnedPrefix {\n            @(Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Force -Filter 'boe-gameengine-turnlifecycle-*' | Sort-Object FullName | ForEach-Object FullName)\n          }\n          function InvokeBounded([string]$Label, [string[]]$InvocationArgs) {\n            $prior = @(Get-ChildItem TestResults/test-categories -Directory -ErrorAction SilentlyContinue | ForEach-Object FullName)\n            $started = [DateTimeOffset]::UtcNow\n            & pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 @InvocationArgs *>&1 | Tee-Object \"$evidence/$Label.stdout.log\" | Out-Host\n            $native = $LASTEXITCODE\n            $ended = [DateTimeOffset]::UtcNow\n            $new = @(Get-ChildItem TestResults/test-categories -Directory | Where-Object FullName -NotIn $prior)\n            $record = [ordered]@{ Label = $Label; Argv = @('pwsh', '-NoLogo', '-NoProfile', '-File', 'scripts/test-csharp.ps1') + $InvocationArgs; Source = $env:GITHUB_SHA; StartedUtc = $started.ToString('O'); EndedUtc = $ended.ToString('O'); NativeExit = $native; ResultDirectories = @($new.FullName) }\n            $record | ConvertTo-Json -Depth 12 | Set-Content \"$evidence/$Label.native.json\" -Encoding utf8NoBOM\n            Require ($new.Count -eq 1) \"Expected exactly one new result directory for $Label.\"\n            return [pscustomobject]@{ NativeExit = $native; Directory = $new[0].FullName }\n          }\n          Require ([OperatingSystem]::IsWindows()) 'Positive ordinary worker qualification requires native WindowsJob.'\n          Require ($env:GITHUB_EVENT_NAME -ceq 'push' -and $env:GITHUB_REF -ceq 'refs/heads/1536-wound-b2-cloud-20261012') 'Wrong release event or branch.'\n          Require ($env:GITHUB_RUN_ATTEMPT -ceq '1') 'No workflow/job retry is released.'\n          $head = GitValue @('rev-parse', 'HEAD')\n          Require ($head -ceq $env:GITHUB_SHA) 'Checkout differs from event SHA.'\n          Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Checkout is not clean.'\n          $release = Get-Content -LiteralPath $releasePath -Raw | ConvertFrom-Json -AsHashtable\n          Require ($release.schemaVersion -eq 1 -and $release.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2') 'No exact first-worker release.'\n          Require ($release.reviewedSource -cmatch '^[0-9a-f]{40}$' -and $release.acceptedCheckpoint -cmatch '^[0-9a-f]{40}$') 'Release source pins are invalid.'\n          Require ((GitValue @('rev-parse', 'HEAD^')) -ceq $release.acceptedCheckpoint) 'Release is not directly after the saved SOURCE acceptance.'\n          Require (@(GitValue @('ls-tree', '-r', '--name-only', $release.acceptedCheckpoint, '--', $releasePath)).Count -eq 0) 'Release file must be a first addition.'\n          $releaseDiff = @(GitValue @('diff', '--name-status', $release.acceptedCheckpoint, 'HEAD'))\n          Require ($releaseDiff.Count -eq 1 -and $releaseDiff[0] -ceq \"A`t$releasePath\") 'Release commit must add only the dedicated release file.'\n          # Explicit bounded pinned history; absence of the ancestor fails closed.\n          & git fetch --no-tags --depth=32 origin $release.reviewedSource $release.acceptedCheckpoint\n          Require ($LASTEXITCODE -eq 0) 'Cannot recover reviewed pinned history.'\n          & git merge-base --is-ancestor $release.reviewedSource $release.acceptedCheckpoint\n          Require ($LASTEXITCODE -eq 0) 'Reviewed source is not a proved ancestor.'\n          $changed = @(GitValue @('diff', '--name-only', $release.reviewedSource, $release.acceptedCheckpoint))\n          foreach ($path in $changed) {\n            Require ($path -cmatch '^specs/1536-complete-wound-materialization/(spec\\.md|plan\\.md|tasks\\.md|design/[^/]+\\.md|recovery/.+)$') \"Unreviewed source/configuration change: $path\"\n          }\n          foreach ($kind in @('md', 'json')) {\n            $pin = $release.sourceReview[$kind]\n            Require ($pin.path -cmatch '^specs/1536-complete-wound-materialization/recovery/[^/]+\\.(md|json)$' -and $pin.sha256 -cmatch '^[0-9a-f]{64}$') 'Invalid review artifact pin.'\n            Require ((Get-FileHash -LiteralPath $pin.path -Algorithm SHA256).Hash.ToLowerInvariant() -ceq $pin.sha256) 'Raw SOURCE review bytes differ.'\n          }\n          Require (@($release.selections).Count -eq 1 -and $release.selections[0].category -ceq $category) 'Only the worker category is released.'\n          Import-Module ./scripts/testing/TestCategoryCatalog.psm1\n          $catalog = Read-TestCategoryCatalog ./tests/categories.json\n          $owner = @($catalog.categories | Where-Object id -CEQ $category)\n          Require ($owner.Count -eq 1 -and $owner[0].requirements.ciRunner -ceq 'windows-latest' -and $owner[0].requirements.exclusive -and -not $owner[0].requirements.frontendBuild -and $owner[0].timeoutMinutes -eq 5) 'Worker catalog host/exclusivity/budget differs.'\n          [ordered]@{ Source = $head; AcceptedCheckpoint = $release.acceptedCheckpoint; ReviewedSource = $release.reviewedSource; RunId = $env:GITHUB_RUN_ID; RunAttempt = $env:GITHUB_RUN_ATTEMPT; Os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; Architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString(); PowerShell = $PSVersionTable.PSVersion.ToString(); GitCheckoutAutocrlf = (GitValue @('config', '--get', 'core.autocrlf')); PreActualRuntime = 'NOT_RUN' } | ConvertTo-Json | Set-Content \"$evidence/environment.json\" -Encoding utf8NoBOM\n          & dotnet --info | Tee-Object \"$evidence/dotnet-info.log\" | Out-Host\n          Require ($LASTEXITCODE -eq 0) 'Cannot inspect native .NET.'\n          $catalogRun = InvokeBounded 'fresh-both-catalog' @('-ValidateCatalog')\n          Require ($catalogRun.NativeExit -eq 0) 'Fresh BOTH/catalog failed; no actual released.'\n          $audit = Get-Content (Join-Path $catalogRun.Directory 'summary.json') -Raw | ConvertFrom-Json\n          Require ($audit.DiscoveryOnly -and $audit.Tests.Executed -eq 0 -and $audit.CatalogAudit.Valid -and @($audit.CatalogAudit.Unmapped).Count -eq 0 -and @($audit.CatalogAudit.StaleSelectors).Count -eq 0 -and -not $audit.TimedOut -and $audit.OwnedTreeCleanupSucceeded -and $audit.RuntimeCleanupSucceeded) 'Fresh inventory/discovery/cleanup did not qualify.'\n          foreach ($phase in @('Build-unit', 'Build-integration')) {\n            Require (@($audit.PhaseResults | Where-Object { $_.Name -ceq $phase -and $_.Completed }).Count -eq 1) 'Both selected projects require a fresh successful build.'\n          }\n          Get-ChildItem $catalogRun.Directory -Recurse -Filter 'Build-*.log' | ForEach-Object {\n            & ./scripts/check-dotnet-warning-budget.ps1 -LogPath $_.FullName -MaxWarnings 158\n          }\n          $planRun = InvokeBounded 'exact-plan' @('-SelectionFile', $releasePath, '-PlanOnly', '-NoBuild')\n          Require ($planRun.NativeExit -eq 0) 'Exact PlanOnly failed; no actual released.'\n          $plan = Get-Content (Join-Path $planRun.Directory 'plan.json') -Raw | ConvertFrom-Json\n          $planSummary = Get-Content (Join-Path $planRun.Directory 'summary.json') -Raw | ConvertFrom-Json\n          Require ($planSummary.PlanOnly -and $planSummary.Tests.Executed -eq 0 -and @($plan.Descriptors).Count -eq 1) 'PlanOnly must execute zero tests and plan one descriptor.'\n          $descriptor = $plan.Descriptors[0]\n          Require ($descriptor.Category -ceq $category -and $descriptor.Adapter -ceq 'integration' -and $descriptor.Exclusive -and -not $descriptor.FrontendBuild -and $descriptor.BudgetMinutes -eq 5 -and $descriptor.EstimatedCases -eq 2 -and @($descriptor.ExpectedMethodCounts).Count -eq 1 -and $descriptor.ExpectedMethodCounts[0].Name -ceq 'BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody' -and $descriptor.ExpectedMethodCounts[0].Cases -eq 2) 'Exact worker method/count/budget differs.'\n          $beforeDll = @(DllPins)\n          $beforeTemp = @(OwnedPrefix)\n          Require ($beforeTemp.Count -eq 0) 'Scoped fixture residue exists before actual.'\n          Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Source changed during preparation.'\n          $beforeDll | ConvertTo-Json -Depth 8 | Set-Content \"$evidence/dll-before.json\" -Encoding utf8NoBOM\n          $beforeTemp | ConvertTo-Json -AsArray | Set-Content \"$evidence/temp-before.json\" -Encoding utf8NoBOM\n          $actualFailure = $null\n          try { $actualRun = InvokeBounded 'first-worker2' @('-SelectionFile', $releasePath, '-NoBuild') }\n          catch { $actualFailure = $_ }\n          finally {\n            $afterDll = @(DllPins)\n            $afterTemp = @(OwnedPrefix)\n            $afterStatus = @(GitValue @('status', '--porcelain'))\n            $afterHead = GitValue @('rev-parse', 'HEAD')\n            [ordered]@{ Source = $afterHead; Status = $afterStatus; Dll = $afterDll; ScopedTemp = $afterTemp; WrapperFailure = if ($actualFailure) { $actualFailure.ToString() } else { $null } } | ConvertTo-Json -Depth 12 | Set-Content \"$evidence/after-actual.json\" -Encoding utf8NoBOM\n          }\n          if ($actualFailure) { throw $actualFailure }\n          Require ($afterHead -ceq $head -and $afterStatus.Count -eq 0 -and $afterTemp.Count -eq 0 -and (($beforeDll | ConvertTo-Json -Compress) -ceq ($afterDll | ConvertTo-Json -Compress))) 'Source, DLL or owned cleanup continuity failed.'\n          Require ($actualRun.NativeExit -eq 0) 'FIRST worker2 failed; preserve the original packet and stop, no retry.'\n          $summary = Get-Content (Join-Path $actualRun.Directory 'summary.json') -Raw | ConvertFrom-Json\n          Require ($summary.ExitCode -eq 0 -and -not $summary.TimedOut -and $summary.OwnedTreeCleanupSucceeded -and $summary.RuntimeCleanupSucceeded -and $summary.Selection.PlannedDescriptors -eq 1 -and $summary.Selection.CompletedDescriptors -eq 1 -and $summary.Selection.PlannedCases -eq 2 -and $summary.Selection.CompletedCases -eq 2 -and $summary.Selection.Complete -and $summary.Tests.Total -eq 2 -and $summary.Tests.Executed -eq 2 -and $summary.Tests.Passed -eq 2 -and $summary.Tests.Failed -eq 0 -and @($summary.DuplicateTests).Count -eq 0 -and @($summary.CategoryResults).Count -eq 1 -and $summary.CategoryResults[0].Completed -and $summary.CategoryResults[0].BudgetMinutes -eq 5 -and $summary.CategoryResults[0].Seconds -le 300) 'Exact positive two-case/cleanup result did not qualify.'\n          Write-Host 'FIRST native Windows worker2 packet preserved; separate EVIDENCE and final bounded review remain required.'\n\n      - name: Preserve every native outcome and preparation artifact\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: fr063-hot-worker-windows-${{ github.sha }}-${{ github.run_attempt }}\n          path: |\n            TestResults/test-categories/\n            TestResults/fr063-hot-worker-windows/\n          if-no-files-found: warn\n          retention-days: 30\n",
+      "state": "Root saved WIP snapshot; preliminary consultation only, not SOURCE accepted."
+    },
+    {
+      "revision": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+      "bytes": 14105,
+      "sha256": "cc5aeb628bf53dbb7cb1f9513cec31d65ce6a9c9b5e65a3d552355f8e4fd4c69",
+      "text": "using System.Text;\nusing System.Text.Json;\nusing System.Text.Json.Nodes;\nusing BookOfEternityClient.Configuration;\nusing BookOfEternityClient.Core;\nusing BookOfEternityClient.Models;\nusing BookOfEternityClient.Services;\nusing BookOfEternityClient.Services.GmWorkers;\nusing Microsoft.Extensions.Logging.Abstractions;\nusing Xunit;\n\nnamespace BookOfEternityClient.Tests;\n\npublic sealed partial class GameEngineTurnLifecycleTests\n{\n    [Theory]\n    [InlineData(false)]\n    [InlineData(true)]\n    public async Task HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody(bool failReadyPublication)\n    {\n        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));\n        const string weatherPath = \"game_state/world/weather.json\";\n        const string readyPath = \"game_state/control/validation_repair_ready.json\";\n        var readyCuts = 0; var armed = false;\n        string? appliedTaskAtCut = null;\n        FileSystemManager? files = null;\n        files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,\n            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks\n            {\n                BeforeCanonicalMutationAsync = path =>\n                {\n                    if (!armed || !failReadyPublication || readyCuts != 0 || path != readyPath)\n                        return Task.CompletedTask;\n                    var auditPath = files!.ResolvePath(GmWorkerAuditLog.AuditLogPath);\n                    if (!File.Exists(auditPath)) return Task.CompletedTask;\n                    var applied = File.ReadAllLines(auditPath).Where(line => !string.IsNullOrWhiteSpace(line))\n                        .Select(line => GmWorkerJson.Deserialize<WorkerAuditEvent>(line))\n                        .Where(row => row?.EventType == \"proposal-applied\").ToArray();\n                    if (applied.Length == 0) return Task.CompletedTask;\n                    appliedTaskAtCut = Assert.Single(applied)!.TaskId;\n                    readyCuts++;\n                    // Real accepted apply has returned. This existing physical\n                    // mutation hook is before Ready publisher/temp creation.\n                    throw new IOException(\"Actual accepted worker apply; Ready publication did not begin.\");\n                }\n            });\n        CopyDirectory(TestRepoPaths.BaseSessionRoot, files.GameSessionPath);\n        await files.WriteFileAtomicAsync(\"game_state/misc/characteristics.json\", JsonSerializer.Serialize(\n            Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));\n        await files.WriteFileAtomicAsync(\"game_state/player/experience.json\",\n            \"{\\\"level\\\":1,\\\"experience\\\":0,\\\"experienceForNextLevel\\\":100}\");\n        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 42, 20, 20, 20, 20, 20);\n        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());\n        await files.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());\n        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions,\n            path => files.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);\n        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));\n        await files.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);\n        await files.WriteFileAtomicAsync(weatherPath, \"{\\\"tendency\\\":\\\"NO_CHANGE\\\",\\\"description\\\":\\\"Погода не меняется.\\\"}\");\n        var scriptPath = Path.Combine(_rootPath, \"hot-custody-worker.ps1\");\n        await File.WriteAllTextAsync(scriptPath, \"\"\"\n            $ErrorActionPreference = 'Stop'\n            $task = Get-Content -Raw -LiteralPath $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json\n            $weather = @($task.contextFiles | Where-Object { $_.path -eq 'game_state/world/weather.json' })[0]\n            if ($null -eq $weather) { throw 'Missing actual weather context.' }\n            $proposalId = 'worker_proposal_hot_custody'\n            $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'\n            $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef\n            New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null\n            Copy-Item -LiteralPath (Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state/world/weather.json') -Destination $contentPath\n            $proposal = [ordered]@{\n                schemaVersion = 1; proposalId = $proposalId; taskId = $task.taskId; workerId = $task.workerId\n                status = 'completed'; summary = 'Actual no-op weather repair for HOT route control.'\n                changedFiles = @([ordered]@{\n                    path = 'game_state/world/weather.json'; changeKind = 'replace'; beforeSha256 = $weather.sha256\n                    afterSha256 = (Get-FileHash -LiteralPath $contentPath -Algorithm SHA256).Hash.ToLowerInvariant()\n                    contentRef = $contentRef\n                })\n                findings = @(); selfCheck = [ordered]@{ scopeReviewed = $true; validationExpectedToPass = $true; notes = @() }\n                createdAtUtc = [DateTime]::UtcNow.ToString('O')\n            }\n            $proposal | ConvertTo-Json -Depth 40 | Set-Content -LiteralPath $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8\n            \"\"\", Encoding.UTF8);\n        var executable = OperatingSystem.IsWindows() ? \"pwsh.exe\" : \"pwsh\";\n        var shell = (Environment.GetEnvironmentVariable(\"PATH\") ?? \"\").Split(Path.PathSeparator)\n            .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)\n            ?? throw new InvalidOperationException(\"PowerShell 7 fixture executable is unavailable.\");\n        var input = new QueuedConsoleInputSource([]);\n        var logger = new SpiritualLifecycleTestLogger();\n        var engine = CreateGameEngine(input, settings =>\n        {\n            InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;\n            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with\n                { Enabled = true, LaunchCommand = $\"\\\"{shell}\\\" -NoLogo -NoProfile -File \\\"{scriptPath}\\\"\", TimeoutSeconds = 15 });\n        }, fileSystem: files, logger: logger);\n        GetPrivateField<GameLoop>(engine, \"_gameLoop\").SetSession(\"session_hot_actual_worker\", 42);\n        await GetPrivateField<StateManager>(engine, \"_stateManager\").RefreshGameStateAsync();\n        await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>\n        {\n            var preparation = Assert.IsAssignableFrom<object>(await InvokePrivateTaskNullableResultAsync(\n                engine, \"StagePlayerTurnAsync\", \"Спокойно осмотреться.\", null, null));\n            var request = Assert.IsType<TurnRequest>(preparation.GetType().GetProperty(\"Request\")!.GetValue(preparation));\n            var backup = preparation.GetType().GetProperty(\"Backup\")!.GetValue(preparation)!;\n            var generation = Assert.IsType<string>(preparation.GetType().GetProperty(\"Generation\")!.GetValue(preparation));\n            var before = await files.ReadFileBytesAsync(weatherPath);\n            armed = true;\n            using var deadlineStop = new CancellationTokenSource();\n            var deadline = Task.Delay(TimeSpan.FromSeconds(40), deadlineStop.Token);\n            Task<bool>? repairWait = null;\n            var failures = new List<Exception>();\n            var accepted = false;\n            var guardFired = false;\n            try\n            {\n                repairWait = InvokePrivateAsync<bool>(engine, \"WaitForContractRepairAsync\", \"hot actual worker control\",\n                    new List<ValidationIssue> { new(weatherPath, IssueSeverity.Error, \"Synthetic weather repair owner control.\",\n                        code: \"normalized_weather_missing_description\") }, 1, backup, generation);\n                if (await Task.WhenAny(repairWait, deadline) != repairWait)\n                {\n                    guardFired = true;\n                    throw new TimeoutException(\"Actual worker repair Wait exceeded the fixture's protective 40s bound.\");\n                }\n                accepted = await repairWait;\n            }\n            catch (Exception failure) { failures.Add(failure); }\n            finally\n            {\n                await deadlineStop.CancelAsync();\n                if (repairWait is { IsCompleted: false }) input.Enqueue(Key(ConsoleKey.Escape));\n                // A worker fallback enters the real ordinary Ready/Escape loop.\n                // Join that owner and the guard before participation/root disposal.\n                try { if (repairWait is not null) await repairWait; }\n                catch (Exception failure)\n                {\n                    if (!failures.Contains(failure)) failures.Add(failure);\n                }\n                try { await deadline; }\n                catch (OperationCanceledException failure) when (failure.CancellationToken == deadlineStop.Token) { }\n                catch (Exception failure)\n                {\n                    if (!failures.Contains(failure)) failures.Add(failure);\n                }\n                armed = false;\n            }\n            // Retain the actual worker result even when fallback/launch/apply fails;\n            // a diagnostic failure must not replace the primary owner failure.\n            try\n            {\n                WritePhysicalInjuryDiagnostic(\"fr063_hot_actual_worker_settled_before_oracles\", new\n                {\n                    failReadyPublication, guardFired, accepted, readyCuts, appliedTaskAtCut,\n                    WaitSettled = repairWait?.IsCompleted, GuardSettled = deadline.IsCompleted,\n                    EngineDiagnostics = logger.Describe(),\n                    Platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription,\n                    WorkerExecutable = shell,\n                    Audit = await new GmWorkerAuditLog(files).ReadEventsAsync(),\n                    LatestTask = await files.ReadFileAsync(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath),\n                    Failures = failures.Select(failure => failure.ToString()).ToArray(), request.RequestId, generation\n                });\n            }\n            catch (Exception failure) { failures.Add(failure); }\n            if (failures.Count == 1) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();\n            if (failures.Count > 1) throw new AggregateException(\"Actual worker fixture and settled diagnostics failed.\", failures);\n            Assert.True(accepted); Assert.Equal(failReadyPublication ? 1 : 0, readyCuts);\n            var audit = await new GmWorkerAuditLog(files).ReadEventsAsync();\n            var applied = Assert.Single(audit, row => row.EventType == \"proposal-applied\");\n            var task = GmWorkerJson.Deserialize<WorkerTaskPacket>((await files.ReadFileAsync(\n                GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath))!)!;\n            Assert.Equal(task.TaskId, applied.TaskId); Assert.Equal(request.SessionId, task.SourceTurn.SessionId);\n            Assert.Equal(request.RequestId, task.SourceTurn.RequestId); Assert.Equal(43, task.SourceTurn.TurnNumber);\n            Assert.Equal(generation, task.SessionGeneration);\n            if (failReadyPublication) Assert.Equal(task.TaskId, appliedTaskAtCut);\n            Assert.Equal(before, await files.ReadFileBytesAsync(weatherPath));\n            Assert.Null(await files.ReadFileBytesAsync(readyPath));\n            Assert.Null(await files.ReadFileBytesAsync(\"game_state/control/validation_repair_request.json\"));\n            var ledger = (await files.ReadFileAsync(\"game_state/control/gm_trajectory_ledger.jsonl\"))!\n                .Split('\\n', StringSplitOptions.RemoveEmptyEntries).Select(line => JsonNode.Parse(line)!.AsObject()).ToArray();\n            var acceptedRow = Assert.Single(ledger, row => row[\"requestId\"]?.GetValue<string>() == request.RequestId &&\n                row[\"sessionId\"]?.GetValue<string>() == request.SessionId && row[\"turnNumber\"]?.GetValue<int>() == 43 &&\n                row[\"validation\"]?[\"acceptanceScope\"]?.GetValue<string>() ==\n                    (failReadyPublication ? \"worker_apply_gate\" : \"correlated_repair_ready\"));\n            Assert.Equal(failReadyPublication ? \"worker_apply_gate_accepted\" : \"validation_repair_ready\",\n                acceptedRow[\"terminal\"]![\"kind\"]!.GetValue<string>());\n            Assert.False(acceptedRow[\"validation\"]![\"fullCanonicalStateAccepted\"]!.GetValue<bool>());\n            var diagnostic = InvokePrivateValue<JsonObject>(engine, \"ExportHotOrdinarySubmissionDiagnostic\");\n            Assert.True(diagnostic[\"binding\"]![\"actualStageCompleted\"]!.GetValue<bool>());\n            Assert.Equal(\"Unavailable\", diagnostic[\"custody\"]![\"status\"]!.GetValue<string>());\n            Assert.Equal(\"WorkerDispositionNotIntegrated\", diagnostic[\"custody\"]![\"reason\"]!.GetValue<string>());\n            Assert.Equal(!failReadyPublication, diagnostic[\"custody\"]![\"readyDeleteReturned\"]!.GetValue<bool>());\n            Assert.Equal(!failReadyPublication, diagnostic[\"custody\"]![\"readyReleaseReturned\"]!.GetValue<bool>());\n            foreach (var key in new[] { \"hasS\", \"hasB\", \"hasM3\" }) Assert.False(diagnostic[key]!.GetValue<bool>());\n            WritePhysicalInjuryDiagnostic(\"fr063_hot_actual_worker_disposition\", new\n                { failReadyPublication, readyCuts, appliedTaskAtCut, applied, task, diagnostic, request.RequestId, generation });\n            return true;\n        });\n    }\n}\n",
+      "state": "Root saved WIP snapshot; preliminary consultation only, not SOURCE accepted."
+    },
+    {
+      "revision": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+      "path": "tests/categories.json",
+      "bytes": 1967517,
+      "sha256": "52c5f5edfe6c31a9dc37ad034fe3b5fd5c72d324dcbde04ed0f2a61a0c4d2ab9",
+      "text": null,
+      "state": "Root saved WIP snapshot; preliminary consultation only, not SOURCE accepted."
+    }
+  ],
+  "diffs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+        "--",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+        "tests/categories.json"
+      ],
+      "bytes": 5325,
+      "sha256": "1e8d0f737a84714e01c7d01e20d5e0e176e30f68a15ad915fdbd9001019db785",
+      "text": "diff --git a/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs b/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\nindex 0b5a019debd7607561ce6dc6f072c2bd191df9a1..8a57a4465fa83c3ba5707e89ca35aab937486a17 100644\n--- a/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\n+++ b/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\n@@ -88,12 +88,13 @@ public sealed partial class GameEngineTurnLifecycleTests\n             .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)\n             ?? throw new InvalidOperationException(\"PowerShell 7 fixture executable is unavailable.\");\n         var input = new QueuedConsoleInputSource([]);\n+        var logger = new SpiritualLifecycleTestLogger();\n         var engine = CreateGameEngine(input, settings =>\n         {\n             InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;\n             settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with\n                 { Enabled = true, LaunchCommand = $\"\\\"{shell}\\\" -NoLogo -NoProfile -File \\\"{scriptPath}\\\"\", TimeoutSeconds = 15 });\n-        }, fileSystem: files);\n+        }, fileSystem: files, logger: logger);\n         GetPrivateField<GameLoop>(engine, \"_gameLoop\").SetSession(\"session_hot_actual_worker\", 42);\n         await GetPrivateField<StateManager>(engine, \"_stateManager\").RefreshGameStateAsync();\n         await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>\n@@ -151,6 +152,9 @@ public sealed partial class GameEngineTurnLifecycleTests\n                 {\n                     failReadyPublication, guardFired, accepted, readyCuts, appliedTaskAtCut,\n                     WaitSettled = repairWait?.IsCompleted, GuardSettled = deadline.IsCompleted,\n+                    EngineDiagnostics = logger.Describe(),\n+                    Platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription,\n+                    WorkerExecutable = shell,\n                     Audit = await new GmWorkerAuditLog(files).ReadEventsAsync(),\n                     LatestTask = await files.ReadFileAsync(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath),\n                     Failures = failures.Select(failure => failure.ToString()).ToArray(), request.RequestId, generation\ndiff --git a/tests/categories.json b/tests/categories.json\nindex cd4c76a51dc66b26fcc11bc3bdd31f55ae30ceb6..2bd27c9956e90014905693f2a70f7d5cd165b950 100644\n--- a/tests/categories.json\n+++ b/tests/categories.json\n@@ -61,21 +61,21 @@\n },\n {\n   \"id\": \"fr063-hot-worker-ready-disposition\",\n-  \"responsibility\": \"#1536 T179-Pd.3b HS-IMPL-F03: Two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.\",\n-  \"excludes\": \"No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.\",\n+  \"responsibility\": \"#1536 T179-Pd.3b HS-IMPL-F03/HS-WORKER-F01: On the supported native WindowsJob host, two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.\",\n+  \"excludes\": \"No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. Ordinary Linux WorkerRelease is intentionally unavailable; pwsh configuration does not admit it. No Linux positive worker qualification. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.\",\n   \"changeHints\": [\n     \"BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\"\n   ],\n   \"related\": [\n     {\n       \"id\": \"fr063-joint-late-completion\",\n-      \"when\": \"FIRST protected Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE; separate frozen EVIDENCE before specifically released new GREEN singleton. No aggregate.\"\n+      \"when\": \"Reassess protected Late2 for production custody/dispatch changes. Test-only settled logger/platform/CI correction retains accepted prior13PASS and requires fresh BOTH/catalog/exact singleton PlanOnly plus affected SOURCE before FIRST Windows worker2; no unchanged Late2 replay.\"\n     }\n   ],\n   \"requirements\": {\n     \"frontendBuild\": false,\n     \"exclusive\": true,\n-    \"ciRunner\": \"ubuntu-24.04\"\n+    \"ciRunner\": \"windows-latest\"\n   },\n   \"timeoutMinutes\": 5,\n   \"expectedSeconds\": null,\n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "scripts",
+        "tests",
+        ".github"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:.github/workflows/portable-load-linux.yml"
+      ],
+      "exit": 0,
+      "bytes": 4018,
+      "sha256": "d338537993ba063c99283610e5b02d741d4e80a761ba382ca2cb75d0e6aa14c9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:.github/workflows/portable-load-linux.yml"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "c758a26997da046d8f3da392a7e7ea38c03045ce594703d1e8b40bafcb91aac9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:.github/workflows/dotnet-ci.yml"
+      ],
+      "exit": 0,
+      "bytes": 4649,
+      "sha256": "5d33e5bf08ec81264d583566544b3ceb7e716686d014d09799814440ac379bfe",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:.github/workflows/dotnet-ci.yml"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "4d060cfe1b00251a849e53d997770fe2a9e9795f162a5c58c2591ed189f26c9a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/test-csharp.ps1"
+      ],
+      "exit": 0,
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/test-csharp.ps1"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "4580c9e1849a9c04db0b30bea14e220a6e1b32039b602e340fc4b037493448fb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/testing/TestCategoryCatalog.psm1"
+      ],
+      "exit": 0,
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/testing/TestCategoryCatalog.psm1"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "4be2973369ed972d915471df4b1dd60d7432076a53d5778ed139768caa812b3b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/tests/test-ci-platform.tests.ps1"
+      ],
+      "exit": 0,
+      "bytes": 16852,
+      "sha256": "decd3d893899f87cfa7abefc94c7fb5d5e3c00e88830a13241772a48446f3782",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:scripts/tests/test-ci-platform.tests.ps1"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "8dc4907a8548f1a8c0c63acd03f144648fceba08f0d06b46e5fd9bcecb36fc2d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs"
+      ],
+      "exit": 0,
+      "bytes": 2990,
+      "sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "1e66a25a8e2b0d86d0efb9cd7acf0cbfe027da5393179b33909379b7af378a45",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "exit": 0,
+      "bytes": 68955,
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "fdb08d02a1d9e33b3e8458a853272a5d8f4f34532a0853e0f0f7f2847e34ec39",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "exit": 0,
+      "bytes": 68955,
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "fdb08d02a1d9e33b3e8458a853272a5d8f4f34532a0853e0f0f7f2847e34ec39",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs"
+      ],
+      "exit": 0,
+      "bytes": 4602,
+      "sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "832625422240adceaf5974e1d563de8a0911b79aef9efeac07d1386a44e50acf",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs"
+      ],
+      "exit": 0,
+      "bytes": 10947,
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "f99459cbe2ea56837ceef879a87f6d927f4d3d621884b2d5cf04991fa350e7b2",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs"
+      ],
+      "exit": 0,
+      "bytes": 36511,
+      "sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "4c1286aa7e7ea61b1af9c1715d64767fd7fe0e492dd8bd3fc4c3f648f3cef29c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs"
+      ],
+      "exit": 0,
+      "bytes": 29080,
+      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "5558dbce7d5cbe6baf658eeb882c86473e93c440972b8f70507b6eb70248cfb5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs"
+      ],
+      "exit": 0,
+      "bytes": 29080,
+      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "5558dbce7d5cbe6baf658eeb882c86473e93c440972b8f70507b6eb70248cfb5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
+      ],
+      "exit": 0,
+      "bytes": 13831,
+      "sha256": "ca038678ef8832732b2efbe0157f45d8d2f88927113ec67de1f1d92e96c7f2b7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "2a4a338b512a207b012d9bba9da9559ffedcd8cf2792f12fec6f8c36ab82b556",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs"
+      ],
+      "exit": 0,
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "5ea72f527c2863edfc90b0f00c70ff601492f71421cda1f35fae07c73747aff0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:tests/categories.json"
+      ],
+      "exit": 0,
+      "bytes": 1967214,
+      "sha256": "2907c10a7305d26ced7fe5fd69d8ae3fb3d58215dfd2238a123ef85c7a7975f9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:tests/categories.json"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "a8b573d77c1698557072121236aad33a151701f9dd7902674362c7da8e3557f5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:AGENTS.md"
+      ],
+      "exit": 0,
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:AGENTS.md"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "122a32268e895bde359056daad6681dccbc7e31021a93f17bce70a9dbee058a3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "a09da1666e8a7396192bd4ee2b08fc52bd06ef366e32d35e5c4ab36934db144f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:docs/testing.md"
+      ],
+      "exit": 0,
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:docs/testing.md"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "ef2847176f4f4afd9bd40ce251e4931e3df29b925981ea3069b5cff6a08994aa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1553-portable-local-storage/recovery/.gitattributes"
+      ],
+      "exit": 0,
+      "bytes": 130,
+      "sha256": "0227e43e46919abd0f0a3e652ccb08ae3af301b8bc4d2f9533064a14f52c65f1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1553-portable-local-storage/recovery/.gitattributes"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "070612e7b8de3264b6d1302744da97be45bc1c1d5999e2ced4110d054ac98a87",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/BookOfEternityClient.csproj"
+      ],
+      "exit": 0,
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient/BookOfEternityClient.csproj"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "367c3f0be85e043b84d938014a8d938d87f3f1d119716adbcd51c0ce447e3737",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj"
+      ],
+      "exit": 0,
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "8b5269e7b9b9ad8af203d2aa1041a5e5392491c5eb278f67162f3ac1c0b89475",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj"
+      ],
+      "exit": 0,
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "bb5961ed693ac056f17856dae7cfe644c5a521b7d857574b3b9ddf4e8e23bba6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md"
+      ],
+      "exit": 0,
+      "bytes": 9591,
+      "sha256": "fcb71dd6db6e64d587e088b1a766fd8ac188b280f49f0cd96d92048b305fe099",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "b7c3b278a623d66bdfcf2ea6c822897580c4cc7b369e0853fb178d8926378b21",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json"
+      ],
+      "exit": 0,
+      "bytes": 647157,
+      "sha256": "723a3f38082695a3bde617b6f04e07b8fc661b46fac122f02b9f179a9b92d6fb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "1c54f6fa0295d40cfed8119b7e74acd3c93da6acbbd85f75eb7c55aadef8fafa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "-rz",
+        "--full-tree",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b"
+      ],
+      "exit": 0,
+      "bytes": 11000253,
+      "sha256": "44c5c2439145c9be098898e4926e06a4921d7dcb96e6e1fc680555b8ec0e0ce8",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b:.github/workflows/fr063-hot-worker-windows.yml"
+      ],
+      "exit": 0,
+      "bytes": 13761,
+      "sha256": "242e95680cbe60a38466a2448da4b25a63192f0aa8d4753fad8ff13db5710f61",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
+      ],
+      "exit": 0,
+      "bytes": 14105,
+      "sha256": "cc5aeb628bf53dbb7cb1f9513cec31d65ce6a9c9b5e65a3d552355f8e4fd4c69",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b:tests/categories.json"
+      ],
+      "exit": 0,
+      "bytes": 1967517,
+      "sha256": "52c5f5edfe6c31a9dc37ad034fe3b5fd5c72d324dcbde04ed0f2a61a0c4d2ab9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+        "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+        "--",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+        "tests/categories.json"
+      ],
+      "exit": 0,
+      "bytes": 5325,
+      "sha256": "1e8d0f737a84714e01c7d01e20d5e0e176e30f68a15ad915fdbd9001019db785",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+        "f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "scripts",
+        "tests",
+        ".github"
+      ],
+      "exit": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "bytes": 41,
+      "sha256": "42e176213c7d630a45ac3a4e3ff7d1f7cb9c237eeb50d02169235b3eda66bb5d",
+      "stderr": ""
+    }
+  ],
+  "proposedWorkflowNotSourceAccepted": true,
+  "priorCheckerStopped": {
+    "path": "/tmp/t179pd-hot-worker-windows-consult-inspect-20261016.py",
+    "sha256": "ddc0ee155d81820689264e4ba2f7f0a19c904907234851a9543c6fb992f668ea",
+    "text": "from pathlib import Path\nimport subprocess,hashlib,json,os,re,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn');C='f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5';S='f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9';stem=Path('/tmp/t179pd-hot-worker-windows-ci-engineering-consultation-20261016');md=stem.with_suffix('.md');js=stem.with_suffix('.json');assert not md.exists() and not js.exists();h=lambda b:hashlib.sha256(b).hexdigest();env=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0');commands=[];pins=[];projections=[]\ndef git(*args):\n p=subprocess.run(['git',*args],cwd=R,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE);commands.append(dict(argv=['git',*args],exit=p.returncode,bytes=len(p.stdout),sha256=h(p.stdout),stderr=p.stderr.decode()));assert p.returncode==0;return p.stdout\ndef pin(path):\n b=git('show',C+':'+path);pins.append(dict(revision=C,path=path,blob=git('rev-parse',C+':'+path).decode().strip(),bytes=len(b),sha256=h(b)));return b\ndef proj(path,lo,hi):\n b=pin(path);t=''.join(b.decode().splitlines(keepends=True)[lo-1:hi]);projections.append(dict(revision=C,path=path,start=lo,end=hi,sha256=h(t.encode()),text=t))\nfor p,lo,hi in [('.github/workflows/portable-load-linux.yml',1,98),('.github/workflows/dotnet-ci.yml',1,90),('scripts/test-csharp.ps1',1,95),('scripts/testing/TestCategoryCatalog.psm1',90,125),('scripts/tests/test-ci-platform.tests.ps1',43,54),('BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs',24,43),('BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs',795,867),('BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs',1000,1105),('BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs',1,99),('BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs',46,112),('BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs',320,398),('BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs',245,277),('BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs',495,600),('BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs',24,195),('BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs',131,145),('tests/categories.json',63,90)]:proj(p,lo,hi)\nfor p in ['AGENTS.md','docs/development-workflow.md','docs/testing.md','specs/1553-portable-local-storage/recovery/.gitattributes','BookOfEternityClient/BookOfEternityClient.csproj','BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj','BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj','specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md','specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json']:pin(p)\nrows=git('ls-tree','-rz','--full-tree',C).split(b'\\0');paths=[];bad=[];links=[]\nfor row in rows:\n if not row:continue\n meta,path=row.split(b'\\t',1);p=path.decode();paths.append(p)\n if meta.startswith(b'120000'):links.append(p)\n for part in p.split('/'):\n  why=[]\n  if any(ord(c)<32 or c in '<>:\"\\\\|?*' for c in part):why.append('forbidden-character')\n  if part.endswith((' ','.')):why.append('trailing-dot-or-space')\n  if re.fullmatch(r'(?i)(CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])(?:\\..*)?',part):why.append('reserved-device-name')\n  if len(part.encode('utf-16-le'))//2>255:why.append('component-over255-UTF16')\n  if why:bad.append(dict(path=p,component=part,reasons=why))\nassert not bad and not links;fold={}\nfor p in paths:fold.setdefault(p.casefold(),[]).append(p)\ncollisions=[v for v in fold.values() if len(v)>1];assert not collisions\ninventory=dict(revision=C,trackedFiles=len(paths),invalidComponents=bad,symlinks=links,caseFoldCollisions=collisions,longestRelativePath=max(paths,key=len),maximumRelativeCharacters=max(map(len,paths)),pathsOver180Characters=sum(len(p)>180 for p in paths),scope='Static Windows filename constraints; not actual Windows checkout or filesystem qualification.')\nwip=[]\nfor p in ['.github/workflows/fr063-hot-worker-windows.yml','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs','tests/categories.json']:\n b=(R/p).read_bytes();wip.append(dict(path=p,bytes=len(b),sha256=h(b),text=b.decode() if not p.endswith('categories.json') else None,state='Root uncommitted WIP snapshot; preliminary consultation only.'))\nassert not (R/'tests/selections/1536-hot-worker-windows.json').exists()\ndiffargs=['diff','--binary','--full-index','--no-ext-diff',C,'--','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs','tests/categories.json'];diff=git(*diffargs);contargs=['diff','--binary','--full-index','--no-ext-diff',S,C,'--','BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','BookOfEternityClient.TestSupport','scripts','tests','.github'];cont=git(*contargs);assert not cont\nstatus=git('status','--short').decode();assert git('rev-parse','HEAD').decode().strip()==C\ntext=f'''# Bounded Windows worker2 — independent engineering consultation\n\n**Feasible using the existing ordinary WindowsJob owner, subject to concrete SOURCE/release guards. No actual run is released by this consultation.** Root remains sole writer. Retained configured reviewer: `gpt-6-astra` / `xhigh`; backend telemetry unavailable. Read-only source/Git/documentary inspection only; no network, build, discovery, test, runtime, delegation or repository edit.\n\nPinned checkpoint `{C}`, unchanged compiled production `{S}`. I also inspected the root's explicitly uncommitted workflow/logger/catalog draft; hashes and text/diff are preserved in JSON. That draft is not SOURCE accepted. The dedicated release file is absent.\n\n## Route and fixture feasibility\n\nThe ordinary selector admits `WindowsJob` for actual Windows+Auto before its Linux refusal branch. The public pool reserves the real task, creates the detached workspace, prepares the managed host, assigns the actual Windows Job owner, then releases the real worker. The existing apply gate and apply→Ready publication owner remain intact. The two fixture routes can therefore target genuine accepted apply/generated Ready and accepted apply/failed Ready publication on Windows, without a production seam or synthetic admission.\n\nThe fixture uses an absolute quoted `pwsh.exe` and script path. Existing command parsing preserves Windows backslashes and quoted spaces; host construction resolves the built `.exe` or installed dotnet and transmits arguments/environment to the worker. The script writes only its detached proposal/content, using actual weather context hashes. The Ready fault remains armed only after the real correlated `proposal-applied` event. I found no additional deterministic source blocker in that route. Actual hosted Job assignment, subprocess execution, apply, cleanup and timing remain UNRUN; preserve first failures rather than treating platform availability as PASS. Retain15s worker/40s fixture/5m category limits and the logger's original failure diagnostics.\n\nAttach the existing per-test GameEngine logger (present in the draft). Add a clear native-Windows prerequisite if needed to prevent accidental Linux execution; do not use skip or a Linux refusal as positive qualification. Update catalog responsibility/host to Windows. Linux fresh BOTH/catalog/PlanOnly still executes zero cases. Existing13PASS retain their source/platform provenance; no protectedLate2/131 replay is justified by an isolated worker fixture/logger/CI-host change.\n\n## Concrete release protocol requirements\n\n1. Keep the new workflow inert until a dedicated release file is added on the exact task branch. No workflow-file trigger, pull-request trigger, manual dispatch or automatic retry for this job. `dotnet-ci.yml` already has `workflow_dispatch` in addition to main/PR triggers; it is not the proposed one-category release protocol. The new narrow workflow is reasonable.\n2. Require push/exact branch, `GITHUB_SHA==HEAD`, clean source, `run_attempt==1`, and **exactly one parent** equal to the recorded accepted checkpoint. Require the release file absent in that parent and the sole added path in the child. The draft's `HEAD^` check alone accepts a merge; add a parent-count check. Concurrency must not cancel an active run. No repeat on failure.\n3. Recover pinned reviewed source/history and prove ancestry, then reject every behavioral/source/test/catalog/scripts/workflow change between reviewed source and accepted checkpoint. A fixed shallow fetch can fail closed if insufficient; never bypass missing ancestry. The draft's32-depth fetch is a bounded choice, not proof until it succeeds. Allow only the intended documentary preservation paths.\n4. **Bind the review contents, not just file hashes.** In the inspected draft, supplied MD/JSON hashes are checked, but the JSON's reviewed source and explicit FIRST Windows worker2 release are not. Require machine-readable accepted verdict, exact reviewed source, category/two-case/five-minute/Windows scope and matching MD digest from the hashed review/acceptance manifest. Require distinct `.md`/`.json` paths of their corresponding kind. An unrelated historical review must not authorize this run. Final affected SOURCE review will provide the exact fields.\n5. Windows preparation must freshly build BOTH projects, successfully validate the catalog, then run singleton PlanOnly with exactly the named integration method/two cases, zero executions, five-minute/exclusive/frontend=false. Record native argv/exit/timestamps/stdout and exact source for every step; stop at any preparation failure. The final actual should use explicit `-Category fr063-hot-worker-ready-disposition -NoBuild`; if the dedicated one-entry SelectionFile is retained, enforce its exact singleton and label it as such—never consume the ordinary multi-category selection.\n6. Record the four **fresh Windows** DLL hashes immediately before actual and verify unchanged afterward; do not compare Windows-produced DLL bytes to Linux compilation. Preserve the original two-case oracles, full stdout/log/TRX/summary/task/audit/trajectory/guard evidence and any wrapper error. Final artifact availability and hashes must be checked independently after download; GitHub job success alone is insufficient.\n7. Verify root removal on the **Windows runner**, using actual `GetTempPath()` and exact roots from both strict cleanup receipts. Archive before/after prefix and physical root checks. A later Linux `Path.Exists` check on a Windows path proves nothing. Use explicit JSON array serialization for empty lists. Upload evidence with `if: always()`; if setup/job cancellation prevents a full packet, classify it incomplete, never GREEN. Outer25m is a protective job bound, not an increased category limit or cleanup guarantee.\n\n## Checkout constraints verified\n\nPinned tree:54,402 tracked files; **no Windows-invalid filename characters/device components/trailing dot-space names, no components exceeding255 UTF-16 units, no symlinks, and no case-fold collisions**. Longest relative path is379 characters;12,361 paths exceed180 characters. Configure `core.longpaths=true` **before checkout** and preserve failure if materialization fails. No registry/security workaround is needed or proposed.\n\nThere is no repository-wide `.gitattributes`; only the older1553 recovery subtree has immutable-byte rules. Windows line-ending conversion could make raw review hashes differ despite clean Git status. The draft's pre-checkout Git environment sets `core.autocrlf=false` and `core.longpaths=true`, which addresses those risks without changing source. Verify their effective values and the required raw bytes. Record actual runner OS/architecture, PowerShell, SDK/runtime, run ID/attempt and source; do not infer a specific image or runtime qualification from the moving `windows-latest` label. Existing workflows provide .NET8 runtime plus10 SDK and use only checkout/setup-dotnet/upload-artifact; current remote action policy and hosted availability were not queried by this reviewer.\n\n## Next bounded gate\n\nSave/recover the concrete workflow, fixture logger/prerequisite and catalog patch; complete the required fresh zero-execution preparation; obtain affected independent SOURCE review of the actual guard code, source/diff and recovery. That later decision may explicitly release only FIRST Windows worker2 after its acceptance checkpoint and one-file release commit. This consultation grants no run. Retrieve/freeze the first outcome and obtain separate EVIDENCE/final bounded integration review. General Linux release/native integration, fullWindows/visual/DOM, full3b/S/B/M3/F1/T197/new-QTE and all prior open fault seams remain unqualified.\n\n**FINALSTOP.**\n'''\nmd.write_text(text)\nresult=dict(verdict='FEASIBLE_EXISTING_WINDOWS_ROUTE_WITH_REQUIRED_CONCRETE_RELEASE_GUARDS_NO_ACTUAL_RELEASE',configuration=dict(model='gpt-6-astra',reasoningEffort='xhigh',backendTelemetry='UNAVAILABLE'),checkpoint=C,compiledSource=S,observedWorktreeStatus=status,materialProtocolCorrections=[dict(id='WIN-C01',finding='Validate hashed review JSON binds reviewedSource and explicit Windows singleton release; hash equality alone is insufficient.',status='REQUIRED_IN_CONCRETE_SOURCE'),dict(id='WIN-C02',finding='Require exactly one parent; HEAD^ alone permits a merge release commit.',status='REQUIRED_IN_CONCRETE_SOURCE')],verifiedCheckoutInventory=inventory,gitPins=pins,projections=projections,worktreeSnapshots=wip,diffs=[dict(argv=['git',*diffargs],bytes=len(diff),sha256=h(diff),text=diff.decode()),dict(argv=['git',*contargs],bytes=0,sha256=h(cont),text='')],commands=commands,proposedWorkflowNotSourceAccepted=True,releaseFilePresent=False,actualRelease=[],runtimeExecuted=False,networkUsed=False,repoWrites=False,markdown=dict(path=str(md),sha256=h(md.read_bytes())),checker=dict(path=__file__,sha256=h(Path(__file__).read_bytes()),text=Path(__file__).read_text()),createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),finalStop=True)\njs.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\\n');print(json.dumps(dict(md=str(md),mdSha256=h(md.read_bytes()),json=str(js),jsonSha256=h(js.read_bytes()),pins=len(pins),projections=len(projections),verdict=result['verdict']),indent=2))\n",
+    "reason": "Root published announced WIP while checker retained an obsolete live-HEAD precondition; no runtime failure."
+  },
+  "releaseFilePresent": false,
+  "actualRelease": [],
+  "runtimeExecuted": false,
+  "networkUsed": false,
+  "repoWrites": false,
+  "markdown": {
+    "path": "/tmp/t179pd-hot-worker-windows-ci-engineering-consultation-20261016.md",
+    "sha256": "c4454dfb57b53ba8ee3068657a57e937edd9cdfea912fd81ebd16bceb4a974ab"
+  },
+  "checker": {
+    "path": "/tmp/t179pd-hot-worker-windows-consult-inspect-v2-20261016.py",
+    "sha256": "cd6f8b8c9ac7b17686ecda01269c2e6275d5b4967f0dbee8e16b6a9c6ca2c73d",
+    "text": "from pathlib import Path\nimport subprocess,hashlib,json,os,re,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn');C='f9cf1a16b2d186d8ecfc00333f9b04a2e950efe5';S='f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9';stem=Path('/tmp/t179pd-hot-worker-windows-ci-engineering-consultation-20261016');md=stem.with_suffix('.md');js=stem.with_suffix('.json');assert not md.exists() and not js.exists();h=lambda b:hashlib.sha256(b).hexdigest();env=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0');commands=[];pins=[];projections=[];W='a09272e91b379adb792450cd9e9d4f2a928d8a9b'\ndef git(*args):\n p=subprocess.run(['git',*args],cwd=R,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE);commands.append(dict(argv=['git',*args],exit=p.returncode,bytes=len(p.stdout),sha256=h(p.stdout),stderr=p.stderr.decode()));assert p.returncode==0;return p.stdout\ndef pin(path):\n b=git('show',C+':'+path);pins.append(dict(revision=C,path=path,blob=git('rev-parse',C+':'+path).decode().strip(),bytes=len(b),sha256=h(b)));return b\ndef proj(path,lo,hi):\n b=pin(path);t=''.join(b.decode().splitlines(keepends=True)[lo-1:hi]);projections.append(dict(revision=C,path=path,start=lo,end=hi,sha256=h(t.encode()),text=t))\nfor p,lo,hi in [('.github/workflows/portable-load-linux.yml',1,98),('.github/workflows/dotnet-ci.yml',1,90),('scripts/test-csharp.ps1',1,95),('scripts/testing/TestCategoryCatalog.psm1',90,125),('scripts/tests/test-ci-platform.tests.ps1',43,54),('BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs',24,43),('BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs',795,867),('BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs',1000,1105),('BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs',1,99),('BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs',46,112),('BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs',320,398),('BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs',245,277),('BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs',495,600),('BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs',24,195),('BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs',131,145),('tests/categories.json',63,90)]:proj(p,lo,hi)\nfor p in ['AGENTS.md','docs/development-workflow.md','docs/testing.md','specs/1553-portable-local-storage/recovery/.gitattributes','BookOfEternityClient/BookOfEternityClient.csproj','BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj','BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj','specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md','specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json']:pin(p)\nrows=git('ls-tree','-rz','--full-tree',W).split(b'\\0');paths=[];bad=[];links=[]\nfor row in rows:\n if not row:continue\n meta,path=row.split(b'\\t',1);p=path.decode();paths.append(p)\n if meta.startswith(b'120000'):links.append(p)\n for part in p.split('/'):\n  why=[]\n  if any(ord(c)<32 or c in '<>:\"\\\\|?*' for c in part):why.append('forbidden-character')\n  if part.endswith((' ','.')):why.append('trailing-dot-or-space')\n  if re.fullmatch(r'(?i)(CON|PRN|AUX|NUL|COM[1-9¹²³]|LPT[1-9¹²³])(?:\\..*)?',part):why.append('reserved-device-name')\n  if len(part.encode('utf-16-le'))//2>255:why.append('component-over255-UTF16')\n  if why:bad.append(dict(path=p,component=part,reasons=why))\nassert not bad and not links;fold={}\nfor p in paths:fold.setdefault(p.casefold(),[]).append(p)\ncollisions=[v for v in fold.values() if len(v)>1];assert not collisions\ninventory=dict(revision=W,trackedFiles=len(paths),invalidComponents=bad,symlinks=links,caseFoldCollisions=collisions,longestRelativePath=max(paths,key=len),maximumRelativeCharacters=max(map(len,paths)),pathsOver180Characters=sum(len(p)>180 for p in paths),scope='Static Windows filename constraints; not actual Windows checkout or filesystem qualification.')\nwip=[]\nfor p in ['.github/workflows/fr063-hot-worker-windows.yml','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs','tests/categories.json']:\n b=git('show',W+':'+p);wip.append(dict(revision=W,path=p,bytes=len(b),sha256=h(b),text=b.decode() if not p.endswith('categories.json') else None,state='Root saved WIP snapshot; preliminary consultation only, not SOURCE accepted.'))\nassert not (R/'tests/selections/1536-hot-worker-windows.json').exists()\ndiffargs=['diff','--binary','--full-index','--no-ext-diff',C,W,'--','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs','tests/categories.json'];diff=git(*diffargs);contargs=['diff','--binary','--full-index','--no-ext-diff',S,C,'--','BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','BookOfEternityClient.TestSupport','scripts','tests','.github'];cont=git(*contargs);assert not cont\nstatus=git('status','--short').decode();observedHead=git('rev-parse','HEAD').decode().strip()\ntext=f'''# Bounded Windows worker2 — independent engineering consultation\n\n**Feasible using the existing ordinary WindowsJob owner, subject to concrete SOURCE/release guards. No actual run is released by this consultation.** Root remains sole writer. Retained configured reviewer: `gpt-6-astra` / `xhigh`; backend telemetry unavailable. Read-only source/Git/documentary inspection only; no network, build, discovery, test, runtime, delegation or repository edit.\n\nPinned checkpoint `{C}`, unchanged compiled production `{S}`. I also inspected the root's workflow/logger/catalog draft, now saved at `{W}` during consultation; hashes and text/diff are preserved in JSON. That draft is not SOURCE accepted. The dedicated release file is absent.\n\n## Route and fixture feasibility\n\nThe ordinary selector admits `WindowsJob` for actual Windows+Auto before its Linux refusal branch. The public pool reserves the real task, creates the detached workspace, prepares the managed host, assigns the actual Windows Job owner, then releases the real worker. The existing apply gate and apply→Ready publication owner remain intact. The two fixture routes can therefore target genuine accepted apply/generated Ready and accepted apply/failed Ready publication on Windows, without a production seam or synthetic admission.\n\nThe fixture uses an absolute quoted `pwsh.exe` and script path. Existing command parsing preserves Windows backslashes and quoted spaces; host construction resolves the built `.exe` or installed dotnet and transmits arguments/environment to the worker. The script writes only its detached proposal/content, using actual weather context hashes. The Ready fault remains armed only after the real correlated `proposal-applied` event. I found no additional deterministic source blocker in that route. Actual hosted Job assignment, subprocess execution, apply, cleanup and timing remain UNRUN; preserve first failures rather than treating platform availability as PASS. Retain15s worker/40s fixture/5m category limits and the logger's original failure diagnostics.\n\nAttach the existing per-test GameEngine logger (present in the draft). Add a clear native-Windows prerequisite if needed to prevent accidental Linux execution; do not use skip or a Linux refusal as positive qualification. Update catalog responsibility/host to Windows. Linux fresh BOTH/catalog/PlanOnly still executes zero cases. Existing13PASS retain their source/platform provenance; no protectedLate2/131 replay is justified by an isolated worker fixture/logger/CI-host change.\n\n## Concrete release protocol requirements\n\n1. Keep the new workflow inert until a dedicated release file is added on the exact task branch. No workflow-file trigger, pull-request trigger, manual dispatch or automatic retry for this job. `dotnet-ci.yml` already has `workflow_dispatch` in addition to main/PR triggers; it is not the proposed one-category release protocol. The new narrow workflow is reasonable.\n2. Require push/exact branch, `GITHUB_SHA==HEAD`, clean source, `run_attempt==1`, and **exactly one parent** equal to the recorded accepted checkpoint. Require the release file absent in that parent and the sole added path in the child. The draft's `HEAD^` check alone accepts a merge; add a parent-count check. Concurrency must not cancel an active run. No repeat on failure.\n3. Recover pinned reviewed source/history and prove ancestry, then reject every behavioral/source/test/catalog/scripts/workflow change between reviewed source and accepted checkpoint. A fixed shallow fetch can fail closed if insufficient; never bypass missing ancestry. The draft's32-depth fetch is a bounded choice, not proof until it succeeds. Allow only the intended documentary preservation paths.\n4. **Bind the review contents, not just file hashes.** In the inspected draft, supplied MD/JSON hashes are checked, but the JSON's reviewed source and explicit FIRST Windows worker2 release are not. Require machine-readable accepted verdict, exact reviewed source, category/two-case/five-minute/Windows scope and matching MD digest from the hashed review/acceptance manifest. Require distinct `.md`/`.json` paths of their corresponding kind. An unrelated historical review must not authorize this run. Final affected SOURCE review will provide the exact fields.\n5. Windows preparation must freshly build BOTH projects, successfully validate the catalog, then run singleton PlanOnly with exactly the named integration method/two cases, zero executions, five-minute/exclusive/frontend=false. Record native argv/exit/timestamps/stdout and exact source for every step; stop at any preparation failure. The final actual should use explicit `-Category fr063-hot-worker-ready-disposition -NoBuild`; if the dedicated one-entry SelectionFile is retained, enforce its exact singleton and label it as such—never consume the ordinary multi-category selection.\n6. Record the four **fresh Windows** DLL hashes immediately before actual and verify unchanged afterward; do not compare Windows-produced DLL bytes to Linux compilation. Preserve the original two-case oracles, full stdout/log/TRX/summary/task/audit/trajectory/guard evidence and any wrapper error. Final artifact availability and hashes must be checked independently after download; GitHub job success alone is insufficient.\n7. Verify root removal on the **Windows runner**, using actual `GetTempPath()` and exact roots from both strict cleanup receipts. Archive before/after prefix and physical root checks. A later Linux `Path.Exists` check on a Windows path proves nothing. Use explicit JSON array serialization for empty lists. Upload evidence with `if: always()`; if setup/job cancellation prevents a full packet, classify it incomplete, never GREEN. Outer25m is a protective job bound, not an increased category limit or cleanup guarantee.\n\n## Checkout constraints verified\n\nPinned saved WIP tree: {len(paths):,} tracked files; **no Windows-invalid filename characters/device components/trailing dot-space names, no components exceeding255 UTF-16 units, no symlinks, and no case-fold collisions**. Longest relative path is{inventory['maximumRelativeCharacters']} characters;{inventory['pathsOver180Characters']:,} paths exceed180 characters. Configure `core.longpaths=true` **before checkout** and preserve failure if materialization fails. No registry/security workaround is needed or proposed.\n\nThere is no repository-wide `.gitattributes`; only the older1553 recovery subtree has immutable-byte rules. Windows line-ending conversion could make raw review hashes differ despite clean Git status. The draft's pre-checkout Git environment sets `core.autocrlf=false` and `core.longpaths=true`, which addresses those risks without changing source. Verify their effective values and the required raw bytes. Record actual runner OS/architecture, PowerShell, SDK/runtime, run ID/attempt and source; do not infer a specific image or runtime qualification from the moving `windows-latest` label. Existing workflows provide .NET8 runtime plus10 SDK and use only checkout/setup-dotnet/upload-artifact; current remote action policy and hosted availability were not queried by this reviewer.\n\n## Next bounded gate\n\nSave/recover the concrete workflow, fixture logger/prerequisite and catalog patch; complete the required fresh zero-execution preparation; obtain affected independent SOURCE review of the actual guard code, source/diff and recovery. That later decision may explicitly release only FIRST Windows worker2 after its acceptance checkpoint and one-file release commit. This consultation grants no run. Retrieve/freeze the first outcome and obtain separate EVIDENCE/final bounded integration review. General Linux release/native integration, fullWindows/visual/DOM, full3b/S/B/M3/F1/T197/new-QTE and all prior open fault seams remain unqualified.\n\nThe initial documentary checker stopped when root published the announced WIP during inspection; v2 pins that saved WIP explicitly. No application/runtime failure occurred. Parent plans to fix WIN-C01/C02 after preserving the current zero-execution preparation; that future correction remains for affected SOURCE review. **FINALSTOP.**\n'''\nmd.write_text(text)\nresult=dict(verdict='FEASIBLE_EXISTING_WINDOWS_ROUTE_WITH_REQUIRED_CONCRETE_RELEASE_GUARDS_NO_ACTUAL_RELEASE',configuration=dict(model='gpt-6-astra',reasoningEffort='xhigh',backendTelemetry='UNAVAILABLE'),checkpoint=C,compiledSource=S,savedWip=W,observedHead=observedHead,observedWorktreeStatus=status,materialProtocolCorrections=[dict(id='WIN-C01',finding='Validate hashed review JSON binds reviewedSource and explicit Windows singleton release; hash equality alone is insufficient.',status='REQUIRED_IN_CONCRETE_SOURCE'),dict(id='WIN-C02',finding='Require exactly one parent; HEAD^ alone permits a merge release commit.',status='REQUIRED_IN_CONCRETE_SOURCE')],verifiedCheckoutInventory=inventory,gitPins=pins,projections=projections,worktreeSnapshots=wip,diffs=[dict(argv=['git',*diffargs],bytes=len(diff),sha256=h(diff),text=diff.decode()),dict(argv=['git',*contargs],bytes=0,sha256=h(cont),text='')],commands=commands,proposedWorkflowNotSourceAccepted=True,priorCheckerStopped=dict(path='/tmp/t179pd-hot-worker-windows-consult-inspect-20261016.py',sha256=h(Path('/tmp/t179pd-hot-worker-windows-consult-inspect-20261016.py').read_bytes()),text=Path('/tmp/t179pd-hot-worker-windows-consult-inspect-20261016.py').read_text(),reason='Root published announced WIP while checker retained an obsolete live-HEAD precondition; no runtime failure.'),releaseFilePresent=False,actualRelease=[],runtimeExecuted=False,networkUsed=False,repoWrites=False,markdown=dict(path=str(md),sha256=h(md.read_bytes())),checker=dict(path=__file__,sha256=h(Path(__file__).read_bytes()),text=Path(__file__).read_text()),createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),finalStop=True)\njs.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\\n');print(json.dumps(dict(md=str(md),mdSha256=h(md.read_bytes()),json=str(js),jsonSha256=h(js.read_bytes()),pins=len(pins),projections=len(projections),verdict=result['verdict']),indent=2))\n"
+  },
+  "createdUtc": "2026-10-16T22:43:48.110316+00:00",
+  "finalStop": true
+}

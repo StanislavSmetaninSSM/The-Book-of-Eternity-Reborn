@@ -1,0 +1,22 @@
+{
+  "source_sha": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "phase": "Fresh BOTH/catalog and exact singleton PlanOnly after test-only logger/Windows catalog and gated CI source a092; ZERO tests. Affected SOURCE pending; no actual release. Subsequent CI-only gate correction does not change compiled inputs.",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "d134faf0436de2fac53cb7e4341bfcc5b07140538d004446c83f29bfeae1b8eb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "ebcfda920d8d84bceec7d49f02197edb4deec4e148dd2c4ffe0e249ab8d426f4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "d134faf0436de2fac53cb7e4341bfcc5b07140538d004446c83f29bfeae1b8eb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "94442441cb7a67a640e2432b96f6482195829fa1444cb51a0c74af95c9cdab3c"
+    }
+  ]
+}

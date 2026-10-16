@@ -1,6 +1,6 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
-> Current bounded3b source f9bc is compiled and SOURCE-reviewed. Selected15cases executed:13PASS+2workerFAIL; independent causal review confirms ordinaryLinux worker route unavailable. Worker-positive/final bounded acceptance and further actual release remain BLOCKED. See current [plan](plan.md). Full3b/S/B/M3/F1/T197/new-QTE and prior limits remain open.
+> Current bounded3b production is unchanged since7acd. Test-only worker logger/Windows routing compiled at a092; subsequent CI-only guards are pending affected SOURCE. Previous15selectedcases executed=13PASS+2Linux workerFAIL; Windows actualUNRUN, release fileABSENT. Full3b/S/B/M3/F1/T197/new-QTE and prior limits remain open; see current plan.
 
 > Ready3 causal RED is independently qualified atcc8; accepted bounded3b implementation may continue after decision persistence, with fresh source/evidence gates and no additional actual/GREEN release. See [current plan](plan.md).
 

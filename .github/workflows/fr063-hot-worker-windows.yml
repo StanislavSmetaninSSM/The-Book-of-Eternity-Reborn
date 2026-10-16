@@ -92,6 +92,7 @@ jobs:
           $head = GitValue @('rev-parse', 'HEAD')
           Require ($head -ceq $env:GITHUB_SHA) 'Checkout differs from event SHA.'
           Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Checkout is not clean.'
+          Require (((GitValue @('rev-list', '--parents', '-n', '1', 'HEAD')) -split ' ').Count -eq 2) 'Release commit must have exactly one parent.'
           $release = Get-Content -LiteralPath $releasePath -Raw | ConvertFrom-Json -AsHashtable
           Require ($release.schemaVersion -eq 1 -and $release.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2') 'No exact first-worker release.'
           Require ($release.reviewedSource -cmatch '^[0-9a-f]{40}$' -and $release.acceptedCheckpoint -cmatch '^[0-9a-f]{40}$') 'Release source pins are invalid.'
@@ -110,9 +111,13 @@ jobs:
           }
           foreach ($kind in @('md', 'json')) {
             $pin = $release.sourceReview[$kind]
-            Require ($pin.path -cmatch '^specs/1536-complete-wound-materialization/recovery/[^/]+\.(md|json)$' -and $pin.sha256 -cmatch '^[0-9a-f]{64}$') 'Invalid review artifact pin.'
+            Require ($pin.path -cmatch ('^specs/1536-complete-wound-materialization/recovery/[^/\\]+\.' + $kind + '$') -and $pin.sha256 -cmatch '^[0-9a-f]{64}$') 'Invalid review artifact pin.'
             Require ((Get-FileHash -LiteralPath $pin.path -Algorithm SHA256).Hash.ToLowerInvariant() -ceq $pin.sha256) 'Raw SOURCE review bytes differ.'
           }
+          $sourceReview = Get-Content -LiteralPath $release.sourceReview.json.path -Raw | ConvertFrom-Json -AsHashtable
+          Require ($sourceReview.reviewedSource -ceq $release.reviewedSource -and $sourceReview.markdownSha256 -ceq $release.sourceReview.md.sha256 -and $sourceReview.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2' -and @($sourceReview.releasedActuals).Count -eq 1) 'Review does not grant this exact source and singleton actual.'
+          $grant = $sourceReview.releasedActuals[0]
+          Require ($grant.category -ceq $category -and $grant.expectedCases -eq 2 -and $grant.budgetMinutes -eq 5 -and $grant.platform -ceq 'windows-latest' -and $grant.attempt -ceq 'FIRST_NATIVE_WINDOWS_ONLY') 'Review grants a different platform, attempt, category or bound.'
           Require (@($release.selections).Count -eq 1 -and $release.selections[0].category -ceq $category) 'Only the worker category is released.'
           Import-Module ./scripts/testing/TestCategoryCatalog.psm1
           $catalog = Read-TestCategoryCatalog ./tests/categories.json
@@ -124,7 +129,7 @@ jobs:
           $catalogRun = InvokeBounded 'fresh-both-catalog' @('-ValidateCatalog')
           Require ($catalogRun.NativeExit -eq 0) 'Fresh BOTH/catalog failed; no actual released.'
           $audit = Get-Content (Join-Path $catalogRun.Directory 'summary.json') -Raw | ConvertFrom-Json
-          Require ($audit.DiscoveryOnly -and $audit.Tests.Executed -eq 0 -and $audit.CatalogAudit.Valid -and @($audit.CatalogAudit.Unmapped).Count -eq 0 -and @($audit.CatalogAudit.StaleSelectors).Count -eq 0 -and -not $audit.TimedOut -and $audit.OwnedTreeCleanupSucceeded -and $audit.RuntimeCleanupSucceeded) 'Fresh inventory/discovery/cleanup did not qualify.'
+          Require ($audit.Revision.Head -ceq $head -and $audit.Revision.ChangedFiles -eq 0 -and $audit.DiscoveryOnly -and $audit.Tests.Executed -eq 0 -and $audit.CatalogAudit.Valid -and @($audit.CatalogAudit.Unmapped).Count -eq 0 -and @($audit.CatalogAudit.StaleSelectors).Count -eq 0 -and -not $audit.TimedOut -and $audit.OwnedTreeCleanupSucceeded -and $audit.RuntimeCleanupSucceeded) 'Fresh inventory/discovery/cleanup did not qualify.'
           foreach ($phase in @('Build-unit', 'Build-integration')) {
             Require (@($audit.PhaseResults | Where-Object { $_.Name -ceq $phase -and $_.Completed }).Count -eq 1) 'Both selected projects require a fresh successful build.'
           }
@@ -135,7 +140,7 @@ jobs:
           Require ($planRun.NativeExit -eq 0) 'Exact PlanOnly failed; no actual released.'
           $plan = Get-Content (Join-Path $planRun.Directory 'plan.json') -Raw | ConvertFrom-Json
           $planSummary = Get-Content (Join-Path $planRun.Directory 'summary.json') -Raw | ConvertFrom-Json
-          Require ($planSummary.PlanOnly -and $planSummary.Tests.Executed -eq 0 -and @($plan.Descriptors).Count -eq 1) 'PlanOnly must execute zero tests and plan one descriptor.'
+          Require ($plan.Revision.Head -ceq $head -and $plan.Revision.ChangedFiles -eq 0 -and $planSummary.Revision.Head -ceq $head -and $planSummary.Revision.ChangedFiles -eq 0 -and -not $planSummary.TimedOut -and $planSummary.OwnedTreeCleanupSucceeded -and $planSummary.RuntimeCleanupSucceeded -and $planSummary.PlanOnly -and $planSummary.Tests.Executed -eq 0 -and @($plan.Descriptors).Count -eq 1) 'PlanOnly must execute zero tests and plan one descriptor.'
           $descriptor = $plan.Descriptors[0]
           Require ($descriptor.Category -ceq $category -and $descriptor.Adapter -ceq 'integration' -and $descriptor.Exclusive -and -not $descriptor.FrontendBuild -and $descriptor.BudgetMinutes -eq 5 -and $descriptor.EstimatedCases -eq 2 -and @($descriptor.ExpectedMethodCounts).Count -eq 1 -and $descriptor.ExpectedMethodCounts[0].Name -ceq 'BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody' -and $descriptor.ExpectedMethodCounts[0].Cases -eq 2) 'Exact worker method/count/budget differs.'
           $beforeDll = @(DllPins)
@@ -143,7 +148,7 @@ jobs:
           Require ($beforeTemp.Count -eq 0) 'Scoped fixture residue exists before actual.'
           Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Source changed during preparation.'
           $beforeDll | ConvertTo-Json -Depth 8 | Set-Content "$evidence/dll-before.json" -Encoding utf8NoBOM
-          $beforeTemp | ConvertTo-Json -AsArray | Set-Content "$evidence/temp-before.json" -Encoding utf8NoBOM
+          ConvertTo-Json -InputObject @($beforeTemp) | Set-Content "$evidence/temp-before.json" -Encoding utf8NoBOM
           $actualFailure = $null
           try { $actualRun = InvokeBounded 'first-worker2' @('-SelectionFile', $releasePath, '-NoBuild') }
           catch { $actualFailure = $_ }
@@ -154,11 +159,39 @@ jobs:
             $afterHead = GitValue @('rev-parse', 'HEAD')
             [ordered]@{ Source = $afterHead; Status = $afterStatus; Dll = $afterDll; ScopedTemp = $afterTemp; WrapperFailure = if ($actualFailure) { $actualFailure.ToString() } else { $null } } | ConvertTo-Json -Depth 12 | Set-Content "$evidence/after-actual.json" -Encoding utf8NoBOM
           }
+          # Observe exact strict receipt roots here, on their owning Windows host.
+          $physicalRecords = @()
+          $physicalFailure = $null
+          try {
+            Require ($null -ne $actualRun) 'Actual result directory was not retained.'
+            $trxFiles = @(Get-ChildItem $actualRun.Directory -Recurse -Filter '*.trx')
+            Require ($trxFiles.Count -eq 1) 'Expected one raw worker TRX.'
+            [xml]$trx = Get-Content -LiteralPath $trxFiles[0].FullName -Raw
+            $results = @($trx.SelectNodes("//*[local-name()='UnitTestResult']"))
+            Require ($results.Count -eq 2) 'Expected two distinct worker TRX results.'
+            foreach ($result in $results) {
+              $output = $result.SelectSingleNode("*[local-name()='Output']/*[local-name()='StdOut']")
+              $receipts = @($output.InnerText -split '\r?\n' | Where-Object { $_.StartsWith('{"CleanupOwnedRoot":') } | ForEach-Object { $_ | ConvertFrom-Json })
+              Require ($receipts.Count -eq 1) 'Each worker result requires one strict cleanup receipt.'
+              $receipt = $receipts[0]
+              $root = [IO.Path]::GetFullPath($receipt.CleanupOwnedRoot)
+              Require ([IO.Path]::GetDirectoryName($root) -eq [IO.Path]::GetTempPath().TrimEnd([IO.Path]::DirectorySeparatorChar) -and [IO.Path]::GetFileName($root) -cmatch '^boe-gameengine-turnlifecycle-[0-9a-f]{32}$') 'Receipt root is outside the exact owned temp scope.'
+              $absent = $false
+              try { Get-Item -LiteralPath $root -Force -ErrorAction Stop | Out-Null }
+              catch [System.Management.Automation.ItemNotFoundException] { $absent = $true }
+              $physicalRecords += [ordered]@{ TestId = $result.testId; TestName = $result.testName; Receipt = $receipt; PhysicalRoot = $root; PhysicallyAbsentOnWindows = $absent }
+              Require ($receipt.OwnedFixtureRemoved -and $null -eq $receipt.CleanupFailure -and $absent) 'Strict owned Windows root cleanup did not complete.'
+            }
+            Require (@($physicalRecords.PhysicalRoot | Sort-Object -Unique).Count -eq 2) 'Worker roots are not distinct.'
+          }
+          catch { $physicalFailure = $_ }
+          [ordered]@{ Host = 'Windows'; TempPath = [IO.Path]::GetTempPath(); Records = $physicalRecords; Error = if ($physicalFailure) { $physicalFailure.ToString() } else { $null } } | ConvertTo-Json -Depth 12 | Set-Content "$evidence/physical-cleanup.json" -Encoding utf8NoBOM
           if ($actualFailure) { throw $actualFailure }
+          if ($physicalFailure) { throw $physicalFailure }
           Require ($afterHead -ceq $head -and $afterStatus.Count -eq 0 -and $afterTemp.Count -eq 0 -and (($beforeDll | ConvertTo-Json -Compress) -ceq ($afterDll | ConvertTo-Json -Compress))) 'Source, DLL or owned cleanup continuity failed.'
           Require ($actualRun.NativeExit -eq 0) 'FIRST worker2 failed; preserve the original packet and stop, no retry.'
           $summary = Get-Content (Join-Path $actualRun.Directory 'summary.json') -Raw | ConvertFrom-Json
-          Require ($summary.ExitCode -eq 0 -and -not $summary.TimedOut -and $summary.OwnedTreeCleanupSucceeded -and $summary.RuntimeCleanupSucceeded -and $summary.Selection.PlannedDescriptors -eq 1 -and $summary.Selection.CompletedDescriptors -eq 1 -and $summary.Selection.PlannedCases -eq 2 -and $summary.Selection.CompletedCases -eq 2 -and $summary.Selection.Complete -and $summary.Tests.Total -eq 2 -and $summary.Tests.Executed -eq 2 -and $summary.Tests.Passed -eq 2 -and $summary.Tests.Failed -eq 0 -and @($summary.DuplicateTests).Count -eq 0 -and @($summary.CategoryResults).Count -eq 1 -and $summary.CategoryResults[0].Completed -and $summary.CategoryResults[0].BudgetMinutes -eq 5 -and $summary.CategoryResults[0].Seconds -le 300) 'Exact positive two-case/cleanup result did not qualify.'
+          Require ($summary.Revision.Head -ceq $head -and $summary.Revision.ChangedFiles -eq 0 -and $summary.ExitCode -eq 0 -and -not $summary.TimedOut -and $summary.OwnedTreeCleanupSucceeded -and $summary.RuntimeCleanupSucceeded -and $summary.Selection.PlannedDescriptors -eq 1 -and $summary.Selection.CompletedDescriptors -eq 1 -and $summary.Selection.PlannedCases -eq 2 -and $summary.Selection.CompletedCases -eq 2 -and $summary.Selection.Complete -and $summary.Tests.Total -eq 2 -and $summary.Tests.Executed -eq 2 -and $summary.Tests.Passed -eq 2 -and $summary.Tests.Failed -eq 0 -and @($summary.DuplicateTests).Count -eq 0 -and @($summary.CategoryResults).Count -eq 1 -and $summary.CategoryResults[0].Category -ceq $category -and $summary.CategoryResults[0].Completed -and $summary.CategoryResults[0].BudgetMinutes -eq 5 -and $summary.CategoryResults[0].Seconds -le 300) 'Exact positive two-case/cleanup result did not qualify.'
           Write-Host 'FIRST native Windows worker2 packet preserved; separate EVIDENCE and final bounded review remain required.'
 
       - name: Preserve every native outcome and preparation artifact
