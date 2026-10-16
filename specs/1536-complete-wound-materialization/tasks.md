@@ -1,3 +1,13 @@
+## T179-Pd.3b F01 SOURCE accepted — expanded concrete recovery prerequisite (2026-10-16)
+
+- [x] Independent affectedSOURCE accepts d474/22e, F01closed/noresidualmaterialfindings; root36pins/fivediffs/11tmprefs/10projections;12chains/fourDLLs/exact2desc5cases/ZEROexecution/1250selectedfiles verified. Preserve both read-only inspectorversions and all initialBLOCKED history.
+- [ ] Publish/readback/newcleanGitHub restore ALLconcrete3b105author/113reviewer dependencies (+52automatic and21/42narrative), validate new helper/requirements through narrow affectedindependentreview. Previous1250 scope had52/105 and57/1133bpaths only; union66additionalpaths identified, nofullcheckoutclaim. Helper/docs-only change retains compiledd474/DLL/prep/selection; no repeatedbuild/discovery. Then ONLY conditionalFIRSTLate2singleton2; freeze/push/recover/separateEVIDENCE before newReady3. Currentactuals0/releaseHELD until this recoverycondition. Prior473RED/reader131 retained; fullstage/S/B/M3/F1/T197/activation/alllimitsOPEN.
+
+## T179-Pd.3d bounded DESIGN accepted; NI-D01 clarified (2026-10-16)
+
+- [x] Separate independentDESIGN zero materialblockers: root71pins/fivediffs/seventmprefs/63exactprojections;immutable author/reviewer/supports preserved. Kernels+realordinaryconsumers+source-aware no-write accepted for subsequent bounded test-first engineering; allchecksUNRUN/no runtime release.
+- [ ] Verify NI-D01 affected canonical wording: existing writerencoding only Changed+actualReturned/leaseclose; no-write exactraw presence/bytes including UTF-8withoutBOM/UTF-16BOM; Fault/Uncertain neverpromotedbybyteequality. Add these contrasts to futurefinitechecks. General retainedpass/source/write/historyjoin/coldambient/fullS/B/M3/F1/T197/priorlimitsOPEN. Accepted3b staysindependent.
+
 ## T179-Pd.3b corrected RED2 preparation — SOURCE decision pending (2026-10-16)
 
 - [x] Corrected d474 fresh BOTH/catalog native0,133.5684122s/774owners11722methods/no unmappedstale/35+133warnings0errors; PlanOnly native0,4.1835481s/exact2descriptors5cases/ZEROexecution. Twelve raw/local/storedchains/fourd474DLLs/rootaudit/1230newGitHub-onlycleanselectedrecovery preserved. Initialf71BLOCKEDreport and preparation remainhistorical.
