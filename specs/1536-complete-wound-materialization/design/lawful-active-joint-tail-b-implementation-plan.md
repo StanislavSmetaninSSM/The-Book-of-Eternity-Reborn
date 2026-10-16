@@ -1,5 +1,7 @@
 # Lawful ACTIVE fixed joint-tail B Implementation Plan
 
+> Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).
+
 > **Current execution authority, 2026-10-16:** new direct delegation resumes autonomous accepted bounded3b implementation from745b and supersedes the completed discussion STOP. Follow [current plan authority](../plan.md): separately review saved FIRST Late2 EVIDENCE, run only specifically released Ready3, preserve/qualify causal RED, then implement the accepted bounded custody stage through TDD and independent gates. Do not repeat accepted F1 design or unchanged tests without a concrete changed cause. All full S/M3/F1/ordinary/T197/new-QTE and D4/guided/DOM/visual/Windows/D8 gates remain open.
 
 > **Completed DESIGN-only pass at745b:** its no-code/no-runtime and final discussion STOP instructions describe that finished pass; they do not veto the new direct delegation. Immutable review findings/results remain historical, and a review verdict alone never issues runtime authority.

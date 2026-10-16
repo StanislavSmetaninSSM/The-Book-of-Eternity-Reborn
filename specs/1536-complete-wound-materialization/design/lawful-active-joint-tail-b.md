@@ -1,5 +1,7 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
+> Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).
+
 > **Current execution authority, 2026-10-16:** new direct delegation resumes autonomous accepted bounded3b implementation from745b, superseding the completed discussion STOP. The [current plan entry](../plan.md) starts at saved FIRST Late2's separate EVIDENCE gate; Ready3 and causal TDD/implementation follow only their engineering gates. No new F1 redesign or full-S/M3/F1/T197/new-QTE release; all D4/guided/DOM/visual/Windows/D8 limits remain.
 
 > **Completed DESIGN-only pass at745b:** documents/review/source recovery only; its STOP was followed for that pass. The corrected final review below closes its documentation finding and does not itself issue implementation/runtime authority. The new direct delegation above authorizes subsequent bounded work.
