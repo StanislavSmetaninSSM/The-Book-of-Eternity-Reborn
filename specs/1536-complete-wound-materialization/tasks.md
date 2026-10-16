@@ -1,3 +1,13 @@
+## T179-Pd.3b recovery R01 BLOCKED — full-tree correction WIP (2026-10-16)
+
+- [x] Preserve recoveryBLOCKED HS-RED2-R01, root43pins/threediffs/12tmprefs/threeprojections. Five145-path reportscope/all1348files correct but17later fixture/caller dependencies absent. F01 SOURCE remainsaccepted; FIRSTLate2HELD/noactuals.
+- [x] Root-cause audit before thirdattempt: eightreportunion197,missing17,35newlyreferencedalreadyselected. Record initial readonly162-count assertion correction; no runtime/source artifact affected. Abandon manual sparse-list inference; capacity permits standard fullcurrenttree54127files/3.55GB in new/workspace dir.
+- [ ] Publish/readback/recover new full-current-tree helper WIP; verify EVERYtrackedpath/mode/bytes againstGit+writer, no localobjects/alternates/sparse. Narrow independent R01closure then saved/recovered acceptance before FIRSTLate2only2; separate frozenEVIDENCE before Ready3. Compiled d474/fourDLLs/prep/selection unchanged; no prep rerun. Allfullstage/S/B/M3/F1/T197/activation/priorlimitsOPEN, historical473RED/reader131retained.
+
+## T179-Pd.3d NI-D01 CLOSED (2026-10-16)
+
+- [x] Separate affected wording verification no newfinding; root16pins/threediffs/fourtmprefs/11projections; immutable priorpairs unchanged. Changed+actualReturned/leaseclose encodes; no-write preserves exactraw encodings; Fault/Uncertain neverpromotedbyequality. Allfuturechecks/sourcehistory/cold/fullstage remainOPEN; no3b/runtimeactivationrelease.
+
 ## T179-Pd.3b F01 SOURCE accepted — expanded concrete recovery prerequisite (2026-10-16)
 
 - [x] Independent affectedSOURCE accepts d474/22e, F01closed/noresidualmaterialfindings; root36pins/fivediffs/11tmprefs/10projections;12chains/fourDLLs/exact2desc5cases/ZEROexecution/1250selectedfiles verified. Preserve both read-only inspectorversions and all initialBLOCKED history.

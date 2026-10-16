@@ -1,0 +1,55 @@
+[
+  {
+    "path": "t179pd-hot-custody-owner-scope-recovery-independent-source-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-owner-scope-recovery-independent-source-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-owner-scope-recovery-independent-helper-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-owner-scope-recovery-independent-helper-20261016.diff",
+    "raw_sha256": "9379627bc263997bf1ae6267a5f174adb2a9f0b6da3ede5d73e6d7b02cded6e8",
+    "raw_bytes": 5439,
+    "stored_sha256": "b7c0a69b9236fdf1c1e74e472510ec71a0a4b3e33d027b15e68326ca186b3b42",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-fresh-github-owner-policy-scope-restore-20261016.py"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-owner-scope-recovery-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-owner-scope-recovery-independent-status-20261016.diff",
+    "raw_sha256": "ad4398edcee97100cb888ac2a500848943e087af69a7e94653e90cda55aad4b4",
+    "raw_bytes": 8071,
+    "stored_sha256": "cf0ac098f754426c56614d606d108696743edb0616677f91b0a827d0aded0b38",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  }
+]

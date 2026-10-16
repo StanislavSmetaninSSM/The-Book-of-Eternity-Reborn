@@ -1,0 +1,363 @@
+{
+  "task": "Narrow affected NI-D01 wording verification",
+  "configuration": {
+    "assigned_model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "serving_backend_telemetry": "unknown",
+    "reviewer": "/root/t179pb_story_independent_review"
+  },
+  "candidate": "f186abee075654859d536073d8a582f213af0529",
+  "prior_design_review_candidate": "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+  "wording_diff_base": "22e31d09999ff9cd8616116ff0e19f517a192426",
+  "utc": "2026-10-16T19:31:06.605913+00:00",
+  "verdict": {
+    "NI_D01": "CLOSED",
+    "new_findings": [],
+    "prior_bounded_design_acceptance_unchanged": true,
+    "new_runtime_or_full_stage_release": false,
+    "separate_3b_release_unmodified": true
+  },
+  "resolved_contract": {
+    "ChangedAndReturned": "Compare current bound afterimage with actual writer encoder only after genuine changed public write and successful owning release.",
+    "NotNeededOrCurrentNoWrite": "Retain/recheck exact observed raw presence and bytes, including BOM-less UTF-8 and UTF-16 BOM. No encoding rewrite.",
+    "FaultOrUncertain": "Byte equality cannot create Returned or historical publication authority.",
+    "future_tests": "Explicitly contrast all cited branches; all checks remain FUTURE/UNRUN."
+  },
+  "scope": {
+    "included": [
+      "NI-D01 canonical3d/new plan/tasks correction",
+      "projector/wrapper/writer/decoder/release/no-write source dependencies",
+      "immutable author/reviewer pairs",
+      "exact source/test/catalog/selection continuity"
+    ],
+    "excluded": [
+      "full repeated 3d design review",
+      "new recovery helper/profile/145 paths/clone/network qualification",
+      "3b source/fixture/evidence or actual release",
+      "runtime/binary qualification"
+    ]
+  },
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOutputProjection.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "557bdb9f4ace4b5545c1a8e6dfd77e63eff08d87",
+      "sha256": "d4a28c2dbed9c1e2d5b289035eb093420f4b4b97fce3dcf103bf1661566dd6ae",
+      "bytes": 26275,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
+      "bytes": 9590,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "3a817e031d8cc5e4c3122c5ac3437e8665f2dd33",
+      "sha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "bytes": 454547,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "8e57589d8997ce8a2f5d3ff814b60919f80c89cd",
+      "sha256": "862e7e2eea2f4a92c7d066e36b734d5d2a0f011d80666f767c373653433ad6d9",
+      "bytes": 131670,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "b22b228511a2e27de16e167f26f9fad12fc5e837",
+      "sha256": "c83c7d20f1f697fd5d1416c4e1640e853911e134e7ffdf5512477cb48cf8db25",
+      "bytes": 2153913,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.json",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "88adca9f93952997f8b3ba8becd7f179cd3b6ab2",
+      "sha256": "23156fda6410b7ec164c22a2c93c5c5b232358f01d755de10592fd194c893675",
+      "bytes": 149976,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "30458a6dbcf43026becae6863154e9daf28b9876",
+      "sha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055",
+      "bytes": 25246,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.json",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "41c43fdbef1c89f58faff384b69dab5cbe2087d3",
+      "sha256": "c32bc4107a5dacf7fcf6dd13653c849fbde4d56974c077ea7d69eefd7674bb0c",
+      "bytes": 74689,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "f774a68226b7581425cd51d0a836be3ee63606f0",
+      "sha256": "91dcc0c0df7fcb314ddb30742ea26bd7ae63653ea1c372662f278aa6c2ace0bc",
+      "bytes": 17227,
+      "working_matches_candidate": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "834f9509adeea2b3b23312dc6566f6bb7d121f92",
+      "sha256": "896588aedecb98ceb8afdf2115dc2b8e5a5361bb3a6f44c60c2e1f4b3e1a8a9a",
+      "bytes": 1518869,
+      "working_matches_candidate": true
+    }
+  ],
+  "immutable_artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "30458a6dbcf43026becae6863154e9daf28b9876",
+      "sha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055",
+      "bytes": 25246,
+      "working_matches_candidate": true,
+      "local_original": "/tmp/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "local_and_published_byte_exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.json",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "88adca9f93952997f8b3ba8becd7f179cd3b6ab2",
+      "sha256": "23156fda6410b7ec164c22a2c93c5c5b232358f01d755de10592fd194c893675",
+      "bytes": 149976,
+      "working_matches_candidate": true,
+      "local_original": "/tmp/t179pd-narrative-interface-policy-engineering-design-20261016.json",
+      "local_and_published_byte_exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "f774a68226b7581425cd51d0a836be3ee63606f0",
+      "sha256": "91dcc0c0df7fcb314ddb30742ea26bd7ae63653ea1c372662f278aa6c2ace0bc",
+      "bytes": 17227,
+      "working_matches_candidate": true,
+      "local_original": "/tmp/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md",
+      "local_and_published_byte_exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.json",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "git_blob": "41c43fdbef1c89f58faff384b69dab5cbe2087d3",
+      "sha256": "c32bc4107a5dacf7fcf6dd13653c849fbde4d56974c077ea7d69eefd7674bb0c",
+      "bytes": 74689,
+      "working_matches_candidate": true,
+      "local_original": "/tmp/t179pd-narrative-interface-policy-engineering-independent-review-20261016.json",
+      "local_and_published_byte_exact": true
+    }
+  ],
+  "exact_projections": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 341,
+      "end_line": 347,
+      "sha256": "f74860f4f274d9661b8f5f49e5fa44e8bf34471faa54c5d5fe3d986272f95719",
+      "bytes": 2333,
+      "text": "#### T179-Pd.3d shared narrative/interface policy — bounded DESIGN accepted\n\nThe [focused engineering contract](../recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md) proposes actual ordinary consumers of shared kernels and the fixed eleven-role HOT source adapter. Preserve narrative's read of PRE-interface-normalization prose, ordered repeated IO/catches/warnings, actual one-pass projection, and the existing actual single UTC sample/public write/owning release. Ambient DateTimeOffset.TryParse remains a distinct leaf. A valid final fixed point cannot prove first-pass source/history or earlier parse results. CurrentNoWriteEvaluation is distinct from retained genuine ordinary pass; missing invocation/write/physical afterimage/source joins yield family Unavailable, never new ordinary rejection or completeS.\n\nRoot21wholeGitpins/40exactprojections/emptyproductiondiff verified; [separate Astra/XHigh DESIGN review](../recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md) accepts the bounded kernels/ordinary/no-write work, zero materialblockers. Root71pinentries/fiveexactdiffs/seventmprefs/63exactprojections verified; immutable reports preserved. All future checks UNRUN. Engine invocation/owned transition/history/source consumer is a finite engineering prerequisite, not existing DTO authority; fullrepairmetadata/cold ambient equivalence/otheroutputs/D9P0–P1/M3/F1/T197/activation remainOPEN. No implementation/runtime release from author consultation. Continue accepted3b independently; preserve all D4/guided/visual/Windows/D8 constraints.\n\nNI-D01 precise afterimage rule supersedes the author's line83 shorthand: use FileSystemManager.EncodeUtf8WithPreamble(projected.Json) comparison ONLY when Changed=true AND the actual ordinary public write returned after owning lease release. NotNeeded/CurrentNoWriteEvaluation retains and rechecks exact observed raw presence/bytes, including BOM-less UTF-8/UTF-16BOM; no re-encoding/newwrite. Fault/Uncertain cannot become Returned merely by matching bytes. Future finite source tests distinguish those no-write encodings, Changed/Returned and Fault/Uncertain. Affected wording verification pending, not a new policy or an authority grant. Complete owner/source/history join and ambient cold equivalence remainOPEN.\n"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 9,
+      "end_line": 12,
+      "sha256": "6a7551e5be443dcecd83e20e18514b332008fb11f2eeebe9a9f055251f57e3dd",
+      "bytes": 1505,
+      "text": "\n- [Separate independent DESIGN review](recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md) accepts shared kernels + actual ordinary consumers + genuine source-aware no-write evaluation; zero materialblockers. Root71Git-pinentries/fiveexactdiffs/seventemporaryrefs/63exactprojections verified (21historical+42candidate sourcepins,40author+23reviewerprojections,8immutablepriorartifactrefs). Wholeproduction3fd→d474 empty; only separate3b taskdocs advance through22e. Report/author pairs remainimmutable. No3b/runtime/fullS/B/M3/cold/activation release from this verdict; allfuturechecksUNRUN.\n- NI-D01 low/nonblocking is clarified canonically: compare physical afterimage with existing writer EncodeUtf8WithPreamble(projected.Json) ONLY for Changed=true plus genuine ordinary public-write Returned after owning leaseclose. NotNeeded/CurrentNoWriteEvaluation preserves/rechecks exact observed raw presence/bytes, including BOM-less UTF-8 and UTF-16BOM; no re-encoding or normalization write. Fault/Uncertain cannot become Returned by byte equality. Future finite tests explicitly contrast those no-write encodings with Changed/Returned and Fault/Uncertain. Separate affected wording verification next; no source/semantic policy change. General retained first-pass/source/write/history join, ambient timestamp cold equivalence/fullrepairmetadata/otheroutputs/mixedD9/F1/T197 remainOPEN. Expand concrete recovery before3d engineering; accepted3b proceeds independently.\n\n"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 7,
+      "end_line": 10,
+      "sha256": "0e524dec16dcc143f456f78f60de50c02d16026aafd69072149fb2b4d9eb6b7b",
+      "bytes": 693,
+      "text": "\n- [x] Separate independentDESIGN zero materialblockers: root71pins/fivediffs/seventmprefs/63exactprojections;immutable author/reviewer/supports preserved. Kernels+realordinaryconsumers+source-aware no-write accepted for subsequent bounded test-first engineering; allchecksUNRUN/no runtime release.\n- [ ] Verify NI-D01 affected canonical wording: existing writerencoding only Changed+actualReturned/leaseclose; no-write exactraw presence/bytes including UTF-8withoutBOM/UTF-16BOM; Fault/Uncertain neverpromotedbybyteequality. Add these contrasts to futurefinitechecks. General retainedpass/source/write/historyjoin/coldambient/fullS/B/M3/F1/T197/priorlimitsOPEN. Accepted3b staysindependent.\n\n"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 230,
+      "end_line": 235,
+      "sha256": "d64d0af12c8c805cf6e96e65c1ca9cb24e6b880cfe88dff105621485d8ea7b74",
+      "bytes": 225,
+      "text": "    {\n        var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);\n        if (projected.Changed)\n            await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);\n        return projected.Json;\n    }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 710,
+      "end_line": 717,
+      "sha256": "2d9093e4c1aaef33cd7e24fe3aaa59388838ba193fdb59cfc66ad65e8d55ed2d",
+      "bytes": 383,
+      "text": "    {\n        DateTimeOffset? fallback = AcceptedTurnOutputProjector.RequiresInterfaceTimestampFallback(json)\n            ? DateTimeOffset.UtcNow : null;\n        var projected = AcceptedTurnOutputProjector.ProjectInterface(json, fallback);\n        if (projected.Changed)\n            await _fs.WriteFileAtomicAsync(interfacePath, projected.Json);\n        return projected.Json;\n    }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 840,
+      "end_line": 854,
+      "sha256": "85ea7cdfe04418088c97f8f741dcf20c386223ab382050ebb0c62d07ed9dfdfe",
+      "bytes": 644,
+      "text": "    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)\n    {\n        var writeLock = await AcquireCanonicalWriteLeaseAsync();\n        Exception? publicationUncertainty = null;\n        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content); }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            publicationUncertainty = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                this, writeLock, completed: false, operationFailure: publicationUncertainty);\n        }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 1529,
+      "end_line": 1547,
+      "sha256": "44bc1642213bb2593744e2e8ed89aabe21006b9d9fc2363dbccc24663064255e",
+      "bytes": 613,
+      "text": "    private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)\n    {\n        if (snapshot == null)\n            return null;\n\n        return DecodeFileBytes(snapshot.Content);\n    }\n\n    internal static string DecodeFileBytes(byte[] bytes)\n    {\n        using var stream = new MemoryStream(bytes, writable: false);\n        using var reader = new StreamReader(\n            stream,\n            Encoding.UTF8,\n            detectEncodingFromByteOrderMarks: true);\n        return reader.ReadToEnd();\n    }\n\n    internal byte[]? ReadFileBytesSync(CanonicalWriteLease writeLease, string relativePath)\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 4337,
+      "end_line": 4345,
+      "sha256": "ef5730279c402853df35d4c81769955b448c7c3ff614343a91e6c90316331eeb",
+      "bytes": 403,
+      "text": "    internal static byte[] EncodeUtf8WithPreamble(string content)\n    {\n        var preamble = Encoding.UTF8.GetPreamble();\n        var body = Encoding.UTF8.GetBytes(content);\n        var bytes = new byte[preamble.Length + body.Length];\n        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);\n        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);\n        return bytes;\n    }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 139,
+      "end_line": 151,
+      "sha256": "a16c920fd4ad1d196604f36741cfadb93aca8ad54fcb252d7c0d6eda2d0c5c42",
+      "bytes": 329,
+      "text": "                changed = true;\n            }\n\n            return changed ? new(Serialize(root), true) : new(json, false);\n        }\n        catch (JsonException)\n        {\n            return new(json, false);\n        }\n    }\n\n    /// <summary>\n    /// Checks useful property presence and the original blank timestamp condition.\n"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 103,
+      "end_line": 122,
+      "sha256": "c90ed0f6221fa7734c53b8857d0c6cabc11c041eaa3d00808eb2cef10420c98e",
+      "bytes": 896,
+      "text": "    internal static async ValueTask ReleaseOwnedLeaseAsync(\n        FileSystemManager fs,\n        FileSystemManager.CanonicalWriteLease writeLease,\n        bool completed,\n        Exception? operationFailure)\n    {\n        try { await writeLease.DisposeAsync(); }\n        catch (Exception failure) when (operationFailure != null)\n        {\n            // A secondary release failure cannot turn unresolved publication\n            // into an ordinary error eligible for compensation or safe retry.\n            operationFailure.Data[\"CoordinatedLeaseReleaseFailure\"] = failure;\n        }\n        catch (Exception failure) when (completed)\n        {\n            // Diagnostics are follow-up after an established completed result.\n            try { fs.LogCompletedCoordinatedWriteReleaseFailure(failure); }\n            catch { /* A failed warning sink cannot change that result. */ }\n        }\n    }\n"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOutputProjection.cs",
+      "commit": "f186abee075654859d536073d8a582f213af0529",
+      "start_line": 365,
+      "end_line": 389,
+      "sha256": "c671517f1fdf823011f5e20661eee757165b7d4055c41ad3df3353546ef81728",
+      "bytes": 1898,
+      "text": "    public async Task OrdinaryOutputProjection_WritesOnlyChangedSharedImages()\n    {\n        await using var context = await CreateCompleteConflictFrameContextAsync(\n            seedOriginalInputs: SeedOriginalIntakeBaselinesAsync);\n        await WriteCompleteConflictFrameExchangeAsync(context);\n        const string unchangedNarrative = \"\"\"{\"response\":\"Тихая сцена\",\"timestamp\":\"2026-01-01T00:00:00Z\"}\"\"\";\n        const string malformedInterface = \"{broken\";\n        await context.WriteExactBytesAsync(ProjectionNarrativePath, Encoding.UTF8.GetBytes(unchangedNarrative));\n        await context.WriteExactBytesAsync(ProjectionInterfacePath, Encoding.UTF8.GetBytes(malformedInterface));\n        var narrativePhysical = Path.Combine(context.FileSystem.GameSessionPath, ProjectionNarrativePath);\n        var interfacePhysical = Path.Combine(context.FileSystem.GameSessionPath, ProjectionInterfacePath);\n        var oldTime = new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc);\n        File.SetLastWriteTimeUtc(narrativePhysical, oldTime);\n        File.SetLastWriteTimeUtc(interfacePhysical, oldTime);\n\n        await context.Validator.ValidateAcceptedTurnNarrativePayloadAsync();\n        await context.Validator.ValidateAcceptedTurnInterfacePayloadAsync();\n\n        Assert.Equal(Encoding.UTF8.GetBytes(unchangedNarrative), await File.ReadAllBytesAsync(narrativePhysical));\n        Assert.Equal(Encoding.UTF8.GetBytes(malformedInterface), await File.ReadAllBytesAsync(interfacePhysical));\n        Assert.Equal(oldTime, File.GetLastWriteTimeUtc(narrativePhysical));\n        Assert.Equal(oldTime, File.GetLastWriteTimeUtc(interfacePhysical));\n\n        const string changedNarrative = \"\"\"{\"response\":\"Первая`nвторая\",\"timestamp\":\"2026-01-01T00:00:00Z\"}\"\"\";\n        const string changedInterface = \"\"\"{\"dialogueOptions\":[\"Выбор`nдва\"],\"timestamp\":\"2026-01-01T00:00:00Z\"}\"\"\";\n"
+    }
+  ],
+  "exact_diffs": [
+    {
+      "label": "scoped-wording",
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "22e31d09999ff9cd8616116ff0e19f517a192426",
+        "f186abee075654859d536073d8a582f213af0529",
+        "--",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-scoped-wording.diff",
+      "sha256": "4ae3ee989d0699b950caec2dcbfd11586a34067144e8710e166bf22a47e88b25",
+      "bytes": 15286
+    },
+    {
+      "label": "source-tests-catalog-continuity",
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+        "f186abee075654859d536073d8a582f213af0529",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests/categories.json",
+        "tests/selection.json"
+      ],
+      "path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-source-tests-catalog-continuity.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "label": "immutable-author-continuity",
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+        "f186abee075654859d536073d8a582f213af0529",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.json"
+      ],
+      "path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-immutable-author-continuity.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "observed_head": "f186abee075654859d536073d8a582f213af0529",
+  "observed_status": "",
+  "artifacts": {
+    "markdown": {
+      "path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016.md",
+      "bytes": 3805,
+      "sha256": "2c1d195f1276a9417f8a9b626b4bd838e019f47296209f8ad0b1166872967f39"
+    },
+    "digest_manifest": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-sha256.txt"
+  },
+  "operations": {
+    "repo_write": false,
+    "build": false,
+    "discovery": false,
+    "test": false,
+    "application_or_native_runtime": false,
+    "network": false,
+    "fetch": false,
+    "push": false,
+    "delegation": false
+  },
+  "FINALSTOP": true
+}

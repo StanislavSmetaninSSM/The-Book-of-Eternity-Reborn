@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-16T19:32:26.162552+00:00",
+  "candidate": "f186abee075654859d536073d8a582f213af0529",
+  "receipt": {
+    "path": "/tmp/t179pd-hot-custody-red2-owner-scope-recovery-20261016.json",
+    "sha256": "fbf0f0cbc271dc6dc048db52871a509c37051b1ec7d51fcb421a24aa12b6f05f"
+  },
+  "exact_recovered_files": 1348,
+  "independently_reconstructed_required_paths": 145,
+  "scope_counts": [
+    52,
+    105,
+    113,
+    21,
+    42
+  ],
+  "additional_required_paths_vs_1250": 66,
+  "all_raw_sizes_hashes_writer_git_equal": true,
+  "clean_no_ignored_runtime_no_alternates": true,
+  "four_d474_binaries_unchanged": true,
+  "compiled_source_to_candidate_task_documents_only": true,
+  "remote_readback": "f186abee075654859d536073d8a582f213af0529\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "restored_build_or_runtime": "NOT_RUN",
+  "scope": "Checkpoint-specific root verification of selected concrete owner/policy recovery, not a full checkout/build/runtime or release decision"
+}
