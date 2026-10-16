@@ -1,3 +1,8 @@
+## T179-Pd corrected ledger SOURCE gate — first Late2 only, 2026-10-16
+
+- Independent configured Astra/XHigh [review](./recovery/t179pd-ledger-wired-source-review-20261016.md) at f5f208c59 / compiled56e2: READY_FOR_FIRST_UNCHANGED_LATE2_ONLY; Pd-R1/Pd-R2 resolved, no outstanding blockers. Root76 historical source/context/evidence pins, 6 exact diffs and four current DLLs verified; immutable report pair byte-exact. Fresh BOTH/valid catalog/exact8desc42case PlanOnly executes0tests.
+- Next only fr063-joint-late-completion -NoBuild,2existingcases. Freeze full raw actual/owner/turn/story/arithmetic/inert-repeat/strict cleanup evidence, push/readback, separate independent EVIDENCE before ledger15/retainedC1/regressions. Source/fixtures/catalog/selection stay56e2. Unexpectedfailure freezes execution. Full coherent Pd admission/S/C/B/M3/coldP0 and F1/T197/activation remain unqualified; continue independent work after this bounded gate.
+
 ## T179-Pd corrected ledger fresh preparation — SOURCE pending, 2026-10-16
 
 - Clean source/compiled56e2efa13: fresh BOTH build/catalog native0 in65.3840733s (Build-integration44.5800327s, Build-unit12.6143193s), valid11,702methods/767categories, no unmapped/stale selectors; exact PlanOnly -SelectionFile -NoBuild native0 in7.0037385s, **8descriptors/42cases, 0 executed**. Full immutable recovery/t179pd-ledger-corrected-{catalog,plan,binaries}-20261016* retains all build/discovery/plan/summary/stdout and four fresh DLL hashes. Root10 raw/stored/local chains and clean revision/zeroexecution checked.
