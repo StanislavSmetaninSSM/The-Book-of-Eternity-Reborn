@@ -1,0 +1,45 @@
+{
+  "source_sha": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+  "run": "TestResults/test-categories/20261016-080347-372-18561-35ad85ecb993412facb63e5e78a0540f-categories",
+  "artifacts": [
+    {
+      "path": "t179pa-first-green-20261016-dotnet-test.log.gz",
+      "raw_sha256": "06fce0fbac0178609a62128858ab2b1cf0b299f98f6194fbcaee45182556ef75",
+      "stored_sha256": "797b3f4bba8924878f7735f8f1a4cfac05068c62e4a4cb5649ec0f9f13f193d1",
+      "raw_bytes": 1764207
+    },
+    {
+      "path": "t179pa-first-green-20261016-fr063-automatic-calculation-unit-001.trx",
+      "raw_sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+      "stored_sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+      "raw_bytes": 53680
+    },
+    {
+      "path": "t179pa-first-green-20261016-plan.json",
+      "raw_sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+      "stored_sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+      "raw_bytes": 4544
+    },
+    {
+      "path": "t179pa-first-green-20261016-summary.json",
+      "raw_sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+      "stored_sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+      "raw_bytes": 1560
+    }
+  ],
+  "tests": {
+    "Total": 33,
+    "Executed": 33,
+    "Passed": 33,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 33,
+    "CompletedCases": 33,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exit_code": 0
+}
