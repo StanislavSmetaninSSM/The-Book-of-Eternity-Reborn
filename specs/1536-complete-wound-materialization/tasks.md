@@ -1,3 +1,6 @@
+- T179-Pd actual retainedC1 PASS; independent readonly clarification2transitions/3events (depleted atenergy2→0), external checker only corrected/no rerun. Resume ordered ordinary15 after checkpoint; finalstage stillpending.
+- Admission/cold DESIGN98pins preserved; initial extra-control-path proposal rejected/unaccepted. ExistingM3 nested owner-evidence alternative being specified; independentreview before substantive next-source implementation. No M3/public activation yet.
+
 - T179-Pd fixture-corrected Late2EVIDENCE accepted; conditional ledger15→retainedC1→ordinary15→resource2→QTE3→active3→mixed1 only, freeze/push/readback each, stop firstunexpected. All new actualsUNRUN at release; fullPd/P0/F1 stillopen.
 - T197 source-story-child conditional DESIGN preserved61pins/12registries/45constants/16UNRUNchecks; independentreview pending. Actual custodian hosting/whole-parent enrollment and cold/fullG-C remainOPEN; no child→parentpin retirement.
 
