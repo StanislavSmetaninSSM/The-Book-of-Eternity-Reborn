@@ -1,3 +1,6 @@
+- T179-Pd fixture-corrected Late2EVIDENCE accepted; conditional ledger15→retainedC1→ordinary15→resource2→QTE3→active3→mixed1 only, freeze/push/readback each, stop firstunexpected. All new actualsUNRUN at release; fullPd/P0/F1 stillopen.
+- T197 source-story-child conditional DESIGN preserved61pins/12registries/45constants/16UNRUNchecks; independentreview pending. Actual custodian hosting/whole-parent enrollment and cold/fullG-C remainOPEN; no child→parentpin retirement.
+
 - T179-Pd static NPC correction now takes genuine initial carrier baseline entries, not initially untouched-path filtering. Prior05f BOTH/catalog valid but superseded; no actual ran. Fresh G5 required. Submitted-output transitive read-closure consultation preserved71pins/73leaves; full source admission/cold semantics still unimplemented.
 
 - T179-Pd unexpected15 diagnosis preserved; narrow unit fixture/assertion corrections UNRUN. Fresh BOTH/catalog/PlanOnly/SOURCE/firstLate2/EVIDENCE mandatory before retry; prior remaining-category release stopped.
