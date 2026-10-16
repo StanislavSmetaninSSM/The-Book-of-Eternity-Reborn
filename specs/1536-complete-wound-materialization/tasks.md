@@ -1,3 +1,5 @@
+- Pd.3a expectedcausalRED1 frozen: native1/solemissingAPIline80 aftergenuinecontrols/7.181s/6rawchains/1strictabsentroot/fourDLLunchanged. No prodsuccesslogic. Nexttest-only causalbarrier cycle underfreshG5, then complete safevertical.
+
 - Pd.3a firstLate2EVIDENCE accepted; release onlycausalRED1 missingAPI line80 aftergenuinecontrols. Futureguardedtest-only missingbarrier RED consulted6pins; separate freshG5/source/Late2/EVIDENCE required, no prodsuccesslogic yet.
 
 - Pd.3a firstcorrectedLate2 native0/2PASS/207.161s/6rawchains/2strictabsentroots/fourDLLfixeddb655 frozen; rootfullsemantics verified. SeparateEVIDENCE pending beforecausalRED1; no production successlogic.

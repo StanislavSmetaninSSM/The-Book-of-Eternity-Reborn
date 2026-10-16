@@ -1,0 +1,92 @@
+{
+  "classification": "EXPECTED_CAUSAL_RED_MISSING_OBSERVED_API_ONLY",
+  "actual": "7942d0842ff8a2746acd499817cde52a0a25180c",
+  "compiledSource": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+  "nativeExit": 1,
+  "message": "Assert.NotNull() Failure: Value is null",
+  "stack": "   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderTests.cs:line 80\n   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderTests.cs:line 97\n--- End of stack trace from previous location ---",
+  "control": {
+    "GenuineOriginalControl": true,
+    "SessionId": "observed-original-session-71",
+    "RequestId": "observed-original-request-71",
+    "TurnNumber": 71,
+    "SnapshotToken": "93852F0CF8083766A02027F3CF4598E97413F52F8DA191898B89E03B5F675344",
+    "Generation": "ac37b3075e9f469eb903717bda44ba0a",
+    "OriginalBytes": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W119",
+    "LiveBytes": "77u/eyJzY2hlbWFWZXJzaW9uIjoxLCJvY2N1cnJlbmNlcyI6W3t9XX0=",
+    "ReadOnlyTree": true
+  },
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-observed-original-reader-4f0f4b048c0c4f40a94352436c4bc09c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "sourceScopeUnchanged": true,
+  "fourDllsUnchanged": true,
+  "rawChains": 6,
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-reader"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "7942d0842ff8a2746acd499817cde52a0a25180c",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-reader",
+        "Seconds": 3.2631542,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0655206,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0565389,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1344578,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:00:07.1809329",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

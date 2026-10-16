@@ -1,0 +1,112 @@
+{
+  "source_sha": "7942d0842ff8a2746acd499817cde52a0a25180c",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories",
+  "native_exit_code": 1,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/dotnet-test.log",
+      "raw_bytes": 1699584,
+      "raw_sha256": "66dec24c46f415021f203498b35eb8fd4af334b2a1a416910e234c447c81629c",
+      "stored_sha256": "78c4800edce32ba2a52a866410c1299cdf240ca415e19cbf75bb75624a49e443"
+    },
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-fr063-observed-original-reader-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/fr063-observed-original-reader-unit-001.trx",
+      "raw_bytes": 6225,
+      "raw_sha256": "2e23031f19f9c0b92590245aec65d42cd562f815c6c81b4c80bb4d23144c6b89",
+      "stored_sha256": "044dcbc2dfd85a84bec255927aad6094a4cce44bd75e0a308e5109aee273750d"
+    },
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/native-exit.json",
+      "raw_bytes": 325,
+      "raw_sha256": "f02cd354b62f0e44d574f248c3abb69ff7b9bf054d72450c721f436b865339c0",
+      "stored_sha256": "f02cd354b62f0e44d574f248c3abb69ff7b9bf054d72450c721f436b865339c0"
+    },
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/plan.json",
+      "raw_bytes": 1156,
+      "raw_sha256": "27983c0480d76dc54e5687ed812dea76d931c9601d21d89e6fe169bae3bb6e0b",
+      "stored_sha256": "27983c0480d76dc54e5687ed812dea76d931c9601d21d89e6fe169bae3bb6e0b"
+    },
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/runner-stdout.log",
+      "raw_bytes": 3535,
+      "raw_sha256": "12a029e13413a7c81380083b017017328800133dd210aa8ee320bd6ccc2c35f4",
+      "stored_sha256": "c28b61ad953c3c1fd19a6cb4c67b41573702d0c301829b28ff098d90ef478d64"
+    },
+    {
+      "path": "t179pd-observed-reader-causal-red-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-134546-773-104665-11b1b2905a204cf4a514363d96902daa-categories/summary.json",
+      "raw_bytes": 1370,
+      "raw_sha256": "7440ac31973a481d405d3f4ab65b3063eb9bb7222e01874efeb720b36b07d176",
+      "stored_sha256": "7440ac31973a481d405d3f4ab65b3063eb9bb7222e01874efeb720b36b07d176"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-reader"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "7942d0842ff8a2746acd499817cde52a0a25180c",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-reader",
+        "Seconds": 3.2631542,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0655206,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0565389,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1344578,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:00:07.1809329",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}
