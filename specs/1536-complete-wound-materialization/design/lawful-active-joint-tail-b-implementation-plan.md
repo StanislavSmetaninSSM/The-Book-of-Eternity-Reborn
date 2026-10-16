@@ -44,7 +44,7 @@ Source facts на ccb8eed3 (Core/Services/WebUi paths ниже внутри `Boo
 | Source | Факт / следствие |
 |---|---|
 | `Core/GameEngine/GameEngine.TurnLifecycle.cs:2345–2361` | Ordinary console decline записывает отказ, удаляет Ready и вызывает ProcessPlayerTurn(originalAction,QTE_DECLINED). Это повторное обращение для разрешения ситуации; перенести helper unchanged в committed joint tail нельзя. |
-| `Rules/Block_CLI_Operations.txt:4618–4627`; `CLI_API_Specification.md:1240–1250`; `Examples/E_CLI_QTE_Offer.txt:7–9` | Offer-turn не разрешает normal state changes той же ситуации; decline требует ordinary GM resolution. Удалить follow-up значит потенциально потерять сам исход. Literal «обычные game_state untouched» также требует явного joint-only contract delta, прежде чем разрешать joint mechanics+offer. |
+| `Rules/Block_CLI_QTE.txt:19–28`; `CLI_API_Specification.md:1240–1250`; `Examples/E_CLI_QTE_Offer.txt:7–9` | Offer-turn не разрешает normal state changes той же ситуации; decline требует ordinary GM resolution. Удалить follow-up значит потенциально потерять сам исход. Literal «обычные game_state untouched» также требует явного joint-only contract delta, прежде чем разрешать joint mechanics+offer. |
 | `Services/QteSceneService.cs:6402–6441` | В QteOffer нет optional/mandatory remainder field. DeclineHint/cinematic prose не machine authority, отсутствие поля не доказывает отсутствие обязательств. |
 | `WebUi/QteWebInteractionService.cs:267–283` | Existing browser decline только records/clears offer, notification прямо отличает console follow-up. Это текущая parity gap; не выдавать её за корректный shared implementation. |
 
@@ -86,8 +86,12 @@ Source facts на ccb8eed3 (Core/Services/WebUi paths ниже внутри `Boo
 ## File ownership и интерфейсы
 
 Ниже **планируемые** имена/сигнатуры, не существующие API и не новые public authority constructors.
-`F=FileSystemManager`, `L=F.CanonicalWriteLease`, `Frame=ValidatedPendingTurnSnapshotContext`,
-`M=MortalQteDecisionPublication`. Все новые types internal; arrays/maps detached immutable.
+`F=FileSystemManager`, `L=F.CanonicalWriteLease`, `M=MortalQteDecisionPublication`.
+`Frame=GameEngine.ValidatedPendingTurnSnapshotContext` остаётся **private engine-only**;
+никакой Services API его не принимает и visibility не расширяется. `Binding=M.JointActiveTailBinding` —
+новый internal immutable value `(Generation,SessionId,RequestId,SnapshotToken,Turn,Realm,Incarnation)`;
+строки/целые — только expected correlation, не proof. Каждый reader независимо проверяет actual
+physical original/G. Новые value/proof types internal; arrays/maps detached immutable.
 Сокращение `.MortalJointX.cs` сохраняет directory/class prefix предыдущего полного path.
 Integration shorthand `.JointActiveX.cs` означает
 `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointActiveX.cs`;
@@ -95,19 +99,51 @@ Integration shorthand `.JointActiveX.cs` означает
 
 | Files (от корня repository) | Responsibility / proposed API |
 |---|---|
-| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointActiveTailSource.cs` (new); `GameEngine.MortalJointInactiveTail.cs` (modify) | Engine-private `MortalJointActiveTailSource`; `CaptureMortalJointActiveTailSourceAsync(L,Frame,MortalJointRepairPublicationPreparation)` → `Task<MortalJointActiveTailSource>`. Только actual original/G/normalization/common candidate admission, до take. V2 inactive guard не ослаблять. |
-| `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointActiveTail.cs` (new); `.MortalJointRepair.cs` (modify) | Closed M3 schemas/phase graph. `CreateJointActiveTailBasisAsync(F,L,GameEngine.MortalJointActiveTailSource)` → `Task<JointActiveTailBasis>`; `ReadJointActiveTailPhaseAsync(F,L,Frame)` → `Task<JointActiveTailCapability>`. Basis — value; capability только fresh physical issuer. |
+| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointActiveTailSource.cs` (new); `GameEngine.MortalJointInactiveTail.cs` (modify) | Engine-private `MortalJointActiveTailSource`; `CaptureMortalJointActiveTailSourceAsync(L,Frame)` → `Task<MortalJointActiveTailSource>`. Только actual original/G/normalization/common candidate admission, до take. V2 inactive guard не ослаблять. |
+| `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointActiveTail.cs` (new); `.MortalJointRepair.cs` (modify) | Closed M3 schemas/phase graph. `CreateJointActiveTailBasisAsync(F,L,GameEngine.MortalJointActiveTailSource,WoundAcceptedTurnPlanner.JointActiveCommonInputs)` → `Task<JointActiveTailBasis>`; `ReadJointActiveTailPhaseAsync(F,L,Binding)` → `Task<JointActiveTailCapability>`. Basis — value; capability только fresh physical issuer. |
 | `BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs`, `MortalJointRepairPublicationTransaction.cs`; `Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs`, `.MortalJointRepairCanonicalPublication.cs`, `.MortalJointRepairCompletion.cs` (modify) | Forward basis через настоящий prepared/taken common owner; M3 выпускается одним common batch, не side write. Cold dispatch version-first, no generic ordinary fallback при retained active evidence. |
 | `BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs` (new) | `CalculateMortalJointAutomatic(M.JointAutomaticInputs)` → `M.JointAutomaticPlan`, pure. Inputs/plan types объявлены в M; ordered arrays, exact three after-images, checked arithmetic. Ordinary CharacteristicsService APIs/allocator не менять формулой. |
 | `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticPublication.cs` (new) | `PublishJointAutomaticAsync(F,L,JointActiveTailCapability)` → `Task<JointTailApplyResult>`; privately issued same-attempt `JointAutomaticCommittedAttempt` и `CompensateJointAutomaticAsync(F,L,JointAutomaticCommittedAttempt)` → `Task<JointTailApplyResult>`. Token не сериализуется/не rehydrate cold. |
 | `BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs` (modify) | Named overload `WriteMortalJointActiveProjectionAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>` и read-only `VerifyMortalJointActiveProjectionAsync` с той же сигнатурой. Current phase определяет initial/post-QTE slot; caller не выбирает произвольный source mode. Existing v2 overload остаётся точным. |
 | `BookOfEternityClient/Services/StoryService.MortalJointRepair.cs`; `Core/GameEngine/GameEngine.MortalJointStoryTurn.cs` (modify) | `WriteMortalJointActiveStoryAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; `ReadMortalJointActiveStoryProofAsync` → `Task<MortalJointStoryProof>`. Story+M ack atomic, frozen initial inputs; runtime n−1/n reconcile. |
-| `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs` (new); `QteDeferredEffectContinuation.cs`, `StoryService.AcceptedStoryAppend.cs` (modify) | Сделать existing static continuation class partial; strict schema2/joint story variant, guard-only capture inventory, named genuine retirement reader. `ReadPriorMortalJointTerminalRetirementAsync(F,L,Frame)` → `Task<PriorQteTerminalRetirementProof?>`; proof private issuer внутри continuation owner. Existing v1 shape/source guards сохраняются. |
+| `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs` (new); `QteDeferredEffectContinuation.cs`, `StoryService.AcceptedStoryAppend.cs` (modify) | Сделать existing static continuation class partial; strict schema2/joint story variant, guard-only capture inventory, named genuine retirement reader. `ReadPriorMortalJointTerminalRetirementAsync(F,L,Binding)` → `Task<PriorQteTerminalRetirementProof?>`; proof private issuer внутри continuation owner. Existing v1 shape/source guards сохраняются. |
 | `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs` (new); `Core/GameEngine/GameEngine.MortalJointQteTail.cs` (new) | `BeginAcceptedMortalJointSceneAsync(L,M.JointActiveTailCapability,M.JointQteChoice)` → `Task<M.JointTailApplyResult>`. Choice — value, not authority; exact decisionReceipt, no original cleanup. Decline continuation API намеренно не объявлен как accepted: см. Q-D5/B08. |
 | `BookOfEternityClient/Services/QteSceneService.MortalJointTerminal.cs` (new); `QteSceneService.cs`, `QteDeferredAcceptedMechanicsPlanner.cs` (modify) | `PrepareMortalJointTerminalAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; `CommitMortalJointTerminalAsync` с теми же arguments/result. Only persisted selected outcome/resolved wave. Pure XP/history/runtime/narrative after-images, exact existing typed plan contributions. |
-| `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs` (new); `Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs` (modify) | `ReadMortalJointQteTailPhaseAsync(F,L,Frame)` → `Task<JointActiveTailCapability>`: original→H→current, initial story vs current terminal output; `PrepareMortalJointTerminalTailAsync(F,L,JointActiveTailCapability)` → `Task<JointTailApplyResult>` freezes terminal-known auto basis. |
+| `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs` (new); `Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs` (modify) | `ReadMortalJointQteTailPhaseAsync(F,L,Binding)` → `Task<JointActiveTailCapability>`: original→H→current, initial story vs current terminal output; `PrepareMortalJointTerminalTailAsync(F,L,JointActiveTailCapability)` → `Task<JointTailApplyResult>` freezes terminal-known auto basis. |
 | `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` (modify) | `CompleteMortalJointActiveCleanupAsync(L,M.JointActiveTailCapability)` → `Task<M.JointTailApplyResult>`; K+M release atomic. Q-D5 may require separate accepted cleanup/staging boundary; не добавить follow-up paths в K молча. |
 | `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`, `.AgentConsole.cs`; `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`, `QteWebInteractionService.cs`, `BrowserPlayerActionService.cs` (modify) | Actual retained-tail admission для allocation/ordinary input; joint UI dispatch к одному named owner. Separate ordinary browser allocator уже имеет coordinator wrapper: не объявлять его crash-unsafe только по console implementation и не расширять его contract этим планом. |
+
+### B01 pre-seal dependency и fingerprint DAG
+
+Active inputs захватываются **до** CreateJointRepairCommonPlanAsync, composition/cache seal/preflight/take,
+как existing progression source. Источник не принимает PublicationPreparation: она уже требует sealed plan.
+Common owner получает source, privately строит `WoundAcceptedTurnPlanner.JointActiveCommonInputs`
+(immutable exact planned common after-images/resource binding из настоящего resource authority, не caller map),
+передаёт его в CreateJointActiveTailBasisAsync и связывает source + frozen raw basis в CommonAuthority
+**до** BindInput/ComputePlanningInput/ComputePrepared/cache sealing. Новое overload
+`CreateJointRepairCommonPlanAsync(F,L,object resourceAuthority,GameEngine.MortalJointProgressionSource,GameEngine.MortalJointActiveTailSource)`
+создаёт v3; existing overload/v2 не получает nullable «upgrade later».
+
+Acyclic order: physical capture S → owner-produced common inputs C → raw basis B без final common proof core
+→ CommonAuthority fingerprint(S,B,C) → planning input → prepared plan/cache/take → final M basisFingerprint(B,immutable common proof core).
+Final marker fingerprint/basisFingerprint не подаются обратно в CommonAuthority/input/prepared hashes.
+Если planned after-images требуют pure composition helper, его вызвать до cache candidate seal;
+не достраивать данные после seal, не recapture current bytes, не пересоздавать уже принятый plan.
+`GetOrCreateCommonAuthority` обязан reject другой active source/basis при уже bound instance.
+
+| Exact path | Planned change или обязательная проверка |
+|---|---|
+| `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs` | Modify constructor/one-time binding/fingerprint/ValidateCurrentAsync + new overload, source/raw basis до input seal. |
+| `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs` | Modify GetOrCreateCommonAuthority source/basis identity; cached owner не игнорирует новые inputs. |
+| `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs` | Modify capture/handoff до common composition; no Preparation dependency. |
+| `BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs` | Verify existing common-authority fingerprint propagation into actual planning input; менять только если test докажет missing dependency, без нового raw DTO authority. |
+| `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs` | Verify ComputePlanningInput/ComputePrepared transitively cover changed CommonAuthority; не добавлять циклический final marker hash. |
+| `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs`, `AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs` | Verify same candidate/cache fence/common source validation through seal/take; no generic cache access/rebuild. |
+| `BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs`, `MortalJointRepairPublicationTakeReceipt.cs`, `MortalJointRepairPublicationTransaction.cs`, `CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs` | Verify unchanged transitive common/input/prepared/receipt/inventory guards; modify only named v3 forwarding/serialization where required. Preparation/take never capture new source. |
+
+Tests B01 must demonstrate that changing/foreign source before seal/take changes/refuses the real candidate,
+after-seal attachment is rejected, both planning/prepared fingerprints cover source/raw basis, while mutable
+phase receipts do not alter immutable input seal. Existing member/fence/original and one-time issuer assertions stay.
 
 `M.JointTailApplyResult` — closed `{Disposition,Phase,Failure}`; Disposition=`NewlyApplied|ExistingApplied|KnownRolledBack|Refused|PublicationUncertain`. Result value сам next capability не выдаёт: следующий owner всегда fresh re-export. `Failure=null` только для verified success/known rollback; uncertain требует retained evidence и не считается warning-success. `JointAutomaticInputs/Plan`, `JointQteChoice`, `JointActiveTailBasis/Capability` имеют ровно DESIGN schemas/roles; public constructors/caller path lists запрещены. Общий helper результата не превращается в общий journal или arbitrary writer.
 
@@ -137,7 +173,7 @@ Read/guard P: full DESIGN §4/§5, including initial narrative/interface/debug/c
 - [ ] **G2 — narrow implementation:** только owner/files/cohort этого этапа; synchronized GM docs/example/manifest/source guards включены в тот же diff, если changed authoring contract. Existing successful mechanics/recovery assertions не удалять и не ослаблять.
 - [ ] **G3 — publish before review:** diff/status/ignored/untracked check, WIP commit + non-force push, actual `git ls-remote` equality. Один clean HEAD для compilation/execution pins. Failure evidence сохранять до correction.
 - [ ] **G4 — independent gate:** отдельный Astra/XHigh проверяет SOURCE/FIXTURE/SELECTION, actual fixture setup/cleanup, exact roles/transactions и достаточность negatives. После findings — source-backed correction, affected corrected gate; не повторять весь review без причины.
-- [ ] **G5 — fresh bounded verification:** fresh selected BOTH preparation → catalog/discovery/Plan zero execution → exact stage owner actual → отдельно Late2. После failure freeze и диагностика, никаких следующих stages/бюджетного widening. Новые code edits требуют новой preparation.
+- [ ] **G5 — fresh bounded verification:** сначала определить impact и обязательные `related.when` prerequisites выбранных owners. Fresh selected BOTH preparation → catalog/discovery/Plan (zero execution). Если затронут common/source/admission/phase/story/cleanup owner или выбран protected header/generation/output owner: **Late2 первый actual**, затем raw freeze + независимая EVIDENCE классификация Late2, только после неё отдельно release stage/negative owner actual. Failure останавливает дальнейшие actuals; correction требует fresh preparation. UI-only/evidence-only diff с неизменными shared source pins не повторяет уже PASS Late2 без нового impact/failure; основание и прежние точные pins записываются явно, не выдаются за fresh run.
 - [ ] **G6 — evidence acceptance:** независимое EVIDENCE review реальных native exit/selected vs executed/reached oracles/source-binary pins/cleanup; затем final stage commit/push/readback, SpecKit task закрывается только по evidence. Перезапускать PASS лишь после relevant changes/failure/unresolved concern.
 
 Будущие команды из repository root (не запускались в planning):
@@ -147,17 +183,30 @@ Read/guard P: full DESIGN §4/§5, including initial narrative/interface/debug/c
 pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category fr063-active-b-automatic,fr063-joint-late-completion -PlanOnly
 pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
 pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category fr063-active-b-automatic -PlanOnly -NoBuild
-pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category fr063-active-b-automatic -NoBuild
 pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category fr063-joint-late-completion -NoBuild
+# STOP: freeze exact Late2 packet; independent EVIDENCE classification and release.
+# With unchanged source/binaries, only then execute the separately released stage owner:
+pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category fr063-active-b-automatic -NoBuild
 ```
 
-BOTH означает actual successful build unit+integration selected projects, не два PASS-теста. Если stage category только integration, preparation дополнительно выбирает самый узкий затронутый unit owner из таблицы ниже; если такого owner нет, existing `fr063-joint-output-basis` только для preparation с явно записанным основанием shared output proof. Не запускать его actual по инерции. При frontend contract change отдельный `npm ci --prefix BookOfEternityClient.WebFrontend` и finite frontend owner; не полный npm test/verify.
+BOTH означает actual successful build unit+integration selected projects, не два PASS-теста. Если stage category только integration, preparation дополнительно выбирает самый узкий затронутый unit owner из таблицы ниже; если такого owner нет, existing `fr063-joint-output-basis` только для preparation с явно записанным основанием shared output proof. Не запускать его actual по инерции. Preparation-only category не считается actual selection/PASS; если actual output-basis всё же выбран, его first-Late2/EVIDENCE prerequisite обязателен. `fr063-joint-initial-header-refusal`, `fr063-joint-generation-admission`, `fr063-joint-output-basis`/output-positive явно требуют этот порядок. При generation-admission учитывать related generation-refusal; conditional graph анализировать по реальному impact, не запускать весь граф автоматически. При frontend contract change отдельный `npm ci --prefix BookOfEternityClient.WebFrontend` и finite frontend owner; не полный npm test/verify.
 
 Runner имеет собственный unique result directory; external stdout/log filename дополнительно содержит UTC+PID+nonce+stage+attempt. Реальный native exit берётся непосредственно от завершённого процесса, не из последней успешной команды/pipeline. Preserve command, actual category plan.json/full TRX IDs, compile/source HEAD и binary SHA256 до/после, timeout/kill/drain, complete vs UNRUN, per-phase operationId/transactionId и raw before/after payloads. Baseline removal, progression consumption, automatic и QTE transfer наблюдаются как **разные named transactions**; не считать события через raw aggregate <=2.
 
 Each actual fixture имеет собственные distinct absolute mutable roots и emits real nonzero cleanup receipts: actual root list, inactive lease, explicit null failure, directories absent после disposal. Pure parser controls own zero roots и не получают cleanup PASS. Snapshot нельзя снимать через exclusive lease его же generic filesystem reader; no shared mutable fixture/cache/active owner. Fresh process tests фиксируют actual child PID и immutable durable bytes, без inherited process registry/root cache; bad authority seed выполняется до constructor/child admission.
 
 New categories ниже — proposals for implementation, сейчас catalog/selection не меняются. Initial budget каждого нового narrow owner ≤5 minutes; если body не помещается, split по coherent cases с измеренными expectedSeconds, не повышать limits. Existing budgets не менять. Не включать broad `qte-rules`, `browser-qte`, `frontend-qte`, все wound categories или category sequence вместо impact-selected finite cases. Conditional existing consumer regressions выбираются точными owners, а не всем их соседним графом.
+
+Finite GM guidance owner для B06/B08/B12: proposed `fr063-active-b-qte-guidance` с exact selectors в
+`BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`:
+`QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput`,
+`QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces`,
+`DaemonSpecDocumentsQteOfferRuntimeContract` и новый planned
+`MortalJointQteDecline_MandatoryResolutionAndNoReplay_AcrossGmSurfaces`.
+Первые два уже имеют narrow QTE-documentation owners: intentional overlap документировать,
+исполнять каждый method один раз через выбранного владельца, не wildcard whole PromptDocumentationCoverageTests.
+Синхронизировать также `CLI_Agent_Daemon_Specification.md` и `TaskGuides/CLI_Step_Main.txt`, которые эти
+настоящие guards читают; same-change joint-only guidance не должна противоречить owning Block_CLI_QTE.
 
 ## Этапы: конкретные deliverables, tests и acceptance
 
@@ -173,14 +222,14 @@ New categories ниже — proposals for implementation, сейчас catalog/s
 
 ### T179 / B01 — M3 closed contract и genuine before-common capture
 
-**Files:** create engine source и M active-tail partial из registry; modify preparation/transaction/admission/common/completion/inactive-tail files. Tests: new `BookOfEternityClient.Tests/MortalJointActiveTailContractTests.cs`; new `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointActiveAdmission.cs` (existing partial class GameEngineTurnLifecycleTests).
+**Files:** create engine source и M active-tail partial из registry; modify CommonPlan/Resources/canonical handoff и version dispatch; exact changed-vs-verified common/input/cache/registry/preparation/take/normalizer files — таблица B01 pre-seal выше. Tests: new `BookOfEternityClient.Tests/MortalJointActiveTailContractTests.cs`; new `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointActiveAdmission.cs` (existing partial class GameEngineTurnLifecycleTests).
 **Interfaces:** source→basis→common M3, then `ReadJointActiveTailPhaseAsync`; no raw DTO issues capability.
 **Owner:** proposed `fr063-active-b-admission`.
 
-- [ ] RED `M3_RejectsUnknownFieldsIllegalPhaseAndCyclicSeals`, `M3_SourceRolesRequireExactOriginalSubmittedCommonGuards`, `JointActive_MissingInitializerRefusesBeforeCommon`, `JointActive_BadAuthorityBeforeFreshProcessAdmissionPreservesNamespace`: exact schema/roles/digests and no writes/G mint on refusal.
-- [ ] Capture P before common, strict present/absent/BOM/duplicate/path policy, distinct training/award inputs, offer/old-control exclusions and storyPlan. Build v3 only through actual prepared/taken publisher; retain existing v2 inactive constraints and family dispatch.
+- [ ] RED `M3_RejectsUnknownFieldsIllegalPhaseAndCyclicSeals`, `M3_SourceRolesRequireExactOriginalSubmittedCommonGuards`, `JointActive_MissingInitializerRefusesBeforeCommon`, `JointActive_BadAuthorityBeforeFreshProcessAdmissionPreservesNamespace`, `JointActive_SourceChangeBeforeSealOrTakeRefuses`, `JointActive_AfterSealAttachmentIsRejected`, `JointActive_SourceAndRawBasisReachPlanningAndPreparedSeals`:  exact schema/roles/digests and no writes/G mint on refusal.
+- [ ] Capture P before common, strict present/absent/BOM/duplicate/path policy, distinct training/award inputs, offer/old-control exclusions and storyPlan. Bind source/raw basis before CommonAuthority/input/cache sealing; final M basis fingerprint only after immutable common proof core. Publish v3 through actual prepared/taken publisher; retain existing v2 inactive constraints and family dispatch.
 - [ ] Reconcile actual reader catalogs with P and permitted overlaps; new dependency without frozen capture refuses. New offer stays refused before common until Q-D5 implementation is approved and complete.
-- [ ] G; conditional regression `fr063-joint-output-basis`, `fr063-joint-initial-header-refusal`, `fr063-joint-generation-admission` when touched dispatch/admission; exact case plan before run. **Accept:** M3 common receipt+whole union genuine, no ACTIVE-v2 migration, no changed/stale/foreign draft acceptance. Covers A02/A05/A08/R02/V01.
+- [ ] G; conditional regression `fr063-joint-output-basis`, `fr063-joint-initial-header-refusal`, `fr063-joint-generation-admission` + related `fr063-joint-generation-refusal` when touched dispatch/admission; first-Late2/EVIDENCE gate precedes these actuals, exact case plan before run. **Accept:** M3 common receipt+whole union genuine, no ACTIVE-v2 migration, no changed/stale/foreign draft acceptance. Covers A02/A05/A08/R02/V01.
 
 ### T180 / B02 — atomic automatic action+ack
 
@@ -236,7 +285,7 @@ New categories ниже — proposals for implementation, сейчас catalog/s
 - [ ] RED `QteGrammar_ExactDirectFieldsNullsPrecedenceAndDamageOnly`, `QteCapture_PriorTerminalRequiresActualClosureAndStoryPrefix`, `QteCapture_ThreeSuccessiveTransfersNeverNestPredecessorBlobs`.
 - [ ] Implement DESIGN §6/§8.4 exact offer/responseFragment branches, sourceTurn absent-or-n, type/unknown/null policy; resource definitions/capacity forbidden even null, damage-only typed resource/physical grants. Validate every authored branch before common, don't choose outcome.
 - [ ] Genuine current original/G/Ready/output capture; bound offer in memory. Actual old terminal validation before replacement; compact retirement descriptor after commit is correlation only. Nonphysical capture still covers fixed joint proof cohort; no new harmful occurrence from old receipt.
-- [ ] G; targeted current `qte-physical-injury-producer-continuation` and exact story witness consumers where changed. Sync QTE guide/example/manifest same change after accepted joint GM exception. **Accept:** no v1 weakening, stale/foreign/active prior fails, capsule acyclic. Covers Q01/Q05/Q06/Q10/Q13/V01.
+- [ ] G; targeted current `qte-physical-injury-producer-continuation` and exact story witness consumers where changed. Sync actual `Rules/Block_CLI_QTE.txt`, QTE guide/example/manifest and exact owning PromptDocumentationCoverageTests methods in the same change after accepted joint GM exception. **Accept:** no v1 weakening, stale/foreign/active prior fails, capsule acyclic. Covers Q01/Q05/Q06/Q10/Q13/V01.
 
 ### T185 / B07 — tuple-bound accept, decisionReceipt и retention
 
@@ -251,7 +300,7 @@ New categories ниже — proposals for implementation, сейчас catalog/s
 
 ### T186 / B08 — обязательное ordinary resolution после decline (BLOCKED Q-D5)
 
-**Files:** exact future follow-up owner/schema files определяются только accepted Q-D5 subdesign; known consumers `GameEngine.MortalJointQteTail.cs`, `GameEngine.TurnLifecycle.cs`, `LiveTurnPreparationService.cs`, `WebUi/QteWebInteractionService.cs`, `BrowserPlayerActionService.cs`. Test file `.JointActiveQteDecline.cs`; contract/rules/CLI/QTE example + manifest/source guards must move together.
+**Files:** exact future follow-up owner/schema files определяются только accepted Q-D5 subdesign; known consumers `GameEngine.MortalJointQteTail.cs`, `GameEngine.TurnLifecycle.cs`, `LiveTurnPreparationService.cs`, `WebUi/QteWebInteractionService.cs`, `BrowserPlayerActionService.cs`. Test file `.JointActiveQteDecline.cs`; contract/`Rules/Block_CLI_QTE.txt`/CLI/QTE example + manifest/source guards must move together, including finite owning PromptDocumentationCoverageTests methods.
 **Interfaces:** не выдавать invented follow-up API за accepted B. Approved Q-D5 appendix обязан до code назвать producer/consumer signatures, exact maps, receipt/IDs и source/target original admission; отсутствующий appendix — STOP этого этапа.
 **Owner:** proposed `fr063-active-b-qte-decline` after Q-D5 closure.
 
@@ -299,7 +348,7 @@ New categories ниже — proposals for implementation, сейчас catalog/s
 
 ### T190 / B12 — player parity и GM-facing qualification
 
-**Files:** actual joint console/browser adapters from registry; `BookOfEternityClient.WebFrontend/src/components/QteScenePanel.tsx`, `src/components/StatusView.tsx` only if product behavior requires change; new focused `test/jointTailInteraction.test.tsx` if needed. Integration `.JointActiveUi.cs`; docs `Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`, `OtherGuides/Wound_Materialization_Contract.md`, applicable `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_QTE_Offer.txt`, applicable `Examples/E_CLI_Afterlife_Turns.txt`, manifest and owning source/documentation guards.
+**Files:** actual joint console/browser adapters from registry; `BookOfEternityClient.WebFrontend/src/components/QteScenePanel.tsx`, `src/components/StatusView.tsx` only if product behavior requires change; new focused `test/jointTailInteraction.test.tsx` if needed. Integration `.JointActiveUi.cs`; docs **`Rules/Block_CLI_QTE.txt`** (actual QTE owner), applicable `Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, `TaskGuides/CLI_Step_Main.txt`, `OtherGuides/Wound_Materialization_Contract.md`, applicable `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_QTE_Offer.txt`, applicable `Examples/E_CLI_Afterlife_Turns.txt`, manifest and owning source/documentation guards.
 **Interfaces:** shared named joint dispatch/state tokens, clear in-world Russian UI; no API/DTO/receipt jargon to player.
 **Owner:** proposed `fr063-active-b-player-parity` and finite `fr063-active-b-frontend-interaction`; exact new test methods/files only.
 

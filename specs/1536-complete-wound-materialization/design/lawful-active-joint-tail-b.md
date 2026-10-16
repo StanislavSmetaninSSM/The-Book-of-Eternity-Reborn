@@ -480,7 +480,7 @@ committed последствия. Исходное действие не вып�
 
 Source conflict подтверждён на planning base ccb8eed3:
 `GameEngine.TurnLifecycle.cs:2345–2361` после decline вызывает ProcessPlayerTurn с исходной
-строкой и QTE_DECLINED reminder; `Rules/Block_CLI_Operations.txt` QTE Offer Flow,
+строкой и QTE_DECLINED reminder; `Rules/Block_CLI_QTE.txt:19–28` QTE Offer Protocol,
 `CLI_API_Specification.md:1240–1250` и `Examples/E_CLI_QTE_Offer.txt:7–9` запрещают normal
 state resolution той же ситуации в offer-turn и требуют ordinary resolution после отказа.
 `QteOffer` не содержит machine-readable optional/mandatory remainder discriminator;
@@ -755,7 +755,7 @@ aliases/provider discovery/quotes/confirmation/staging, не закрывает 
 
 До implementation release должен быть согласован contract delta в
 `contracts/mortal-wound-treatment.md`; затем вместе с кодом синхронизируются
-`Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`,
+`Rules/Block_CLI_QTE.txt` (owning QTE rule), applicable `Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`,
 `OtherGuides/Wound_Materialization_Contract.md`, applicable
 `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Wound_Materialization.txt`,
 `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/E_CLI_QTE_Offer.txt`,
