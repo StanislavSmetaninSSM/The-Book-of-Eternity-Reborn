@@ -1,0 +1,38 @@
+[
+  {
+    "path": "t179pd-r01-r03-original-restore-owner-independent-review-20261016-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-r01-r03-original-restore-owner-independent-review-20261016-carrier.diff",
+    "raw_sha256": "04df409d96b77999e82de1246f9ccb7923f6ac71d723a335f6781c11fb4866c2",
+    "raw_bytes": 1950774,
+    "stored_sha256": "fb559941b5a647b93b62906ad96536988c96351138fb89d2c09b7f278c62988c",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-r01-r03-original-restore-owner-independent-review-20261016-scoped.diff.gz",
+    "raw_path": "/tmp/t179pd-r01-r03-original-restore-owner-independent-review-20261016-scoped.diff",
+    "raw_sha256": "d22b091d1bc7527fa2d06192c440fc5b8b870cf0f63b72edceeb9b47d54cc9ac",
+    "raw_bytes": 51279,
+    "stored_sha256": "25dc09ee669f09dec3d8e6400fafcd3fe96ee204de252cb525a0f9841b49a4a0",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-r01-r03-original-restore-owner-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-r01-r03-original-restore-owner-design-20261016.json",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  }
+]

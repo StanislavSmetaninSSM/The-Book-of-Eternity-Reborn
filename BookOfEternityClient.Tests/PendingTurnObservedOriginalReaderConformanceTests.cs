@@ -127,8 +127,15 @@ public sealed class PendingTurnObservedOriginalReaderConformanceTests(ITestOutpu
             : Encoding.UTF8.GetBytes("{}");
         if (role == "generation_replaced")
         {
-            var generation = JsonNode.Parse(File.ReadAllText(fullTarget))!;
-            generation["generationId"] = Guid.NewGuid().ToString("N");
+            var generation = JsonNode.Parse(File.ReadAllText(fullTarget))!.AsObject();
+            Assert.True(generation.TryGetPropertyValue("GenerationId", out var currentId));
+            Assert.NotNull(currentId);
+            Assert.False(generation.ContainsKey("generationId"));
+            var originalId = currentId!.GetValue<string>();
+            Assert.True(Guid.TryParseExact(originalId, "N", out _));
+            var replacementId = Guid.NewGuid().ToString("N");
+            Assert.NotEqual(originalId, replacementId);
+            generation["GenerationId"] = replacementId;
             changed = JsonSerializer.SerializeToUtf8Bytes(generation);
         }
         trigger = fixture.Manifest.Files[Second];
