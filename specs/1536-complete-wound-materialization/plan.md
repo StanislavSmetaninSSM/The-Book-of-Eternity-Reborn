@@ -1,3 +1,9 @@
+## T179-Pd corrected Late2 EVIDENCE accepted — ordered singleton release, 2026-10-16
+
+- Separate independent configured Astra/XHigh [review](./recovery/t179pd-ledger-corrected-late-evidence-review-20261016.md) of frozenf9a40eb84 / actual59e05adb1 / compiled56e2: Late2EVIDENCEaccepted, no blockers. Root86 historical pins, 7 exact diffs, 12 derived hashes and four unchanged DLLs checked; reportpairbyteexact. Metadata-only parallelT197designcarriere4a excluded, no source/test/fixture/catalog/selection drift.
+- Conditional order only: ledger evidence15 → actual retainedC1 → ordinary regression15 → resource continuation2 → QTE consumers3 → active refusal3 → mixed guard1. Each exact singleton must complete with full raw/native/TRX/method/strict cleanup verification, freeze/commit/push/readback before next. Firstunexpected/evidence uncertainty stops execution; no aggregate/fullsuite. All seven remainUNRUN at this gate.
+- Ledger integration is an intermediate WIP within full coherent Pd; source admission/S/C/B/M3/coldP0/F1/T197/activation remainunqualified. Continue independent work beyond bounded checkpoint.
+
 ## T197 targeted G-C/A4 proposal preserved — independent review pending, 2026-10-16
 
 - Separate read-only Astra/High author FINALSTOP. Byte-exact recovery/t197-depc-a4-targeted-design-20261016.md/.json saved; root27 historical source/blob/SHA/byte pins verified,28futurechecksUNRUN. Proposed A1–A5 APIs, closed metadata, work/run/debt states, lock order, D0–D5 source debt-kind dispatch, LinuxL1/L2 and WindowsW1/W2 alternatives, official primary OS references and explicit source-vs-proposal distinctions. No code/tests/tools/runtime/OS change.
