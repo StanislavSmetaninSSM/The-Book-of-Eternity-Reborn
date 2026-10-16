@@ -31,6 +31,9 @@ New direct delegation resumes implementation from745b and supersedes the complet
 - [x] SOURCEefc8 saved/readback/recovered51files/all45delta; clean f9bc/fourDLLs then soleFIRSTLate2 native0/exact2PASS/211.5694448scategory≤5m,217.8626062srunner; source/DLLunchanged/strict2roots/noresidue. Sixchains/full raw semantic+binding/rootinspector/supports frozen; no GREEN release.
 - [ ] Push/readback/recover FIRST implementation Late2 packet and separate independent EVIDENCE before specificallyreleasedReady3/HS01/remainingGREEN. No aggregate/hiddenretry/unchangedhistorical131orRED replay; full3b/priorlimitsOPEN.
 
+- [x] Separate FIRSTLate2 EVIDENCE accepted77db:18chains/fourDLLs/fullrawbindings+semanticunion/strict2roots, no materialfinding; root178pins/16projections/4diffs/10tmprefs. Immutable MD3ff31d0c/JSON82895e22 saved; no repeatedruntime.
+- [ ] Save/readback/recover EVIDENCE decision, then seven SINGLETONS INORDER Ready3→HS01→live1→active-tail3→owner-refusal1→browser2→worker2 (13remainingcases,5meach). Freeze/push/readback/recover EACHbefore next; stopFIRSTunexpected/no hiddenretry. Final bounded15case review; full3b/priorlimitsOPEN.
+
 ## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
