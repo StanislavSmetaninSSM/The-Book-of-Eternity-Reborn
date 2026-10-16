@@ -1,3 +1,9 @@
+## T179-Pd wired preparation superseded by static Pd-R1, 2026-10-16
+
+- Fresh BOTH/catalog at91e28fd74 native0,129.5440253s, valid catalog 11702 methods/767 categories, **0 tests executed**. Complete immutable recovery/t179pd-ledger-wired-superseded-catalog-20261016* preserves build/discovery/summary/stdout; no PlanOnly/actual was run for this superseded source.
+- Independent Astra/XHigh confirms Pd-R1: storing the complete catalog per lifecycle event retains O(events×all-effects) snapshots and multiplies copies. Correct before runtime: one full actual start roster at first valid event per pass; per-event target/effect-filter matching roster before causal/mode exclusions and actual outcomes. No valid events => explicitly no captured start roster, never an invented empty global roster. Add real multi-target owner case; no event/subject deduplication.
+- No SOURCE release at91e; fresh BOTH/catalog/PlanOnly + affected independent source review/firstLate2/separate EVIDENCE required after correction. Current catalog pass is preparation only, not ledger behavior/golden/F1/P0 qualification.
+
 ## Autonomous continuation authority update, 2026-10-16 11:48 UTC
 
 - Coordinator relays user11:46:54UTC «Работай автономно пожалуйста. Меня не будет точно несколько часов» and11:48UTC «Я думаю ты можешь в принципе без моего разрешения работать. Направление ясное, там работы ещё много». Continue agreed F1-R2/D9–D11 and dependencies autonomously with TDD, independent review and verified GitHub checkpoints/recovery; do not stop the whole task after a bounded checkpoint.
