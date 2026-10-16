@@ -1,0 +1,1 @@
+{"argv": ["pwsh", "-NoLogo", "-NoProfile", "-File", "scripts/test-csharp.ps1", "-SelectionFile", "tests/selection.json", "-PlanOnly", "-NoBuild"], "native_exit": 0}

@@ -1,3 +1,7 @@
+## T179-Pd.3a corrected zero-execution preparation frozen — 2026-10-16
+
+- Clean compiled db655665a0f109b39172b4d6806a680bb3cb76e6 fresh BOTH/catalog: native0,69.7281320s,11703methods/768categories, valid/no stale/unmapped; PlanOnly native0,7.5726896s, exact2descriptors3cases (Late2 + causal observedreader1), zero actual executions in both. Full immutable t179pd-observed-reader-corrected-{catalog,plan,binaries}-20261016* includes native argv/exit, raw logs, audit, plan, summaries, source and fourDLL hashes; root12raw/stored/local chains verified. Superseded initial prep remains immutable. Independent affected SOURCE/FIXTURE/SELECTION pending; first actualONLY Late2 after release, freeze then separate EVIDENCE before causalRED1. No new runtime result or production success implementation.
+
 ## T179-Pd.3a static fixture correction — WIP, 2026-10-16
 
 - Independent SOURCE preflight confirmed whole-tree File.ReadAllBytes under active canonical lease would read FileShare.None canonical-write.lock before intended API RED. Corrected with default/G control under first actual lease, full-tree comparison after disposal, then observed issuance/RequireCurrent under a fresh same actual lease with unchanged G; final whole-tree check after disposal. Old Snapshot remains expected-data control only. No runtime-file exclusion or production change. No actual test ran.

@@ -1,0 +1,133 @@
+{
+  "source_sha": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-Build-integration.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/Build-integration.log",
+      "raw_bytes": 119991,
+      "raw_sha256": "14a4f21eca9fd09f8efab37559dc72e1ea1e2db6ae141de3b850a8c7d2149332",
+      "stored_sha256": "3b6f26e0ec0b68e524d1882a3274388fef869993d8c5cff1feed38ccc4ac47f9"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-Build-unit.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/Build-unit.log",
+      "raw_bytes": 26198,
+      "raw_sha256": "f85b4510343b78e1410c0fae058040e1b2dc3a8b4a735021d45ca8eb3b0139d4",
+      "stored_sha256": "6927a778f14db4e7089755e91244f22a9c2b083411e7e68d39a7b97da62680db"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-catalog-audit.json",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/catalog-audit.json",
+      "raw_bytes": 103,
+      "raw_sha256": "ed5b97b880dd963d81127173fc881e75b6997dcbf9334eed6c56bd8831fe8d85",
+      "stored_sha256": "ed5b97b880dd963d81127173fc881e75b6997dcbf9334eed6c56bd8831fe8d85"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/dotnet-test.log",
+      "raw_bytes": 3523935,
+      "raw_sha256": "24ee9edac4ebee7fdd1698364c39cc6615cd157a0f66e63b5a4ce65cef6aba29",
+      "stored_sha256": "7624bb1d275081da22bf210a48bca0d7fb9a3da5f908e434fe2b597b353cb8ba"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/native-exit.json",
+      "raw_bytes": 118,
+      "raw_sha256": "86a39118f87926ecccd619cf0b8fe2c0857f9fafb46a5e8730365819eb26a6fa",
+      "stored_sha256": "86a39118f87926ecccd619cf0b8fe2c0857f9fafb46a5e8730365819eb26a6fa"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/runner-stdout.log",
+      "raw_bytes": 712,
+      "raw_sha256": "c9779c1a9a8194280e16418f8ff8d3b0212616ec49438c038de8d2acbd62cb07",
+      "stored_sha256": "77cc68d62c9bdd268bdb80bdcda8a4d51582e3ae41e9494b5684995a77b74c6d"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-catalog-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-132737-593-97537-4221f138acf44927a2f1541f43d24f3e-categories/summary.json",
+      "raw_bytes": 1599,
+      "raw_sha256": "7dd6f31131ad1f7284e220b301ddbb8e2106cdf56163d3a519971a6904b7d61a",
+      "stored_sha256": "7dd6f31131ad1f7284e220b301ddbb8e2106cdf56163d3a519971a6904b7d61a"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11703,
+      "Categories": 768,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.067085,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0539101,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1423625,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 48.0727445,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 13.0986428,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0052249,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:09.7281320",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

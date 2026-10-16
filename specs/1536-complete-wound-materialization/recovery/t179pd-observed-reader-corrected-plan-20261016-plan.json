@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "fr063-observed-original-reader",
+    "fr063-joint-late-completion"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-observed-original-reader",
+      "reason": "One genuine original/current/G/default-reader control followed by missing observed API causal RED; no production success logic. Strict per-test finally cleanup and raw control diagnostics.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "Mandatory G5 first actual after any test/catalog/selection correction; exact existing v2 full union/story/progression/inert repeat/strict cleanup. Freeze and separate EVIDENCE before reader causal RED.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.1690962,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-late-completion-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-late-completion",
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-observed-original-reader-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-observed-original-reader",
+      "Categories": [
+        "fr063-observed-original-reader"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderTests.ReadObservedCurrent_IssuesEvidenceForTheActualOriginalAndCurrentLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
