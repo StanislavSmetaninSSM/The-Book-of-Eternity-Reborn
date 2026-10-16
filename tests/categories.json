@@ -2,6 +2,41 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-hot-joint-ready-custody-drift",
+  "responsibility": "#1536 T179-Pd.3b RED2 TEST-ONLY: genuine ordinary Stage producer then actual WaitForContractRepair with same original/request/G. Two legacy controls (unchanged and Ready replaced only at later manifest read) must return true/delete observed replacement/preserve selected source images. One missing private detached Stage/Ready diagnostic target must then report Unavailable(SourceChanged), actual positive delete/release observations and no S/B/M3. Ordinary Wait=true is not custody authority.",
+  "excludes": "No prior-QTE/held-treatment/canonical attempt, full semantic validation, owned registry close or fullHS02-16 claim. No original rewrite/private field seeding/caller issuer/test production callback. Isolated real Ld-release failure, native debt, browser/worker/foreign owner and full joint coupling remain separate OPEN coverage. Initial expected sole target RED is absent ExportHotOrdinarySubmissionDiagnostic after all genuine control/drift oracles and successful strict cleanup. All actuals HELD pending fresh G5/SOURCE/FIRSTLate2/separate EVIDENCE.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotSubmissionReadyDrift.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-late-completion",
+      "when": "FIRST unchanged protected Late2 on fresh source; freeze/push/readback/recovery and separate EVIDENCE before explicitly released controls/RED2."
+    },
+    {
+      "id": "fr063-hot-joint-attempt-ownership",
+      "when": "Retain independently qualified HS01 missing-owner RED at compiled473 without repeating on this test-only source. Select actual HS01 GREEN/regressions when production owner changes; this cheap Stage/Wait category cannot qualify joint registry custody."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 5,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-observed-original-conformance",
   "responsibility": "Pd.3a real original-source closure: exact owner/lease/Snapshot/private issuer, detached bytes/diagnostics and byte-only mtime policy; late source/G/presence/text drift including present-to-missing, generation replacement, physical faults/recheck, frozen RequireCurrent drift, default priority/eager contexts, BOM/signed absence/missing G/no ambient context; actual post-open lease invalidation and genuine deferred worker pending decision refusal/rollback. Per-test genuine original/G and strict cleanup; exact discovery counts pending.",
   "excludes": "No submitted-output admission, active S/C/B/M3, common take, cold proof, full F1/T197, Windows or visual qualification. No activation or imported source authority.",
