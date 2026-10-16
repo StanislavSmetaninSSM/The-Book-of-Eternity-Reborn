@@ -1,0 +1,653 @@
+{
+  "report": "T197 DEP-C targeted G-C/A4 design",
+  "status": "DESIGN_PROPOSAL_UNACCEPTED_FINALSTOP",
+  "date_utc": "2026-10-16",
+  "source_commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+  "observed_head_metadata_only": "59e05adb13602dca91a58238701620b00381d3f4",
+  "author_configuration": {
+    "requested": "Astra/High",
+    "retained_configuration": "Astra/High per coordinator",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "authorization": {
+    "targeted_design": "2026-10-16T11:44:14Z Sentinel_6315f3c4625c81919005f154b82b6227 Да",
+    "subsequent_coordinator_instruction": "11:48 UTC autonomous implementation after exact independently ACCEPTED contract and TDD/bounded qualification",
+    "assignment": "READ_ONLY_DESIGN_ONLY",
+    "repeat_user_permission_required_for_agreed_application_work": false,
+    "os_service_security_rights_changes_authorized": false
+  },
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "lines": 199,
+      "examined_ranges": []
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "lines": 493,
+      "examined_ranges": []
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "lines": 264,
+      "examined_ranges": []
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "02c79252eb95551168a0e210a3ea53650a72c382",
+      "sha256": "7b871f3e3518660a64cf702d06e8cf43d1b72091d5970f4933c2317dc8603201",
+      "bytes": 1974251,
+      "lines": 22562,
+      "examined_ranges": []
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "699a661ec3f750a2fe669e9584a2d6749f1eb5e7",
+      "sha256": "6e0aafb3f6a57dbdf5ece5d16f11777f43a7cefd00bbf44fba41928736832ab2",
+      "bytes": 69121,
+      "lines": 271,
+      "examined_ranges": [
+        [
+          94,
+          145
+        ],
+        [
+          215,
+          269
+        ]
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+      "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+      "bytes": 22799,
+      "lines": 101,
+      "examined_ranges": []
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+      "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+      "bytes": 14010,
+      "lines": 319,
+      "examined_ranges": []
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "examined_ranges": [
+        [
+          28,
+          84
+        ],
+        [
+          125,
+          186
+        ],
+        [
+          292,
+          367
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "examined_ranges": [
+        [
+          1,
+          109
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "4797cd481bffc8b9f46d31af9f30e6b0ffdab017",
+      "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14",
+      "bytes": 8221,
+      "lines": 146,
+      "examined_ranges": [
+        [
+          1,
+          135
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63",
+      "bytes": 5526,
+      "lines": 105,
+      "examined_ranges": [
+        [
+          1,
+          110
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "a3f8602314cf5fb4ee2f1713dbc98712fcc987bb",
+      "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "bytes": 10516,
+      "lines": 181,
+      "examined_ranges": [
+        [
+          1,
+          185
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343,
+      "lines": 6231,
+      "examined_ranges": [
+        [
+          564,
+          584
+        ],
+        [
+          3711,
+          3850
+        ],
+        [
+          3994,
+          4070
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "examined_ranges": [
+        [
+          1,
+          110
+        ],
+        [
+          139,
+          170
+        ],
+        [
+          201,
+          250
+        ],
+        [
+          300,
+          318
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "examined_ranges": [
+        [
+          24,
+          180
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "65b0a9d5fda59a86213a7805968eea1b53db7445",
+      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df",
+      "bytes": 4982,
+      "lines": 75,
+      "examined_ranges": [
+        [
+          1,
+          77
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "lines": 75,
+      "examined_ranges": []
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "lines": 410,
+      "examined_ranges": [
+        [
+          1,
+          226
+        ],
+        [
+          240,
+          416
+        ]
+      ]
+    },
+    {
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+      "bytes": 24566,
+      "lines": 446,
+      "examined_ranges": [
+        [
+          20,
+          95
+        ],
+        [
+          137,
+          197
+        ],
+        [
+          338,
+          447
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "bytes": 10947,
+      "lines": 334,
+      "examined_ranges": [
+        [
+          78,
+          240
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "lines": 261,
+      "examined_ranges": [
+        [
+          1,
+          200
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "b186c1c96c8c46937b47950809ec6b25a0151593",
+      "sha256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c",
+      "bytes": 5104,
+      "lines": 78,
+      "examined_ranges": []
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "37e4860f4bf2e6b153836183af916265cb141d90",
+      "sha256": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59",
+      "bytes": 3516,
+      "lines": 54,
+      "examined_ranges": []
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
+      "sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
+      "bytes": 23367,
+      "lines": 396,
+      "examined_ranges": [
+        [
+          1,
+          170
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "examined_ranges": [
+        [
+          1,
+          196
+        ],
+        [
+          395,
+          483
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "544ee7a0fccf3530473ba04b35e7d03b060e5bd1",
+      "sha256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805",
+      "bytes": 72348,
+      "lines": 1910,
+      "examined_ranges": [
+        [
+          1,
+          170
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "examined_ranges": [
+        [
+          1,
+          185
+        ]
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "title": "Ruling and scope",
+      "text": "This is a proposed, source-grounded G-C/A1–A5 contract for **one operation whose original custodian survives bridge loss**. It is not an implementation or a closed DEP-C qualification. The recommended architecture makes an outliving, per-run application custodian the original launcher and keeper of native authority. A bridge becomes a frontend; losing it does not lose the native owner. All mutable work for the protected operation must have been enrolled before its first side effect. The custodian first seals admission, proves real work exhaustion, and then settles the exact already-started publication debts. It never completes the gameplay operation by rerunning it.\n\nThe minimum successful case is bridge/transport loss with the original custodian, original native scope and exact publication owners or qualified recovery adapters still available. Custodian loss before authoritative retirement cannot be repaired by decoding these proposed records. This is a deliberate remaining limitation, not a claimed full crash/reboot solution. Unknown descendant escape, unregistered writers, incomplete native I/O or missing publication provenance likewise remain blocked. A stronger systemd/OS service authority is an alternative decision, not silently part of this recommendation.\n\nUser authorization at 11:44:14 UTC (Sentinel_6315f3c4625c81919005f154b82b6227, “Да”) authorized the targeted design/review. The coordinator's subsequent 11:48 UTC instruction permits implementation in the agreed direction after a complete exact contract, independent ACCEPTED review and TDD/bounded regression qualification. Repeat user permission is not the engineering gate. This author assignment remains READ-ONLY DESIGN. OS security/network settings, credentials, persistent access, privileged rights and unagreed installed services are not authorized by that instruction.\n\nEvery new API/schema/state below is PROPOSED / NOT INDEPENDENTLY ACCEPTED. No lifecycle, gameplay, archive-format or target-write grant is established here. DEP-C, DEP-I, DEP-L, full target, global H2/H3 and new joint QTE remain BLOCKED. D4/guided/visual/D8 remain OPEN. Source accepted Mortal n/action/k_death and ordinary evaluation n+1 are immutable; no extra Mortal tick, dice, reward, source replay or new G. Console/browser merely display recovery state until the actual existing and future gates permit continuation."
+    },
+    {
+      "title": "Historical evidence and current limits",
+      "text": "All code claims use commit `43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a`, not the writer's working tree. Full blob IDs, SHA-256, bytes and relevant line intervals are in the companion JSON and the pin appendix. Observed current HEAD is metadata only; no uncommitted file is evidence. Author configuration is retained Astra/High as instructed by the coordinator; backend telemetry is UNKNOWN.\n\n* `GmSessionRunCoordinator.PipePins.cs:9–50`: grants carry operation/pin/close/run identity; original close retires the counted pin; Lost sets Unresolved, closed and uncertain while preserving the pin. Lines 38–39 evict old observed closes after 32; lines 53–59 limit active remote entries to 32. Neither collection is a durable operation ledger.\n* `GmSessionRunCoordinator.cs:292–367`: stop persists its state, waits counted pins with a five-second observation deadline, and only then acquires lifecycle ownership. Confirmation requires the original terminal object, actual registered input/loop tasks, the adapter's same proof object, actual disposal and successful root exit. It rejects `_uncertain` and nonzero pins. The proposal does not loosen this existing method.\n* `GmSessionRunPersistence.cs:9–104,149–184`: original main guard is a physical file-handle lock outside the run metadata namespace. Main publication retains exact before/after and stage in a live `Pending`; Linux flushes directories; Windows uses write-through rename plus destination flush/readback. The retained pending plan is not a cold operation-recovery ledger. The existing `gm-runs` reader rejects unknown sibling entries inside that directory.\n* `GmSessionRunRecord.cs:5–25,107–133` and codec: existing schema1 includes run/root/G/epoch/backend/host/boot and stop evidence. Cold interpretation grants no live owner. Existing VerifiedHostReboot serialization is not evidence that a trusted reboot issuer or this handoff's source debt recovery exists.\n* `SessionOperationContext.cs:93–171` and `FileSystemManager.MainRunFence.cs:18–110,201–250`: managed nested frames borrow/refcount real access. This is not an exhaustive task/child/native-I/O registry. Remote participants can execute outside the bridge process and outside its terminal scope.\n* `FileSystemManager.cs:3711–3850,3994–4070`: canonical/lifecycle leases are separate FileShare.None lock-file handles with stable path/handle validation and main admission first. They serialize cooperating routes. They do not impose mandatory write locks on every canonical target file, stop arbitrary CLI writes, or prove that a native child or unregistered managed thread has ended.\n* `OwnedTerminalSessionFactory.cs:22–35`: production Linux launch creates an original NativeLineageOwner. Its systemd path at 64–76 is a controlled neutral-fixture path. It is not a production cold-recovery issuer.\n* `NativeLineageOwner.cs:141–226,295–416`: original bootstrap transfers real descriptors before release; current managed owner holds original process/status/PTY tasks. Status/control loss and uncertainty remain sticky. Stop/disposal cannot fabricate their successful observations.\n* `native/linux/boe-lineage-supervisor.c:27–31,137–174,338–446`: one exclusive subreaper, ordinary same-PID-namespace lineage, at most 128 retained child entries. `/proc` is a discovery worklist; sealed launch plus actual ECHILD and no pending exec is the terminal proof inside that declared scope. Owner stdin EOF latches `owner-lost`; terminal output is Uncertain, and the helper exits. The existing helper cannot later authenticate recovery from a replacement bridge.\n* `ConPtySession.cs` and `GmWorkerProcessTree.cs:78–234`: original suspended launch is assigned to a job before release; the job has kill-on-close. Stop uses the original job handle/query, and terminal teardown retains stream/close/root settlement. Those objects currently live in the bridge. Bridge death loses the original objects even if OS kill-on-close eventually kills job members.\n* `SystemdUserScopeOwner.cs:28–79` / `SystemdUserBus.cs:15–54`: the controlled adapter binds the original bus identity/unit invocation/cgroup and held pidfd, checks fresh emptiness plus native retirement and refuses lost/replaced authority. It does not accept a new bus connection as the old binding.\n* `TrustedLocalFilePublication.cs:107–110,419–483`: publication recovery requires an admitted canonical lease and exact current-generation preflight. Uncommitted journals restore before-images; committed journals preserve after-images then clean owned scratch. Its documented guarantee is process-crash recovery, not power-loss durability of renames. `ReversibleFilePublication.cs:38–57,91–145` has a different exact intent/physical identity and cleanup debt. Neither grants arbitrary source-path cleanup.\n* `GmWorkerDurableExecution.cs:7–8,48–88,102–133,151–170`: original worker cleanup authority is live, not minted by its DTO or replacement process. Any existing worker debt remains its own conjunct; this design cannot turn a worker inventory into main-operation retirement."
+    },
+    {
+      "title": "A1–A5 exact proposed contracts",
+      "text": "| Contract | Named proposed API and issuer | Required effect and explicit limit |\n|---|---|---|\n| A1 | `OriginalOperationCustodian.AdmitExclusiveLifecycleOperation(SourceAdmission, OriginalExecutionProfile)` → private `OperationLease` | Issuer owns original main guard and original launch. It obtains a recovery lane before the source action begins, validates same current G and exact source admission, and records the operation tuple before allowing any mutation. A nested frame is a borrow of this operation, never another operation. It admits no unrelated mutation while the lane is held. This scheduling/ownership change must be independently reviewed; it cannot be invented late after an already accepted death. |\n| A1 | `RegisterWork(OperationLease, WorkKind, OriginalWorkHandle)` → private `WorkTicket`; `BeginPublication(ticket, OriginalPublicationPlan)` → private `DebtTicket` | Work tickets cover task execution, callbacks, timers, native requests, child/helper launches, output processing and finalization. Registration is synchronous and precedes launch/dispatch; active registration is closed atomically by recovery sealing. Tickets close only on actual completion or original process-scope termination plus native-I/O settlement. No thread-count snapshot, task label or AsyncLocal value is proof. |\n| A2 | `OperationRecoveryStore.PublishOriginalFrame(before, frozenAfter)` / `QueryOriginalOperation(exactTuple)` | Original custodian owns finite metadata CAS and retained terminal frames. No pending or handoff-referenced record is evicted. The old 32-close cache is not the backing store. Bound exhaustion refuses admission before release; no truncation, expiry or oldest-record eviction. |\n| A3 | `SealForLostOperation(exactTuple)` → `RecoveryReservation`; `ObserveWorkExhausted(reservation)` → private `WorkExhausted`; `RetireLostPin(reservation, WorkExhausted, NativeScopeRetired, SettledSourceDebts)` → private `OriginalOperationRetired` | The new recovery path has its own one-way state machine. The old pin remains Unresolved until all proof conjuncts exist. Actual original pin disposal occurs once as the consequence of retirement, so the count decreases naturally. It never changes Unresolved into ClosedObserved, clears old uncertainty, assigns the count to zero or resumes the old run. |\n| A4 | `PrepareCustodiedRun(SourceAdmission)` / `PrepareOriginalNativeScope()` / `ReleaseOriginalOnce()` / `StopOriginalScope()` | Outliving per-run custodian creates and retains original native owner and original main guard from before launch. The bridge is never sole custodian. Linux uses the same original managed NativeLineageOwner plus its native subreaper; Windows custodian creates original ConPTY and job itself. No post-crash PID discovery or transfer from a dead bridge is attempted. |\n| A4 | `ConfirmSameGenerationRunRetirement(OriginalOperationRetired, ExhaustedRunInventory)` → `SameGenerationRunRetirementReceipt` | Original custodian must account for every original operation/worker in that run. Chosen initial lane requires no unrelated active mutation or worker debt. This prevents one-operation recovery from silently retiring somebody else's pins or killing their work. Receipt binds root/G/run/epoch/host/boot/native generation, the exact pin/close/op tuple, work closure, publication resolution and actual stop proof. |\n| A5 | `BindHandoffCloseResolution(OriginalOperationRetired, exactRetainedHandoff)` → private `HandoffCloseResolution` | A named same-G handoff adapter consumes real lifecycle proof for HC only. H2 must already be genuinely accepted, with its complete target contract. H3 uses its new actual target-bound participating operation. No target write scope is created by a source tuple or receipt. A new main run may use the same G under ordinary guard/epoch rules after old run retirement; it does not resurrect the old source pin. |\n\nA1–A4 are new ownership interfaces and process topology, not routine D11 pure extraction. Exact-byte adapters for already-authorized publication plans may be routine specialization, but their provenance, lifetime and admission must actually exist. A missing helper name alone is not a new principled grant. New global target write authority, arbitrary rollback, source replay and old-G rebind are not requested."
+    },
+    {
+      "title": "Chosen ownership topology and one-operation boundary",
+      "text": "The proposed application custodian is launched for this one main run using ordinary user privileges. It owns the original coordinator, main guard, native owner, launch controls, terminal input gate, output drain pumps, recovery reservation and operation ledger. It outlives bridge and UI transport disconnection. It is not an installed service, not auto-started on boot, not an elevated broker and not a machine-wide registry. No tool in this task launched it. Keeping such a run alive while references/debts remain is intentional lifecycle custody, not an OS service installation.\n\nThe frontend passes admitted commands through a bounded authenticated channel. It owns no canonical write handle, operation borrow or native terminal input endpoint. A frontend reader may display output; the original custodian always drains PTY/ConPTY output independently even when no reader exists. Frontend disappearance cannot abandon an output callback that has mutation authority: any such callback belongs to registered operation work in the mutation executor.\n\n**Managed mutation execution:** the recommended complete A1 contract is a dedicated single-operation runner owned from birth by this custodian, or an equivalent audited executor with actual joinable exhaustive task ownership. The dedicated runner is the defensible forced-stop option: its entire process, all threads and allowed descendants belong to the operation's native scope. UI processes are not terminated to approximate operation cancellation. The runner executes existing authorized owner logic once and publishes through its original admitted file APIs; transferring serialized originals never reconstructs a capability. Before beginning a publication it freezes the exact native recovery evidence and registers its owner-bound debt. Death of that runner permits only a specifically qualified recovery adapter for the already-started journal. A surviving runner may instead perform its own original finalization and return real work/debt receipts. An unjoined managed task still in the custodian blocks retirement; killing the custodian would destroy the proof issuer.\n\nThis runner split is an explicit engineering proposal, not evidence that the present delegate-based SessionOperationContext can be moved across processes unchanged. Exact source owner extraction and recovery-capability transport are an OPEN interface. A cooperative in-process implementation can support successful join, but cannot promise retirement of a hung arbitrary thread. It must not abort/forget the thread or pretend its cancellation token was completion. If an exact runner adapter cannot preserve an owner's live original authority, that source path is not yet recovery-qualified.\n\n**Run scope vs operation scope:** the current main CLI scope is shared at run level. Recovering one lost operation may stop that entire original native run, but only after the exclusive lifecycle lane has excluded unrelated work from the beginning. The lane serializes mutating admission, allows separately proven read-only displays, and retains nested work under the same operation. Existing durable helpers must already have actual owner-issued retirement/debt clearance before lane acquisition, or be explicitly part of the same operation's finite enrolled inventory with their existing original owner. The initial proposal chooses the first, narrower condition. It does not drain arbitrary other operations by timeout, nor relabel their work as this operation. If the existing workflow cannot provide this lane before a possible death, DEP-C remains incomplete rather than rejecting a legal death after acceptance.\n\n**Scope exclusions are not permission to ignore effects:** calls to external daemons, WMI/schedulers, service managers, remote tools, shared worker pools, shared writable mappings, io_uring/shared native executors or non-child process launchers can escape ordinary lineage/job accounting. This operation profile may not use any such writer without a separately registered genuine exhaustion/settlement owner. An audit proving their absence is required; a string `profile=safe` is no proof. Direct CLI writes are not guarded by the current lock files. The native scope must first be truly exhausted, and each direct writer's finite write set and pending I/O must be owned by an accepted adapter. Until that is demonstrated, a full all-writers claim is unavailable. No security sandbox or OS policy that prevents those escapes is silently assumed."
+    },
+    {
+      "title": "Platform alternatives and recommendation",
+      "text": "**Linux L1 — recommended narrow bridge-loss route.** Start the existing original managed NativeLineageOwner inside the outliving custodian, and its original C subreaper beneath it. The bridge is never the supervisor's stdin/status/PTY owner. Keep original descriptor transfer and held-before-release handshake. Keep the native supervisor's one exclusive reaper and same-PID-namespace scope; fork/setsid/double-fork alone do not justify abandoning descendants. Original pidfds identify processes; `/proc` discovery is not terminal proof. On bridge loss the custodian seals launches/input, requests original stop, observes the original terminal status and actual helper/root/I/O completion, then retains that observation while settling debts. The existing C EOF→Uncertain behavior need not be weakened: EOF from custodian death still means proof loss. All native source uncertainty—including namespace violation, child capacity overflow, invalid status or observation deadline—remains a blocker. This design does not clear that uncertainty after a later empty-looking scan.\n\nRequirements: currently supported Linux x64 package, native subreaper/pidfd/descriptor bootstrap prerequisites, same declared namespace profile, observable original helper/status, no environmental policy that kills custodian with bridge, and actual qualified local filesystem. No minimum kernel is claimed beyond the required calls: the package already checks its prerequisites. New runtime qualification must establish the exact supported distro/kernel/libc/.NET/storage combinations. Container PID1/session teardown or whole container death can kill both processes; L1 does not promise recovery through that event. `/proc` restrictions, seccomp restrictions or unavailable APIs produce refusal, not a sudo/remount workaround. No Linux qualification was run here.\n\n**Linux L2 — separately considered stronger manager/cgroup route.** Bind a manager-owned cgroup from before release, keep the original unit invocation and cgroup physical identity, and require no permitted migration out of that family plus actual recursive emptiness after sealed kill. A proposed existing-user-manager adapter could use a transient scope or a per-run service, but automatic restart must never relaunch the source action. A fresh connection after custodian death needs a new narrowly specified manager attestation/retained unit identity contract, not the current SystemdUserBus original-reference API. Unit name, path, recreated cgroup, Inactive state or PID absence are insufficient. Require exact invocation, manager/boot continuity, source membership binding, stable cgroup reference, sealed admission, native I/O and publication debt owners. If the manager removes the unit before recovery can authenticate it, proof is unavailable. Service/unit retention policy is an unresolved prerequisite, not supplied by this report. Installing a service, enabling lingering, changing delegation/permissions, namespaces or mount/security policies is decision-only and not authorized. L2 is not recommended as the default merely because cgroup.kill exists.\n\n**Windows W1 — recommended narrow bridge-loss route.** The outliving same-user custodian creates ConPTY, its I/O pumps and an unnamed job, starts the original child suspended, assigns it to the job and verifies the chosen non-breakaway job limits before its single resume. It retains original process/job/terminal handles and original completion tasks. Frontend death cannot close the last job handle or the only ConPTY host. On recovery, first seal launch/input; request termination through the original job; query that same live object until real active-process exhaustion; wait actual original process and all owned native I/O/close tasks; retain terminal evidence before disposal. Job notifications are wakeups, not a substitute for the actual query and closed admission. No ordinary job or process handle is inherited by children unnecessarily. Original handles must remain live through the last proof read. A handle duplicate, when used, is acknowledged by the receiving live custodian before sender release; it is never reconstructed from a saved integer. The chosen design creates ConPTY in the keeper from the outset and does not assume HPCON can be rescued after host death with DuplicateHandle.\n\nRequirements: supported Windows ConPTY API and compatible job assignment/nesting environment; original child starts suspended and cannot perform a write before job assignment and metadata ACK; no breakaway/silent-breakaway profile; all operation writers inside the approved scope or separately proven owned. Existing outer jobs/launcher policies may prevent the required topology; failure must be reported as a platform prerequisite, not worked around by elevated rights. WMI-created processes and work submitted to external services are not covered by ordinary child job inheritance. Terminating a process/job does not justify skipping native I/O completion or publication recovery. No Windows host or backend qualification exists in this task; cloud/Linux source inspection cannot supply it.\n\n**Windows W2 — alternatives not recommended for this slice.** An additional original handle keeper can extend job custody across one keeper death only if that exact live duplicate was installed before release and all ConPTY/I/O/managed obligations still have original owners. Duplication does not preserve arbitrary managed state or a dead ConPTY host. A named job plus OpenJobObject is insufficient: the name can disappear/rebind and does not attest the old operation's work/publication closure. An installed Windows service could be a longer-lived original custodian, but service identity/installation/rights and its own crash proof are separate explicit decisions; this task grants none. W1 gives the narrower ordinary-user, per-run bridge-loss guarantee.\n\n**Recommendation boundary:** select L1/W1 for further contract review, with original-custodian survival as an explicit guarantee boundary. Do not advertise total process/host restart recovery. If the required product guarantee includes custodian death, neither selected backend closes it; choose a genuinely stronger accepted issuer and qualify its source/debt custody before claiming DEP-C complete. The coordinator can proceed autonomously with ordinary application changes only after the exact contract is accepted; OS/security/service changes remain separate decisions."
+    },
+    {
+      "title": "Primary OS evidence, version limits and inferences",
+      "text": "These were read on 2026-10-16. They specify APIs, not evidence that this host supports or exercised them. HTML documentation is rolling unless a version is named. No OS version was guessed from the cloud environment. No web text is copied verbatim below.\n\n| Source | Narrow documented fact used | Design inference / limit |\n|---|---|---|\n| [Linux man-pages PR_SET_CHILD_SUBREAPER](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html) | A living nearest ancestor subreaper adopts orphaned descendants and can wait for them. | Losing the original subreaper is not repaired by creating a new one. The source's namespace/sole-reaper constraints remain necessary. |\n| [Linux kernel cgroup v2 documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html) | Descendants inherit membership, migration is possible; populated reports live processes recursively. cgroup.kill covers the subtree and handles concurrent fork/migration during the kill operation. Threaded groups have restrictions. | Earlier escape, external-daemon work, object replacement and disk publication remain outside an emptiness observation. Manager/permissions/profile and sealed identity are prerequisites. |\n| [Linux man-pages unix(7)](https://man7.org/linux/man-pages/man7/unix.7.html) | SCM_RIGHTS transfers references to open file descriptions; peer credential mechanisms exist for local sockets. | Actual transferred descriptors and authenticated original live endpoint are needed; saved FD/PID numbers cannot replace them. Endpoint protocol qualification is separate. |\n| [Linux man-pages flock(2)](https://man7.org/linux/man-pages/man2/flock.2.html) | Linux advisory locking does not impose universal target-file write exclusion. | This does not assert that .NET FileShare.None has a particular libc implementation; the source locks distinct lock files, so arbitrary target writers remain outside them. |\n| [Linux man-pages fsync(2)](https://man7.org/linux/man-pages/man2/fsync.2.html) | File synchronization alone does not synchronize the containing directory entry. | Keep the actual publication owner's durability contract; do not promote existing process-crash recovery to power-loss atomicity. |\n| [Microsoft Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects) | Ordinary child creation generally preserves membership; breakaway and WMI exceptions exist; kill-on-last-handle-close terminates members. | Last-close kill is not an observed old-operation retirement receipt. Retain the original job and seal admission before observing it. |\n| [Microsoft DuplicateHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle) | Supported kernel handles can be duplicated between live processes with appropriate access. | This cannot recreate a dead original object or transfer arbitrary live managed authority. W1 avoids relying on ConPTY-handle rescue. |\n| [Microsoft pseudoconsole lifecycle](https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session) (page updated 2022-09-20) | The host creates channels before the client; teardown can need active output draining and can deadlock without it. | Custodian owns pumps independently of bridge/UI, and close completion is a separate obligation. |\n| [Microsoft TerminateProcess](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess) and [CancelIoEx](https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex) | Termination and cancellation requests are not synchronous completion of every operation; pending I/O requires completion/cancellation observation. | No cancellation return, timeout or job count alone discharges publication/native-I/O debts. |\n| [systemd v257 kill source](https://raw.githubusercontent.com/systemd/systemd/v257/man/systemd.kill.xml) and [scope source](https://raw.githubusercontent.com/systemd/systemd/v257/man/systemd.scope.xml) | control-group stopping targets the unit's processes; scopes are programmatically created and encompass their member processes. | A chosen unit policy still needs source binding and preserved identity; no current cold issuer follows from these features. Rolling freedesktop rendered pages returned 403; versioned upstream XML supplied the evidence. |\n\nMinimum versions for new adapters, native package hashes and filesystem matrices are future qualification decisions. This report's versioned systemd documentation is v257, not an assertion that v257 is installed or sufficient for every desired pidfd API. No external source states that arbitrary escaped writers are safe; the no-escape/completion profile is a new engineering obligation."
+    },
+    {
+      "title": "Closed metadata proposal and live authority",
+      "text": "The proposed on-disk family is `.boe_runtime/main-operation-recovery-v1/<runId>/<operationId>/`. It is outside `gm-runs`, whose current strict reader rejects additions. No directory is created in this task. A coordinated version change to main schema is still required to link its immutable recovery descriptor and to prevent an old binary from opening a run using a newer recovery protocol. The proposal is fail-closed version separation, not automatic migration of an already-Lost schema1 run. Existing unknown or legacy records remain refused by the new route.\n\nClosed files: `manifest.json` (immutable before release), `state.json` (one exact-byte CAS state), `state.tmp` (only the exact original pending candidate), `debts/<sequence>.json` (immutable owner-produced descriptor), `receipts/<sequence>.json` (immutable owner result), and `retirement.json` (one terminal record). No wildcard files, symlink/reparse targets, duplicate/case-aliased paths, alternate numeric spellings or unknown properties. A write-ahead ledger entry is flushed and acknowledged before its corresponding release/start. An incomplete metadata mutation remains metadata debt. Proposed Linux metadata publication uses original validated directory handles plus file/directory synchronization; Windows uses the qualified write-through/flush/readback path. These are new adapter requirements; no claim of general power-loss qualification is made.\n\n**Manifest v1 exact keys:** `schemaVersion`, `sourceRun`, `physicalRoot`, `sourceOperation`, `sourceBinding`, `backendProfile`, `custodian`, `operationExecutor`, `admissionInventory`, `limits`. `sourceRun` is the existing exact RootKey/RunId/GenerationId/Epoch/Backend/HostInstanceId/BootId tuple, with nonempty current G required for this handoff. `physicalRoot` is the existing platform physical directory identity plus normalized root key; numeric PID/path equality is not physical identity. `sourceOperation` is exactly operationId/pinId/closeId. `sourceBinding` contains only the existing source owner kind, admitted source-original and source action identifiers, n, k_death and source original-proof reference. It neither contains nor derives a target request. The exact source proof type remains the named handoff adapter's obligation.\n\n`backendProfile` is a closed union: `LinuxOriginalLineageV1 {nativePackageDigest, guarantee, namespaceIdentity}` or `WindowsOriginalJobV1 {launchImageDigest, jobPolicyDigest, conPtyProfile}`. These fields describe/refuse; live original objects prove custody. `custodian` has `instanceId, protocolVersion, endpointKind, endpointName, publicChallengeKey, startupBindingDigest`; process ID/start identity may be recorded as diagnostics, never the proof. `operationExecutor` is `OriginalRunner {instanceId, imageDigest, scopeBinding}` or `OriginalJoinableExecutor {instanceId, registrationCatalogDigest}`; only a reviewed concrete executor variant is admitted. `admissionInventory` is an ordered exact array of original work/worker slots and close identities (including the absence witnesses required by the exclusive lane). It is not a namespace snapshot. `limits` fixes admitted maximums before release.\n\n**State v1 exact keys:** `schemaVersion, manifestDigest, sequence, previousFrameDigest, phase, sealedAdmissionSequence, workRows, debtRows, terminalFrame, pendingMetadata`. Each work row is `workId, parentWorkId, kind, ownerInstanceId, registrationSequence, terminalReceiptRef`; kind is one of `ManagedBody, ManagedContinuation, NativeProcessScope, TerminalInput, TerminalOutput, NativeIO, PublicationOwner, Finalization`. Each debt row is `debtId, kind, ownerInstanceId, armedSequence, descriptorRef, resolutionReceiptRef`. No arbitrary handler name or serialized callback is dispatchable. `terminalFrame` is null or an exact original normal Close frame or a private retirement record reference; those alternatives cannot be interchanged. `pendingMetadata` binds the exact before/after bytes and one stage identity for the currently attempted CAS, or null.\n\n**Debt descriptor v1 exact keys:** `schemaVersion, manifestDigest, debtId, kind, originalOwnerBinding, transactionId, armedSequence, generationBefore, generationAfter, members, guards, nativeEvidenceRefs, allowedResolution`. A member is exactly `ownerRole, canonicalRelativePath, beforeRef, afterRef, operation`, with operation in `Replace, Create, Delete`; guards carry exact typed before-image/presence evidence. Image references name immutable original owner artifacts with byte length, digest and physical provenance; hashes alone never authorize reading/writing arbitrary paths. `allowedResolution` is a closed owner-derived disposition set; e.g. an uncommitted trusted-local cohort permits its exact rollback, not execution of an unstarted next phase. Same-G before and after are mandatory here. Runtime generation changes, archive loads and incarnation bootstrap are not admitted debt variants.\n\n**Retirement v1 exact keys:** `schemaVersion, manifestDigest, sourceRun, sourceOperation, sealedAdmissionSequence, workClosureDigest, nativeReceiptRef, sourceDebtReceiptRefs, metadataReceiptRef, disposition, consumerBindings`. Only `RetiredAfterExhaustion` is the retirement disposition. Any committed/rolledback business result is separately retained from its real publication owner; retirement itself does not assert business success. Each receipt ref is issued by the named original owner and compared under its live authority, not trusted merely because a file exists. `consumerBindings` restricts consumption to the retained same-G handoff/HC and its exact original references; it grants no H2/H3 by itself.\n\nProposed admission bounds: 32 outstanding operation records per run as a hard upper bound, one active lifecycle mutation lane, 128 enrolled work tickets, 64 armed debt descriptors, 4,096 exact member/guard rows in total, 1 MiB metadata per frame, depth 16, 4,096 UTF-8 bytes per normalized path and bounded existing-owner image sizes. These are proposed engineering limits, not measured adequacy. Before admission an executable owner catalog must establish that the legal operation fits; if it cannot, the recovery-capable route is not qualified. Never discover overflow after release and silently drop work. Historical retained records cannot be evicted while any handoff or publication reference remains; storage exhaustion blocks new admission. The source's native CHILD_LIMIT=128 is a separate bound and any native overflow remains uncertainty, not a reason to omit a descendant.\n\n**Endpoint identity and replay:** a live original endpoint is required for bridge restart. Suggested protocol: original custodian creates an ephemeral P-256 challenge key in memory before release; publishes only its public key and original launch binding through the guarded manifest; a new frontend sends a fresh 32-byte nonce and exact tuple. Custodian responds with a signed digest of nonce + protocol/version + tuple + current sequence + requested receipt, and internally validates its actual original objects. Verify platform peer/process binding as well. The private key is never persisted, exported, logged or recovered from JSON; it is protocol identity, not native authority. Native authority still comes from the original retained handles and state. Cryptographic serialization and transport framing require independent review; no credential store or OS settings are changed. This proposal assumes the project's trusted-local filesystem model, not resistance to hostile same-user arbitrary code editing the ledger or stealing process memory.\n\nA fresh channel is only a query/recovery channel to the same still-live original custodian. It never reconnects the old active pin or accepts new normal work under that pin. Nonce replay, stale sequence, wrong root/G/run/epoch/boot/key/operation or changed receipt is refusal. Copied JSON on another root cannot identify the actual live custodian. If the custodian died, challenge authentication and native proof are unavailable: stop. A durable retirement file is not a replacement live capability. The keeper may remain alive in terminal query mode until exact consumers release their references; cold import of its proof after its death is a separate unresolved authority contract."
+    },
+    {
+      "title": "State machines and lock coverage",
+      "text": "**Run:** `PreparedCustody → RunningExclusive → RecoverySealed → NativeExhausted → SourceDebtsSettled → RetirementPublished → RetiredQueryOnly → Released`. `CustodyLost` is a one-way failure branch from any phase before legitimate release. It retains all evidence and blocks new mutation. Existing run `_uncertain` is not cleared; the new path terminates that old run through independently verified recovery proof. `Released` requires genuine transfer/release of all retained reference obligations, not a TTL.\n\n**Operation:** `PreparedGrant → Active → {OriginalCloseObserved | LostUnresolved}`. Recovery uses `LostUnresolved → AdmissionSealed → WorkExhausted → DebtsResolved → RetiredAfterExhaustion`. Normal close preserves the existing exact terminal frame. Lost remains a historical fact. The two terminal alternatives are different. A closure ACK lost after original CloseObserved is a query of the retained original terminal frame; it is not Lost retirement and never reexecutes the operation.\n\n**Publication debt:** `Reserved → Armed → {CommittedPendingCleanup | RollbackRequired | Uncertain} → {CommittedSettled | RolledBackSettled}`. Reserved work that never reached its owner-authorized durable begin is not forward-executed by recovery. Armed means the original owner acknowledged its exact durable publication intent before any member effect. In a crash gap the owner journal and exact registration evidence determine whether arming occurred; ambiguity stays Uncertain. Committed data is never rolled back because close/ACK was lost. If a semantic follow-up was not started, it remains future work of its existing owner and is not a settlement privilege.\n\n| Lock/ownership boundary | Covers | Does not cover |\n|---|---|---|\n| Original main-owner physical guard, held by custodian before release through retirement publication | One admitted main-run owner and its metadata CAS; refuses competing compliant owner | All arbitrary root filesystem writers; native descendants by itself |\n| Custodian admission/registration mutex | Atomically closes new work registration, child launch, input queue acceptance and publication begin; makes the sealed inventory finite | Already running tasks/I/O, cancellation completion |\n| Original native scope + real process handles/reaper/job | Enrolled native processes and threads under the declared backend profile | Escaped/external broker work, arbitrary managed threads in another process, durable file completion |\n| Operation task/executor lifetime | Actual registered work and borrowed scopes; reference release only after genuine completion | Detached Task.Run/timer callbacks with untracked continuations; these are a qualification failure |\n| Existing session-lifecycle physical lease | Excludes other cooperating lifecycle changes while debt reconciliation/current-G checks run | Canonical data publication by itself or successful stop evidence |\n| Existing canonical-write physical lease | Serializes admitted file effects and exact journal recovery, through native request completion and lease disposal | Direct CLI target writes that never use it; paths unrelated to the finite owner plan |\n| Original publication/worker owner | Exact transaction images, guards, outcomes and owned scratch cleanup | New gameplay transforms, target grants, generic whole-root rollback |\n\n**Order:** original main guard is outermost. Acquire short admission/metadata mutexes to seal and publish reservation, then release them before waiting for any task/process. Do not hold canonical or lifecycle leases across participant drain/native stop; an operation may need its existing closing lease to finish an already-started publication. All pre-seal publication entries have been registered and owner-authorized; they may settle their own exact intent, but cannot start a new semantic phase. Native/task drain must finish, with no future callbacks/writer continuations, before obtaining the recovery lifecycle lease and then canonical write lease. Recovery uses a new private main recovery access issued by the same original custodian, validated against the sealed tuple; it does not reopen a normal pin. Main metadata lease is never recursively requested while canonical is held. Its exact lower-level lock order must reuse the existing fence implementation and receive focused review.\n\nThe custodian itself holds the main guard, so it executes recovery or issues a narrow original recovery access; a restarted frontend cannot acquire that guard and then wait for the custodian that owns it. While holding lifecycle/canonical, verify physical root, exact current G, original manifest, no other run/worker debt, native/task proof, full armed debt inventory and source originals. Resolve only those debts. Release canonical and lifecycle with their real finalization outcomes; persist final retirement under main metadata ownership. A metadata failure retains the original stop/debt proof and exact pending CAS. Only after that ACK may the original pin be retired exactly once and the ordinary main run's Stopped record be published/acknowledged by the new verified recovery method. If ordering requires a final cross-record commit, the recovery store's terminal frame is the durable decision and main.json is a retryable dependent metadata debt; admission refuses either partial state. Do not expose Stopped while the retirement decision or source debt is missing.\n\nFinal consistency: the main guard is released only after terminal decision, dependent main metadata, lease release and every pin/worker conjunct is observed. The custodian can then remain alive read-only to authenticate the exact retained receipt to the same-G successor. New normal work under the old run is permanently denied. A new ordinary main owner must independently acquire the physical guard, verify current G and the fully acknowledged retired predecessor; its epoch changes, G does not. The handoff adapter binds the exact receipt to the retained source and genuine target instead of rebinding old live authority."
+    },
+    {
+      "title": "Finite publication debts and exact settlement boundary",
+      "text": "This is a finite **debt-kind dispatch catalog**, not a completed full-source leaf inventory. Every instance must be registered from an actual already-authorized owner before its first effect. The catalog cannot prove absence of unregistered writers; that remains a mandatory source integration audit.\n\n| ID / closed kind | Actual source / original ownership | Frozen plan and permitted recovery | Blocking hole / absence witness |\n|---|---|---|---|\n| D0 MainMetadata | GmSessionRunPersistence exact Pending before/after/stage, physical main guard | Retry only those exact bytes; flush/readback ACK; then acknowledge dependent retirement. No Running/release replay. | Current Pending is in-memory. Outliving custodian preserves it for bridge loss; cold recovery after custodian death needs a separate qualified issuer. No-debt requires actual original HasDebt=false plus acknowledged record comparison. |\n| D1 TrustedLocalCohort | TrustedLocalFilePublication current-schema journal, actual canonical lease, same-G preflight | Record exact transaction/member/guard/namespace inventory and original scope. Committed: verify after-images and remove only owned scratch. Uncommitted: restore exact before-images according to current journal semantics. Native cleanup failure remains debt. | Operation-to-journal provenance binding is new. Absence of active.json alone is insufficient if an armed ticket, commit stage or cleanup evidence remains. Intent-stage-only cleanup must follow the actual owner's pre-effect rule. |\n| D2 ReversibleOriginalPublication | ReversibleFilePublication exact intent, physical identities, hashes, retained journal/phase markers | Native owner classifies committed vs rollback from genuine existing evidence; finish only declared rename/restore/cleanup members, retaining source original proof separately. | Exact source callers and registration adapters must be supplied. No generic scan of similarly named journal directories; missing original authority blocks. |\n| D3 CoordinatedOriginalOwnerPlan | CoordinatedStateWriteHelper original-storage branch and actual source LocalInteraction/original owner | Freeze all original writes/guards and retained current typed outcome. May settle its already-started native members only. A pure recalculation, normalizer, callback or unstarted compensation is not a recovery command. | The helper expressly separates ordinary and original routes. Original live owner/journal recovery after runner death is not created by serializing PlannedWrite. Exact adapters remain OPEN. |\n| D4 EnrolledWorkerDebt | GmWorkerDurableExecution + original root context, native stop/cleanup and exact ledger mutation | Existing original worker issuer must settle its own already-started publication/cleanup. Proposed initial lane requires genuine absence/retirement before it starts, so this row is a blocking guard unless a later exact same-operation enrollment contract is accepted. | Main recovery cannot reconstruct worker authority from ledger JSON. Windows's existing absence requirement is preserved; Linux context quiescence is not guessed. |\n| D5 SourceHandoffNativeCohort | Actual already-started H0/HP/H2/HC/H3/HQ source/target owner where admitted, mapped to D1/D2/D3 native transaction | Keep one underlying transaction ID and its semantic phase tag; never double-settle it as two debts. Finish only that transaction's frozen members/receipt. Preserve successor originals and source proof/rollback role distinctions. | H2/full-target contract is still blocked. This row does not make those phases callable. HC close resolution requires A3/A4; H3 and HQ not yet started remain separate future operations, never recovery debts invented after Lost. |\n\nDebt enumeration closes at the sealed admission sequence. `SettleSourceDebts` accepts only original ticket IDs with `armedSequence <= sealedAdmissionSequence`, except retries of their exact original metadata ACK/cleanup. It cannot append an after-image, replace a guard, change a path, widen the root set, allocate an incarnation, mint G, issue a target request, evaluate a life or run a source response handler. New bytes needed to acknowledge the recovery itself are confined to this recovery protocol's exact metadata family and the separately authorized HC adapter; they do not change gameplay data.\n\nNative write completion and storage outcome are independent. For each writer record, preserve pending syscall/overlapped/native request ownership through actual completion or original scope exit plus the backend's qualified cancellation/settlement rule. Flushing a target cannot certify all vanished requests. A writable shared mapping or external async submitter requires its own original owner; if absent, there is no receipt. Lock availability after process death is only one precondition for journal recovery. It is never evidence that every formerly permitted write is done or that an unknown file plan can safely be completed.\n\nEvery outcome records actual exact bytes and receipt from its real owner. No-change/absence witnesses must be owner-local, under the current fence, and include stale scratch/commit/cleanup checks. Any extra native journal, changed source original, unrelated transaction, different G, or unknown member fails before mutation. Only a complete finite source owner/leaf audit can promote this catalog to executable admission; that audit is not fabricated here."
+    },
+    {
+      "title": "Crash, restart, timeout and stale-state matrix",
+      "text": "| Cut / observation | Required behavior |\n|---|---|\n| Before custodian manifest ACK or before original scope creation | No child release or mutation. Exact metadata stage may be cleaned only by its original preparer. Startup absence does not mint a completed operation. |\n| Custodian live; bridge dies before release | Original custodian seals, disposes/retire-observes held native resources and records no-release outcome. Never perform delayed release when frontend returns. |\n| Bridge/close channel dies while operation active | Lost stays counted and historical. Custodian closes admission and freezes ticket/debt frontier, stops input/launch, obtains actual runner/child/task/I/O exhaustion, then resolves only armed debts. |\n| Bridge dies after original Close frame accepted | Retained exact close is queried. Do not retire twice or invoke operation body again. No cache eviction while referenced. |\n| Runner survives with already-started write | Let original registered owner complete that exact native intent or request cooperative cancellation; join actual completion. Do not wait holding leases the owner needs. No later semantic phase may begin. |\n| Runner dies with a journal | Genuine original scope exit plus I/O rule first. Typed original journal recovery under same-G locks only after provenance/whole inventory preflight. Missing recovery adapter leaves debt, not success. |\n| Timeout at any drain/native/metadata stage | Return a bounded pending/uncertain diagnostic and retain custody/evidence. A deadline never issues exhaustion, zero pins, successful close or retirement. Existing backend sticky uncertainty remains sticky. |\n| Native child double-forks/setsid, child forks during stop | Original scope algorithm must include it; actual sealed exhaustive observation required. Namespace escape, child capacity overflow or external broker transfer blocks the positive route. |\n| Bridge dies after stop but before metadata ACK | Same custodian retains native proof and exact pending CAS. Retry exact metadata only; no native launch or source replay. |\n| Client dies during recovery | Original custodian continues/retains its one recovery operation. Another client may only authenticate/query that same operation. Duplicate requests return same terminal frame or pending state; no second recovery owner. |\n| Recovery client and normal frontend race | Admission is already sealed under original custodian. Normal operation grant is denied; recovery channel cannot become an active pin. |\n| Current G, physical root, epoch or source proof differs | Refuse before canonical recovery, preserve all evidence. No root-copy/hash-based rebind, no generation creation and no automatic restoration of old G. |\n| Custodian dies before verified retirement | L1/W1 have lost their issuer. Windows last-close kill or Linux helper cleanup may run, but neither is an authenticated completed receipt to a new process. Cold ledger stays unresolved. Stronger original manager/keeper contract or independently valid reboot route is still required. |\n| Custodian dies after writing retirement but before its live consumption | Do not turn the serialized receipt into a capability. Genuine already-acknowledged semantic receipts remain facts, but any still-required HC/admission proof lacks this live issuer. Cold terminal receipt validation is an OPEN dependency. |\n| Host reboot / boot ID changed | Recorded boot change is a refusal witness until an actual existing trusted reboot owner supplies its own proof and exact native/storage debts are classified. This design does not implement that route or claim power-loss recovery. A boot ID from the current client proves nothing about an old remote host or escaped submitter. |\n| Container restart, PID namespace replacement, host migration or restored VM image | A new namespace/host/boot tuple cannot attest that the old host/container and its external work stopped; it may still be alive elsewhere. Hold all source/target evidence. Require the original custodian on the original execution domain or a separately accepted trusted platform retirement issuer covering that exact old domain and all native/debt obligations. No PID scan or metadata hash supplies that proof. |\n| Distinct-root archive/load or copied runtime family | This same-root same-G contract does not transfer original native custody. Do not copy live scope descriptors, make a new custodian from the archive, or use destination G/root equality as old-source stop evidence. DEP-L must separately supply actual source quiescence/stop, exact source-debt settlement, archive-family membership and lawful destination admission. The source domain may still write after the copy, so source proof remains necessary. |\n| Native retired, source debts committed, H2 unaccepted/incomplete | Keep source evidence and block H3/HQ/target dispatch. Retirement is not target remaining-work acceptance. |\n| H2 committed, HC resolved, H3 not started | A later genuine target-bound operation may perform only authorized H3 once all global contracts are qualified. It is not part of lost source settlement. |\n| H3 committed but H3 close lost / HQ pending | Preserve sourceTransferred and target originals; H3's own operation needs its own genuine close/retirement. Do not infer it from source HC. HQ and dispatch remain gated. |\n| More than one operation or unexpected worker is active | Initial exclusive-lane contract fails; never use this one-operation receipt to discharge the rest. A complete multi-owner contract is a different design. |"
+    },
+    {
+      "title": "Handoff and user-visible behavior",
+      "text": "The retirement receipt resolves only the exact old source-operation close debt, after all publication and native obligations above. It does not say the business action completed, does not validate a new target, and cannot manufacture H2. If an earlier H2 cohort genuinely committed, its exact after-images/target originals remain; a close failure does not roll them back. HC records the original owner's real closure/retirement only through the named handoff adapter. H3 releases source artifacts only after all existing target/H2 obligations and HC are valid. HQ is its own exact browser dequeue/target-preservation operation and close obligation. No old pin is resurrected for those operations.\n\nThe browser displays an in-progress or unresolved transition and keeps the new-action composer blocked. Reload or another frontend can query the same original custodian; a reconnect neither recreates the pin nor reruns source input. Already accepted narrative/result is retained and not presented as a new choice. Console/agent paths use the same status and gates; they cannot continue by pressing a force-close option. A timeout may yield control and show that evidence is retained. Definitive unsupported custodian-loss recovery is reported honestly instead of silently dropping a lawful death/evaluation. Because that branch is required for full qualification, activation remains blocked until the product's accepted recovery contract covers it."
+    },
+    {
+      "title": "Engineering decisions and unresolved blockers",
+      "text": "1. **Original-custodian survival boundary:** L1/W1 concretely cover bridge/transport restart, not loss of the original keeper, container/host migration or distinct-root restore. Safe HOLD on those branches preserves safety but is not successful recovery and is not an accepted fail-closed completion policy for a lawful death. Those unresolved required branches block full G-C and T197 qualification unless a narrower supported contract is explicitly accepted through design review; no such acceptance is claimed here. Decide whether this narrower guarantee satisfies the required lifecycle case. If total keeper/host restart is required, an exact stronger native issuer plus publication provenance contract is missing. No amount of extra metadata alone supplies it.\n2. **A1 source executor:** supply a concrete source action/processing runner adapter preserving actual original owner capabilities, with all task/callback/native/I/O writers enrolled and exclusive lane established before any possible legal death. Current delegates/refcounts do not establish this. Choosing a per-operation runner is a process ownership contract requiring independent acceptance, not automatic D11 extraction.\n3. **Finite actual source publications:** instantiate D0–D5 from real reachable source owners and their exact native/rollback/original leaves; prove no direct CLI or escaped writer bypasses registration. Typed cold recovery of already-started original-storage plans after runner death remains missing. Do not confuse the prior EP/E1 target catalog with this source closure.\n4. **Protocol/storage integration:** review strict codec, version separation, metadata CAS crash cuts, bounds adequacy, private challenge binding, terminal retention/garbage collection and the private main recovery admission. Main.schema1/old binaries and already-existing Lost runs do not gain recovery by upgrade alone. The custody route must be established before work starts.\n5. **Platform qualification:** actual Linux package/namespace/pidfd/process/I/O and Windows job/ConPTY/host-policy/storage evidence must be acquired through separately scheduled bounded tests after contract acceptance. This cloud/source-only pass provides none. No automatic install, elevation, service, lingering, delegation, sandbox or security-setting workaround is authorized.\n6. **Dependent handoff contracts:** DEP-I, DEP-L, complete EP/E1/full target and global H2/H3/HQ qualification remain open. Same-G retirement alone cannot accept remaining work or activate new QTE. D4/guided/visual/D8 remain untouched.\n\nThe coordinator's autonomous implementation authorization applies after independent ACCEPTED contract review and TDD/bounded regression qualification. These are engineering prerequisites, not a request for repeat user permission. Only expansion into unagreed persistent services/rights/settings or a materially stronger lifecycle policy calls for the separate concrete decision already described. This report recommends the narrow ordinary-user topology and exposes its non-complete branches for review rather than claiming DEP-C resolved."
+    },
+    {
+      "title": "Future bounded checks — all UNRUN",
+      "text": "* **F01 Original launch custody — UNRUN:** Kill only the bridge at each held/released boundary; verify the same custodian/native owner remains and child release never occurs without original ACK.\n* **F02 Lost pin positive route — UNRUN:** One genuine active source op loses its original channel; actual work/native/debts settle; exactly one RetiredAfterExhaustion receipt and one actual pin disposal, no ClosedObserved fabrication.\n* **F03 Lost normal close ACK — UNRUN:** Original close accepted then reply lost; same immutable normal close returned without retirement or replay.\n* **F04 Managed descendants — UNRUN:** Task/callback/timer continuation attempts post-seal registration; deny before side effect; a previously registered delayed task keeps retirement pending.\n* **F05 Hung in-process work — UNRUN:** Cancellation requested but task/thread stays alive; no timeout or task-count snapshot grants exhaustion.\n* **F06 Dedicated runner death — UNRUN:** Kill enrolled original runner at each frozen/armed/native publication cut; only qualified exact journal recovery runs, otherwise remain blocked.\n* **F07 Unrelated activity — UNRUN:** Another operation/helper/source grant present before lane or appears unexpectedly; no one-operation retirement of it and no unauthorized scope kill.\n* **F08 Linux descendants — UNRUN:** Original fork/double-fork/setsid, rapid fork during stop and all reaper turns; no /proc absence promoted to ECHILD proof.\n* **F09 Linux scope breach — UNRUN:** Namespace divergence, proc restriction, pidfd failure, 128-child overflow, helper/status loss; all remain uncertain.\n* **F10 Linux custodian crash — UNRUN:** Original owner dies; native EOF cleanup does not become proof to a fresh bridge; copied journal cannot reopen native authority.\n* **F11 Windows original job — UNRUN:** Suspended assignment, no release before registration, child/nested job behavior, same original query and root wait, no numeric PID reuse.\n* **F12 Windows escaped launch — UNRUN:** Breakaway/WMI/external broker or incompatible outer job; no claimed complete scope retirement.\n* **F13 Windows ConPTY drain — UNRUN:** Bridge disappears under full output/backpressure and final close frame; original keeper pumps and close task must really settle.\n* **F14 Windows custodian death — UNRUN:** Kill keeper; kill-on-last-close is not acknowledged operation retirement; no named-job reconstruction.\n* **F15 Native I/O — UNRUN:** Long outstanding request, cancellation racing success, shared mapping/external submitter; actual completion owner required before locks/settlement succeed.\n* **F16 Canonical/lifecycle lock order — UNRUN:** Lost while original native publication holds canonical lease; recovery waits outside leases then lifecycle→canonical under same main custody; no lock inversion or guard reacquire.\n* **F17 Metadata CAS faults — UNRUN:** Every stage/write/flush/rename/readback and dependent main Stopped ACK cut; exact pending bytes retained and retried without source/native replay.\n* **F18 Publication outcomes — UNRUN:** D1 committed cleanup versus uncommitted rollback, D2 native markers/physical identities, D3 original owner; preserve committed data and reject missing/extra evidence.\n* **F19 Unarmed phase exclusion — UNRUN:** Reserved but unarmed next phase, including H3/HQ, is never executed by settlement; no after-image/callback recomputation.\n* **F20 Whole debt inventory — UNRUN:** Extra journal, stale commit.tmp, unknown cleanup file, armed ticket without matching journal or absent target with real source debt refuses before effects.\n* **F21 Identity/replay — UNRUN:** Cross-root, cross-G/run/epoch/boot, copied JSON, stale challenge/sequence, same PID reuse and wrong original key cannot recover/continue.\n* **F22 Concurrent recovery — UNRUN:** Two frontends plus old delayed message request recovery; one original custodian state machine and immutable terminal reply only.\n* **F23 Bounds/retention — UNRUN:** All proposed bounds checked before admission; referenced old closes survive more than 32 unrelated historical closes; no eviction or truncation.\n* **F24 Reboot/cold receipt/migration — UNRUN:** Changed boot, new PID namespace, restored container/VM, different host or distinct-root copy with terminal JSON but no original-domain proof remains blocked; old source may still run. No live consumer authority is reconstructed until a separately accepted genuine issuer/load contract supplies it.\n* **F25 Same-G handoff — UNRUN:** Actual retirement plus genuine H2 allows only HC binding; target request/original/source proof mismatch refuses. No new G or old-pin resurrection.\n* **F26 H3/HQ own close debt — UNRUN:** Each later operation has distinct exact owner/close; old source receipt cannot discharge later Lost; target originals remain protected.\n* **F27 Browser/console behavior — UNRUN:** Reload/new frontend shows retained transition, composer blocked, accepted narrative not rerun, no extra tick/dice/reward.\n* **F28 Backend availability and global gate — UNRUN:** Missing Linux/Windows prerequisites fail before release; source-level or one-platform pass cannot promote full DEP-C/I/L/H2/H3/new-QTE activation.\n\nNo build, unit/integration test, native executable, runtime fixture, test discovery or qualification was run. These are future test designs. Test selection itself requires the repository's exact bounded test workflow and independent contract acceptance. No F2, PASS or runtime evidence is claimed."
+    },
+    {
+      "title": "Final stop",
+      "text": "FINALSTOP — targeted READ-ONLY DESIGN complete as a reviewable conditional proposal. Existing reports are immutable; no repository, runtime, OS or service changes were made by this task. The selected architecture provides a precise proposed bridge-loss route while the original native custodian survives. A complete implementation/acceptance claim is withheld for the named A1/source-publication/cold-custody interfaces and platform qualification. All dependent T197 gates remain blocked."
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "F01",
+      "title": "Original launch custody",
+      "description": "Kill only the bridge at each held/released boundary; verify the same custodian/native owner remains and child release never occurs without original ACK.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F02",
+      "title": "Lost pin positive route",
+      "description": "One genuine active source op loses its original channel; actual work/native/debts settle; exactly one RetiredAfterExhaustion receipt and one actual pin disposal, no ClosedObserved fabrication.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F03",
+      "title": "Lost normal close ACK",
+      "description": "Original close accepted then reply lost; same immutable normal close returned without retirement or replay.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F04",
+      "title": "Managed descendants",
+      "description": "Task/callback/timer continuation attempts post-seal registration; deny before side effect; a previously registered delayed task keeps retirement pending.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F05",
+      "title": "Hung in-process work",
+      "description": "Cancellation requested but task/thread stays alive; no timeout or task-count snapshot grants exhaustion.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F06",
+      "title": "Dedicated runner death",
+      "description": "Kill enrolled original runner at each frozen/armed/native publication cut; only qualified exact journal recovery runs, otherwise remain blocked.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F07",
+      "title": "Unrelated activity",
+      "description": "Another operation/helper/source grant present before lane or appears unexpectedly; no one-operation retirement of it and no unauthorized scope kill.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F08",
+      "title": "Linux descendants",
+      "description": "Original fork/double-fork/setsid, rapid fork during stop and all reaper turns; no /proc absence promoted to ECHILD proof.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F09",
+      "title": "Linux scope breach",
+      "description": "Namespace divergence, proc restriction, pidfd failure, 128-child overflow, helper/status loss; all remain uncertain.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F10",
+      "title": "Linux custodian crash",
+      "description": "Original owner dies; native EOF cleanup does not become proof to a fresh bridge; copied journal cannot reopen native authority.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F11",
+      "title": "Windows original job",
+      "description": "Suspended assignment, no release before registration, child/nested job behavior, same original query and root wait, no numeric PID reuse.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F12",
+      "title": "Windows escaped launch",
+      "description": "Breakaway/WMI/external broker or incompatible outer job; no claimed complete scope retirement.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F13",
+      "title": "Windows ConPTY drain",
+      "description": "Bridge disappears under full output/backpressure and final close frame; original keeper pumps and close task must really settle.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F14",
+      "title": "Windows custodian death",
+      "description": "Kill keeper; kill-on-last-close is not acknowledged operation retirement; no named-job reconstruction.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F15",
+      "title": "Native I/O",
+      "description": "Long outstanding request, cancellation racing success, shared mapping/external submitter; actual completion owner required before locks/settlement succeed.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F16",
+      "title": "Canonical/lifecycle lock order",
+      "description": "Lost while original native publication holds canonical lease; recovery waits outside leases then lifecycle→canonical under same main custody; no lock inversion or guard reacquire.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F17",
+      "title": "Metadata CAS faults",
+      "description": "Every stage/write/flush/rename/readback and dependent main Stopped ACK cut; exact pending bytes retained and retried without source/native replay.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F18",
+      "title": "Publication outcomes",
+      "description": "D1 committed cleanup versus uncommitted rollback, D2 native markers/physical identities, D3 original owner; preserve committed data and reject missing/extra evidence.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F19",
+      "title": "Unarmed phase exclusion",
+      "description": "Reserved but unarmed next phase, including H3/HQ, is never executed by settlement; no after-image/callback recomputation.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F20",
+      "title": "Whole debt inventory",
+      "description": "Extra journal, stale commit.tmp, unknown cleanup file, armed ticket without matching journal or absent target with real source debt refuses before effects.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F21",
+      "title": "Identity/replay",
+      "description": "Cross-root, cross-G/run/epoch/boot, copied JSON, stale challenge/sequence, same PID reuse and wrong original key cannot recover/continue.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F22",
+      "title": "Concurrent recovery",
+      "description": "Two frontends plus old delayed message request recovery; one original custodian state machine and immutable terminal reply only.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F23",
+      "title": "Bounds/retention",
+      "description": "All proposed bounds checked before admission; referenced old closes survive more than 32 unrelated historical closes; no eviction or truncation.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F24",
+      "title": "Reboot/cold receipt/migration",
+      "description": "Changed boot, new PID namespace, restored container/VM, different host or distinct-root copy with terminal JSON but no original-domain proof remains blocked; old source may still run. No live consumer authority is reconstructed until a separately accepted genuine issuer/load contract supplies it.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F25",
+      "title": "Same-G handoff",
+      "description": "Actual retirement plus genuine H2 allows only HC binding; target request/original/source proof mismatch refuses. No new G or old-pin resurrection.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F26",
+      "title": "H3/HQ own close debt",
+      "description": "Each later operation has distinct exact owner/close; old source receipt cannot discharge later Lost; target originals remain protected.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F27",
+      "title": "Browser/console behavior",
+      "description": "Reload/new frontend shows retained transition, composer blocked, accepted narrative not rerun, no extra tick/dice/reward.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "F28",
+      "title": "Backend availability and global gate",
+      "description": "Missing Linux/Windows prerequisites fail before release; source-level or one-platform pass cannot promote full DEP-C/I/L/H2/H3/new-QTE activation.",
+      "status": "UNRUN"
+    }
+  ],
+  "gates": {
+    "DEP-C": "BLOCKED",
+    "DEP-I": "BLOCKED",
+    "DEP-L": "BLOCKED",
+    "fulltarget": "BLOCKED",
+    "H2": "BLOCKED",
+    "H3": "BLOCKED",
+    "new_joint_QTE": "BLOCKED"
+  },
+  "preserved_open": [
+    "D4",
+    "guided",
+    "visual",
+    "D8"
+  ],
+  "implementation": false,
+  "runtime_execution": false,
+  "builds": false,
+  "tests": false,
+  "test_discovery": false,
+  "repo_mutation": false,
+  "subagents": false,
+  "final_stop": true
+}

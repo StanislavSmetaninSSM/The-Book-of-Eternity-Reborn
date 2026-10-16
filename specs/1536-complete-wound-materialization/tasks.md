@@ -1,3 +1,5 @@
+- T197 targetedG-C/A4 proposal preserved:27historicalpins/28futureUNRUNchecks, L1/W1 per-run originalcustodian bridge-loss route conditionalonactualsurvival; exactA1/source-debt/coldcustodyinterfaces stillOPEN. IndependentAstra/XHighreview pending, noG-Cimplementation/native qualification/OSchange. FullDEP-C/I/L/T197/newQTE remainblocked; F1continues.
+
 - T179-Pd staticPd-R1 correction: one actual full initial roster perpass + per-event matched roster/outcomes; true multi-target scenario added, expected15unit/42selected cases pending discovery. All corrected prep/actualsUNRUN; independent affectedSOURCE/firstLate2/EVIDENCE required.
 
 - Authority11:48UTC: autonomous agreed DESIGN→implementation may proceed after complete independently accepted design/TDD/bounded qualification, including G-C/T197 dependencies. Earlier repeat-user-approval-only G-C block superseded; current targeted DESIGN remains incomplete/review pending, no activation or OS/security/service/credential grant. Continue independent F1 stages; do not stop at checkpoint.
