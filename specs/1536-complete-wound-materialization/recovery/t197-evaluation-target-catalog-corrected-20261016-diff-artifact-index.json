@@ -1,0 +1,9 @@
+{
+  "raw_path": "/tmp/t197-evaluation-target-catalog-corrected-20261016.diff",
+  "raw_bytes": 501093,
+  "raw_sha256": "261ae6f38412be9451b6f13064c2e692ed5963ce90b098129f4103601c5919c4",
+  "stored_path": "t197-evaluation-target-catalog-corrected-20261016.diff.gz",
+  "stored_bytes": 65480,
+  "stored_sha256": "28bb083bc83dafe8c8d7631a4174743a23faa19827019437be60ab7dbf7c7af3",
+  "format": "gzip mtime0; lossless exact MD+JSON n3 unified pairdiff; no normalization"
+}
