@@ -1,3 +1,8 @@
+## T179-Pd initial Late2 EVIDENCE gate — causal RED3 only, 2026-10-16
+
+- Separate independent configured Astra/XHigh [review](./recovery/t179pd-initial-late-evidence-review-20261016.md) of frozen c1eff0c66: LATE2_EVIDENCE_ACCEPTED_RELEASE_CAUSAL_LIFECYCLE_RED3_ONLY, no blocking findings. Root verified 54 historical pins, 3 exact diffs, 7 derived artifact hashes and four current DLLs; report pair preserved byte-exact. Complete Late2 raw semantic evidence checked independently.
+- Only next actual: fr063-active-prefix-lifecycle-evidence -NoBuild, one descriptor/three cases on unchanged cf95c6091 binaries. Require all three failures solely at missing LifecycleExecutionLedger property Assert.NotNull line59 after genuine completed old reduction and assembly. Freeze/push/readback full RED before any success implementation. Unexpected earlier/different failure, pass, incomplete count or cleanup/evidence uncertainty freezes execution for diagnosis; no other actual released. Full coherent Pd/F1/T197/activation gates remain open.
+
 ## T179-Pd initial unchanged Late2 frozen — EVIDENCE review pending, 2026-10-16
 
 - First released singleton fr063-joint-late-completion on clean f6b9d5f04 / compiled cf95c6091: native exit0, **2/2 PASS**, 1 complete descriptor, wall200.0513169s, no timeout/skip/duplicate/underfill; runner and runtime cleanup complete. Full immutable recovery/t179pd-initial-late-20261016* retains runner stdout, raw log/TRX/plan/summary and native exit/hash index. Source/fixture/catalog/selection and all four DLL pins unchanged.
