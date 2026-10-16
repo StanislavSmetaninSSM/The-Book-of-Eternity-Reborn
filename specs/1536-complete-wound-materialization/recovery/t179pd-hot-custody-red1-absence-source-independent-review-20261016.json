@@ -1,0 +1,1071 @@
+{
+  "date": "2026-10-16",
+  "review": "Affected independent HS01 SOURCE/FIXTURE/SELECTION/preparation review after F01/F02 correction",
+  "verdict": "ACCEPTED_AFFECTED_SOURCE_RELEASE_FIRST_PROTECTED_LATE2_ONLY",
+  "reviewer": {
+    "role": "independent reviewer, not author/implementer",
+    "actual_configured_model": "gpt-6-astra",
+    "actual_configured_reasoning_effort": "xhigh",
+    "requested_model": "gpt-6-astra",
+    "requested_reasoning_effort": "xhigh",
+    "configuration_basis": "coordinator original spawn receipt for /root/t179pc_independent_review",
+    "backend_telemetry": "not exposed; not independently attested"
+  },
+  "base": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "review_carrier": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+  "observed_clean_head": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+  "scope": {
+    "affected_source_files": [
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "production_diff_empty": true,
+    "carrier_source_test_catalog_script_diff_empty": true,
+    "prior_bounded_analysis_reused": true,
+    "full_re_review": false,
+    "production_success_logic_present": false,
+    "reviewer_actual_executions": 0
+  },
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "HS01-F01",
+      "status": "CLOSED_BY_SOURCE_CORRECTION",
+      "evidence": "HotSubmissionCustody.cs137\u2013147 asserts status_changes as the sole uncovered original and first changed path, original null/current present. JointCompletionActiveTail.cs109 requires only the existing Uncovered joint mechanical input is present: path refusal. Production MC122\u2013126 is unchanged; no either-message or weakened assertion."
+    },
+    {
+      "id": "ROOT-HS01-F02",
+      "status": "CLOSED_BY_SOURCE_CORRECTION",
+      "evidence": "HotSubmissionCustody.cs39\u201368 uses ordinary PendingTurnSnapshotPathSelection, requires a successful real current-original read and the actual tuple, exact original bytes for covered paths, and absence from both AbsentLogicalPaths and DeclaredOriginalLogicalPaths for the known uncovered status path. Physical current null remains a separately observed fixture fact. Original image rows221\u2013227 distinguish UncoveredInSignedInventory/null presence/null bytes from Present/exact bytes. No original/schema/closed-set/reader guard change."
+    }
+  ],
+  "fixture_assessment": {
+    "actual_route": "Existing genuine prior42 followed by actual ProcessPlayerTurn/Stage43; public stats/experience/player-status authored after signed original, same client-owned acknowledgment/baselines, actual severity repair, complete resubmission with Ready last. No private issuer, field-seeded accepted owner, original rewrite or production callback.",
+    "preconditions_before_missing_feature": "Existing held/refusal/full union/source/request/original/G/turn42/no-common-consequence assertions, then exact retained public images, Ready absence and unchanged input/manifest/authority, all before reflection. Cleanup remains finally-owned and assertion-bearing.",
+    "causal_target": {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+      "line": 172,
+      "assertion": "Assert.NotNull(export)",
+      "missing_member": "ExportMortalJointPublicationAttemptDiagnostic",
+      "production_member_absence_checked": true,
+      "runtime_qualified": false
+    },
+    "future_green_oracles": "ActualStageCompleted, exact binding/current/original/output bytes, consumed Ready read/delete/successful release/current recheck, ClosedNoNativeAttempt, expired capabilities/no reopen/no S/B/M3, detached export copy. These remain future assertions, not source-proven runtime custody or full semantic admission.",
+    "defaults": "The shared JointCompletion file and both protected method bodies are unchanged from the blocked initial source. The correction changes only the new post_original_stats_level refusal arm; existing active-tail arms and helper defaults remain unchanged.",
+    "uncovered_semantics": "Ordinary optional selection provides no authenticated absence for status_changes. The canonical plan now explicitly states unknown original presence/no original coordinate or bytes, and distinguishes real current absence. This is consistent with the already accepted bounded custody design."
+  },
+  "selection": {
+    "category_count": 2,
+    "descriptor_count": 2,
+    "method_count": 3,
+    "case_count": 3,
+    "exact_finite_owners": {
+      "fr063-joint-late-completion": 2,
+      "fr063-hot-joint-attempt-ownership": 1
+    },
+    "all_integration": true,
+    "all_exclusive": true,
+    "frontend_build": false,
+    "budget_minutes_each": 5,
+    "no_overlap": true,
+    "catalog_change_only_responsibility": true,
+    "selection_change_only_reason": true,
+    "plan": {
+      "Categories": [
+        "fr063-joint-late-completion",
+        "fr063-hot-joint-attempt-ownership"
+      ],
+      "Reasons": [
+        {
+          "category": "fr063-joint-late-completion",
+          "reason": "G5 FIRST only: both protected method bodies unchanged; default helper branch must retain actual v2 union/source/G/held request/native cohort/story/progression/turn/inert and strict cleanup before separate EVIDENCE.",
+          "contracts": [
+            "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+          ]
+        },
+        {
+          "category": "fr063-hot-joint-attempt-ownership",
+          "reason": "One genuine missing-private-custody-result causal RED after actual ProcessPlayerTurn/Stage43, post-original submitted changes including genuine uncovered-original/status submitted-present, repair/Ready and exact existing v2 held/uncovered-present-refusal/no-consequence preconditions. Not released before separate Late2 EVIDENCE.",
+          "contracts": [
+            "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+          ]
+        }
+      ],
+      "Revision": {
+        "Head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 4.3417408,
+      "Descriptors": [
+        {
+          "Name": "fr063-hot-joint-attempt-ownership-integration-001",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-hot-joint-attempt-ownership",
+          "Categories": [
+            "fr063-hot-joint-attempt-ownership"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-late-completion-integration-002",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "sufficiency": "Sufficient only for this test-first missing-custody prerequisite and protected helper regression. No production impact requiring the prior 131 reader cases to rerun; HS02\u201316 and later affected production selection remain open. PlanOnly alphabetical listing is not execution order."
+  },
+  "preparation": {
+    "raw_local_stored_git_chains": [
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/Build-integration.log",
+        "raw_bytes": 119991,
+        "raw_sha256": "894f1bae5c9145f63974618f4bf6ac22eee166712a1571dc468c4bd6f3ffb8b2",
+        "stored_sha256": "9d4ceedb61aaa3d9f08c3c31439c70645725adb934d02170ddd7f92772cd8edd",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "git_blob": "aec5a6f23708cfe4e2547342e95c9170b09c57fc",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/Build-unit.log",
+        "raw_bytes": 26198,
+        "raw_sha256": "0e2b50729bced2911b1ad844134e133e8781db08f5d05ac3ba983a634c186eb3",
+        "stored_sha256": "117e9321391b3ba2a9e2300c3ae872f16bfbe8f26382c1953f695ad944a5e049",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "git_blob": "f348007f508f3eefb7320eca6824b9fc47817745",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/catalog-audit.json",
+        "raw_bytes": 103,
+        "raw_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+        "stored_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+        "git_blob": "a7d254b5da65ba7acacac90d5c9c8cd18af2f12c",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/dotnet-test.log",
+        "raw_bytes": 3531068,
+        "raw_sha256": "a89f975f94ed3666eaca8729f4afe904de03ed9dc97cc59812767b51d1a22939",
+        "stored_sha256": "b26572e758e0ed92dcc3764a3b58808d58bb218a101a45fa2489238164605a73",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+        "git_blob": "7942f7e3b43793ccab8baece237d828973561e4e",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/native-exit.json",
+        "raw_bytes": 527,
+        "raw_sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+        "stored_sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+        "git_blob": "de342fff13186693ad830f1d93c68fd722e8ab7f",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/stdout.log",
+        "raw_bytes": 714,
+        "raw_sha256": "bbc7b349583eb408f0165ec52fab6f7ad23043e17c591f8d179ba483f6bb7703",
+        "stored_sha256": "25f87b9cbb3438c41351850523fde9e6be73381f5be40bb1cdeb6a84cd93bda4",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+        "git_blob": "ef7d5cbca00666b52cdb622624d50100de4cf054",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180706-741-200726-e57d8a0dc7d547349bebbe0c4a58d62e-categories/summary.json",
+        "raw_bytes": 1600,
+        "raw_sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+        "stored_sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+        "git_blob": "e340f5d775c20ad1b4fe22a9e742461fdab72ac6",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/dotnet-test.log",
+        "raw_bytes": 1683096,
+        "raw_sha256": "e5603c6c7ed13e10f485fa87141f0462d839789b014bb6cfca4d58ed6d23a351",
+        "stored_sha256": "17cdcb498e42af8f7bd19cdde046ca62ca8f1dc4d0bc48a26aad137369747a55",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+        "git_blob": "cc0e5b6aec1b1c0a32846beceadf69e80573c537",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/native-exit.json",
+        "raw_bytes": 586,
+        "raw_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+        "stored_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+        "git_blob": "ebcf3584735831831a09cfb80907b87c193e0e04",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/plan.json",
+        "raw_bytes": 4408,
+        "raw_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+        "stored_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+        "git_blob": "22f47c8917e67409cf3ce4c40fe8d7f8425a68f5",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/stdout.log",
+        "raw_bytes": 2415,
+        "raw_sha256": "39fe34e383a869f52452df2771fc207a866cd0b21fa630e81013c5f72cfbbc0a",
+        "stored_sha256": "3f6e9105b0e59c9de9fedccd45ff493e0bba09860cc4a6b84f72cafd2dabed7d",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+        "git_blob": "c59dfc0666a65cb9466bee4dac56b3ab072aebb3",
+        "raw_local_stored_git_equal": true
+      },
+      {
+        "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+        "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/summary.json",
+        "raw_bytes": 3446,
+        "raw_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+        "stored_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+        "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+        "git_blob": "27d7aee548d49ccc3196e78e676892f337d1e3a0",
+        "raw_local_stored_git_equal": true
+      }
+    ],
+    "chain_count": 12,
+    "natives": {
+      "catalog": {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-ValidateCatalog"
+        ],
+        "native_exit": 0,
+        "actual_head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "started_utc": "2026-10-16T18:07:05.921897+00:00",
+        "ended_utc": "2026-10-16T18:09:16.044075+00:00",
+        "test_execution": "ZERO_REQUIRED",
+        "scope": "T179-Pd.3b HS01 corrected optional/uncovered-source fixture before any product implementation"
+      },
+      "plan": {
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-SelectionFile",
+          "tests/selection.json",
+          "-PlanOnly",
+          "-NoBuild"
+        ],
+        "native_exit": 0,
+        "actual_head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "started_utc": "2026-10-16T18:09:22.004290+00:00",
+        "ended_utc": "2026-10-16T18:09:27.635514+00:00",
+        "test_execution": "ZERO_REQUIRED",
+        "scope": "T179-Pd.3b HS01 corrected optional/uncovered-source fixture before any product implementation"
+      }
+    },
+    "summaries": {
+      "catalog": {
+        "Categories": [
+          null
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": true,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": {
+          "Valid": true,
+          "Methods": 11719,
+          "Categories": 773,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0648102,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0503345,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1325896,
+            "Completed": true
+          },
+          {
+            "Name": "Build-integration",
+            "Seconds": 102.2581383,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 16.6064556,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.004007,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:02:09.2323569",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "plan": {
+        "Categories": [
+          "fr063-joint-late-completion",
+          "fr063-hot-joint-attempt-ownership"
+        ],
+        "Reasons": [
+          {
+            "category": "fr063-joint-late-completion",
+            "reason": "G5 FIRST only: both protected method bodies unchanged; default helper branch must retain actual v2 union/source/G/held request/native cohort/story/progression/turn/inert and strict cleanup before separate EVIDENCE.",
+            "contracts": [
+              "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+            ]
+          },
+          {
+            "category": "fr063-hot-joint-attempt-ownership",
+            "reason": "One genuine missing-private-custody-result causal RED after actual ProcessPlayerTurn/Stage43, post-original submitted changes including genuine uncovered-original/status submitted-present, repair/Ready and exact existing v2 held/uncovered-present-refusal/no-consequence preconditions. Not released before separate Late2 EVIDENCE.",
+            "contracts": [
+              "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+            ]
+          }
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "Revision": {
+          "Head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.1125895,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0455881,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1453102,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0058577,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 15,
+        "WallTime": "00:00:04.7508023",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 2,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 3,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-hot-joint-attempt-ownership-integration-001",
+            "fr063-joint-late-completion-integration-002"
+          ],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    },
+    "builds": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+        "succeeded": true,
+        "errors": 0,
+        "warnings": 133
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+        "succeeded": true,
+        "errors": 0,
+        "warnings": 35
+      }
+    ],
+    "catalog_valid": true,
+    "catalog_methods": 11719,
+    "catalog_categories": 773,
+    "catalog_seconds": 129.2323569,
+    "plan_seconds": 4.7508023,
+    "actual_test_executions": 0,
+    "binaries": {
+      "source_sha": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "phase": "Pd.3b HS01 corrected TEST-ONLY ordinary-optional/uncovered post-original custody fixture; fresh BOTH/catalog/PlanOnly; ZERO actual, missing-owner causal RED not yet run",
+      "binaries": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "9d15ef1899974319732d6008ff46b7cacd8c3e9b6ba23dde25bd2c50a0322488"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "02da7a3ebd79dafa1b9ce15417d6770ea7a0024a18a49d8aeeb4bafc69f0f399"
+        }
+      ]
+    },
+    "binaries_rechecked_at_finalization": true,
+    "old_e182_preparation_not_current_binary_evidence": true
+  },
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 14797,
+      "sha256": "8a4855fdd971076f5afeddac703040b95677ef62ba92ffbc96bf427cd7b7cbe7",
+      "git_blob": "90e23a73665aa2ebc1355faad1d3ffddeccb02d1",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 15676,
+      "sha256": "8129b3c90d713a7f888da2dc968e72da7a846ff5a02f17aabb68a12ac0e88a5b",
+      "git_blob": "dcfcc5cb015306883202e03a3237d38cbd1981b7",
+      "working_equal": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 1960050,
+      "sha256": "80a4b8e19b0e4c93185cd7fd63d5e67145fde98ae7fc7982f7f48404b2da517f",
+      "git_blob": "ac29f90f41fd0f6ae8f62eb18777843755e18ebc",
+      "working_equal": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 2014,
+      "sha256": "3b16e48efb80d1668791e417d13c6ca30b7eb067c4ccfbad98ca3398433463e2",
+      "git_blob": "e6b2bd0c4e535b296760c00d19daee86954e138e",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 121812,
+      "sha256": "9e4dfa25cfd192a5eb505369c53679796f99fded19ba2d4091a7e9caaceda7c5",
+      "git_blob": "31f9cc9144992ef2739c7497e62353c9ae704450",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "working_equal": true
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "working_equal": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "working_equal": true
+    },
+    {
+      "path": "docs/testing.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "working_equal": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 2124048,
+      "sha256": "f93280f5ae0b2fee65798331577df100011666014a6f9eeb980b12c1be51bbbb",
+      "git_blob": "aca5a4388885345497315b3925b6359f7241123f",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 1502511,
+      "sha256": "be9f4a14592a032549bb8d2fde9fed5de781619de2c2d255d7b62f6649cebf86",
+      "git_blob": "d2544ba28620e2210b6293d84c8a725cb829b3e4",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 48906,
+      "sha256": "90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f",
+      "git_blob": "2bddfa8ce550ca2a323863742c6f5a3d7777088e",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 10915,
+      "sha256": "dd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829",
+      "git_blob": "7770061e0464aed52e7dc770bcdf45f0b761f025",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 54149,
+      "sha256": "0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2",
+      "git_blob": "97825837550da5fd73c0ab423892a89dccacc378",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-hcd01-verification-20261016.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 2585,
+      "sha256": "a146d88db4a468a20a232a1abd2122e35ff0e81cbeb5f361dc62dfcf4b5958ab",
+      "git_blob": "f445cfc6880c2ebd25962b635a2cbd11fada0d27",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-hcd01-verification-20261016.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 31878,
+      "sha256": "9d16c14c40d606501341ead597e85a10a0d346d5a367e80c2760c0622e99b0f9",
+      "git_blob": "92d2b072e2feaf02db83ea0db9c0962cd9b07ed8",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "git_blob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 21294,
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "git_blob": "5082cbf7d66a91ecfdf0ffca61031afe88a92932",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 31785,
+      "sha256": "e9bdb0d7ee9f09df6581c773485f51baed9908fc85fedacd0bb33bc302e00c96",
+      "git_blob": "2fe9051270a8c02eb147c1c268a82e2263010dbb",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 294934,
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "git_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "git_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 9437,
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "git_blob": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+      "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 53265,
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06",
+      "git_blob": "0cf0e4b0d4751490afb0c2652f5f0f5e978ff594",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 379285,
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "git_blob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-artifact-index.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 5388,
+      "sha256": "6313c78c9acf6038db9e253e9c2afa81d73d6a0232b38ed88cdd070be2976e13",
+      "git_blob": "8ba5a6353429ccede251c5310460ab971095d6a6",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-integration.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 9216,
+      "sha256": "9d4ceedb61aaa3d9f08c3c31439c70645725adb934d02170ddd7f92772cd8edd",
+      "git_blob": "aec5a6f23708cfe4e2547342e95c9170b09c57fc",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-Build-unit.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 1702,
+      "sha256": "117e9321391b3ba2a9e2300c3ae872f16bfbe8f26382c1953f695ad944a5e049",
+      "git_blob": "f348007f508f3eefb7320eca6824b9fc47817745",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-catalog-audit.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 103,
+      "sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+      "git_blob": "a7d254b5da65ba7acacac90d5c9c8cd18af2f12c",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-dotnet-test.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 386398,
+      "sha256": "b26572e758e0ed92dcc3764a3b58808d58bb218a101a45fa2489238164605a73",
+      "git_blob": "7942f7e3b43793ccab8baece237d828973561e4e",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-native-exit.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 527,
+      "sha256": "c76f4d6ab7449b2c51216691e6c8408938a954cd46fe29c6bd90ba6fb1a74ab5",
+      "git_blob": "de342fff13186693ad830f1d93c68fd722e8ab7f",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-stdout.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 394,
+      "sha256": "25f87b9cbb3438c41351850523fde9e6be73381f5be40bb1cdeb6a84cd93bda4",
+      "git_blob": "ef7d5cbca00666b52cdb622624d50100de4cf054",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-catalog-20261016-summary.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 1600,
+      "sha256": "b1f9411f24c620bba1c407a15c7c309a483d23d501b919be4e24b24bae5be368",
+      "git_blob": "e340f5d775c20ad1b4fe22a9e742461fdab72ac6",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-artifact-index.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 6234,
+      "sha256": "d336a2dfcdee19fb03badb1d8b37a70f7ef7ced5cae4f33b61879e4f03d2a7f8",
+      "git_blob": "79ac6d967dbd987dded40a82a70eccdda0c63790",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 186970,
+      "sha256": "17cdcb498e42af8f7bd19cdde046ca62ca8f1dc4d0bc48a26aad137369747a55",
+      "git_blob": "cc0e5b6aec1b1c0a32846beceadf69e80573c537",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 586,
+      "sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+      "git_blob": "ebcf3584735831831a09cfb80907b87c193e0e04",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 4408,
+      "sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+      "git_blob": "22f47c8917e67409cf3ce4c40fe8d7f8425a68f5",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 762,
+      "sha256": "3f6e9105b0e59c9de9fedccd45ff493e0bba09860cc4a6b84f72cafd2dabed7d",
+      "git_blob": "c59dfc0666a65cb9466bee4dac56b3ab072aebb3",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 3446,
+      "sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+      "git_blob": "27d7aee548d49ccc3196e78e676892f337d1e3a0",
+      "working_equal": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-binaries-20261016.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 1039,
+      "sha256": "6df66ee19703aed217c48f411f55e172d9edf2065bc76fb221ab554ca41e916e",
+      "git_blob": "f1b7cbef963cd822506d1434e60d035dd0a83ae1",
+      "working_equal": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "git_blob": "22d60fe030dec80162add49bf0da93c50da4a521",
+      "bytes": 83709,
+      "sha256": "b4d5114085a2a98997dc6f7546af448fc9c9345e2d5debf3116ba267e9cd7b42",
+      "unchanged_from": "e182b6745817bd34ff5247c34f8d469bb71754f1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "unchanged_from": "e182b6745817bd34ff5247c34f8d469bb71754f1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "commit": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+      "unchanged_from": "e182b6745817bd34ff5247c34f8d469bb71754f1"
+    }
+  ],
+  "protected_methods": [
+    {
+      "method": "GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "text": "    [Fact]\n    public Task GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression() =>\n        RunJointCompletionControlAsync(nonzeroProgression: false);",
+      "sha256": "a46d5638a8cff2cd48a36c8b9bfbeeb2e984466d0e4547c25c8e594812ba716b",
+      "unchanged": true
+    },
+    {
+      "method": "GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "text": "    [Fact]\n    public Task GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce() =>\n        RunJointCompletionControlAsync(nonzeroProgression: true);",
+      "sha256": "c001e04ae7b88bf6f5a391f090f3df95f3917de49daf8a301ddb30eabadd47aa",
+      "unchanged": true
+    }
+  ],
+  "diffs": [
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-source-20261016.diff",
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "bytes": 12454,
+      "sha256": "b03bbe53089382df12a6e8b4149d2e7c1a8dd3a3a4e7acefd412fc06fdad0a9f"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-production-20261016.diff",
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "--",
+        "BookOfEternityClient"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-carrier-continuity-20261016.diff",
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "47364c47f5788427fa6360d99c4babdce8f2d717",
+        "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-status-20261016.diff",
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+        "--",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "bytes": 16484,
+      "sha256": "bc4aa3c5596d12c4ad79b3cdbe9adaadb35c83780480b8dedb1f2c05e78b9d78"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-design-20261016.diff",
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+        "--",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "bytes": 3640,
+      "sha256": "f17021b05cdc3b2b4b61183431e579f6695228af920e6f5f184469df47f0e1c9"
+    }
+  ],
+  "projections": {
+    "path": "/tmp/t179pd-hot-custody-red1-absence-independent-projections-20261016.json",
+    "sha256": "8dff7770611302ad105a78efb359429187e59b4d274db7ff8faf99db248bdd7a",
+    "count": 10
+  },
+  "prior_reports_unchanged": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-source-independent-review-20261016.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 8625,
+      "sha256": "18886ecd532776f9658c3f77c0c05863ebbc3606161265bc3d785d3398155c31",
+      "git_blob": "ac4e8ec642d3deb9f555f5fa7de7ad91581aa89b",
+      "working_equal": true,
+      "temporary_path": "/tmp/t179pd-hot-custody-red1-source-independent-review-20261016.md",
+      "unchanged": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-source-independent-review-20261016.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 45287,
+      "sha256": "8389138cb51f6b644ab7e120f4704c93d3beff5ad0ea12cfbcfbdd324735fc37",
+      "git_blob": "9a9b213ea1850730732f5ca663861a72d48ff62f",
+      "working_equal": true,
+      "temporary_path": "/tmp/t179pd-hot-custody-red1-source-independent-review-20261016.json",
+      "unchanged": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-optional-absence-source-addendum-20261016.md",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 5343,
+      "sha256": "b9f0254620c7a26c99f8e01f08f4a2867c24b24512b7a4530f52b1f0b6d7dbba",
+      "git_blob": "610d80111b43ae1e1e3816c994f16a8f5da07c8b",
+      "working_equal": true,
+      "temporary_path": "/tmp/t179pd-hot-custody-red1-optional-absence-source-addendum-20261016.md",
+      "unchanged": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-optional-absence-source-addendum-20261016.json",
+      "commit": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "bytes": 57477,
+      "sha256": "d0deb6ee1745c4adb5174b81716845c941f9118c23e9cbdb1d649ddaba800f6f",
+      "git_blob": "1a2228eba959104468fa89833833d0c2a6f4bc76",
+      "working_equal": true,
+      "temporary_path": "/tmp/t179pd-hot-custody-red1-optional-absence-source-addendum-20261016.json",
+      "unchanged": true
+    }
+  ],
+  "recovery": {
+    "receipt_path": "/tmp/t179pd-hot-custody-red1-absence-prepared-recovery-20261016.json",
+    "receipt_sha256": "4173222e7d91752fe98f810100de773e409bfce981beee34af8e3660a2114ffd",
+    "directory": "/tmp/f1-r2-hot-custody-red1-absence-prepared-github-20261016",
+    "head": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+    "selected_files_independently_verified": 1067,
+    "all_equal_writer_git_blob_receipt": true,
+    "clean": true,
+    "no_alternates": true,
+    "network_provenance": "Root GitHub-only fresh clone and remote readback receipt. Reviewer independently checked local clone HEAD, cleanliness, no alternates and every selected file against writer/Git/receipt; no reviewer network or restored runtime.",
+    "remote_main_from_receipt": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+    "retired_older_clones": "Historical receipts do not assert directories remain present. No missing historical retired clone was treated as an evidence failure."
+  },
+  "support_artifacts": [
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-source-independent-inspection-20261016.json",
+      "bytes": 409837,
+      "sha256": "3b76ed4bf21d6e6c6ec748922063d6e5d30f96a71e58a6f799625602ae35d1fa"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-source-independent-inspect-20261016.py",
+      "bytes": 10826,
+      "sha256": "c9366e372620d71dbc6c1b3089005b98a03d13e2e1f625dfe9185514b38b05d8"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-independent-projections-20261016.json",
+      "bytes": 58294,
+      "sha256": "8dff7770611302ad105a78efb359429187e59b4d274db7ff8faf99db248bdd7a"
+    },
+    {
+      "path": "/tmp/t179pd-hot-custody-red1-absence-prepared-recovery-20261016.json",
+      "bytes": 263726,
+      "sha256": "4173222e7d91752fe98f810100de773e409bfce981beee34af8e3660a2114ffd"
+    }
+  ],
+  "release": {
+    "only_category": "fr063-joint-late-completion",
+    "expected_cases": 2,
+    "expected_descriptors": 1,
+    "category_budget_minutes": 5,
+    "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+    "must_match_manifest": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prep-binaries-20261016.json",
+    "execution": "One singleton -Category fr063-joint-late-completion on the pinned fresh binaries; no aggregate SelectionFile actual. Preserve clean source and unchanged assertions/category/selection/budget.",
+    "after_run": "Freeze complete raw/native/plan/TRX/summary/hash/source/DLL/cleanup evidence, checkpoint/push/readback and clean selected recovery, then obtain a separate independent EVIDENCE decision. Stop and freeze any unexpected failure/incompleteness/cleanup/source or binary drift.",
+    "hs01_currently_released": false,
+    "production_success_logic_released": false,
+    "other_actuals_released": false
+  },
+  "qualification_limits": [
+    "SOURCE acceptance is not an actual PASS or causal RED. A setup/refusal/cleanup failure is unexpected, not feature RED.",
+    "No HS01 run before separately released EVIDENCE. No success implementation before a genuine frozen causal missing-export RED.",
+    "No HS02\u201316/full custody integration/semantic S/B/M3/admission/history/cold P0/F1/T197/activation/Windows/visual/D4/guidedUS5/D8 closure.",
+    "No public/emitted GM contract changed by these test-only edits; no GM documentation update is needed for this correction. Later implementation/activation must reassess its actual contract changes.",
+    "Parallel architecture analysis and prior broad acceptance are outside this affected review."
+  ],
+  "stop": "FINALSTOP"
+}

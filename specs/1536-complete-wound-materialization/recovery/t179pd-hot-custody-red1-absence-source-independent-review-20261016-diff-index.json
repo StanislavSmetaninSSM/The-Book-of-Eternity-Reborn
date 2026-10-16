@@ -1,0 +1,91 @@
+[
+  {
+    "path": "t179pd-hot-custody-red1-absence-independent-source-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-independent-source-20261016.diff",
+    "raw_sha256": "b03bbe53089382df12a6e8b4149d2e7c1a8dd3a3a4e7acefd412fc06fdad0a9f",
+    "raw_bytes": 12454,
+    "stored_sha256": "9ee3aaf0eb954806f7b949f750335345bef601dcb7b3acb0bf12ef1f8213041d",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-independent-production-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-independent-production-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-independent-carrier-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-independent-carrier-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-independent-status-20261016.diff",
+    "raw_sha256": "bc4aa3c5596d12c4ad79b3cdbe9adaadb35c83780480b8dedb1f2c05e78b9d78",
+    "raw_bytes": 16484,
+    "stored_sha256": "d086c451f19400221b5a3f28f9912715928533aa341d72a66848ba073dcae50d",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-absence-independent-design-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-absence-independent-design-20261016.diff",
+    "raw_sha256": "f17021b05cdc3b2b4b61183431e579f6695228af920e6f5f184469df47f0e1c9",
+    "raw_bytes": 3640,
+    "stored_sha256": "62c3f417714475d5e8c78e5fcb956b9819e6e68416a3b539c9157e6fb105d994",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ]
+  }
+]
