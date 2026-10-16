@@ -95,7 +95,7 @@
 },
 {
   "id": "fr063-common-calculation-regression",
-  "responsibility": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Two exact existing original spiritual prefix controls cover their shared capacity/mutation/projection data adapters; no new original-spiritual authority.",
+  "responsibility": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the genuine-context capacity/mutation adapters through original_definition and verifies exact identity replay. Ordinary projection controls cover the detached data overload; unchanged original-spiritual routing and its projection wrapper are statically reviewed, not runtime-qualified by this subset.",
   "excludes": "Intentional subset overlap with effects-planning/accepted-mechanics-planning; no broad category or unrelated owner execution.",
   "changeHints": [
     "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
@@ -133,8 +133,7 @@
         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
         "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
         "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
-        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.OriginalPrefix_ClosesOrdinaryWorkWithoutReplay",
-        "BookOfEternityClient.Tests.AcceptedMechanicsPlannerTests.OriginalPrefix_ExchangeContinuesWithExactOwnerAndNoReplay"
+        "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal"
       ]
     }
   ]
