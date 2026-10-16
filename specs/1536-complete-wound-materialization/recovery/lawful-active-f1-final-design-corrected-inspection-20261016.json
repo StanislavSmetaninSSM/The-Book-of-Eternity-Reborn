@@ -1,0 +1,2177 @@
+{
+  "candidate": "709a6bfa973d88616f78966450494248a2756609",
+  "base": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+  "checkedUtc": "2026-10-16T20:20:33.141434+00:00",
+  "writerClean": true,
+  "changedRows": [
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ],
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+    ],
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/plan.md"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz"
+    ],
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/spec.md"
+    ],
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  ],
+  "diffs": [
+    {
+      "label": "five-notice-documents-and-affected-status-O03",
+      "from": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "to": "709a6bfa973d88616f78966450494248a2756609",
+      "paths": [
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "bytes": 21540,
+      "sha256": "db525440c2562d6e9bb3b6135170c4fc2427036f0947d033316d644e41c10450",
+      "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\nindex ecd0e5119..b339a5b03 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n@@ -1,6 +1,8 @@\n # Lawful ACTIVE fixed joint-tail B Implementation Plan\n \n-> **Current execution authority, 2026-10-16:** coordinator confirms explicit user approval07:01:11UTC (Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”) for staged F1-R2/D9–D11 implementation and independent reviews from9baccdfb5. Historical DESIGN-only/STOP text below is superseded for independent stages. T197 remains DESIGN-only until complete accepted protocol; DEP-C/I/L/full target/newQTE gates remain. Full task checkboxes require actual evidence.\n+> **Current delegated scope, 2026-10-16: DESIGN ONLY.** The [current plan entry](../plan.md) takes precedence over historical authorization and next-run records below. Only F1 design/matrix/T178–T191, independent DESIGN review/corrections and document publication/source recovery are authorized in this pass. No code/test/runtime-tool changes or build/discovery/tests/runtime; no SOURCE/EVIDENCE decision can release Late2, Ready3 or another actual run here. Preserve existing source/evidence, then STOP for implementation discussion after corrected final review and verified recovery. All full-F1/T197/D4/guided/DOM/visual/platform/D8/new-QTE gates remain open.\n+\n+> **Historical checkpoint authority record, 2026-10-16:** coordinator confirms explicit user approval07:01:11UTC (Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”) for staged F1-R2/D9–D11 implementation and independent reviews from9baccdfb5. That checkpoint superseded its earlier DESIGN-only/STOP text for independent stages; it does not supersede the current delegation above. T197 remains DESIGN-only until complete accepted protocol; DEP-C/I/L/full target/newQTE gates remain. Full task checkboxes require actual evidence.\n \n > **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans` после отдельного разрешения реализации. Один writer, отдельный обязательный Astra/XHigh reviewer на каждый связный этап. Checkboxes описывают будущую работу, не выдают разрешение её начинать.\n \n@@ -350,11 +352,11 @@ Root21wholeGitpins/40exactprojections/emptyproductiondiff verified; [separate As\n \n NI-D01 precise afterimage rule supersedes the author's line83 shorthand: use FileSystemManager.EncodeUtf8WithPreamble(projected.Json) comparison ONLY when Changed=true AND the actual ordinary public write returned after owning lease release. NotNeeded/CurrentNoWriteEvaluation retains and rechecks exact observed raw presence/bytes, including BOM-less UTF-8/UTF-16BOM; no re-encoding/newwrite. Fault/Uncertain cannot become Returned merely by matching bytes. Future finite source tests distinguish those no-write encodings, Changed/Returned and Fault/Uncertain. [Affected independent wording verification](../recovery/t179pd-narrative-interface-nid01-verification-20261016.md) closes NI-D01 atf186 with no newfinding; this is not a new policy or authority grant. Complete owner/source/history join and ambient cold equivalence remainOPEN.\n \n-#### T179-Pd.3e debug_logs / Full reasoning — bounded DESIGN pending independent review\n+#### T179-Pd.3e debug_logs / Full reasoning — bounded DESIGN independently reviewed\n \n The [source-backed engineering contract](../recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md) defines actual ordinary-consumed debug/scope/ActorBrain kernels and a genuine still-Capturing fixed-source PREFIX. Root24Gitpins/62exactnestedprojections/8priorrefs/emptyproductiondiff verified. Preserve ordered original/current/repeatedIO, ambient timestamp leaf at its existing single slot, diagnostics/catches/conditionalmemoryaudits; no unused kernel completion. Valid scope always performs guardianpolicy and crossrealm structuredreads even with no relevantactors.\n \n-Full reasoning authority still needs the actual completedGuardianMusings owner/MatchesAsync through a provided-lease observed adapter (existing comparison synchronously acquires a new lease outside its domaincatch), and real guardian/resident first-pass projection/volatile observations. No nestedlease, imported DTO/[], replayed normalizer/UTC/GUID or current-normalized-byte retroproof. Prefix NeedsActorDependencies/unavailable nevermeans Full/S accepted. DFR01–07allFUTURE_UNRUN; separate Astra/XHigh DESIGN review next. Completefamily/source/history/cold/fullS/B/M3/F1/T197/activation and D4/guided/visual/Windows/D8 remainOPEN; thisnextfamily doesnotgateaccepted3b.\n+Full reasoning authority still needs the actual completedGuardianMusings owner/MatchesAsync through a provided-lease observed adapter (existing comparison synchronously acquires a new lease outside its domaincatch), and real guardian/resident first-pass projection/volatile observations. No nestedlease, imported DTO/[], replayed normalizer/UTC/GUID or current-normalized-byte retroproof. Prefix NeedsActorDependencies/unavailable nevermeans Full/S accepted. [Separate Astra/XHigh DESIGN review](../recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md) at exact2ab accepts only this bounded proposal, with no confirmed findings; root66Gitpins/fourexactdiffs/14temporaryreferences/84exactauthor+reviewerprojections verified. Implementation and actual release sets are empty. DFR01–07allFUTURE_UNRUN. Completefamily/source/history/cold/fullS/B/M3/F1/T197/activation and D4/guided/visual/Windows/D8 remainOPEN; the current delegated scope above governs all next actions.\n \n #### T179-Pd admission evidence refinement — DESIGN review pending\n \n@@ -465,6 +467,7 @@ Full T179/T192/F1/T197/D4/guided/visual/Windows/D8 and new joint QTE gates stay\n **Owner:** proposed `fr063-active-b-qte-terminal`.\n \n - [ ] RED `Terminal_PrepareFreezesKnownSelectionAndUtcOnlyOnce`, `Terminal_XpHistoryRuntimeContinuationAndWaveConsumeCommitTogether`, `Terminal_EveryMemberCrashOrLostCallerReceiptNeverReplaysOutcome`, `Terminal_UnsupportedBranchRefusesBeforeCommon`.\n+- [ ] D9/T192 qualification includes the actual shared `BuildCommonPlan` callers listed there: acceptance identity preallocation (including its receipt-wave discovery), first selected-terminal preparation and receipt-resume recomposition. Preserve the same accepted source and cumulative known receipt proof across them; pure planning/recomposition cannot consume an action/event budget or issue its acknowledgement. All checks remain future/UNRUN.\n - [ ] At actual persisted selected outcome/resolved wave freeze exact source reads and owner-produced before/after; PREPARE M-only. Reuse existing XP arithmetic (including total/current/level thresholds) as pure calculation with frozen timestamp, existing typed deferred plan/identity ledger; no XP compensation source.\n - [ ] Produce status/narrative/history/runtime/continuation/wave after-images without calling legacy multi-write distributor/normalizer. Narrow pure extraction must preserve existing formula/normalization; if it needs extra write roots, STOP for amended grant, not use broad rollback inventory.\n - [ ] Commit complete fixed subset+M terminal receipt atomically. Nonblank responseFragment.response precedence/finalNarrative fallback/score exact. Applied history row unique; resolved wave only own request/receipt/Ready. No terminal rollback of previously accepted waves.\n@@ -547,6 +550,7 @@ no final-marker hash backedge. Cold reader reconstructs immutable source and eve\n - [ ] Extract actual closure/roster/time provenance from common accepted contribution before seals. Same n/new request source accepted by Ready/original/daemon/repair readers only under complete F1 proof.\n - [ ] RED R201–R204/R214: pending/consumed boundary, new targets/effects after prefix, genuine elapsed/operation events, replay strict scheduler, foreign proof/crash. No blanket lifecycle array removal or fake history. Preserve actual prefix/remainder resolved/unresolved time projections and scene/source/condition/realm semantics. RED `Time_CalendarOnlySetWorldTimeAcceptedFailOpenOnce`, `Time_NumericAbsoluteJumpOrRewindPreservesOwnerPolicy`, genuine elapsed positive control. Calendar-only without currentTimeInMinutes stays lawful: exact raw source, actual progression fallback/report/control and nullable effect time, no forced interval/repair or implicit calendar converter.\n - [ ] Pure composer D9 contribution shared by accepted terminal and ordinary result. D8 raw responseFragment unchanged; exact additional time/event union cohort requires written grant and all typed companions before activation. Qualify equivalent event traces and different real outcomes separately.\n+- [ ] Address R2 review precision O03 at the shared `QteDeferredAcceptedMechanicsPlanner.BuildCommonPlan` boundary: `PreallocateIdentityLedgerAtAcceptanceAsync` (call at current source line74), nested `PreallocateReceiptReplayIdentities` (351), `PrepareAndSealTerminalSelectionAsync` (173) and `PrepareReceiptResumeAsync` (286). Actual method names/roles are the contract; reconcile line references with the implementation source later. Future R201–R204/R216 and B09 checks retain the same genuine accepted source and cumulative known source/receipt evidence, including repeated waves and cold resume. Pure preallocation/recomposition issues no durable event/turn/time acknowledgement and grants no extra budget; the genuine owning publication records actual admitted events and its action+ack. Transported waves do not themselves prove elapsed time or another turn. This closes the planning precision only, with no source change, new grant or runtime qualification.\n \n ### T193 — full lawful input/result inventory and OrdinaryOutcomeOwnerRegistry (D10)\n \ndiff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\nindex 142ce6682..3376d98fd 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n@@ -1,5 +1,7 @@\n # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B\n \n+> **Current delegated scope, 2026-10-16: DESIGN ONLY.** Follow the [current plan entry](../plan.md): documents and independent DESIGN review/corrections only, with task-branch publication/source recovery. No code/test/runtime-tool changes or build/discovery/tests/runtime. Historical execution records do not release actual runs in this pass. After corrected final review and verified document recovery, STOP for implementation discussion. Existing source/evidence and all D4/guided/DOM/visual/platform/D8/full-F1/T197/new-QTE limits are retained.\n+\n **Статус:** PROPOSED DESIGN, подготовлен для обсуждения. Не accepted runtime contract,\n не implementation plan и не разрешение менять production, тесты или полномочия записи.\n **Задача:** [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070.\ndiff --git a/specs/1536-complete-wound-materialization/plan.md b/specs/1536-complete-wound-materialization/plan.md\nindex 8d0c96cfb..7ba2df402 100644\n--- a/specs/1536-complete-wound-materialization/plan.md\n+++ b/specs/1536-complete-wound-materialization/plan.md\n@@ -1,3 +1,21 @@\n+## Current delegated scope — DESIGN ONLY (2026-10-16)\n+\n+This pass follows the direct delegation anchored at `c4dde0629cc17aad75196ec509d2cdaf621945a3`: F1 design, the future verification matrix, T178–T191 refinement, independent review and document corrections. Only documents, non-force task-branch publication and GitHub source recovery are authorized. Do not edit code, tests or runtime tools; do not run build, discovery, tests or application/runtime commands.\n+\n+Historical implementation-authorization and “continue/run next” entries below remain provenance for earlier work. They do not authorize a next step in this pass. In particular, no historical SOURCE/EVIDENCE decision or new review may release Late2, Ready3 or another actual run under this delegation. Existing source and historical evidence are retained; this pass neither undoes them nor qualifies full F1 runtime behavior.\n+\n+Next action: finish corrected independent DESIGN review, publish the document checkpoint, verify its remote SHA and recover its documents, then **STOP for implementation discussion**. D4 allocator, guided US5, actual console/browser DOM/visual and platform qualification, D8 limits, full S/B/M3, the complete ordinary composite, T197 and new-QTE activation remain open. F2 requires a demonstrated F1 obstacle and is not selected automatically.\n+\n+Recovery: requested `c4dde0629cc17aad75196ec509d2cdaf621945a3` is an ancestor of the retained task-branch checkpoint `2ab809d4ca590fd5c7583914d40121f0c0ee5699`; no reset or source rollback. A new GitHub-only full current-tree checkout verified all 54,180 tracked files, modes and 3,602,184,081 bytes against Git and the writer, clean including ignored files, without alternates or sparse checkout. Remote branch SHA and main were unchanged. This is source recovery only; restored build/discovery/tests/runtime were NOT_RUN.\n+\n+The [full source recovery receipt](recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz) preserves the exact 19,984,004-byte JSON (raw SHA256 `6ec1e2b47c098650533e4ab0c5a4177f045a1e8cda382a70b7c423514a1a5aa9`, gzip SHA256 `fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c`). The source-recovery wrapper returned native0; its argv/time/log are retained separately. No recovery or runtime tool was changed in this pass.\n+\n+Independent DESIGN status: [3e bounded review](recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md) accepts ordinary-consumed policy extraction and the conditional genuine Capturing prefix only, with zero confirmed findings. Root verified 66 Git pins, four exact diffs, 14 temporary references and all 84 author/reviewer projections; immutable pair and documentary supports are preserved. DFR01–07 remain UNRUN, implementation/actual release sets empty. [Initial final F1 review](recovery/lawful-active-f1-final-design-review-20261016.md) confirmed a current-authorization conflict (F1-FINAL-D01), with no new confirmed mechanical F1 defect; root80pin entries/five exact diffs/17temporary references/25projections verified. Its immutable BLOCKED verdict is preserved. The leading scope notices and historical-heading corrections are WIP pending affected verification. R2-O03's four shared-composer callsites are now explicit future T192/B09 checks; this is planning precision, not a new grant or observed runtime defect. Main T178–T191 remain unique and unchecked, with 15 F101–F115 and 18 R201–R218 future matrix cases.\n+\n+Scope-correction WIP `9f0f0535049f725f315ea433bfba8e74388b6a9a` was non-force pushed/read back; [new GitHub-only document recovery](recovery/lawful-active-f1-design-only-notice-recovery-20261016.json) verifies all 17 changed/new documentary files plus mandatory instructions/designs (22 exact files total, raw Git blob SHA1 and SHA256). This is selected document recovery, not a new full checkout or runtime qualification. Production/tests/frontend/scripts/catalog/selection/governance remain byte-identical to full-tree2ab; initial final-review reports and supports are being preserved for affected-only independent correction review.\n+\n+## Historical checkpoint records — current scope above takes precedence\n+\n ## T179-Pd.3b FIRST Late2 raw evidence saved — separate EVIDENCE pending (2026-10-16)\n \n - Actualclean93a72d6df0f59f5b5768b007ca51ad8b712ce9f3 / compiled d474cdd8546f8157b6ffd71840f268062ee05ed0 singletonfr063-joint-late-completion completednative0,2/2PASS,203.1165103s wall/197.930765s categorywithin5m. Exact2planned/completed/no skip/duplicate/underfill/timeout. FourDLLs/sourceHEAD/clean unchanged; scopedtempbefore/afterempty, strict2ownedrootsremoved. Full6raw/local/stored chains/nativeargv/stdout/TRX/plan/summary/cleanup frozen under recovery/t179pd-hot-custody-red2-owned-first-late-20261016-*. This is root-verified actual evidence, not the separate EVIDENCE release decision.\ndiff --git a/specs/1536-complete-wound-materialization/spec.md b/specs/1536-complete-wound-materialization/spec.md\nindex 136712e97..385516b23 100644\n--- a/specs/1536-complete-wound-materialization/spec.md\n+++ b/specs/1536-complete-wound-materialization/spec.md\n@@ -1,5 +1,7 @@\n # Feature Specification: Complete Wound Materialization and Healing\n \n+> **Current delegated scope, 2026-10-16: DESIGN ONLY.** The [current plan entry](plan.md) governs this pass: F1 design/matrix/T178–T191, independent review/corrections and document publication/recovery only. No code/test/runtime-tool changes or build/discovery/tests/runtime; historical authorization and next-run records below do not authorize execution in this pass. Preserve existing source/evidence, then STOP for implementation discussion after corrected final DESIGN review. Full F1 qualification, D4/guided/actual DOM/visual/platform/D8/T197/new-QTE gates remain open.\n+\n **Feature Branch**: `1536-complete-wound-materialization`\n \n **Created**: 2026-08-26\n@@ -17,11 +19,11 @@\n - **Save compatibility**: Not required under the pre-release constitution and the user's explicit decision. Repository bootstrap state, fixtures, examples, and tests move directly to the new contract.\n - **Out of scope**: A catalog of ready-made wounds; migration of non-empty legacy saves; replacement of the effect engine; a general combat-damage or experience redesign; automatic post-battle fatigue; automatic soul dissipation; a full afterlife inventory; a mandatory public clinic for the whole Shining Abode. If Saref's `memory_suppression` is only audit metadata rather than a complete independent effect, a separate linked issue MUST be created before #1536 closes.\n \n-## Current authorization reconciliation — 2026-10-16\n+## Historical checkpoint authorization reconciliation — 2026-10-16\n \n Coordinator directly confirms the user’s07:01:11UTC approval (Sentinel_f3e48da025808191bdb46fab2e0b960f, “хорошо”) of staged F1-R2/D9–D11 implementation with independent verification and parallel T197 DESIGN. The restored DESIGN-only handoff is superseded for independent stages; implementation resumes from9baccdfb5. T197 itself requires its complete accepted DESIGN first, with DEP-C/I/L and full target coverage unresolved. No new joint QTE activation or guard weakening follows.\n \n-## Staged F1-R2 implementation authorization — 2026-10-16\n+## Historical staged F1-R2 implementation authorization — 2026-10-16\n \n The user approved staged F1-R2/D9–D11 implementation from d43d6f3a9 and parallel T197 DESIGN.\n This supersedes historical DESIGN-only/STOP authorization statements below, not runtime evidence.\ndiff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md\nindex ebba9ac1c..83cfa82f9 100644\n--- a/specs/1536-complete-wound-materialization/tasks.md\n+++ b/specs/1536-complete-wound-materialization/tasks.md\n@@ -1,3 +1,12 @@\n+## Current delegated scope — DESIGN ONLY (2026-10-16)\n+\n+Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.\n+\n+- [x] Preserve separately accepted bounded 3e DESIGN review at2ab: no confirmed finding, root66pins/fourexactdiffs/14temporaryreferences/84projections; immutable MD/JSON/documentary supports only. DFR01–07 remain UNRUN; no implementation or actual release.\n+- [ ] Verify F1-FINAL-D01's current DESIGN-only scope corrections and the future shared-composer O03 clarification through affected independent review; preserve the original report. Then publish/readback/recover the document checkpoint and STOP. No actual run can be released by this checklist.\n+\n+## Historical checkpoint records — current scope above takes precedence\n+\n ## T179-Pd.3b FIRST Late2 saved — EVIDENCE gate pending (2026-10-16)\n \n - [x] Actual93a/compiledd474 native0:2/2PASS,203.1165103s wall/197.930765s≤5m, exactselection/strict2cleanup/no newtempresidue/fourDLLs+HEADclean unchanged. Sixrawchains/fullroot66snapshot66rollback+request/G/common/story/progression/inert bindings verified; scripts/results saved. Acceptance93afullsource54164files/newGitHub-only/clean/noalts/nosparse/mainunchanged verified beforeactual; no restoredruntime.\n"
+    },
+    {
+      "label": "product-tests-frontend-catalog-selection-scripts-governance",
+      "from": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "to": "709a6bfa973d88616f78966450494248a2756609",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "text": ""
+    }
+  ],
+  "pins": [
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": ".specify/memory/constitution.md",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "AGENTS.md",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "docs/development-workflow.md",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "gitBlob": "0d58236f7c1ea6ca8149dd1ae6fe26fa6928f99b",
+      "sha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+      "bytes": 72329,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "gitBlob": "b339a5b0317fc054107be6eff894b6db5a69863c",
+      "sha256": "f5ca510ea517b095e68853e853064281545bb1818ef4e5ebb81c5f6052a1b69f",
+      "bytes": 137212,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "gitBlob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "bytes": 63665,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "gitBlob": "3376d98fd0727fe737eaf0f4e48125f7f7ca5250",
+      "sha256": "a9b7366f98fe7130225762338c55bb78fe8e850dadf42454f295ebd63d54ddd4",
+      "bytes": 107938,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "gitBlob": "7ba2df402059ea484beb14590fc25135c277919d",
+      "sha256": "e82a454e6edccbbfa8e780f626db903afec633e1c5ef9b60a18d171325c6e350",
+      "bytes": 2166878,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json",
+      "gitBlob": "e9e28173cfad4b4bc17cffa91e8d245eeaec71c8",
+      "sha256": "4dabd74d7e13deb70651089871cfec37abcfdb4aca1014acda0230cdf65fb102",
+      "bytes": 12540,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz",
+      "gitBlob": "a41f70cd7dbef95fee062d37e9f815edb135af4d",
+      "sha256": "b4a6c863a91127b76e514da8ceecee9a6d562cfaa0d79d7ac8fe032e9f94bca3",
+      "bytes": 237394,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json",
+      "gitBlob": "43adc580c5c56f4ecc77ee93338423a508d426ae",
+      "sha256": "b8038c511daa5d4834639d40b65c792521260c3fe919997abc2e6b12e35413e9",
+      "bytes": 64972,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json",
+      "gitBlob": "b41e64a6637b441f76befef6ed4e004d8e72fa2d",
+      "sha256": "fa5e0ca18915b9a1c24c73bb5b84c8899172e2b09c0de378e285a067d5c391b2",
+      "bytes": 130637,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz",
+      "gitBlob": "f2cee7594a0631d933cc61edaeaa52b3c2a48419",
+      "sha256": "a35913eb0c9bc63d51668d8b4d420ae517b9e6f18126a2bc532a6dced90a5eab",
+      "bytes": 3997,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz",
+      "gitBlob": "ba94d9ff803b040e1b94b209263e6c1d152f88d2",
+      "sha256": "5f858b2efe51776134b5f92c6572aee20faf2c2694fc6181b7fba13d19430586",
+      "bytes": 142368,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json",
+      "gitBlob": "7507b45992e3ef360bf48061c29e3023b34e42d1",
+      "sha256": "1b37beaeafc8bb16cd21573524390a1e6022ccae471091340b21bee1f0ca88a1",
+      "bytes": 4214,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json",
+      "gitBlob": "56a95761e5a3751f7f88a5dc08c8e9b6f6631c06",
+      "sha256": "f38934e09b7d5a3acaa3a32fab446c86a7533b8d5da1d9282fd1f8a5e2c6185e",
+      "bytes": 1501276,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md",
+      "gitBlob": "030e077caef998be7954091e064c806208dd5d8b",
+      "sha256": "cfd668e33dec15718781efc6c66ec8c21884da117069f1613a97db06fae8afe9",
+      "bytes": 9425,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json",
+      "gitBlob": "acaa7c18111ae5ddf722aaebd7df2bd7a36c6eb9",
+      "sha256": "73c0d4aafc90a1f53d41ba5c48804ee92948c5bbb35696b301f5baa4ed092eef",
+      "bytes": 253099,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz",
+      "gitBlob": "065494cde772f76d4a37d8d8c6bf50762daaab34",
+      "sha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+      "bytes": 11912115,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json",
+      "gitBlob": "fe55158d2a05856445e3b1a4f47893002c42a473",
+      "sha256": "aeec809b336206dcf0a2a0bb6345d1d21fd01f541cb5a32a7828294f7cd04f70",
+      "bytes": 3002,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz",
+      "gitBlob": "a5f60bc04e0c2a9e111ce6ffeee9cb8561a289c9",
+      "sha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+      "bytes": 49167,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt",
+      "gitBlob": "aae7577b0a71a2963d3be7d64aa2cedd36be4c16",
+      "sha256": "5f93383210400043945ad125ca61be2b709e08f57e6b16fb48d97cebfc1d050b",
+      "bytes": 1038,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json",
+      "gitBlob": "0012b50fa7d1f0af3ca076ae180fa925a7aa642d",
+      "sha256": "2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0",
+      "bytes": 59917,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+      "gitBlob": "0fb5be8fc29fadaacc241c7a5c858718df476666",
+      "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+      "bytes": 13814,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json",
+      "gitBlob": "f3ff3285b683974b7ea619bcc9326a87c901d876",
+      "sha256": "c1c1d2737d57a5d1022a29908e3dbe8fb61146d8566fe29e9606b70746bce05b",
+      "bytes": 618,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log",
+      "gitBlob": "2d7d28e3ed486538fbf6b6de84ff80aa2efd1f33",
+      "sha256": "a6db84521bbd3193a54ca3cce6e5207adcee992216eba2af3f0eb18587cd6987",
+      "bytes": 193,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz",
+      "gitBlob": "3087f42858521e68105e646474c3af604d6eaafb",
+      "sha256": "fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c",
+      "bytes": 3269673,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "gitBlob": "385516b232f444452d982804ca5e33f0b123e45f",
+      "sha256": "1d9433b50e71fcd746933057f299a0e481984e5ffe57acd2135f0c2f2c3614cf",
+      "bytes": 230201,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "gitBlob": "83cfa82f9dfd283a9e0dbb7a8591dee9ad91482c",
+      "sha256": "f25909861a2d48ff147f285fec9c5b247c840936ad21c889a6bde94eb571254f",
+      "bytes": 1524136,
+      "writerAndRecoveredBytesMatch": true
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "gitBlob": "3cf17d591800a2acea287548e2b0e7476d85e203",
+      "sha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "bytes": 56278,
+      "baseUnchanged": true
+    }
+  ],
+  "projections": [
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "start": 1,
+      "end": 32,
+      "label": "spec_scope",
+      "sha256": "1a43d66d5edcb3cb0c06d9db388191062d5189a92390ca0a201e6b0a1d15b03f",
+      "text": "# Feature Specification: Complete Wound Materialization and Healing\n\n> **Current delegated scope, 2026-10-16: DESIGN ONLY.** The [current plan entry](plan.md) governs this pass: F1 design/matrix/T178–T191, independent review/corrections and document publication/recovery only. No code/test/runtime-tool changes or build/discovery/tests/runtime; historical authorization and next-run records below do not authorize execution in this pass. Preserve existing source/evidence, then STOP for implementation discussion after corrected final DESIGN review. Full F1 qualification, D4/guided/actual DOM/visual/platform/D8/T197/new-QTE gates remain open.\n\n**Feature Branch**: `1536-complete-wound-materialization`\n\n**Created**: 2026-08-26\n\n**Status**: Implementation in progress; US2 RED contracts complete and GREEN authority slices underway\n\n**Input**: Materialize independently treatable physical and spiritual wounds with complete creation, consequence, diagnosis, treatment, recovery, healing, history, command, provider, and GM-authoring lifecycles.\n\n## Source Issues & Scope *(mandatory)*\n\n- **Source GitHub issue(s)**: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); depends on completed effect materialization [#1535](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1535)\n- **Issue type**: Epic enhancement and audit hardening task\n- **Spec Kit justification**: The feature spans multiple sessions and changes player-facing commands, console/browser parity, canonical state, validation, normalizers, resource use, afterlife conflict, entity progression, GM prompts, documentation, examples, and rollback behavior.\n- **Contract scope**: Player-facing Mortal World and afterlife mechanics; GM-facing authoring and repair; runtime state; validation; effects; resources; progression; documentation; examples; console; browser frontend.\n- **Save compatibility**: Not required under the pre-release constitution and the user's explicit decision. Repository bootstrap state, fixtures, examples, and tests move directly to the new contract.\n- **Out of scope**: A catalog of ready-made wounds; migration of non-empty legacy saves; replacement of the effect engine; a general combat-damage or experience redesign; automatic post-battle fatigue; automatic soul dissipation; a full afterlife inventory; a mandatory public clinic for the whole Shining Abode. If Saref's `memory_suppression` is only audit metadata rather than a complete independent effect, a separate linked issue MUST be created before #1536 closes.\n\n## Historical checkpoint authorization reconciliation — 2026-10-16\n\nCoordinator directly confirms the user’s07:01:11UTC approval (Sentinel_f3e48da025808191bdb46fab2e0b960f, “хорошо”) of staged F1-R2/D9–D11 implementation with independent verification and parallel T197 DESIGN. The restored DESIGN-only handoff is superseded for independent stages; implementation resumes from9baccdfb5. T197 itself requires its complete accepted DESIGN first, with DEP-C/I/L and full target coverage unresolved. No new joint QTE activation or guard weakening follows.\n\n## Historical staged F1-R2 implementation authorization — 2026-10-16\n\nThe user approved staged F1-R2/D9–D11 implementation from d43d6f3a9 and parallel T197 DESIGN.\nThis supersedes historical DESIGN-only/STOP authorization statements below, not runtime evidence.\nDeath transition implementation requires its accepted independent DESIGN review first; new\nprincipled grants beyond R2 are referred to the coordinator while independent stages continue.\nNew joint QTE remains disabled until T197, full ordinary outcomes and every required gate qualify.\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "start": 1,
+      "end": 18,
+      "label": "current_plan_scope",
+      "sha256": "59f8940abde5b70b74f484d27d0aa27b3b35d7e5147318475e093b68c54cb8d3",
+      "text": "## Current delegated scope — DESIGN ONLY (2026-10-16)\n\nThis pass follows the direct delegation anchored at `c4dde0629cc17aad75196ec509d2cdaf621945a3`: F1 design, the future verification matrix, T178–T191 refinement, independent review and document corrections. Only documents, non-force task-branch publication and GitHub source recovery are authorized. Do not edit code, tests or runtime tools; do not run build, discovery, tests or application/runtime commands.\n\nHistorical implementation-authorization and “continue/run next” entries below remain provenance for earlier work. They do not authorize a next step in this pass. In particular, no historical SOURCE/EVIDENCE decision or new review may release Late2, Ready3 or another actual run under this delegation. Existing source and historical evidence are retained; this pass neither undoes them nor qualifies full F1 runtime behavior.\n\nNext action: finish corrected independent DESIGN review, publish the document checkpoint, verify its remote SHA and recover its documents, then **STOP for implementation discussion**. D4 allocator, guided US5, actual console/browser DOM/visual and platform qualification, D8 limits, full S/B/M3, the complete ordinary composite, T197 and new-QTE activation remain open. F2 requires a demonstrated F1 obstacle and is not selected automatically.\n\nRecovery: requested `c4dde0629cc17aad75196ec509d2cdaf621945a3` is an ancestor of the retained task-branch checkpoint `2ab809d4ca590fd5c7583914d40121f0c0ee5699`; no reset or source rollback. A new GitHub-only full current-tree checkout verified all 54,180 tracked files, modes and 3,602,184,081 bytes against Git and the writer, clean including ignored files, without alternates or sparse checkout. Remote branch SHA and main were unchanged. This is source recovery only; restored build/discovery/tests/runtime were NOT_RUN.\n\nThe [full source recovery receipt](recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz) preserves the exact 19,984,004-byte JSON (raw SHA256 `6ec1e2b47c098650533e4ab0c5a4177f045a1e8cda382a70b7c423514a1a5aa9`, gzip SHA256 `fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c`). The source-recovery wrapper returned native0; its argv/time/log are retained separately. No recovery or runtime tool was changed in this pass.\n\nIndependent DESIGN status: [3e bounded review](recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md) accepts ordinary-consumed policy extraction and the conditional genuine Capturing prefix only, with zero confirmed findings. Root verified 66 Git pins, four exact diffs, 14 temporary references and all 84 author/reviewer projections; immutable pair and documentary supports are preserved. DFR01–07 remain UNRUN, implementation/actual release sets empty. [Initial final F1 review](recovery/lawful-active-f1-final-design-review-20261016.md) confirmed a current-authorization conflict (F1-FINAL-D01), with no new confirmed mechanical F1 defect; root80pin entries/five exact diffs/17temporary references/25projections verified. Its immutable BLOCKED verdict is preserved. The leading scope notices and historical-heading corrections are WIP pending affected verification. R2-O03's four shared-composer callsites are now explicit future T192/B09 checks; this is planning precision, not a new grant or observed runtime defect. Main T178–T191 remain unique and unchecked, with 15 F101–F115 and 18 R201–R218 future matrix cases.\n\nScope-correction WIP `9f0f0535049f725f315ea433bfba8e74388b6a9a` was non-force pushed/read back; [new GitHub-only document recovery](recovery/lawful-active-f1-design-only-notice-recovery-20261016.json) verifies all 17 changed/new documentary files plus mandatory instructions/designs (22 exact files total, raw Git blob SHA1 and SHA256). This is selected document recovery, not a new full checkout or runtime qualification. Production/tests/frontend/scripts/catalog/selection/governance remain byte-identical to full-tree2ab; initial final-review reports and supports are being preserved for affected-only independent correction review.\n\n## Historical checkpoint records — current scope above takes precedence\n\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "start": 1,
+      "end": 12,
+      "label": "current_tasks_scope",
+      "sha256": "5f723b783dec2bcf8e2df1cfa368e608f132a9aa38528c01fb42e97431ff4cfb",
+      "text": "## Current delegated scope — DESIGN ONLY (2026-10-16)\n\nFollow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.\n\n- [x] Preserve separately accepted bounded 3e DESIGN review at2ab: no confirmed finding, root66pins/fourexactdiffs/14temporaryreferences/84projections; immutable MD/JSON/documentary supports only. DFR01–07 remain UNRUN; no implementation or actual release.\n- [ ] Verify F1-FINAL-D01's current DESIGN-only scope corrections and the future shared-composer O03 clarification through affected independent review; preserve the original report. Then publish/readback/recover the document checkpoint and STOP. No actual run can be released by this checklist.\n\n## Historical checkpoint records — current scope above takes precedence\n\n## T179-Pd.3b FIRST Late2 saved — EVIDENCE gate pending (2026-10-16)\n\n- [x] Actual93a/compiledd474 native0:2/2PASS,203.1165103s wall/197.930765s≤5m, exactselection/strict2cleanup/no newtempresidue/fourDLLs+HEADclean unchanged. Sixrawchains/fullroot66snapshot66rollback+request/G/common/story/progression/inert bindings verified; scripts/results saved. Acceptance93afullsource54164files/newGitHub-only/clean/noalts/nosparse/mainunchanged verified beforeactual; no restoredruntime.\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "start": 1,
+      "end": 15,
+      "label": "B_scope",
+      "sha256": "b18da425aae005d55830fa98a4bfa5024441509754c769e2eaad84c2e09e11f5",
+      "text": "# FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B\n\n> **Current delegated scope, 2026-10-16: DESIGN ONLY.** Follow the [current plan entry](../plan.md): documents and independent DESIGN review/corrections only, with task-branch publication/source recovery. No code/test/runtime-tool changes or build/discovery/tests/runtime. Historical execution records do not release actual runs in this pass. After corrected final review and verified document recovery, STOP for implementation discussion. Existing source/evidence and all D4/guided/DOM/visual/platform/D8/full-F1/T197/new-QTE limits are retained.\n\n**Статус:** PROPOSED DESIGN, подготовлен для обсуждения. Не accepted runtime contract,\nне implementation plan и не разрешение менять production, тесты или полномочия записи.\n**Задача:** [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR063/T070.\n**Исходники:** `10611c69aa0d25683b9d74de04d1f96482f87d59`, ветка `1536-wound-b2-cloud-20261012`.\n**Разрешение:** пользователь разрешил только подготовку B, сравнение с C/A и независимое DESIGN review;\nперед реализацией требуется обсуждение и отдельное решение по этому документу.\n**Доказательства:** все новые runtime/crash/platform проверки ниже **UNRUN**. Принятые 96 cases\nотносятся к readonly US5-RO2 на `737092c39`, а не к этому проекту ACTIVE.\n\n**Уточнение 2026-10-16:** пользователь выбрал B для planning, затем разрешил DESIGN F1 и независимое review, без кода.\nD4/D8 сохраняются. D5 пересмотрен в §8.5: подтверждённый ordinary/GM contract требует\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 1,
+      "end": 19,
+      "label": "implementation_scope",
+      "sha256": "b8dd2f7bb3f5a2f8327beb64480eebe05f6d59855fb318770b02892579396b65",
+      "text": "# Lawful ACTIVE fixed joint-tail B Implementation Plan\n\n> **Current delegated scope, 2026-10-16: DESIGN ONLY.** The [current plan entry](../plan.md) takes precedence over historical authorization and next-run records below. Only F1 design/matrix/T178–T191, independent DESIGN review/corrections and document publication/source recovery are authorized in this pass. No code/test/runtime-tool changes or build/discovery/tests/runtime; no SOURCE/EVIDENCE decision can release Late2, Ready3 or another actual run here. Preserve existing source/evidence, then STOP for implementation discussion after corrected final review and verified recovery. All full-F1/T197/D4/guided/DOM/visual/platform/D8/new-QTE gates remain open.\n\n> **Historical checkpoint authority record, 2026-10-16:** coordinator confirms explicit user approval07:01:11UTC (Sentinel_f3e48da025808191bdb46fab2e0b960f “хорошо”) for staged F1-R2/D9–D11 implementation and independent reviews from9baccdfb5. That checkpoint superseded its earlier DESIGN-only/STOP text for independent stages; it does not supersede the current delegation above. T197 remains DESIGN-only until complete accepted protocol; DEP-C/I/L/full target/newQTE gates remain. Full task checkboxes require actual evidence.\n\n> **For agentic workers:** REQUIRED SUB-SKILL: `superpowers:executing-plans` после отдельного разрешения реализации. Один writer, отдельный обязательный Astra/XHigh reviewer на каждый связный этап. Checkboxes описывают будущую работу, не выдают разрешение её начинать.\n\n**Goal:** Завершить lawful ACTIVE stats/level-up/new-QTE joint tail без повторных эффектов, потери ordinary resolution, преждевременного cleanup или ослабления genuine original/G proof.\n\n**Architecture:** Сохранить existing common publisher и coordinated storage; добавить fixed owner phases в marker3, atomic action+ack и named phase-aware proof. Automatic award отделён от interactive allocation. QTE acceptance/terminal сохраняют original; D5/F1 задаёт one-obligation ordinary continuation в том же M с atomic parent→child request/original transfer и actual accepted result; grants ещё не приняты.\n\n**Tech Stack:** C#/.NET 8, SDK 10.0.401 baseline, PowerShell 7.6.6 baseline, JSON file state, Spectre.Console, existing loopback browser/React/TypeScript. Linux/Windows — отдельные native qualifications; новые зависимости/storage services не нужны.\n\n**Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).\n\n**F1-R2 source base:** `e7f86f590892e4c335ad29ece88c265ad94b8138`; original recovery `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1-R2 READY FOR USER DISCUSSION; corrected independent review complete; D9–D11 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.\n\n## Global Constraints\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 354,
+      "end": 364,
+      "label": "3e_status",
+      "sha256": "0afe39a424ffa6a0cf5c0b49454d903f90e86afa2cf9e1a87471265881bbe2f8",
+      "text": "\n#### T179-Pd.3e debug_logs / Full reasoning — bounded DESIGN independently reviewed\n\nThe [source-backed engineering contract](../recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md) defines actual ordinary-consumed debug/scope/ActorBrain kernels and a genuine still-Capturing fixed-source PREFIX. Root24Gitpins/62exactnestedprojections/8priorrefs/emptyproductiondiff verified. Preserve ordered original/current/repeatedIO, ambient timestamp leaf at its existing single slot, diagnostics/catches/conditionalmemoryaudits; no unused kernel completion. Valid scope always performs guardianpolicy and crossrealm structuredreads even with no relevantactors.\n\nFull reasoning authority still needs the actual completedGuardianMusings owner/MatchesAsync through a provided-lease observed adapter (existing comparison synchronously acquires a new lease outside its domaincatch), and real guardian/resident first-pass projection/volatile observations. No nestedlease, imported DTO/[], replayed normalizer/UTC/GUID or current-normalized-byte retroproof. Prefix NeedsActorDependencies/unavailable nevermeans Full/S accepted. [Separate Astra/XHigh DESIGN review](../recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md) at exact2ab accepts only this bounded proposal, with no confirmed findings; root66Gitpins/fourexactdiffs/14temporaryreferences/84exactauthor+reviewerprojections verified. Implementation and actual release sets are empty. DFR01–07allFUTURE_UNRUN. Completefamily/source/history/cold/fullS/B/M3/F1/T197/activation and D4/guided/visual/Windows/D8 remainOPEN; the current delegated scope above governs all next actions.\n\n#### T179-Pd admission evidence refinement — DESIGN review pending\n\n[Cold semantics/provenance](../recovery/t179pd-admission-cold-proof-design-20261016.md) is refined by the [existing-M location correction](../recovery/t179pd-admission-history-location-design-20261016.md). The initial separate-control-path recommendation is superseded/unaccepted. Canonical §6.1 now explicitly proposes `basis.admissionEvidence` and first layout encoder1; this is not an implemented or independently accepted issuer/codec. Private original-issued hot history → genuine seven-root/finite73-leaf source session → frozen evidence before C/B → same common/native M3 → independent cold semantic verifier. No changed old v2/request/Ready/original bytes for initial internal extraction, no new durable path, and no caller/DTO/rehash authority. Exact tagged-row codecs, owner transition checkers, observable projection equivalence and worker-direct closure remain prerequisites for full admission/P0. Source-aware original callback/read extraction may be a bounded internal prerequisite; it cannot issue active admission or M3 by itself. Shared emitted contracts require same-change GM/docs/examples/source guards.\n\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 464,
+      "end": 478,
+      "label": "B09_O03",
+      "sha256": "166a2771ecf680c405addbf77cb591e47d5f4ea3786be858942d124d705de51a",
+      "text": "\n**Files:** new QteSceneService terminal partial; modify existing QteSceneService/QteDeferredAcceptedMechanicsPlanner through named pure contributions; integration `.JointActiveQteTerminal.cs`. No generic StateDistributor/normalizer write expansion.\n**Interfaces:** PrepareMortalJointTerminalAsync/CommitMortalJointTerminalAsync; exact closed terminal.basis, no future outcome in P0.\n**Owner:** proposed `fr063-active-b-qte-terminal`.\n\n- [ ] RED `Terminal_PrepareFreezesKnownSelectionAndUtcOnlyOnce`, `Terminal_XpHistoryRuntimeContinuationAndWaveConsumeCommitTogether`, `Terminal_EveryMemberCrashOrLostCallerReceiptNeverReplaysOutcome`, `Terminal_UnsupportedBranchRefusesBeforeCommon`.\n- [ ] D9/T192 qualification includes the actual shared `BuildCommonPlan` callers listed there: acceptance identity preallocation (including its receipt-wave discovery), first selected-terminal preparation and receipt-resume recomposition. Preserve the same accepted source and cumulative known receipt proof across them; pure planning/recomposition cannot consume an action/event budget or issue its acknowledgement. All checks remain future/UNRUN.\n- [ ] At actual persisted selected outcome/resolved wave freeze exact source reads and owner-produced before/after; PREPARE M-only. Reuse existing XP arithmetic (including total/current/level thresholds) as pure calculation with frozen timestamp, existing typed deferred plan/identity ledger; no XP compensation source.\n- [ ] Produce status/narrative/history/runtime/continuation/wave after-images without calling legacy multi-write distributor/normalizer. Narrow pure extraction must preserve existing formula/normalization; if it needs extra write roots, STOP for amended grant, not use broad rollback inventory.\n- [ ] Commit complete fixed subset+M terminal receipt atomically. Nonblank responseFragment.response precedence/finalNarrative fallback/score exact. Applied history row unique; resolved wave only own request/receipt/Ready. No terminal rollback of previously accepted waves.\n- [ ] G; exact affected existing deferred-continuation uncertainty and closure consumers, not all qte-rules. **Accept:** full terminal before/after or HOLD, one XP/history outcome across cold/repeat, unchanged unrelated outputs/roots. Covers Q08/Q11/Q13.\n\n### T188 / B10 — post-QTE automatic/projection и lawful drift proof\n\n**Files:** new M QteProof partial; automatic/projection owner partials from B02/B03; engine completion, story read proof; integration `.JointActiveQteTail.cs`.\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 548,
+      "end": 558,
+      "label": "T192_O03",
+      "sha256": "3806d45c559c5bd94b9c1acd0e3e92b9f3bebd869d7d7f94ed6aac3b36c2eedc",
+      "text": "no final-marker hash backedge. Cold reader reconstructs immutable source and every named overlay.\n\n- [ ] Extract actual closure/roster/time provenance from common accepted contribution before seals. Same n/new request source accepted by Ready/original/daemon/repair readers only under complete F1 proof.\n- [ ] RED R201–R204/R214: pending/consumed boundary, new targets/effects after prefix, genuine elapsed/operation events, replay strict scheduler, foreign proof/crash. No blanket lifecycle array removal or fake history. Preserve actual prefix/remainder resolved/unresolved time projections and scene/source/condition/realm semantics. RED `Time_CalendarOnlySetWorldTimeAcceptedFailOpenOnce`, `Time_NumericAbsoluteJumpOrRewindPreservesOwnerPolicy`, genuine elapsed positive control. Calendar-only without currentTimeInMinutes stays lawful: exact raw source, actual progression fallback/report/control and nullable effect time, no forced interval/repair or implicit calendar converter.\n- [ ] Pure composer D9 contribution shared by accepted terminal and ordinary result. D8 raw responseFragment unchanged; exact additional time/event union cohort requires written grant and all typed companions before activation. Qualify equivalent event traces and different real outcomes separately.\n- [ ] Address R2 review precision O03 at the shared `QteDeferredAcceptedMechanicsPlanner.BuildCommonPlan` boundary: `PreallocateIdentityLedgerAtAcceptanceAsync` (call at current source line74), nested `PreallocateReceiptReplayIdentities` (351), `PrepareAndSealTerminalSelectionAsync` (173) and `PrepareReceiptResumeAsync` (286). Actual method names/roles are the contract; reconcile line references with the implementation source later. Future R201–R204/R216 and B09 checks retain the same genuine accepted source and cumulative known source/receipt evidence, including repeated waves and cold resume. Pure preallocation/recomposition issues no durable event/turn/time acknowledgement and grants no extra budget; the genuine owning publication records actual admitted events and its action+ack. Transported waves do not themselves prove elapsed time or another turn. This closes the planning precision only, with no source change, new grant or runtime qualification.\n\n### T193 — full lawful input/result inventory and OrdinaryOutcomeOwnerRegistry (D10)\n\n**Files:** GameResponse/TurnRequest parser, FileMapping/StateDistributor pure encoders, engine\nBuildGameResponseFromFiles, all canonical normalizer/catalog validators; proposed\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "start": 42,
+      "end": 91,
+      "label": "acceptance_preallocation",
+      "sha256": "fe481a7139f96de02872c7f3bbfbcd33bcbf60167004defa086684730933043c",
+      "text": "    internal static async Task<JsonArray> PreallocateIdentityLedgerAtAcceptanceAsync(\n        JsonObject continuation,\n        QteSceneService.QteOffer offer)\n    {\n        ArgumentNullException.ThrowIfNull(continuation);\n        ArgumentNullException.ThrowIfNull(offer);\n\n        var roots = ReadSealedRoots(continuation);\n        var reservations = new Dictionary<string, string>(StringComparer.Ordinal);\n        var identities = new HashSet<string>(StringComparer.Ordinal);\n        var selections = EnumerateTerminalSelections(\n                offer,\n                ReadPositiveInt(continuation, \"acceptedSourceTurn\"))\n            .ToArray();\n        if (selections.Length == 0)\n        {\n            throw new InvalidDataException(\n                \"qte_deferred_identity_preallocation_empty: accepted offer has no reachable terminal selection authority.\");\n        }\n\n        foreach (var selection in selections)\n        {\n            var rehydrated = await RehydrateAsync(\n                continuation,\n                roots,\n                selection);\n            var selectedBinding = CreateSelectedTerminalBinding(\n                selection,\n                rehydrated.ResourceDraft?.RegisteredOutcome?.Fingerprint);\n            var ledger = QtePersistentIdentityLedger.CreateRecording(\n                ReadExact(continuation, \"continuationId\"),\n                ReadFingerprint(selectedBinding, \"fingerprint\"));\n            var plan = BuildCommonPlan(\n                continuation,\n                roots,\n                rehydrated,\n                selectedBinding,\n                ledger,\n                publishPhysicalOccurrences: false);\n            if (plan.AwaitsPendingResolution)\n            {\n                PreallocateReceiptReplayIdentities(\n                    continuation,\n                    roots,\n                    rehydrated,\n                    selectedBinding,\n                    plan,\n                    ledger);\n            }\n\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "start": 125,
+      "end": 188,
+      "label": "terminal_selection",
+      "sha256": "3c08b34b7f7f3d118cd6d4dbc6da96b49df42f74f7398a8a4faca227c1736aa2",
+      "text": "        PrepareAndSealTerminalSelectionAsync(\n            FileSystemManager fileSystem,\n            FileSystemManager.CanonicalWriteLease writeLease,\n            QteSceneService.QteRuntimeState runtime,\n            QteSceneService.ActiveQteSceneState activeScene,\n            QteSceneService.QteOffer offer,\n            QteTerminalResourceSelection selection)\n    {\n        ArgumentNullException.ThrowIfNull(fileSystem);\n        ArgumentNullException.ThrowIfNull(writeLease);\n        ArgumentNullException.ThrowIfNull(runtime);\n        ArgumentNullException.ThrowIfNull(activeScene);\n        ArgumentNullException.ThrowIfNull(offer);\n        ArgumentNullException.ThrowIfNull(selection);\n        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);\n\n        var continuation = await QteDeferredEffectContinuation\n            .ValidateForTerminalSelectionAsync(\n                fileSystem,\n                writeLease,\n                activeScene,\n                offer,\n                selection.SourceTurn);\n        var roots = ReadSealedRoots(continuation);\n        var rehydrated = await RehydrateAsync(\n            continuation,\n            roots,\n            selection);\n        var selectedBinding = CreateSelectedTerminalBinding(\n            selection,\n            rehydrated.ResourceDraft?.RegisteredOutcome?.Fingerprint);\n        var state = ReadExact(continuation, \"state\");\n        var ledger = QtePersistentIdentityLedger.CreateReplay(\n            ReadExact(continuation, \"continuationId\"),\n            ReadFingerprint(selectedBinding, \"fingerprint\"),\n            continuation[\"identityLedger\"] as JsonArray,\n            allowUnusedReservations: true);\n\n        if (state == \"terminal_selected\")\n        {\n            if (continuation[\"selectedTerminalBinding\"] is not JsonObject persisted ||\n                !JsonNode.DeepEquals(persisted, selectedBinding))\n            {\n                throw new InvalidDataException(\n                    \"qte_deferred_terminal_selection_conflict: terminal selection is write-once and differs from the persisted binding.\");\n            }\n        }\n\n        var plan = BuildCommonPlan(\n            continuation,\n            roots,\n            rehydrated,\n            selectedBinding,\n            ledger);\n        ledger.ValidateComplete();\n\n        if (state == \"terminal_selected\")\n        {\n            return new QteDeferredAcceptedMechanicsPreparation(\n                plan,\n                continuation,\n                selectedBinding);\n        }\n\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "start": 249,
+      "end": 301,
+      "label": "receipt_resume",
+      "sha256": "06937948c98e4cbe2d19d45a0ce0030982781d5dedbc3c921621534cbfa7687c",
+      "text": "        PrepareReceiptResumeAsync(\n            JsonObject continuation,\n            QteTerminalResourceSelection selection,\n            ResourcePendingResolutionState pendingState,\n            CanonicalBeforeImage pendingBeforeImage,\n            JsonArray receipts)\n    {\n        ArgumentNullException.ThrowIfNull(continuation);\n        ArgumentNullException.ThrowIfNull(selection);\n        ArgumentNullException.ThrowIfNull(pendingState);\n        ArgumentNullException.ThrowIfNull(pendingBeforeImage);\n        ArgumentNullException.ThrowIfNull(receipts);\n        if (ReadExact(continuation, \"state\") != \"awaiting_receipt\" ||\n            continuation[\"selectedTerminalBinding\"] is not JsonObject persisted)\n        {\n            throw new InvalidDataException(\n                \"qte_deferred_receipt_selection_missing: receipt replay requires one persisted awaiting terminal selection.\");\n        }\n\n        var roots = ReadSealedRoots(continuation);\n        var rehydrated = await RehydrateAsync(\n            continuation,\n            roots,\n            selection);\n        var selectedBinding = CreateSelectedTerminalBinding(\n            selection,\n            rehydrated.ResourceDraft?.RegisteredOutcome?.Fingerprint);\n        if (!JsonNode.DeepEquals(persisted, selectedBinding))\n        {\n            throw new InvalidDataException(\n                \"qte_deferred_receipt_selection_conflict: receipt replay differs from the write-once terminal selection.\");\n        }\n        var ledger = QtePersistentIdentityLedger.CreateReplay(\n            ReadExact(continuation, \"continuationId\"),\n            ReadFingerprint(selectedBinding, \"fingerprint\"),\n            continuation[\"identityLedger\"] as JsonArray,\n            allowUnusedReservations: true);\n        var plan = BuildCommonPlan(\n            continuation,\n            roots,\n            rehydrated,\n            selectedBinding,\n            ledger,\n            pendingState,\n            pendingBeforeImage,\n            receipts);\n        ledger.ValidateComplete();\n        return new QteDeferredAcceptedMechanicsPreparation(\n            plan,\n            continuation,\n            selectedBinding);\n    }\n\n"
+    },
+    {
+      "commit": "709a6bfa973d88616f78966450494248a2756609",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "start": 302,
+      "end": 369,
+      "label": "receipt_identity_preallocation",
+      "sha256": "984e868cdf191b416efb1ee7c3de8147a1a04aa61b288d89c7cd3b5c6cd30d72",
+      "text": "    private static void PreallocateReceiptReplayIdentities(\n        JsonObject continuation,\n        IReadOnlyDictionary<string, CanonicalBeforeImage> roots,\n        RehydratedAuthority rehydrated,\n        JsonObject selectedBinding,\n        AcceptedMechanicsPlan initialPlan,\n        QtePersistentIdentityLedger selectedLedger)\n    {\n        var currentPlan = initialPlan;\n        for (var wave = 0;\n             currentPlan.AwaitsPendingResolution;\n             wave++)\n        {\n            if (wave > ResourceMaterializationContract.MaxTriggerDepth)\n            {\n                throw new InvalidDataException(\n                    \"qte_deferred_identity_preallocation_exhausted: bounded receipt discovery exceeded the canonical trigger-depth limit.\");\n            }\n            if (!currentPlan.PendingAfterImages.TryGetValue(\n                ResourcePendingResolutionState.PendingPath,\n                out var pendingRoot) ||\n                pendingRoot == null)\n            {\n                throw new InvalidDataException(\n                    \"qte_deferred_identity_preallocation_invalid: awaiting plan has no pending after-image.\");\n            }\n            var parsed = ResourcePendingResolutionState.ParseCanonical(\n                pendingRoot.ToJsonString(),\n                rehydrated.Definitions,\n                allowMissingPristine: false);\n            if (!parsed.IsValid || parsed.State == null ||\n                parsed.State.Requests.Count == 0)\n            {\n                throw PlanningFailure(\"identity-preallocation-pending\", parsed.Issues);\n            }\n            var receipts = new JsonArray(parsed.State.Requests\n                .Select(static request => (JsonNode)new JsonObject\n                {\n                    [\"requestId\"] = request.RequestId,\n                    [\"resultKind\"] = \"resource_delta\",\n                    [\"amount\"] = request.MaximumAmount,\n                    [\"reason\"] = \"Предварительное вычисление достижимой QTE-механики.\"\n                })\n                .ToArray());\n            var simulationLedger = QtePersistentIdentityLedger.CreateRecording(\n                ReadExact(continuation, \"continuationId\"),\n                ReadFingerprint(selectedBinding, \"fingerprint\"));\n            var pendingJson = pendingRoot.ToJsonString(\n                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);\n            currentPlan = BuildCommonPlan(\n                continuation,\n                roots,\n                rehydrated,\n                selectedBinding,\n                simulationLedger,\n                parsed.State,\n                new CanonicalBeforeImage(\n                    true,\n                    Encoding.UTF8.GetBytes(pendingJson)),\n                receipts,\n                publishPhysicalOccurrences: false);\n            selectedLedger.MergeReservationsFrom(simulationLedger);\n        }\n    }\n\n    private static IEnumerable<QteTerminalResourceSelection>\n        EnumerateTerminalSelections(\n            QteSceneService.QteOffer offer,\n"
+    }
+  ],
+  "recovery": {
+    "path": "/tmp/lawful-active-f1-design-only-corrected-recovery-20261016.json",
+    "bytes": 18710,
+    "sha256": "458515c65957809aa6f223b6958421e53f450d7c089bc895b4191aea560ec911",
+    "receipt": {
+      "sha": "709a6bfa973d88616f78966450494248a2756609",
+      "base_full_tree": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "directory": "/workspace/f1-design-only-corrected-709a6bfa-docs-github-20261016",
+      "started_utc": "2026-10-16T20:18:08.626010+00:00",
+      "completed_utc": "2026-10-16T20:18:12.176026+00:00",
+      "count": 33,
+      "changed_count": 28,
+      "files": [
+        {
+          "path": ".specify/memory/constitution.md",
+          "bytes": 14081,
+          "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+          "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/.specify/memory/constitution.md"
+        },
+        {
+          "path": "AGENTS.md",
+          "bytes": 11662,
+          "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+          "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/AGENTS.md"
+        },
+        {
+          "path": "docs/development-workflow.md",
+          "bytes": 66432,
+          "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+          "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/docs/development-workflow.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+          "bytes": 72329,
+          "git_blob": "0d58236f7c1ea6ca8149dd1ae6fe26fa6928f99b",
+          "sha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "bytes": 137212,
+          "git_blob": "b339a5b0317fc054107be6eff894b6db5a69863c",
+          "sha256": "f5ca510ea517b095e68853e853064281545bb1818ef4e5ebb81c5f6052a1b69f",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+          "bytes": 63665,
+          "git_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+          "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+          "bytes": 107938,
+          "git_blob": "3376d98fd0727fe737eaf0f4e48125f7f7ca5250",
+          "sha256": "a9b7366f98fe7130225762338c55bb78fe8e850dadf42454f295ebd63d54ddd4",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/plan.md",
+          "bytes": 2166878,
+          "git_blob": "7ba2df402059ea484beb14590fc25135c277919d",
+          "sha256": "e82a454e6edccbbfa8e780f626db903afec633e1c5ef9b60a18d171325c6e350",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/plan.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json",
+          "bytes": 12540,
+          "git_blob": "e9e28173cfad4b4bc17cffa91e8d245eeaec71c8",
+          "sha256": "4dabd74d7e13deb70651089871cfec37abcfdb4aca1014acda0230cdf65fb102",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz",
+          "bytes": 237394,
+          "git_blob": "a41f70cd7dbef95fee062d37e9f815edb135af4d",
+          "sha256": "b4a6c863a91127b76e514da8ceecee9a6d562cfaa0d79d7ac8fe032e9f94bca3",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz",
+          "bytes": 20,
+          "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz",
+          "bytes": 20,
+          "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json",
+          "bytes": 64972,
+          "git_blob": "43adc580c5c56f4ecc77ee93338423a508d426ae",
+          "sha256": "b8038c511daa5d4834639d40b65c792521260c3fe919997abc2e6b12e35413e9",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json",
+          "bytes": 130637,
+          "git_blob": "b41e64a6637b441f76befef6ed4e004d8e72fa2d",
+          "sha256": "fa5e0ca18915b9a1c24c73bb5b84c8899172e2b09c0de378e285a067d5c391b2",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz",
+          "bytes": 3997,
+          "git_blob": "f2cee7594a0631d933cc61edaeaa52b3c2a48419",
+          "sha256": "a35913eb0c9bc63d51668d8b4d420ae517b9e6f18126a2bc532a6dced90a5eab",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz",
+          "bytes": 142368,
+          "git_blob": "ba94d9ff803b040e1b94b209263e6c1d152f88d2",
+          "sha256": "5f858b2efe51776134b5f92c6572aee20faf2c2694fc6181b7fba13d19430586",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json",
+          "bytes": 4214,
+          "git_blob": "7507b45992e3ef360bf48061c29e3023b34e42d1",
+          "sha256": "1b37beaeafc8bb16cd21573524390a1e6022ccae471091340b21bee1f0ca88a1",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json",
+          "bytes": 1501276,
+          "git_blob": "56a95761e5a3751f7f88a5dc08c8e9b6f6631c06",
+          "sha256": "f38934e09b7d5a3acaa3a32fab446c86a7533b8d5da1d9282fd1f8a5e2c6185e",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md",
+          "bytes": 9425,
+          "git_blob": "030e077caef998be7954091e064c806208dd5d8b",
+          "sha256": "cfd668e33dec15718781efc6c66ec8c21884da117069f1613a97db06fae8afe9",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json",
+          "bytes": 253099,
+          "git_blob": "acaa7c18111ae5ddf722aaebd7df2bd7a36c6eb9",
+          "sha256": "73c0d4aafc90a1f53d41ba5c48804ee92948c5bbb35696b301f5baa4ed092eef",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz",
+          "bytes": 20,
+          "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz",
+          "bytes": 11912115,
+          "git_blob": "065494cde772f76d4a37d8d8c6bf50762daaab34",
+          "sha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json",
+          "bytes": 3002,
+          "git_blob": "fe55158d2a05856445e3b1a4f47893002c42a473",
+          "sha256": "aeec809b336206dcf0a2a0bb6345d1d21fd01f541cb5a32a7828294f7cd04f70",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz",
+          "bytes": 20,
+          "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz",
+          "bytes": 49167,
+          "git_blob": "a5f60bc04e0c2a9e111ce6ffeee9cb8561a289c9",
+          "sha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt",
+          "bytes": 1038,
+          "git_blob": "aae7577b0a71a2963d3be7d64aa2cedd36be4c16",
+          "sha256": "5f93383210400043945ad125ca61be2b709e08f57e6b16fb48d97cebfc1d050b",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json",
+          "bytes": 59917,
+          "git_blob": "0012b50fa7d1f0af3ca076ae180fa925a7aa642d",
+          "sha256": "2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+          "bytes": 13814,
+          "git_blob": "0fb5be8fc29fadaacc241c7a5c858718df476666",
+          "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json",
+          "bytes": 618,
+          "git_blob": "f3ff3285b683974b7ea619bcc9326a87c901d876",
+          "sha256": "c1c1d2737d57a5d1022a29908e3dbe8fb61146d8566fe29e9606b70746bce05b",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log",
+          "bytes": 193,
+          "git_blob": "2d7d28e3ed486538fbf6b6de84ff80aa2efd1f33",
+          "sha256": "a6db84521bbd3193a54ca3cce6e5207adcee992216eba2af3f0eb18587cd6987",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz",
+          "bytes": 3269673,
+          "git_blob": "3087f42858521e68105e646474c3af604d6eaafb",
+          "sha256": "fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/spec.md",
+          "bytes": 230201,
+          "git_blob": "385516b232f444452d982804ca5e33f0b123e45f",
+          "sha256": "1d9433b50e71fcd746933057f299a0e481984e5ffe57acd2135f0c2f2c3614cf",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/spec.md"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/tasks.md",
+          "bytes": 1524136,
+          "git_blob": "83cfa82f9dfd283a9e0dbb7a8591dee9ad91482c",
+          "sha256": "f25909861a2d48ff147f285fec9c5b247c840936ad21c889a6bde94eb571254f",
+          "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/709a6bfa973d88616f78966450494248a2756609/specs/1536-complete-wound-materialization/tasks.md"
+        }
+      ],
+      "new_empty_directory": true,
+      "source": "NEW GitHub raw exact-commit transport; no local content used as transport",
+      "scope": "ALL changed/new documentary files since full-tree2ab + explicit mandatory instructions/design documents. SELECTED DOCUMENT recovery only; no Git checkout/full history/external dependencies/build/discovery/tests/runtime qualification.",
+      "remoteReadback": "709a6bfa973d88616f78966450494248a2756609\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+      "game_code_tests_tools_catalog_selection_unchanged": true,
+      "runtime": "NOT_RUN"
+    },
+    "all33RawGitWriterRecoveredVerified": true,
+    "extraPaths": [
+      ".specify/memory/constitution.md",
+      "AGENTS.md",
+      "docs/development-workflow.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+    ],
+    "limit": "Selected raw document recovery, not a Git checkout or full current-tree/runtime qualification. Network transport/readback is recorded root evidence, not repeated by reviewer."
+  },
+  "initialFullClone": {
+    "head": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+    "directory": "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+    "cleanIncludingIgnored": true,
+    "noAlternates": true,
+    "baseDocsAndCallerMatch": true,
+    "limits": "No full raw3.6GB rehash or new network recovery."
+  },
+  "preservedReports": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md",
+      "sha256": "cfd668e33dec15718781efc6c66ec8c21884da117069f1613a97db06fae8afe9",
+      "tmpAndGitAndRecoveryMatch": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json",
+      "sha256": "f38934e09b7d5a3acaa3a32fab446c86a7533b8d5da1d9282fd1f8a5e2c6185e",
+      "tmpAndGitAndRecoveryMatch": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+      "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+      "tmpAndGitAndRecoveryMatch": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json",
+      "sha256": "2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0",
+      "tmpAndGitAndRecoveryMatch": true
+    }
+  ],
+  "archiveChecks": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz",
+      "rawBytes": 746358,
+      "rawSha256": "a70f7bd9b081cc71b2cbdb2694c638520854c2bb49e733c7a150a12916e09e91",
+      "storedSha256": "b4a6c863a91127b76e514da8ceecee9a6d562cfaa0d79d7ac8fe032e9f94bca3",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": true,
+      "semanticScope": "F1 initial review exact boundary"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz",
+      "rawBytes": 9281,
+      "rawSha256": "efa98e781b066e4687d145f949ccc1370470d24aaaa9f848c559cdf6086b4a0a",
+      "storedSha256": "a35913eb0c9bc63d51668d8b4d420ae517b9e6f18126a2bc532a6dced90a5eab",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": true,
+      "semanticScope": "F1 initial review exact boundary"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz",
+      "rawBytes": 468454,
+      "rawSha256": "9966a883abee7af45be0d9f99b971a09b49ec3df8c3c0548fd1d38c87786ded3",
+      "storedSha256": "5f858b2efe51776134b5f92c6572aee20faf2c2694fc6181b7fba13d19430586",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": true,
+      "semanticScope": "F1 initial review exact boundary"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": true,
+      "semanticScope": "F1 initial review exact boundary"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": true,
+      "semanticScope": "F1 initial review exact boundary"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz",
+      "rawBytes": 47753640,
+      "rawSha256": "03f64a4e38a9bf77667d127d1a60bd23b0a3cfa0b7b3b6648489f15009417c89",
+      "storedSha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": false,
+      "semanticScope": "3e documentary preservation only; no semantic rereview"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz",
+      "rawBytes": 205363,
+      "rawSha256": "c39e0b33722c20c0c10c03c7649043b41a9355efa66beacf2f84679f1de95be1",
+      "storedSha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": false,
+      "semanticScope": "3e documentary preservation only; no semantic rereview"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": false,
+      "semanticScope": "3e documentary preservation only; no semantic rereview"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "tmpRawMatches": true,
+      "gitDiffRecomputed": false,
+      "semanticScope": "3e documentary preservation only; no semantic rereview"
+    }
+  ],
+  "embeddedInitialCheckerTextsVerified": 3,
+  "O03ActualCalls": [
+    74,
+    173,
+    286,
+    351
+  ],
+  "matrixCounts": {
+    "F1": 15,
+    "R2": 18,
+    "uncheckedMainTasks": 14
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "44bd8f701d60c80ec401701094c9f6a17861e165f1e53f4fa8bf56ff294d19a9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "merge-base",
+        "--is-ancestor",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "709a6bfa973d88616f78966450494248a2756609"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--name-status",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "709a6bfa973d88616f78966450494248a2756609"
+      ],
+      "exit": 0,
+      "stdoutBytes": 3098,
+      "stdoutSha256": "f3779a6ec98c2921abb9ad57ca650aac2149f47227b9a22d21fbb864619b1daa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "709a6bfa973d88616f78966450494248a2756609",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 21540,
+      "stdoutSha256": "db525440c2562d6e9bb3b6135170c4fc2427036f0947d033316d644e41c10450",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "709a6bfa973d88616f78966450494248a2756609",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.WebFrontend",
+        "scripts",
+        "tests",
+        "AGENTS.md",
+        "docs",
+        ".specify"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--check",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "709a6bfa973d88616f78966450494248a2756609"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:.specify/memory/constitution.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 14081,
+      "stdoutSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:.specify/memory/constitution.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "6184c8749c383d345edf74f17dc4d4a0013a3f33a4b8845d05abc904d5406696",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:AGENTS.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 11662,
+      "stdoutSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:AGENTS.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "122a32268e895bde359056daad6681dccbc7e31021a93f17bce70a9dbee058a3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 66432,
+      "stdoutSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "a09da1666e8a7396192bd4ee2b08fc52bd06ef366e32d35e5c4ab36934db144f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 72329,
+      "stdoutSha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "eee48a080d2fd8da2aa7011fca3a18e15aea601267f5e2bec32cd0b33fda27cc",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 137212,
+      "stdoutSha256": "f5ca510ea517b095e68853e853064281545bb1818ef4e5ebb81c5f6052a1b69f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "57eb6f56c202f80e1ae60873c1859aff7edaa597f25a6efef2b77b55fbde3410",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 63665,
+      "stdoutSha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "96cdda159ff382d2d2a03257cf3aab849be7b2e59d8a34c27537315a1486d8f0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 107938,
+      "stdoutSha256": "a9b7366f98fe7130225762338c55bb78fe8e850dadf42454f295ebd63d54ddd4",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "4233719166e8bb7f413b4ae41e502caf6b70a8cf508fa5a3e3d01b987c797ed1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 2166878,
+      "stdoutSha256": "e82a454e6edccbbfa8e780f626db903afec633e1c5ef9b60a18d171325c6e350",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "d3c09866178531ee5bba74634eb530b394999a0522fab4e4b1d10fbfa43cde29",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 12540,
+      "stdoutSha256": "4dabd74d7e13deb70651089871cfec37abcfdb4aca1014acda0230cdf65fb102",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-design-only-notice-recovery-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "8f7cb40ee502de16efc1bcff8dc284ea0efe26483d0f1d833eb180e43cff0f07",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 237394,
+      "stdoutSha256": "b4a6c863a91127b76e514da8ceecee9a6d562cfaa0d79d7ac8fe032e9f94bca3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-base-current-docs-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "c5d64a233214c121c4531d358ff59f7d1046f2abe8b0211dd624d612e0b342fd",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 20,
+      "stdoutSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "113fbb5bfa7819aa9c60ea8ce5d82b2832b664b5f68e811fcdee89af6e7d08af",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 20,
+      "stdoutSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-frozen-production-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "113fbb5bfa7819aa9c60ea8ce5d82b2832b664b5f68e811fcdee89af6e7d08af",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 64972,
+      "stdoutSha256": "b8038c511daa5d4834639d40b65c792521260c3fe919997abc2e6b12e35413e9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-inspection-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "000ec60bcf01ba3941bbdfdc574fe4eb614a635a9a052c1ac5d03eeae8694354",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 130637,
+      "stdoutSha256": "fa5e0ca18915b9a1c24c73bb5b84c8899172e2b09c0de378e285a067d5c391b2",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-projections-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "2756d0ae824e6ec60ce2eed309b3aa2403895a8ef38d98c42cff64e1cb4757c6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 3997,
+      "stdoutSha256": "a35913eb0c9bc63d51668d8b4d420ae517b9e6f18126a2bc532a6dced90a5eab",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "98b90e18689d542542359233464efecfe7908c668e3eec1da19395c6d4d15e95",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 142368,
+      "stdoutSha256": "5f858b2efe51776134b5f92c6572aee20faf2c2694fc6181b7fba13d19430586",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "1331c284f441fbbf791121cc0df59c0156202617b3db48c47a91c61787261fd3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 4214,
+      "stdoutSha256": "1b37beaeafc8bb16cd21573524390a1e6022ccae471091340b21bee1f0ca88a1",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016-diff-index.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "517cdae841937116412fa5628cd40469ae2d82bb6dc51f0b2ad79c9811202aeb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 1501276,
+      "stdoutSha256": "f38934e09b7d5a3acaa3a32fab446c86a7533b8d5da1d9282fd1f8a5e2c6185e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "d3473ecf6948fd931fb95ad7a0139f64de331087b1208b107ab014e3c05d813f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 9425,
+      "stdoutSha256": "cfd668e33dec15718781efc6c66ec8c21884da117069f1613a97db06fae8afe9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-final-design-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "2ba5bb930b5839d83d2c6c37e349c0a0ca5b0d77f8ccbe56da2e69c5da98d776",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 253099,
+      "stdoutSha256": "73c0d4aafc90a1f53d41ba5c48804ee92948c5bbb35696b301f5baa4ed092eef",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "9e673fa9f133c405292448fa1108c2b8bb06537fff94a5ee9ba2b0284955b8fa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 20,
+      "stdoutSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "113fbb5bfa7819aa9c60ea8ce5d82b2832b664b5f68e811fcdee89af6e7d08af",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 11912115,
+      "stdoutSha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "7f347027c98ff3c5410c3bab5ae663e8ac387843beb1e2706359a4d3c6fb5399",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 3002,
+      "stdoutSha256": "aeec809b336206dcf0a2a0bb6345d1d21fd01f541cb5a32a7828294f7cd04f70",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "e811a50a4a600f72a36bdc5c661d55fd3c6432e0d257e30cf2a07c9a4b5afe85",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 20,
+      "stdoutSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "113fbb5bfa7819aa9c60ea8ce5d82b2832b664b5f68e811fcdee89af6e7d08af",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 49167,
+      "stdoutSha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "c70e40329be7d73749bcb5241d2176a69c23f1814d96a833d5417d0f0c49390c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt"
+      ],
+      "exit": 0,
+      "stdoutBytes": 1038,
+      "stdoutSha256": "5f93383210400043945ad125ca61be2b709e08f57e6b16fb48d97cebfc1d050b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "233b8e9faa9571b9da081dbb059c03167680b409ae84bc93f65b6cd62a311ff0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 59917,
+      "stdoutSha256": "2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "512937f9aa856dfae5e53331a76a450df08416dcdd895fc335a6af589bba283e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 13814,
+      "stdoutSha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "c3d45510271563661da0be2d74c9110997036d123fe5c7d1ab986d097eb25c32",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 618,
+      "stdoutSha256": "c1c1d2737d57a5d1022a29908e3dbe8fb61146d8566fe29e9606b70746bce05b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "38c5923e6ad9e96bba76b6ff289b104aae6341e1701750efc64468d859d3195a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log"
+      ],
+      "exit": 0,
+      "stdoutBytes": 193,
+      "stdoutSha256": "a6db84521bbd3193a54ca3cce6e5207adcee992216eba2af3f0eb18587cd6987",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "bea311099061c6d3a24995aca4839f5b1700aad8f050f83746f1d01e4c48bdba",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 3269673,
+      "stdoutSha256": "fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "03a4e03354f3dac16ae4c179135626363b6abf3dfab89b87bfe19e0727ca13ad",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/spec.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 230201,
+      "stdoutSha256": "1d9433b50e71fcd746933057f299a0e481984e5ffe57acd2135f0c2f2c3614cf",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/spec.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "be3ffe63344eb2f2ce2dc74b77391770a571598d8f3a04b42b75500ef2131906",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 1524136,
+      "stdoutSha256": "f25909861a2d48ff147f285fec9c5b247c840936ad21c889a6bde94eb571254f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "2ea7b77ff853e6ae99569b5de62ac346691691c3a667eb7cd042d50c9bd40e71",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "709a6bfa973d88616f78966450494248a2756609:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutBytes": 56278,
+      "stdoutSha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutBytes": 56278,
+      "stdoutSha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "709a6bfa973d88616f78966450494248a2756609:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "cf0601ca62660805e98e5009b18017f16f573d0dd388f9176cbe18859879b911",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 746358,
+      "stdoutSha256": "a70f7bd9b081cc71b2cbdb2694c638520854c2bb49e733c7a150a12916e09e91",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "bddf930414b12944b5383ec2857404c26f7b01a9",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 9281,
+      "stdoutSha256": "efa98e781b066e4687d145f949ccc1370470d24aaaa9f848c559cdf6086b4a0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "bddf930414b12944b5383ec2857404c26f7b01a9",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 468454,
+      "stdoutSha256": "9966a883abee7af45be0d9f99b971a09b49ec3df8c3c0548fd1d38c87786ded3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "BookOfEternityClient"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.WebFrontend",
+        "scripts",
+        "tests/categories.json",
+        "tests/selection.json"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 2162692,
+      "stdoutSha256": "8f4e175fd8bdb089953591770187ecfe689f93c5f8d86a72b383091d2d5bbb14",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 1522820,
+      "stdoutSha256": "0fa519c65120b8ec96b13cb7ae1b70fb2f39034a4e797d65971d602c7f587e7c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdoutBytes": 41,
+      "stdoutSha256": "02040e7ac4199c27aac8c908467edf0808f469f39b1ab13310d3537cfceaaac5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+        "--ignored"
+      ],
+      "exit": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/spec.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 229597,
+      "stdoutSha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 2162692,
+      "stdoutSha256": "8f4e175fd8bdb089953591770187ecfe689f93c5f8d86a72b383091d2d5bbb14",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 1522820,
+      "stdoutSha256": "0fa519c65120b8ec96b13cb7ae1b70fb2f39034a4e797d65971d602c7f587e7c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 107389,
+      "stdoutSha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutBytes": 134743,
+      "stdoutSha256": "877ea52bbf6c2bdb3de16c861436ef2f61deb66b9e2e293b9cae73e9ccce1530",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutBytes": 56278,
+      "stdoutSha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "stderr": ""
+    }
+  ],
+  "repoWrites": false,
+  "runtimeExecuted": false,
+  "networkUsed": false,
+  "delegationUsed": false
+}

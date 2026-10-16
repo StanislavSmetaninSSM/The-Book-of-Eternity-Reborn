@@ -3,7 +3,9 @@
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
 
 - [x] Preserve separately accepted bounded 3e DESIGN review at2ab: no confirmed finding, root66pins/fourexactdiffs/14temporaryreferences/84projections; immutable MD/JSON/documentary supports only. DFR01–07 remain UNRUN; no implementation or actual release.
-- [ ] Verify F1-FINAL-D01's current DESIGN-only scope corrections and the future shared-composer O03 clarification through affected independent review; preserve the original report. Then publish/readback/recover the document checkpoint and STOP. No actual run can be released by this checklist.
+- [x] [Affected independent final DESIGN review](recovery/lawful-active-f1-final-design-corrected-review-20261016.md) accepts709a: F1-FINAL-D01 resolved, O03 addressed as future qualification, no remaining correction finding. Root34pins/12projections/twoexactdiffs/ninearchives/embeddedverifier checked; original BLOCKED pair preserved. Corrected source709a/new33-document GitHub recovery is verified; full F1 checks remain UNRUN, all main T178–T191 unchecked, implementation/actual release sets empty.
+
+Final handoff gate: publish/readback/recover the documentation-only report/status carrier, then **STOP for implementation discussion**. No actual run can be released by this checklist or a reviewer verdict.
 
 ## Historical checkpoint records — current scope above takes precedence
 
