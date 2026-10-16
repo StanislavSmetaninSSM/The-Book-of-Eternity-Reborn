@@ -1,3 +1,13 @@
+## T179-Pd.3b FIRST Late2 saved — EVIDENCE gate pending (2026-10-16)
+
+- [x] Actual93a/compiledd474 native0:2/2PASS,203.1165103s wall/197.930765s≤5m, exactselection/strict2cleanup/no newtempresidue/fourDLLs+HEADclean unchanged. Sixrawchains/fullroot66snapshot66rollback+request/G/common/story/progression/inert bindings verified; scripts/results saved. Acceptance93afullsource54164files/newGitHub-only/clean/noalts/nosparse/mainunchanged verified beforeactual; no restoredruntime.
+- [ ] Push/readback/newcleanrecover evidencecheckpoint; separate EVIDENCE before anyReady3. No currentReady3release/aggregate/hiddenretry/HS01REDor131replay. Only releasedReady3mayobserve2PASS+targetmissing-exportRED228; fullstage/S/B/M3/F1/T197/activation/allpriorlimitsOPEN.
+
+## T179-Pd.3e debug/Full reasoning DESIGN WIP (2026-10-16)
+
+- [x] Author24Gitpins/62exactprojections/8priorrefs/emptyprod diff verified; sharedordinary-used kernels+genuineCapturingprefix only. Valid scope alwaysreads guardianpolicy/structured actors. Fullfamily needs actualcompletedmusingsprovidedlease adapter and actualvolatileguardian/resident projection observations; no nestedlease/[]/DTO/replay orambientstrictISOshortcut.
+- [ ] Separate independentDESIGN/corrections before3esourceengineering. DFR01–07allUNRUN, completefamily/history/cold/sourceS/B/M3/F1/T197/activation/priorlimitsOPEN. Accepted3b proceedsindependently.
+
 ## T179-Pd.3b R01 CLOSED — FIRST Late2 conditional release (2026-10-16)
 
 - [x] Independent fullcurrenttree recovery acceptsbc719:54149exacttrackedfiles/3556631142bytes/36391uniqueGitblobs/modes/clean/noalts/nosparse;197requiredpaths/17omissions covered. Root60pins/threediffs/11tmprefs/threeprojections/197rawrows; fullreceipt/native0/366.287599s/supports preserved. F01 SOURCE/d474fourDLLs/12prepartifacts retainedunchanged. No restoredruntime/history/externaldepclaim; noactuals.
