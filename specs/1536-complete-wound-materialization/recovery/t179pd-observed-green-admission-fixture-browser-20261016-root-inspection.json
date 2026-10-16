@@ -1,0 +1,289 @@
+{
+  "category": "fr063-observed-original-browser",
+  "actual_head": "54e07796d5fca6bac5940b447ef65379727f2247",
+  "compiled_source": "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+  "carrier": "WORKTREE",
+  "artifact_chains": [
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-dotnet-test.log.gz",
+      "raw_sha256": "138eff08f41df4e8b7dd7dad80b5e2235ebc6addeec522333d45de9063b4f9c2",
+      "stored_sha256": "98395e4f5a9e39ac20a556e051803053c46e57d6f87767f06f5190591571222c"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-fr063-observed-original-browser-integration-001.trx.gz",
+      "raw_sha256": "e46e912c52df6b26130296e26763f1141ed1b092c644ed26373c4002d07b2ac6",
+      "stored_sha256": "14c5aa1c1d36410b2d7e7663cca3c3bacff47a3c003b018bec80d578927176c2"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-native-exit.json",
+      "raw_sha256": "38362e53b40909d988357d36a28d2ee7dc9ec8d75b4657d72a686cd662eb1614",
+      "stored_sha256": "38362e53b40909d988357d36a28d2ee7dc9ec8d75b4657d72a686cd662eb1614"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-plan.json",
+      "raw_sha256": "bc2c5a7f89935c10a2a7fa3a8534eaccaaeb158f2c194cad468183d6ccbd741a",
+      "stored_sha256": "bc2c5a7f89935c10a2a7fa3a8534eaccaaeb158f2c194cad468183d6ccbd741a"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-stdout.log.gz",
+      "raw_sha256": "c6968511217ce3cc9d7fa93563eac1553c9dace50f61f96cbde2a72c4d777a41",
+      "stored_sha256": "b3ca4f856eefbbfd915ed19c62cc97ec7d3d5cf4417b87542c272e8fa3c5eaf8"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-browser-20261016-summary.json",
+      "raw_sha256": "3224f1bbcbea91a4070f9708df4ae271aa7ea4a3564d80ee72b7e4bdb061dc95",
+      "stored_sha256": "3224f1bbcbea91a4070f9708df4ae271aa7ea4a3564d80ee72b7e4bdb061dc95"
+    }
+  ],
+  "descriptors": 1,
+  "actual_cases": 8,
+  "distinct_methods": 3,
+  "cases": [
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "id": "3758f919-621e-aabf-8e78-432151fb27b4",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift(mode: \"unsupported\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-85fd7c887f8d4ceaac84fe47c70daa43",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "id": "962491f8-6e65-1d89-c5f0-467924cd4736",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault(mode: \"late_changed\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4465f2d5cdf241d4bb2554f60b5d0914",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "id": "0a8b5188-f05c-7611-6079-943a4eb81b35",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault(mode: \"physical_fault\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3fa47d2e40974236bd50f71b50e41ee0",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "id": "d5b17cd9-8ad9-888f-2276-a11ba709afb0",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault(mode: \"late_missing\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3180e7f392174644962ec59a8664e330",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "id": "d662ea25-1180-fb13-2e35-f31a8ae6d58b",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault(mode: \"missing_before_read\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1d54adc179bd48dc8b3a29f2b261873e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition",
+      "id": "94f6ebd5-9e67-f0b4-8f75-b68b5cd4bbe7",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-99c2247887094b55a38c66950a7ebe58",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "id": "88669948-3fcd-3675-a603-02db5c8a330b",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift(mode: \"unchanged\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b7ad91c883324c4399532d2692f3fcc2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "descriptor": "fr063-observed-original-browser-integration-001",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "id": "1da8561a-e3bc-925e-74a0-9d875db94fb1",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift(mode: \"changed_restored\")",
+      "diagnostics": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-15a912aa34694d3aa8682772577a3033",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    }
+  ],
+  "strict_cleanup_receipts": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-85fd7c887f8d4ceaac84fe47c70daa43",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4465f2d5cdf241d4bb2554f60b5d0914",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3fa47d2e40974236bd50f71b50e41ee0",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3180e7f392174644962ec59a8664e330",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1d54adc179bd48dc8b3a29f2b261873e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-99c2247887094b55a38c66950a7ebe58",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b7ad91c883324c4399532d2692f3fcc2",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-15a912aa34694d3aa8682772577a3033",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strict_cleanup_count": 8,
+  "scoped_temp_witness": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "dab8d2f152fe89fc6c6027383eea9696beb38689e013368906f4b5c8f2bb4cb3"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "defa0b9e4bcbf94d3998dec6ab9515bc0a411c0709ec2642fef24f5bc2fa2219"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "dab8d2f152fe89fc6c6027383eea9696beb38689e013368906f4b5c8f2bb4cb3"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "4d9fb762ccc414a18526ade9371eefa9aecd2d97a7f36a4a7bea1227e7044107"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-browser"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "54e07796d5fca6bac5940b447ef65379727f2247",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-browser",
+        "Seconds": 5.052579,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0744357,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0533994,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1351252,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0037465,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:09.7193548",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 8,
+      "CompletedCases": 8,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 8,
+      "Executed": 8,
+      "Passed": 8,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "source_scope_docs_only": true,
+  "limits": "Bounded selected reader/storage regression only. Secondary private callback controls are not natural authenticated aliases. Existing default/integration fixtures without strict receipt use runner/scoped temp witness only. No full Pd/admission/S/C/B/M3/cold/F1/T197/Windows qualification."
+}
