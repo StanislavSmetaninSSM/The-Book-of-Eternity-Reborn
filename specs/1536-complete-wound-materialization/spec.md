@@ -1,5 +1,7 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
+> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.
+
 > **Current delegation from f87, 2026-10-16:** T179-Pd-AUDIT-SBM documents existing source/dependencies/future checks only; [current plan authority](plan.md) controls. Windows CI permission is unanswered; failed hold delivery and technical SOURCE/availability review are not user permission. No runtime, transfer workaround, CI/settings/release/catalog change or new QTE. Earlier continuation/release banners are historical. Prior13PASS+first2LinuxFAIL retained, Windows JOBsuccess separate; raw worker2 qualification BLOCKED, full S/B/M3/F1/T197 and D4/guided/DOM+visual/Windows/D8 OPEN.
 
 > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.

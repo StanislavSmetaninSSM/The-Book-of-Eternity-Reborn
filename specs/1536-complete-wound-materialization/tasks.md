@@ -1,4 +1,14 @@
-## Current delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)
+## Current execution — T179-Pd.3c-A1 ordinary training-level kernels (2026-10-16)
+
+Direct coordinator continuation from `04f5fff200350772bc8fe78a0c435c0a1c5866ac` authorizes autonomous independent pure ordinary-kernel implementation with accepted independent contract, TDD and bounded checks. This supersedes the preceding documentary STOP for this narrow item. Windows permission remains unanswered: no CI/run/retry/ZIP transfer/settings/permissions/workflow change. No HOT/S/B/M3/T197/new-QTE integration. One writer, task branch only; main/merge/force/deletion/secrets/issues untouched.
+
+- [x] Verify clean04f5/task remote/main and dependency map. Select ordinary training-level parsed-value extraction: actual CharacteristicsService.GetPlayerLevel consumers exist; no worker packet, HOT owner, history or cold M3 input is needed. Existing projection adapter still consumes the same ordinary body and must retain its exception behavior.
+- [ ] T179-Pd.3c-A1: pin/independently review the narrow contract and exact test/selection/impact gates in the existing implementation plan before success code. Existing broader3c full-family acceptance is not claimed by A1.
+- [ ] Write genuine ordinary-context causal missing-boundary tests plus parsed edge/fallback/read-fault controls; WIP/push/readback/recover, fresh preparation and independent SOURCE/FIXTURE/SELECTION before specifically released RED. No success code before preserved/qualified causal RED.
+- [ ] Extract two pure methods and immediately consume them in unchanged ordinary IO/catch positions. Fresh meaningful bounded GREEN/affected controls; protected Late2/separate EVIDENCE when changed shared projection consumer requires it. Preserve first outcomes/source-binary/raw/strict owned-cleanup evidence.
+- [ ] Final independent review/evidence, resolve findings, update exact statuses, non-force push/readback/GitHub recovery. Close A1 only; full3c family/HOT/S/B/M3/F1/T197 and D4/guided/actualDOMvisual/Windows/D8 remain OPEN. Continue through ordinary implementation without another discussion-only stop.
+
+## Historical delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)
 
 Latest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a751589fc78c896` for independent source/design work. Windows CI permission question is unanswered; unsuccessful delivery of hold messages is not permission. Earlier technical SOURCE/availability decisions are historical evidence, not user authorization. This block edits documents only; no runtime, tests, build/discovery, CI/settings/release/catalog changes, artifact transfer/retry or new QTE. See [current authority and audit](plan.md).
 
