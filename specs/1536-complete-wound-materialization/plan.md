@@ -1,3 +1,9 @@
+## T179-Pd final fixture-corrected fresh preparation — SOURCE pending, 2026-10-16
+
+- Source/compiled3d262e030: fresh BOTH/catalog native0 in00:01:10.0607179, valid11702methods/767categories/no unmapped/stale selectors/0executed; exact PlanOnly -SelectionFile -NoBuild native0 in00:00:07.0644263,8descriptors42cases/0executed. Immutable recovery/t179pd-ledger-fixture-corrected-{catalog,plan,binaries}-20261016* preserves full logs/build/discovery/stdout/plan/summary/fourDLL hashes. Root10raw/stored/local chains, clean revision and zero-execution checked.
+- GitHub-only filtered/sparse clean recovery of3d262e030 verified386 exact selected files/no alternates/main unchanged/no restored runtime; receipt /tmp/t179pd-ledger-fixture-corrected-selected-recovery-final-20261016.json. Current metadata carrier is pushed/read back before review; this is source/preparation recovery, not runtime qualification.
+- Independent affected SOURCE/FIXTURE/SELECTION review must formally resolve the three diagnosis causes plus initial-TouchedPaths preflight gap. Only first unchangedLate2 may be released after that; separate frozen EVIDENCE before corrected ledger15 or any remaining singleton. All corrected actuals UNRUN. Defaultv2/fullPd/S/C/B/M3/coldP0/F1/T197/activation gates remain; continue independent work.
+
 ## T179-Pd NPC preflight correction; superseded preparation preserved, 2026-10-16
 
 - Affected independent static preflight caught the first NPC fixture fix still selecting initial TouchedPaths: passive NPC enters that set only in the later final-lifetime pass. Corrected the explicit opt-in to copy every missing entry from actual initial CarrierBeforeImages instead. Existing entries/default callers stay unchanged; no completed after-image or fabricated absence. Final ledger consume ref now requires exactly one ref, and diagnostic text includes actual issue FilePath. Production remains unchanged. No corrected actual ran.
