@@ -1,0 +1,47 @@
+{
+  "purpose": "Exact raw test/discovery logs preserved losslessly; gzip avoids treating raw terminal whitespace as source whitespace. Decompress to recover original bytes. Existing raw files also persist in earlier Git WIP commits.",
+  "artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "308ce34ccac59fc103afef3b84879b4b84c680322441822f697a3df4548c7301",
+      "raw_sha256": "c632e6f91f60fe9cc315f45bd9ed555c53ee3151694b597d57e9e3a6874e9b02",
+      "raw_bytes": 3434232
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "c573197f667223480fef19504f377d43f9fc0193762e93a3ada2d4ba77dce4c7",
+      "raw_sha256": "354b838bab6f1ccd253a7501af310fb6c9779db27ec8dff3e32b4e09d293f769",
+      "raw_bytes": 1758989
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "c813b4f1464f15d84bf371d739dcbfbcbdc347d7784439f6f3d6912516625d91",
+      "raw_sha256": "cd52eded143793bb260225fdc50f0e6acd331abff9002bcbc9f72641de6cf5f0",
+      "raw_bytes": 1758723
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "0e8f95844c642d62d12d78f37f795378cc7e13c7645e9275f25fe8526ad92e42",
+      "raw_sha256": "6bdf37cf750a7b4515a26a8586eeda5fd35d23050f026ee69078a681bafc2f6c",
+      "raw_bytes": 62107
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "17f82b80d38dfa7c0644568f7316b93dbb7089085121463d124ba7cee50ded18",
+      "raw_sha256": "bc2ed97185d6ef00bc8e9d20e3244fcf7768a9f34c9ae97c10894f7a5dd566cd",
+      "raw_bytes": 1779292
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "836c081e4058ffe4aed896cd5205390ad7aa27b8e9f57953f027db18b0363dd7",
+      "raw_sha256": "84dccf02fbb11f977e4fcc4a5952d5c879fd13b54038d610f5632886d2e2f778",
+      "raw_bytes": 1760010
+    }
+  ]
+}
