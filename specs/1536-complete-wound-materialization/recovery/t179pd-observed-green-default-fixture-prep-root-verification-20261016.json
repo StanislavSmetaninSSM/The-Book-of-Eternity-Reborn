@@ -1,0 +1,22 @@
+{
+  "source_sha": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "raw_local_stored_chains": [
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-Build-integration.log.gz",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-Build-unit.log.gz",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-catalog-audit.json",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-dotnet-test.log.gz",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-native-exit.json",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-stdout.log.gz",
+    "t179pd-observed-green-default-fixture-prep-catalog-20261016-summary.json",
+    "t179pd-observed-green-default-fixture-prep-plan-20261016-dotnet-test.log.gz",
+    "t179pd-observed-green-default-fixture-prep-plan-20261016-native-exit.json",
+    "t179pd-observed-green-default-fixture-prep-plan-20261016-plan.json",
+    "t179pd-observed-green-default-fixture-prep-plan-20261016-stdout.log.gz",
+    "t179pd-observed-green-default-fixture-prep-plan-20261016-summary.json"
+  ],
+  "count": 12,
+  "catalog": "native0; 11718 methods/files;772categories;0executed",
+  "plan": "native0;8descriptors;59methods;131cases;0executed",
+  "four_binary_manifest": "t179pd-observed-green-default-fixture-prep-binaries-20261016.json",
+  "actual_after_correction": "ZERO; SOURCE/FIRSTLate2/separateEVIDENCE pending"
+}

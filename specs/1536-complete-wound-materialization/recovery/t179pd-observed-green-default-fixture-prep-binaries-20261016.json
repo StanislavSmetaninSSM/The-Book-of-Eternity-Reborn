@@ -1,0 +1,22 @@
+{
+  "source_sha": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "phase": "Pd.3a raw-duplicate default-manifest fixture after genuine admission; fresh BOTH/catalog/PlanOnly; ZERO actual after correction",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "61e2f28d365c34abd8b0e913405848250dc83bd5b96e5fe79c1bacf00ca9d2e2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "25d2d61aa1397baae54b13ed1ae81f53b108ed3d190924bee92a4b5888aa4b73"
+    }
+  ]
+}
