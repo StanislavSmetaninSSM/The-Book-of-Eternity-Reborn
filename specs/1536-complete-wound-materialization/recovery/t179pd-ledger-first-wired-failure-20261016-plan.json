@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "fr063-active-prefix-lifecycle-evidence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.1764257,
+  "Descriptors": [
+    {
+      "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-active-prefix-lifecycle-evidence",
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+          "Cases": 10
+        }
+      ]
+    }
+  ]
+}

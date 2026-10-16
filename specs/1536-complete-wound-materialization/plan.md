@@ -1,3 +1,8 @@
+## T179-Pd unexpected wired ledger failure — actual execution frozen, 2026-10-16
+
+- First released ledger singleton on clean4d92eddb5 / compiled56e2: native1, **15/15executed,11PASS/4FAIL**, complete1descriptor, wall6.8224445s, no timeout/skip/duplicate/underfill, cleanupcomplete. Full raw recovery/t179pd-ledger-first-wired-failure-20261016* preserved before diagnosis/fix, including stdout/log/fullTRX/plan/summary/nativeexit and deterministic hash index. Root allfive raw/stored/local chains,15unique results and fourunchangedDLLs checked. Unit fixture ownsno diskroots.
+- Unexpectedfailure: conditional ordered release stops here. RetainedC1 and all further regressions remainUNRUN. No success claim or weakened assertion/owner proof. Next inspect actual failure messages/stack/source, determine minimal cause, preserve diagnosis and correct under fresh BOTH/catalog/PlanOnly/SOURCE/firstLate2/EVIDENCE cycle before any retry. Unaffected parallelG-C/A4 DESIGN review continues; fullPd/F1/T197/activation remainunqualified.
+
 ## T179-Pd corrected Late2 EVIDENCE accepted — ordered singleton release, 2026-10-16
 
 - Separate independent configured Astra/XHigh [review](./recovery/t179pd-ledger-corrected-late-evidence-review-20261016.md) of frozenf9a40eb84 / actual59e05adb1 / compiled56e2: Late2EVIDENCEaccepted, no blockers. Root86 historical pins, 7 exact diffs, 12 derived hashes and four unchanged DLLs checked; reportpairbyteexact. Metadata-only parallelT197designcarriere4a excluded, no source/test/fixture/catalog/selection drift.
