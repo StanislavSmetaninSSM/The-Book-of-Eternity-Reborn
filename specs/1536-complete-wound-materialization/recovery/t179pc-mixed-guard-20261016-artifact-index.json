@@ -1,0 +1,103 @@
+{
+  "source_sha": "1b7e25fc2739a9970d62fa7666f1a0f3222f8d06",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-105738-446-54771-0456244bc51e4c8aa5184decc63b3fe0-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-mixed-guard-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-105738-446-54771-0456244bc51e4c8aa5184decc63b3fe0-categories/dotnet-test.log",
+      "raw_bytes": 1695564,
+      "raw_sha256": "f642170df4bd2cb624f2148e02f05c635db37c89cb20046d53a72345f16404d9",
+      "stored_sha256": "069cc8ad5401e086af21a4f8d0df880b67975b47a81f1af085de6ac637f1cd99"
+    },
+    {
+      "path": "t179pc-mixed-guard-20261016-fr063-joint-c1-common-mixed-guard-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-105738-446-54771-0456244bc51e4c8aa5184decc63b3fe0-categories/fr063-joint-c1-common-mixed-guard-unit-001.trx",
+      "raw_bytes": 3253,
+      "raw_sha256": "3ef6e26c75fbabec8424e70dacd3670b397e579e4be56c44f1f0adcb225ffe55",
+      "stored_sha256": "dee21c9da13ad74bc74bf48d1b005c2de93f0265a9f109a5bd4a1edd1f50a635"
+    },
+    {
+      "path": "t179pc-mixed-guard-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-105738-446-54771-0456244bc51e4c8aa5184decc63b3fe0-categories/plan.json",
+      "raw_bytes": 1133,
+      "raw_sha256": "4bd076a8d4012e0fd6e7d66a93c23db249592ae92007b311dc5549f4441d172e",
+      "stored_sha256": "4bd076a8d4012e0fd6e7d66a93c23db249592ae92007b311dc5549f4441d172e"
+    },
+    {
+      "path": "t179pc-mixed-guard-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-105738-446-54771-0456244bc51e4c8aa5184decc63b3fe0-categories/summary.json",
+      "raw_bytes": 1473,
+      "raw_sha256": "82de37d65a9a1f167b622b6088a696742c2f09001b78540cb37517995f5ea831",
+      "stored_sha256": "82de37d65a9a1f167b622b6088a696742c2f09001b78540cb37517995f5ea831"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-c1-common-mixed-guard"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "1b7e25fc2739a9970d62fa7666f1a0f3222f8d06",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-c1-common-mixed-guard",
+        "Seconds": 6.5159689,
+        "BudgetMinutes": 2,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0574621,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0499035,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1396599,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0089763,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:10.8738951",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}
