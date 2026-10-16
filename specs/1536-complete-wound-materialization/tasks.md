@@ -1,3 +1,6 @@
+- T179-Pd admission independent DESIGN supports direction but PD-D01 mustclose before narrow TDD. Exactreaderdesign18pins +canonicalPd.3a contract preserved; affectedreview pending. No codechanges or fulladmission/M3release.
+- All8ledgercategories42distinctPASS/40rawchains/12strictabsentroots; Github-only063979459exactfiles; finalboundedledgerreview pending. Continue independentdesign, no newruntime/sourceedits untildecision.
+
 - Admission DESIGN correction uses existingM3 nested evidence/explicitproposedcodec; UAD01–08 futureUNRUN. New controlpath recommendation rejected; independentreview pending before sourceadmission/M3 issuer.
 - T197 A1 source-child conditional independentreview complete/no material defect; all16checksUNRUN and fullhosting/parent/protocol/cold/target blockers remain.
 

@@ -1,0 +1,160 @@
+{
+  "inspected_head": "317bff96784e55952086e39e00153ae1118ca334",
+  "completion_head": "063979d4aecec74eadd08715954c7e73b228f54f",
+  "repo": "/workspace/The-Book-of-Eternity-Reborn",
+  "status_porcelain": "",
+  "working_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "ba5408988166d42fc993a4ccda8a3ebc1f77af7b",
+      "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "ffefa63b7b0635b63dd1a92b8d022c991d429e25",
+      "sha256": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "3458cb0a92d340cc5e6d16469e4b2fe3a74fcc41",
+      "sha256": "f25d63483fb7284f3dd3d99ac06f5f40cf071f7569d5c3dccbbe206e392f4b22",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65",
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1",
+      "sha256": "33f859765ca5623afe999f646218f4999c9d080bbfec27c4a37cf11e96296174",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "d2b74191a500f64bb6ca96ec868f29ba6c27bb30",
+      "sha256": "269ba66def94f9515aa581b15c65e6e778285772528be8bdd272a20cd4bbd474",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "142ce6682b88ab2760a39f78471c18be6c9ddb97",
+      "sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "current_worktree_matches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "317bff96784e55952086e39e00153ae1118ca334",
+      "git_blob": "6ea55ad597ee138d7ef2999d0cf49acf240c5b4e",
+      "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "current_worktree_matches": true
+    }
+  ],
+  "configuration": {
+    "assigned_model": "gpt-6-astra",
+    "assigned_reasoning": "high",
+    "serving_backend": "unknown"
+  },
+  "report": "/tmp/t179pd-original-observed-reader-design-20261016.md",
+  "report_sha256": "8666b7551e91adbee3a9776f42ee4115e841df03dd848d4ac9409ffa8b3ee435",
+  "prior_reports_sha256": {
+    "/tmp/t179pd-admission-cold-proof-design-20261016.md": "38d4d925026748391dc3b7b99aa8bbd5656516b479f0f6781f7ecec2c9316fb7",
+    "/tmp/t179pd-admission-cold-proof-design-20261016.json": "8129b2d77dfb2de95c06abcf97fd95bfb2d055c2da19089fd9e26aa44061e8c2",
+    "/tmp/t179pd-admission-history-location-design-20261016.md": "f5c91f653a79b651748d3b53128dd16126c6366efbf0cc94ab7da541d5dc3f60",
+    "/tmp/t179pd-admission-history-location-design-20261016.json": "2b2e852738154193cd5aee9d59eebdc637b641e6ee217b1181874475c34f27dd"
+  },
+  "prior_reports_unchanged": true,
+  "scope": "Read-only narrow source-aware original-reader architecture; /tmp pair only; no build/discovery/tests/runtime/network/delegation",
+  "chosen_vertical": "Distinct ReadObservedCurrent + private original read session + genuine explicit-lease synchronous byte leaf; shared validation core, default ReadCurrent unchanged",
+  "authority_mint_barrier": "Complete exact read-operation closure recheck, sticky fault, actual owner/G/lease fences BEFORE PendingTurnSnapshotReadAuthority construction",
+  "source_modes": [
+    "Existing default unchanged",
+    "Observed explicit lease; no arbitrary reader injection"
+  ],
+  "callback_scope": "Actual normalized rollback coordinates only, invoked in original authority checker order; no eager map import or scalar fallback",
+  "remaining_narrow_blocker": "No architectural blocker identified; code/source/fixture review and causal TDD required before qualification",
+  "future_checks": "ALL UNRUN; report finite selection candidates are not execution requests",
+  "active_admission_or_m3_authority": false
+}
