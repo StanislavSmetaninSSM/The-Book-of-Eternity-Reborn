@@ -61,21 +61,21 @@
 },
 {
   "id": "fr063-hot-worker-ready-disposition",
-  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
-  "excludes": "No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.",
+  "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03/HS-WORKER-F01: On the supported native WindowsJob host, two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
+  "excludes": "No component-only delegator/private accepted flag/fake original proof; ordinary worker behavior retained. Ordinary Linux WorkerRelease is intentionally unavailable; pwsh configuration does not admit it. No Linux positive worker qualification. This is unsupported HOT worker disposition only, not worker semantic source admission/native uncertainty/fullF1/S/B/M3.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
   ],
   "related": [
     {
       "id": "fr063-joint-late-completion",
-      "when": "FIRST protected Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE; separate frozen EVIDENCE before specifically released new GREEN singleton. No aggregate."
+      "when": "Reassess protected Late2 for production custody/dispatch changes. Test-only settled logger/platform/CI correction retains accepted prior13PASS and requires fresh BOTH/catalog/exact singleton PlanOnly plus affected SOURCE before FIRST Windows worker2; no unchanged Late2 replay."
     }
   ],
   "requirements": {
     "frontendBuild": false,
     "exclusive": true,
-    "ciRunner": "ubuntu-24.04"
+    "ciRunner": "windows-latest"
   },
   "timeoutMinutes": 5,
   "expectedSeconds": null,

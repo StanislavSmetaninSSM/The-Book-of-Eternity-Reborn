@@ -1,0 +1,173 @@
+name: FR063 bounded ordinary worker Windows qualification
+
+# Source/preparation pushes do not execute this job. Add the release file once,
+# only after the independent affected SOURCE decision is saved and recovered.
+on:
+  push:
+    branches: [1536-wound-b2-cloud-20261012]
+    paths: [tests/selections/1536-hot-worker-windows.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fr063-hot-worker-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  first-worker2:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      POWERSHELL_TELEMETRY_OPTOUT: '1'
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+      DOTNET_PROCESSOR_COUNT: '1'
+      GenerateDocumentationFile: 'true'
+      NoWarn: '1591'
+      # Apply before checkout materializes files; hashes below are raw bytes.
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.longpaths
+      GIT_CONFIG_VALUE_1: 'true'
+    steps:
+      - name: Recover exact source from GitHub
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup current compiler and target runtime
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Require reviewed first release, prepare and execute only worker2
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $releasePath = 'tests/selections/1536-hot-worker-windows.json'
+          $category = 'fr063-hot-worker-ready-disposition'
+          $evidence = 'TestResults/fr063-hot-worker-windows'
+          New-Item -ItemType Directory -Path $evidence -Force | Out-Null
+          function Require([bool]$Condition, [string]$Message) {
+            if (-not $Condition) { throw $Message }
+          }
+          function GitValue([string[]]$GitArgs) {
+            $value = & git @GitArgs
+            Require ($LASTEXITCODE -eq 0) "Git read failed: $($GitArgs -join ' ')"
+            return $value
+          }
+          function DllPins {
+            @('BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll',
+              'BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll',
+              'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll',
+              'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll') | ForEach-Object {
+              [ordered]@{ Path = $_; Bytes = (Get-Item -LiteralPath $_).Length; Sha256 = (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash }
+            }
+          }
+          function OwnedPrefix {
+            @(Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Force -Filter 'boe-gameengine-turnlifecycle-*' | Sort-Object FullName | ForEach-Object FullName)
+          }
+          function InvokeBounded([string]$Label, [string[]]$InvocationArgs) {
+            $prior = @(Get-ChildItem TestResults/test-categories -Directory -ErrorAction SilentlyContinue | ForEach-Object FullName)
+            $started = [DateTimeOffset]::UtcNow
+            & pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 @InvocationArgs *>&1 | Tee-Object "$evidence/$Label.stdout.log" | Out-Host
+            $native = $LASTEXITCODE
+            $ended = [DateTimeOffset]::UtcNow
+            $new = @(Get-ChildItem TestResults/test-categories -Directory | Where-Object FullName -NotIn $prior)
+            $record = [ordered]@{ Label = $Label; Argv = @('pwsh', '-NoLogo', '-NoProfile', '-File', 'scripts/test-csharp.ps1') + $InvocationArgs; Source = $env:GITHUB_SHA; StartedUtc = $started.ToString('O'); EndedUtc = $ended.ToString('O'); NativeExit = $native; ResultDirectories = @($new.FullName) }
+            $record | ConvertTo-Json -Depth 12 | Set-Content "$evidence/$Label.native.json" -Encoding utf8NoBOM
+            Require ($new.Count -eq 1) "Expected exactly one new result directory for $Label."
+            return [pscustomobject]@{ NativeExit = $native; Directory = $new[0].FullName }
+          }
+          Require ([OperatingSystem]::IsWindows()) 'Positive ordinary worker qualification requires native WindowsJob.'
+          Require ($env:GITHUB_EVENT_NAME -ceq 'push' -and $env:GITHUB_REF -ceq 'refs/heads/1536-wound-b2-cloud-20261012') 'Wrong release event or branch.'
+          Require ($env:GITHUB_RUN_ATTEMPT -ceq '1') 'No workflow/job retry is released.'
+          $head = GitValue @('rev-parse', 'HEAD')
+          Require ($head -ceq $env:GITHUB_SHA) 'Checkout differs from event SHA.'
+          Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Checkout is not clean.'
+          $release = Get-Content -LiteralPath $releasePath -Raw | ConvertFrom-Json -AsHashtable
+          Require ($release.schemaVersion -eq 1 -and $release.decision -ceq 'ACCEPTED_SOURCE_FIRST_WINDOWS_WORKER2') 'No exact first-worker release.'
+          Require ($release.reviewedSource -cmatch '^[0-9a-f]{40}$' -and $release.acceptedCheckpoint -cmatch '^[0-9a-f]{40}$') 'Release source pins are invalid.'
+          Require ((GitValue @('rev-parse', 'HEAD^')) -ceq $release.acceptedCheckpoint) 'Release is not directly after the saved SOURCE acceptance.'
+          Require (@(GitValue @('ls-tree', '-r', '--name-only', $release.acceptedCheckpoint, '--', $releasePath)).Count -eq 0) 'Release file must be a first addition.'
+          $releaseDiff = @(GitValue @('diff', '--name-status', $release.acceptedCheckpoint, 'HEAD'))
+          Require ($releaseDiff.Count -eq 1 -and $releaseDiff[0] -ceq "A`t$releasePath") 'Release commit must add only the dedicated release file.'
+          # Explicit bounded pinned history; absence of the ancestor fails closed.
+          & git fetch --no-tags --depth=32 origin $release.reviewedSource $release.acceptedCheckpoint
+          Require ($LASTEXITCODE -eq 0) 'Cannot recover reviewed pinned history.'
+          & git merge-base --is-ancestor $release.reviewedSource $release.acceptedCheckpoint
+          Require ($LASTEXITCODE -eq 0) 'Reviewed source is not a proved ancestor.'
+          $changed = @(GitValue @('diff', '--name-only', $release.reviewedSource, $release.acceptedCheckpoint))
+          foreach ($path in $changed) {
+            Require ($path -cmatch '^specs/1536-complete-wound-materialization/(spec\.md|plan\.md|tasks\.md|design/[^/]+\.md|recovery/.+)$') "Unreviewed source/configuration change: $path"
+          }
+          foreach ($kind in @('md', 'json')) {
+            $pin = $release.sourceReview[$kind]
+            Require ($pin.path -cmatch '^specs/1536-complete-wound-materialization/recovery/[^/]+\.(md|json)$' -and $pin.sha256 -cmatch '^[0-9a-f]{64}$') 'Invalid review artifact pin.'
+            Require ((Get-FileHash -LiteralPath $pin.path -Algorithm SHA256).Hash.ToLowerInvariant() -ceq $pin.sha256) 'Raw SOURCE review bytes differ.'
+          }
+          Require (@($release.selections).Count -eq 1 -and $release.selections[0].category -ceq $category) 'Only the worker category is released.'
+          Import-Module ./scripts/testing/TestCategoryCatalog.psm1
+          $catalog = Read-TestCategoryCatalog ./tests/categories.json
+          $owner = @($catalog.categories | Where-Object id -CEQ $category)
+          Require ($owner.Count -eq 1 -and $owner[0].requirements.ciRunner -ceq 'windows-latest' -and $owner[0].requirements.exclusive -and -not $owner[0].requirements.frontendBuild -and $owner[0].timeoutMinutes -eq 5) 'Worker catalog host/exclusivity/budget differs.'
+          [ordered]@{ Source = $head; AcceptedCheckpoint = $release.acceptedCheckpoint; ReviewedSource = $release.reviewedSource; RunId = $env:GITHUB_RUN_ID; RunAttempt = $env:GITHUB_RUN_ATTEMPT; Os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; Architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString(); PowerShell = $PSVersionTable.PSVersion.ToString(); GitCheckoutAutocrlf = (GitValue @('config', '--get', 'core.autocrlf')); PreActualRuntime = 'NOT_RUN' } | ConvertTo-Json | Set-Content "$evidence/environment.json" -Encoding utf8NoBOM
+          & dotnet --info | Tee-Object "$evidence/dotnet-info.log" | Out-Host
+          Require ($LASTEXITCODE -eq 0) 'Cannot inspect native .NET.'
+          $catalogRun = InvokeBounded 'fresh-both-catalog' @('-ValidateCatalog')
+          Require ($catalogRun.NativeExit -eq 0) 'Fresh BOTH/catalog failed; no actual released.'
+          $audit = Get-Content (Join-Path $catalogRun.Directory 'summary.json') -Raw | ConvertFrom-Json
+          Require ($audit.DiscoveryOnly -and $audit.Tests.Executed -eq 0 -and $audit.CatalogAudit.Valid -and @($audit.CatalogAudit.Unmapped).Count -eq 0 -and @($audit.CatalogAudit.StaleSelectors).Count -eq 0 -and -not $audit.TimedOut -and $audit.OwnedTreeCleanupSucceeded -and $audit.RuntimeCleanupSucceeded) 'Fresh inventory/discovery/cleanup did not qualify.'
+          foreach ($phase in @('Build-unit', 'Build-integration')) {
+            Require (@($audit.PhaseResults | Where-Object { $_.Name -ceq $phase -and $_.Completed }).Count -eq 1) 'Both selected projects require a fresh successful build.'
+          }
+          Get-ChildItem $catalogRun.Directory -Recurse -Filter 'Build-*.log' | ForEach-Object {
+            & ./scripts/check-dotnet-warning-budget.ps1 -LogPath $_.FullName -MaxWarnings 158
+          }
+          $planRun = InvokeBounded 'exact-plan' @('-SelectionFile', $releasePath, '-PlanOnly', '-NoBuild')
+          Require ($planRun.NativeExit -eq 0) 'Exact PlanOnly failed; no actual released.'
+          $plan = Get-Content (Join-Path $planRun.Directory 'plan.json') -Raw | ConvertFrom-Json
+          $planSummary = Get-Content (Join-Path $planRun.Directory 'summary.json') -Raw | ConvertFrom-Json
+          Require ($planSummary.PlanOnly -and $planSummary.Tests.Executed -eq 0 -and @($plan.Descriptors).Count -eq 1) 'PlanOnly must execute zero tests and plan one descriptor.'
+          $descriptor = $plan.Descriptors[0]
+          Require ($descriptor.Category -ceq $category -and $descriptor.Adapter -ceq 'integration' -and $descriptor.Exclusive -and -not $descriptor.FrontendBuild -and $descriptor.BudgetMinutes -eq 5 -and $descriptor.EstimatedCases -eq 2 -and @($descriptor.ExpectedMethodCounts).Count -eq 1 -and $descriptor.ExpectedMethodCounts[0].Name -ceq 'BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody' -and $descriptor.ExpectedMethodCounts[0].Cases -eq 2) 'Exact worker method/count/budget differs.'
+          $beforeDll = @(DllPins)
+          $beforeTemp = @(OwnedPrefix)
+          Require ($beforeTemp.Count -eq 0) 'Scoped fixture residue exists before actual.'
+          Require (@(GitValue @('status', '--porcelain')).Count -eq 0) 'Source changed during preparation.'
+          $beforeDll | ConvertTo-Json -Depth 8 | Set-Content "$evidence/dll-before.json" -Encoding utf8NoBOM
+          $beforeTemp | ConvertTo-Json -AsArray | Set-Content "$evidence/temp-before.json" -Encoding utf8NoBOM
+          $actualFailure = $null
+          try { $actualRun = InvokeBounded 'first-worker2' @('-SelectionFile', $releasePath, '-NoBuild') }
+          catch { $actualFailure = $_ }
+          finally {
+            $afterDll = @(DllPins)
+            $afterTemp = @(OwnedPrefix)
+            $afterStatus = @(GitValue @('status', '--porcelain'))
+            $afterHead = GitValue @('rev-parse', 'HEAD')
+            [ordered]@{ Source = $afterHead; Status = $afterStatus; Dll = $afterDll; ScopedTemp = $afterTemp; WrapperFailure = if ($actualFailure) { $actualFailure.ToString() } else { $null } } | ConvertTo-Json -Depth 12 | Set-Content "$evidence/after-actual.json" -Encoding utf8NoBOM
+          }
+          if ($actualFailure) { throw $actualFailure }
+          Require ($afterHead -ceq $head -and $afterStatus.Count -eq 0 -and $afterTemp.Count -eq 0 -and (($beforeDll | ConvertTo-Json -Compress) -ceq ($afterDll | ConvertTo-Json -Compress))) 'Source, DLL or owned cleanup continuity failed.'
+          Require ($actualRun.NativeExit -eq 0) 'FIRST worker2 failed; preserve the original packet and stop, no retry.'
+          $summary = Get-Content (Join-Path $actualRun.Directory 'summary.json') -Raw | ConvertFrom-Json
+          Require ($summary.ExitCode -eq 0 -and -not $summary.TimedOut -and $summary.OwnedTreeCleanupSucceeded -and $summary.RuntimeCleanupSucceeded -and $summary.Selection.PlannedDescriptors -eq 1 -and $summary.Selection.CompletedDescriptors -eq 1 -and $summary.Selection.PlannedCases -eq 2 -and $summary.Selection.CompletedCases -eq 2 -and $summary.Selection.Complete -and $summary.Tests.Total -eq 2 -and $summary.Tests.Executed -eq 2 -and $summary.Tests.Passed -eq 2 -and $summary.Tests.Failed -eq 0 -and @($summary.DuplicateTests).Count -eq 0 -and @($summary.CategoryResults).Count -eq 1 -and $summary.CategoryResults[0].Completed -and $summary.CategoryResults[0].BudgetMinutes -eq 5 -and $summary.CategoryResults[0].Seconds -le 300) 'Exact positive two-case/cleanup result did not qualify.'
+          Write-Host 'FIRST native Windows worker2 packet preserved; separate EVIDENCE and final bounded review remain required.'
+
+      - name: Preserve every native outcome and preparation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fr063-hot-worker-windows-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            TestResults/test-categories/
+            TestResults/fr063-hot-worker-windows/
+          if-no-files-found: warn
+          retention-days: 30

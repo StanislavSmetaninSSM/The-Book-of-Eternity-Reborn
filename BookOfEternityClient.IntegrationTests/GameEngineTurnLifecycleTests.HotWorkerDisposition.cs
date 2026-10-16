@@ -88,12 +88,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             .Select(path => Path.GetFullPath(Path.Combine(path, executable))).FirstOrDefault(File.Exists)
             ?? throw new InvalidOperationException("PowerShell 7 fixture executable is unavailable.");
         var input = new QueuedConsoleInputSource([]);
+        var logger = new SpiritualLifecycleTestLogger();
         var engine = CreateGameEngine(input, settings =>
         {
             InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0;
             settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
                 { Enabled = true, LaunchCommand = $"\"{shell}\" -NoLogo -NoProfile -File \"{scriptPath}\"", TimeoutSeconds = 15 });
-        }, fileSystem: files);
+        }, fileSystem: files, logger: logger);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_hot_actual_worker", 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>
@@ -151,6 +152,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     failReadyPublication, guardFired, accepted, readyCuts, appliedTaskAtCut,
                     WaitSettled = repairWait?.IsCompleted, GuardSettled = deadline.IsCompleted,
+                    EngineDiagnostics = logger.Describe(),
+                    Platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
+                    WorkerExecutable = shell,
                     Audit = await new GmWorkerAuditLog(files).ReadEventsAsync(),
                     LatestTask = await files.ReadFileAsync(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath),
                     Failures = failures.Select(failure => failure.ToString()).ToArray(), request.RequestId, generation

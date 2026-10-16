@@ -52,9 +52,9 @@
     },
     {
       "category": "fr063-hot-worker-ready-disposition",
-      "reason": "#1536 T179-Pd.3b HS-IMPL-F03: Two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
+      "reason": "#1536 T179-Pd.3b HS-IMPL-F03/HS-WORKER-F01: Native WindowsJob host only; two genuine ordinary Stage→actual Wait/engine-dispatched process worker→real apply cases. Worker proposal uses actual task context/hash. Real worker-generated Ready is consumed but HOT stays unavailable; one-shot Ready publication IO fault armed by correlated durable proposal-applied event exercises actual accepted-apply/no-Ready direct return. Audit/task/trajectory/current bytes/G/strict cleanup must prove route, no dispatch field seeding.",
       "contracts": [
-        "#1536 T179-Pd.3b HS-IMPL-F03 genuine affected owner/route coverage; all new controls UNRUN. Existing hook/actual owner only, no private issuer/field seeding. Keep category five-minute bounds; no SOURCE/actual release inferred. FIRST protected Late2/separate frozen EVIDENCE precede individually released GREEN; exact failed-Begin and isolated Ld/native seams remain OPEN."
+        "#1536 T179-Pd.3b HS-WORKER-F01: FIRST Linux packet remains2FAIL; ordinaryLinuxRelease is intentionally unavailable, not activated. Test-only logger/platform correction requires fresh BOTH/catalog/singletonPlanOnly and independent affected SOURCE before FIRST Windows worker2. Prior13PASS retained without replay; five-minute category/two real apply oracles unchanged. No source/run acceptance from metadata; full3b/S/B/M3/native/DOMvisual remainOPEN."
       ]
     }
   ]
