@@ -1,3 +1,9 @@
+## T179-Pd fixture-corrected first Late2 frozen — EVIDENCE pending, 2026-10-16
+
+- First corrected-source actual on clean d0008c346 / compiled3d262e030, fr063-joint-late-completion: native0,2/2PASS, complete1descriptor/2cases, wall00:03:41.0313790, no timeout/skip/duplicate/underfill; owned/runtime cleanup complete. Immutable recovery/t179pd-ledger-fixture-corrected-late-20261016* preserves full rawstdout/log/TRX/plan/summary/nativeexit/hashindex. Four DLL/source/fixture/catalog/selection unchanged.
+- Rootfive raw/stored/local chains/exact method counts checked, plus full source42→original43/session/request/token/G, CREATE2/TREAT3, damage3health5→2, charge2energy2→0, zero/nonzero signed schedules/named native transaction images, exactstory, inert84-image repeat,142cleanup paths percase and two strict removed/noerror/physicallyabsent roots. This is unchanged v2 control, not ledger15GREEN or active qualification.
+- Next separate independent EVIDENCE decision. Correctedledger15,retainedC1 and all regressions remainUNRUN; firstunexpected/evidence uncertainty freezes execution. FullPd submitted-current admission/S/C/B/M3/coldP0/F1/T197/activation remain open. Continue independent design work, no default public routing change.
+
 ## T179-Pd fixture-corrected SOURCE gate — first unchanged Late2 only, 2026-10-16
 
 - Separate configured Astra/XHigh [affected SOURCE/FIXTURE/SELECTION review](./recovery/t179pd-ledger-fixture-corrected-source-review-20261016.md) at4452a50cb / compiled3d262e030: READY_FOR_FIRST_UNCHANGED_LATE2_ONLY, no remaining blockers. All diagnosis causes plus initial-TouchedPaths gap resolved in source; genuine NPC before-images/default callers, trigger+consume/exactsingle consume link,50L/no-currentTime and issue-path diagnostics assessed. Production/integration/catalog/selection unchanged from prior reviewed56e2. Root110 historical/context/evidence Git pins,5 exact diffs and four DLLs checked; immutable pair byteexact.
