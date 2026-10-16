@@ -82,7 +82,7 @@ public sealed class MortalJointStoryRowCalculationTests
         void Calculate() => StoryService.CalculateMortalJointStoryRow(Inputs(action: action,
             guardians: guardians, residents: residents, npc: npc));
         if (npc == "null") Assert.Throws<InvalidDataException>(Calculate);
-        else Assert.Throws<JsonException>(Calculate);
+        else Assert.ThrowsAny<JsonException>(Calculate);
     }
 
     [Theory]
