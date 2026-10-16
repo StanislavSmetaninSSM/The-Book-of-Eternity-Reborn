@@ -28,7 +28,7 @@
 - [ ] T194 [US7] R2 Pure location/item/quest family plans with real identities/storage/reward companions.
 - [ ] T195 [US7] R2 Pure NPC/faction/world/meta/misc family plans and exact realm/source eligibility.
 - [ ] T196 [US7] R2 Ordinary XP/stats, complete Plan|ValidatedEmpty take/compositor, same-turn story/readers and full repair D11.
-- [ ] T197 [US7] R2 Corrected MortalDeath→LifeEvaluation DESIGN R1–R5, independent rereview, DEP-I successor/DEP-L restore contract decisions; then separately authorized exact H0–HQ/EP–E4K implementation/qualification. H2/H3/activation blocked until complete lawful target ownership qualifies.
+- [ ] T197 [US7] R2 Corrected MortalDeath→LifeEvaluation DESIGN R1–R5, independent rereview, DEP-C lost-pin retirement/DEP-I successor/DEP-L restore contract decisions; then separately authorized exact H0–HQ/EP–E4K implementation/qualification. H2/H3/activation blocked until complete lawful target ownership qualifies.
 - [ ] T198 [US7] R2 Full lawful outcome universe/composite/action-time/accept-decline qualification; finite future owners and actual client/OS evidence.
 
 ## FR063-D5-F1 готов к обсуждению; реализация не разрешена — 2026-10-16
