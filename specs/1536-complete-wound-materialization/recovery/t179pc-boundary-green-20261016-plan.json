@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "fr063-common-boundary-calculation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4aa764cf6fac307903363903fdac5d5c2d3ced1b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.2918441,
+  "Descriptors": [
+    {
+      "Name": "fr063-common-boundary-calculation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-common-boundary-calculation",
+      "Categories": [
+        "fr063-common-boundary-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.CommonBoundary_RealDiscoveredBoundedResultCannotBecomeCompletedEmpty|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualActivePendingRefusesUnboundedCalculation|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualTerminalRequiresReceiptsOnlyForExactFrame|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_EmptyHasNoPendingReceiptOrCandidateObligation|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_SubmittedReceiptsCannotBecomeUnboundedEmpty",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.CommonBoundary_RealDiscoveredBoundedResultCannotBecomeCompletedEmpty",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualActivePendingRefusesUnboundedCalculation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualTerminalRequiresReceiptsOnlyForExactFrame",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_EmptyHasNoPendingReceiptOrCandidateObligation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_SubmittedReceiptsCannotBecomeUnboundedEmpty",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "source_sha": "4aa764cf6fac307903363903fdac5d5c2d3ced1b",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-105014-010-51914-a188a4b2c5d0463fa82beaac5d72b2db-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-boundary-green-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-105014-010-51914-a188a4b2c5d0463fa82beaac5d72b2db-categories/dotnet-test.log",
+      "raw_bytes": 1695574,
+      "raw_sha256": "793a83cf7bbea06dc46fd3b45089825db3f21dbdb4d473d7dd3a4f8e215d8568",
+      "stored_sha256": "9a276a2a034cc2ef17d291938f7e9afc2cd8a6a13e3fec5f1d2168564f04eb4e"
+    },
+    {
+      "path": "t179pc-boundary-green-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-105014-010-51914-a188a4b2c5d0463fa82beaac5d72b2db-categories/fr063-common-boundary-calculation-unit-001.trx",
+      "raw_bytes": 17344,
+      "raw_sha256": "d9672475e6fa322e69b84262be19df4388ea3adb41a11e8555dd6e1e54fc3620",
+      "stored_sha256": "d82c31ae4cdb48b214dce95f5850280ff51a0ad0a72476553d0b23ed98b5570b"
+    },
+    {
+      "path": "t179pc-boundary-green-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-105014-010-51914-a188a4b2c5d0463fa82beaac5d72b2db-categories/plan.json",
+      "raw_bytes": 2433,
+      "raw_sha256": "5e8ad9b4f3aafaa3d6823c139e2d340777258f72dcadf75e85a3c410106dc71c",
+      "stored_sha256": "5e8ad9b4f3aafaa3d6823c139e2d340777258f72dcadf75e85a3c410106dc71c"
+    },
+    {
+      "path": "t179pc-boundary-green-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-105014-010-51914-a188a4b2c5d0463fa82beaac5d72b2db-categories/summary.json",
+      "raw_bytes": 1478,
+      "raw_sha256": "cc294318a4eac7daf49775bdc1c2bfb8de133a619d80dee7b62d9de718e9945a",
+      "stored_sha256": "cc294318a4eac7daf49775bdc1c2bfb8de133a619d80dee7b62d9de718e9945a"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-common-boundary-calculation"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "4aa764cf6fac307903363903fdac5d5c2d3ced1b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-common-boundary-calculation",
+        "Seconds": 2.8492713,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0588986,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.053082,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1342429,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0049655,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:06.5358212",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 10,
+      "CompletedCases": 10,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 10,
+      "Executed": 10,
+      "Passed": 10,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}
