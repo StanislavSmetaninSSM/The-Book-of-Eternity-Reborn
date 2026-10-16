@@ -1,0 +1,12 @@
+{
+  "source_sha": "af473803a5fe60eab87837f9c7381a73a18f2188",
+  "run": "TestResults/test-categories/20261016-075926-924-17807-384859545eb741a8b368ae6fa8e66e44-categories",
+  "runtime_cases": 33,
+  "passed": 0,
+  "failed": 33,
+  "all_failures": "NotImplementedException from test-first API seams",
+  "log_gzip_sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821",
+  "log_raw_sha256": "3282528e82ff87c347a33e9ef6c61f21f246fef6bc20d0751c46f0903159c2e7",
+  "raw_bytes": 1813439,
+  "new_capability_or_live_F1": false
+}
