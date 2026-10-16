@@ -1,6 +1,8 @@
 # Feature Specification: Complete Wound Materialization and Healing
 
-> **Current delegated scope, 2026-10-16: DESIGN ONLY.** The [current plan entry](plan.md) governs this pass: F1 design/matrix/T178–T191, independent review/corrections and document publication/recovery only. No code/test/runtime-tool changes or build/discovery/tests/runtime; historical authorization and next-run records below do not authorize execution in this pass. Preserve existing source/evidence, then STOP for implementation discussion after corrected final DESIGN review. Full F1 qualification, D4/guided/actual DOM/visual/platform/D8/T197/new-QTE gates remain open.
+> **Current execution authority, 2026-10-16:** new direct delegation resumes autonomous accepted bounded3b implementation from745b and supersedes the prior discussion STOP. Follow the [current plan entry](plan.md): saved FIRST Late2 requires separate EVIDENCE before specifically released Ready3, then preserved/qualified causal RED before custody success implementation. No unchanged-test repetition or F1 redesign; full S/M3/F1/ordinary/T197/new-QTE and D4/guided/DOM/visual/Windows/D8 gates remain open.
+
+> **Completed delegated scope at745b, 2026-10-16: DESIGN ONLY.** That pass allowed F1 design/matrix/T178–T191, independent review/corrections and document publication/recovery only. Its no-code/no-runtime and discussion STOP records below describe that completed pass; the new direct delegation above controls subsequent work. Existing source/evidence and all full-qualification constraints remain retained.
 
 **Feature Branch**: `1536-complete-wound-materialization`
 

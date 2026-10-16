@@ -1,4 +1,11 @@
-## Current delegated scope — DESIGN ONLY (2026-10-16)
+## Current execution — autonomous bounded T179-Pd.3b (2026-10-16)
+
+New direct delegation resumes implementation from745b and supersedes the completed discussion STOP below. Follow [current execution authority](plan.md); accepted F1 is not redesigned, routine user approval is not a new gate.
+
+- [x] Verify745b remote/clean/main and compiled d474/fourDLL continuity; locate frozen93a FIRST Late2/2ab carrier and confirm its separate EVIDENCE acceptance is absent. Recheck six chains/full semantic+strict-cleanup union without runtime repetition.
+- [ ] Preserve/push/readback/recover continuation; independent FIRST Late2 EVIDENCE before any Ready3. Only explicitly released Ready3 singleton may run; freeze/preserve every actual outcome and qualify causal RED independently before implementing accepted bounded custody. Full3b/S/B/M3/F1/T197/newQTE and prior D4/guided/visual/Windows/D8 gates remain open.
+
+## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 Follow the [current delegated scope](plan.md) before any historical task instruction below: documents, independent DESIGN review/corrections, task-branch publication and source recovery only. No code/test/runtime-tool changes and no build/discovery/tests/runtime. Historical SOURCE/EVIDENCE decisions cannot release Late2, Ready3 or another actual run in this pass. Preserve existing source/evidence; after corrected final review and verified document recovery, **STOP for implementation discussion**. Main T178–T191 remain unchecked; future full F1 checks and D4/guided/DOM/visual/platform/D8/T197/new-QTE gates remain open.
 

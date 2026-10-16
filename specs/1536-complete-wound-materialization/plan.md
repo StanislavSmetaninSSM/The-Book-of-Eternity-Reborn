@@ -1,4 +1,12 @@
-## Current delegated scope — DESIGN ONLY (2026-10-16)
+## Current execution authority — autonomous bounded 3b continuation (2026-10-16)
+
+The new direct coordinator delegation resumes autonomous implementation from remote `745b8581275bd4b5fe25f01cb1bf6ea899492314`: continue the accepted bounded T179-Pd.3b sequence, obtain engineering reviews, use causal TDD and implement the accepted custody contract without another routine user gate. It explicitly supersedes the discussion STOP of the completed DESIGN-only pass below. Earlier immutable design/review/evidence records remain unchanged.
+
+Exact next executable step: independent EVIDENCE review of the already frozen FIRST Late2 actual at93a/compiledd474, carried by2ab. No separate acceptance for that packet was found in recovery; SOURCE/F01 and full-recovery/R01 decisions release only that completed FIRST Late2, not Ready3. Root reverified six raw/local/stored/Git-carrier chains, both cases/full request+original+G/common/story/progression/inert/strict cleanup, unchanged compiled source and all four DLLs without rerunning tests. Publish/readback/recover this continuation checkpoint, then obtain the separate EVIDENCE decision. Only its explicit release may run the Ready3 singleton `fr063-hot-joint-ready-custody-drift`; expected2legacyPASS+one sole missing-export RED228 is still UNRUN. No aggregate, hidden retry or repetition of unchanged Late2/HS01/reader131.
+
+Preserve and independently qualify any causal RED before success implementation. Continue accepted finite 3b custody/source/attempt/owned-close work and meaningful checks; settle concrete engineering gaps through focused design and independent review. Full S/B/M3/F1, complete ordinary owners, T197, new-QTE activation and all D4/guided/DOM/visual/Windows/D8 gates remain open. F2 is not selected. Sole writer, category budgets, native/cleanup/source evidence and non-force task-branch persistence remain mandatory; main/merge/force-push/branch deletion/secrets/issue closure stay prohibited.
+
+## Completed delegated DESIGN-only pass — checkpoint745b8581 (2026-10-16)
 
 This pass follows the direct delegation anchored at `c4dde0629cc17aad75196ec509d2cdaf621945a3`: F1 design, the future verification matrix, T178–T191 refinement, independent review and document corrections. Only documents, non-force task-branch publication and GitHub source recovery are authorized. Do not edit code, tests or runtime tools; do not run build, discovery, tests or application/runtime commands.
 

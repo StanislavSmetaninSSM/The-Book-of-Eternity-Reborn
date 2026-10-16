@@ -1,6 +1,8 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
-> **Current delegated scope, 2026-10-16: DESIGN ONLY.** Follow the [current plan entry](../plan.md): documents and independent DESIGN review/corrections only, with task-branch publication/source recovery. No code/test/runtime-tool changes or build/discovery/tests/runtime. Historical execution records do not release actual runs in this pass. After corrected final review and verified document recovery, STOP for implementation discussion. Existing source/evidence and all D4/guided/DOM/visual/platform/D8/full-F1/T197/new-QTE limits are retained.
+> **Current execution authority, 2026-10-16:** new direct delegation resumes autonomous accepted bounded3b implementation from745b, superseding the completed discussion STOP. The [current plan entry](../plan.md) starts at saved FIRST Late2's separate EVIDENCE gate; Ready3 and causal TDD/implementation follow only their engineering gates. No new F1 redesign or full-S/M3/F1/T197/new-QTE release; all D4/guided/DOM/visual/Windows/D8 limits remain.
+
+> **Completed DESIGN-only pass at745b:** documents/review/source recovery only; its STOP was followed for that pass. The corrected final review below closes its documentation finding and does not itself issue implementation/runtime authority. The new direct delegation above authorizes subsequent bounded work.
 
 Current [corrected independent final DESIGN review](../recovery/lawful-active-f1-final-design-corrected-review-20261016.md) at709a closes the authorization-text finding F1-FINAL-D01; no new confirmed mechanical F1 defect was found. READY FOR USER DISCUSSION only: no implementation or actual-run release, full future F1/ordinary-owner/T197 qualification remains open.
 
