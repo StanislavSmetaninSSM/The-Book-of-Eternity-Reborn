@@ -1,0 +1,45 @@
+{
+  "source_sha": "f679ea25f70112addc15ea76fab1df0db9dfd01b",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-081059-601-20401-1dc975017b0f47c4bcdc793267933d64-categories",
+  "artifacts": [
+    {
+      "path": "t179pa-corrected-green-20261016-dotnet-test.log.gz",
+      "raw_sha256": "bd2088f826e393b3a189cad51be607c3f5c71d88985f62337e0bca0e45c11b0e",
+      "stored_sha256": "79bfefc8046c567346621aff4f83d578c225645100e2c12fd6bb56275d70caf5",
+      "raw_bytes": 1765180
+    },
+    {
+      "path": "t179pa-corrected-green-20261016-fr063-automatic-calculation-unit-001.trx",
+      "raw_sha256": "be8bcc0036ee5d90021cd186a5c896b65b33c3c11be84302f1146a8464715fed",
+      "stored_sha256": "be8bcc0036ee5d90021cd186a5c896b65b33c3c11be84302f1146a8464715fed",
+      "raw_bytes": 63307
+    },
+    {
+      "path": "t179pa-corrected-green-20261016-plan.json",
+      "raw_sha256": "58d3581def61f5982dad25ddcad5c4d7f2fd2e30044f18e39cb8a8768f8b563a",
+      "stored_sha256": "58d3581def61f5982dad25ddcad5c4d7f2fd2e30044f18e39cb8a8768f8b563a",
+      "raw_bytes": 5216
+    },
+    {
+      "path": "t179pa-corrected-green-20261016-summary.json",
+      "raw_sha256": "d1b64d26efc20104ad72bbeca124ea09908ead3cc51e4d9d306d0f4df4e4359d",
+      "stored_sha256": "d1b64d26efc20104ad72bbeca124ea09908ead3cc51e4d9d306d0f4df4e4359d",
+      "raw_bytes": 1559
+    }
+  ],
+  "tests": {
+    "Total": 39,
+    "Executed": 39,
+    "Passed": 39,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 39,
+    "CompletedCases": 39,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exit_code": 0
+}

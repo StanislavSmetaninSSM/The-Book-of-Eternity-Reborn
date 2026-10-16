@@ -1,0 +1,86 @@
+{
+  "Categories": [
+    "fr063-automatic-calculation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f679ea25f70112addc15ea76fab1df0db9dfd01b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 39.1497934,
+  "Descriptors": [
+    {
+      "Name": "fr063-automatic-calculation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-automatic-calculation",
+      "Categories": [
+        "fr063-automatic-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.ByteDistinctReadSource_ChangesSealEvenWhenResultValuesMatch|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.ChangedThreeRootPlan_UsesTheExistingOwnersUtf8Preamble|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.CoveredOrLowerLevel_PreservesBalanceWatermarkAndExactPointBytes|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.FrozenInputsAndReturnedImages_DoNotAliasCallerArrays|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.IncompleteOrNoncanonicalBaseStats_Refuse|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.InvalidLevel_Refuses|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.MalformedStatsInput_Refuses|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.MissingOrInvalidInitializerEvidence_RefusesInsteadOfInferringFromBalances|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.NoWork_PreservesAbsenceAndExactBytesWithoutInitialization|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.OrderedDuplicates_ReachCapThenBlockWithoutExperienceCompensation|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.Overflow_RefusesBeforeAnyPublication|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.TrainingAndAward_KeepTheirDifferentActualSourcePriorities",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 39,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.ByteDistinctReadSource_ChangesSealEvenWhenResultValuesMatch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.ChangedThreeRootPlan_UsesTheExistingOwnersUtf8Preamble",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.CoveredOrLowerLevel_PreservesBalanceWatermarkAndExactPointBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.FrozenInputsAndReturnedImages_DoNotAliasCallerArrays",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.IncompleteOrNoncanonicalBaseStats_Refuse",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.InvalidLevel_Refuses",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.MalformedStatsInput_Refuses",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.MissingOrInvalidInitializerEvidence_RefusesInsteadOfInferringFromBalances",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.NoWork_PreservesAbsenceAndExactBytesWithoutInitialization",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.OrderedDuplicates_ReachCapThenBlockWithoutExperienceCompensation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.Overflow_RefusesBeforeAnyPublication",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.TrainingAndAward_KeepTheirDifferentActualSourcePriorities",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}
