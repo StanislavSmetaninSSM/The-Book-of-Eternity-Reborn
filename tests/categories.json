@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-observed-original-barrier",
+  "responsibility": "T179-Pd.3a causal missing drift barrier: genuine original A/B and G/default-reader success, existing B post-open hook mutates already-read A, only that physical original changes. Separate default-reader positive characterization and observed barrier specification. On absent API only test adapter invokes old real behavior; expected sole RED is Success=true at rejection assertion. Every GREEN unconditionally requires actual observed API, source_changed on A and null Snapshot/Evidence.",
+  "excludes": "No production fallback/unsafe temporary issuer/new hook/caller source map, fabricated authority, whole observed-reader acceptance or admission/S/C/B/M3/cold/F1/T197/activation/Windows/visual qualification. Initial missing-API RED1 is separately frozen and not repeated in this cycle.",
+  "changeHints": [
+    "BookOfEternityClient.Tests/PendingTurnObservedOriginalBarrierTests.cs",
+    "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-observed-original-reader",
+      "when": "Initial genuine unchanged-source positive is required in wired GREEN; its missing-API causal RED1 is already frozen and excluded from this test-only cycle."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 3,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadCurrent_CharacterizesCapturedOriginalBytesAfterLaterSourceDrift",
+        "BookOfEternityClient.Tests.PendingTurnObservedOriginalBarrierTests.ReadObservedCurrent_MustRejectAlreadyReadOriginalDriftBeforeIssuingAuthority"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-observed-original-reader",
   "responsibility": "T179-Pd.3a actual original-source reader: genuine LiveTurnPreparationService original, changed live root, existing G and successful default reader before causal missing observed API assertion; then exact original bytes, privately issued evidence and current same lease recheck. Initial one-case causal RED; success implementation absent.",
   "excludes": "No submitted-output admission, S/C/B/M3/take/cold authority, new QTE/F1/T197, Windows or visual qualification; no manufactured primary authority or caller source injection.",

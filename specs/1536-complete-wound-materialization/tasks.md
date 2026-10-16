@@ -1,3 +1,6 @@
+- Pd.3a test-only causalbarrier cycle WIP: realoriginal A/B→existing B-postopen mutatesalready-readA; legacycharacterizationPASS1 + explicitlyguarded absent-feature barrierRED1 expected. Newfiniteowner+Late2 expected2descriptors4cases pendingfreshBOTH/PlanOnly/SOURCE/firstLate2/EVIDENCE; no prodsuccesslogic.
+- T197 locationalternative conditional independentreview preserved57pins2diffs/LA-O1citation334–335; no mode choice/engineeringrelease. Nextexactparentseal/unwindDESIGN; allfullG-C/target/keeperloss/browser/protocol/platformgatesOPEN.
+
 - Pd.3a expectedcausalRED1 frozen: native1/solemissingAPIline80 aftergenuinecontrols/7.181s/6rawchains/1strictabsentroot/fourDLLunchanged. No prodsuccesslogic. Nexttest-only causalbarrier cycle underfreshG5, then complete safevertical.
 
 - Pd.3a firstLate2EVIDENCE accepted; release onlycausalRED1 missingAPI line80 aftergenuinecontrols. Futureguardedtest-only missingbarrier RED consulted6pins; separate freshG5/source/Late2/EVIDENCE required, no prodsuccesslogic yet.

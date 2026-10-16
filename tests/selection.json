@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-observed-original-reader",
-      "reason": "One genuine original/current/G/default-reader control followed by missing observed API causal RED; no production success logic. Strict per-test finally cleanup and raw control diagnostics.",
+      "category": "fr063-observed-original-barrier",
+      "reason": "Two independent genuine A/B originals. Old default positively characterizes already captured bytes after late physical A drift; missing-feature test-only adapter must causally RED on Success=true, and can never GREEN without actual observed API. Strict per-test cleanup and complete only-A-change/G/read-order controls.",
       "contracts": [
-        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+        "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
       ]
     },
     {
       "category": "fr063-joint-late-completion",
-      "reason": "Mandatory G5 first actual after any test/catalog/selection correction; exact existing v2 full union/story/progression/inert repeat/strict cleanup. Freeze and separate EVIDENCE before reader causal RED.",
+      "reason": "G5 mandatory first actual after new test/catalog/selection changes, using fresh BOTH binaries; exact existing v2 fullunion/source/request/story/turn/progression/inert/strictcleanup before separate EVIDENCE release for barrier pair.",
       "contracts": [
-        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+        "#1536 T179-Pd.3a accepted observed-reader design, genuine missing-API RED1 frozen61e10b091; current test-only causal barrier cycle. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → firstLate2 → frozen separateEVIDENCE → specifically released characterizationPASS1 + missing-barrierRED1. No production success logic before causal barrier RED; no admission/M3/activation grant."
       ]
     }
   ]
