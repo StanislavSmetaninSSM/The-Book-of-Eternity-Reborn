@@ -1,0 +1,72 @@
+{
+  "scope": "Available official metadata/redacted access denial only; raw hosted packet NOT retrieved. No fallback/enable/retry.",
+  "source": "53a38ff8d6e18e441e4d6f53a0738bc6bccc64b6",
+  "files": [
+    {
+      "path": "t179pd-hot-worker-windows-first-outcome-20261016.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-outcome-20261016.json",
+      "bytes": 3418,
+      "sha256": "086ea387f6385e4e040b7894ce4f5348a609a47c5e2124f4bc56bd92639e13ac"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-outcome-20261016-run.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-outcome-20261016-run.json",
+      "bytes": 15450,
+      "sha256": "ccfc66e12dc561ec6eca4aac4a97384332324dca92580ecb851a106f24f3a69b"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-outcome-20261016-jobs.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-outcome-20261016-jobs.json",
+      "bytes": 2523,
+      "sha256": "8d0d82571aab9a42411e6f93b1d6c74da698bc99fd1b60b0c93e94a9e8cc8278"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-outcome-20261016-artifacts.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-outcome-20261016-artifacts.json",
+      "bytes": 847,
+      "sha256": "de822f372e9145075d41501e24d24b847fa7630fa60e7ddac27591698bd9e0f5"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-outcome-root-inspection-20261016.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-outcome-root-inspection-20261016.json",
+      "bytes": 1337,
+      "sha256": "f3a8f009825f2e6e7a119e84679ae9e98a47a0f1b490e4115a59552b5e3ec949"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-run-metadata-20261016.json",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-run-metadata-20261016.json",
+      "bytes": 15447,
+      "sha256": "7e63085675ee29dd80b796e3ee18161983e3b4b87fd1c9a15a4a1868cc6159be"
+    },
+    {
+      "path": "t179pd-hot-worker-windows-first-run-watch-20261016.log",
+      "origin": "/tmp/t179pd-hot-worker-windows-first-run-watch-20261016.log",
+      "bytes": 6528,
+      "sha256": "0e924c2725eb4422656c06d42670a92d1a7e193fa95d4e023da7740bd4760394"
+    },
+    {
+      "path": "t179pd-fetch-first-worker-windows-evidence-20261016.py",
+      "origin": "/tmp/t179pd-fetch-first-worker-windows-evidence-20261016.py",
+      "bytes": 4081,
+      "sha256": "6f5a897faf2feb7d415e38a78a05ac839597f251e9ae95f34a858ffdd57e22b3"
+    },
+    {
+      "path": "t179pd-create-first-worker-windows-release-20261016.py",
+      "origin": "/tmp/t179pd-create-first-worker-windows-release-20261016.py",
+      "bytes": 3448,
+      "sha256": "3b6e658a8d9dfc30f2c856d549127492f6a79681b6815602518914de6b054cd7"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-release-accepted-delta-recovery-20261016.json",
+      "origin": "/tmp/t179pd-hot-custody-worker-windows-release-accepted-delta-recovery-20261016.json",
+      "bytes": 169611,
+      "sha256": "e3053a52eade4bbff3bf4554be07f51da8f5142d21a72f2bd9541776bc6c20d1"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-first-release-delta-recovery-20261016.json",
+      "origin": "/tmp/t179pd-hot-custody-worker-windows-first-release-delta-recovery-20261016.json",
+      "bytes": 170177,
+      "sha256": "3587420208d3cf07d41989388dda386208af9ef87a387b6d6232cc05923d4918"
+    }
+  ]
+}

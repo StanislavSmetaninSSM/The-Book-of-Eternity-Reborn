@@ -1,0 +1,22 @@
+{
+  "source": "53a38ff8d6e18e441e4d6f53a0738bc6bccc64b6",
+  "acceptedParent": "bd407f0a4cc0a38db838b41a2bba32ed064babbf",
+  "compiledLocalSource": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "workflowRun": 38978917195,
+  "job": 117234913253,
+  "hostedWorkflowConclusion": "success",
+  "allJobStepsReportedSuccess": true,
+  "artifactId": 12080975497,
+  "artifactBytes": 811881,
+  "artifactDigest": "sha256:fa0992a149fc0cc3dc8af767b9ca54e6e26658ca67813aca81e5c87dac82f292",
+  "artifactExpiresAt": "2026-11-15T23:08:12Z",
+  "downloadNativeExit": 1,
+  "downloadStdoutBytes": 0,
+  "downloadDenial": "Forbidden at productionresultssa4.blob.core.windows.net; signed query redacted before persistence.",
+  "rawWindowsPacketAvailable": false,
+  "windowsCaseResults": "NOT_INDEPENDENTLY_VERIFIED; pinned workflow green indirectly reports two positive cases, but no raw native/TRX/task/audit/DLL/strict-root packet was retrieved.",
+  "currentAcceptedSelectedEvidence": "13 prior PASS + first2LinuxFAIL retained at original f9bc provenance; no Windows PASS added to accepted case totals.",
+  "localFourDllUnchanged": true,
+  "noRetryNoSettingsMutationNoAlternateTransfer": true,
+  "dependentQualification": "STOPPED/BLOCKED by the explicitly reviewed availability addendum; SOURCE stays accepted, EVIDENCE/final bounded acceptance not granted."
+}

@@ -1,0 +1,158 @@
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 1 minute ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  * Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 2 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  * Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 3 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 3 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 4 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 5 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 6 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 6 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 7 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+Refreshing run status every 45 seconds. Press Ctrl+C to quit.
+
+* 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 8 minutes ago
+
+JOBS
+* first-worker2 (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  * Require reviewed first release, prepare and execute only worker2
+  * Preserve every native outcome and preparation artifact
+  * Post Setup current compiler and target runtime
+  * Post Recover exact source from GitHub
+✓ 1536-wound-b2-cloud-20261012 FR063 bounded ordinary worker Windows qualification · 38978917195
+Triggered via push about 9 minutes ago
+
+JOBS
+✓ first-worker2 in 9m11s (ID 117234913253)
+  ✓ Set up job
+  ✓ Recover exact source from GitHub
+  ✓ Setup current compiler and target runtime
+  ✓ Require reviewed first release, prepare and execute only worker2
+  ✓ Preserve every native outcome and preparation artifact
+  ✓ Post Setup current compiler and target runtime
+  ✓ Post Recover exact source from GitHub
+  ✓ Complete job
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-dotnet@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+first-worker2: .github#2
+

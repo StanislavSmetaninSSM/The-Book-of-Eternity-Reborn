@@ -1,6 +1,6 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
-> Current bounded3b production is unchanged since7acd. Test-only worker logger/Windows routing compiled a092; affected SOURCE accepts reviewed8e0 and a narrow availability addendum permits ONE guarded first Windows worker2 release push under unchanged settings after decision recovery. Previous15selectedcases executed=13PASS+2Linux workerFAIL; Windows actualUNRUN. Unavailable scheduling/evidence means STOP without enabling/settings changes/retry. Full3b/S/B/M3/F1/T197/new-QTE and prior limits remain open; see current plan.
+> Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.
 
 > Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).
 
