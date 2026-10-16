@@ -1,0 +1,171 @@
+{
+  "sha": "9f0f0535049f725f315ea433bfba8e74388b6a9a",
+  "base_full_tree": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+  "directory": "/workspace/f1-design-only-notice-9f0f0535-docs-github-20261016",
+  "started_utc": "2026-10-16T20:16:43.020154+00:00",
+  "completed_utc": "2026-10-16T20:16:46.274931+00:00",
+  "count": 22,
+  "changed_count": 17,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/docs/development-workflow.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "bytes": 72329,
+      "git_blob": "0d58236f7c1ea6ca8149dd1ae6fe26fa6928f99b",
+      "sha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "bytes": 137212,
+      "git_blob": "b339a5b0317fc054107be6eff894b6db5a69863c",
+      "sha256": "f5ca510ea517b095e68853e853064281545bb1818ef4e5ebb81c5f6052a1b69f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "bytes": 63665,
+      "git_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "bytes": 107938,
+      "git_blob": "3376d98fd0727fe737eaf0f4e48125f7f7ca5250",
+      "sha256": "a9b7366f98fe7130225762338c55bb78fe8e850dadf42454f295ebd63d54ddd4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2166002,
+      "git_blob": "08ea3d9489ed7be3b35b1d19124e212698de561d",
+      "sha256": "ff437bf5933245873a0d4396ddeef046cf453b3f3350c15418b1513b63aecd95",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json",
+      "bytes": 253099,
+      "git_blob": "acaa7c18111ae5ddf722aaebd7df2bd7a36c6eb9",
+      "sha256": "73c0d4aafc90a1f53d41ba5c48804ee92948c5bbb35696b301f5baa4ed092eef",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz",
+      "bytes": 20,
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz",
+      "bytes": 11912115,
+      "git_blob": "065494cde772f76d4a37d8d8c6bf50762daaab34",
+      "sha256": "91b1ea07895bfaedb8c2cb76c02cf27601013431e3084bdc34e7b1b49c6c8c7f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json",
+      "bytes": 3002,
+      "git_blob": "fe55158d2a05856445e3b1a4f47893002c42a473",
+      "sha256": "aeec809b336206dcf0a2a0bb6345d1d21fd01f541cb5a32a7828294f7cd04f70",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz",
+      "bytes": 20,
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz",
+      "bytes": 49167,
+      "git_blob": "a5f60bc04e0c2a9e111ce6ffeee9cb8561a289c9",
+      "sha256": "c11a2658acb07bca800828a36f09226e6b5d36902db4f07f1e5b62fac8440a21",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt",
+      "bytes": 1038,
+      "git_blob": "aae7577b0a71a2963d3be7d64aa2cedd36be4c16",
+      "sha256": "5f93383210400043945ad125ca61be2b709e08f57e6b16fb48d97cebfc1d050b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-sha256.txt"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json",
+      "bytes": 59917,
+      "git_blob": "0012b50fa7d1f0af3ca076ae180fa925a7aa642d",
+      "sha256": "2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+      "bytes": 13814,
+      "git_blob": "0fb5be8fc29fadaacc241c7a5c858718df476666",
+      "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json",
+      "bytes": 618,
+      "git_blob": "f3ff3285b683974b7ea619bcc9326a87c901d876",
+      "sha256": "c1c1d2737d57a5d1022a29908e3dbe8fb61146d8566fe29e9606b70746bce05b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log",
+      "bytes": 193,
+      "git_blob": "2d7d28e3ed486538fbf6b6de84ff80aa2efd1f33",
+      "sha256": "a6db84521bbd3193a54ca3cce6e5207adcee992216eba2af3f0eb18587cd6987",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-20261016.log"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz",
+      "bytes": 3269673,
+      "git_blob": "3087f42858521e68105e646474c3af604d6eaafb",
+      "sha256": "fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-first-late-recovery-20261016.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 230201,
+      "git_blob": "385516b232f444452d982804ca5e33f0b123e45f",
+      "sha256": "1d9433b50e71fcd746933057f299a0e481984e5ffe57acd2135f0c2f2c3614cf",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/spec.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1524136,
+      "git_blob": "83cfa82f9dfd283a9e0dbb7a8591dee9ad91482c",
+      "sha256": "f25909861a2d48ff147f285fec9c5b247c840936ad21c889a6bde94eb571254f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9f0f0535049f725f315ea433bfba8e74388b6a9a/specs/1536-complete-wound-materialization/tasks.md"
+    }
+  ],
+  "new_empty_directory": true,
+  "source": "NEW GitHub raw exact-commit transport; no local content used as transport",
+  "scope": "ALL changed/new documentary files since full-tree2ab + explicit mandatory instructions/design documents. SELECTED DOCUMENT recovery only; no Git checkout/full history/external dependencies/build/discovery/tests/runtime qualification.",
+  "remoteReadback": "9f0f0535049f725f315ea433bfba8e74388b6a9a\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "game_code_tests_tools_catalog_selection_unchanged": true,
+  "runtime": "NOT_RUN"
+}
