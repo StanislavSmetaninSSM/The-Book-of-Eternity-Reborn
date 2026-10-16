@@ -1,0 +1,20 @@
+[
+  {
+    "path": "t179pd-run-observed-green-orf02-singleton.py.txt.gz",
+    "raw_sha256": "e75b957bb81e0e0a698ed1224e349fdccc566a9dc3a484029ec8fc5b788be60b",
+    "stored_sha256": "1f61965509c3f2a0399f0094e33c6d701f6ed3e5e923253f7681e9b8b22f61ac",
+    "raw_bytes": 3245
+  },
+  {
+    "path": "t179pd-freeze-observed-green-singleton-v1.py.txt.gz",
+    "raw_sha256": "1fb8c51d7212a2c4e90d2002872e3bcdbf993100807b9fb05b19e7305a7309bb",
+    "stored_sha256": "bd9f06d319493eb41a6b1b6cd654bcc779cfe37243900a46bcce126586f881bc",
+    "raw_bytes": 1650
+  },
+  {
+    "path": "t179pd-inspect-observed-green-singleton-v1.py.txt.gz",
+    "raw_sha256": "6de1858c067eb314822665eef89783f22d37a0f99d2341cf9c58b3ba14835fca",
+    "stored_sha256": "762479d564fae657ddff7942d51bab545d5966432d781bd5c93617ba23facd44",
+    "raw_bytes": 9659
+  }
+]
