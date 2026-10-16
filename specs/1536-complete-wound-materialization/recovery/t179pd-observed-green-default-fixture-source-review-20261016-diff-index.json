@@ -1,0 +1,111 @@
+[
+  {
+    "path": "t179pd-observed-green-default-fixture-source-full-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-full-20261016.diff",
+    "raw_sha256": "ec05f31119dcbd82e5c707c2ab05f24879f01ceba87eda709262e093777d6343",
+    "raw_bytes": 55220018,
+    "stored_sha256": "075c7a27a2bd0d545e6d123bd07bacdfa14ab7137869b2bb407d1bb4c9468173",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-fixture-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-fixture-20261016.diff",
+    "raw_sha256": "257d422b55f7f4583a2c85b8ffdaea6f554bb2813c03e9e48d3f93a21cad8cb7",
+    "raw_bytes": 1935,
+    "stored_sha256": "92f05ef6c1a703b6d00ba52c9010c0322f4f708d61d578b1af2949d1825eee3d",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-production-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-production-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-other-runtime-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-other-runtime-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts",
+      ":(exclude)BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-source-carrier-full-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-source-carrier-full-20261016.diff",
+    "raw_sha256": "321085f4b07fd0e2eee264ed58d5b5e1565b44833599c5966d15cff5dafece85",
+    "raw_bytes": 1290561,
+    "stored_sha256": "1fa49d153553b3c44e51b2833cd480c17739654b5bc7ad60ae48ee818612ab76",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "e79e6c239f3461f6c7542986279ff6dd99796062",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-source-carrier-runtime-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-source-source-carrier-runtime-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "e79e6c239f3461f6c7542986279ff6dd99796062",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  }
+]
