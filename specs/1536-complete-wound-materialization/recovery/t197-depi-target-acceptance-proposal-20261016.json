@@ -1,0 +1,567 @@
+{
+  "task": "#1536 T197 DEP-I narrow target-acceptance DESIGN proposal",
+  "date": "2026-10-16",
+  "author": "/root/t197_lost_pin_design",
+  "verdict": "PARTIAL_CONCRETE_DESIGN_AND_SOURCE_MAPPING_DEP_I_OPEN",
+  "source_revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+  "observed_head_at_end": "5d5b8ca655ebe772cd171b1a976b2bfe63a72473",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "213ad0156c95c50c4b6011d656ee3d46d5babf27",
+      "sha256": "f24e70de50bfaf4be201b6ba8e564483cfdd385b9b1e43499dacbd49e01edc9b",
+      "bytes": 1924802,
+      "worktree_equals_source_revision": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "dee996ed6e8364767700a30d874a8250e0c0becf",
+      "sha256": "4e1c1de3d43dcfc55dbf3fb09bebe7de2f11b7e2684fb38f910a8c5e0b49cd28",
+      "bytes": 64144,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "0061557eb7096199570d9654fba027fb4a038217",
+      "sha256": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+      "bytes": 92738,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "53e13fa361d3237f9f5f407cc6ab35ab15f59233",
+      "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+      "bytes": 16372,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+      "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "bytes": 15874,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.json",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "97bdd0aeae08a3a12900dd1703698870d0d90f30",
+      "sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "bytes": 40309,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/IncarnationTriggerContract.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "29c96cfe41fa1e8bdece49566d240dac4de28674",
+      "sha256": "d406204075b1c12ea02df1e0aaee371cabd7e0887d2a21fc97b156ff6f0e3894",
+      "bytes": 3601,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "1840a006ee71fd10507bb64a36343d39b18b4b22",
+      "sha256": "1b59be5ce9a915769d55be60fb2bd1a18d96188b025ed3a2e81d7458fa362c02",
+      "bytes": 46491,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "d15f84c02e7d8d8d3c0d4bb30b07d27165bb1505",
+      "sha256": "d9a268c30cb219fc1e66e3a6466880e4124155cbefcc448a8b4824fdcb39179b",
+      "bytes": 591080,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "bytes": 38914,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "96cf5bf1aeca1c019bb53c189a4ce6957b99c3d9",
+      "sha256": "128074197039ebaa28444713dc5ab1fcda9d534ea41550926ee2d26aba41d3c4",
+      "bytes": 11845,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "7f19572f2b7d64ea69e69e44b6d79a779138f95d",
+      "sha256": "4bb3f34de7dc2341cf7c7481a5787158b557085f091571f726be8d0963f113b5",
+      "bytes": 97320,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "1fe48d0314ca3698da7b8e18a391474abc2c8060",
+      "sha256": "4c7bcdb716281e961b5882b10d1d378c5804bc52c2a7285f56ec1e329e80ebe7",
+      "bytes": 99138,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/RivalSoulArcService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "f540a64f3228ee1e25b56a0807d7aec12531b355",
+      "sha256": "9428b0af42fb32218ed49e1455d25d9878b76dd29820f8c2bffedeffd6f80f75",
+      "bytes": 32383,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "bb7275dbe2add5d7908f032e3f27c3956b13a1d5",
+      "sha256": "c800dd307fab1a953e0bb3c26f9eee68a40c688afbebecab02b0a81f43c753d5",
+      "bytes": 136263,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "662319ade96932cf315f08cb37ad489fe1a08bfc",
+      "sha256": "dee415706cf7084f8acbf6f5555aaa2ddfc603590ca217f45e1302e4d8150173",
+      "bytes": 53182,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WorldDirectiveService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "75d02ca0f52409dbc9fc063808c4b8d6c42bb602",
+      "sha256": "1e272e2a48ac49eb82894c917fa3476d24c568bfe9c903b358cb56fe3529c2c0",
+      "bytes": 21122,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeReturnGuardService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "f8e2808955acf194cf0e07e36ad3c3271e7195f8",
+      "sha256": "1e10ddc29700aa3c312de010a89a3a033891518f3200bbb5c589b313dc601ee3",
+      "bytes": 9134,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "f9119d428ff09a6edb4fe7bf0532c8acaa55b965",
+      "sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b",
+      "bytes": 17142,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "bytes": 41585,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "bytes": 14974,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationIdentityState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "956f64ecd1fce89a53fcf87c3224d2cea45e9560",
+      "sha256": "ccfb17a09fd2591179e502fe8b0cda3fc10f74b6e50d7a593feae78abe35c19c",
+      "bytes": 43408,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemIdentityState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "9b416723dbee45c8e5f275351cf5367d3c384611",
+      "sha256": "50034ba7d600ea21e8da0c34c878719b6cdfc2bb28fb532fe869e3094fd801d2",
+      "bytes": 75654,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalBootstrapLocationScaffold.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "5e75ec9fdec50da530238bfa0565e459efff6356",
+      "sha256": "ad6815ed71f2860465a8a921e5db139fdd29a971506db0d3e8e0282a6b787774",
+      "bytes": 11136,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianProjectState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "4b73d2cc3ca49f96f7607c63c066ddcf5054b341",
+      "sha256": "b7b776abc6535f8a78e041638a87864d655f8c72238c57b0b3f0e26679d5c75b",
+      "bytes": 79015,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "7633ea207afb6236ac46e73a044a489235123f59",
+      "sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
+      "bytes": 37410,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "4aa65d5d20535bdced8079e87fee3c25a34a1ec6",
+      "sha256": "24edd37caff5bc1bb48c39557a109cdf0932d7307441cbc1056922669c4be7b2",
+      "bytes": 63416,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "bytes": 93122,
+      "worktree_equals_source_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LifeEvaluationRewardAnalyzer.cs",
+      "revision": "e6482fc83b80eacc8222215d1d98467d7d462259",
+      "git_blob": "bb2197e433b52ba82d9f697307b6a10bade8e75c",
+      "sha256": "102de6c9380c652c060f245323e88626d9e147774c37ea0d6cf1226ff0f1d9bb",
+      "bytes": 5801,
+      "worktree_equals_source_revision": true
+    }
+  ],
+  "source_pin_scope": "Exact local Git object pins; selected source sections inspected, not complete downstream line-by-line review; no remote verification.",
+  "authority": {
+    "task_scope": "Read-only DESIGN; /tmp deliverables only",
+    "parent_sole_repository_writer": true,
+    "approval_message_parent_reported": "Sentinel_f3e48da025808191bdb46fab2e0b960f",
+    "original_conversation_independently_verified": false,
+    "this_contract_accepted": false,
+    "new_principled_grant_established_by_api_absence": false,
+    "dep_c_g_c_remains_unaccepted": true
+  },
+  "eligibility": {
+    "direct_source": "Genuine accepted automatic LifeEvaluation original in Chaos Sea at n+1/k",
+    "non_forced": "Eligible only under actual accepted context, current/original realm, trigger and no-active-conflict validation",
+    "guardian_forced_on_evaluation": "INELIGIBLE; requires ordinary player source plus real guard/proof rules",
+    "shining_package_from_chaos_original": "INELIGIBLE; package presence does not create Shining source authority",
+    "pending_echo": "Conditional actual soul pending-state/resource owner work still must be assessed"
+  },
+  "selected_design": {
+    "name": "Acceptance-only actual incarnation-owner intake",
+    "status": "PROPOSED_NOT_CURRENT_API",
+    "storage_proposal": "Strict client-owned fixed successor envelope at existing incarnation_trigger.json only through genuine issuer, plus explicitly catalogued successor proof roles in existing snapshot/rollback namespace; exact role path specification unresolved",
+    "acceptance_means": "Owner accepts complete qualified remaining workflow obligation, not completed UI/realm/bootstrap request or accepted Mortal turn",
+    "release_gate": "IA genuine accepted obligation and debt settlement before E4R/E4K; actual source released before destination UI/preparation",
+    "phases": [
+      "IA AcceptedObligation",
+      "IR SourceReleased",
+      "IP PreparedInitialization",
+      "IU Choices",
+      "IB BootstrapInstalled",
+      "IC BootstrapAccepted",
+      "IK Released"
+    ]
+  },
+  "row_catalog": [
+    {
+      "id": "I01",
+      "name": "eligibility/intake",
+      "actual_owner_and_source": "`Core/IncarnationTriggerContract.cs`; `Core/GameEngine/GameEngine.TurnLifecycle.cs:3040–3110,4120–4165`; lifecycle validator `:6724–7041`",
+      "obligations": "Accepted evaluation original/current soul, trigger, spiritual conflict, return guard; forced source negative, source/current realm match, exact eligible branch. Guard accepted evaluation provenance and current G; no new source tuple.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I02",
+      "name": "source release/admission",
+      "actual_owner_and_source": "Canonical T197 E4I/E4R/E4K; actual snapshot/main/native owners",
+      "obligations": "Intake evidence ownership and exact deletion/preservation inventories; source/evaluation main close debt via DEP-C. No destination UI or GM dispatch before source release.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I03",
+      "name": "gate presentation",
+      "actual_owner_and_source": "`TurnLifecycle.cs:3114–3210`",
+      "obligations": "Actual escaped world/character/circumstances and non-forced gate continuation. Press-continue is presentation consent, not bootstrap acceptance. Wait outside lease/main operation; reload may redisplay.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I04",
+      "name": "new-life reset",
+      "actual_owner_and_source": "`TurnLifecycle.cs:3211–3230`; `Core/FileSystemManager.cs:6149–6161`; return-guard/rival owners",
+      "obligations": "Freeze actual nonrollback current-world lore deletion roster; remove return guard by destination owner, rival arcs reset. No wildcard sweep at replay. Do not reset evaluation receipts/rewards, source story or target evidence.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I05",
+      "name": "realm/incarnation/resources",
+      "actual_owner_and_source": "`GameEngine.IncarnationAndAfterlife.cs:107–270`",
+      "obligations": "Actual soul k→k+1 and Chaos Sea→Mortal World, player-soul profile, resource state/history/owner authority and exact global guards. No completed-life history append. Actual `AfterlifeOwnerResourceStateService` plan, not a raw soul DTO write.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I06",
+      "name": "guardian correction",
+      "actual_owner_and_source": "`Services/GuardianCorrectionService.cs:342–550` and owner receipt helpers",
+      "obligations": "Scenario core, guardians, actual correction receipt/current incarnation, project tracker, abode power journal, resource quartet and exact conditional owner companions; preserve real same-life replay fingerprint. Branches with no scenario/guardian have precise owner delete/no-change semantics, not fabricated empty receipts.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I07",
+      "name": "resident manifestation",
+      "actual_owner_and_source": "`Services/GuardianAbodeResidentRequestState.cs:788–879` and health helper",
+      "obligations": "`pending_resident_companion_manifestation_request.json` plus soul equipped relic markers, existing pending/companion/owner evidence; genuine k+1 eligibility and history. Malformed or stale pending conditions cannot silently disappear from intake obligations.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I08",
+      "name": "fresh player status/characteristics",
+      "actual_owner_and_source": "`MortalBootstrapStateBuilder.BuildFreshPlayerStatus`; `CharacteristicsService.cs:195–237,333–383`",
+      "obligations": "`core/player_status.json`, `misc/characteristics.json`, `player/stat_points.json`, computed characteristics. Twelve base stats=1, initial eight points, actual level-up-through-level bookkeeping; preserve real formula dependency reads. No auto-allocation.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I09",
+      "name": "memory legacy application",
+      "actual_owner_and_source": "`IncarnationAndAfterlife.cs:341–544,598–728`",
+      "obligations": "soul.pendingMemoryLegacy absent / startingCharacteristicBonus / startingPassiveKnowledgeSkill / applied-awaiting-turn-accept; characteristics or passive skill output plus application state/audit. Actual survival check and canonical structured bonus semantics; consume only after genuine accepted bootstrap.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I10",
+      "name": "Shining package branch",
+      "actual_owner_and_source": "`IncarnationAndAfterlife.cs:871–994`; `ShiningBlessingEffectState.MaterializeForBootstrapAsync`",
+      "obligations": "Direct evaluation→Chaos successor proves new Shining-source branch ineligible. A genuine Shining route, if separately included, needs exact preserved prepared package, world-setup effects, soul pending effects, immediate effects, resource-backed rerolls and final package cleanup. No counterfeit Shining original.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I11",
+      "name": "existing echo choice",
+      "actual_owner_and_source": "`IncarnationAndAfterlife.cs:735–854`; `ShiningBlessingEffectState.cs:495–576`",
+      "obligations": "Actual pending soul echo candidates, life-hint uniqueness/window, option count, resource allocation; select/skip/reroll. Actual `ShiningBlessingRerollResourceService` spend plus soul receipt is atomic. Pending absence is proven; display labels do not identify a write.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I12",
+      "name": "initial stat choice",
+      "actual_owner_and_source": "`TurnLifecycle.cs:5025–5168`; `CharacteristicsService.DistributePointsAsync`; browser writer `:258–326`",
+      "obligations": "Player-selected allocations within point budget/cap, explicit remaining-unspent choice, exact stats/points/computed writes. Console has sequential writes; browser has existing atomic wrapper, but neither proves full submit-ID/cold replay contract. D4 remains open.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I13",
+      "name": "baseline roots/compositor",
+      "actual_owner_and_source": "`TurnLifecycle.cs:3408–3615`; `MortalBootstrapStateBuilder.cs:28–150`",
+      "obligations": "Fixed fresh roots listed below; codex merge preserves existing entries via real merge policy; exact existing resource quartet and permanent characteristics feed `BuildMortalPlayer`. Never publish builder's pristine quartet over an existing session. Compose owner overlaps once.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I14",
+      "name": "bootstrap scaffold/original/request",
+      "actual_owner_and_source": "`TurnLifecycle.cs:3300–3337,3704–4117`; snapshot owner",
+      "obligations": "Actual fresh request identity, session, source label `GM-инициированного воплощения`, turn n+2 after evaluation n+1, incarnation k+1; frozen UTC, own fresh dice/gacha, real Mortal progression preparation and exact baseline/scaffold. Only the genuine pending-original issuer may publish request+manifest+authority/rollback catalogs.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I15",
+      "name": "target candidate/repair/acceptance",
+      "actual_owner_and_source": "`TurnLifecycle.cs:88–191`; actual validation/normalization/private owners",
+      "obligations": "Full lawful Mortal bootstrap response, complete actor/location/item/resource/faction declarations, originals, actual owner take/repair/acceptance. No “first scene exists” shortcut, success Boolean, narrowed reply whitelist or unowned sequential normalizer. Full ordinary-target qualification applies.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I16",
+      "name": "accepted target finalization",
+      "actual_owner_and_source": "`TurnLifecycle.cs:192–255,1100–1145`; story/progression/world-directive owners",
+      "obligations": "One genuine bootstrap logical turn/story/progression; memory legacy consumption only on actual accepted incarnation; existing pending blessing runtime effects; pending→active world directives, accepted state/UI normalization and required terminal maintenance. No repeat evaluation rewards.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I17",
+      "name": "terminal cleanup/debt",
+      "actual_owner_and_source": "T197 exact cleanup discipline plus actual bootstrap cleanup owners",
+      "obligations": "Target original/request/ready/repair and intake artifact retirement only after actual accepted terminal/remaining-owned continuation proof. Exact guard/receipt absence and expected retained output; native/claim/main uncertainty retains evidence. No general pending sweep or success from deletion alone.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    },
+    {
+      "id": "I18",
+      "name": "cancellation/failure/later successor",
+      "actual_owner_and_source": "`TurnLifecycle.cs:95–175,3342–3375`; real terminal and transition owners",
+      "obligations": "Wait cancellation, rejected candidate/repair, lost close, known rollback vs uncertainty, and lawful accepted bootstrap lifecycle outputs remain explicit states. Required cancellation/resumption policy and reachable post-bootstrap successor catalog are unresolved; cannot discard an accepted obligation or declare all later transitions owned.",
+      "qualification": "UNIMPLEMENTED_OR_UNQUALIFIED_PROPOSAL"
+    }
+  ],
+  "row_catalog_entry_complete_claim": "Narrow route entry mapping only; executable leaf/companion/full-bootstrap catalog NOT complete",
+  "remaining_questions": [
+    {
+      "id": "Q1",
+      "summary": "Exact intake artifact role paths/authority format/transitive inventory, atomic IA and complete trigger-path consumer closure"
+    },
+    {
+      "id": "Q2",
+      "summary": "Accepted D4 initial-allocation submit/crash/partial-choice owner, browser keep-all path and echo navigation/spend persistence"
+    },
+    {
+      "id": "Q3",
+      "summary": "All conditional owner leaf plans/read guards and overlap compositor; passive legacy/blessing vs fresh baseline policy"
+    },
+    {
+      "id": "Q4",
+      "summary": "Actual durable cancellation/repair/resumption or lawful terminal cancellation, preserving accepted evaluation and acknowledged decisions"
+    },
+    {
+      "id": "Q5",
+      "summary": "Complete actual bootstrap validation/private-pending/repair/finalization/lifecycle and debt-owner catalog"
+    },
+    {
+      "id": "Q6",
+      "summary": "Actual same-G cold reconstruction with DEP-C and supported distinct-root restoration with DEP-L"
+    }
+  ],
+  "apis_proposed_routine_d11": [
+    "ClassifyAcceptedEvaluationIncarnation",
+    "CreateIncarnationIntakeRoleInventory",
+    "IncarnationSuccessorOwner.AcceptEvaluationAsync",
+    "CalculateIncarnationRealmPlan",
+    "CalculateInitialCharacteristicsPlan",
+    "CalculateMemoryLegacyApplicationAndAudit",
+    "PrepareIncarnationGuardianAndResidentPlans",
+    "CalculateMortalBootstrapBaselineAndScaffold",
+    "PrepareIncarnationProgression",
+    "PrepareIncarnationRequestOriginal",
+    "Named phase readback/cleanup owner adapters"
+  ],
+  "genuine_new_grants_not_proposed": [
+    "Forced evaluation incarnation",
+    "Shining eligibility from Chaos original",
+    "Incarnation without accepted trigger",
+    "Automatic player allocation",
+    "Arbitrary intake writer paths or unqualified future workflow ownership",
+    "Raw DTO/M/hash live authority",
+    "Create or rebind G",
+    "Unknown main-debt bypass"
+  ],
+  "source_overlap_observation": {
+    "passive_legacy_then_fresh_passive_root": "Source ordering establishes overlap requiring compositor review; no runtime loss asserted",
+    "blessing_immediate_effects_vs_baseline": "Conditional overlap needs exact owner composition",
+    "runtime_reproduction": "UNRUN"
+  },
+  "future_matrix": {
+    "ids": [
+      "I-T01",
+      "I-T02",
+      "I-T03",
+      "I-T04",
+      "I-T05",
+      "I-T06",
+      "I-T07",
+      "I-T08",
+      "I-T09",
+      "I-T10",
+      "I-T11",
+      "I-T12",
+      "I-T13"
+    ],
+    "status": "ALL_UNRUN",
+    "categories_selected": false,
+    "execution_authorized_by_report": false
+  },
+  "global_status": {
+    "dep_i_complete": false,
+    "dep_c_complete": false,
+    "dep_l_complete": false,
+    "full_target_qualified": false,
+    "t197_design_complete": false,
+    "h2_qualified": false,
+    "h3_release_allowed": false,
+    "new_joint_qte_activation_allowed": false,
+    "f2_selected": false,
+    "d4_allocator_closed": false
+  },
+  "preserved": [
+    "Source n/k and death marker -1",
+    "Genuine LifeEvaluation n+1",
+    "Genuine own bootstrap n+2/k+1",
+    "Unchanged physical G on same-root path",
+    "No extra source Mortal tick/reward/dice or source replay",
+    "D4/guided/visual/platform/D8 remain open"
+  ],
+  "verification": {
+    "builds": "UNRUN",
+    "discovery": "UNRUN",
+    "tests_runtime": "UNRUN",
+    "review_of_this_proposal": "PENDING",
+    "repository_edits": false,
+    "commits_pushes": false,
+    "subagents": 0
+  },
+  "report_markdown_path": "/tmp/t197-depi-target-acceptance-proposal-20261016.md",
+  "report_markdown_sha256": "5f7cc9c46927ea89e662769c4281a3aefaae27bda36b4869e071bdb346ac49b2",
+  "finalstop": {
+    "only_written_paths": [
+      "/tmp/t197-depi-target-acceptance-proposal-20261016.md",
+      "/tmp/t197-depi-target-acceptance-proposal-20261016.json"
+    ],
+    "old_reports_untouched": true,
+    "pending_writes": false,
+    "background_activity": false
+  }
+}
