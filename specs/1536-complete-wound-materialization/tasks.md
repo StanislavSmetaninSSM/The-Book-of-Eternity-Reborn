@@ -1,3 +1,7 @@
+- T179-Pd bounded ledger ACCEPTED by separate final Astra/XHigh review:42distinctPASS/40rawchains/12strictabsentroots/fourDLLfixed3d262/459selectedrecovery; root169pins23diffs. WholePd/F1/tasks remainOPEN.
+- Pd.3a PD-D01 DESIGN RESOLVED by affected separate Astra/XHigh review on854643981; root47pins6diffs. Bounded causal TDD may start under persistent11:48 authorization, with freshG5/source/firstLate2/EVIDENCE beforeactualRED. No active admission/M3 grant.
+- T197 original per-run custodian hosting conditional proposal preserved70pins/18futureUNRUN; independent review pending. No wholeA1/G-C/target release.
+
 - T179-Pd admission independent DESIGN supports direction but PD-D01 mustclose before narrow TDD. Exactreaderdesign18pins +canonicalPd.3a contract preserved; affectedreview pending. No codechanges or fulladmission/M3release.
 - All8ledgercategories42distinctPASS/40rawchains/12strictabsentroots; Github-only063979459exactfiles; finalboundedledgerreview pending. Continue independentdesign, no newruntime/sourceedits untildecision.
 
