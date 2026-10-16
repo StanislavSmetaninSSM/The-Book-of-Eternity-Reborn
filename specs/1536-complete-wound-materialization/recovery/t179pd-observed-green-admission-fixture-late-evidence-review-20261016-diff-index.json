@@ -1,0 +1,122 @@
+[
+  {
+    "path": "t179pd-observed-green-admission-fixture-late-compiled-to-actual.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-admission-fixture-late-compiled-to-actual.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "befe8ae9d6046bad5701d00806ac3eee6f60bfec",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-admission-fixture-late-prep-to-actual.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-admission-fixture-late-prep-to-actual.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "befe8ae9d6046bad5701d00806ac3eee6f60bfec",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-admission-fixture-late-actual-to-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-admission-fixture-late-actual-to-carrier.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "befe8ae9d6046bad5701d00806ac3eee6f60bfec",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-admission-fixture-late-compiled-to-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-admission-fixture-late-compiled-to-carrier.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-admission-fixture-late-carrier-to-observed-head.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-admission-fixture-late-carrier-to-observed-head.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "e6796dc3b5454cceb1591ccc634b54dbb1021bd6",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  }
+]
