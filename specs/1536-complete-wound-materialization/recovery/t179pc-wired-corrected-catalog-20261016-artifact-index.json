@@ -1,0 +1,119 @@
+{
+  "source_sha": "901435333b00ad7e92cef80429ce99ef010c7db9",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-integration.log",
+      "raw_bytes": 119991,
+      "raw_sha256": "d3496efd2fbe316570bbf4347d7f615f074f784017a365d8ae5636ed2788ebb4",
+      "stored_sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f"
+    },
+    {
+      "path": "t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-unit.log",
+      "raw_bytes": 26198,
+      "raw_sha256": "aefdefc5f94d9392aca7d2f8a52c1c6eac0af28b0284d031800ff4182e35f7ce",
+      "stored_sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b"
+    },
+    {
+      "path": "t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+      "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/catalog-audit.json",
+      "raw_bytes": 103,
+      "raw_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+      "stored_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6"
+    },
+    {
+      "path": "t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/dotnet-test.log",
+      "raw_bytes": 3521566,
+      "raw_sha256": "b254ea3bbcd523b45f2d47525a42fe373a90a7d65aa2c082c8bf384cc8652f72",
+      "stored_sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f"
+    },
+    {
+      "path": "t179pc-wired-corrected-catalog-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/summary.json",
+      "raw_bytes": 1598,
+      "raw_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+      "stored_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11698,
+      "Categories": 766,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0651966,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.051958,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1337064,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 46.6930261,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 12.5690336,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004357,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:07.7108666",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}
