@@ -1,4 +1,4 @@
-- T197 DEP-C supplemental lifecycle proposal: DESIGN-only UNACCEPTED; independent review conditional-discussion scope no material defects,24source/contextpins12futureUNRUNcases. O1canonicalclarification readback pending; DEP-C/I/L/fulltarget gates remain OPEN, no runtime authorization.
+- T197 DEP-C supplemental lifecycle proposal: DESIGN-only UNACCEPTED; independent review conditional-discussion scope no material defects,24source/contextpins12futureUNRUNcases. O1canonicalclarification independentreadback PASS; DEP-C/I/L/fulltarget gates remain OPEN, no runtime authorization.
 
 - T179-Pb/T182 WIP fromd13aab44: test-first20caseRED preserved; shared story row calculator now wired into existingv2 owner, WIP/unverified. Exact stage selection and first-Late2/EVIDENCE gates recorded in plan. Initial unchangedLate2 accepted; post-wiring runtime/review and full task closure pending.
 

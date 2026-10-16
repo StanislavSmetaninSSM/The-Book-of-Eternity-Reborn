@@ -1,0 +1,13 @@
+# T197 DEP-C O1 focused amendment readback — 2026-10-16
+
+**PASS — O1 clarification is correctly bounded.** The paragraph permits only exact recorded original-owner recovery needed to settle D, bound to that owner's frozen plan, current G, guards and debt outcome. It withholds new ordinary-operation/target-publication authority until D completes. Its explicit “proposed G-C only, UNACCEPTED” and “not an existing issuer or newly accepted permission” limits prevent any implied grant or claim of an existing issuer.
+
+Reviewed exact candidate `1a51124176a1f332e6fa2abc5666db1202bc40ed` against parent `79d4210f894c0f0a7012877cec5b4639658805b5`. Scope is only the O1 paragraph at canonical death-handoff line211, affected plan/tasks status and the copied independent review MD/JSON. This is an amendment readback, not a new lifecycle/source review. Retained actual reviewer configuration: gpt-6-astra/xhigh, initial fork_turns:none, parent-confirmed; backend telemetry unknown. Parent reports pushed/remote confirmation; this reviewer used pinned local Git objects.
+
+The five documentation-file binary/full-index diff is 50636 bytes, SHA256 `cc163a92ea605075f478f1f5496152bf03c08f163ec9fe5a6098450bcba84bf7`. Exact argv, ordered paths and all five blob/SHA256 pins are in JSON. Static diff hygiene passes. The canonical document differs from its base by exactly this one paragraph and blank line; the suggested wording is preserved semantically, with a typographic right apostrophe in “owner’s” replacing the ASCII apostrophe recorded in the review JSON.
+
+The copied independent review pair is byte-identical to the immutable originals: MD `ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f`; JSON `3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6`. Author proposal/evidence and the earlier initial/corrected T197 review pairs remain unchanged from `fdd5cb8b6bc1180027551489f8d4d700c0613e6e`. No source inspection was expanded or runtime result renewed.
+
+Plan/tasks correctly record the completed conditional-discussion review and pending O1 readback while preserving UNACCEPTED status. This PASS closes only O1 wording/readback. G-C/A1–A5 remain unaccepted; DEP-C/I/L and full lawful-target qualification remain open; T197 design is not complete, H2/H3 and new joint QTE remain blocked. All C01–C12 remain UNRUN. Existing D4/guided/visual/platform/D8 limits and no-F2/no-extra-Mortal-turn boundaries are unaffected. No implementation or runtime permission follows.
+
+**FINALSTOP — only `/tmp/t197-depc-o1-readback-20261016.md` and `.json` written. No repository edits, builds, discovery, tests/runtime, commits/pushes or subagents; no pending writes or background activity.**

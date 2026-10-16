@@ -1,0 +1,216 @@
+{
+  "task": "T197 DEP-C O1 focused amendment readback",
+  "date": "2026-10-16",
+  "verdict": "PASS_O1_WORDING_READBACK_ONLY",
+  "reviewed_revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+  "base_revision": "79d4210f894c0f0a7012877cec5b4639658805b5",
+  "prior_supplemental_review_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+  "review_scope": "one canonical O1 paragraph, affected status, immutable review copies; no full/source re-review",
+  "reviewer": {
+    "agent": "/root/t197_independent_review",
+    "actual_configured_model": "gpt-6-astra",
+    "actual_configured_reasoning": "xhigh",
+    "initial_fork_turns": "none",
+    "configuration_provenance": "parent confirmed",
+    "backend_telemetry": "unknown"
+  },
+  "remote_confirmation": "parent reported; not independently contacted",
+  "diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--full-index",
+      "79d4210f894c0f0a7012877cec5b4639658805b5",
+      "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "bytes": 50636,
+    "sha256": "cc163a92ea605075f478f1f5496152bf03c08f163ec9fe5a6098450bcba84bf7",
+    "diff_check_exit": 0,
+    "documentation_only": true
+  },
+  "document_pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "dee996ed6e8364767700a30d874a8250e0c0becf",
+      "sha256": "4e1c1de3d43dcfc55dbf3fb09bebe7de2f11b7e2684fb38f910a8c5e0b49cd28",
+      "bytes": 64144
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "d013f2842696add087f4420a782794a0f74f29b9",
+      "sha256": "4c20b6d9980e45bf4f83394983c499dd6137b04d7d91a2e0cad8f93fc4c4c311",
+      "bytes": 1924599
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "0ac7c7106041c5434d2bc072b1bbfb3c7391eca1",
+      "sha256": "3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6",
+      "bytes": 26634
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "7a1749558a12a4252def568508a0cce462c2e632",
+      "sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+      "bytes": 15301
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "363d0ce125c6718dbfc70fdec74eb08e30acc78b",
+      "sha256": "5205c3e121aff9def587e60b9ff409d6302c5d8d33caec4f4dfa62bbc998ec34",
+      "bytes": 1402485
+    }
+  ],
+  "canonical_amendment": {
+    "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+    "line": 211,
+    "exact_paragraph": "**Supplemental O1 clarification (proposed G-C only, UNACCEPTED):** Until D is complete, no new ordinary-operation or target-publication authority is issued. The recovery owner may exercise only the exact recorded original-owner recovery authority needed to settle D; every such publication remains bound to that owner’s frozen plan, current G, guards and debt outcome. This describes the conditional proposed recovery lane, not an existing issuer or newly accepted permission.",
+    "only_added_paragraph": true,
+    "preserves_suggested_wording": true,
+    "typography_difference": "ASCII apostrophe in owner's changed to U+2019 right apostrophe",
+    "original_recovery_is_exact_debt_bound": true,
+    "new_ordinary_target_authority_waits_for_d": true,
+    "explicit_proposed_unaccepted_limit": true,
+    "no_existing_issuer_or_new_permission_claim": true
+  },
+  "copied_review_integrity": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "7a1749558a12a4252def568508a0cce462c2e632",
+      "sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+      "bytes": 15301,
+      "local_original": "/tmp/t197-depc-independent-review-20261016.md",
+      "byte_identical": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "0ac7c7106041c5434d2bc072b1bbfb3c7391eca1",
+      "sha256": "3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6",
+      "bytes": 26634,
+      "local_original": "/tmp/t197-depc-independent-review-20261016.json",
+      "byte_identical": true
+    }
+  ],
+  "unchanged_historical_artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+      "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+      "bytes": 22799,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+      "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+      "bytes": 14010,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "53e13fa361d3237f9f5f407cc6ab35ab15f59233",
+      "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+      "bytes": 16372,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.json",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "0044a45b35fcaa7c1bd313dea4ab5f587036efb6",
+      "sha256": "ace62320ebee6cb7d8e2dff112f9814b4d329b27668a6b93a65a5a7557fab31f",
+      "bytes": 29876,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+      "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "bytes": 15874,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.json",
+      "revision": "1a51124176a1f332e6fa2abc5666db1202bc40ed",
+      "git_blob": "97bdd0aeae08a3a12900dd1703698870d0d90f30",
+      "sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "bytes": 40309,
+      "unchanged_since_previous_reviewed_revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e"
+    }
+  ],
+  "status": {
+    "o1_readback_closed": true,
+    "g_c_a1_a5_accepted": false,
+    "dep_c_resolved": false,
+    "dep_i_resolved": false,
+    "dep_l_resolved": false,
+    "full_target_qualified": false,
+    "t197_design_complete": false,
+    "h2_h3_allowed": false,
+    "new_joint_qte_allowed": false,
+    "runtime_permission_follows": false
+  },
+  "future_cases": {
+    "ids": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12"
+    ],
+    "status": "ALL_UNRUN"
+  },
+  "verification": {
+    "builds": "UNRUN",
+    "test_discovery": "UNRUN",
+    "tests_runtime": "UNRUN",
+    "new_source_inspection": "NONE",
+    "prior_source_review_repeated": false
+  },
+  "report_markdown_path": "/tmp/t197-depc-o1-readback-20261016.md",
+  "report_markdown_sha256": "2dc55d211e1cef3ebdea8eed2cafd55f513eac1f73bca6de584d6f8d3f406443",
+  "json_self_hash": "reported externally",
+  "finalstop": {
+    "only_written_paths": [
+      "/tmp/t197-depc-o1-readback-20261016.md",
+      "/tmp/t197-depc-o1-readback-20261016.json"
+    ],
+    "repository_writes": false,
+    "commits_pushes": false,
+    "subagents": 0,
+    "pending_writes": false,
+    "background_activity": false
+  }
+}
