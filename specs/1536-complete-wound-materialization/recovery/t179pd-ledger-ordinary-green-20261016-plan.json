@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "fr063-common-calculation-regression"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8e6ee54f5f0069bf1cc1f289f62590f33fa0d312",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.3930477,
+  "Descriptors": [
+    {
+      "Name": "fr063-common-calculation-regression-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-common-calculation-regression",
+      "Categories": [
+        "fr063-common-calculation-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
