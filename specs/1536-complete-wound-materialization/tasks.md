@@ -1,4 +1,4 @@
-- T197 DEP-I source/intake proposal: DESIGN-only WIP/unaccepted,35sourcepins18entryrows13futureUNRUNcases; Q1–Q6/DEP-C/I/L/fulltarget gates OPEN, independentreviewpending, no runtimepermission.
+- T197 DEP-I source/intake proposal: DESIGN-only REVIEWED FOR DISCUSSION/unaccepted atf130982be; independent Astra/XHigh no confirmed material defects in partial discussion scope. Exact report pair preserved/rootpins checked.35sourcepins18entryrows13futureUNRUNcases; Q1–Q6/DEP-C/I/L/fulltarget gates OPEN, no T197 completion/runtimepermission.
 
 - T197 DEP-C supplemental lifecycle proposal: DESIGN-only UNACCEPTED; independent review conditional-discussion scope no material defects,24source/contextpins12futureUNRUNcases. O1canonicalclarification independentreadback PASS; DEP-C/I/L/fulltarget gates remain OPEN, no runtime authorization.
 

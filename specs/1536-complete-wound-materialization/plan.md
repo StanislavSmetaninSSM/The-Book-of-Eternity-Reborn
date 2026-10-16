@@ -1,6 +1,8 @@
-## T197 DEP-I supplemental DESIGN — WIP / UNACCEPTED, 2026-10-16
+## T197 DEP-I supplemental DESIGN — REVIEWED FOR DISCUSSION / UNACCEPTED, 2026-10-16
 
 - Parallel DESIGN-only source map frome6482fc83 preserved byte-exact recovery/t197-depi-target-acceptance-proposal-20261016.md/.json; root35source/blob/SHA pins checked.18entry-owner rows and13futureUNRUNcases distinguish actual intake obligation, UI/partial allocation/echo choice, genuine n+2 bootstrap and accepted target mechanics. Non-forced Chaos evaluation eligible; no forced-on-evaluation or fabricated Shining source. Routine D11 extraction is distinct from a trulynewgameplaygrant; no such newgrant proposed. Proposed envelope/intake role/schema/phase contract unaccepted, Q1–Q6/DEP-C/I/L/fulltarget/H2/H3/newQTE remainOPEN. Independent Astra/XHigh review pending; no runtime/code/test change or T197 completion.
+
+- Independent configured Astra/XHigh atf130982be found no confirmed material defect **within the partial conditional discussion proposal**. Immutable recovery/t197-depi-independent-review-20261016.md/.json preserved; root verified43historical source/document/copy pins and exact scoped binary diff30bb33c7512613858217abeb6fd40308648df861e9f1106f905ada9a5bbcb4e9. 35authorpins plus additional source inspected;18entry-owner rows/13UNRUNcases do not close Q1–Q6, DEP-I, T197 or any release gate. Proposed schema remainsUNACCEPTED; no transition implementation permission follows. This supersedes the preceding chronological pending-review status.
 
 ## T197 DEP-C supplemental DESIGN — REVIEWED FOR DISCUSSION / UNACCEPTED, 2026-10-16
 
