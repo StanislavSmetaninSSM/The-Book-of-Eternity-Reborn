@@ -1,6 +1,104 @@
 {
     "schemaVersion": 1,
     "categories": [
+    {
+      "id": "fr063-training-level-policy-boundary",
+      "responsibility": "T179-Pd.3c-A1 two real ordinary ComputeAsync controls before requiring each missing pure parsed-value method; structural causal RED, no fabricated source/authority.",
+      "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-training-level-policy",
+      "responsibility": "T179-Pd.3c-A1 pure JsonElement training leaf outcomes: exact aliases/duplicates/kinds/Int32 low/endpoints and root/conversion exceptions. No filesystem/owner qualification.",
+      "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-training-level-ordinary",
+      "responsibility": "T179-Pd.3c-A1 actual GetPlayerLevel source priority/default/read order/no source-byte writes/real IO fault, plus intentional overlap of only two existing training cap/write controls already owned by fr063-automatic-calculation; no whole training category.",
+      "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+            "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+            "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes"
+          ]
+        }
+      ]
+    },
 {
   "id": "fr063-hot-joint-owner-refusals",
   "responsibility": "#1536 T179-Pd.3b HS-IMPL-F03: Actual prior42→ProcessPlayerTurn/Stage43→corrected joint publication. At real pre-reservation/reserved read and delegated native mutation cuts inspect the actual attempt/lease/frame/capture only; refuse not-reserved, independent foreign FS/lease, same-engine Begin reentry and delegated close without receipt/slot change. Real original flow must still commit its full union once; retained diagnostics expire.",
