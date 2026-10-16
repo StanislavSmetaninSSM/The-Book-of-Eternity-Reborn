@@ -1,0 +1,122 @@
+{
+  "source_sha": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories/dotnet-test.log",
+      "raw_bytes": 1683460,
+      "raw_sha256": "e08aa392ca035e482b5fe1213e93d6e2401a5882e1ba08023e7885589b36e1cb",
+      "stored_sha256": "f7b8cba543deb039b2b734817900d8a72e47fa1407f9f913c8a5bee85808af5f"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories/native-exit.json",
+      "raw_bytes": 617,
+      "raw_sha256": "6586102d77923a16cb2c09d2048c7731b48c496b89d619cc5660afe34715d781",
+      "stored_sha256": "6586102d77923a16cb2c09d2048c7731b48c496b89d619cc5660afe34715d781"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories/plan.json",
+      "raw_bytes": 4598,
+      "raw_sha256": "023a3415b459c9d9eca39df4c22fdb87f09d5c5212ee14736f1ee5486a7a48c1",
+      "stored_sha256": "023a3415b459c9d9eca39df4c22fdb87f09d5c5212ee14736f1ee5486a7a48c1"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories/stdout.log",
+      "raw_bytes": 2931,
+      "raw_sha256": "ec78e3cdbf749577b47abd61c6e50b391301581e09e447eeaae72bdad3bbae11",
+      "stored_sha256": "5f7c92fe4943958ede6a80cdea4ce0598c7b165624faaf3a9114f02c1886e234"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-185902-693-220038-e95831eead4d4d1291740a85769cbc43-categories/summary.json",
+      "raw_bytes": 3040,
+      "raw_sha256": "271b064a906609c89d1d6cd2029a1a56ffe3eff1a596b374aafd497cc527bb74",
+      "stored_sha256": "271b064a906609c89d1d6cd2029a1a56ffe3eff1a596b374aafd497cc527bb74"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion",
+      "fr063-hot-joint-ready-custody-drift"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 FIRST protected unchanged Late2 after new TEST-ONLY genuine Stage/Ready drift fixture. Same v2 union/request/G/native/story/progression/inert/strictcleanup before separate EVIDENCE.",
+        "contracts": [
+          "#1536 T179-Pd.3b: HS01 causalRED qualified and preserved at473; new genuine cheap Stage/Wait legacy controls + missing private origin/Ready DATA diagnostic RED2. No product implementation or new runtime release. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze/push/readback/recovery -> separate EVIDENCE -> specifically released controls/RED2. Stop/freeze any unexpected, no hidden retry, no aggregate actual."
+        ]
+      },
+      {
+        "category": "fr063-hot-joint-ready-custody-drift",
+        "reason": "Two real ordinary Stage/Wait controls must accept/delete unchanged/replaced Ready while retaining selected source images; new target then fails solely for absent private detached negative custody diagnostic after genuine later-manifest replacement cut. Initial expected 2PASS/1causalRED is not GREEN.",
+        "contracts": [
+          "#1536 T179-Pd.3b HS05/HS07/RED2 partial source controls: no private-field original/issuer/lease seeding; no attemptexists or semantic acceptance claim. Isolated Ld-close/native/worker/browser/joint-owner remainOPEN. HS01 prior473 causalRED retained, not rerun; protected Late2 first and separate EVIDENCE required. No new actual release/fullS/B/M3/F1/T197/activation."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1058617,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0457595,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1297814,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0051601,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 15,
+    "WallTime": "00:00:04.3987315",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 5,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-hot-joint-ready-custody-drift-integration-001",
+        "fr063-joint-late-completion-integration-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}
