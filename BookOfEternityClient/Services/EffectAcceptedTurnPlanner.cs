@@ -6318,6 +6318,8 @@ internal static partial class EffectAcceptedTurnPlanner
             ["sourceEventCount"] = (eventInput["lifecycleEvents"] as JsonArray)?.Count ?? 0,
             ["eventInputRef"] = LifecycleArtifactRef("event_input", eventInput),
             ["sourceAuthorityFingerprint"] = sourceAuthority?.CanonicalFingerprint,
+            ["initialRosterRef"] = null,
+            ["initialRoster"] = null,
             ["events"] = events
         };
         if (eventInput["lifecycleEvents"] is not JsonArray lifecycleEvents)
@@ -6327,10 +6329,15 @@ internal static partial class EffectAcceptedTurnPlanner
             if (!TryParseLifecycleAuthority(lifecycleEvents[inputOrdinal], issues, out var authority))
                 continue;
             var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
-            // Retain the actual full roster before target and execution exclusions.
-            // The scheduler still visits the same eligible effectId order once.
-            var roster = new JsonArray(catalog.Occurrences.Select(occurrence =>
-                (JsonNode)LifecycleSubjectImage(occurrence)).ToArray());
+            // One full starting roster per actual pass, not one copy per target.
+            // Null explicitly means no valid event ever observed a roster.
+            if (pass["initialRoster"] is null)
+            {
+                var initialRoster = new JsonArray(catalog.Occurrences.Select(occurrence =>
+                    (JsonNode)LifecycleSubjectImage(occurrence)).ToArray());
+                pass["initialRosterRef"] = LifecycleArtifactRef("carrier_roster", initialRoster);
+                pass["initialRoster"] = initialRoster;
+            }
             var parsedAuthority = LifecycleEventImage(new EffectLifecycleEvent(
                 authority.EventRef, authority.Turn, authority.Phase, authority.TriggerId,
                 authority.CurrentTime, authority.CurrentSceneId, authority.SceneClosed,
@@ -6342,16 +6349,6 @@ internal static partial class EffectAcceptedTurnPlanner
                 ["kind"] = authority.Target.Kind, ["targetId"] = authority.Target.TargetId
             };
             parsedAuthority["effectId"] = authority.EffectId;
-            var subjects = new JsonArray();
-            var eventRow = new JsonObject
-            {
-                ["inputOrdinal"] = inputOrdinal, ["sourceEventRef"] = authority.EventRef,
-                ["parsedAuthority"] = parsedAuthority,
-                ["rosterRef"] = LifecycleArtifactRef("carrier_roster", roster),
-                ["roster"] = roster, ["subjects"] = subjects,
-                ["disposition"] = "no_eligible"
-            };
-            events.Add(eventRow);
             var occurrences = catalog.Occurrences
                 .Where(occurrence =>
                     (authority.EffectId == null ||
@@ -6374,6 +6371,21 @@ internal static partial class EffectAcceptedTurnPlanner
                         StringComparison.Ordinal))
                 .OrderBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal)
                 .ToArray();
+            // Preserve every actual match before causal/mode exclusions. The
+            // recorded before/after observations account for within-pass changes;
+            // future cold verification must authenticate them, not rerun work.
+            var roster = new JsonArray(occurrences.Select(occurrence =>
+                (JsonNode)LifecycleSubjectImage(occurrence)).ToArray());
+            var subjects = new JsonArray();
+            var eventRow = new JsonObject
+            {
+                ["inputOrdinal"] = inputOrdinal, ["sourceEventRef"] = authority.EventRef,
+                ["parsedAuthority"] = parsedAuthority,
+                ["rosterRef"] = LifecycleArtifactRef("carrier_roster", roster),
+                ["roster"] = roster, ["subjects"] = subjects,
+                ["disposition"] = "no_eligible"
+            };
+            events.Add(eventRow);
             foreach (var occurrence in occurrences)
             {
                 var subject = LifecycleSubjectImage(occurrence);

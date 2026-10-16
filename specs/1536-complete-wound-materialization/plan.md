@@ -1,3 +1,9 @@
+## T179-Pd Pd-R1 correction WIP — fresh preparation required, 2026-10-16
+
+- Replaced per-event full-catalog retention with one actual full starting roster captured at the first valid event of each pass. Each ordered event keeps exact target/effect-filter matches before causal/mode exclusions and actual scheduler outcomes. Absent/empty/no valid events explicitly retain null initialRoster/ref; no global empty roster inferred. Final pass captures its own actual starting roster after intervening owner work. Future cold verifier remains unimplemented/unqualified.
+- Added a genuine two-target player/NPC common reduction scenario: both owners in each full pass roster, exactly one matching owner per event, actual advances and two transition allocations. New finite unit owner expected15cases; selected8descriptors/42cases pending fresh discovery. New correction/test changes **UNRUN**; no actuals at superseded91e source. Root verified all superseded raw/stored/local chains and39 consultation Git blob IDs.
+- Next fresh BOTH/catalog/PlanOnly, independent affected SOURCE review including Pd-R1, first unchangedLate2 then separate EVIDENCE. Do not reuse superseded preparation or release wired GREEN yet. Full coherent S/C/B/M3/P0/F1/T197/activation remain open.
+
 ## T179-Pd wired preparation superseded by static Pd-R1, 2026-10-16
 
 - Fresh BOTH/catalog at91e28fd74 native0,129.5440253s, valid catalog 11702 methods/767 categories, **0 tests executed**. Complete immutable recovery/t179pd-ledger-wired-superseded-catalog-20261016* preserves build/discovery/summary/stdout; no PlanOnly/actual was run for this superseded source.

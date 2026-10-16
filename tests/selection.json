@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-active-prefix-lifecycle-evidence",
-      "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order, foreign owner and missing-first-pass; expected14cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+      "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
       "contracts": [
         "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
       ]

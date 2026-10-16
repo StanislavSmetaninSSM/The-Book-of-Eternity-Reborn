@@ -127,6 +127,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     [InlineData("npc_advance")]
     [InlineData("ordered_events")]
     [InlineData("empty_source")]
+    [InlineData("multi_target")]
     public void LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(string scenario)
     {
         var fixture = CreateOrdinaryReductionFixture(effects: true,
@@ -158,6 +159,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         if (scenario == "empty_source")
         {
             Assert.All(passes, pass => Assert.Empty(pass!["events"]!.AsArray()));
+            Assert.All(passes, pass => Assert.Null(pass!["initialRoster"]));
+            Assert.All(passes, pass => Assert.Null(pass!["initialRosterRef"]));
             Assert.Equal(0, fixture.Effects.TransitionCalls);
             return;
         }
@@ -220,10 +223,34 @@ public sealed partial class EffectAcceptedTurnPlannerTests
                     Assert.Equal(2, second["beforeImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
                     Assert.NotEqual(final["rosterRef"]!.GetValue<string>(), passes[1]!["events"]![1]!["rosterRef"]!.GetValue<string>());
                 }
+                if (scenario == "multi_target")
+                {
+                    foreach (var pass in passes)
+                    {
+                        var full = pass!["initialRoster"]!.AsArray();
+                        Assert.Equal(2, full.Count);
+                        Assert.Equal(new[] { "npc", "player" }, full.Select(row =>
+                            row!["coordinate"]!["kind"]!.GetValue<string>()).OrderBy(value => value, StringComparer.Ordinal));
+                        Assert.NotEmpty(pass["initialRosterRef"]!.GetValue<string>());
+                        foreach (var row in pass["events"]!.AsArray())
+                        {
+                            var match = Assert.Single(row!["roster"]!.AsArray())!;
+                            var actual = Assert.Single(row["subjects"]!.AsArray())!;
+                            Assert.Equal(row["parsedAuthority"]!["target"]!["kind"]!.GetValue<string>(),
+                                match["coordinate"]!["kind"]!.GetValue<string>());
+                            Assert.Equal(match["effectId"]!.GetValue<string>(), actual["effectId"]!.GetValue<string>());
+                        }
+                    }
+                    var second = Assert.Single(passes[1]!["events"]![1]!["subjects"]!.AsArray())!;
+                    Assert.Equal("npc", second["coordinate"]!["kind"]!.GetValue<string>());
+                    Assert.Equal("advance", second["outcome"]!.GetValue<string>());
+                    Assert.Equal(3, second["beforeImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
+                    Assert.Equal(2, second["afterImage"]!["lifetime"]!["remainingTurns"]!.GetValue<int>());
+                }
             }
         }
         Assert.Equal(0, fixture.Effects.EffectCalls);
-        Assert.Equal(scenario is "turn_expire" or "bound_expire" or "npc_advance" or "ordered_events" ? 1 : 0,
+        Assert.Equal(scenario == "multi_target" ? 2 : scenario is "turn_expire" or "bound_expire" or "npc_advance" or "ordered_events" ? 1 : 0,
             fixture.Effects.TransitionCalls);
         var copy = EffectAcceptedTurnPlan.DetachedCopyOf(completed.Effects);
         Assert.Same(ledger, copy.LifecycleExecutionLedger);
@@ -353,6 +380,35 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         }
         if (scenario == "empty_source") events["lifecycleEvents"] = new JsonArray();
         var rebuilt = CreateReactionInput(effect, definition) with { EventInput = events };
+        if (scenario == "multi_target")
+        {
+            var npc = effect.DeepClone().AsObject();
+            npc["effectId"] = "effect_test_npc_ledger";
+            npc["target"]!["kind"] = "npc"; npc["target"]!["targetId"] = "npc_test_healer";
+            npc["chronology"]!["lastTransitionId"] = "effect_transition_npc_ledger_apply";
+            npc["chronology"]!["createdEventRef"] = "turn_42:npc_ledger:created";
+            var npcEvent = source.DeepClone();
+            npcEvent["eventRef"] = "turn_42:effect:npc_turn_end:1";
+            npcEvent["causalEventRef"] = "turn_42:npc_turn_end:1";
+            npcEvent["effectId"] = npc["effectId"]!.DeepClone();
+            npcEvent["target"] = npc["target"]!.DeepClone();
+            events["lifecycleEvents"]!.AsArray().Add(npcEvent);
+            return rebuilt with
+            {
+                TargetAuthority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+                    new[] { new EffectTargetExport("mortal_world", "player", "player_current", SameTurn: false),
+                        new EffectTargetExport("mortal_world", "npc", "npc_test_healer", SameTurn: false) },
+                    Array.Empty<EffectTargetExport>(), new HashSet<string>(StringComparer.Ordinal), CombatantIdentities: null)),
+                PreTurnCarriers = rebuilt.PreTurnCarriers! with { NpcEffects = new JsonObject
+                {
+                    ["schemaVersion"] = 1, ["entries"] = new JsonArray(new JsonObject
+                    {
+                        ["NPCId"] = "npc_test_healer", ["activeEffects"] = new JsonArray(npc.DeepClone())
+                    })
+                } },
+                PreTurnIdentityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effect, npc)
+            };
+        }
         if (scenario != "npc_advance") return rebuilt;
         effect["target"]!["kind"] = "npc"; effect["target"]!["targetId"] = "npc_test_healer";
         source["target"] = effect["target"]!.DeepClone();
