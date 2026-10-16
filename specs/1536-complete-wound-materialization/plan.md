@@ -1,3 +1,7 @@
+## T179-Pd.3a corrected initial SOURCE gate accepted — 2026-10-16
+
+- Separate configured Astra/XHigh [SOURCE/FIXTURE/SELECTION review](./recovery/t179pd-observed-reader-initial-source-review-20261016.md) on compiled db655665/prep80a707a: OR-F01 RESOLVED, no material blocker for initial missing-API test. Exact2descriptors3cases,12preparationchains/fourfreshDLLs/494GitHubselectedrestore verified. Current laterT197 metadata excluded. Release **first actualONLY unchanged fr063-joint-late-completion2**, native/whole raw/TRX/cleanup/DLL/source inspection then freeze/push/readback and separate EVIDENCE. Reader causalRED1 remainsUNRUN/not released until that distinct decision; no production success logic or fullPd/admission/M3/activation acceptance.
+
 ## T197 original-hosting conditional review preserved — 2026-10-16
 
 - Separate configured Astra/XHigh [hosting review](./recovery/t197-depc-original-custodian-hosting-independent-review-20261016.md) at e28914bef/source854643981: conditional discussion accepted, no confirmed material defect; **NOT complete engineering release**. Root74Gitpins/2exactdiffs verified,70historicalpins/56productioncomparisons/38console+30webDIrows/18futureUNRUN. H-B01composition/presentation, H-B02wholeparent/writers, H-B03seal/original-debt settlement/lock order, H-B04protocol/durable evidence/caller roles and H-B05platform/keeper-loss/cold remainOPEN. No G-C/target/activation permission follows.
