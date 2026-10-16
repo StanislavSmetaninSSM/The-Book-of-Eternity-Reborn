@@ -13,7 +13,7 @@
 D4/D8 сохраняются. D5 пересмотрен в §8.5: подтверждённый ordinary/GM contract требует
 не терять обязательное разрешение ситуации; новый follow-up schema/authority остаётся
 отдельным предложением, не выданным grant. Исторический corrected DESIGN review a8479c86d
-относится к прежним bytes; прежний D5 delta проверен с планом на f8ab919a. Новый F1 ниже — WIP до отдельного independent review; все grants unaccepted.
+относится к прежним bytes; прежний D5 delta проверен с планом на f8ab919a. F1 ниже независимо проверен на 564424a9: READY FOR USER DISCUSSION, F1-D01–D05 закрыты; все grants/implementation unaccepted.
 
 ## 1. Результат и границы
 
@@ -1135,3 +1135,5 @@ stats/level/QTE authoring, видит понятный repair/hold contract и �
 
 Текущая выдача — проект документа. Исторический 96-PASS readonly checkpoint сохранён,
 новый DESIGN не добавляет к нему ни одного runtime PASS.
+
+F1 closeout: [corrected independent review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f` закрыл F1-D01–D05. Текущий carrier добавляет только review/status metadata; written acceptance и implementation authorization отсутствуют. STOP для обсуждения.

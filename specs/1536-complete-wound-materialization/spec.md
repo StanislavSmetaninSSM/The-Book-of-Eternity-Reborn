@@ -52,6 +52,8 @@ These schemas/grants/turn policy and the affected T178–T191 plan await written
 separate implementation authorization. D4, guided US5, frontend visual qualification and D8
 remain unchanged; no new runtime evidence or accepted ACTIVE contract is created.
 
+Corrected F1 DESIGN/affected-plan review on `564424a92469555a807f0f77f53002ff1f7e621f` is [ready for discussion](./recovery/lawful-active-f1-independent-design-corrected-20261016-review.md), with F1-D01–D05 resolved. This status does not accept grants or authorize implementation.
+
 ## Clarifications
 
 ### Session 2026-09-22 — T081-C Durable Spiritual Decision Contract Approved

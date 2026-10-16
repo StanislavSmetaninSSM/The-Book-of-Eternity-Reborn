@@ -10,7 +10,7 @@
 
 **Spec:** [spec.md](../spec.md), FR063/T070/[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); [B design](./lawful-active-joint-tail-b.md), [accepted INACTIVE contract](../contracts/mortal-wound-treatment.md).
 
-**F1 recovery/source base:** `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **F1 DESIGN WIP; independent review pending; Q-D5 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
+**F1 recovery/source base:** `c4dde0629cc17aad75196ec509d2cdaf621945a3`; earlier planning base `ccb8eed3e57debdc3a5023c0cc28e75721c80c4c`, `1536-wound-b2-cloud-20261012`. В этом блоке разрешены только документы, независимое review, commit/push/readback. Implementation, tests, discovery/build/runtime tools, new authority и main не разрешены. Статус этого черновика: **READY FOR USER DISCUSSION; F1 independently reviewed; Q-D5 grants/implementation BLOCKED**. Все будущие implementation/runtime/platform checks **UNRUN**.
 
 ## Global Constraints
 
@@ -432,8 +432,10 @@ F103/F104/F106/F109/F111/F114 входят в этот owner; no released-marker
 - [x] Type scan registry↔stage consumes/produces; capabilities только private issuers, no unused/unowned proposed public API.
 - [x] Проверить tasks.md IDs T178–T191 уникальны, все implementation tasks unchecked, plan/spec/DESIGN/front status согласованы; no [P] при одном writer и shared storage state.
 - [x] Историческое Astra/XHigh plan review на f8ab919a; не покрывает новые F1 bytes.
-- [ ] Новое независимое Astra/XHigh F1 DESIGN/affected-plan review, corrections, immutable final report; remote SHA + clean document recovery перед handoff.
+- [x] Независимое Astra/XHigh F1 DESIGN/affected-plan review на564424a9, F1-D01–D05 corrected; final immutable report сохранён. Reviewed document recovery verified; final carrier remote/readback gate сохраняется перед handoff.
 
 После review вернуть документ, короткую очередность, Q-D5 и зависимости; остановиться. #1557 frozen2601fd6, #1558/#1559 не запускать.
 
 Historical planning closeout: [corrected independent PLAN review](../recovery/lawful-active-b-corrected-independent-plan-20261016T002709Z-review.md) на f8ab919aae3f5a62841704e37fe63b3fce020a32 закрыл P-F1–P-F4; тот прежний Q-D5 был blocked/ungranted. Новый F1 DESIGN здесь требует отдельного review/acceptance. Итоговый carrier меняет здесь только status/review metadata; никакого implementation release.
+
+F1 closeout: [corrected independent DESIGN/PLAN review](../recovery/lawful-active-f1-independent-design-corrected-20261016-review.md) на `564424a92469555a807f0f77f53002ff1f7e621f`, F1-D01–D05 resolved, no material findings. Все T178–T191 остаются unchecked/UNRUN, F1 grants/turn policy/plan не приняты. STOP перед реализацией.
