@@ -1,3 +1,9 @@
+## T179-Pd corrected ledger fresh preparation — SOURCE pending, 2026-10-16
+
+- Clean source/compiled56e2efa13: fresh BOTH build/catalog native0 in65.3840733s (Build-integration44.5800327s, Build-unit12.6143193s), valid11,702methods/767categories, no unmapped/stale selectors; exact PlanOnly -SelectionFile -NoBuild native0 in7.0037385s, **8descriptors/42cases, 0 executed**. Full immutable recovery/t179pd-ledger-corrected-{catalog,plan,binaries}-20261016* retains all build/discovery/plan/summary/stdout and four fresh DLL hashes. Root10 raw/stored/local chains and clean revision/zeroexecution checked.
+- GitHub-only filtered/sparse selected restore of56e2 verified340/340files against exact Git blobs/writer, clean/no alternates/mainunchanged, no restored runtime; local detailed receipt /tmp/t179pd-ledger-corrected-selected-recovery-20261016.json. Preparation carrier push/readback required before source gate.
+- Independent affected SOURCE/FIXTURE/SELECTION review resolving Pd-R1/R2 pending. Only first unchangedLate2 may be released after it; separate EVIDENCE before any ledgerGREEN/regressions. No corrected actuals yet. Full coherent active admission/S/C/B/M3/coldP0/F1/T197 and activation remain open.
+
 ## T179-Pd multi-target fixture identity preflight correction, 2026-10-16
 
 - Independent static fixture review identified CreateIdentityIndex helper uses one constant initial transition ID. The new NPC effect already had a distinct chronology; its actual initial identity history now receives the same distinct transition ID and created-event ref. Existing helper/shared callers unchanged. This prevents a collision precondition failure; no corrected build/discovery/runtime executed yet. Fresh preparation follows this final fixture correction, not6e43 source.
