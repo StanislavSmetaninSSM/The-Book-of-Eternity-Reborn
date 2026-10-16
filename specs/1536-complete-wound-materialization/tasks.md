@@ -4,7 +4,7 @@
 
 - T197 DEP-C supplemental lifecycle proposal: DESIGN-only UNACCEPTED; independent review conditional-discussion scope no material defects,24source/contextpins12futureUNRUNcases. O1canonicalclarification independentreadback PASS; DEP-C/I/L/fulltarget gates remain OPEN, no runtime authorization.
 
-- T179-Pb/T182 fromd13aab44: shared pure story row calculator reused by actualv2 owner; correctedGREEN20, actualstory-owner5 and retained-storyfreshPID1 all PASS after correction-cycle firstLate2/EVIDENCE release. Failed18/20 firstGREEN preserved; exact one-assertion subtype correction separately reviewed. Full raw packets preserved; final independent stage EVIDENCE acceptance pending. FullT179/T182 remain unchecked.
+- T179-Pb/T182 bounded pure story prerequisite+actualv2reuse **ACCEPTED** by final independent Astra/XHigh on7c71e043f/compiled4bc24ed10; exact report pair/rootpins verified. Selected28/28PASS (Late2/calculator20/story5/retained1),15distinctroots cleaned/absent; failedRED/firstGREEN packets immutable. FullT179/T182/S/C/B/M3/F1 remain unchecked/open. Next retained common-C prerequisite, then genuine activeS/B/M3 integration; no automatic QTE/T197 release.
 
 ## Implementation authorization reconciled — 2026-10-16
 
