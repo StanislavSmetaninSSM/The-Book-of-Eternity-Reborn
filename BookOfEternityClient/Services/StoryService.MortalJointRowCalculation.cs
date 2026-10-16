@@ -1,3 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services;
 
 public partial class StoryService
@@ -44,6 +48,34 @@ public partial class StoryService
         internal IReadOnlyList<string> DerivedReadPaths { get; } = Array.AsReadOnly(derivedReadPaths.ToArray());
     }
 
-    internal static JointStoryRowCalculation CalculateMortalJointStoryRow(JointStoryRowInputs inputs) =>
-        throw new NotImplementedException("T179-Pb test-first story row calculation");
+    internal static JointStoryRowCalculation CalculateMortalJointStoryRow(JointStoryRowInputs inputs)
+    {
+        ArgumentNullException.ThrowIfNull(inputs);
+        var reads = new List<string>();
+        JsonObject? Read(string path)
+        {
+            reads.Add(path);
+            var bytes = inputs.ReadSourceBytes(path);
+            return bytes is null ? null : ReadJointStoryObject(bytes, path);
+        }
+
+        var soul = Read(JointStoryRowInputs.SoulPath) ?? throw new InvalidDataException("joint_story_soul_missing");
+        if (ReadJointStoryString(soul, "currentRealm") != inputs.OriginalRealm ||
+            ReadJointStoryIncarnation(soul) != inputs.OriginalIncarnation || string.IsNullOrWhiteSpace(inputs.PlayerAction))
+            throw new InvalidDataException("joint_story_current_realm_action_changed");
+        var narrativeRoot = Read(JointStoryRowInputs.NarrativePath) ?? throw new InvalidDataException("joint_story_narrative_missing");
+        var narrative = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(ReadJointStoryString(narrativeRoot, "response"));
+        if (string.IsNullOrWhiteSpace(narrative)) throw new InvalidDataException("joint_story_narrative_empty");
+        var locationRoot = Read(JointStoryRowInputs.LocationPath) ?? throw new InvalidDataException("joint_story_location_missing");
+        var location = ReadJointStoryString(locationRoot["currentLocationData"] as JsonObject ?? locationRoot, "name") ?? "Неизвестно";
+        var refs = ReadMortalJointStoryRefs(inputs.PlayerAction, Read);
+        var row = JsonSerializer.Serialize(new StoryEntry
+        {
+            RequestId = inputs.RequestId, SessionGeneration = inputs.Generation, Turn = inputs.Turn,
+            Timestamp = inputs.PreparedAtUtc, Realm = inputs.OriginalRealm, Player = inputs.PlayerAction,
+            Narrative = narrative, Location = location, EntityRefs = refs
+        }, JsonOpts);
+        // Existing publisher owns signed prefix recognition and BOM/newline framing.
+        return new(GetStoryPath(inputs.OriginalRealm, inputs.OriginalIncarnation), row, reads);
+    }
 }

@@ -1,4 +1,4 @@
-- T179-Pb/T182 WIP fromd13aab44: test-first shared story row calculation scaffold is unwired; exact stage selection and first-Late2/EVIDENCE gates recorded in plan. No runtime/review acceptance or full task closure.
+- T179-Pb/T182 WIP fromd13aab44: test-first20caseRED preserved; shared story row calculator now wired into existingv2 owner, WIP/unverified. Exact stage selection and first-Late2/EVIDENCE gates recorded in plan. Initial unchangedLate2 accepted; post-wiring runtime/review and full task closure pending.
 
 ## Implementation authorization reconciled — 2026-10-16
 

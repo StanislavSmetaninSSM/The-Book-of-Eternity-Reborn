@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "fr063-joint-story-calculation",
-      "reason": "T179-Pb/T182 pure shared row calculation; exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Unit API scaffold is initially unwired; runtime RED before success logic.",
+      "reason": "T179-Pb/T182 pure row calculation shared by the actual v2 story writer: exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Semantic RED preserved before success logic; post-wiring first Late2/EVIDENCE precedes calculator GREEN.",
       "contracts": [
         "#1536 T179/B01 storyPlan calculation prerequisite; T182/B04 existing v2 story owner. Not complete source/history/artifact storyPlan authority."
       ]

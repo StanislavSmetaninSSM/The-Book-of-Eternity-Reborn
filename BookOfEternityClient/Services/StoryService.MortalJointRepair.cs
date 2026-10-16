@@ -149,17 +149,18 @@ public partial class StoryService
         var bound = await MortalQteDecisionPublication.TryBindExactJointContinuationAsync(_fs, lease,
             original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber);
         if (bound is null || !bound.Success) throw new InvalidDataException("joint_story_owned_output_refused");
-        var locationRoot = await ReadObject("game_state/world/current_location.json") ?? throw new InvalidDataException("joint_story_location_missing");
-        var location = ReadJointStoryString(locationRoot["currentLocationData"] as JsonObject ?? locationRoot, "name") ?? "Неизвестно";
-        var refs = await ReadMortalJointStoryRefsAsync(manifest.PlayerAction, ReadObject);
+        _ = await ReadObject(JointStoryRowInputs.LocationPath) ?? throw new InvalidDataException("joint_story_location_missing");
+        // Keep conditional reads and their validation order behind actual output proof.
+        foreach (var referencePath in GetMortalJointStoryReferenceReadPaths(manifest.PlayerAction))
+            await ReadObject(referencePath);
         var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding.Id;
-        var row = JsonSerializer.Serialize(new StoryEntry
-        {
-            RequestId = original.RequestId, SessionGeneration = generation, Turn = original.TurnNumber,
-            Timestamp = applied.PreparedAtUtcForOwner, Realm = realm, Player = manifest.PlayerAction,
-            Narrative = narrative, Location = location, EntityRefs = refs
-        }, JsonOpts);
-        var path = GetStoryPath(realm, incarnation);
+        var calculation = CalculateMortalJointStoryRow(new(generation, original.RequestId, original.TurnNumber,
+            realm, incarnation, manifest.PlayerAction, applied.PreparedAtUtcForOwner,
+            images[JointStoryRowInputs.SoulPath]!, images[JointStoryRowInputs.NarrativePath]!, images[JointStoryRowInputs.LocationPath]!,
+            images.GetValueOrDefault(JointStoryRowInputs.GuardiansPath), images.GetValueOrDefault(JointStoryRowInputs.ResidentsPath),
+            images.GetValueOrDefault(JointStoryRowInputs.NpcPath)));
+        var row = calculation.RowJson;
+        var path = calculation.Path;
         var histories = manifest.ClientOwnedValidationHashes ?? throw new InvalidDataException("joint_story_original_histories_missing");
         RequireJointStoryHistoryInventory(histories);
         var current = await _fs.ReadFileBytesAsync(lease, path);
@@ -255,15 +256,26 @@ public partial class StoryService
     private static bool SameJointStoryBytes(byte[]? left, byte[]? right) =>
         left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
 
-    private static async Task<List<StoryEntityRef>?> ReadMortalJointStoryRefsAsync(string action, Func<string, Task<JsonObject?>> read)
+    private static (string? GuardianId, string? ResidentId, string? NpcId) ReadMortalJointStoryTags(string action) =>
+        (ReadJointStoryTag(action, "guardianId") ?? ReadJointStoryTag(action, "sourceGuardianId"),
+         ReadJointStoryTag(action, "residentId") ?? ReadJointStoryTag(action, "sourceResidentId"),
+         ReadJointStoryTag(action, "npcId") ?? ReadJointStoryTag(action, "NPCId") ?? ReadJointStoryTag(action, "sourceNpcId"));
+
+    private static IEnumerable<string> GetMortalJointStoryReferenceReadPaths(string action)
+    {
+        var tags = ReadMortalJointStoryTags(action);
+        if (tags.GuardianId is not null) yield return JointStoryRowInputs.GuardiansPath;
+        if (tags.ResidentId is not null) yield return JointStoryRowInputs.ResidentsPath;
+        if (tags.NpcId is not null) yield return JointStoryRowInputs.NpcPath;
+    }
+
+    private static List<StoryEntityRef>? ReadMortalJointStoryRefs(string action, Func<string, JsonObject?> read)
     {
         var refs = new List<StoryEntityRef>();
-        var guardianId = ReadJointStoryTag(action, "guardianId") ?? ReadJointStoryTag(action, "sourceGuardianId");
-        var residentId = ReadJointStoryTag(action, "residentId") ?? ReadJointStoryTag(action, "sourceResidentId");
-        var npcId = ReadJointStoryTag(action, "npcId") ?? ReadJointStoryTag(action, "NPCId") ?? ReadJointStoryTag(action, "sourceNpcId");
+        var (guardianId, residentId, npcId) = ReadMortalJointStoryTags(action);
         if (guardianId is not null)
         {
-            var root = await read("game_state/meta/guardians.json");
+            var root = read(JointStoryRowInputs.GuardiansPath);
             var guardian = root?["activeGuardian"] as JsonObject;
             if (guardian is null || !string.Equals(ReadJointStoryString(guardian, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase))
                 guardian = (root?["guardians"] as JsonArray)?.OfType<JsonObject>().FirstOrDefault(item =>
@@ -273,14 +285,14 @@ public partial class StoryService
         }
         if (residentId is not null)
         {
-            var root = await read(GuardianAbodeResidentState.StatePath);
+            var root = read(JointStoryRowInputs.ResidentsPath);
             var resident = (root?["entries"] as JsonArray)?.OfType<JsonObject>().FirstOrDefault(item =>
                 string.Equals(ReadJointStoryString(item, "residentId"), residentId, StringComparison.OrdinalIgnoreCase));
             refs.Add(new() { EntityType = "resident", EntityId = residentId, DisplayName = resident is null ? null : ReadJointStoryString(resident, "displayName") });
         }
         if (npcId is not null)
         {
-            var root = await read("game_state/npcs/npc_core.json");
+            var root = read(JointStoryRowInputs.NpcPath);
             JsonObject? npc = null;
             if (root is not null)
             {
