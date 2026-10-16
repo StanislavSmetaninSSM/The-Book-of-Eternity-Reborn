@@ -295,6 +295,23 @@ This coherent next block follows bounded Pc acceptance. [Real engine/pre-seal co
 
 **GM/docs and limitations:** initially internal owner/evidence extraction is client-owned and unactivated; record no-update rationale only while no reachable GM-authored/player contract changes. Any new reachable schema/control/behavior must synchronize Mortal/afterlife guidance/examples/source guards in the same change. P0 internal integration is not usable player ACTIVE, full ordinary resolution, T197, allocator/guided/visual/Windows or D8 qualification. Do not stop after a ledger helper; continue source→actual sealed common→genuine M3/cold proof under the already-authorized staged scope. No automatic F2 or lawful-outcome refusal policy is introduced.
 
+#### T179-Pd admission evidence refinement — DESIGN review pending
+
+[Cold semantics/provenance](../recovery/t179pd-admission-cold-proof-design-20261016.md) is refined by the [existing-M location correction](../recovery/t179pd-admission-history-location-design-20261016.md). The initial separate-control-path recommendation is superseded/unaccepted. Canonical §6.1 now explicitly proposes `basis.admissionEvidence` and first layout encoder1; this is not an implemented or independently accepted issuer/codec. Private original-issued hot history → genuine seven-root/finite73-leaf source session → frozen evidence before C/B → same common/native M3 → independent cold semantic verifier. No changed old v2/request/Ready/original bytes for initial internal extraction, no new durable path, and no caller/DTO/rehash authority. Exact tagged-row codecs, owner transition checkers, observable projection equivalence and worker-direct closure remain prerequisites for full admission/P0. Source-aware original callback/read extraction may be a bounded internal prerequisite; it cannot issue active admission or M3 by itself. Shared emitted contracts require same-change GM/docs/examples/source guards.
+
+| Future check | Required evidence / all UNRUN |
+|---|---|
+| UAD01 | Actual original-issued seed, original-first corrected submission, complete route; Ready/checkpoint/missing records cannot create a seed. |
+| UAD02 | Finite73-leaf original/current/control/rollback/metadata closure; nested authority callbacks, Full reasoning, swallowed error latch and physical drift controls. |
+| UAD03 | Exact ordered repair issues/packets and distinct start/request/fallback observations; same owner through waits without holding canonical lease; no frozen-history mutation. |
+| UAD04 | Admission freeze precedes retained C/raw B/all seals; foreign genuine owner/reservation, clone, repeated seal and after-seal attachment refuse. |
+| UAD05 | Existing M-only cohort contains sealed evidence; every native cut/lost reply/readback; no new pathname or side marker publication. |
+| UAD06 | Fresh cold actual original/G/fullcohort and shared named semantic checks; all-hash-recomputed source/route/transition/observation forgeries fail; no source scheduler/reducer/IDs/UTC replay. |
+| UAD07 | Pre-P0 hot proof loss HOLD is bounded internal limitation; whole pre-P0 recovery remains activation prerequisite, no lawful-outcome drop or default ordinary replay. |
+| UAD08 | Actual observed comparison sensitivity/equivalent no-emission slices and strict freshness boundary/metadata fallback, including worker-direct proof before enabling that branch. |
+
+Full T179/T192/F1/T197/D4/guided/visual/Windows/D8 and new joint QTE gates stay open. Continue the coherent stage beyond prerequisite extraction; do not publish M3 before full cold proof.
+
 ### T180 / B02 — atomic automatic action+ack
 
 **Files:** create CharacteristicsService automatic and M automatic-publication partials; tests new `BookOfEternityClient.Tests/MortalJointAutomaticPlanTests.cs`, integration `.JointActiveAutomatic.cs`.

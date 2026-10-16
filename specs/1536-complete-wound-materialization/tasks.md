@@ -1,3 +1,6 @@
+- Admission DESIGN correction uses existingM3 nested evidence/explicitproposedcodec; UAD01–08 futureUNRUN. New controlpath recommendation rejected; independentreview pending before sourceadmission/M3 issuer.
+- T197 A1 source-child conditional independentreview complete/no material defect; all16checksUNRUN and fullhosting/parent/protocol/cold/target blockers remain.
+
 - T179-Pd actual retainedC1 PASS; independent readonly clarification2transitions/3events (depleted atenergy2→0), external checker only corrected/no rerun. Resume ordered ordinary15 after checkpoint; finalstage stillpending.
 - Admission/cold DESIGN98pins preserved; initial extra-control-path proposal rejected/unaccepted. ExistingM3 nested owner-evidence alternative being specified; independentreview before substantive next-source implementation. No M3/public activation yet.
 

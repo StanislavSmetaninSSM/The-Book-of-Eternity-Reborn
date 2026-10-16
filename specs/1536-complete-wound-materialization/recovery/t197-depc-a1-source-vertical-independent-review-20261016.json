@@ -1,0 +1,2115 @@
+{
+  "report": "t197-depc-a1-source-vertical-independent-review-20261016",
+  "date_utc": "2026-10-16T12:48:12.946884+00:00",
+  "review_type": "independent bounded DESIGN-only source-child review",
+  "reviewer_configuration": {
+    "requested": "gpt-6-astra / xhigh",
+    "actual_configured": "gpt-6-astra / xhigh",
+    "original_fork_turns": "none",
+    "provenance": "original separate spawn explicitly confirmed by coordinator",
+    "backend_telemetry": "UNKNOWN",
+    "separate_from_design_author": true
+  },
+  "scope": {
+    "candidate_commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+    "direct_parent": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+    "historical_source_commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+    "observed_head_metadata_only": "8e6ee54f5f0069bf1cc1f289f62590f33fa0d312",
+    "repository": "/workspace/The-Book-of-Eternity-Reborn",
+    "selected_paths": [
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.json",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "whole_carrier_paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-evidence-review-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-evidence-review-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "excluded": "T179 Late2 EVIDENCE report pair and adjacent F1 metadata; all ordinary code/runtime acceptance; later moving worktree",
+    "remote_state": "parent-confirmed clean/pushed/readback, no reviewer fetch or remote operation"
+  },
+  "verdict": {
+    "conditional_discussion": "REVIEWABLE_CONDITIONAL_SOURCE_CHILD_PROPOSAL",
+    "exact_complete_engineering_contract": "NOT_ACCEPTED_INCOMPLETE",
+    "confirmed_material_findings_count": 0,
+    "whole_A1_B01_closed": false,
+    "whole_B02_closed": false,
+    "complete_GC": false,
+    "implementation_released": false,
+    "transition_qualified": false
+  },
+  "confirmed_material_findings": [],
+  "required_engineering_closures": [
+    {
+      "id": "SV-B01",
+      "kind": "declared parent/hosting dependency",
+      "proposal_lines": [
+        7,
+        11,
+        13,
+        23,
+        29,
+        30,
+        65,
+        67,
+        71,
+        78,
+        84,
+        115,
+        159
+      ],
+      "requirement": "Actual owner graph from birth in the surviving custodian and complete outer operation enrollment",
+      "scenario": "If the failed bridge process also hosted GameEngine/StoryService/FileSystemManager/parent task, an in-process join handle does not survive. If only the story child joins, the parent may still have native writers, earlier recovery, turn increment, terminal cleanup or finalization/close work.",
+      "required_closure": "Specify actual launch/hosting/capability placement and every parent task/borrow/writer/lease/close edge before legal source effects. Keep native scope/worker conjuncts and original main guards. Seal-gate every later parent phase at its real admission boundary; the child cannot retire any parent pin."
+    },
+    {
+      "id": "SV-B02",
+      "kind": "declared native adapter and exact ownership dependency",
+      "proposal_lines": [
+        52,
+        75,
+        76,
+        88,
+        90,
+        92,
+        94,
+        96,
+        98,
+        107,
+        113,
+        159
+      ],
+      "requirement": "Executable pre-effect attempt registration and exact-attempt recovery interception",
+      "scenario": "Current BeginPublication and proof readers can invoke broad existing recovery; PublishLocalCore may retry with a new transaction after rollback, and directory EnsureDirectory can mutate before intent. A facade success can coexist with committed cleanup debt. The proposed adapters must change those call boundaries rather than infer ownership after callbacks.",
+      "required_closure": "Bind actual generated transaction ID/frozen member before first effect and original durable arming ACK; enforce same owner/G/ordinary lease, pre-existing safe namespaces and idle legacy/current journal preflight. Check every lower recovery boundary before effects; allow only the exact armed attempt after seal. Retain native commit/rollback/uncertainty independently from semantic proof. No new attempt, arbitrary stale scratch cleanup, browser/D2/D3 path or target phase after seal."
+    },
+    {
+      "id": "SV-B03",
+      "kind": "declared work/callback/join dependency",
+      "proposal_lines": [
+        65,
+        69,
+        75,
+        76,
+        77,
+        78,
+        80,
+        82,
+        94,
+        115,
+        159
+      ],
+      "requirement": "Concrete join and post-seal permission implementation preserving existing guards",
+      "scenario": "Registering a Task after invoking its async body misses synchronous-prefix effects; joining only the top task misses observer/logger detached IO. A current lease/applied proof is reference-bound but does not alone authorize continuation after a parent has become Lost/uncertain.",
+      "required_closure": "Install the actual promise/borrow before invocation; pre-enroll native/readback slots; join actual stream/native/callback completion. Keep production hooks null or qualify explicit owned callbacks and actual diagnostic sinks. Define permitted debt-bound use of the original lease/main access under the new custodian, without weakening existing current-G/Lost guards or treating full proof validation as a pure check inside the registration mutex. Forced abort, timeout and reference counts alone remain insufficient."
+    },
+    {
+      "id": "SV-B04",
+      "kind": "declared parent metadata/protocol dependency",
+      "proposal_lines": [
+        119,
+        121,
+        123,
+        125,
+        127,
+        129,
+        131,
+        159
+      ],
+      "requirement": "B03 durable descriptor/CAS/version/bounds and B04 endpoint rights",
+      "scenario": "Closed field names and proposed enums do not define a complete storage/ACK/reference-lifetime implementation. Dynamic original snapshot/rollback/history maps still require admissible size limits and exact encoding. Decoded descriptors contain correlation, not live owner/lease/capability proof.",
+      "required_closure": "Close exact byte encodings, original references, parent arming/terminal metadata crash cuts and limits without truncating real guards. Preserve source-specific hash modes and required absence. No child schema decode may issue a capability, new parent operation or native receipt; endpoint and client rights remain separate."
+    },
+    {
+      "id": "SV-B05",
+      "kind": "preserved full coverage/qualification dependency",
+      "proposal_lines": [
+        15,
+        147,
+        148,
+        149,
+        153,
+        159,
+        161,
+        182
+      ],
+      "requirement": "Custodian-loss/cold/platform and complete target/handoff contracts",
+      "scenario": "Owner process loss destroys the live lease/proof/join issuer; on-disk journal data cannot mint a child receipt or retirement. The selected caller is explicitly non-browser-staged. Child readback cannot establish browser parity, source transfer, HC or later H3/HQ close resolution.",
+      "required_closure": "Keep B05/B06, DEP-C/I/L, full source/target, H2/H3/HQ/newQTE and D4/guided/visual/Windows/D8 open. Complete design acceptance and bounded TDD/platform evidence before implementation/activation. Safe HOLD is not an accepted lawful-death completion policy and unrelated ordinary test results are not T197 evidence."
+    }
+  ],
+  "optional_observations": [
+    {
+      "id": "SV-O1",
+      "classification": "terminology clarification, not material defect",
+      "proposal_lines": [
+        26,
+        43,
+        44,
+        45,
+        57,
+        59,
+        178
+      ],
+      "source": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:11–16,706–721,969–1013",
+      "note": "Signed is inherited source terminology for original/hash-bound validation here. Current portable v4 uses SHA256-PAYLOAD-JSON local integrity, not a cryptographic origin guarantee against a same-user writer. Legacy Windows compatibility uses ECDsaCng, not RSA; it is neither selected new authority nor permission to create keys. Prefer one adjacent clarification; no proposal key/service implementation exists."
+    }
+  ],
+  "source_backed_assessment": [
+    {
+      "topic": "Actual call and child boundary",
+      "assessment": "GameEngine.MortalJointStoryTurn.cs:75–101 obtains the real canonical lease and applied phase, verifies projection/runtime, calls AppendMortalJointStoryAsync at86, then separately validates, increments and cleans. TurnLifecycle.cs:952/1040/1756/1831 gates these calls on no browser-staged action. SessionOperationContext.cs:192–310 separately retains established outcomes and finalization/close failure. The proposed receipt correctly leaves all of these parent obligations outside child completion."
+    },
+    {
+      "topic": "Original capability identity",
+      "assessment": "StoryService.MortalJointRepair.cs:18–67 binds private issuer, exact owner/files/lease/applied object and exact current row/history. JointProgressionPhaseCapability in MortalQteDecisionPublication.MortalJointProgression.cs:23–95 validates real files/lease, current G and fresh phase proof. Its data or hashes cannot recreate it. Choosing a joinable same-process invocation is source-consistent only if original owner placement survives from birth; the design does not assert current hosting already does."
+    },
+    {
+      "topic": "One append and precise no-change",
+      "assessment": "StoryService.MortalJointRepair.cs:75–112 appends once through AppendFileAtomicAsync after fresh source comparison, verifies exact after, mints and validates the real proof. Source reads :119–187 bind original Mortal context, current soul, narrative/output, conditional display roots, location, G and history. Prefix rules :190–242 preserve exact native bytes and use decoded-text history hashes; absence permits BOM+row+newline creation, while AlreadyAppended requires exact suffix and valid genuine prefix. The pure calculator uses the existing prepared timestamp, not a new clock/die. Story path helper branches are not independent realm eligibility."
+    },
+    {
+      "topic": "42 current guards are not writes",
+      "assessment": "The independently re-expanded Quartet/FootprintAdditional/item/resource/inactive-tail union plus pending-wound path is exactly42. Progression sources7, commands3, original QTE projection9, direct/conditional story3+3 and control/proof8 match the named source sets. Mandatory objects, conditional absent display inputs, exact source output/phase proof, original present/absent paths and dynamic history inventory retain distinct predicates. None becomes a mechanics/target write grant."
+    },
+    {
+      "topic": "Original snapshot and rollback roles",
+      "assessment": "PendingTurnSnapshotReader.cs:193–211,303–375 validates authority and exact declared snapshot selection; PendingTurnSnapshotAuthority.cs:482–521,765–803,856–885 recomputes rollback map hashes with recorded modes. Dynamic original snapshot, rollback and history reads are bounded by admitted owner maps. A signed map value is not rollback permission, a universal exact-byte hash, or authority from a raw descriptor."
+    },
+    {
+      "topic": "Native publication and retries",
+      "assessment": "FileSystemManager.cs:916–955 dispatches the ordinary append; TrustedLocalStorage.cs:335–348 builds exact before/after and :181–247 publishes/retries. TrustedLocalFilePublication.cs:253–325 generates the real transaction ID, stages format1 intent, publishes one index0 member, commits before cleanup. Scratch names derive at:600–604. A new retry is a new transaction and must be registered while open; it is not cleanup of the previous one."
+    },
+    {
+      "topic": "Hidden recovery, namespace and cleanup",
+      "assessment": "Progression phase reader:120–136 and ReadJointCompletedProofAsync:203–207 call ResolveBackupPublicationRecovery; BackupLifecycle.cs:31–46 can enter trusted-local recovery. Canonical acquisition FileSystemManager.cs:3850–3938 also recovers, as parent work. PublishLocalCore:203–207 can create the member directory, and native recovery can ensure its journal root. The proposal explicitly requires noncreating safe existing namespaces and idle evidence before child invocation plus exact-attempt interception afterward; this is a new adapter obligation, not a property current calls already enforce."
+    },
+    {
+      "topic": "Outcome retention and join ordering",
+      "assessment": "TrustedLocalFilePublication.cs:165–196 retains known commit despite cleanup failure; TrustedLocalStorage.cs:255–264 can return success after a cleanup warning. Thus semantic AppendedAndVerified is not sufficient native debt-free evidence. The proposal correctly keeps CommittedCleanupPending and native commit plus readback refusal distinct, pre-enrolls native/readback work, releases only the child borrow and joins outside new recovery locks. It never uses timeout or force-cancellation as completion."
+    },
+    {
+      "topic": "Scope/status and future checks",
+      "assessment": "Canonical and T197 plan/tasks additions accurately say UNACCEPTED/pending at the frozen carrier, one child only, hosting and parent enrollment open,16 future UNRUN checks. No child→parent close/turn/cleanup/HC promotion, native process launch, new key/OS service, source replay, new G, afterlife permission or target/newQTE activation is granted."
+    }
+  ],
+  "selected_document_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "dd9e217bcad61e23165b242ff876953af775ef33",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.json",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+    "sha256": "4debcf2f70e9d131df9a103bc76682ca85dc5ef228e7ecca2e5187c643b24518",
+    "bytes": 168970,
+    "meaning": "exact five selected paths; adjacent F1 status text in plan/tasks excluded semantically"
+  },
+  "whole_carrier_identity_only": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "dd9e217bcad61e23165b242ff876953af775ef33",
+      "--"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+    "sha256": "ba3ed858ff870d7fc02a4ce58820af855e3b3489aba5986da78fccc3103f1c00",
+    "bytes": 328392,
+    "not_other_evidence_acceptance": true
+  },
+  "selected_diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "document_pins": [
+    {
+      "commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.md",
+      "blob": "f644739f1b52263b542868f988f1189f46681752",
+      "sha256": "79a4573c629addccd7ca989b4387e2c5168405b222db475d459914f4a8f6fa64",
+      "bytes": 62771,
+      "lines": 423
+    },
+    {
+      "commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a1-source-vertical-design-20261016.json",
+      "blob": "2b243026bc850fb7d986623522cbe33e7183ed62",
+      "sha256": "80d578549d7bb1d9f175244769d7475afce4ddc9ae38d1f06cb2d39ec540fcef",
+      "bytes": 92481,
+      "lines": 1373
+    },
+    {
+      "commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "blob": "275c26d2cfc3654ecc60a0b89a8fb819ca44339c",
+      "sha256": "58902130f55609b8bfe655e689c704fa91e66ea874a8e9e4c3a2f79a8139a8e8",
+      "bytes": 71850,
+      "lines": 275
+    },
+    {
+      "commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "blob": "b49cdf23b7fa9f415ea918e297a959b4bd8d49f8",
+      "sha256": "3b0da0f4a8aaef71e8b04f05ac18f21ecb58894134057653a38ed98ea008aafa",
+      "bytes": 1999913,
+      "lines": 22671
+    },
+    {
+      "commit": "dd9e217bcad61e23165b242ff876953af775ef33",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "blob": "5903479caad061fdbe2344baf5d56e9b484f1cdf",
+      "sha256": "75a515cfbd35247897d7ac269877095348ed3410196a7f7f914e87f509cc4c23",
+      "bytes": 1411068,
+      "lines": 14730
+    }
+  ],
+  "historical_source_pins": [
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": ".specify/memory/constitution.md",
+      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "lines": 264,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "AGENTS.md",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "lines": 199,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "blob": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "sha256": "71954c0c0e0b73c989208d870470ea9ab7906c9e28aea8d42c06923db90a507f",
+      "bytes": 7681,
+      "lines": 148,
+      "author_relevant_ranges": [
+        [
+          28,
+          46
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "author_relevant_ranges": [
+        [
+          18,
+          110
+        ],
+        [
+          201,
+          250
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "author_relevant_ranges": [
+        [
+          15,
+          118
+        ],
+        [
+          167,
+          350
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343,
+      "lines": 6231,
+      "author_relevant_ranges": [
+        [
+          589,
+          620
+        ],
+        [
+          887,
+          968
+        ],
+        [
+          3850,
+          3938
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "blob": "9aacb56c60f7bdc9882852dfe96b4d005c106990",
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "bytes": 5207,
+      "lines": 80,
+      "author_relevant_ranges": [
+        [
+          8,
+          30
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "9aacb56c60f7bdc9882852dfe96b4d005c106990",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "blob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "bytes": 10353,
+      "lines": 132,
+      "author_relevant_ranges": [
+        [
+          16,
+          132
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "7f054ea23df4b5156635d9155dd176cdc86a0341",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "bytes": 17372,
+      "lines": 266,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "lines": 2456,
+      "author_relevant_ranges": [
+        [
+          710,
+          718
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "author_relevant_ranges": [
+        [
+          885,
+          953
+        ],
+        [
+          1034,
+          1047
+        ],
+        [
+          1745,
+          1760
+        ],
+        [
+          1827,
+          1836
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "author_relevant_ranges": [
+        [
+          93,
+          171
+        ],
+        [
+          191,
+          322
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "blob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
+      "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "bytes": 7553,
+      "lines": 166,
+      "author_relevant_ranges": [
+        [
+          21,
+          106
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "author_relevant_ranges": [
+        [
+          155,
+          325
+        ],
+        [
+          419,
+          510
+        ],
+        [
+          600,
+          625
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "blob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "bytes": 96868,
+      "lines": 2245,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "blob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "bytes": 120150,
+      "lines": 3091,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "blob": "3fb32a3186a15632df4c44a6952bc30959e224b9",
+      "sha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc",
+      "bytes": 51263,
+      "lines": 1198,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "3fb32a3186a15632df4c44a6952bc30959e224b9",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+      "blob": "ce8b92001305a754a2cd2c93caacd53c79540551",
+      "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900",
+      "bytes": 26100,
+      "lines": 624,
+      "author_relevant_ranges": [
+        [
+          25,
+          58
+        ],
+        [
+          65,
+          145
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "ce8b92001305a754a2cd2c93caacd53c79540551",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "blob": "f8fbf37a4617bf0479dc15aeb2e23e62c563c721",
+      "sha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+      "bytes": 26564,
+      "lines": 595,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "f8fbf37a4617bf0479dc15aeb2e23e62c563c721",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "blob": "15ab43b9455efd05f76ffaf564de1aabd55ee0c9",
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "bytes": 28369,
+      "lines": 655,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "15ab43b9455efd05f76ffaf564de1aabd55ee0c9",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "author_relevant_ranges": [
+        [
+          9,
+          69
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "author_relevant_ranges": [
+        [
+          292,
+          360
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/InventoryEquipmentService.cs",
+      "blob": "e147bfb218e387fc80fcbce9b3d802c23d76bac6",
+      "sha256": "3d80c8ab26464ee3eddb06cce4a8982807dc0c9e4447e493d28ebe40a22924e5",
+      "bytes": 28685,
+      "lines": 733,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "e147bfb218e387fc80fcbce9b3d802c23d76bac6",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "bytes": 20289,
+      "lines": 451,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalItemAcceptedTransferCatalog.cs",
+      "blob": "c8e49ba2672bc74a1113f6462a1de2b30497b74d",
+      "sha256": "5204ff87f59ddc164d716d86a38fde19baa32cdcfeda77cc1b2dadc3b8f956bd",
+      "bytes": 22238,
+      "lines": 557,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "c8e49ba2672bc74a1113f6462a1de2b30497b74d",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs",
+      "blob": "19c73713357ef4263455ce1343d1b03cb440e9bd",
+      "sha256": "e0d9d290889eb598d1568b867a1514c141a66a4be17e1c72036f8d9647be3928",
+      "bytes": 20793,
+      "lines": 483,
+      "author_relevant_ranges": [
+        [
+          30,
+          47
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "19c73713357ef4263455ce1343d1b03cb440e9bd",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalItemIdentityState.cs",
+      "blob": "9b416723dbee45c8e5f275351cf5367d3c384611",
+      "sha256": "50034ba7d600ea21e8da0c34c878719b6cdfc2bb28fb532fe869e3094fd801d2",
+      "bytes": 75654,
+      "lines": 1924,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "9b416723dbee45c8e5f275351cf5367d3c384611",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalLocationStorageContentsState.cs",
+      "blob": "7f22334c4f5b37fbb105c66c0ffefa4a91f2b903",
+      "sha256": "27d01910e64b2e8e13cfed19e2fce7ffbadaba7bbc78bfed71f415a07eff2a25",
+      "bytes": 12063,
+      "lines": 326,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "7f22334c4f5b37fbb105c66c0ffefa4a91f2b903",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "blob": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "bytes": 19147,
+      "lines": 258,
+      "author_relevant_ranges": [
+        [
+          23,
+          95
+        ],
+        [
+          120,
+          216
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "blob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "bytes": 33754,
+      "lines": 394,
+      "author_relevant_ranges": [
+        [
+          14,
+          22
+        ],
+        [
+          87,
+          135
+        ],
+        [
+          202,
+          381
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "blob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "bytes": 23806,
+      "lines": 307,
+      "author_relevant_ranges": [
+        [
+          16,
+          36
+        ],
+        [
+          105,
+          113
+        ],
+        [
+          207,
+          284
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "blob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1",
+      "sha256": "33f859765ca5623afe999f646218f4999c9d080bbfec27c4a37cf11e96296174",
+      "bytes": 9693,
+      "lines": 133,
+      "author_relevant_ranges": [
+        [
+          11,
+          108
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs",
+      "blob": "ffb2f1ebc749929c5a4aa5d397df88720772a1ec",
+      "sha256": "8429906352687b5e54b2d85b620187d9083778303d497de3aa811648395e5e9d",
+      "bytes": 66193,
+      "lines": 963,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ffb2f1ebc749929c5a4aa5d397df88720772a1ec",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "blob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "bytes": 61576,
+      "lines": 1448,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
+      "blob": "fbceff41e523c9dd9bb5206d6b4f2cc9159139dc",
+      "sha256": "73ee8c2837d461b5abcece31db0bac03a34f20a6c025140bb279a39a14ba2fa1",
+      "bytes": 63869,
+      "lines": 1754,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "fbceff41e523c9dd9bb5206d6b4f2cc9159139dc",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/NpcCoreChangesContract.cs",
+      "blob": "ce25a08ba2833970aa4552708a0f7fbdae131ea8",
+      "sha256": "c7bcd5987b3b337fc2c34f1b643a19e52d6cad649516f8e45c704ef430f36969",
+      "bytes": 63911,
+      "lines": 1606,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ce25a08ba2833970aa4552708a0f7fbdae131ea8",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "bytes": 41585,
+      "lines": 1054,
+      "author_relevant_ranges": [
+        [
+          482,
+          521
+        ],
+        [
+          600,
+          627
+        ],
+        [
+          765,
+          803
+        ],
+        [
+          856,
+          885
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "bytes": 43996,
+      "lines": 1078,
+      "author_relevant_ranges": [
+        [
+          133,
+          215
+        ],
+        [
+          275,
+          375
+        ],
+        [
+          870,
+          880
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "blob": "584d5aed93072d4b523462eeb68fab5af2c212ef",
+      "sha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa",
+      "bytes": 15932,
+      "lines": 225,
+      "author_relevant_ranges": [
+        [
+          26,
+          75
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "584d5aed93072d4b523462eeb68fab5af2c212ef",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "blob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "bytes": 11393,
+      "lines": 175,
+      "author_relevant_ranges": [
+        [
+          11,
+          14
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "bytes": 93122,
+      "lines": 1906,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "blob": "d0adeaf89a575dec982f9887d9b1fe12f0965416",
+      "sha256": "f2b9b47d454f3d8fc7811404de62e641063dc00f22df782fa735268d4b0cfd85",
+      "bytes": 49097,
+      "lines": 1121,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "d0adeaf89a575dec982f9887d9b1fe12f0965416",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "bytes": 264036,
+      "lines": 6822,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "blob": "0b371748bc9b22052dbdc09a852fa412b13771c4",
+      "sha256": "53b3bd3a975636808d0c1a7c099c784e2d155cf6d501a9db24cf1f8d73ad9c7a",
+      "bytes": 21516,
+      "lines": 641,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "0b371748bc9b22052dbdc09a852fa412b13771c4",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ResourcePendingResolutionState.cs",
+      "blob": "e45849026a827d55f2f6ab9810e575e6279c5a14",
+      "sha256": "35c7a124d7022d2c9839eb1e5c50d783b772aa2bdf4fe18ec72dc09816caf204",
+      "bytes": 127681,
+      "lines": 3511,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "e45849026a827d55f2f6ab9810e575e6279c5a14",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+      "blob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd",
+      "sha256": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873",
+      "bytes": 96769,
+      "lines": 2133,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "blob": "ea4a8b1194d8a7112b44fea122d815a00fec2ada",
+      "sha256": "4159e270d5f5ecc1a7160729b5acf107d80f15c920d08ca3ba23e104ab0838e1",
+      "bytes": 43814,
+      "lines": 1039,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "ea4a8b1194d8a7112b44fea122d815a00fec2ada",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "blob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
+      "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+      "bytes": 22909,
+      "lines": 319,
+      "author_relevant_ranges": [
+        [
+          12,
+          319
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+      "blob": "2777ec4c498835876b2fc7bacd7d18c572f74be0",
+      "sha256": "bdeb4200ac73f113359ba81a2b2db8a56af21d886fe2954236793ec31bb7b0cf",
+      "bytes": 4811,
+      "lines": 81,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "2777ec4c498835876b2fc7bacd7d18c572f74be0",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "bytes": 14974,
+      "lines": 346,
+      "author_relevant_ranges": [
+        [
+          144,
+          160
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "blob": "823f67f04f21021f9a08ee294585cb73169e80f2",
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1",
+      "bytes": 9227,
+      "lines": 214,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "823f67f04f21021f9a08ee294585cb73169e80f2",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "blob": "451a1de12612d2b26800e40057fcc3072834189e",
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d",
+      "bytes": 44369,
+      "lines": 1181,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "451a1de12612d2b26800e40057fcc3072834189e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/WoundHistoryState.cs",
+      "blob": "44285fc44cc2e2ee39f28e51b23e809620a88d6f",
+      "sha256": "7b7083e040ea9fe2338531b6f12e5a54837a1fa186282ed87bd1ec5527f3bea9",
+      "bytes": 67254,
+      "lines": 1756,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "44285fc44cc2e2ee39f28e51b23e809620a88d6f",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "BookOfEternityClient/Services/WoundIdentityState.cs",
+      "blob": "beb860a84e8dba429c125ab0e271ee68219ad6a6",
+      "sha256": "6fcce26db18bea5f20fd51e127b674beeb4d7662ab72b6d90f0bf44c13907601",
+      "bytes": 23240,
+      "lines": 632,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "beb860a84e8dba429c125ab0e271ee68219ad6a6",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "docs/development-workflow.md",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "lines": 493,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "blob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+      "bytes": 24566,
+      "lines": 446,
+      "author_relevant_ranges": [
+        [
+          411,
+          446
+        ]
+      ],
+      "pin_verified": true,
+      "candidate_blob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "blob": "c8d9637e009faebd230d9ecae5f8575532b18c1e",
+      "sha256": "aca133abb2a50a5d5b44cfc0bad0631050e0ca6ff89cb46afa3eb390377a8216",
+      "bytes": 71017,
+      "lines": 273,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "275c26d2cfc3654ecc60a0b89a8fb819ca44339c",
+      "unchanged_at_candidate": false
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
+      "blob": "e077ba66e9332e70fa29ac351d33357d468de3aa",
+      "sha256": "25cef182df647d50e403714562b5c159018ac9a352598213cacd4ce3e7f5bfad",
+      "bytes": 84819,
+      "lines": 653,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "e077ba66e9332e70fa29ac351d33357d468de3aa",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
+      "blob": "183c079de96d8939758371b900efaadd76470b04",
+      "sha256": "ec43864fec0f3800980989366744e4ca5a275d4c10374c9644d1f85c6a97cdcd",
+      "bytes": 69264,
+      "lines": 271,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "183c079de96d8939758371b900efaadd76470b04",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.json",
+      "blob": "16b1292df25efcff80f4b43014a287cf6bf1bf01",
+      "sha256": "8a2910a4c8cf9478552f8dfaca88e42749d1d6fbad0e8540b5a62b3e52ee401e",
+      "bytes": 45457,
+      "lines": 1227,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "16b1292df25efcff80f4b43014a287cf6bf1bf01",
+      "unchanged_at_candidate": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.md",
+      "blob": "2775edb6e4352df4b956f74f4570e899a8405324",
+      "sha256": "693d1987affa688ac284b60320e1b2ea48544b0981ac3b7a21c58d2f58ac4a34",
+      "bytes": 19051,
+      "lines": 58,
+      "author_relevant_ranges": [],
+      "pin_verified": true,
+      "candidate_blob": "2775edb6e4352df4b956f74f4570e899a8405324",
+      "unchanged_at_candidate": true
+    }
+  ],
+  "pin_verification": {
+    "matched": 61,
+    "mismatched": 0,
+    "unchanged_at_candidate": 60,
+    "changed_expected_document_paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    ],
+    "hash_check_not_full_semantic_review_of_every_line": true
+  },
+  "semantic_read_ranges": [
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "ranges": [
+        [
+          1,
+          319
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+      "ranges": [
+        [
+          1,
+          81
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "ranges": [
+        [
+          144,
+          160
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "ranges": [
+        [
+          1,
+          130
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "ranges": [
+        [
+          885,
+          896
+        ],
+        [
+          945,
+          956
+        ],
+        [
+          1034,
+          1047
+        ],
+        [
+          1745,
+          1760
+        ],
+        [
+          1827,
+          1836
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "ranges": [
+        [
+          191,
+          262
+        ],
+        [
+          275,
+          322
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "ranges": [
+        [
+          589,
+          620
+        ],
+        [
+          904,
+          967
+        ],
+        [
+          3850,
+          3938
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "ranges": [
+        [
+          15,
+          118
+        ],
+        [
+          175,
+          265
+        ],
+        [
+          320,
+          350
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "ranges": [
+        [
+          20,
+          58
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "ranges": [
+        [
+          115,
+          325
+        ],
+        [
+          490,
+          510
+        ],
+        [
+          600,
+          625
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "ranges": [
+        [
+          21,
+          106
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "ranges": [
+        [
+          1,
+          185
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "ranges": [
+        [
+          14,
+          22
+        ],
+        [
+          202,
+          306
+        ],
+        [
+          323,
+          381
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "ranges": [
+        [
+          16,
+          36
+        ],
+        [
+          105,
+          113
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "ranges": [
+        [
+          1,
+          95
+        ],
+        [
+          482,
+          521
+        ],
+        [
+          600,
+          627
+        ],
+        [
+          685,
+          731
+        ],
+        [
+          765,
+          803
+        ],
+        [
+          856,
+          885
+        ],
+        [
+          969,
+          1014
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "ranges": [
+        [
+          133,
+          215
+        ],
+        [
+          275,
+          375
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs",
+      "ranges": [
+        [
+          30,
+          47
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+      "ranges": [
+        [
+          25,
+          58
+        ],
+        [
+          65,
+          145
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "ranges": [
+        [
+          1,
+          32
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "ranges": [
+        [
+          11,
+          108
+        ]
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "ranges": [
+        [
+          8,
+          30
+        ]
+      ]
+    }
+  ],
+  "source_registry_projections": {
+    "QuartetPaths": [
+      "game_state/resources/resource_definitions.json",
+      "game_state/resources/resource_history.json",
+      "game_state/resources/resource_owner_authority.json",
+      "game_state/resources/resource_state.json"
+    ],
+    "FootprintAdditional": [
+      "game_state/combat/allies.json",
+      "game_state/combat/enemies.json",
+      "game_state/control/pending_effect_resolutions.json",
+      "game_state/control/pending_mortal_wound_occurrences.json",
+      "game_state/effects/effect_identity_index.json",
+      "game_state/meta/afterlife_entity_profiles.json",
+      "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "game_state/npcs/npc_effects.json",
+      "game_state/npcs/npc_wounds.json",
+      "game_state/player/effects.json",
+      "game_state/player/wounds.json",
+      "game_state/wounds/wound_history.json",
+      "game_state/wounds/wound_identity_index.json",
+      "game_state/wounds/wound_opportunity_receipts.json"
+    ],
+    "ProjectionRootPaths": [
+      "game_state/inventory/item_bonds.json",
+      "game_state/inventory/item_identity_index.json",
+      "game_state/inventory/item_removals.json",
+      "game_state/inventory/item_text_updates.json",
+      "game_state/inventory/items.json",
+      "game_state/inventory/recipes.json",
+      "game_state/misc/vehicles.json",
+      "game_state/npcs/item_journals.json",
+      "game_state/npcs/npc_core.json",
+      "game_state/npcs/npc_inventory.json",
+      "game_state/quests/quest_history.json",
+      "game_state/world/current_location.json",
+      "game_state/world/location_storage_contents.json"
+    ],
+    "SourceAuthorityPaths": [
+      "game_state/combat/allies.json",
+      "game_state/combat/enemies.json",
+      "game_state/inventory/item_bonds.json",
+      "game_state/inventory/item_identity_index.json",
+      "game_state/inventory/item_text_updates.json",
+      "game_state/inventory/items.json",
+      "game_state/inventory/recipes.json",
+      "game_state/meta/afterlife_entity_profiles.json",
+      "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "game_state/meta/guardians.json",
+      "game_state/meta/shining_abode_state.json",
+      "game_state/meta/soul_state.json",
+      "game_state/misc/vehicles.json",
+      "game_state/npcs/item_journals.json",
+      "game_state/npcs/npc_core.json",
+      "game_state/quests/quest_history.json",
+      "game_state/world/current_location.json",
+      "game_state/world/location_storage_contents.json"
+    ],
+    "MortalJointInactiveTailPaths": [
+      "game_state/control/qte_deferred_effect_continuation.json",
+      "game_state/control/qte_runtime.json",
+      "game_state/core/player_status.json",
+      "game_state/player/experience.json",
+      "game_state/player/stat_points.json",
+      "game_state/player/status_changes.json",
+      "output/qte_offer.json"
+    ],
+    "JointFootprintPaths": [
+      "game_state/combat/allies.json",
+      "game_state/combat/enemies.json",
+      "game_state/control/pending_effect_resolutions.json",
+      "game_state/control/pending_mortal_wound_occurrences.json",
+      "game_state/control/pending_wound_resolutions.json",
+      "game_state/control/qte_deferred_effect_continuation.json",
+      "game_state/control/qte_runtime.json",
+      "game_state/core/player_status.json",
+      "game_state/effects/effect_identity_index.json",
+      "game_state/inventory/item_bonds.json",
+      "game_state/inventory/item_identity_index.json",
+      "game_state/inventory/item_removals.json",
+      "game_state/inventory/item_text_updates.json",
+      "game_state/inventory/items.json",
+      "game_state/inventory/recipes.json",
+      "game_state/meta/afterlife_entity_profiles.json",
+      "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "game_state/meta/guardians.json",
+      "game_state/meta/shining_abode_state.json",
+      "game_state/meta/soul_state.json",
+      "game_state/misc/vehicles.json",
+      "game_state/npcs/item_journals.json",
+      "game_state/npcs/npc_core.json",
+      "game_state/npcs/npc_effects.json",
+      "game_state/npcs/npc_inventory.json",
+      "game_state/npcs/npc_wounds.json",
+      "game_state/player/effects.json",
+      "game_state/player/experience.json",
+      "game_state/player/stat_points.json",
+      "game_state/player/status_changes.json",
+      "game_state/player/wounds.json",
+      "game_state/quests/quest_history.json",
+      "game_state/resources/resource_definitions.json",
+      "game_state/resources/resource_history.json",
+      "game_state/resources/resource_owner_authority.json",
+      "game_state/resources/resource_state.json",
+      "game_state/world/current_location.json",
+      "game_state/world/location_storage_contents.json",
+      "game_state/wounds/wound_history.json",
+      "game_state/wounds/wound_identity_index.json",
+      "game_state/wounds/wound_opportunity_receipts.json",
+      "output/qte_offer.json"
+    ],
+    "MortalJointCalculationSourcePaths": [
+      "game_state/control/progression_report.json",
+      "game_state/control/progression_schedule.json",
+      "game_state/control/validation_repair_request.json",
+      "game_state/meta/soul_state.json",
+      "game_state/world/world_time.json",
+      "input/turn_request.json",
+      "ready/turn_complete.json"
+    ],
+    "MechanicalCommandPaths": [
+      "game_state/effects/effect_commands.json",
+      "game_state/resources/resource_commands.json",
+      "game_state/wounds/wound_commands.json"
+    ],
+    "OriginalQteProjectionPaths": [
+      "game_state/combat/allies.json",
+      "game_state/combat/enemies.json",
+      "game_state/control/pending_mortal_wound_occurrences.json",
+      "game_state/meta/afterlife_entity_profiles.json",
+      "game_state/npcs/npc_wounds.json",
+      "game_state/player/wounds.json",
+      "game_state/wounds/wound_history.json",
+      "game_state/wounds/wound_identity_index.json",
+      "game_state/wounds/wound_opportunity_receipts.json"
+    ],
+    "DirectStoryPaths": [
+      "game_state/meta/soul_state.json",
+      "game_state/world/current_location.json",
+      "output/narrative_response.json"
+    ],
+    "ConditionalStoryPaths": [
+      "game_state/meta/guardian_abode_residents.json",
+      "game_state/meta/guardians.json",
+      "game_state/npcs/npc_core.json"
+    ],
+    "ControlAndProofPaths": [
+      ".boe_runtime/session-generation/current.json",
+      "game_state/control/pending_turn_snapshot.authority.json",
+      "game_state/control/pending_turn_snapshot.json",
+      "game_state/control/validation_repair_request.json",
+      "game_state/wounds/mortal_qte_decision_publication.json",
+      "input/turn_request.json",
+      "output/mortal_wound_decisions.json",
+      "ready/turn_complete.json"
+    ]
+  },
+  "registry_verification": {
+    "matched": 12,
+    "mismatched": 0,
+    "joint_union_count": 42,
+    "method": "read-only source slices, literal/symbol resolution and independent union/deduplication; plus direct/control role projections",
+    "initial_ad_hoc_parser_issue": "First script requested an unlisted LiveTurnPreparationService.TurnRequestPath map key and stopped. Resolved actual source literal input/turn_request.json and reran, obtaining12/12 matches; not discovery or runtime."
+  },
+  "constant_resolution_evidence": [
+    {
+      "symbol": "ResourceMaterializationContract.DefinitionsPath",
+      "path": "game_state/resources/resource_definitions.json",
+      "source": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "line": 24
+    },
+    {
+      "symbol": "ResourceMaterializationContract.StatePath",
+      "path": "game_state/resources/resource_state.json",
+      "source": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "line": 25
+    },
+    {
+      "symbol": "ResourceMaterializationContract.HistoryPath",
+      "path": "game_state/resources/resource_history.json",
+      "source": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "line": 26
+    },
+    {
+      "symbol": "CanonicalResourceOwnerAuthorityComposer.AuthorityPath",
+      "path": "game_state/resources/resource_owner_authority.json",
+      "source": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+      "line": 24
+    },
+    {
+      "symbol": "MortalWoundOccurrenceState.StatePath",
+      "path": "game_state/control/pending_mortal_wound_occurrences.json",
+      "source": "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs",
+      "line": 15
+    },
+    {
+      "symbol": "MortalWoundOpportunityReceiptState.StatePath",
+      "path": "game_state/wounds/wound_opportunity_receipts.json",
+      "source": "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
+      "line": 15
+    },
+    {
+      "symbol": "WoundIdentityState.StatePath",
+      "path": "game_state/wounds/wound_identity_index.json",
+      "source": "BookOfEternityClient/Services/WoundIdentityState.cs",
+      "line": 35
+    },
+    {
+      "symbol": "WoundHistoryState.HistoryPath",
+      "path": "game_state/wounds/wound_history.json",
+      "source": "BookOfEternityClient/Services/WoundHistoryState.cs",
+      "line": 91
+    },
+    {
+      "symbol": "WoundCarrierCatalog.PlayerPath",
+      "path": "game_state/player/wounds.json",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "line": 299
+    },
+    {
+      "symbol": "WoundCarrierCatalog.NpcPath",
+      "path": "game_state/npcs/npc_wounds.json",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "line": 300
+    },
+    {
+      "symbol": "WoundCarrierCatalog.EnemiesPath",
+      "path": "game_state/combat/enemies.json",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "line": 301
+    },
+    {
+      "symbol": "WoundCarrierCatalog.AlliesPath",
+      "path": "game_state/combat/allies.json",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "line": 302
+    },
+    {
+      "symbol": "WoundCarrierCatalog.AfterlifeProfilesPath",
+      "path": "game_state/meta/afterlife_entity_profiles.json",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "line": 303
+    },
+    {
+      "symbol": "EffectAcceptedTurnPlan.IdentityIndexPath",
+      "path": "game_state/effects/effect_identity_index.json",
+      "source": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "line": 112
+    },
+    {
+      "symbol": "EffectCarrierCatalog.PlayerPath",
+      "path": "game_state/player/effects.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 31
+    },
+    {
+      "symbol": "EffectCarrierCatalog.NpcPath",
+      "path": "game_state/npcs/npc_effects.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 32
+    },
+    {
+      "symbol": "EffectCarrierCatalog.EnemiesPath",
+      "path": "game_state/combat/enemies.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 33
+    },
+    {
+      "symbol": "EffectCarrierCatalog.AlliesPath",
+      "path": "game_state/combat/allies.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 34
+    },
+    {
+      "symbol": "EffectCarrierCatalog.AfterlifeProfilesPath",
+      "path": "game_state/meta/afterlife_entity_profiles.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 35
+    },
+    {
+      "symbol": "EffectCarrierCatalog.SpiritualConflictPath",
+      "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "source": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "line": 36
+    },
+    {
+      "symbol": "ResourcePendingResolutionState.PendingPath",
+      "path": "game_state/control/pending_effect_resolutions.json",
+      "source": "BookOfEternityClient/Services/ResourcePendingResolutionState.cs",
+      "line": 260
+    },
+    {
+      "symbol": "InventoryEquipmentService.ItemsPath",
+      "path": "game_state/inventory/items.json",
+      "source": "BookOfEternityClient/Services/InventoryEquipmentService.cs",
+      "line": 11
+    },
+    {
+      "symbol": "NpcCoreChangesContract.NpcCorePath",
+      "path": "game_state/npcs/npc_core.json",
+      "source": "BookOfEternityClient/Services/NpcCoreChangesContract.cs",
+      "line": 10
+    },
+    {
+      "symbol": "MortalItemAcceptedTransferCatalog.NpcCommandsPath",
+      "path": "game_state/npcs/npc_inventory.json",
+      "source": "BookOfEternityClient/Services/MortalItemAcceptedTransferCatalog.cs",
+      "line": 33
+    },
+    {
+      "symbol": "MortalItemAcceptedTransferCatalog.PlayerRemovalPath",
+      "path": "game_state/inventory/item_removals.json",
+      "source": "BookOfEternityClient/Services/MortalItemAcceptedTransferCatalog.cs",
+      "line": 32
+    },
+    {
+      "symbol": "StorageTransportMoveService.CurrentLocationPath",
+      "path": "game_state/world/current_location.json",
+      "source": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "line": 13
+    },
+    {
+      "symbol": "MortalLocationStorageContentsState.StatePath",
+      "path": "game_state/world/location_storage_contents.json",
+      "source": "BookOfEternityClient/Services/MortalLocationStorageContentsState.cs",
+      "line": 17
+    },
+    {
+      "symbol": "StorageTransportMoveService.VehiclesPath",
+      "path": "game_state/misc/vehicles.json",
+      "source": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "line": 14
+    },
+    {
+      "symbol": "MortalItemIdentityState.StatePath",
+      "path": "game_state/inventory/item_identity_index.json",
+      "source": "BookOfEternityClient/Services/MortalItemIdentityState.cs",
+      "line": 170
+    },
+    {
+      "symbol": "AfterlifeEntityProfileState.StatePath",
+      "path": "game_state/meta/afterlife_entity_profiles.json",
+      "source": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "line": 10
+    },
+    {
+      "symbol": "AfterlifeSpiritualConflictState.StatePath",
+      "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "source": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "line": 9
+    },
+    {
+      "symbol": "ShiningAbodeState.StatePath",
+      "path": "game_state/meta/shining_abode_state.json",
+      "source": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+      "line": 14
+    },
+    {
+      "symbol": "QteSceneService.QteOfferPath",
+      "path": "output/qte_offer.json",
+      "source": "BookOfEternityClient/Services/QteSceneService.cs",
+      "line": 36
+    },
+    {
+      "symbol": "QteSceneService.QteRuntimePath",
+      "path": "game_state/control/qte_runtime.json",
+      "source": "BookOfEternityClient/Services/QteSceneService.cs",
+      "line": 37
+    },
+    {
+      "symbol": "QteDeferredEffectContinuation.StatePath",
+      "path": "game_state/control/qte_deferred_effect_continuation.json",
+      "source": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "line": 64
+    },
+    {
+      "symbol": "WoundAcceptedTurnSnapshotContract.PendingResolutionPath",
+      "path": "game_state/control/pending_wound_resolutions.json",
+      "source": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "line": 5
+    },
+    {
+      "symbol": "ProgressionScheduleService.SchedulePath",
+      "path": "game_state/control/progression_schedule.json",
+      "source": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "line": 16
+    },
+    {
+      "symbol": "ProgressionScheduleService.ReportPath",
+      "path": "game_state/control/progression_report.json",
+      "source": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "line": 17
+    },
+    {
+      "symbol": "ResourceMaterializationContract.CommandPath",
+      "path": "game_state/resources/resource_commands.json",
+      "source": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "line": 27
+    },
+    {
+      "symbol": "EffectAcceptedTurnPlan.CommandPath",
+      "path": "game_state/effects/effect_commands.json",
+      "source": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "line": 111
+    },
+    {
+      "symbol": "AcceptedMechanicsPlan.WoundCommandPath",
+      "path": "game_state/wounds/wound_commands.json",
+      "source": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "line": 1297
+    },
+    {
+      "symbol": "LiveTurnPreparationService.PendingTurnSnapshotManifestPath",
+      "path": "game_state/control/pending_turn_snapshot.json",
+      "source": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "line": 18
+    },
+    {
+      "symbol": "PendingTurnSnapshotAuthority.AuthorityPath",
+      "path": "game_state/control/pending_turn_snapshot.authority.json",
+      "source": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "line": 10
+    },
+    {
+      "symbol": "MortalQteDecisionPublication.StatePath",
+      "path": "game_state/wounds/mortal_qte_decision_publication.json",
+      "source": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "line": 16
+    },
+    {
+      "symbol": "MortalWoundOpportunityAdapter.DecisionPath",
+      "path": "output/mortal_wound_decisions.json",
+      "source": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "line": 21
+    }
+  ],
+  "constant_verification": {
+    "matched": 45,
+    "mismatched": 0,
+    "method": "literal at declared pinned source line neighborhood; used to resolve concrete source array expressions"
+  },
+  "md_json_section_verification": {
+    "sections_checked": 10,
+    "all_exact_text_present": true
+  },
+  "future_checks": [
+    {
+      "id": "V01",
+      "title": "Invoke-vs-seal race",
+      "description": "Seal on both sides of installing the child promise and before the async body returns its Task; no unregistered synchronous-prefix effect.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V02",
+      "title": "Original object identity",
+      "description": "Different owner/files/lease/applied capability, copied descriptor or old G refuses; genuine in-process references work only while original host lives.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V03",
+      "title": "Bridge loss hosting",
+      "description": "Kill frontend bridge while owner graph is in original keeper; real join continues. Kill actual owner process instead and require HOLD, never rehydration.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V04",
+      "title": "Missing story",
+      "description": "Genuine absent original history creates precisely BOM+one frozen row+newline, not AlreadyAppended/no-change.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V05",
+      "title": "Already appended",
+      "description": "Exact prior suffix/prefix/source proofs yields no native attempt; foreign suffix, extra turn, duplicate request/G or unlisted history refuses.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V06",
+      "title": "Conditional inputs",
+      "description": "Each guardian/resident/NPC tag combination; absent optional roots vs malformed roots; frozen output/row unchanged across seal.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V07",
+      "title": "Native phase cuts",
+      "description": "Before/after actual intent staging/publication, story stage/rename, commit stage/rename, each cleanup; exact one D1 outcome, no duplicate D5 settlement.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V08",
+      "title": "Fresh retry suppression",
+      "description": "Transient rollback before seal may register next real attempt; after seal no new TransactionId or append even with identical bytes.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V09",
+      "title": "Committed cleanup debt",
+      "description": "Native Committed plus cleanup failure remains tracked even if facade/story readback returns success; resolve exact original journal only.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V10",
+      "title": "Readback refusal after commit",
+      "description": "Change a guard/source during readback; retain native commit and semantic refusal independently, no story rollback/replay.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V11",
+      "title": "Hidden recovery and namespace effects",
+      "description": "Foreign journal at lease/proof boundaries, commit-stage-only evidence, missing stories/runtime parent: no unregistered recovery/creation; preserve parent debt.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V12",
+      "title": "I/O/callback join",
+      "description": "Delayed async read/disposal, sync native error, hook spawned work, diagnostic outstanding I/O; no receipt before actual owned completion, timeout remains pending.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V13",
+      "title": "Parent borrow/finalization",
+      "description": "Child success does not release lease/main pin; seal before parent return prevents turn increment/terminal cleanup; finalization/close failure retains child outcome.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V14",
+      "title": "Original/read-role integrity",
+      "description": "Tampered signed backup, snapshot hash mode, history text hash/BOM, 42-leaf guard union, progression and command absence; reject without broadening write inventory.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V15",
+      "title": "Native EOF/cold migration",
+      "description": "EOF latches uncertainty; actual empty+no exec required even for helper exit. Keeper death/reboot/new host/distinct root never yields original child or parent retirement.",
+      "status": "UNRUN"
+    },
+    {
+      "id": "V16",
+      "title": "Global limits",
+      "description": "Non-browser callsite and supported storage profile only; no HC/H2/H3/HQ/target activation, new G, source replay or extra tick/dice/reward from child receipt.",
+      "status": "UNRUN"
+    }
+  ],
+  "gates": {
+    "DEP-C": "BLOCKED",
+    "DEP-I": "BLOCKED",
+    "DEP-L": "BLOCKED",
+    "fulltarget": "BLOCKED",
+    "H2": "BLOCKED",
+    "H3": "BLOCKED",
+    "HQ": "BLOCKED",
+    "new_joint_QTE": "BLOCKED"
+  },
+  "open_preserved": [
+    "D4",
+    "guided",
+    "visual",
+    "Windows",
+    "D8"
+  ],
+  "authorization": "Continuing agreed ordinary application DESIGN needs no repeated permission; exact independently accepted implementation contract and bounded TDD/qualification remain required. No new OS/security/services/keys/credentials granted.",
+  "runtime_evidence": {
+    "all_future_checks": "UNRUN",
+    "builds": false,
+    "tests": false,
+    "discovery": false,
+    "application_native_execution": false,
+    "OS_qualification": false,
+    "unrelated_ordinary_results_used": false,
+    "F2": false
+  },
+  "mutations": {
+    "repository": false,
+    "code": false,
+    "tests": false,
+    "runtime": false,
+    "OS_services_keys": false,
+    "fetch_push": false,
+    "delegation": false,
+    "only_outputs": [
+      "/tmp/t197-depc-a1-source-vertical-independent-review-20261016.md",
+      "/tmp/t197-depc-a1-source-vertical-independent-review-20261016.json"
+    ]
+  },
+  "markdown_report": {
+    "path": "/tmp/t197-depc-a1-source-vertical-independent-review-20261016.md",
+    "sha256": "1d56a1548c083dd6929aa31446781d3025599cf3a7708305ba4ad1c61ae14814",
+    "bytes": 16651
+  },
+  "json_self_hash": "Delivered out-of-band after serialization.",
+  "final_stop": true,
+  "pending_writes": false
+}
