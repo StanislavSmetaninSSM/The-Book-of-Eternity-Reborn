@@ -1,3 +1,5 @@
+- Pd.3a static preflight lock-read fixture finding corrected beforeactual; superseded initial discovery124.301s/0exec retained with outer-shell exit discrepancy. Fresh corrected BOTH/PlanOnly/SOURCE/firstLate2/EVIDENCE required; no prodsuccesslogic.
+
 - Pd.3a initialtest-first actualoriginal/current/G/defaultreader→missingobservedAPI case + newfinitecategory/selection WIP. Expected2descriptors3cases pendingfreshBOTH/discovery/source/firstLate2/EVIDENCE; no prodchanges, allnewchecksUNRUN.
 
 - T179-Pd bounded ledger ACCEPTED by separate final Astra/XHigh review:42distinctPASS/40rawchains/12strictabsentroots/fourDLLfixed3d262/459selectedrecovery; root169pins23diffs. WholePd/F1/tasks remainOPEN.

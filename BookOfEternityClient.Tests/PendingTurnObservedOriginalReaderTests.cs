@@ -37,15 +37,19 @@ public sealed class PendingTurnObservedOriginalReaderTests(ITestOutputHelper out
             await files.WriteFileAtomicAsync(RequiredPath,
                 "{\"schemaVersion\":1,\"occurrences\":[{}]}");
 
-            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-            var generation = files.ReadLocalGenerationSnapshot(lease);
-            Assert.NotNull(generation.Binding.Id);
-            Assert.NotNull(generation.Bytes);
             var before = SnapshotTree(root);
-            var existing = PendingTurnSnapshotReader.ReadCurrent(files, lease, [RequiredPath]);
-            Assert.True(existing.Success, JsonSerializer.Serialize(existing.Issues));
-            Assert.Empty(existing.Issues);
-            var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(existing.Snapshot);
+            LocalSessionGenerationSnapshot generation;
+            PendingTurnSnapshotReadAuthority original;
+            await using (var defaultLease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                generation = files.ReadLocalGenerationSnapshot(defaultLease);
+                Assert.NotNull(generation.Binding.Id);
+                Assert.NotNull(generation.Bytes);
+                var existing = PendingTurnSnapshotReader.ReadCurrent(files, defaultLease, [RequiredPath]);
+                Assert.True(existing.Success, JsonSerializer.Serialize(existing.Issues));
+                Assert.Empty(existing.Issues);
+                original = Assert.IsType<PendingTurnSnapshotReadAuthority>(existing.Snapshot);
+            }
             Assert.Equal("observed-original-session-71", original.SessionId);
             Assert.Equal("observed-original-request-71", original.RequestId);
             Assert.Equal(71, original.TurnNumber);
@@ -66,25 +70,31 @@ public sealed class PendingTurnObservedOriginalReaderTests(ITestOutputHelper out
 
             // Deliberate causal RED: genuine original/current/G/default-reader
             // preconditions above must succeed before the missing API assertion.
-            var observedMethod = typeof(PendingTurnSnapshotReader).GetMethod(
-                "ReadObservedCurrent", BindingFlags.Static | BindingFlags.NonPublic);
-            Assert.NotNull(observedMethod);
-            var observed = observedMethod!.Invoke(null,
-                [files, lease, new[] { RequiredPath }]);
-            Assert.NotNull(observed);
-            T Property<T>(string name) => Assert.IsAssignableFrom<T>(
-                observed!.GetType().GetProperty(name,
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(observed));
-            Assert.True(Property<bool>("Success"));
-            var snapshot = Property<PendingTurnSnapshotReadAuthority>("Snapshot");
-            Assert.NotSame(original, snapshot);
-            Assert.Equal(original.SnapshotToken, snapshot.SnapshotToken);
-            Assert.Equal(originalBytes, snapshot.ReadRequiredBytes(RequiredPath));
-            var evidence = Property<object>("Evidence");
-            var requireCurrent = evidence.GetType().GetMethod("RequireCurrent",
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            Assert.NotNull(requireCurrent);
-            requireCurrent!.Invoke(evidence, [files, lease, snapshot]);
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                var currentGeneration = files.ReadLocalGenerationSnapshot(lease);
+                Assert.Equal(generation.Binding.Id, currentGeneration.Binding.Id);
+                Assert.Equal(generation.Bytes, currentGeneration.Bytes);
+                var observedMethod = typeof(PendingTurnSnapshotReader).GetMethod(
+                    "ReadObservedCurrent", BindingFlags.Static | BindingFlags.NonPublic);
+                Assert.NotNull(observedMethod);
+                var observed = observedMethod!.Invoke(null,
+                    [files, lease, new[] { RequiredPath }]);
+                Assert.NotNull(observed);
+                T Property<T>(string name) => Assert.IsAssignableFrom<T>(
+                    observed!.GetType().GetProperty(name,
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(observed));
+                Assert.True(Property<bool>("Success"));
+                var snapshot = Property<PendingTurnSnapshotReadAuthority>("Snapshot");
+                Assert.NotSame(original, snapshot);
+                Assert.Equal(original.SnapshotToken, snapshot.SnapshotToken);
+                Assert.Equal(originalBytes, snapshot.ReadRequiredBytes(RequiredPath));
+                var evidence = Property<object>("Evidence");
+                var requireCurrent = evidence.GetType().GetMethod("RequireCurrent",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                Assert.NotNull(requireCurrent);
+                requireCurrent!.Invoke(evidence, [files, lease, snapshot]);
+            }
             AssertTreeEqual(before, SnapshotTree(root));
         }
         finally
