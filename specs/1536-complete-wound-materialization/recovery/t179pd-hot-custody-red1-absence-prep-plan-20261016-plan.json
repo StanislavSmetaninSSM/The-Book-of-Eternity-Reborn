@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "fr063-joint-late-completion",
+    "fr063-hot-joint-attempt-ownership"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "G5 FIRST only: both protected method bodies unchanged; default helper branch must retain actual v2 union/source/G/held request/native cohort/story/progression/turn/inert and strict cleanup before separate EVIDENCE.",
+      "contracts": [
+        "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+      ]
+    },
+    {
+      "category": "fr063-hot-joint-attempt-ownership",
+      "reason": "One genuine missing-private-custody-result causal RED after actual ProcessPlayerTurn/Stage43, post-original submitted changes including genuine uncovered-original/status submitted-present, repair/Ready and exact existing v2 held/uncovered-present-refusal/no-consequence preconditions. Not released before separate Late2 EVIDENCE.",
+      "contracts": [
+        "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.3417408,
+  "Descriptors": [
+    {
+      "Name": "fr063-hot-joint-attempt-ownership-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-hot-joint-attempt-ownership",
+      "Categories": [
+        "fr063-hot-joint-attempt-ownership"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-late-completion-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-late-completion",
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

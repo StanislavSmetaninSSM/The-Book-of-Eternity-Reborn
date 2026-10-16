@@ -1,0 +1,57 @@
+{
+  "utc": "2026-10-16T18:05:53.619084+00:00",
+  "reason": "8.8GB task/tmp mount full during new recovery, writer/workspace mount has capacity; no game tests running",
+  "failed_clone_only_removed_before_audit": "/tmp/f1-r2-hot-custody-red1-absence-source-github-20261016",
+  "failed_recovery_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "failed_recovery_receipt_emitted": false,
+  "removed_clean_reconstructable_task_clones": [
+    {
+      "directory": "/tmp/f1-r2-hot-admission-start-github-20261016",
+      "head": "f0441081b1030b559340bc6e2827867c6cd7195b",
+      "file_count": 986,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-admission-start-recovery-20261016.json",
+      "receipt_sha256": "c548984b77e79ba47e9da4e93307665be78165cfff8cb0b1a74eba3666f8882e",
+      "clean_no_ignored_runtime": true,
+      "all_selected_file_hashes_rechecked": true,
+      "descendant_durable_checkpoint": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-engineering-design-github-20261016",
+      "head": "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "file_count": 990,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-design-recovery-20261016.json",
+      "receipt_sha256": "11a8bafeb451d3ef3c1960e2603a6c279b1918fb0b3d596b68cf2242342fbfca",
+      "clean_no_ignored_runtime": true,
+      "all_selected_file_hashes_rechecked": true,
+      "descendant_durable_checkpoint": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-accepted-engineering-github-20261016",
+      "head": "d149d37577a3367ae6ca249640353a194934300e",
+      "file_count": 1002,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-accepted-engineering-recovery-20261016.json",
+      "receipt_sha256": "f3f036f7deb07a74dadb4c1b2f010b3694e132c8662b3734770d4092e802524c",
+      "clean_no_ignored_runtime": true,
+      "all_selected_file_hashes_rechecked": true,
+      "descendant_durable_checkpoint": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-source-github-20261016",
+      "head": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "file_count": 1010,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-wip-selected-recovery-20261016.json",
+      "receipt_sha256": "6a744238909df1a89065097c3373d9aa5b9848d458de1237c8592d84317a39c0",
+      "clean_no_ignored_runtime": true,
+      "all_selected_file_hashes_rechecked": true,
+      "descendant_durable_checkpoint": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "removed": true
+    }
+  ],
+  "preserved": "writer, all raw runtime/test evidence/receipts/reports, e0prepared1028 clone,3fdaccepted-reader clone, remote refs",
+  "product_changes": 0,
+  "remote_ref_or_branch_deletion": false,
+  "system_security_changes": false
+}
