@@ -1,0 +1,76 @@
+{
+  "kind": "ROOT_FRESH_PRODUCTION_SELECTED_BUILD_PLAN_ONLY_LITERAL_READBACK",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-prep-first-d8e53413-20261017/record.json",
+  "recordSha256": "cc965219369d5de563a166c38a22e60d1be62ec6dfe9c11d6f040f03b35343e8",
+  "nativeExit": 0,
+  "actualTestsExecuted": 0,
+  "wallSeconds": 87.56183214500197,
+  "sourcePinCount": 136,
+  "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
+  "stage": {
+    "categories": 9,
+    "descriptors": 10,
+    "methods": 15,
+    "rows": 47
+  },
+  "semanticPlansEqualPriorFb6": true,
+  "bothSelectedProjectsBuilt": true,
+  "noTRX": true,
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "ec5f9a7c26898ed4c5dc54c382a163423eb9d26ace267a518765c0009a3c1a03"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "21d2d6f8ea08c01b5f8eb0c8cc4ef6f867f7bcaace2a1027d668f93ea7cbd03f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "d55d10ea6bbf30a44288cceb99730bb1a90d65ad1ca03b4bdeac7be956b96237"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    }
+  ],
+  "managedOutputFiles": 258,
+  "helperSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+  "namespaceStable": true,
+  "archive": {
+    "path": "/tmp/gm1559-lifecycle-stage-prep-first-archive-d8e53413-20261017/archive.json",
+    "sha256": "c2edfd1b4901f1ea8155c53612ccfe47367a219ef13fb35cc2691fba6dde0384",
+    "chains": 9
+  },
+  "scope": "Fresh preparation only; productionSOURCE and Root named actual47 release stillrequired. Catalog829/11699 retainedbecauseownership/FQN/selectorsunchanged. No baselineactualreplay."
+}

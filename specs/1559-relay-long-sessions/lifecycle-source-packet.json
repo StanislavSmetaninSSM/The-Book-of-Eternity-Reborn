@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "PRODUCTION_WIP_FRESH_COMPILED_DISCOVERED_0EXEC; SOURCE_PENDING",
+  "stage": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
   "sourcePinCount": 136,
   "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
   "sourcePins": [
@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "7e0e8613e3dffb399c8818fc3706c37a3577d53a1befbe15fc48634ba33ddd3e"
+    "sha256": "2112bc50e88fee1d2428a7183b346476c10267edbbf7cd221246a5b33ea54006"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1404,7 +1404,7 @@
       "actualPublisher": "UNRUN_REQUIRED_GREEN1"
     }
   },
-  "runtimePolicy": "Current32causalEVIDENCEaccepted. Rootreleasedinactive8file+READMEsourceauthoringonly; publishexactWIP/recoverbeforefreshbuild. ActualGREENhelduntilproductionSOURCE/PREP/selection/controlleracceptance and namedRootactivation.",
+  "runtimePolicy": "ProductionSOURCE/FIXTURE/SELECTION/PREPaccepted only; all47GREENUNRUN. No build/catalog/Planrepeat. Exactsuccessorremote/newGitHubrecovery and separately namedRootaa15Selection47-NoBuild activation required. AllFIRSThistoriesimmutable; unexpectedSTOP/no retries.",
   "handoff": "Close only safe inactive lifecycle stage through affected GREEN/independent acceptance/durable checkpoint; then wounds T179-Pd.3d. Full relay backlog stays open/deferred.",
   "newFirstActualRecorder": {
     "path": "recovery/tools/lifecycle-guard-first-run.py",
@@ -1632,7 +1632,7 @@
     "classification": "ACCEPTED_CURRENT32_16CAUSAL_RED16POSITIVE; original0771notdoublecounted"
   },
   "productionWip": {
-    "status": "D8E_FRESH_COMPILED_DISCOVERED_0EXEC_NOT_GREEN",
+    "status": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
     "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
     "changedProductionPaths": [
       "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -1695,8 +1695,8 @@
         "status": "UNRUN; syntaxchecked/source-readable, separate Root prep/actual gates required"
       }
     ],
-    "preparation": "FIRSTfreshbothbuildPlan47 native0/0exec; savedexactraw/new9managedpins. No catalog/npm repeat. CoherentproductionSOURCEandnamedGREEN47stillpending.",
-    "green": "NOT_RUN; productionSource+freshPrep/selection/controller independently reviewed and exactRootactivation required before onefixed47SelectionFile-NoBuildaggregate.",
+    "preparation": "FIRSTd8ebothbuildPlan47native0/0exec; coherentSource/Fixture/Selection/Prep accepted, reports persisted. No repetition required.",
+    "green": "ALL47UNRUN; separate named exactRootactivation after successorpublication/recovery required.",
     "documentation": "README only: inactiveclient-ownednames; notGM-authorable,noMortal/afterlifepending/gameplay/schema/statecontract change. ExistingD01/sourceban,52readingdocs/daemon/CLI/sixinverseentrypoints unchanged. NoGMworkedexample/manifest/matrix/categoryreplaytriggered. Actualhelperpackageinputchanged=>exactgenuinepublisher1selected.",
     "handoff": "AfterboundedlifecycleGREEN/independentacceptance/remotecheckpoint STOPfullrelaybacklog; handoffwoundsT179-Pd.3d acceptedNI-D01implementation in preserved1536worktree, no repeatdesign. WindowsZIPblock/openWindowsunchanged,noCIretry."
   },
@@ -1709,5 +1709,36 @@
     "descriptors": 10,
     "methods": 15,
     "cases": 47
+  },
+  "productionSourceDecision": {
+    "verdict": "ACCEPT_INACTIVE_LIFECYCLE_PRODUCTION_SOURCE_FIXTURE_SELECTION_PREPARATION",
+    "carrier": "2c5186c61526b29fb00a13dbd57ab3dc545ab72b",
+    "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+    "reports": [
+      {
+        "path": "recovery/lifecycle-production-source-independent.md",
+        "sha256": "859ad1e7f66c058cc81f6ce41ec6a5fae5f421bf8faaf0845a04e01912fdc5f0"
+      },
+      {
+        "path": "recovery/lifecycle-production-source-independent.json",
+        "sha256": "2dc3ecbf0c1e9e5314aab5c248d3bcf9d733089f00304ca7b2cf6f697c15a465"
+      },
+      {
+        "path": "recovery/lifecycle-production-source-independent-check.json",
+        "sha256": "de5c5311a8b61e6c018b0402e0dab578a6ec39c425e1995f8cfe16f4678b3212"
+      },
+      {
+        "path": "recovery/root-production-prep-readback-d8e53413.json",
+        "sha256": "d7f5b208fdce5fd2b9801f4b40e1908dd6650020c1658d9e35fef41d43c68045"
+      }
+    ],
+    "rootDisposition": "Rootread/hashverified full finalMD/JSON/support and accepted no materialfinding. Persist/readexactsuccessor/newcompleteGitHubrecovery before Root separately names ONEapprovedaa15Selection47-NoBuild. This metadata is not actual activation.",
+    "actual": "ALL47_GREEN_UNRUN; no build/Plan repetition",
+    "scope": "Onlyinactive8existingpolicyowners+README; no relaymechanism/authority. Fullrelay/Windowsopen; afterGREEN/EVIDENCE/durablecheckpoint handoffwoundsPd3d.",
+    "recovery": {
+      "delta": "recovery/2c51-delta-github.json",
+      "rootComposition": "recovery/2c51-recovery-composition.json",
+      "retainedDeltas": 142
+    }
   }
 }

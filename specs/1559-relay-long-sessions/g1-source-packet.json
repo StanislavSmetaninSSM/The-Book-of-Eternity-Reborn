@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "HistoricaloriginalG1/componentcausal preserved. Inactive8fileproductionfreshd8ebothbuildPlan47passed0exec; noGREENorproductionSourceacceptanceyet.",
+  "actual": "Historicalcausalbaselinesretained; currentinactive8ownerproductionSOURCE/PREPaccepted, all47GREENUNRUN. Fullrelay/Windowsnotaccepted.",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "7e0e8613e3dffb399c8818fc3706c37a3577d53a1befbe15fc48634ba33ddd3e"
+    "sha256": "2112bc50e88fee1d2428a7183b346476c10267edbbf7cd221246a5b33ea54006"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
