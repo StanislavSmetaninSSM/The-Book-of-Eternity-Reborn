@@ -1,0 +1,72 @@
+{
+  "kind": "INDEPENDENT_RP01_PREINTAKE_ROUTE_SOURCE_REVIEW",
+  "date": "2026-10-17",
+  "verdict": "ACCEPT_SINGLE_ROUTE_SOURCE_ASSESSMENT_AND_HANDOFF_ONLY",
+  "sourceBase": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+  "publishedCarrier": "5e3bfaded1bc854a6bb49a871e625d9d794fc542",
+  "candidate": [
+    {
+      "path": "/tmp/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md",
+      "bytes": 9461,
+      "sha256": "0d4c5a7cd9bb39333b78d4499f1ab8aed080a1c59f9d1e1091391db7ac8cb056"
+    },
+    {
+      "path": "/tmp/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json",
+      "bytes": 26258,
+      "sha256": "10e012f5bc70812bcc568b9919e607fb5629e16b8143aaae06453f62ef6baf14"
+    }
+  ],
+  "support": {
+    "path": "/tmp/t179pd-rp01-preintake-route-source-independent-check-20261017.json",
+    "bytes": 43053,
+    "sha256": "9e556469ddcc55270dbda7245a804c740b687b31f01f642dad778d26a0b59c7c"
+  },
+  "sourceVerdict": "ACCEPT: actual producer/consumer/order and limits accurately documented; no material documentary finding.",
+  "evidenceVerdict": "NO_NEW_RUNTIME_EVIDENCE; prior accepted evidence retained, not replayed/requalified.",
+  "testsOnlyVerdict": "NO_NEW_TESTS_ONLY_STAGE_ON_THIS_CANDIDATE",
+  "implementationReadiness": "Producer observation engineering is within NI-D01 and user autonomy. A useful new consumer vertical is not closed: no selected new-observation effect at intake, and corrected route supplies N rather than complete NI before publication.",
+  "consumerBoundary": "Mandatory narrative-observation binding/refusal would add a v2 admission rule. Optional unused observations do not complete an ordinary vertical. Intended pre-seal family availability needs actual NI/source/history/owner closure.",
+  "futureCausalFrontier": "Reach real Stage/TREAT/draft/original and returned N; change an earlier consumed source at a later read. A specified real consumer must distinguish earlier invocation from changed source, with unchanged and real write/finalization contrasts. Current-only rerun is a different invocation. No new refusal or runtime is authorized by this report.",
+  "existingPrerequisites": [
+    "JointOutputBinding:17 -> actual JointCompletion fixture; corrected binding402-413/first normalized checkpoint519-527.",
+    "AcceptedTurnNarrativeInterfaceOrdinaryTests:26/54/85/111 no-write, changed writer, mutation fault, distinct outer-finalization controls. Source facts, no new PASS."
+  ],
+  "preservedSemantics": [
+    "Error-only outward consumption; warning-only omission.",
+    "Engine guard Skipped is no invocation, not Passed.",
+    "Stale equality Warning; unusable original policy-null.",
+    "Public-write owning release and later outer SessionOperation close are separate.",
+    "Readonly/current fixedpoint/later Full cannot substitute for actual ordinary NI history.",
+    "Cold completion does not replay normalization/committed actions or invent live authority."
+  ],
+  "verification": {
+    "frozenPins": 24,
+    "exactRanges": 22,
+    "currentByteEqualPins": 22,
+    "intentionalMetadataPinChanges": [
+      "plan.md",
+      "tasks.md"
+    ],
+    "metadataChangedPaths": 9,
+    "newRecoveredFiles": 13,
+    "exactCopiedArtifacts": 6,
+    "productTestSelectorToolDelta": "EMPTY",
+    "retainedRootRecovery": "full7a +64 deltas /55112 paths"
+  },
+  "findings": [],
+  "precisionDisposition": {
+    "id": "RP01-PREINTAKE-L01",
+    "status": "RESOLVED_IN_SAVED_DERIVED_PLAN",
+    "detail": "Engine owns guardSkipped; detailed validator observation describes actual invocation only."
+  },
+  "completionLimit": "Only current one-route assessment/handoff may complete after Root acceptance/persistence. Producer/source/read/history/consumer implementation and causal TDD remain open. No new human-approval stop or blanket ZIP/Windows prohibition.",
+  "held": [
+    "complete3e",
+    "pre-seal HOT/source-history",
+    "S/B/D9/M3/F1/T197",
+    "Windows",
+    "A3 NO-PROCEED boundaries"
+  ],
+  "priorProbeDisposition": "Earlier generic usefulness of genuine baseline is refined by existing controls: no additional prerequisite-only tests justified here. Preserve probe unchanged.",
+  "authority": "SOURCE only; no production/native activation or new EVIDENCE acceptance."
+}
