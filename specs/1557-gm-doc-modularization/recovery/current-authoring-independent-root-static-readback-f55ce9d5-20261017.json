@@ -1,0 +1,23 @@
+{
+  "kind": "ROOT_STATIC_PRESERVATION_READBACK",
+  "sha": "f55ce9d5ced46c46b7b0df1d4b58e2162c93c81c",
+  "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "verifiedUtc": "2026-10-17T03:35:36.299913+00:00",
+  "recoveredFiles": 64,
+  "changedPaths": 60,
+  "destinations": 24,
+  "blocks": 137,
+  "sources": 3,
+  "reversedEdits": 18,
+  "externalEditedSources": [
+    "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+    "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+    "BookOfEternityClient/game_master_daemon.ps1",
+    "CLI_Agent_Daemon_Specification.md",
+    "TaskGuides/CLI_Step_Main.txt"
+  ],
+  "catalog": "all784existingsemanticrowsunchanged; originalrawprefixretained;5newowners",
+  "verdict": "Static scope checks accepted for this WIP only. Remaining consumers/negative fixtures/fresh build/SOURCE/EVIDENCE unaccepted; no runtime.",
+  "receipt": "/tmp/gm1557-authoring-delta-github-f55ce9d5-20261017.json",
+  "receiptSha256": "f6db5c41c9328239429d5a39c218ab7decc0ec3822b14d3ee5cda5c978b64d87"
+}

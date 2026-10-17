@@ -65,6 +65,77 @@ public sealed class GmDocumentationModularizationTests
     }
 
     [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority(bool guardian)
+    {
+        var profile = guardian
+            ? BookOfEternityClient.Services.GmWorkers.GmWorkerBridgeProfileTemplates.CreateGuardianAbodeContentCodexTemplate()
+            : BookOfEternityClient.Services.GmWorkers.GmWorkerBridgeProfileTemplates.CreateSoulContentCodexTemplate();
+        var bodies = Fixture().Destinations;
+        Assert.Equal(24, bodies.Length);
+        foreach (var body in bodies)
+        {
+            Assert.Contains(body, profile.Permissions.ReadPaths);
+            Assert.True(File.Exists(Path.Combine(TestRepoPaths.RepoRoot, body)), body);
+        }
+        Assert.Empty(profile.Permissions.ProposalWritePaths);
+        Assert.True(profile.Permissions.ProposalOnly);
+        Assert.False(profile.Enabled);
+    }
+
+    [Fact]
+    public void ActualFlatDiscoveryRetainsEveryMovedExampleAndClassification()
+    {
+        var fixture = Fixture();
+        var expected = fixture.Map["snippetInventory"]!.AsArray()
+            .Where(row => GmDocumentationPreservationFixtures.S(row!, "source") == "Examples/E_CLI_Afterlife_Turns.txt")
+            .Select(row => GmDocumentationPreservationFixtures.S(row!, "bodySha256") + ":" +
+                GmDocumentationPreservationFixtures.S(row!, "expected"))
+            .OrderBy(value => value, StringComparer.Ordinal).ToArray();
+        var actual = ExampleSnippetExtractor.ExtractAll()
+            .Where(snippet => GmDocumentationBodyFiles.IsThematicExample(snippet.File))
+            .Select(snippet => GmDocumentationPreservationFixtures.Hash(
+                GmDocumentationPreservationFixtures.Bytes(snippet.RawText)) + ":" + snippet.Expected)
+            .OrderBy(value => value, StringComparer.Ordinal).ToArray();
+        Assert.Equal(187, expected.Length);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ActualEntrypointEditsReverseToTheExactCurrentBaseSources()
+    {
+        var fixture = Fixture();
+        var baselines = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["CLI_Agent_Daemon_Specification.md"] = "50bc7e73ae74801398a20d32b1effd2503dd773efad871ada7192764182ade89",
+            ["TaskGuides/CLI_Step_Main.txt"] = "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
+            ["BookOfEternityClient/game_master_daemon.ps1"] = "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+            ["BookOfEternityClient/Launcher/CLI_Launch_Script.md"] = "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+            ["BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1"] = "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+            ["CLI_API_Specification.md"] = "250a2ea151a3c932b4a460343e6d61ef2bc5ea70e2979d473189f446e6e29b22",
+        };
+        var groups = fixture.Edits.Where(edit => baselines.ContainsKey(
+            GmDocumentationPreservationFixtures.S(edit, "source")))
+            .GroupBy(edit => GmDocumentationPreservationFixtures.S(edit, "source")).ToArray();
+        Assert.Equal(baselines.Count, groups.Length);
+        foreach (var group in groups)
+        {
+            var bytes = File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, group.Key));
+            foreach (var edit in group.OrderBy(edit => GmDocumentationPreservationFixtures.I(edit, "start")))
+            {
+                var after = Convert.FromBase64String(GmDocumentationPreservationFixtures.S(edit, "afterBase64"));
+                var offset = bytes.AsSpan().IndexOf(after);
+                Assert.True(offset >= 0, group.Key);
+                Assert.True(bytes.AsSpan(offset + after.Length).IndexOf(after) < 0, group.Key);
+                bytes = GmDocumentationPreservationFixtures.ReplaceOnce(bytes, after,
+                    Convert.FromBase64String(GmDocumentationPreservationFixtures.S(edit, "beforeBase64")));
+            }
+            Assert.Equal(baselines[group.Key], GmDocumentationPreservationFixtures.Hash(bytes));
+        }
+    }
+
+    [Theory]
     [InlineData("missing")]
     [InlineData("duplicate")]
     [InlineData("unlisted_edit")]

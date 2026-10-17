@@ -42,9 +42,9 @@ public sealed class MathAssistantPromptGuidanceTests
 
     [Theory]
     [InlineData("Examples/E_Block_6.txt", "calc_mortal_combat_damage_example")]
-    [InlineData("Examples/E_CLI_Afterlife_Turns.txt", "calc_afterlife_conflict_margin_example")]
+    [InlineData("Examples/E_CLI_Afterlife_Spiritual_Conflict.txt", "calc_afterlife_conflict_margin_example")]
     [InlineData("Examples/E_Block_10.txt", "calc_economy_price_example")]
-    [InlineData("Examples/E_CLI_Afterlife_Turns.txt", "calc_shining_treasury_interest_example")]
+    [InlineData("Examples/E_CLI_Afterlife_Shining_Actions.txt", "calc_shining_treasury_interest_example")]
     [InlineData("Examples/E_Block_32.txt", "calc_guardian_project_progress_example")]
     public void GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(
         string relativePath,
@@ -60,7 +60,6 @@ public sealed class MathAssistantPromptGuidanceTests
 
     private static string ReadRepoFile(params string[] segments)
     {
-        var path = Path.Combine(TestRepoPaths.RepoRoot, Path.Combine(segments));
         return GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, Path.Combine(segments));
     }
 }

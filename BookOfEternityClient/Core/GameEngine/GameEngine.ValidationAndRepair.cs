@@ -5390,8 +5390,13 @@ public partial class GameEngine
             TemplateRefs = new List<string>
             {
                 "TaskGuides/CLI_Step_Main.txt",
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Actor_Profiles.md",
+                "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+                "OtherGuides/Afterlife_Guardian_Contracts.md",
+                "Examples/E_CLI_Afterlife_Guardian_Contracts.txt"
             },
             CanonicalCreateSkeleton = BuildGuardianPendingCreationCanonicalCreateSkeleton(),
             AllowedEnums = BuildGuardianPendingCreationAllowedEnums(),
@@ -5802,8 +5807,13 @@ public partial class GameEngine
             {
                 "OtherGuides/Actor_Brain_2_0.md",
                 "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Actor_Profiles.md",
+                "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+                "OtherGuides/Afterlife_Story_Memory.md",
+                "Examples/E_CLI_Afterlife_Story_Memory.txt"
             },
             CanonicalActorNames = actorNames,
             ExpectedShape = new List<string>
@@ -5885,8 +5895,11 @@ public partial class GameEngine
                 ? new List<string> { "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md" }
                 : new List<string>
                 {
+                    "CLI_Rules_Index.md",
                     "OtherGuides/Afterlife_Contract_Matrix.md",
-                    "Examples/E_CLI_Afterlife_Turns.txt"
+                    "Examples/E_CLI_Afterlife_Turns.txt",
+                    "OtherGuides/Afterlife_Shining_Actions.md",
+                    "Examples/E_CLI_Afterlife_Shining_Actions.txt"
                 },
             CanonicalActorNames = new List<string> { coordinate },
             MissingFields = missingFields.Count == 0 ? null : missingFields,
@@ -6522,8 +6535,11 @@ public partial class GameEngine
             templateRefs.Add("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md");
         if (hasAfterlifeTargets)
         {
+            templateRefs.Add("CLI_Rules_Index.md");
             templateRefs.Add("OtherGuides/Afterlife_Contract_Matrix.md");
             templateRefs.Add("Examples/E_CLI_Afterlife_Turns.txt");
+            templateRefs.Add("OtherGuides/Afterlife_Actor_Profiles.md");
+            templateRefs.Add("Examples/E_CLI_Afterlife_Actor_Profiles.txt");
         }
 
         return new ValidationRepairHarnessPacket
@@ -7076,8 +7092,11 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string>
             {
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Spiritual_Conflict.md",
+                "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt"
             },
             ExactFieldCorrections = exactFieldCorrections,
             ExpectedShape = new List<string>
@@ -7148,8 +7167,11 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string>
             {
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Spiritual_Conflict.md",
+                "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt"
             },
             ExpectedShape = new List<string>
             {
@@ -7226,8 +7248,11 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string>
             {
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Actor_Profiles.md",
+                "Examples/E_CLI_Afterlife_Actor_Profiles.txt"
             },
             CanonicalActorNames = actorNames,
             ExpectedShape = new List<string>
@@ -7302,8 +7327,11 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string>
             {
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Story_Memory.md",
+                "Examples/E_CLI_Afterlife_Story_Memory.txt"
             },
             ExpectedShape = new List<string>
             {
@@ -7375,8 +7403,11 @@ public partial class GameEngine
             TargetFiles = targetFiles,
             TemplateRefs = new List<string>
             {
+                "CLI_Rules_Index.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Guardian_Contracts.md",
+                "Examples/E_CLI_Afterlife_Guardian_Contracts.txt"
             },
             ExpectedShape = new List<string>
             {

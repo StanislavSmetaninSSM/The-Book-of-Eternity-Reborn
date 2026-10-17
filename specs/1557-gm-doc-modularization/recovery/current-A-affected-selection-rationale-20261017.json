@@ -1,0 +1,654 @@
+{
+  "kind": "FINITE_CURRENT_A_SELECTION_SOURCE_RATIONALE_NOT_DISCOVERY",
+  "bodyGuardMethods": 122,
+  "bodyGuardBindings": [
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.GuardianMusings.cs",
+      "method": "GuardianMusingsWorkedExampleKeepsSingleMemorySurfaceAndOriginalClientBinding",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.HistoricalExchangeAuthority.cs",
+      "method": "HistoricalExchangeAuthorityDocumentation_RequiresSnapshotNotBackdating",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.LightIncarnateHistoricalAuthority.cs",
+      "method": "LightIncarnateHistoryDocumentation_RequiresAcceptedPayloadNotOldMarker",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualBinding.cs",
+      "method": "SpiritualBindingResultClosureDocumentation_PinsTwoResponseBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualDangerDeclaration.cs",
+      "method": "SpiritualDangerDeclarationDocumentation_RequiresExactModesAndPersistedExample",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualDurableState.cs",
+      "method": "SpiritualDurableStateDocumentsPrivateOwnershipAndCurrentBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualSourceEnvelope.cs",
+      "method": "SpiritualSourceActionDocumentation_RoutesBothRealmsAndPendingContours",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualSourceEnvelope.cs",
+      "method": "SpiritualSourceEnvelopeDocumentation_RoutesBothRealmsToWorkedSource",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualDependentFrontiers_DocumentCurrentRequestBoundaries",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualWoundPositionDependency_DocumentsExactArithmeticScope",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualWoundPosition_DocumentsEffectiveRankWithoutCanonicalErosion",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualColdRecovery_DocumentsAtomicOutcomeAndCurrentRequest",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualPendingSubmission_DocumentsPreservedChoiceAndClientOwnership",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualContinuationEnvelope_DocumentsExplicitResponseAndPrivateBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualCommonPublication_DocumentsOneShotRollbackAndLiveDispatch",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualTerminalClosure_DocumentsOrderingAndPrivatePublicationBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualReceiptOrigin_DocumentsSignedPresenceAndLegacyBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "StandardWoundArt_CurrentScalarContractIsDocumentedForGmAuthors",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "TrainingShowcaseContractsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ChaosSeaGuardianPoliticsContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeChronicleExternalMemoryContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeActiveThreatContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionPoliticalMemoryContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeGlobalFlagsContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ActorBrainProtocolPreservesNpcBrainAndDocumentsAfterlifePacks",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeWriterRoomContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningCoreActionCoverageIncludesEverySupportedActionType",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningCoreActionSchemaAndStatusesMatchRuntime",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningCoreRequestShapeAndZeroCostFieldsAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "PlayerGuardianFoundationPreconditionsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ReenterShiningAbodeLocalRouteDocsCoverGuardAndSyncSideEffects",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningCanonicalEnumVocabularyIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionFoundingDocsCoverClientResourceReservationSnapshot",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "GuardianProjectAssistAndSabotageScoringAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "NonFeatherAbodeOfferingsAreDocumentedWithoutInkFeatherReceipt",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningGachaAndProjectStrengthDocsMatchRuntimeContracts",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AbodeResidentDispositionDevotionMigrationVocabularyIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "DirectResidentActionExamplesAreRuntimeValidated",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningClosureCompositeDiffRulesAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningPoliticalActorsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeEntityProfilesAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeEntityProfileEntrypointsMentionRequiredContracts",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePendingFilesMentionedByRuntimeAreCoveredByMatrix",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeClientOwnedControlFilesAreCoveredByMatrixAndExamples",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "FounderAttractionResidentRosterModeIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePlayerActionRoutingTagsAreCoveredByPromptDocs",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePreviewOwnershipRulesDistinguishGmContractsFromClientLocalMutations",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ChaosSeaHighCostPreviewAuditSurfacesAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ResidentTransferCompetitionLabelsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeArchiveUpdatesAndDerivedNotificationTriggersAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeLocalLifecycleRoutesAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsDescribeHandoffAsTriggerOnlyAndFileLevelForbiddenRule",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningResidentAscensionDocsMatchNormalizerBehavior",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "NextLifeScenarioCoreIsDocumentedAsClientOwnedBootstrapInput",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsDescribeGuardianProjectStartAndShiningFactionTradeSurfaces",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsDescribeReturnGuardAndRealmWrongPendingSemantics",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverRealmSegregationAndMortalOnlyPendingFiles",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsRequireRealmGateBeforeReadingMortalWorldState",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "GmDaemonPromptsUseRepoLocalAbsoluteDocumentationPaths",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeDocsExplainGuardianScopeRepairHarnessPackets",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "MortalNpcSocialTopicContractIsDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverFullRuntimeForbiddenFileGroups",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsTreatProgressionScheduleAsClientOwned",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningSchedulerAllowanceDocsStayNarrowAcrossGmEntrypoints",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverGuardianProvocationAndArchiveCandidateManifest",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverAscensionClientExecutedHandoff",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverSoulPreparationAndGuardianCorrections",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifePromptDocsCoverGuardianProjectStartsAndShiningBlessingTerminalAudits",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningForgePromptDocsUseExactActionTypesWithoutWildcard",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningTradePromptDocsRequireUniqueNewRelicIdentities",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningQueueLimitsAvailabilityAndControlSurfacesAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningBlessingPostBootstrapEffectsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeResourceCutoverIsDocumentedWithoutLegacyMechanicalMirrors",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningBlessingRerollAllocationIsDocumentedAsClientOwnedBootstrapInput",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "GuardianQuestOriginMetadataIsDocumentedForAfterlifeHooks",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningBlessingCardTokensAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningGatesLocalMutationsAndResidentNormalizerAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionLifecycleContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionConflictCampaignContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeEnumContractsAreDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningTreasuryClientOwnedEconomyIsDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningProjectedStateFragmentPreviewIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ResidentCompanionManifestationHandoffIsDocumentedForAfterlifeOrigin",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ChaosSeaTravelContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "FreeformChaosSeaAbodeSearchContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SpiritualWoundSpecialActionCosts_AreDocumentedAcrossGmEntrypoints",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeSpiritualConflictContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SourceOfLightCapstoneContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningForgeExactMutationTableIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ChaosSeaGachaDocsMatchValidatedModifierAndCostContract",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeDocsBanImplementationCodeAndNameSafeContractSources",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "RealmDocsDoNotTreatEmptyCurrentRealmAsChaosSea",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeCombatConditionsContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeSpecialArtCombatEffectContractIsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "PredvechnyeSpecialArtCombatEffectExamplesStayCombatActionable",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "TaskGuideRoutesSarefMainStoryTurnsToAfterlifeExample27",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SarefMainStoryRuntimeContractIsDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "SarefMemorySystemBoundariesAreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeActorMaterializationContract_IsDocumentedForGm",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "FactionMaterializationContracts_AreCoveredByRequiredGuidance",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionMaterializationGuidance_CoversRoutesExamplesAndAuthorityBoundary",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionLifecycleGuidance_RequiresExplicitCurrentSchemaState",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "AfterlifeActorMaterializationWorkedExample_PassesExecutableContract",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "RollScopeAfterlifeDocumentation_KeepsSpiritualArtsSeparateFromMortalSkills",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "CompleteEffectMaterializationAfterlifeAdapter_IsDocumentedWithoutLegacyFallback",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    },
+    {
+      "file": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "method": "BoundedReceiptExplicitZero_IsDocumentedAsTerminalWithoutProjection",
+      "reason": "actual moved body/changed entrypoint consumer, explicit method selector; excludes unrelated UI/scanner class wildcards"
+    }
+  ],
+  "consumerMethods": {
+    "GmDocumentationModularizationTests": [
+      "ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority"
+    ],
+    "GmWorkerProfileTemplateTests": [
+      "DefaultTemplates_AreDisabledRunnerBasedAndValid"
+    ],
+    "GmWorkerProposalOnlyTests": [
+      "BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket"
+    ],
+    "WoundPlayerStatusDocumentationTests": [
+      "CurrentReadonlyStatusIsSynchronizedForGm"
+    ],
+    "EffectMaterializationSourceGuardTests": [
+      "ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope",
+      "ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority"
+    ],
+    "ResourceContractSourceGuardTests": [
+      "CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority"
+    ],
+    "MathAssistantPromptGuidanceTests": [
+      "AfterlifeRewardExample_UsesMathAuditFinalAmountReference",
+      "GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces"
+    ],
+    "GmWorkerBridgeDocumentationTests": [
+      "GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
+      "ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
+      "ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
+      "ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort"
+    ]
+  },
+  "namedConsumer": "1method1case/23actualnamedsections135orderedinputs; no writer replay",
+  "repairConsumer": "1method9rows/9changedrealTemplateRefs producers/strict9roots",
+  "newPhysicalNegatives": "1method2rows/4strictroots",
+  "newLifetime": "1method1row/controlled2roots; adapter-only",
+  "freshRequired": "BOTH/build/catalog + exactSelectionFile PlanOnly0; no actual before independent affected SOURCE/FIXTURE/SELECTION",
+  "excluded": "old A1/A2/Late2/HOT/M3/Block5/Windows/CI/provider; no unchanged runtime family count replay"
+}

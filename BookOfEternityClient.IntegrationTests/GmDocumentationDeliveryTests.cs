@@ -23,6 +23,64 @@ public sealed class GmDocumentationDeliveryTests
         Assert.Empty(result.Issues);
     }
 
+    [Theory]
+    [InlineData("missing_package_source")]
+    [InlineData("missing_session_copy")]
+    public async Task PhysicalDeliveryFaultsReachTheRealWriterClosureOracle(string fault)
+    {
+        var result = await GmDocumentationDeliveryScenario.RunAsync(TestRepoPaths.RepoRoot, publish: true,
+            physicalFault: fault);
+        _output.WriteLine("GM1557_PHYSICAL_NEGATIVE " + result.Evidence.ToJsonString());
+        Assert.Null(result.Failure);
+        Assert.True(result.Ast!["runtimeExecuted"]!.GetValue<bool>());
+        Assert.True(result.Evidence["exitConfirmed"]!.GetValue<bool>());
+        Assert.True(result.Evidence["rootsRemoved"]!.GetValue<bool>());
+        var physical = result.Evidence["physicalFault"]!;
+        Assert.Equal(fault, physical["kind"]!.GetValue<string>());
+        Assert.True(physical["presentBefore"]!.GetValue<bool>());
+        Assert.False(physical["presentAfter"]!.GetValue<bool>());
+        Assert.Equal(64, physical["beforeSha256"]!.GetValue<string>().Length);
+        Assert.Contains("delivery.copy_missing:OtherGuides/GM_Common_Core.md", result.Issues);
+        if (fault == "missing_package_source")
+            Assert.Contains("delivery.manifest_missing_or_duplicate:OtherGuides/GM_Common_Core.md", result.Issues);
+        else
+        {
+            Assert.DoesNotContain("delivery.manifest_inventory", result.Issues);
+            Assert.DoesNotContain("delivery.manifest_missing_or_duplicate:OtherGuides/GM_Common_Core.md", result.Issues);
+        }
+        Assert.DoesNotContain("delivery.cleanup_failed", result.Issues);
+    }
+
+    [Fact]
+    public async Task ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup()
+    {
+        var result = await GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(TestRepoPaths.RepoRoot);
+        _output.WriteLine("GM1557_OWNED_LIFETIME " + result.Evidence.ToJsonString());
+        Assert.Contains("TimeoutException: delivery.controlled_owned_lifetime_timeout", result.Failure, StringComparison.Ordinal);
+        Assert.Empty(result.Issues);
+        Assert.Equal("CONTROLLED_ADAPTER_LIFETIME_NOT_PRODUCER_DELIVERY", result.Evidence["kind"]!.GetValue<string>());
+        Assert.True(result.Evidence["orphanObserved"]!.GetValue<bool>());
+        var identities = result.Evidence["identities"]!.AsArray();
+        Assert.Equal(2, identities.Count);
+        Assert.All(identities, identity => Assert.NotNull(identity));
+        Assert.NotEqual(identities[0]!["Pid"]!.GetValue<int>(),
+            result.Evidence["orphanAfterLauncherExit"]!["ParentPid"]!.GetValue<int>());
+        foreach (var pipe in new[] { "stdout", "stderr" })
+        {
+            Assert.True(result.Evidence[pipe]!.GetValue<string>().Length > 65536);
+            Assert.True(result.Evidence[pipe + "Eof"]!.GetValue<bool>());
+            Assert.Null(result.Evidence[pipe + "Failure"]);
+        }
+        Assert.False(result.Evidence["ownershipUnresolved"]!.GetValue<bool>());
+        Assert.Empty(result.Evidence["remaining"]!.AsArray());
+        Assert.Empty(result.Evidence["cleanupFailures"]!.AsArray());
+        Assert.True(result.Evidence["exitConfirmed"]!.GetValue<bool>());
+        Assert.True(result.Evidence["rootsRemoved"]!.GetValue<bool>());
+        Assert.True(result.Evidence["elapsedSeconds"]!.GetValue<double>() <= 60);
+        Assert.False(Directory.Exists(result.Evidence["root"]!.GetValue<string>()));
+        Assert.False(Directory.Exists(result.Evidence["package"]!.GetValue<string>()));
+    }
+
     [Fact]
     public async Task PackagedDaemonAstCutsOnlyCompleteTwoCommandStartup()
     {
@@ -132,6 +190,23 @@ public sealed class GmDocumentationDeliveryTests
             expected = mutation == "escape" ? "delivery.link_escape:" : "delivery.anchor_missing:";
         }
         Assert.Contains(GmDocumentationDeliveryRules.VerifyClosure(docs), issue => issue.StartsWith(expected, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void RelativeLinkVerifierRejectsARootPrefixEvenWhenThatRootTargetExists()
+    {
+        var docs = ClosureSeed();
+        docs["OtherGuides/GM_Common_Core.md"] = Encoding.UTF8.GetBytes(
+            "# Anchor\n[router](../CLI_Rules_Index.md)\n[topic](Afterlife_Lifecycle.md#anchor)\n");
+        Assert.Empty(GmDocumentationDeliveryRules.VerifyClosure(docs));
+        docs["OtherGuides/GM_Common_Core.md"] = Encoding.UTF8.GetBytes(
+            "# Anchor\n[wrong router](CLI_Rules_Index.md)\n[wrong topic](OtherGuides/Afterlife_Lifecycle.md#anchor)\n");
+        Assert.True(docs.ContainsKey("CLI_Rules_Index.md"));
+        Assert.True(docs.ContainsKey("OtherGuides/Afterlife_Lifecycle.md"));
+        var issues = GmDocumentationDeliveryRules.VerifyClosure(docs);
+        Assert.Equal(2, issues.Count);
+        Assert.Contains("delivery.link_missing:CLI_Rules_Index.md", issues);
+        Assert.Contains("delivery.link_missing:OtherGuides/Afterlife_Lifecycle.md#anchor", issues);
     }
 
     [Fact]

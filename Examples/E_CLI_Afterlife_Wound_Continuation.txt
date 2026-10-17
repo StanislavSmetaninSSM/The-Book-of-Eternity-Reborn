@@ -1,10 +1,10 @@
 # E_CLI_Afterlife_Wound_Continuation.txt
 
 Read when: Current issued spiritual frontier with conflict source. Follow only the current dispatch/contract; Private checkpoint or stale Ready with no issued envelope does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Spiritual_Conflict.md](OtherGuides/Afterlife_Spiritual_Conflict.md), [Afterlife_Effects_Resources.md](OtherGuides/Afterlife_Effects_Resources.md), [Afterlife_Actor_Profiles.md](OtherGuides/Afterlife_Actor_Profiles.md). Core is correlation/terminal only; no ordinary turn_request, scene, lifecycle or progression duty is added.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](../OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Spiritual_Conflict.md](../OtherGuides/Afterlife_Spiritual_Conflict.md), [Afterlife_Effects_Resources.md](../OtherGuides/Afterlife_Effects_Resources.md), [Afterlife_Actor_Profiles.md](../OtherGuides/Afterlife_Actor_Profiles.md). Core is correlation/terminal only; no ordinary turn_request, scene, lifecycle or progression duty is added.
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Afterlife_Wound_Continuation.txt](Examples/E_CLI_Afterlife_Wound_Continuation.txt); paired rules: [Afterlife_Wound_Continuation.md](OtherGuides/Afterlife_Wound_Continuation.md). Whole original examples/negative labels remain below.
+Worked examples: [E_CLI_Afterlife_Wound_Continuation.txt](E_CLI_Afterlife_Wound_Continuation.txt); paired rules: [Afterlife_Wound_Continuation.md](../OtherGuides/Afterlife_Wound_Continuation.md). Whole original examples/negative labels remain below.
 
 <!-- GM1557:A096:START -->
 ## spiritual_wound_source_envelope_v1

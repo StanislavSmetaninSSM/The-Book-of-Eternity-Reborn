@@ -1,10 +1,10 @@
 # Afterlife_Effects_Resources.md
 
 Read when: Current ordinary bounded resource/effect safe packet. Follow only the current dispatch/contract; No resource/effect work; not dedicated receipt-only does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Afterlife_Effects_Resources.txt](Examples/E_CLI_Afterlife_Effects_Resources.txt); paired rules: [Afterlife_Effects_Resources.md](OtherGuides/Afterlife_Effects_Resources.md). Whole original examples/negative labels remain below.
+Worked examples: [E_CLI_Afterlife_Effects_Resources.txt](../Examples/E_CLI_Afterlife_Effects_Resources.txt); paired rules: [Afterlife_Effects_Resources.md](Afterlife_Effects_Resources.md). Whole original examples/negative labels remain below.
 
 <!-- GM1557:A002:START -->
 Generic resource effects use `periodic_spend` / `periodic_gain` for

@@ -166,9 +166,9 @@ internal static class GmDocumentationDeliveryRules
     {
         if (target.StartsWith("https://", StringComparison.Ordinal) || target.StartsWith("http://", StringComparison.Ordinal)) return;
         var split = target.Split('#', 2); var file = Uri.UnescapeDataString(split[0]);
-        var rootRelative = file.StartsWith("OtherGuides/", StringComparison.Ordinal) || file.StartsWith("Examples/", StringComparison.Ordinal) || file == "CLI_Rules_Index.md";
+        // Markdown hrefs resolve from the document directory, including copied session docs.
         var relative = file.Length == 0 ? source : Path.GetRelativePath("/gm1557-closure", Path.GetFullPath(Path.Combine(
-            rootRelative ? "/gm1557-closure" : Path.Combine("/gm1557-closure", Path.GetDirectoryName(source)!), file)));
+            "/gm1557-closure", Path.GetDirectoryName(source)!, file)));
         if (Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal)) { issues.Add("delivery.link_escape:" + target); return; }
         if (!docs.TryGetValue(relative, out var bytes)) { issues.Add("delivery.link_missing:" + target); return; }
         if (physicalRoot is not null)

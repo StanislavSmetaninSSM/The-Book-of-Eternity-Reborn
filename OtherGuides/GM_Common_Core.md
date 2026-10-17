@@ -1,10 +1,10 @@
 # GM_Common_Core.md
 
 Read when: An actual ordinary turn selects common obligations, or an exact current repair/spiritual-frontier packet selects only its matching correlation/terminal/repair paragraphs. Bootstrap and dedicated receipt-only tasks read no core body.
-Prerequisites: Current dispatch, authoritative realm/request and exact issued permitted-read/write scope; select topic dependencies through [CLI_Rules_Index.md](CLI_Rules_Index.md).
+Prerequisites: Current dispatch, authoritative realm/request and exact issued permitted-read/write scope; select topic dependencies through [CLI_Rules_Index.md](../CLI_Rules_Index.md).
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Step_Main.txt](Examples/E_CLI_Step_Main.txt) for its authorized ordinary flow; exact afterlife pairs are named in [CLI_Rules_Index.md](CLI_Rules_Index.md). Do not apply ordinary examples to a restricted task.
+Worked examples: [E_CLI_Step_Main.txt](../Examples/E_CLI_Step_Main.txt) for its authorized ordinary flow; exact afterlife pairs are named in [CLI_Rules_Index.md](../CLI_Rules_Index.md). Do not apply ordinary examples to a restricted task.
 
 Ordinary-turn workflows below apply only to an actual ordinary turn. Bootstrap and dedicated receipt-only tasks read no core body. Spiritual frontier/validation repair use only their current matching correlation/terminal/repair paragraphs, without adding an ordinary request, scene, actor, scheduler or lifecycle obligation.
 

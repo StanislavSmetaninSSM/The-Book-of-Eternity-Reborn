@@ -39,7 +39,7 @@ public sealed class EffectMaterializationSourceGuardTests
                 component)));
 
         var afterlifeExample = ParseNamedJsonFence(
-            "Examples/E_CLI_Afterlife_Turns.txt",
+            "Examples/E_CLI_Afterlife_Effects_Resources.txt",
             "## afterlife_effect_profile_v1");
         rows.AddRange(afterlifeExample["activeEffectDefinitions"]!.AsArray()
             .OfType<JsonObject>()
@@ -50,7 +50,7 @@ public sealed class EffectMaterializationSourceGuardTests
                 "roll_modifier",
                 StringComparison.Ordinal))
             .Select(component => (
-                "Examples/E_CLI_Afterlife_Turns.txt",
+                "Examples/E_CLI_Afterlife_Effects_Resources.txt",
                 component)));
 
         Assert.Equal(4, rows.Count);

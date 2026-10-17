@@ -18501,7 +18501,7 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeClientOwnedControlFilesAreCoveredByMatrixAndExamples",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeCombatConditionsContractIsDocumentedForGm",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsExplainGuardianScopeRepairHarnessPackets",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsExposeClientCodeFallbackWithoutReplacingPrompts",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsBanImplementationCodeAndNameSafeContractSources",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEntityProfileEntrypointsMentionRequiredContracts",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEntityProfileOperationRulesMentionCommandSurfaces",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEntityProfilesAreDocumentedForGm",
@@ -27472,7 +27472,8 @@
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards",
-                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalLinkVerifierRefusesSymlinkEscape"
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalLinkVerifierRefusesSymlinkEscape",
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.RelativeLinkVerifierRejectsARootPrefixEvenWhenThatRootTargetExists"
                     ]
                 }
             ]
@@ -27503,7 +27504,9 @@
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
-                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior"
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualFlatDiscoveryRetainsEveryMovedExampleAndClassification",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources"
                     ]
                 }
             ]
@@ -27535,6 +27538,294 @@
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-current-body-guards",
+            "responsibility": "#1557 Exact current body and entrypoint guards after moving all afterlife monolith bytes. Explicit methods retain gameplay token assertions and the corrected D01 ban; runtime game contracts are unchanged.",
+            "excludes": "No AfterlifePlayerFacingSourceGuard/terminology/UI class wildcards, no old A1/A2/HOT/Late2/runtime family replay. Existing documentation owners intentionally overlap these exact methods; do not co-select those broad owners.",
+            "changeHints": [
+                "OtherGuides/Afterlife_*.md",
+                "OtherGuides/GM_Common_Core.md",
+                "Examples/E_CLI_Afterlife_*.txt",
+                "CLI_API_Specification.md",
+                "CLI_Agent_Daemon_Specification.md"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GuardianMusingsWorkedExampleKeepsSingleMemorySurfaceAndOriginalClientBinding",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.HistoricalExchangeAuthorityDocumentation_RequiresSnapshotNotBackdating",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.LightIncarnateHistoryDocumentation_RequiresAcceptedPayloadNotOldMarker",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualBindingResultClosureDocumentation_PinsTwoResponseBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualDangerDeclarationDocumentation_RequiresExactModesAndPersistedExample",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualDurableStateDocumentsPrivateOwnershipAndCurrentBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceActionDocumentation_RoutesBothRealmsAndPendingContours",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceEnvelopeDocumentation_RoutesBothRealmsToWorkedSource",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualDependentFrontiers_DocumentCurrentRequestBoundaries",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualWoundPositionDependency_DocumentsExactArithmeticScope",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualWoundPosition_DocumentsEffectiveRankWithoutCanonicalErosion",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualColdRecovery_DocumentsAtomicOutcomeAndCurrentRequest",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualPendingSubmission_DocumentsPreservedChoiceAndClientOwnership",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationEnvelope_DocumentsExplicitResponseAndPrivateBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualCommonPublication_DocumentsOneShotRollbackAndLiveDispatch",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualTerminalClosure_DocumentsOrderingAndPrivatePublicationBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualReceiptOrigin_DocumentsSignedPresenceAndLegacyBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.StandardWoundArt_CurrentScalarContractIsDocumentedForGmAuthors",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.TrainingShowcaseContractsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ChaosSeaGuardianPoliticsContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeChronicleExternalMemoryContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActiveThreatContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionPoliticalMemoryContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeGlobalFlagsContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ActorBrainProtocolPreservesNpcBrainAndDocumentsAfterlifePacks",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWriterRoomContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningCoreActionCoverageIncludesEverySupportedActionType",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningCoreActionSchemaAndStatusesMatchRuntime",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningCoreRequestShapeAndZeroCostFieldsAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PlayerGuardianFoundationPreconditionsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ReenterShiningAbodeLocalRouteDocsCoverGuardAndSyncSideEffects",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningCanonicalEnumVocabularyIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionFoundingDocsCoverClientResourceReservationSnapshot",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GuardianProjectAssistAndSabotageScoringAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.NonFeatherAbodeOfferingsAreDocumentedWithoutInkFeatherReceipt",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningGachaAndProjectStrengthDocsMatchRuntimeContracts",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AbodeResidentDispositionDevotionMigrationVocabularyIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.DirectResidentActionExamplesAreRuntimeValidated",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningClosureCompositeDiffRulesAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningPoliticalActorsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEntityProfilesAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEntityProfileEntrypointsMentionRequiredContracts",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePendingFilesMentionedByRuntimeAreCoveredByMatrix",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeClientOwnedControlFilesAreCoveredByMatrixAndExamples",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.FounderAttractionResidentRosterModeIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePlayerActionRoutingTagsAreCoveredByPromptDocs",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePreviewOwnershipRulesDistinguishGmContractsFromClientLocalMutations",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ChaosSeaHighCostPreviewAuditSurfacesAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ResidentTransferCompetitionLabelsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeArchiveUpdatesAndDerivedNotificationTriggersAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeLocalLifecycleRoutesAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsDescribeHandoffAsTriggerOnlyAndFileLevelForbiddenRule",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningResidentAscensionDocsMatchNormalizerBehavior",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.NextLifeScenarioCoreIsDocumentedAsClientOwnedBootstrapInput",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsDescribeGuardianProjectStartAndShiningFactionTradeSurfaces",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsDescribeReturnGuardAndRealmWrongPendingSemantics",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverRealmSegregationAndMortalOnlyPendingFiles",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsRequireRealmGateBeforeReadingMortalWorldState",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GmDaemonPromptsUseRepoLocalAbsoluteDocumentationPaths",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsExplainGuardianScopeRepairHarnessPackets",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MortalNpcSocialTopicContractIsDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverFullRuntimeForbiddenFileGroups",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsTreatProgressionScheduleAsClientOwned",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningSchedulerAllowanceDocsStayNarrowAcrossGmEntrypoints",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverGuardianProvocationAndArchiveCandidateManifest",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverAscensionClientExecutedHandoff",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverSoulPreparationAndGuardianCorrections",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverGuardianProjectStartsAndShiningBlessingTerminalAudits",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningForgePromptDocsUseExactActionTypesWithoutWildcard",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningTradePromptDocsRequireUniqueNewRelicIdentities",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningQueueLimitsAvailabilityAndControlSurfacesAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningBlessingPostBootstrapEffectsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeResourceCutoverIsDocumentedWithoutLegacyMechanicalMirrors",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningBlessingRerollAllocationIsDocumentedAsClientOwnedBootstrapInput",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GuardianQuestOriginMetadataIsDocumentedForAfterlifeHooks",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningBlessingCardTokensAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningGatesLocalMutationsAndResidentNormalizerAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionLifecycleContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionConflictCampaignContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeEnumContractsAreDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningTreasuryClientOwnedEconomyIsDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningProjectedStateFragmentPreviewIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ResidentCompanionManifestationHandoffIsDocumentedForAfterlifeOrigin",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ChaosSeaTravelContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.FreeformChaosSeaAbodeSearchContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualWoundSpecialActionCosts_AreDocumentedAcrossGmEntrypoints",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSpiritualConflictContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SourceOfLightCapstoneContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningForgeExactMutationTableIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ChaosSeaGachaDocsMatchValidatedModifierAndCostContract",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsBanImplementationCodeAndNameSafeContractSources",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.RealmDocsDoNotTreatEmptyCurrentRealmAsChaosSea",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeCombatConditionsContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSpecialArtCombatEffectContractIsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PredvechnyeSpecialArtCombatEffectExamplesStayCombatActionable",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.TaskGuideRoutesSarefMainStoryTurnsToAfterlifeExample27",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryRuntimeContractIsDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMemorySystemBoundariesAreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorMaterializationContract_IsDocumentedForGm",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.FactionMaterializationContracts_AreCoveredByRequiredGuidance",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionMaterializationGuidance_CoversRoutesExamplesAndAuthorityBoundary",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionLifecycleGuidance_RequiresExplicitCurrentSchemaState",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorMaterializationWorkedExample_PassesExecutableContract",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.RollScopeAfterlifeDocumentation_KeepsSpiritualArtsSeparateFromMortalSkills",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.CompleteEffectMaterializationAfterlifeAdapter_IsDocumentedWithoutLegacyFallback",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.BoundedReceiptExplicitZero_IsDocumentedAsTerminalWithoutProjection"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-current-consumers",
+            "responsibility": "#1557 Current actual readonly bodies, worker read availability/proposal-only boundaries, current afterlife task instructions, and moved resource/effect/math body consumers.",
+            "excludes": "No unchanged worker execution/storage/progression/UI families; five-row existing math method is selected whole to preserve its established method-level positive controls. Existing broad domain owners overlap; select only this finite owner in current selection.",
+            "changeHints": [
+                "BookOfEternityClient/Services/GmWorkers",
+                "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs",
+                "BookOfEternityClient.TestSupport/GmDocumentationBodyFiles.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority",
+                        "BookOfEternityClient.Tests.GmWorkerProfileTemplateTests.DefaultTemplates_AreDisabledRunnerBasedAndValid",
+                        "BookOfEternityClient.Tests.GmWorkerProposalOnlyTests.BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket",
+                        "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm",
+                        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope",
+                        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+                        "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+                        "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.AfterlifeRewardExample_UsesMathAuditFinalAmountReference",
+                        "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces",
+                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
+                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
+                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
+                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-named-consumers",
+            "responsibility": "#1557 Actual existing single- and multi-fence readers resolve23 moved named sections/135 ordered baseline JSON inputs from direct topic filenames. Separate flat187/classification and80manifest semantics preserve the other inputs.",
+            "excludes": "Does not replay unchanged engine writers or relabel input equality as new gameplay runtime qualification. Expected inputs are pinned exact a5 bytes; no router/body concatenation.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests*.cs",
+                "specs/1557-gm-doc-modularization/named-consumer-inputs.json"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MovedNamedConsumersResolveEveryFrozenSectionThroughTheActualParsers"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-repair-consumers",
+            "responsibility": "#1557 Nine concrete existing real repair-owner bodies with thin strict-owned cleanup and exact conditional topic-pair/path resolution. Each actually changed TemplateRefs producer is exercised once; original target/skeleton/authority assertions remain.",
+            "excludes": "No broad repair family, unaffected Mortal branches, A1/A2/Late2/gameplay controls. No new write authority; original nine bodies and factories are reused, not fake/uninitialized owners.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GmDocumentation.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-package-negatives",
+            "responsibility": "#1557 Two distinct real production package→session negative paths: remove guarded owned package source before unchanged producer vs guarded owned session copy after it. Both retain package/AST/process/strict2root prerequisites before specific closure oracle.",
+            "excludes": "Not memory-only missing-row evidence, no production endpoint/source override, provider/full daemon dispatch, or old writer RED replay.",
+            "changeHints": [
+                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+                "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalDeliveryFaultsReachTheRealWriterClosureOracle"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-owned-lifetime",
+            "responsibility": "#1557 Separately labeled adapter-only controlled orphan/helper timeout. Prove exact birth/argv/parent before ack, helper live after launcher exit, concurrent two-pipe drain and owned-only timeout cleanup under45+15/60 deadline.",
+            "excludes": "Never a replacement producer/prefix or real delivery proof; no new production endpoint/supervisor/framework, unknown-identity kills or provider.",
+            "changeHints": [
+                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs",
+                "tests/fixtures/GmDocumentationDelivery/owned-lifetime.ps1"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup"
                     ]
                 }
             ]

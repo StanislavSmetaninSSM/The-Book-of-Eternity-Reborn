@@ -125,6 +125,10 @@ public sealed class GmWorkerProposalOnlyTests
         Assert.Contains(task.ForbiddenActions, action =>
             action.Contains("worldStateFlags", StringComparison.Ordinal));
         Assert.Contains("Afterlife_Contract_Matrix.md", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains("CLI_Rules_Index.md", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains("conditional dependency union", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains("receipt-only/repair work stays inside the current packet permitted-read scope", task.Instructions, StringComparison.Ordinal);
+        Assert.Contains(task.AcceptanceCriteria, criterion => criterion.Contains("only the matching rule/example topic union", StringComparison.Ordinal));
         Assert.Contains("game_state/meta/guardians.json", task.Instructions, StringComparison.Ordinal);
 
         var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);

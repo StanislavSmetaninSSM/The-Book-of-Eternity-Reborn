@@ -3645,7 +3645,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
-    public void AfterlifeDocsExposeClientCodeFallbackWithoutReplacingPrompts()
+    public void AfterlifeDocsBanImplementationCodeAndNameSafeContractSources()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
@@ -3653,21 +3653,24 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 
         foreach (var text in new[] { matrix, taskGuide, daemonSpec })
         {
-            Assert.Contains("fallback", text, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("client code", text, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("canonical", text, StringComparison.OrdinalIgnoreCase);
+            foreach (var token in new[] { "implementation code", "validation repair", "harnessRepairPackets",
+                         "safe", "helper commands", "session state/control files", "gm_thoughts_markdown", "canonical" })
+                Assert.Contains(token, text, StringComparison.OrdinalIgnoreCase);
         }
 
-        Assert.DoesNotContain(
-            "The GM does not need to read client code.",
-            matrix,
-            StringComparison.Ordinal);
-        Assert.Contains("normally does not need to read client code", matrix, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("FileMapping.cs", daemonSpec, StringComparison.Ordinal);
-        Assert.Contains("Validation/", daemonSpec, StringComparison.Ordinal);
-        Assert.Contains("gm_thoughts_markdown", daemonSpec, StringComparison.Ordinal);
-        Assert.Contains("pending file name", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("must not be used to invent new gameplay outcomes", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("must not read client implementation code during normal play or validation repair", matrix, StringComparison.Ordinal);
+        Assert.Contains("do not read client implementation code", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("запрещено читать implementation code", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("named copied GM docs", matrix, StringComparison.Ordinal);
+        Assert.Contains("documentation/harness surfaces", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("never invent gameplay outcomes", matrix, StringComparison.Ordinal);
+        Assert.Contains("do not invent fields, receipts or canonical answers", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("не придумывай gameplay outcomes, JSON-поля, allowed values, receipt/report shape", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("realm/pending/canonical restrictions", matrix, StringComparison.Ordinal);
+        Assert.Contains("realm/pending/canonical restrictions", taskGuide, StringComparison.Ordinal);
+        Assert.DoesNotContain("may inspect client code as a fallback source of truth", matrix, StringComparison.Ordinal);
+        Assert.DoesNotContain("inspect the client code by pending file name", taskGuide, StringComparison.Ordinal);
+        Assert.DoesNotContain("fallback source of truth только", daemonSpec, StringComparison.Ordinal);
     }
 
     [Fact]

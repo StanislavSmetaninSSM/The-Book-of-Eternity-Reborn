@@ -1,0 +1,476 @@
+{
+  "kind": "NEW_WRAPPER_HREF_ONLY_FILE_RELATIVE_CORRECTION",
+  "payloadBytes": "UNCHANGED; only exact inventoried prefixes replaced",
+  "hrefChanges": [
+    {
+      "source": "OtherGuides/GM_Common_Core.md",
+      "before": "CLI_Rules_Index.md",
+      "after": "../CLI_Rules_Index.md"
+    },
+    {
+      "source": "OtherGuides/GM_Common_Core.md",
+      "before": "Examples/E_CLI_Step_Main.txt",
+      "after": "../Examples/E_CLI_Step_Main.txt"
+    },
+    {
+      "source": "OtherGuides/GM_Common_Core.md",
+      "before": "CLI_Rules_Index.md",
+      "after": "../CLI_Rules_Index.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Effects_Resources.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Effects_Resources.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Effects_Resources.md",
+      "before": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "after": "../Examples/E_CLI_Afterlife_Effects_Resources.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Effects_Resources.md",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "after": "Afterlife_Spiritual_Conflict.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "after": "../Examples/E_CLI_Afterlife_Wound_Continuation.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "before": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "after": "Afterlife_Wound_Continuation.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "before": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "after": "../Examples/E_CLI_Afterlife_Actor_Profiles.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Lifecycle.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Lifecycle.md",
+      "before": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "after": "../Examples/E_CLI_Afterlife_Lifecycle.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Lifecycle.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Scheduler.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Scheduler.md",
+      "before": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "after": "Afterlife_Guardian_Contracts.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Scheduler.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Scheduler.md",
+      "before": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "after": "../Examples/E_CLI_Afterlife_Scheduler.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Scheduler.md",
+      "before": "OtherGuides/Afterlife_Scheduler.md",
+      "after": "Afterlife_Scheduler.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "after": "../Examples/E_CLI_Afterlife_Spiritual_Conflict.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "before": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "after": "Afterlife_Spiritual_Conflict.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Story_Memory.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Story_Memory.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Story_Memory.md",
+      "before": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "after": "../Examples/E_CLI_Afterlife_Story_Memory.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Story_Memory.md",
+      "before": "OtherGuides/Afterlife_Story_Memory.md",
+      "after": "Afterlife_Story_Memory.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "before": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "after": "../Examples/E_CLI_Afterlife_Guardian_Contracts.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "before": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "after": "Afterlife_Guardian_Contracts.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "before": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "after": "../Examples/E_CLI_Afterlife_Abodes_Residents.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "before": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "after": "Afterlife_Abodes_Residents.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Shining_Actions.md",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "GM_Common_Core.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Shining_Actions.md",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Shining_Actions.md",
+      "before": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "after": "../Examples/E_CLI_Afterlife_Shining_Actions.txt"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Shining_Actions.md",
+      "before": "OtherGuides/Afterlife_Shining_Actions.md",
+      "after": "Afterlife_Shining_Actions.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "before": "CLI_Rules_Index.md",
+      "after": "../CLI_Rules_Index.md"
+    },
+    {
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "before": "OtherGuides/Afterlife_Wound_Continuation.md#wound_player_status_readonly_v1--current-read-only-player-status",
+      "after": "Afterlife_Wound_Continuation.md#wound_player_status_readonly_v1--current-read-only-player-status"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "before": "CLI_Rules_Index.md",
+      "after": "../CLI_Rules_Index.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "after": "../OtherGuides/Afterlife_Spiritual_Conflict.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "../OtherGuides/Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "../OtherGuides/Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "after": "E_CLI_Afterlife_Wound_Continuation.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "before": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "after": "../OtherGuides/Afterlife_Wound_Continuation.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "before": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "after": "E_CLI_Afterlife_Effects_Resources.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "../OtherGuides/Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "before": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "after": "E_CLI_Afterlife_Actor_Profiles.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "../OtherGuides/Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "before": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "after": "../OtherGuides/Afterlife_Guardian_Contracts.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "before": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "after": "E_CLI_Afterlife_Scheduler.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "before": "OtherGuides/Afterlife_Scheduler.md",
+      "after": "../OtherGuides/Afterlife_Scheduler.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "before": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "after": "E_CLI_Afterlife_Shining_Actions.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "before": "OtherGuides/Afterlife_Shining_Actions.md",
+      "after": "../OtherGuides/Afterlife_Shining_Actions.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "before": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "after": "E_CLI_Afterlife_Lifecycle.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "before": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "after": "E_CLI_Afterlife_Guardian_Contracts.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "before": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "after": "../OtherGuides/Afterlife_Guardian_Contracts.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "before": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "after": "E_CLI_Afterlife_Abodes_Residents.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "before": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "after": "../OtherGuides/Afterlife_Abodes_Residents.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "OtherGuides/Afterlife_Effects_Resources.md",
+      "after": "../OtherGuides/Afterlife_Effects_Resources.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "after": "../OtherGuides/Afterlife_Actor_Profiles.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "after": "E_CLI_Afterlife_Spiritual_Conflict.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "before": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "after": "../OtherGuides/Afterlife_Spiritual_Conflict.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "before": "OtherGuides/GM_Common_Core.md",
+      "after": "../OtherGuides/GM_Common_Core.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "before": "OtherGuides/Afterlife_Lifecycle.md",
+      "after": "../OtherGuides/Afterlife_Lifecycle.md"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "before": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "after": "E_CLI_Afterlife_Story_Memory.txt"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "before": "OtherGuides/Afterlife_Story_Memory.md",
+      "after": "../OtherGuides/Afterlife_Story_Memory.md"
+    }
+  ]
+}

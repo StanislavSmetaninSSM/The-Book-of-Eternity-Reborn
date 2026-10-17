@@ -603,9 +603,6 @@ public sealed class ResourceContractSourceGuardTests
 
     private static IEnumerable<string> FindRemovedAuthorityViolations(string relativePath)
     {
-        var absolutePath = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            relativePath.Replace('/', Path.DirectorySeparatorChar));
         return GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath)
             .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
             .Select((line, index) => (Line: line, Number: index + 1))

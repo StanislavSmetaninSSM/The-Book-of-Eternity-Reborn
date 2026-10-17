@@ -27,10 +27,58 @@
     },
     {
       "category": "gm-doc-afterlife-package-delivery",
-      "reason": "Accepted historical closure RED is not rerun; after changed implementation and SOURCE this singleton proves actual new package\u2192session36-document byte/role/link closure.",
+      "reason": "Accepted historical closure RED is not rerun; after changed implementation and SOURCE this singleton proves actual new package→session36-document byte/role/link closure.",
       "contracts": [
         "#1557",
         "approved A lossless conditional afterlife reading and real packaged session delivery"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-body-guards",
+      "reason": "#1557 Exact current body and entrypoint guards after moving all afterlife monolith bytes. Explicit methods retain gameplay token assertions and the corrected D01 ban; runtime game contracts are unchanged.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-consumers",
+      "reason": "#1557 Current actual readonly bodies, worker read availability/proposal-only boundaries, current afterlife task instructions, and moved resource/effect/math body consumers.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-named-consumers",
+      "reason": "#1557 Actual existing single- and multi-fence readers resolve23 moved named sections/135 ordered baseline JSON inputs from direct topic filenames. Separate flat187/classification and80manifest semantics preserve the other inputs.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-repair-consumers",
+      "reason": "#1557 Nine concrete existing real repair-owner bodies with thin strict-owned cleanup and exact conditional topic-pair/path resolution. Each actually changed TemplateRefs producer is exercised once; original target/skeleton/authority assertions remain.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-negatives",
+      "reason": "#1557 Two distinct real production package→session negative paths: remove guarded owned package source before unchanged producer vs guarded owned session copy after it. Both retain package/AST/process/strict2root prerequisites before specific closure oracle.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-lifetime",
+      "reason": "#1557 Separately labeled adapter-only controlled orphan/helper timeout. Prove exact birth/argv/parent before ack, helper live after launcher exit, concurrent two-pipe drain and owned-only timeout cleanup under45+15/60 deadline.",
+      "contracts": [
+        "#1557",
+        "current A source-preserving conditional docs and real package/session closure"
       ]
     }
   ]

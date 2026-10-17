@@ -1,7 +1,7 @@
 # Afterlife_Contract_Matrix.md
 
 Read when: The current dispatch or a retained old reference needs a topic/old-heading/example-number destination. This compact navigator does not require reading all topic bodies.
-Prerequisites: [CLI_Rules_Index.md](CLI_Rules_Index.md) selects the current dependency union; bootstrap/receipt-only/repair retain their narrower scope.
+Prerequisites: [CLI_Rules_Index.md](../CLI_Rules_Index.md) selects the current dependency union; bootstrap/receipt-only/repair retain their narrower scope.
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
 Worked examples: Exact complete worked-example destinations are listed in the old-heading/number map below; use only the current applicable pair.
@@ -47,7 +47,7 @@ Worked examples: Exact complete worked-example destinations are listed in the ol
 <a id="example-0"></a> [0..5 tiers and explicit `spiritual_resilience` / `spiritual_healing`; unknown art](Afterlife_Wound_Continuation.md)
 
 <a id="wound_player_status_readonly_v1--current-read-only-player-status"></a>
-Current read-only wound status: [OtherGuides/Afterlife_Wound_Continuation.md](OtherGuides/Afterlife_Wound_Continuation.md#wound_player_status_readonly_v1--current-read-only-player-status).
+Current read-only wound status: [OtherGuides/Afterlife_Wound_Continuation.md](Afterlife_Wound_Continuation.md#wound_player_status_readonly_v1--current-read-only-player-status).
 <!-- GM1557:A092:START -->
 
 ## Example Coverage Map

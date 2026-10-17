@@ -11,6 +11,35 @@ public static class GmWorkerBridgeProfileTemplates
     private static readonly string RetiredUnquotedCodexWorkerExecCommand =
         $"codex exec -m {"gpt-5" + ".5"} -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check -";
 
+    // Read availability only; task instructions select the current conditional topic union.
+    private static readonly string[] AfterlifeDocumentationReadPaths =
+    [
+        "CLI_Rules_Index.md",
+        "OtherGuides/GM_Common_Core.md",
+        "OtherGuides/Afterlife_Contract_Matrix.md",
+        "Examples/E_CLI_Afterlife_Turns.txt",
+        "OtherGuides/Afterlife_Lifecycle.md",
+        "OtherGuides/Afterlife_Scheduler.md",
+        "OtherGuides/Afterlife_Guardian_Contracts.md",
+        "OtherGuides/Afterlife_Abodes_Residents.md",
+        "OtherGuides/Afterlife_Shining_Actions.md",
+        "OtherGuides/Afterlife_Spiritual_Conflict.md",
+        "OtherGuides/Afterlife_Effects_Resources.md",
+        "OtherGuides/Afterlife_Actor_Profiles.md",
+        "OtherGuides/Afterlife_Story_Memory.md",
+        "OtherGuides/Afterlife_Wound_Continuation.md",
+        "Examples/E_CLI_Afterlife_Lifecycle.txt",
+        "Examples/E_CLI_Afterlife_Scheduler.txt",
+        "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+        "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+        "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+        "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+        "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+        "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+        "Examples/E_CLI_Afterlife_Story_Memory.txt",
+        "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+    ];
+
     public static IReadOnlyList<WorkerBridgeProfile> CreateDefaultTemplates() =>
     [
         CreateValidationRepairCodexTemplate(),
@@ -149,8 +178,7 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/control/system_guardian_attraction.json",
                 "game_state/control/afterlife_return_guard.json",
                 "game_state/control/progression_schedule.json",
-                "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                .. AfterlifeDocumentationReadPaths
             ]);
 
     public static WorkerBridgeProfile CreateSoulContentCodexTemplate() =>
@@ -165,8 +193,7 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/meta/afterlife_global_flags.json",
                 "game_state/control/progression_schedule.json",
                 "game_state/control/pending_dice_state.json",
-                "OtherGuides/Afterlife_Contract_Matrix.md",
-                "Examples/E_CLI_Afterlife_Turns.txt"
+                .. AfterlifeDocumentationReadPaths
             ]);
 
     private static WorkerBridgeProfile CreateContentAuthoringCodexTemplate(

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace BookOfEternityClient.Tests;
 
 // Local #1557 fixture only. No provider, process supervisor, source override or storage mock.
-internal static class GmDocumentationDeliveryScenario
+internal static partial class GmDocumentationDeliveryScenario
 {
     internal sealed record Doc(string Path, string Role);
     // Independent approved inventory: not obtained from daemon docSpecs or its resulting manifest.
@@ -101,9 +101,11 @@ internal static class GmDocumentationDeliveryScenario
     }
     internal static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
     internal static async Task<Result> RunAsync(string repo, bool publish, Func<byte[], byte[]>? sourceMutation = null,
-        Func<byte[], byte[]>? sourceSeedMutation = null)
+        Func<byte[], byte[]>? sourceSeedMutation = null, string? physicalFault = null)
     {
         if (!OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This exact delivery responsibility is Linux-only.");
+        if (physicalFault is not null && (!publish || physicalFault is not ("missing_package_source" or "missing_session_copy")))
+            throw new ArgumentException("Physical delivery faults require the unchanged real publishing producer.", nameof(physicalFault));
         var clock = new Clock();
         var id = Guid.NewGuid().ToString("N");
         var package = Path.Combine(Path.GetTempPath(), "boe-gm1557-package-" + id);
@@ -142,6 +144,18 @@ internal static class GmDocumentationDeliveryScenario
                 var full = Path.Combine(package, path);
                 if (!File.Exists(full)) throw new InvalidDataException("delivery.package_prerequisite:" + path);
                 pins[path] = Hash(File.ReadAllBytes(full));
+            }
+            if (physicalFault == "missing_package_source")
+            {
+                const string relative = "OtherGuides/GM_Common_Core.md";
+                var physical = Path.Combine(package, "operational-resources", relative);
+                var original = File.ReadAllBytes(physical);
+                if (!original.SequenceEqual(File.ReadAllBytes(Path.Combine(repo, relative))))
+                    throw new InvalidDataException("delivery.physical_source_fault_seed_mismatch");
+                File.Delete(physical);
+                evidence["physicalFault"] = new JsonObject { ["kind"] = physicalFault, ["relativePath"] = relative,
+                    ["physicalPath"] = physical, ["beforeSha256"] = Hash(original), ["presentBefore"] = true,
+                    ["presentAfter"] = File.Exists(physical), ["phase"] = "before unchanged real producer" };
             }
             if (publish && (sourceMutation is not null || sourceSeedMutation is not null)) throw new InvalidDataException("Only nonexecuting AST fixtures may mutate source.");
             if (sourceMutation is not null) File.WriteAllBytes(daemon, sourceMutation(source));
@@ -209,6 +223,20 @@ internal static class GmDocumentationDeliveryScenario
                 var manifestPath = Path.Combine(files.GameSessionPath, "game_state/control/gm_context_pack/context_pack_manifest.json");
                 var manifest = JsonNode.Parse(File.ReadAllBytes(manifestPath))!.AsObject();
                 evidence["manifest"] = manifest.DeepClone();
+                if (physicalFault == "missing_session_copy")
+                {
+                    const string relative = "OtherGuides/GM_Common_Core.md";
+                    var target = Path.Combine(files.GameSessionPath, "game_state/control/gm_context_pack", relative);
+                    var sourcePath = Path.Combine(package, "operational-resources", relative);
+                    var bytes = File.ReadAllBytes(target);
+                    if (!bytes.SequenceEqual(File.ReadAllBytes(sourcePath)) ||
+                        manifest["docs"]!.AsArray().Count(row => row?["relativePath"]?.GetValue<string>() == relative) != 1)
+                        throw new InvalidDataException("delivery.physical_copy_fault_seed_mismatch");
+                    File.Delete(target);
+                    evidence["physicalFault"] = new JsonObject { ["kind"] = physicalFault, ["relativePath"] = relative,
+                        ["physicalPath"] = target, ["beforeSha256"] = Hash(bytes), ["presentBefore"] = true,
+                        ["presentAfter"] = File.Exists(target), ["phase"] = "after unchanged real producer, before closure check" };
+                }
                 var docs = CollectDelivered(files.GameSessionPath, manifest, package, repo, issues, clock);
                 evidence["copiedPins"] = new JsonObject(docs.Select(pair => KeyValuePair.Create<string, JsonNode?>(pair.Key, JsonValue.Create(Hash(pair.Value)))));
                 issues.AddRange(GmDocumentationDeliveryRules.VerifyClosure(docs, files.GameSessionPath + "/game_state/control/gm_context_pack"));

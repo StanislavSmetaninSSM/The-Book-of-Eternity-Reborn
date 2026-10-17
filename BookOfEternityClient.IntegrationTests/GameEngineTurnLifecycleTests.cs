@@ -3523,7 +3523,10 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(
             new[]
             {
+                "CLI_Rules_Index.md",
+                "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
                 "Examples/E_CLI_Afterlife_Turns.txt",
+                "OtherGuides/Afterlife_Actor_Profiles.md",
                 "OtherGuides/Afterlife_Contract_Matrix.md"
             },
             packet.GetProperty("templateRefs")

@@ -702,7 +702,7 @@ public static class GmWorkerTaskPacketBuilder
         [
             "Include afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks.",
             "Use only afterlife state surfaces listed in afterlifeContract.allowedAfterlifeSurfaces.",
-            "Review OtherGuides/Afterlife_Contract_Matrix.md before recommending afterlife state changes."
+            "Use CLI_Rules_Index.md and OtherGuides/Afterlife_Contract_Matrix.md as navigators; read GM_Common_Core and only the matching rule/example topic union required by this current afterlifeContract before recommending state changes."
         ]).ToArray();
     }
 
@@ -744,7 +744,7 @@ public static class GmWorkerTaskPacketBuilder
             (validationRepair
                 ? "For this bounded validation-repair task, changedFiles must stay inside allowedAfterlifeSurfaces and afterlifeProposal is optional. "
                 : "Return afterlifeProposal when this contract is present. ") +
-            "Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
+            "Use CLI_Rules_Index.md and Afterlife_Contract_Matrix.md to locate the actual rule/example bodies for this current contract. Read only its conditional dependency union and GM_Common_Core; receipt-only/repair work stays inside the current packet permitted-read scope.";
     }
 
     private static IReadOnlyList<string> BuildGuardianAbodeAcceptanceCriteria(

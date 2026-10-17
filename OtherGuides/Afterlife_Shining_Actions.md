@@ -1,10 +1,10 @@
 # Afterlife_Shining_Actions.md
 
 Read when: Active Shining core action; prepared package absent. Follow only the current dispatch/contract; Valid prepared package handoff blocks ordinary Shining work does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Afterlife_Shining_Actions.txt](Examples/E_CLI_Afterlife_Shining_Actions.txt); paired rules: [Afterlife_Shining_Actions.md](OtherGuides/Afterlife_Shining_Actions.md). Whole original examples/negative labels remain below.
+Worked examples: [E_CLI_Afterlife_Shining_Actions.txt](../Examples/E_CLI_Afterlife_Shining_Actions.txt); paired rules: [Afterlife_Shining_Actions.md](Afterlife_Shining_Actions.md). Whole original examples/negative labels remain below.
 
 <!-- GM1557:A014:CONTEXT -->
 ## Universal Afterlife Rules

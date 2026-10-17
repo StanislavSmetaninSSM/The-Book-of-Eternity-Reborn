@@ -1,10 +1,10 @@
 # Afterlife_Lifecycle.md
 
 Read when: Resolved ordinary afterlife realm; no handoff. Follow only the current dispatch/contract; Missing/null/empty realm remains unresolved fault; no ordinary topics does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md).
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](GM_Common_Core.md).
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Afterlife_Lifecycle.txt](Examples/E_CLI_Afterlife_Lifecycle.txt); paired rules: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md). Whole original examples/negative labels remain below.
+Worked examples: [E_CLI_Afterlife_Lifecycle.txt](../Examples/E_CLI_Afterlife_Lifecycle.txt); paired rules: [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md). Whole original examples/negative labels remain below.
 
 <!-- GM1557:A008:CONTEXT -->
 ## Universal Afterlife Rules

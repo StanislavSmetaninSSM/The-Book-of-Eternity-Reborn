@@ -1,0 +1,244 @@
+{
+  "kind": "CURRENT_A_PREPARATION_STATIC_PREFLIGHT_NOT_COMPILE_OR_RUNTIME_ACCEPTANCE",
+  "createdUtc": "2026-10-17T03:49:47.077561+00:00",
+  "retainedPayloadProof": "reuse independent root f55 static proof; all137 blocks/188snippets/80semanticrows remain byte-identical; only inventoried24prefix bytes change",
+  "wrapperOnlyChanges": [
+    {
+      "path": "OtherGuides/GM_Common_Core.md",
+      "oldPrefixSha256": "170d03ff65a7655433a5646c4ca768cd485744c219bfbb325c57463eecf0f77a",
+      "newPrefixSha256": "f7ef4707849fbb63655d48ecebabf92bf82a535fa03e8f766fa6a912c0f4ad6a",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Effects_Resources.md",
+      "oldPrefixSha256": "4662b2b88aaa7a8fc5674c5f70ca890038e56fc0634234eca81d139aaae85333",
+      "newPrefixSha256": "f789a2f02f211a0d1a12cfd6876cae14eea8dc2e855449f487505cc13392340e",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "oldPrefixSha256": "79e4ecb7fe74f5adbc47d1f8f90aea9771cabe2b6c8fabdf6f967cc61cab3de6",
+      "newPrefixSha256": "4af8a54a0f57ffd63416f52fdbf1f2d5a6480f98cbf06fac87894eac03b6b48f",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "oldPrefixSha256": "31c3bcbdbc4f8769b4425ffbca034f2e4e95addedb242de23c98cf747104dba7",
+      "newPrefixSha256": "31680f854d913b627230083b0c50809b44eb06058d0020e64b86041f07a9eb23",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Lifecycle.md",
+      "oldPrefixSha256": "ed16ccc4c8eadeaf74610f0a664ace6355b391cb2a377aebcac1b0e1f5ff44b8",
+      "newPrefixSha256": "1bd4b9c100f9c2adc121b0259b6ffffcd50ba1846e7ef5a953481b10a73c4637",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Scheduler.md",
+      "oldPrefixSha256": "a0461429e8df4d77453c31630705be3696bb96695b1742c78d246ff323294d97",
+      "newPrefixSha256": "2c15bb75f81d4fe6e2e15221c9cc5a2dbd4d3b9ec7462331be4f03730f815164",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "oldPrefixSha256": "88b6fd16a0685e5b32741e32dff90a7a9ffd2d3c2fc3c5449452d27291b04da4",
+      "newPrefixSha256": "c3ccb7e57e1aff9dd8977fc6acff3cc1fa198ae7be52fba48a6e241e93642e46",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Story_Memory.md",
+      "oldPrefixSha256": "10234f55b9d89111a48e00c2c04c2320fe71456e43aef7fa179fae3549541658",
+      "newPrefixSha256": "e5f0aa5bf4f3bfacb9acf9e880b50827192f9bcb945f0f34a92d383f83b13384",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "oldPrefixSha256": "73c6c5d801c31ac6de3f5813305e5d1e9b3aff243cdaa122a630d54847edab1e",
+      "newPrefixSha256": "2115abd00e3c5bed286d1ba4eece2b95a04ad0905a216753fdd998441cf2dbaa",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "oldPrefixSha256": "05842660c0a7bbef64803d5c7fcc50745230fa705737591d7642e568795b7285",
+      "newPrefixSha256": "13393730e89ee169d79eb2a9be7cece3faa11750cd6939e629fc001d28fb6d67",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Shining_Actions.md",
+      "oldPrefixSha256": "cc6e74751f29e7a67da6002d2af6a58b1679a970f3313bf9f256b202d8b4a4a9",
+      "newPrefixSha256": "25ce3b911df5d05f7f6e4ef381be280b4c4f7c54abc556a7cec31b1831bed26d",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "oldPrefixSha256": "221541e88e0332a540dc9c24c1560dddd0e2af1dc0d7c885e7924213413a7f0f",
+      "newPrefixSha256": "0aa07a40885428f6800e4b978b217a7263e36057b55e0174be996497a9a5b777",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "oldPrefixSha256": "ebcb00d7270637eb417d6e7f173301f25f4f1460cc87af77911c792941170e9a",
+      "newPrefixSha256": "ac615be3a74ac86e07e39d62aa195d0c9196dd616f215656f691fed612a5d9a5",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "oldPrefixSha256": "f2685acd8548d70cb656e26ce196469d7ff114582c3f9c968703c880e237afb0",
+      "newPrefixSha256": "40e73fe1129a34349742d086b95a8af7cb4ff1ebb0fca64fbef42032efc48f36",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "oldPrefixSha256": "5ddd91cc8e5d761de50506d7c383eab6d1afec5cb28a782aa9c2fc66762219d0",
+      "newPrefixSha256": "55d87aadd537dfb1a4336afcb935d1fd7b1d10d135edbda5d14c9aaeea9c52b4",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "oldPrefixSha256": "2c1ee39eb1672ab389d75240ba861f715fa738ef6f93afcb5318b2ffbe1c6d9e",
+      "newPrefixSha256": "1347fefdcfe4d2681ae12107c05d94e53063df84874036bb77993f9c0866d04a",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "oldPrefixSha256": "0b8367ba03b7d702a237afcf299370e7eb1a9108a307fba45f1aa6734ed460ae",
+      "newPrefixSha256": "935ae3f7983bbe88242f416e69406efb56fa2bd7edbe99f9e48009d2491714d3",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "oldPrefixSha256": "189a616f5e27a7e33ef998cc8d3642caaeb90de1608489b1da2374773352cae5",
+      "newPrefixSha256": "1aaa4adfca7bd16d6cc8e786fde3d0e0851757a06e307003a984e0df2e4066fa",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "oldPrefixSha256": "c32062f86d64733c863a6da24ac82ffe3739f8ae3d29e9b886ef2d3f97624fe2",
+      "newPrefixSha256": "44e9d601d1f8ba586191c015334b09987a428cc82ba184162d26952344c519cf",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "oldPrefixSha256": "9c59c0517c232aadccb82fad11d99d4e0cb90785768c2aabd7ffac5addb4ea75",
+      "newPrefixSha256": "5587bd1e116e0cb744bd4a2303808830f81279f3405491508b72802f8acc02e8",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "oldPrefixSha256": "a47403cf5cc6fd22cfceba8fa60d7604cb9b4781356bba89a1305db9ca50f71c",
+      "newPrefixSha256": "ecb63d09237e8395f19fd427a2f321b571ec02c31aa6fd2b6639015b3fa24df3",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "oldPrefixSha256": "cc3e10d936fc03405659c01b1c0576365ddcb39d1cb13433769069ecf3711a6a",
+      "newPrefixSha256": "92ad8ee1bdfb0eaeea5d44e8c2b7b5332d68379a3ce9d059d1462def8dc8bd00",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "oldPrefixSha256": "40c1b03fbc6d3faa5eda0317c4862e44712b6d87d8de05e27bc706274ad7ba8d",
+      "newPrefixSha256": "21ecb49bf146abad25b3495e5112af92c02d64bce5986da0f08ab793e2c1a403",
+      "payloadTailUnchanged": true
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "oldPrefixSha256": "6bef728c4ad56b16d43fc02c3824e77cb8ae03754d0aabe77ab4e2dc49503dfb",
+      "newPrefixSha256": "6bef728c4ad56b16d43fc02c3824e77cb8ae03754d0aabe77ab4e2dc49503dfb",
+      "payloadTailUnchanged": true
+    }
+  ],
+  "exactExternalEdits": [
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "665c76bdc8621934e3423dc8422bd031526c821b61be2610b88dd0b88a3d3377"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "eaf872ffda599661ad523e5233dda8b4047e19c98c36b274461e063257a3f668"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "e402a923efc0f0f4f931c842a5ae403e417c692374837c6e44769b12758ec953"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "f2e5aafa0cc3dcbcdde89b360dbf636a72d4dc26457990310baa1b5661eed354"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "exactOnlyInventoriedEdits": true,
+      "sha256": "2e2bacc407bed25774ba6494af1a25faad5a2e3c5615d3a76d6b84dfd311b3fb"
+    }
+  ],
+  "allNavigationEdits": 24,
+  "standardFileRelativeResolvedLinks": 218,
+  "categories": 795,
+  "exactSelectedMethods": 160,
+  "proposedCases": 216,
+  "selection": [
+    {
+      "category": "gm-doc-afterlife-preservation",
+      "methods": 7,
+      "proposedCases": 18
+    },
+    {
+      "category": "gm-doc-afterlife-reading",
+      "methods": 5,
+      "proposedCases": 28
+    },
+    {
+      "category": "gm-doc-afterlife-delivery-source-guards",
+      "methods": 7,
+      "proposedCases": 15
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "methods": 1,
+      "proposedCases": 1
+    },
+    {
+      "category": "gm-doc-afterlife-current-body-guards",
+      "methods": 122,
+      "proposedCases": 122
+    },
+    {
+      "category": "gm-doc-afterlife-current-consumers",
+      "methods": 14,
+      "proposedCases": 19
+    },
+    {
+      "category": "gm-doc-afterlife-named-consumers",
+      "methods": 1,
+      "proposedCases": 1
+    },
+    {
+      "category": "gm-doc-afterlife-repair-consumers",
+      "methods": 1,
+      "proposedCases": 9
+    },
+    {
+      "category": "gm-doc-afterlife-package-negatives",
+      "methods": 1,
+      "proposedCases": 2
+    },
+    {
+      "category": "gm-doc-afterlife-owned-lifetime",
+      "methods": 1,
+      "proposedCases": 1
+    }
+  ],
+  "sourceChanges": "read availability/instructions/TemplateRefs only; A1/A2 leaves/ordinary owner/Late2/gameplay writers unchanged; no successful source42 path reaches changed repair-error metadata branches",
+  "bindingPreflight": "new partial classes/namespaces/implicit imports/JsonNode+Process APIs/worker Permissions.ProposalOnly/factory return signatures/9 existing Task methods/CleanupOwnedFixture/IConsole contracts checked against actual declarations; no new console implementations",
+  "status": "WIP UNCOMPILED/UNRUN; fresh BOTH/catalog and PlanOnly0 next; independent affected SOURCE before actual",
+  "remaining": "fresh build/discovery/package/protected-source and independent SOURCE/FIXTURE/SELECTION, all first current actuals and independent EVIDENCE/A acceptance"
+}

@@ -1,10 +1,10 @@
 # E_CLI_Afterlife_Scheduler.txt
 
 Read when: mustEvaluateGuardianProjectProgression=true. Follow only the current dispatch/contract; All due flags false and no catchup does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Guardian_Contracts.md](OtherGuides/Afterlife_Guardian_Contracts.md), [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](../OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Guardian_Contracts.md](../OtherGuides/Afterlife_Guardian_Contracts.md), [Afterlife_Lifecycle.md](../OtherGuides/Afterlife_Lifecycle.md).
 Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
-Worked examples: [E_CLI_Afterlife_Scheduler.txt](Examples/E_CLI_Afterlife_Scheduler.txt); paired rules: [Afterlife_Scheduler.md](OtherGuides/Afterlife_Scheduler.md). Whole original examples/negative labels remain below.
+Worked examples: [E_CLI_Afterlife_Scheduler.txt](E_CLI_Afterlife_Scheduler.txt); paired rules: [Afterlife_Scheduler.md](../OtherGuides/Afterlife_Scheduler.md). Whole original examples/negative labels remain below.
 
 <!-- GM1557:A102:START -->
 COMBINED TURN DECISION TREE
