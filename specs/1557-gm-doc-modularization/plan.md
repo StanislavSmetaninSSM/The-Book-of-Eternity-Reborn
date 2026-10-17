@@ -1,5 +1,11 @@
 # Implementation Plan: GM Documentation Modularization
 
+## A-E01 affected SOURCE accepted — runtime closure pending (2026-10-17)
+
+[Exact independent narrow SOURCE verdict](recovery/current-A-bootstrap-fix-source-independent-review-20261017.md), MD`e25c2004…`/JSON`265ac761…`, accepts the one-sentence correction/N025 and exact affected selection at compileda4d/preparationee0a. A-E01 closes **at SOURCE only**; original SOURCE miss, genuine firstFAIL and causal report remain immutable. [Complete preparation recovery](recovery/current-bootstrap-preparation-complete-delta-recovery-ee0a5c65-20261017.json) covers all23GitHubfiles/all19changedpaths. The verified fresh plan remains11categories/14descriptors/165methods/253cases, sevenDLLs/package244files45038544B/all36docs; no input changes follow compilation.
+
+After this decision is pushed/read back/recovered, root separately releases `gm-doc-afterlife-bootstrap-authority`5affected cases first, then only160originallyUNRUN cases. Retain88unaffected originalPASS with explicit actual1a48/compiled06a provenance; do not replay their groups or claim new-source execution. Additional165results are still UNRUN/HELD, not GREEN; stop on the first native/qualification failure and preserve first outcome before any diagnosis. Separate independent EVIDENCE/fullA acceptance remains pending. No broader gameplay/Block5/provider/Windows/CI or historical-family replay.
+
 ## A-E01 fresh corrected preparation frozen — affected SOURCE pending (2026-10-17)
 
 [Exact correction recovery](recovery/current-bootstrap-fix-complete-delta-recovery-a4d08171-20261017.json) binds published `a4d081713d25913e3216d502c33ca5f7cb7a6cfd`, all16GitHubfiles/all12changedpaths. [First fresh preparation](recovery/current-A-bootstrap-fix-fresh-preparation-20261017.json) freezes12raw chains: BOTH/catalog native0 **90.393588494s**, integration72.6489627s/unit11.3003791s completed, valid796categories/11771methods/no stale or unmapped selectors, **0tests**. ExactSelectionFile `-PlanOnly -NoBuild` native0 **5.750583750999795s**, observed **11categories/14descriptors/165unique methods/253cases**, no duplicate identities; original165method/case tuples unchanged. [Writer inspection](recovery/current-A-bootstrap-fix-preparation-writer-inspection-20261017.json) confirms the new affected owner has2descriptors/5cases and body guards retain60/60/2.

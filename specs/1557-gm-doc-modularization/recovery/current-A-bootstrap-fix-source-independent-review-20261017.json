@@ -1,0 +1,344 @@
+{
+  "kind": "INDEPENDENT_NARROW_A_E01_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "verdict": "SOURCE_ACCEPTED_CONDITIONAL_ON_DECISION_PERSISTENCE_RECOVERY_AND_ROOT_RELEASE",
+  "source": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+  "carrier": "ee0a5c6511e34be381b5a0d45d83c61230ea8d91",
+  "priorCausalReview": {
+    "mdSha256": "d7d74425a0af5404d07a9ea1cc643d167a43a49ecd845592cd382d161790f948",
+    "jsonSha256": "c10fea7d0eb326a595c60f4cbe1d95ea13ad79c340ed48f0724cc0ddfe74ca0e"
+  },
+  "newFindings": [],
+  "A_E01": "Closed at SOURCE only; affected actual still required",
+  "correction": {
+    "exactSingleSentenceReplacement": true,
+    "N025Kind": "D01 authority-conflict reconciliation",
+    "baseByteInterval": [
+      93391,
+      93623
+    ],
+    "beforeSha256": "937f552f83eecd97feaf42c1497b0873adf57cd152fa02b4f2c8392ec5c3d6c3",
+    "afterSha256": "1db1020a608418e1c4e0ec00d9ced3e3723fea17887c30ba22f680e726f763e8",
+    "daemonSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+    "prior24EditsExact": true,
+    "wholeDaemonInverseToA5Exact": true,
+    "CSharpGuardTestBodiesFixturesRunnerUnchanged": true,
+    "clarifiedSeedUnchangedSha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f"
+  },
+  "selection": {
+    "source": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+    "planSha256": "53900853b87f1db008a6f758283136a32f63743fa51dc8e2e5d0a5295705e328",
+    "categories": 11,
+    "descriptors": 14,
+    "methods": 165,
+    "plannedCases": 253,
+    "executed": 0,
+    "exactCatalogAndFilterSets": true,
+    "bootstrapAuthorityCases": 5,
+    "detail": [
+      {
+        "name": "gm-doc-afterlife-bootstrap-authority-integration-001",
+        "category": "gm-doc-afterlife-bootstrap-authority",
+        "methods": 1,
+        "cases": 1,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-bootstrap-authority-unit-002",
+        "category": "gm-doc-afterlife-bootstrap-authority",
+        "methods": 3,
+        "cases": 4,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-current-body-guards-unit-003",
+        "category": "gm-doc-afterlife-current-body-guards",
+        "methods": 60,
+        "cases": 60,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-current-body-guards-unit-004",
+        "category": "gm-doc-afterlife-current-body-guards",
+        "methods": 60,
+        "cases": 60,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-current-body-guards-unit-005",
+        "category": "gm-doc-afterlife-current-body-guards",
+        "methods": 2,
+        "cases": 2,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-current-consumers-unit-006",
+        "category": "gm-doc-afterlife-current-consumers",
+        "methods": 14,
+        "cases": 19,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-delivery-source-guards-integration-007",
+        "category": "gm-doc-afterlife-delivery-source-guards",
+        "methods": 6,
+        "cases": 14,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-named-consumers-integration-008",
+        "category": "gm-doc-afterlife-named-consumers",
+        "methods": 2,
+        "cases": 5,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-owned-lifetime-integration-009",
+        "category": "gm-doc-afterlife-owned-lifetime",
+        "methods": 2,
+        "cases": 2,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-package-delivery-integration-010",
+        "category": "gm-doc-afterlife-package-delivery",
+        "methods": 1,
+        "cases": 1,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-package-negatives-integration-011",
+        "category": "gm-doc-afterlife-package-negatives",
+        "methods": 1,
+        "cases": 2,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-preservation-unit-012",
+        "category": "gm-doc-afterlife-preservation",
+        "methods": 6,
+        "cases": 17,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-reading-unit-013",
+        "category": "gm-doc-afterlife-reading",
+        "methods": 6,
+        "cases": 57,
+        "budgetMinutes": 2
+      },
+      {
+        "name": "gm-doc-afterlife-repair-consumers-integration-014",
+        "category": "gm-doc-afterlife-repair-consumers",
+        "methods": 1,
+        "cases": 9,
+        "budgetMinutes": 3
+      }
+    ]
+  },
+  "qualification": {
+    "retainedOriginalPass": 88,
+    "retainedBreakdown": {
+      "preservation": 17,
+      "reading": 57,
+      "sourceGuards": 14
+    },
+    "affectedCases": 5,
+    "affectedMethods": 4,
+    "affectedDescriptors": 2,
+    "originalUnrunCases": 160,
+    "remainingToExecute": 165,
+    "totalUniqueCases": 253,
+    "newTestsExecuted": 0
+  },
+  "preparation": {
+    "manifest": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017.json",
+    "manifestSha256": "2663f21fb039db4202f9376d9c579a385d767f29f37ab24eb304d5c34c8dfeed",
+    "rawChains": [
+      {
+        "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-fix-catalog-first-a4d08171/record.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/record.json.gz",
+        "bytes": 9719,
+        "sha256": "816b5cf6de55f8eea68c83441f1c3637b198423058b4852eaea8fad350826ee3",
+        "storedSha256": "a9d55ae0af21132eb48f5ce53450c90c402d2dae434b1771e501b655662ac397",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-fix-catalog-first-a4d08171/stdout.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/stdout.log.gz",
+        "bytes": 722,
+        "sha256": "c6e24ad149ebeabef9425fd1d815226ffeedda4e8650e97720b78b8c61c97694",
+        "storedSha256": "37716cabcfa0353a07c02c98c8655a7cf04ff50a5f8ac96ccae48d39029127e2",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042750-117-37255-0a80a8597ca44d968d23f4a1dc3d1f03-categories/Build-integration.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/runner0/Build-integration.log.gz",
+        "bytes": 122846,
+        "sha256": "db2171eba0c713d777a52225e8227ae197d7fff87d7243fe87eb2d1f2232ee61",
+        "storedSha256": "1215b8f4bc5c27c2443f69215772c36a235c15bf9d9acc655a32b4400fcd7b9a",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042750-117-37255-0a80a8597ca44d968d23f4a1dc3d1f03-categories/Build-unit.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/runner0/Build-unit.log.gz",
+        "bytes": 26923,
+        "sha256": "e0fd9b4242350ab9473367bfccd6a7718bfe3a4e94d5369e38e214cf893e5643",
+        "storedSha256": "5cc8c725546c1c99c767f55cc9502cdc50c63de1cd090b84b43b3638a2c39b10",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042750-117-37255-0a80a8597ca44d968d23f4a1dc3d1f03-categories/catalog-audit.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/runner0/catalog-audit.json.gz",
+        "bytes": 103,
+        "sha256": "b2ef0cad9968fad004e397252316c1eed33e2ed624de90e6e327ca32f8fd35fe",
+        "storedSha256": "0bce1d2f2b53f252f7565153be967371bff6a2cda51d706b4905396447c30c6b",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042750-117-37255-0a80a8597ca44d968d23f4a1dc3d1f03-categories/dotnet-test.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/runner0/dotnet-test.log.gz",
+        "bytes": 3573207,
+        "sha256": "5a4b6b0f51a94d4f2d4e3a83af06343264715b9b865956d2dff7dec9e52e8c46",
+        "storedSha256": "08aca07f62752a2b20f3139122b0dd8273071efc176250823bc8b58ec36f895a",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042750-117-37255-0a80a8597ca44d968d23f4a1dc3d1f03-categories/summary.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/0-gm1557-A-bootstrap-fix-catalog-first-a4d08171/runner0/summary.json.gz",
+        "bytes": 1600,
+        "sha256": "02404f117ff938117a7311b49702208d30ee658f32a66fe1a07fe45b0a58107a",
+        "storedSha256": "3beeec7dc600e8c8f0e06d817fb293c6e8a16944075db5c5a93449fb4bbbf715",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-fix-plan-first-a4d08171/record.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/1-gm1557-A-bootstrap-fix-plan-first-a4d08171/record.json.gz",
+        "bytes": 9769,
+        "sha256": "728ab9b5f8efd5d5116010289c882176ff2a0c52bc454ced459b3c79a60766bc",
+        "storedSha256": "5848426ef9cc3bcfb73190fb1ae9f025b7c5791b4f9c4b80d9aa8ddd02dbe326",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-fix-plan-first-a4d08171/stdout.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/1-gm1557-A-bootstrap-fix-plan-first-a4d08171/stdout.log.gz",
+        "bytes": 53526,
+        "sha256": "72cbe9ddfad03129076375a7273c2465692ef395ec0ee06dce62502e0175227e",
+        "storedSha256": "5593d2fbcc59d94692c960aa0a673d8147bfc9b8618db694223a07f5f0a7dd00",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042925-535-37865-8ce1dcc423a547d9a473d7f7022b6f6e-categories/dotnet-test.log",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/1-gm1557-A-bootstrap-fix-plan-first-a4d08171/runner0/dotnet-test.log.gz",
+        "bytes": 3423264,
+        "sha256": "e7d723e09a473555bb7b570000daf197f27eb848dc773aa223ec3df42ccb32e9",
+        "storedSha256": "468bb928b8c24012dc23ee414546f6e9c22b330f28b4cd62222d7c769c12a5a8",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042925-535-37865-8ce1dcc423a547d9a473d7f7022b6f6e-categories/plan.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/1-gm1557-A-bootstrap-fix-plan-first-a4d08171/runner0/plan.json.gz",
+        "bytes": 67386,
+        "sha256": "53900853b87f1db008a6f758283136a32f63743fa51dc8e2e5d0a5295705e328",
+        "storedSha256": "f16436fbe4013529ee278a0d021ec6aa419e630ccb273559d4d66ec3e726bb6c",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-042925-535-37865-8ce1dcc423a547d9a473d7f7022b6f6e-categories/summary.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-fresh-preparation-20261017-files/1-gm1557-A-bootstrap-fix-plan-first-a4d08171/runner0/summary.json.gz",
+        "bytes": 8122,
+        "sha256": "195114db3736a5b28570096a789ad66273ec7c0ae6571acb75b868ed807f4284",
+        "storedSha256": "244352c7b0eecbdceea639e564ef31e111282b2f3b9a88c078d7dbca5b562f1a",
+        "compression": "gzip mtime0"
+      }
+    ],
+    "catalogNative": 0,
+    "catalogSeconds": 90.39358849399832,
+    "categories": 796,
+    "discoveredMethods": 11771,
+    "planNative": 0,
+    "planSeconds": 5.750583750999795,
+    "bothBuildsCompleted": true,
+    "newTestsExecuted": 0,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+        "bytes": 9532416
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+        "bytes": 29214720
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+        "bytes": 1935872
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+        "bytes": 1935872
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+        "bytes": 26181632
+      }
+    ],
+    "prefixesUnchangedNineRetainedEvidenceDirectories": true,
+    "runnerCleanupComplete": true
+  },
+  "package": {
+    "chain": {
+      "rawPath": "/tmp/gm1557-bootstrap-fix-package-pins-a4d08171-20261017.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-bootstrap-fix-package-pins-a4d08171-20261017.json.gz",
+      "bytes": 81775,
+      "sha256": "4a43f268ddd16eebdc0298ae0eb0a416bfcfe7bc3a21b239f58eb77e60360ada",
+      "storedSha256": "2f2cdd6bcca09217181e841116ae0f92df6901bbd52af7240938157c724bb9b4",
+      "compression": "gzip mtime0",
+      "files": 244,
+      "totalBytes": 45038544,
+      "all36SourcePackageDocsEqual": true
+    },
+    "files": 244,
+    "bytes": 45038544,
+    "exactCurrentSourcePackageDocs": 36,
+    "sessionDeliveryStillUnrun": true
+  },
+  "recovery": {
+    "sourceDelta": "/tmp/gm1557-bootstrap-fix-delta-github-a4d08171-20261017.json",
+    "sourceFiles": 16,
+    "sourceChangedPaths": 12,
+    "prepDelta": "/tmp/gm1557-bootstrap-prep-delta-github-ee0a5c65-20261017.json",
+    "prepDeltaSha256": "e7dc3b4e5926a8b4a69a49dada158182554b03748c1f9acf4d99e3c4cd0ae46e",
+    "prepFiles": 23,
+    "prepChangedPaths": 19,
+    "metadataOnlySinceCompiled": true,
+    "fullBaseNotRepeated": true
+  },
+  "supporting": {
+    "staticPath": "/tmp/gm1557-bootstrap-fix-independent-static-results-20261017.json",
+    "staticSha256": "30b6ea634c5bfca57e9dd05758edb44500f454816961b93cddf1423a062d643f",
+    "selectionPath": "/tmp/gm1557-bootstrap-fix-independent-selection-20261017.json",
+    "selectionSha256": "0711093d06179725f1532e5ac9d391eaecd1e72f55df37b182fe36034efea62b"
+  },
+  "limits": [
+    "Reviewer read-only repository; no builds/tests/application execution",
+    "Source correction is not affectedGREEN or fullA acceptance",
+    "Retained88PASS keep original actual1a48/compiled06a provenance, not relabeled fresha4d results",
+    "First92PASS1FAIL and originalSOURCE miss/PREPFAIL remain immutable",
+    "Only exactaffected5 and stillunrun160 may be separately released after persistence/recovery; no automatic runtime release",
+    "No broaderBlock5/provider/full-daemon/gameplay/A1A2Late2/WindowsCI/merge/main/issueclosure qualification"
+  ]
+}
