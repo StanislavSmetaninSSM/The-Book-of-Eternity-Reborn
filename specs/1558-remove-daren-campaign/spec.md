@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: S04 FIRSTfreshBOTH/catalog0/822valid +remainingPlanOnly0 exact2integrationdescriptors/5methods/21cases/0exec;16raw chains/new7compiled72aDLL preserved. TargetedaffectedSOURCE pending; distinctcorrectedownerhelper UNRUN, no save4/HTTP17 actual. Acceptedordinary2/storage4/menu1 retainoriginaldf3/0b withoutreplay; old4savefixtureFAIL and allhistory unchanged. Productionheld;T004–T020 unchecked.
+**Status**: S04 SOURCE/FIXTURE/SELECTION/PREP accepted on72a/890; actualvalidation pending. Exactreview/conditionalRootprotocol persisted, remaining2owners/5methods/21cases0exec/new7pins unchanged. Only after newcarrier remote/recovery may Root activate correctedsave4 first; HTTP17 requires next separate activation. Oldaccepted7cases/4savefixtureFAIL retainoriginaldf3/0b provenance; no replay/actual/product. T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -84,4 +84,7 @@ Historical [FIRST finite-consumer partialSTOP](recovery/g1-first-consumer-stop-2
 Historical [partial causal EVIDENCE acceptance](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) qualifies ordinary2PASS and5storage/menuRED while retaining4save fixture failures and HTTP17unrun. [Narrow S04 test correction](g1-s04-correction-source-packet-20261017.json) awaits fresh affected preparation/independentSOURCE before remaining21 actuals. Production/removal and all functional/success-criterion completion claims remain held.
 
 
-Current [S04 fresh zero-execution preparation](recovery/g1-s04-first-preparation-20261017.json) observes remaining2owners/5methods/21cases withnewcompiled72a/sevenDLL binding. Affected independentSOURCE and exactRootactivation remain pending; corrected save4 and firstHTTP17 are unrun. Accepted ordinary/storage/menu evidence keeps its originalprovenance; production and functional/success completion stay held.
+Historical [S04 fresh zero-execution preparation](recovery/g1-s04-first-preparation-20261017.json) observes remaining2owners/5methods/21cases withnewcompiled72a/sevenDLL binding. Affected independentSOURCE and exactRootactivation remain pending; corrected save4 and firstHTTP17 are unrun. Accepted ordinary/storage/menu evidence keeps its originalprovenance; production and functional/success completion stay held.
+
+
+Current [S04 SOURCE/FIXTURE/SELECTION/PREP acceptance](recovery/gm1558-g1-s04-source-independent-20261017.md) leaves actual validation pending. [Root conditional remaining-owner protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) gates corrected save4 first, then HTTP17, after exact persistence/readback/recovery and separate activation. No new runtime or requirement/success completion is declared; old accepted/unqualified evidence remains distinct and production is held.

@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: S04 FIRSTfreshBOTH/catalog0/822valid +remainingPlanOnly0 exact2integrationdescriptors/5methods/21cases/0exec;16raw chains/new7compiled72aDLL preserved. TargetedaffectedSOURCE pending; distinctcorrectedownerhelper UNRUN, no save4/HTTP17 actual. Acceptedordinary2/storage4/menu1 retainoriginaldf3/0b withoutreplay; old4savefixtureFAIL and allhistory unchanged. Productionheld;T004–T020 unchecked.
+**Current phase**: S04 SOURCE/FIXTURE/SELECTION/PREP accepted on72a/890; actualvalidation pending. Exactreview/conditionalRootprotocol persisted, remaining2owners/5methods/21cases0exec/new7pins unchanged. Only after newcarrier remote/recovery may Root activate correctedsave4 first; HTTP17 requires next separate activation. Oldaccepted7cases/4savefixtureFAIL retainoriginaldf3/0b provenance; no replay/actual/product. T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -66,4 +66,7 @@ Historical FIRST finite block at589 is [partialSTOP](recovery/g1-first-consumer-
 Historical S04 source disposition at72a: [accepted partial causal EVIDENCE](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) retains ordinary2PASS+storage4/menu1RED without replay, confirms save4fixture decoder failure and HTTP17unrun. [Root tests-only correction release](recovery/gm1558-root-s04-test-correction-preparation-release-589cdcd5-20261017.json) authorizes exactly3BOM-aware canonical soul reads in2testfiles, unchanged final oracles, plus remaining21selection. FreshBOTH/catalog/PlanOnly and independent affectedSOURCE remain pending; no actual or product change. Original4saveFAIL/32raw and T004–T020 unchecked stay intact.
 
 
-Current S04 preparation: [16FIRST raw chains](recovery/g1-s04-first-preparation-20261017.json) bind freshBOTH/catalog0 and remainingPlanOnly0 exact2descriptors/5methods/21cases/0exec/new7compiled72aDLLs. Targeted independentSOURCE and explicitRootactivation still precede corrected save4/unrunHTTP17; accepted ordinary2/menu1/storage4 retainoldprovenance withoutrepeat. No actual runtime fix or completed task is claimed; all T004–T020 stay unchecked.
+Historical S04 preparation at890: [16FIRST raw chains](recovery/g1-s04-first-preparation-20261017.json) bind freshBOTH/catalog0 and remainingPlanOnly0 exact2descriptors/5methods/21cases/0exec/new7compiled72aDLLs. Targeted independentSOURCE and explicitRootactivation still precede corrected save4/unrunHTTP17; accepted ordinary2/menu1/storage4 retainoldprovenance withoutrepeat. No actual runtime fix or completed task is claimed; all T004–T020 stay unchecked.
+
+
+Current S04 binding is [accepted independently](recovery/gm1558-g1-s04-source-independent-20261017.md); [conditional Root protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) still requires newcarrier readback/recovery and exact activation of corrected save4, followed separately by HTTP17. Neither actual ran. Keep7oldqualified cases and4oldfixtureFAIL at originalprovenance; no task completion or product release. T004–T020 remain unchecked.

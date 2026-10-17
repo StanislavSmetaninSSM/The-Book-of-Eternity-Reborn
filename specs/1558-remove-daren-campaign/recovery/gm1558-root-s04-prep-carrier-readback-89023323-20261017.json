@@ -1,0 +1,26 @@
+{
+  "kind": "ROOT_S04_PREP_CARRIER_RAW_RECOVERY_READBACK_NO_RUNTIME",
+  "createdUtc": "2026-10-17T09:55:22.797415+00:00",
+  "carrier": "890233239b4aff5a0ea6122efc9de9c623f7d711",
+  "preparedSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "verifiedRawLiveGzipCommittedChains": 16,
+  "completeDeltas": 96,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-89023323-20261017.json",
+  "newGitHubFiles": 29,
+  "metadataOnlyChangedPaths": 25,
+  "sourceReadback": {
+    "path": "/tmp/gm1558-root-s04-source-readback-72a29489-20261017.json",
+    "sha256": "4834fd7d0365a7904b5c7d5ab3df2d65afff29efdffc3400f7d85c0999f3e9e6"
+  },
+  "rawPreparationReadback": {
+    "path": "/tmp/gm1558-root-s04-preparation-readback-72a29489-20261017.json",
+    "sha256": "2c9944b8962641b9c019294ac0f4e94183111208db23cfb0bc2b26673dacd040"
+  },
+  "unrunCorrectedHelper": {
+    "path": "/tmp/gm1558-consumer-s04-run.py",
+    "sha256": "fbb176665eaac5fd5f2ab976df6179da975c9654e11c148dffe17986571bb331"
+  },
+  "remainingCases": 21,
+  "executed": 0,
+  "runtimeRelease": false
+}
