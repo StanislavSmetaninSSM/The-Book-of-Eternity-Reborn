@@ -1,0 +1,57 @@
+{
+  "kind": "ROOT_LITERAL_LIVE_DRAFT5_FIRST_RAW_INSPECTION",
+  "utc": "2026-10-17T14:01:37.165055+00:00",
+  "actualSource": "981ae845ae09081148434e6db1455e07951c173f",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-live5-981ae845-20261017/record.json",
+  "recordSha256": "4647b9bae2119fabc3999a261b682d4840230ffce46b8a6f562457b192b6106a",
+  "nativeExit": 1,
+  "wallSeconds": 5.281682761997217,
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 2,
+    "Failed": 3
+  },
+  "complete": true,
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: True)",
+      "outcome": "Passed",
+      "output": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_relay_apply_receipt.json\", expected: False)",
+      "outcome": "Failed",
+      "output": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True\n             at BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayPublicationFoundationTests.cs:line 70\n   at InvokeStub_GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+      "outcome": "Failed",
+      "output": "Assert.DoesNotContain() Failure: Item found in collection\n             ↓ (pos 0)\nCollection: [\"game_state/control/gm_prompt_delivery.json\", \"game_state/control/gm_relay_apply_receipt.json\", \"game_state/control/pending_ink_actions.json\", \"game_state/control/relay_ordinary_neighbor.json\", \"game_state/meta/soul_state.json\", ···]\nFound:      \"game_state/control/gm_prompt_delivery.json\"\n             at BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.RelayOperational.cs:line 31\n--- End of stack trace from previous location ---"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: True)",
+      "outcome": "Passed",
+      "output": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_prompt_delivery.json\", expected: False)",
+      "outcome": "Failed",
+      "output": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True\n             at BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayPublicationFoundationTests.cs:line 70\n   at InvokeStub_GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    }
+  ],
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-dcabf87799394c97b21647c7f6c2c286",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "physicalRootsAbsent": true,
+  "sourcePinDigest": "97fe785df1b33868876082cfd5907e2be9480274608f664390c7a252aaadc7a1",
+  "managedCopies": 9,
+  "binaryStable": true,
+  "sourcePrerequisites": "Original assertions before line31 prove actual PrepareAsync returned; ordinary manifest Files and rollback members and request identity passed. First exact operational Files assertion fails; later checks are not claimed executed.",
+  "disposition": "Expected bounded observation suitable for combined independent causal EVIDENCE with save1 after its separate activation. No rerun or production release."
+}

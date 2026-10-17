@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "ONLY_FIRST_ENGINE2_2EXECUTED_0PASS_2ACCEPTED_CAUSAL_RED; OTHER47_UNRUN",
+  "actual": "ENGINE2_ACCEPTED_CAUSAL_RED_2; LIVE5_FIRST_RAW_2PASS_3FAIL_COMPLETE; SAVE1_UNRUN; NO_PRODUCTION",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "7022ece73dd4c98c5206d26675c8e36dfe19ee755b97c89b33ab1281a2937093"
+    "sha256": "0c4a147f83e3a51ff398a96ef477d409b20bb560927e0f3b22a9ce3d94e16a48"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
@@ -1216,7 +1216,7 @@
     "scope": "Reserve/protect/exclude only2exact operational paths across existing owners; no writer/reader/schema/dispatch/batch/sequence/retry/budget activation.",
     "stopAfter": "Affected GREEN + independent review + durable remote checkpoint for lifecycle stage, then handoff wounds T179-Pd.3d narrative/interface shared kernels and real ordinary consumers.",
     "fullRelayBacklog": "DEFERRED_OPEN_NOT_AUTOMATICALLY_AUTHORIZED",
-    "baselineNext": "Already reviewed live/draft5 and save/load1 require targeted recorder inspection and separate Root named activations; both currently UNRUN.",
+    "baselineNext": "Live/draft5 FIRST outcome saved (2PASS/3FAIL), independent causal qualification pending. Save/load1 requires separate named Root activation after this successor recovery.",
     "implementation": "HELD_PENDING_BASELINE_AND_ROOT_RELEASE",
     "source": "recovery/root-engine2-evidence-lifecycle-ruling.json"
   },
@@ -1232,7 +1232,7 @@
   "nextBaselineRecorder": {
     "path": "recovery/tools/g1-operational-baseline-first-run.py",
     "sha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
-    "status": "TARGETED_SOURCE_ACCEPTED; UNRUN; EACH_OWNER_REQUIRES_NAMED_ROOT_ACTIVATION",
+    "status": "LIVE5_EXECUTED_ONCE_ORIGINAL_SENTINEL_PRESERVED; SAVE1_UNRUN_REQUIRES_OWN_NAMED_ROOT_ACTIVATION",
     "allowed": {
       "gm-relay-operational-live-preparation": 5,
       "gm-relay-operational-save-load": 1
@@ -1247,7 +1247,17 @@
       "recovery/remaining-a01-recorder-source-independent.json"
     ],
     "rootConditional": "recovery/root-remaining-a01-source-live5-conditional-release.json",
-    "actual": "LIVE5_UNRUN_AND_SAVE1_UNRUN",
-    "next": "Root verifies exact successor/newdelta then names first live5 activation; save1 separate after first outcome inspection."
+    "actual": "LIVE5_FIRST_RAW_COMPLETE_2PASS_3FAIL; SAVE1_UNRUN",
+    "next": "Root verifies this raw carrier then separately names save1 activation; no source/native change before that."
+  },
+  "firstLiveDraftRaw": {
+    "packet": "recovery/g1-first-live5.json",
+    "actualSource": "981ae845ae09081148434e6db1455e07951c173f",
+    "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+    "executed": 5,
+    "passed": 2,
+    "failed": 3,
+    "qualification": "FIRST_RAW_SAVED; INDEPENDENT_CAUSAL_EVIDENCE_PENDING",
+    "saveLoad1": "UNRUN_REQUIRES_SEPARATE_ROOT_ACTIVATION"
   }
 }

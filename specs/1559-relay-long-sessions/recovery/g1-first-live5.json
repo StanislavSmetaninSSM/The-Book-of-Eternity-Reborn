@@ -1,0 +1,48 @@
+{
+  "kind": "FIRST_LIVE_DRAFT5_NATIVE_RAW_NOT_INDEPENDENT_CAUSAL_ACCEPTANCE",
+  "utc": "2026-10-17T14:02:32.720958+00:00",
+  "actualSource": "981ae845ae09081148434e6db1455e07951c173f",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "nativeExit": 1,
+  "wallSeconds": 5.281682761997217,
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 2,
+    "Failed": 3
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 5,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "rawArchive": "recovery/g1-first-live5-files/archive.json",
+  "archiveSha256": "74978167b588cae454696caeed7cd78eb86f6d123e3912443ebd0663fa020a61",
+  "nativeRawChainCount": 8,
+  "nativeRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-live5-981ae845-20261017/record.json",
+  "resultDirectories": [
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140055-431-124184-b850482d05274b2dbfcb0f0906dc7660-categories"
+  ],
+  "creditedRootLiteralReadback": "recovery/root-first-live5-raw-inspection-981ae845.json",
+  "nineBinariesStable": true,
+  "namespaceUnchanged": true,
+  "strictRunnerCleanup": true,
+  "physicalOwnedRootAbsent": true,
+  "originalFailureSites": [
+    "GmRelayPublicationFoundationTests.cs:70 (two exact-name draft rows)",
+    "LiveTurnPreparationServiceTests.RelayOperational.cs:31 (first exact-name Files exclusion)"
+  ],
+  "proofLimits": "PrepareAsync completion, ordinary Files/rollback inclusion and request identity follow actual original assertion order before line31; later exact-path checks were not executed. Suffix rows passed. No valid relay record/dispatch schema or causal acceptance is inferred from native1.",
+  "disposition": "FIRST_RAW_ONLY: engine2 remains accepted under its original provenance; new live5 causal qualification pending. Save1 and all production held, no retry/otherowner.",
+  "fullG1Membership": {
+    "planned": 49,
+    "executedDistinctToDate": 7,
+    "passed": 2,
+    "failed": 5,
+    "unrun": 42
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "ROOT_NAMED_FIRST_LIVE_DRAFT5_ACTIVATION",
+  "utc": "2026-10-17T13:58:22.655206+00:00",
+  "actualSource": "981ae845ae09081148434e6db1455e07951c173f",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "category": "gm-relay-operational-live-preparation",
+  "descriptors": 1,
+  "methods": 2,
+  "plannedRows": 5,
+  "recorder": "/tmp/gm1559-g1-operational-baseline-first-run.py",
+  "recorderSha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
+  "planRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-plan-first-d473ed33-20261017t1330z/record.json",
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-981ae845-20261017.json",
+  "completeDeltas": 130,
+  "trackedPaths": 56331,
+  "persistedTargetedSourceExact": true,
+  "rootRemoteAndCleanVerified": true,
+  "activate": "ONE_FIRST_LIVE_DRAFT5_ONLY",
+  "expectedPrediction": "Actual Live Prepare ordinary inclusion then exactsnapshotexclusions1fail; exactdrafttwo2fail; suffixneighbors2pass. Native1 not autoRED. Anyunexpectedprerequisite/cleanup/timeout/underfillstop.",
+  "after": "Freeze/publishalloriginalraw andnamedactivation/nonforce/exactremote/completeGitHubdelta; Rootliteralinspection before any save1 activation. Allproduction andotherrelayactualsheld; lifecycle-onlystage thenwoundhandoff."
+}
