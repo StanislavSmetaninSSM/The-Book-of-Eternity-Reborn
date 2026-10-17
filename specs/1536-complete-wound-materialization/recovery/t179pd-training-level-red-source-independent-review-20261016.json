@@ -1,0 +1,1275 @@
+{
+  "schemaVersion": 1,
+  "task": "T179-Pd.3c-A1",
+  "reviewKind": "TESTS_ONLY_SOURCE_FIXTURE_SELECTION_PREPARATION_GATE",
+  "decision": "ACCEPTED_SOURCE_FIRST_A1_CAUSAL_RED2",
+  "reviewedSource": "119555f516d86e3d71081bead981e597223f393c",
+  "compiledSource": "c032138834ff35206c07ff673e06ab3dc40ab128",
+  "baseline": "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+  "reviewer": {
+    "agent": "/root/t179pc_independent_review",
+    "independentNonAuthor": true,
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Retained actual coordinator-confirmed spawn/configuration receipt",
+    "backendTelemetry": "UNAVAILABLE"
+  },
+  "materialFindings": [],
+  "releasedActuals": [
+    {
+      "category": "fr063-training-level-policy-boundary",
+      "expectedCases": 2,
+      "budgetMinutes": 5,
+      "platform": "local Linux",
+      "attempt": "FIRST_CAUSAL_RED_ONLY_AFTER_PERSISTENCE_READBACK_RECOVERY",
+      "expectedNativeExit": 1,
+      "expectedPassed": 0,
+      "expectedFailed": 2,
+      "expectedFailure": "Missing-helper Assert.NotNull at TrainingLevelPolicyTests.cs:128, each after actual ComputeAsync level2",
+      "requiredCleanup": "Two distinct actual owned roots removed/physically absent, complete receipts, no residue"
+    }
+  ],
+  "heldActuals": [
+    "fr063-training-level-policy:33",
+    "fr063-training-level-ordinary:17",
+    "fr063-joint-late-completion:2"
+  ],
+  "successImplementationReleased": false,
+  "releaseConditions": [
+    "Save/push/readback/recover decision first",
+    "Clean metadata-only continuation, unchanged c032 inputs and four fresh DLLs",
+    "Singleton category only; no SelectionFile aggregate",
+    "Preserve first full outcome and stop; no hidden retry",
+    "Unexpected PASS/failure/incomplete/skip/duplicate/timeout/cleanup/evidence issue blocks qualification",
+    "Separate causal-RED evidence acceptance before success implementation"
+  ],
+  "fixtureLimits": [
+    "Expected missing-method RED skips callback post-return byte assertions; do not claim those as RED proof",
+    "Read trace is logical existing FS hook attempts, not every low-level physical reread",
+    "Exact three level-source bytes are checked by successful ordinary controls, not a full-tree proof",
+    "No fabricated HOT/joint projection owner, field-seeded authority, new production hook or scaffold"
+  ],
+  "verification": {
+    "reviewedSource": "119555f516d86e3d71081bead981e597223f393c",
+    "compiledSource": "c032138834ff35206c07ff673e06ab3dc40ab128",
+    "baseline": "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+    "inspectionUtc": "2026-10-17T00:00:36.471197+00:00",
+    "sourcePins": [
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+        "gitBlob": "c71d4571b841a3edb2baf99149c8e68f1c9de8e1",
+        "bytes": 9772,
+        "sha256": "6e3a32344244d3590da0d63d655767257e244acae2f17ba0fde3405420300fd9"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "tests/categories.json",
+        "gitBlob": "8f4882753a0c0a368de4db706ec1a61395c887d8",
+        "bytes": 1972463,
+        "sha256": "7ad8409f03a1894c8af291fa46af46d5fcb159d42ccf5f50da5c73a5fda11c9c"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "tests/selection.json",
+        "gitBlob": "7240f3d40ed24e63a7f0b03a011215fbc0fd1c18",
+        "bytes": 2383,
+        "sha256": "3a453a140698a5182178287d17052ecc17459f8b3ddad1e02772699229b9a53e"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "gitBlob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+        "bytes": 38914,
+        "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "gitBlob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95",
+        "bytes": 11487,
+        "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+        "bytes": 241886,
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "gitBlob": "aadf31f92b8df81b37087a0fabfc1b5a9d6c2de8",
+        "bytes": 12668,
+        "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "scripts/test-csharp.ps1",
+        "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+        "bytes": 81688,
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "AGENTS.md",
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "bytes": 11662,
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "docs/development-workflow.md",
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "bytes": 66432,
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "docs/testing.md",
+        "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "bytes": 18979,
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "gitBlob": "efbd0f0f22cae7daa89978d8e50bd29c909004f6",
+        "bytes": 2232019,
+        "sha256": "15ea3130302314d98bdea6523a9a5d17ba5b3de467062c8cf355cc156033a7fe"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "gitBlob": "1576b10546c2745d737a5656483c81ea2f29600a",
+        "bytes": 1545422,
+        "sha256": "0107a7a0d41baa76fc06f92a437588b2351f313b0dcea45e04561c63b4d77c8b"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "gitBlob": "e3d24b4c9b07ea5312baaf5f9d315acb57da1058",
+        "bytes": 162379,
+        "sha256": "96f93ab9ef3228edbf5d049adb4a442797e9cc70e221360f2cbb084935532786"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016.json",
+        "gitBlob": "72078c570b5a0d2baaa09bb068855350bb4dec77",
+        "bytes": 22798,
+        "sha256": "367652a16eda5da6e74b8b812110f239da3c4947d097060e0eec1fa98df7d1c3"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-root-inspection-20261016.json",
+        "gitBlob": "9e6c5f5c4b3154bddb8d82fac2438a6e51c662a5",
+        "bytes": 5312,
+        "sha256": "39d2dc8243d3f36342ad5457a15b6fb2ff4a0bd53ef95da240e35846487c33df"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-source-delta-recovery-20261016.json",
+        "gitBlob": "e0be6cddaf4ae1f66612dc6a1ab9a005b8433445",
+        "bytes": 203631,
+        "sha256": "9d66a15e7e7686f40959f737ca1b88f5796e07a6e8579632603896fd2726db03"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-a1-contract-independent-review-20261016.md",
+        "gitBlob": "b90c7f97d9e854359895baf13a8e24be71819d03",
+        "bytes": 7093,
+        "sha256": "1aa518f2a79cf7eaa074cc30f2795bbd807c64daa017068510173c9141c70728"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-a1-contract-independent-review-20261016.json",
+        "gitBlob": "83c264136df9fa0614cddb90b1604056db65457c",
+        "bytes": 97868,
+        "sha256": "587683c64cbb5b2f42b0e3ce5b490208903433ac1b84f99b8874ce38d7bd8313"
+      },
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+        "gitBlob": "c71d4571b841a3edb2baf99149c8e68f1c9de8e1",
+        "bytes": 9772,
+        "sha256": "6e3a32344244d3590da0d63d655767257e244acae2f17ba0fde3405420300fd9"
+      },
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "tests/categories.json",
+        "gitBlob": "8f4882753a0c0a368de4db706ec1a61395c887d8",
+        "bytes": 1972463,
+        "sha256": "7ad8409f03a1894c8af291fa46af46d5fcb159d42ccf5f50da5c73a5fda11c9c"
+      },
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "tests/selection.json",
+        "gitBlob": "7240f3d40ed24e63a7f0b03a011215fbc0fd1c18",
+        "bytes": 2383,
+        "sha256": "3a453a140698a5182178287d17052ecc17459f8b3ddad1e02772699229b9a53e"
+      }
+    ],
+    "projections": [
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+        "firstLine": 15,
+        "lastLine": 34,
+        "sha256": "581c88a98d4a9b3d5058b0e544b42407bc409e0ccdb912b84cf657e31f5cf789",
+        "text": "{\n    private static readonly string[] Sources =\n    [\"game_state/player/experience.json\", \"game_state/core/player_status.json\", \"game_state/meta/soul_state.json\"];\n\n    [Theory]\n    [InlineData(\"ReadTrainingExperienceLevel\")]\n    [InlineData(\"ReadTrainingSingleLevel\")]\n    public async Task OrdinaryContext_PrecedesMissingParsedPolicy(string method)\n    {\n        await WithOwner(\"{\\\"level\\\":2}\", \"{\\\"level\\\":7}\", \"{\\\"level\\\":9}\", async (owner, _, _) =>\n        {\n            var actual = await owner.ComputeAsync();\n            Assert.Equal(2, actual.PlayerLevel);\n            output.WriteLine(JsonSerializer.Serialize(new\n            {\n                Boundary = \"ordinary_context_before_training_policy\", Method = method,\n                ActualPlayerLevel = actual.PlayerLevel, ExpectedPlayerLevel = 2\n            }));\n            Assert.Equal(2, ReadPolicy(method, \"{\\\"level\\\":2}\"));\n        });\n"
+      },
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+        "firstLine": 36,
+        "lastLine": 120,
+        "sha256": "acffe78ce6bd7d0c03571f6cb49279a3c7a343078bb1fdeccaf1c3f6f92b4c08"
+      },
+      {
+        "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+        "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+        "firstLine": 122,
+        "lastLine": 202,
+        "sha256": "91cb972925496fab2c4127f1f899d0c1a3f0c6f1b2705ff2594b16c848c40bf2",
+        "text": "\n    private static int? ReadPolicy(string methodName, string json)\n    {\n        using var document = JsonDocument.Parse(json);\n        var method = typeof(CharacteristicsService).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic,\n            binder: null, types: [typeof(JsonElement)], modifiers: null);\n        Assert.NotNull(method);\n        Assert.Equal(typeof(int?), method.ReturnType);\n        try { return (int?)method.Invoke(null, [document.RootElement]); }\n        catch (TargetInvocationException error) when (error.InnerException is not null)\n        {\n            ExceptionDispatchInfo.Capture(error.InnerException).Throw();\n            throw;\n        }\n    }\n\n    private static async Task<int> ReadActualOwner(CharacteristicsService owner)\n    {\n        var method = typeof(CharacteristicsService).GetMethod(\"GetPlayerLevel\", BindingFlags.Instance | BindingFlags.NonPublic);\n        Assert.NotNull(method);\n        return await (Task<int>)method.Invoke(owner, null)!;\n    }\n\n    private async Task WithOwner(string? experience, string? status, string? soul,\n        Func<CharacteristicsService, List<string>, Action<IOException>, Task> check)\n    {\n        var root = Path.Combine(Path.GetTempPath(), \"boe-training-level-a1-\" + Guid.NewGuid().ToString(\"N\"));\n        var reads = new List<string>();\n        IOException? fault = null;\n        var observing = false;\n        try\n        {\n            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,\n                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks\n                {\n                    AfterCanonicalReadAttemptAsync = path =>\n                    {\n                        if (observing && Sources.Contains(path, StringComparer.Ordinal))\n                        {\n                            reads.Add(path);\n                            if (fault is not null && path == Sources[0]) throw fault;\n                        }\n                        return Task.CompletedTask;\n                    }\n                });\n            files.EnsureDirectoryStructure();\n            var stats = Characteristics.All.ToDictionary(name => name, _ => 1);\n            await files.WriteFileAtomicAsync(\"game_state/misc/characteristics.json\", JsonSerializer.Serialize(stats));\n            var sources = new[] { experience, status, soul };\n            for (var i = 0; i < Sources.Length; i++)\n                if (sources[i] is { } json) await files.WriteFileAtomicAsync(Sources[i], json);\n            var before = Sources.Select(path => ReadPhysical(root, path)).ToArray();\n            var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);\n            var owner = new CharacteristicsService(files, state, NullLogger<CharacteristicsService>.Instance);\n            observing = true;\n            await check(owner, reads, error => fault = error);\n            for (var i = 0; i < Sources.Length; i++) Assert.Equal(before[i], ReadPhysical(root, Sources[i]));\n            output.WriteLine(JsonSerializer.Serialize(new\n            {\n                Boundary = \"ordinary_training_level_sources\", Root = root, Reads = reads,\n                Images = Sources.Select((path, i) => new { Path = path, Present = before[i] is not null,\n                    Sha256 = before[i] is { } bytes ? Convert.ToHexString(SHA256.HashData(bytes)) : null })\n            }));\n        }\n        finally\n        {\n            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);\n            output.WriteLine(JsonSerializer.Serialize(new\n            {\n                Boundary = \"training_level_a1_cleanup\", Root = root, Removed = !Directory.Exists(root)\n            }));\n            Assert.False(Directory.Exists(root));\n        }\n    }\n\n    private static byte[]? ReadPhysical(string root, string path)\n    {\n        var physical = Path.Combine(root, path);\n        return File.Exists(physical) ? File.ReadAllBytes(physical) : null;\n    }\n}\n"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 283,
+        "lastLine": 334,
+        "sha256": "f9338417b5992a58f72eaa3ec756bf50598e08ffc983534d652f32da9ca2e7bf",
+        "text": "    private async Task<int> GetPlayerLevel()\n    {\n        // Prefer experience.json because local systems such as QTE can advance level there.\n        var json = await ReadCharacteristicsSourceAsync(\"game_state/player/experience.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n                if (doc.RootElement.TryGetProperty(\"playerLevel\", out var playerLvl) &&\n                    playerLvl.ValueKind == JsonValueKind.Number)\n                    return playerLvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        // Try player_status next, then soul_state\n        json = await ReadCharacteristicsSourceAsync(\"game_state/core/player_status.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        // Fallback: check soul_state for level\n        json = await ReadCharacteristicsSourceAsync(\"game_state/meta/soul_state.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        return 1;\n    }\n\n    public async Task<int> GetUnspentStatPoints()\n    {\n"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 65,
+        "lastLine": 97,
+        "sha256": "03876d0d07fdadc5b28485a44e746760dd212186ee7537d11339c9d75d3ae9d3"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 147,
+        "lastLine": 189,
+        "sha256": "d6997851939a0dc04cd67c272fc47fafff368d2f7302df3fd3cc3f627daae8f7"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "firstLine": 96,
+        "lastLine": 108,
+        "sha256": "f48cc4eae3f0751f017c5043cd350f7de3075731b84890700504570fc35b72c3"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "firstLine": 1319,
+        "lastLine": 1357,
+        "sha256": "cb97aaad7d67178eb847e73bf9b2900b98d49261b49c15b0d144489e2d08a984",
+        "text": "    public async Task<string?> ReadFileAsync(string relativePath)\n    {\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"started\");\n#endif\n#if DEBUG\n        try\n        {\n#endif\n        await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(\n            CancellationToken.None);\n        var result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"initial\", result == null ? \"missing\" : \"present\");\n#endif\n        await InvokeAfterCanonicalReadAttemptAsync(relativePath);\n        if (!HasAmbientCanonicalLease() &&\n            (result == null || HasPendingFilePublications()))\n        {\n#if DEBUG\n            BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup-reason\", result == null ? \"missing\" : \"pending\");\n#endif\n            await using var writeLease =\n                await AcquirePublicationReadQuiescenceLeaseAsync();\n            result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n                BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup\", result == null ? \"missing\" : \"present\");\n#endif\n        }\n\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", result == null ? \"returned-missing\" : \"returned-present\");\n#endif\n        return result;\n\n#if DEBUG\n        }\n        catch { BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"fault\"); throw; }\n#endif\n"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "firstLine": 175,
+        "lastLine": 210,
+        "sha256": "180c21ae352b62d0c02eae791c0476a3d82d9ee811625787b3e9b42321dc18d3"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "tests/categories.json",
+        "firstLine": 1,
+        "lastLine": 101,
+        "sha256": "e1ec9c284a884a961416eda806f4b0ca5ce1275af6994abad463a37471082f14"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "tests/selection.json",
+        "firstLine": 1,
+        "lastLine": 33,
+        "sha256": "3a453a140698a5182178287d17052ecc17459f8b3ddad1e02772699229b9a53e"
+      },
+      {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "firstLine": 1,
+        "lastLine": 9,
+        "sha256": "0da28707495562f28efaeaa0e6c6c418e99ddb927dd5646c3fdb946f5c149354"
+      }
+    ],
+    "exactDiffs": [
+      {
+        "label": "test-source",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "--",
+          "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+        ],
+        "nativeExit": 0,
+        "bytes": 10302,
+        "sha256": "70d731a5b5d07e8fbdf8e65decdd6f38262f4f1fcc9098fb8246f9d956db5fa8"
+      },
+      {
+        "label": "catalog",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "--",
+          "tests/categories.json"
+        ],
+        "nativeExit": 0,
+        "bytes": 5835,
+        "sha256": "069d54dac0575c4eeb439b6f81e515bf7bc66fed29634a4800fbec0e84accfd9"
+      },
+      {
+        "label": "selection",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "--",
+          "tests/selection.json"
+        ],
+        "nativeExit": 0,
+        "bytes": 8747,
+        "sha256": "953cff493ee97236a7434b925039d2fe87ad05a5f42c6a3dd717d58b396b278d"
+      },
+      {
+        "label": "compiled-to-carrier",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "119555f516d86e3d71081bead981e597223f393c"
+        ],
+        "nativeExit": 0,
+        "bytes": 1255562,
+        "sha256": "0006660b147dc4461a1614232266b17f8be527ab2feef7b8d266aa4761febf2b"
+      },
+      {
+        "label": "whole-stage",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "119555f516d86e3d71081bead981e597223f393c"
+        ],
+        "nativeExit": 0,
+        "bytes": 1607954,
+        "sha256": "a05cf85ea0bf365d5ff71a197471659dbf26024b5addcce40a1c8add8df844e9"
+      },
+      {
+        "label": "protected",
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "119555f516d86e3d71081bead981e597223f393c",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.IntegrationTests",
+          "scripts",
+          ".github",
+          "tests/selections",
+          "AGENTS.md",
+          "docs",
+          ".specify"
+        ],
+        "nativeExit": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "readOnlyCommands": [
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "119555f516d86e3d71081bead981e597223f393c\n",
+        "stdoutSha256": "395d7494b7fa6d65d9b72e0352a72208412ed4d8a41a428a8b4abf486824bdb4",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "119555f516d86e3d71081bead981e597223f393c"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "c032138834ff35206c07ff673e06ab3dc40ab128"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "119555f516d86e3d71081bead981e597223f393c",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.IntegrationTests",
+          "scripts",
+          ".github",
+          "tests/selections",
+          "AGENTS.md",
+          "docs",
+          ".specify"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "grep",
+          "-n",
+          "-F",
+          "-e",
+          "ReadTrainingExperienceLevel",
+          "-e",
+          "ReadTrainingSingleLevel",
+          "119555f516d86e3d71081bead981e597223f393c",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 1,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "7acd4a960fa273e0df2dd83e4998baef79ba94d5\n",
+        "stdoutSha256": "ed2d1e5546dc48f9aaac3701e7c215d828d47e275621ba0e008ec000a8726a3b",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1",
+          "--untracked-files=all"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "sourceCounts": {
+      "OrdinaryContext_PrecedesMissingParsedPolicy": 2,
+      "ExperiencePolicy_ReturnsExactNumericPriority": 13,
+      "SinglePolicy_ReturnsOnlyExactNumericLevel": 10,
+      "ParsedPolicy_PreservesConversionFailure": 4,
+      "ParsedPolicy_PreservesNonObjectFailure": 6,
+      "OrdinaryOwner_PreservesSourceOrderAndBytes": 14,
+      "OrdinaryOwner_ReadFaultEscapesBeforeParseCatch": 1
+    },
+    "catalogNewOwners": [
+      {
+        "id": "fr063-training-level-policy-boundary",
+        "responsibility": "T179-Pd.3c-A1 two real ordinary ComputeAsync controls before requiring each missing pure parsed-value method; structural causal RED, no fabricated source/authority.",
+        "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+        "changeHints": [
+          "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+          "BookOfEternityClient/Services/CharacteristicsService.cs",
+          "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+        ],
+        "related": [
+          {
+            "id": "fr063-joint-late-completion",
+            "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+          }
+        ],
+        "requirements": {
+          "frontendBuild": false,
+          "exclusive": false,
+          "ciRunner": "ubuntu-24.04"
+        },
+        "timeoutMinutes": 5,
+        "expectedSeconds": null,
+        "selectors": [
+          {
+            "project": "unit",
+            "tests": [
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fr063-training-level-policy",
+        "responsibility": "T179-Pd.3c-A1 pure JsonElement training leaf outcomes: exact aliases/duplicates/kinds/Int32 low/endpoints and root/conversion exceptions. No filesystem/owner qualification.",
+        "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+        "changeHints": [
+          "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+          "BookOfEternityClient/Services/CharacteristicsService.cs",
+          "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+        ],
+        "related": [
+          {
+            "id": "fr063-joint-late-completion",
+            "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+          }
+        ],
+        "requirements": {
+          "frontendBuild": false,
+          "exclusive": false,
+          "ciRunner": "ubuntu-24.04"
+        },
+        "timeoutMinutes": 5,
+        "expectedSeconds": null,
+        "selectors": [
+          {
+            "project": "unit",
+            "tests": [
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fr063-training-level-ordinary",
+        "responsibility": "T179-Pd.3c-A1 actual GetPlayerLevel source priority/default/read order/no source-byte writes/real IO fault, plus intentional overlap of only two existing training cap/write controls already owned by fr063-automatic-calculation; no whole training category.",
+        "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
+        "changeHints": [
+          "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+          "BookOfEternityClient/Services/CharacteristicsService.cs",
+          "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs"
+        ],
+        "related": [
+          {
+            "id": "fr063-joint-late-completion",
+            "when": "After production GetPlayerLevel/shared projection changes, FIRST actual protectedLate2 plus separate EVIDENCE precedes A1 GREEN. Product-unchanged tests-only causal RED does not repeat Late2."
+          }
+        ],
+        "requirements": {
+          "frontendBuild": false,
+          "exclusive": false,
+          "ciRunner": "ubuntu-24.04"
+        },
+        "timeoutMinutes": 5,
+        "expectedSeconds": null,
+        "selectors": [
+          {
+            "project": "unit",
+            "tests": [
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+              "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+              "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes"
+            ]
+          }
+        ]
+      }
+    ],
+    "selection": {
+      "schemaVersion": 1,
+      "selections": [
+        {
+          "category": "fr063-training-level-policy-boundary",
+          "reason": "T179-Pd.3c-A1 two real ordinary ComputeAsync controls before requiring each missing pure parsed-value method; structural causal RED, no fabricated source/authority.",
+          "contracts": [
+            "#1536 T179-Pd.3c-A1 accepted narrow ordinary training contract; local-only, no CI/Windows/HOT/S/B/M3/newQTE. Fresh BOTH/catalog/exact PlanOnly+SOURCE before specifically released causal RED; product change then protectedLate2/separateEVIDENCE before individually released unitGREEN."
+          ]
+        },
+        {
+          "category": "fr063-training-level-policy",
+          "reason": "T179-Pd.3c-A1 pure JsonElement training leaf outcomes: exact aliases/duplicates/kinds/Int32 low/endpoints and root/conversion exceptions. No filesystem/owner qualification.",
+          "contracts": [
+            "#1536 T179-Pd.3c-A1 accepted narrow ordinary training contract; local-only, no CI/Windows/HOT/S/B/M3/newQTE. Fresh BOTH/catalog/exact PlanOnly+SOURCE before specifically released causal RED; product change then protectedLate2/separateEVIDENCE before individually released unitGREEN."
+          ]
+        },
+        {
+          "category": "fr063-training-level-ordinary",
+          "reason": "T179-Pd.3c-A1 actual GetPlayerLevel source priority/default/read order/no source-byte writes/real IO fault, plus intentional overlap of only two existing training cap/write controls already owned by fr063-automatic-calculation; no whole training category.",
+          "contracts": [
+            "#1536 T179-Pd.3c-A1 accepted narrow ordinary training contract; local-only, no CI/Windows/HOT/S/B/M3/newQTE. Fresh BOTH/catalog/exact PlanOnly+SOURCE before specifically released causal RED; product change then protectedLate2/separateEVIDENCE before individually released unitGREEN."
+          ]
+        },
+        {
+          "category": "fr063-joint-late-completion",
+          "reason": "Affected existing joint derived projection consumes GetPlayerLevel; run FIRST only AFTER actual training kernel production change, fresh preparation and independent SOURCE. Do not execute for unchanged-product RED.",
+          "contracts": [
+            "#1536 T179-Pd.3c-A1 shared ordinary projection behavior preservation. Existing2 bodies/5m unchanged, raw first outcome+separateEVIDENCE before A1 unitGREEN; no worker/full-family replay."
+          ]
+        }
+      ]
+    },
+    "preparation": {
+      "packetPin": {
+        "sha": "119555f516d86e3d71081bead981e597223f393c",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016.json",
+        "gitBlob": "72078c570b5a0d2baaa09bb068855350bb4dec77",
+        "bytes": 22798,
+        "sha256": "367652a16eda5da6e74b8b812110f239da3c4947d097060e0eec1fa98df7d1c3"
+      },
+      "commands": [
+        {
+          "mode": "catalog",
+          "label": "a1-red-catalog",
+          "argv": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-File",
+            "scripts/test-csharp.ps1",
+            "-ValidateCatalog"
+          ],
+          "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+          "sourceHead": "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "startedUtc": "2026-10-16T23:52:56.698823+00:00",
+          "finishedUtc": "2026-10-16T23:55:08.620649+00:00",
+          "wallSeconds": 131.65201839800284,
+          "nativeExit": 0,
+          "stdoutPath": "/tmp/f1-r2-tools/a1-red-catalog/stdout.log",
+          "stdoutSha256": "bf4f99c50f1e935e5500d164203c8628a52d585effec66e7c2781507faead3a2",
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories"
+          ],
+          "headAfter": "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "statusAfter": "",
+          "ownedPrefixesBefore": [],
+          "ownedPrefixesAfter": [],
+          "runtimeScope": "local fresh preparation ZERO execution",
+          "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release.",
+          "completeRecordAvailableInVerifiedRawChain": true,
+          "binaryContinuityVerifiedSeparately": true
+        },
+        {
+          "mode": "plan",
+          "label": "a1-red-plan",
+          "argv": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-File",
+            "scripts/test-csharp.ps1",
+            "-SelectionFile",
+            "tests/selection.json",
+            "-PlanOnly",
+            "-NoBuild"
+          ],
+          "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+          "sourceHead": "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "startedUtc": "2026-10-16T23:55:44.508314+00:00",
+          "finishedUtc": "2026-10-16T23:55:53.482786+00:00",
+          "wallSeconds": 8.713543288002256,
+          "nativeExit": 0,
+          "stdoutPath": "/tmp/f1-r2-tools/a1-red-plan/stdout.log",
+          "stdoutSha256": "d380edc6ed690c4e0e41cb8904ab53cdb4f4101f8ac4779a889adaa8c89eca10",
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235545-421-291027-47a5a30fcfab4f17b8c8020df7016aa2-categories"
+          ],
+          "headAfter": "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "statusAfter": "",
+          "ownedPrefixesBefore": [],
+          "ownedPrefixesAfter": [],
+          "runtimeScope": "local fresh preparation ZERO execution",
+          "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release.",
+          "completeRecordAvailableInVerifiedRawChain": true,
+          "binaryContinuityVerifiedSeparately": true
+        }
+      ],
+      "chains": [
+        {
+          "rawPath": "/tmp/f1-r2-tools/a1-red-catalog/record.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/record.json.gz",
+          "bytes": 6708,
+          "sha256": "a287e08068503049553e5b8867ba86597459cea07437bdf5f11db2485ebac38a",
+          "storedSha256": "8a2a2b8f174b6c09aed4c92a6a9a5ab06d9ecf55aad6d879c7948dbd7345ee98",
+          "compression": "gzip mtime0",
+          "gitBlob": "c0c5f6661c0a89418e4d20abceeb816703ec328e",
+          "storedBytes": 2452,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/tmp/f1-r2-tools/a1-red-catalog/stdout.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/stdout.log.gz",
+          "bytes": 714,
+          "sha256": "bf4f99c50f1e935e5500d164203c8628a52d585effec66e7c2781507faead3a2",
+          "storedSha256": "261f2a1349e3db097e28a4076ab68ee9db299c32680f4b4dc74d6b4190c97cca",
+          "compression": "gzip mtime0",
+          "gitBlob": "7eca62b4a1a80a89fd0562acc028a72d6b96ba4b",
+          "storedBytes": 394,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories/Build-integration.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/Build-integration.log.gz",
+          "bytes": 120171,
+          "sha256": "3a24a86ac3a067898c338eced4bc207b1a64e83aeb5499826bfcba000f7ef61f",
+          "storedSha256": "3d72387db361ca667cf038940538a94a385943548ccb77edc8c7427aa523e2c7",
+          "compression": "gzip mtime0",
+          "gitBlob": "21b0a65a3b51a00de9c358b1611990bb39fbb051",
+          "storedBytes": 9249,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories/Build-unit.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/Build-unit.log.gz",
+          "bytes": 26198,
+          "sha256": "458abdb7ac455bef7f1450bd22183f5cb9e0869133d9a0f5238ac38c8c8735b6",
+          "storedSha256": "d25937f55d9febf8acb0859744bfc15eab54b2bdd508980d7eb49ea0e9d8ab1d",
+          "compression": "gzip mtime0",
+          "gitBlob": "d77713fdb12731c5b225f7ff801a4af27df994fa",
+          "storedBytes": 1709,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories/catalog-audit.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/catalog-audit.json.gz",
+          "bytes": 103,
+          "sha256": "1cfeb3bb41675c6d5ceb0a55729cd64203b0cee482ecd11c6e1fde0a60980818",
+          "storedSha256": "368f8e374b50752d2b0eafa20a875ad639f4ec747ec699f303e1b38c77d6b972",
+          "compression": "gzip mtime0",
+          "gitBlob": "e5d6d8472dc4d3f9d0e28dfc69b8d39d7fadc8b3",
+          "storedBytes": 103,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories/dotnet-test.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/dotnet-test.log.gz",
+          "bytes": 3540542,
+          "sha256": "b504e8582f96c0cf427adbd34143f364d54032cd1ac8783a77273445021b8d4a",
+          "storedSha256": "3a0397ea8683fb936407f1ad77581579f7b2888717d95145e933c3b72c82186e",
+          "compression": "gzip mtime0",
+          "gitBlob": "f528406cfc508b31c569286e0e7c338e17646a09",
+          "storedBytes": 387267,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235259-126-290524-d27c8de2979c4a9b90d60c433d0c658b-categories/summary.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/summary.json.gz",
+          "bytes": 1601,
+          "sha256": "c418cb30d2887bd9480b54b892ef8b5cfc8d14f33aafceff61f03ccdf2051332",
+          "storedSha256": "8a4f1003cd8ade43f5c6f52f8a27f4dfd57d5a9e20be915b4f8a0cd32266a8b1",
+          "compression": "gzip mtime0",
+          "gitBlob": "aa0f28272259a052218cef005fef1440314f9297",
+          "storedBytes": 642,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/tmp/f1-r2-tools/a1-red-plan/record.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/record.json.gz",
+          "bytes": 6757,
+          "sha256": "e3e59275621a41fc49b499581de0c465debc9b63230d26101f1204ef83a084d1",
+          "storedSha256": "82f0cc7c274cd0b54b9cb0bb2c6da73b990cf36b019e5e8bf25e05aedb4c43dc",
+          "compression": "gzip mtime0",
+          "gitBlob": "a6942a1d3b230f371bbb50e3676d81449838dd92",
+          "storedBytes": 2316,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/tmp/f1-r2-tools/a1-red-plan/stdout.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/stdout.log.gz",
+          "bytes": 4740,
+          "sha256": "d380edc6ed690c4e0e41cb8904ab53cdb4f4101f8ac4779a889adaa8c89eca10",
+          "storedSha256": "0312d5e376144f843f60cb9684e44e96d3a1f998849eadce4a8afd102e646840",
+          "compression": "gzip mtime0",
+          "gitBlob": "49bab5221c617fd20d3e817b7370b2ca49dde9b9",
+          "storedBytes": 1082,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235545-421-291027-47a5a30fcfab4f17b8c8020df7016aa2-categories/dotnet-test.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/dotnet-test.log.gz",
+          "bytes": 3393741,
+          "sha256": "38ed7a5e87f3cea8b4ab8c484bc8795581a32252032b94c07716accbb05d2678",
+          "storedSha256": "27a4ec51ad7abf7889822e2698de47b5652de7ae61838e701fa332cad9b445bd",
+          "compression": "gzip mtime0",
+          "gitBlob": "5480891a57720f3db199e37483e3b4e23dba8806",
+          "storedBytes": 376213,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235545-421-291027-47a5a30fcfab4f17b8c8020df7016aa2-categories/plan.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/plan.json.gz",
+          "bytes": 7639,
+          "sha256": "9da85bfd0f1a94e39b41d655d836edd12d892e9f0fc3c3b0743b64837013ecaa",
+          "storedSha256": "f2d4467e015a57aca643ea1425d47e1e162a5e0fa8afafd73165b8ed53d937e4",
+          "compression": "gzip mtime0",
+          "gitBlob": "9e7244e8b69f1e1c0ed3551204a4f0623f2b2a2e",
+          "storedBytes": 1713,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-235545-421-291027-47a5a30fcfab4f17b8c8020df7016aa2-categories/summary.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/summary.json.gz",
+          "bytes": 3981,
+          "sha256": "52908f11d3673535e5dad2e3e9ae30bb61a7284e6b141e2c41ecd334e44069b6",
+          "storedSha256": "262aca293715f79099148738d183c9b2d4cacd0fe7261daf44a15fe71a4ec886",
+          "compression": "gzip mtime0",
+          "gitBlob": "1743570882f1f9fea23a9e59c11fe500405bf4f8",
+          "storedBytes": 1393,
+          "verification": "RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact"
+        }
+      ],
+      "catalog": {
+        "Valid": true,
+        "Methods": 11732,
+        "Categories": 780,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "summaries": [
+        {
+          "Categories": [
+            null
+          ],
+          "DiscoveryOnly": true,
+          "PlanOnly": false,
+          "Revision": {
+            "Head": "c032138834ff35206c07ff673e06ab3dc40ab128",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11732,
+            "Categories": 780,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0932273,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.1721809,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1571282,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 102.4267957,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 15.3123578,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0044983,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 10,
+          "WallTime": "00:02:09.1467279",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": [],
+          "reasonsOmittedFromProjection": true
+        },
+        {
+          "Categories": [
+            "fr063-training-level-policy-boundary",
+            "fr063-training-level-policy",
+            "fr063-training-level-ordinary",
+            "fr063-joint-late-completion"
+          ],
+          "DiscoveryOnly": false,
+          "PlanOnly": true,
+          "Revision": {
+            "Head": "c032138834ff35206c07ff673e06ab3dc40ab128",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": null,
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0634817,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0502051,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1373401,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0044067,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 25,
+          "WallTime": "00:00:07.7468614",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 4,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 54,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "fr063-joint-late-completion-integration-001",
+              "fr063-training-level-ordinary-unit-002",
+              "fr063-training-level-policy-unit-003",
+              "fr063-training-level-policy-boundary-unit-004"
+            ],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": [],
+          "reasonsOmittedFromProjection": true
+        }
+      ],
+      "plan": {
+        "Categories": [
+          "fr063-training-level-policy-boundary",
+          "fr063-training-level-policy",
+          "fr063-training-level-ordinary",
+          "fr063-joint-late-completion"
+        ],
+        "Revision": {
+          "Head": "c032138834ff35206c07ff673e06ab3dc40ab128",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "PreparationSeconds": 7.4015496,
+        "Descriptors": [
+          {
+            "Name": "fr063-joint-late-completion-integration-001",
+            "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+            "Category": "fr063-joint-late-completion",
+            "Categories": [
+              "fr063-joint-late-completion"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "Adapter": "integration",
+            "Exclusive": true,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 2,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+                "Cases": 1
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+                "Cases": 1
+              }
+            ]
+          },
+          {
+            "Name": "fr063-training-level-ordinary-unit-002",
+            "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "Category": "fr063-training-level-ordinary",
+            "Categories": [
+              "fr063-training-level-ordinary"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+            "Adapter": "unit",
+            "Exclusive": false,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 17,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+                "Cases": 2
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+                "Cases": 14
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+                "Cases": 1
+              }
+            ]
+          },
+          {
+            "Name": "fr063-training-level-policy-unit-003",
+            "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "Category": "fr063-training-level-policy",
+            "Categories": [
+              "fr063-training-level-policy"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+            "Adapter": "unit",
+            "Exclusive": false,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 33,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+                "Cases": 13
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+                "Cases": 4
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+                "Cases": 6
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+                "Cases": 10
+              }
+            ]
+          },
+          {
+            "Name": "fr063-training-level-policy-boundary-unit-004",
+            "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "Category": "fr063-training-level-policy-boundary",
+            "Categories": [
+              "fr063-training-level-policy-boundary"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy",
+            "Adapter": "unit",
+            "Exclusive": false,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 2,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy",
+                "Cases": 2
+              }
+            ]
+          }
+        ],
+        "reasonsOmittedFromProjection": true
+      },
+      "freshLiveBinaries": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "c494c4e4af02480a2546be4ed86e330052d6e88e8c29afbba741253b2c2e882c",
+          "bytes": 26178048
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "4ccd27554adc6044c9c7b408abec151745bc2a023a3cf8fc03e51dd96cfe8b9f",
+          "bytes": 9500672
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "c494c4e4af02480a2546be4ed86e330052d6e88e8c29afbba741253b2c2e882c",
+          "bytes": 26178048
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "2f2d6cd63037daf0b98c70f07fd3c089fcb49d5c9835d6c0632ac330f08b231f",
+          "bytes": 29163520
+        }
+      ],
+      "actualTests": 0,
+      "buildWarnings": {
+        "integration": 133,
+        "unit": 35,
+        "newTrainingDiagnostics": 0
+      }
+    },
+    "sourceRecovery": {
+      "receiptPath": "/tmp/t179pd-training-level-red-source-delta-recovery-20261016.json",
+      "bytes": 203631,
+      "sha256": "9d66a15e7e7686f40959f737ca1b88f5796e07a6e8579632603896fd2726db03",
+      "sha": "c032138834ff35206c07ff673e06ab3dc40ab128",
+      "directory": "/workspace/f1-r2-training-level-red-source-delta-github-20261016",
+      "filesVerified": 236,
+      "allChangedPaths": 233,
+      "deletions": [],
+      "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification.",
+      "recordedRemoteReadback": "c032138834ff35206c07ff673e06ab3dc40ab128\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+      "reviewerNetwork": "NONE",
+      "inventorySha256": "0f90a062376d6c31a31af46bb4f90410f46e725668d9c64c94a8e5bc46e87407"
+    },
+    "currentRecovery": {
+      "receiptPath": "/tmp/t179pd-training-level-red-prepared-delta-recovery-20261016.json",
+      "bytes": 217580,
+      "sha256": "932738010ad724d3baf69b308f68613660b79aa1470e1630ed47e9753e2aff36",
+      "sha": "119555f516d86e3d71081bead981e597223f393c",
+      "directory": "/workspace/f1-r2-training-level-red-prepared-delta-github-20261016",
+      "filesVerified": 251,
+      "allChangedPaths": 248,
+      "deletions": [],
+      "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification.",
+      "recordedRemoteReadback": "119555f516d86e3d71081bead981e597223f393c\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+      "reviewerNetwork": "NONE",
+      "inventorySha256": "0dcb894472c6dc5032edd2d0596f5cb66b16826786192bdc08b6fd172c7b1583"
+    },
+    "fullBase": {
+      "sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+      "directory": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+      "receiptSha256": "0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0",
+      "historicallyVerifiedFiles": 54267,
+      "currentIdentityAndClean": true,
+      "noAlternates": true,
+      "noSparse": true,
+      "newFullRescan": false
+    },
+    "scope": {
+      "productIntegrationScriptsWorkflowsReleaseUnchangedFromBase": true,
+      "onlyChangedUnitTest": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "compiledToCarrierDocsOnly": [
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/record.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/Build-integration.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/Build-unit.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/catalog-audit.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/dotnet-test.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/runner0/summary.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/0-a1-red-catalog/stdout.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/record.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/dotnet-test.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/plan.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/runner0/summary.json.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016-files/1-a1-red-plan/stdout.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-preparation-root-inspection-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-red-source-delta-recovery-20261016.json",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "missingMethodsStillAbsent": true,
+      "actuals": "UNRUN"
+    }
+  },
+  "checkerText": "import os,pathlib,subprocess,json,hashlib,gzip,stat,re,datetime\nR=pathlib.Path('/workspace/The-Book-of-Eternity-Reborn');B='04f5fff200350772bc8fe78a0c435c0a1c5866ac';S='c032138834ff35206c07ff673e06ab3dc40ab128';C='119555f516d86e3d71081bead981e597223f393c';F='7acd4a960fa273e0df2dd83e4998baef79ba94d5';P='specs/1536-complete-wound-materialization/';E=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0');commands=[]\ndef h(b):return hashlib.sha256(b).hexdigest()\ndef run(a,cwd=R,expected=0,record=True):\n q=subprocess.run(a,cwd=cwd,env=E,capture_output=True);assert q.returncode==expected,(a,q.returncode,q.stderr)\n if record:commands.append(dict(argv=a,cwd=str(cwd),nativeExit=q.returncode,stdout=q.stdout.decode(),stdoutSha256=h(q.stdout),stderrSha256=h(q.stderr)))\n return q.stdout\ndef git(*a):return run(['git',*a],record=False)\ncache={}\ndef raw(s,p):\n if (s,p) not in cache:cache[s,p]=git('show',s+':'+p)\n return cache[s,p]\ndef pin(s,p):\n b=raw(s,p);oid=git('rev-parse',s+':'+p).decode().strip();assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest()==oid\n return dict(sha=s,path=p,gitBlob=oid,bytes=len(b),sha256=h(b))\ndef proj(s,p,a,b):\n x=b''.join(raw(s,p).splitlines(keepends=True)[a-1:b]);return dict(sha=s,path=p,firstLine=a,lastLine=b,sha256=h(x),text=x.decode())\nassert run(['git','rev-parse','HEAD']).decode().strip()==C and run(['git','status','--porcelain=v1'])==b''\nrun(['git','merge-base','--is-ancestor',S,C]);run(['git','merge-base','--is-ancestor',B,S])\nassert run(['git','diff','--exit-code',B,C,'--','BookOfEternityClient','BookOfEternityClient.IntegrationTests','scripts','.github','tests/selections','AGENTS.md','docs','.specify'])==b''\nassert git('diff','--name-only',B,C,'--','BookOfEternityClient.Tests').decode().splitlines()==['BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs']\npost=git('diff','--name-only',S,C).decode().splitlines();assert all(p.startswith(P) for p in post)\nrun(['git','grep','-n','-F','-e','ReadTrainingExperienceLevel','-e','ReadTrainingSingleLevel',C,'--','BookOfEternityClient'],expected=1)\ntest='BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs';tt=raw(S,test).decode();assert raw(S,test)==raw(C,test) and 'Assert.NotNull(method);' in tt.splitlines()[127]\n# Pure case/owner counts from concrete source attributes, independent of saved PlanOnly.\nnamesCounts={}\nfor m in re.finditer(r'((?:    \\[(?:Theory|Fact|InlineData)[^\\n]*\\]\\n)+)    public (?:async Task|void) ([A-Za-z0-9_]+)\\(',tt):\n attrs,name=m.group(1),m.group(2);namesCounts[name]=attrs.count('[InlineData(') or 1\nassert namesCounts=={'OrdinaryContext_PrecedesMissingParsedPolicy':2,'ExperiencePolicy_ReturnsExactNumericPriority':13,'SinglePolicy_ReturnsOnlyExactNumericLevel':10,'ParsedPolicy_PreservesConversionFailure':4,'ParsedPolicy_PreservesNonObjectFailure':6,'OrdinaryOwner_PreservesSourceOrderAndBytes':14,'OrdinaryOwner_ReadFaultEscapesBeforeParseCatch':1}\nassert sum(namesCounts.values())==50\n# Current catalog adds three owners; every old catalog object remains exact.\noldcat=json.loads(raw(B,'tests/categories.json'))['categories'];cat=json.loads(raw(C,'tests/categories.json'))['categories'];newcat=cat[:3];assert cat[3:]==oldcat\nids=['fr063-training-level-policy-boundary','fr063-training-level-policy','fr063-training-level-ordinary']\nassert [c['id'] for c in newcat]==ids\nfor c in newcat:assert c['timeoutMinutes']==5 and c['requirements']==dict(frontendBuild=False,exclusive=False,ciRunner='ubuntu-24.04')\nselection=json.loads(raw(C,'tests/selection.json'));assert [x['category'] for x in selection['selections']]==ids+['fr063-joint-late-completion']\npacketPath=P+'recovery/t179pd-training-level-red-preparation-20261016.json';packet=json.loads(raw(C,packetPath));assert len(packet['commands'])==2 and len(packet['files'])==12\ndata={};chains=[]\nfor row in packet['files']:\n stored=raw(C,row['storedPath']);assert stored==(R/row['storedPath']).read_bytes() and h(stored)==row['storedSha256']\n b=gzip.decompress(stored);assert len(b)==row['bytes'] and h(b)==row['sha256'] and b==pathlib.Path(row['rawPath']).read_bytes()\n data[row['storedPath']]=b;chains.append(dict(**row,gitBlob=git('rev-parse',C+':'+row['storedPath']).decode().strip(),storedBytes=len(stored),verification='RAW_LOCAL == GUNZIP(LOCAL_STORED == COMMITTED_GIT); SHA256/length exact'))\ndef finddata(suffix,part):\n matches=[b for p,b in data.items() if part in p and p.endswith(suffix)];assert len(matches)==1\n return matches[0]\ncatalog=packet['commands'][0];planCmd=packet['commands'][1]\nassert catalog['mode']=='catalog' and catalog['argv']==['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-ValidateCatalog']\nassert planCmd['argv']==['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\nfor c in packet['commands']:\n assert c['sourceHead']==S==c['headAfter'] and c['nativeExit']==0 and c['statusAfter']=='' and not c['ownedPrefixesBefore'] and not c['ownedPrefixesAfter']\n assert len(c['resultDirectories'])==1 and h(pathlib.Path(c['stdoutPath']).read_bytes())==c['stdoutSha256']\n assert json.loads(finddata('record.json.gz',c['label']))==c\n assert not list(pathlib.Path(c['resultDirectories'][0]).rglob('*.trx'))\nsummaries=[json.loads(finddata('summary.json.gz',c['label'])) for c in packet['commands']]\nfor summary in summaries:\n assert summary['Revision']['Head']==S and summary['Revision']['ChangedFiles']==0\n assert summary['Tests']==dict(Total=0,Executed=0,Passed=0,Failed=0) and summary['ExitCode']==0 and not summary['TimedOut']\n assert summary['CategoryResults']==[] and summary['AdapterResults']==[] and summary['DuplicateTests']==[]\n assert summary['RuntimeCleanupSucceeded'] and summary['OwnedTreeCleanupSucceeded']\nassert summaries[0]['DiscoveryOnly'] and not summaries[0]['PlanOnly'] and summaries[1]['PlanOnly']\nca=json.loads(finddata('catalog-audit.json.gz','a1-red-catalog'));assert ca==dict(Valid=True,Methods=11732,Categories=780,Unmapped=[],StaleSelectors=[])\nfor project,warnings in [('integration',133),('unit',35)]:\n log=finddata('Build-'+project+'.log.gz','a1-red-catalog').decode();assert f'{warnings} Warning(s)' in log and '0 Error(s)' in log and 'TrainingLevelPolicyTests.cs' not in log and 'Build succeeded.' in log\nphases={x['Name']:x for x in summaries[0]['PhaseResults']}\nassert phases['Build-unit']['Completed'] and phases['Build-integration']['Completed']\nplan=json.loads(finddata('plan.json.gz','a1-red-plan'));assert len(plan['Descriptors'])==4 and plan['Revision']['Head']==S and plan['Revision']['ChangedFiles']==0\nexpected={'fr063-joint-late-completion':2,'fr063-training-level-policy-boundary':2,'fr063-training-level-policy':33,'fr063-training-level-ordinary':17}\nassert {d['Category']:d['EstimatedCases'] for d in plan['Descriptors']}==expected\nallmethods=[]\nfor d in plan['Descriptors']:\n assert d['BudgetMinutes']==5 and not d['FrontendBuild'] and sum(x['Cases'] for x in d['ExpectedMethodCounts'])==d['EstimatedCases']\n assert d['Exclusive']==(d['Category']=='fr063-joint-late-completion')\n allmethods += [x['Name'] for x in d['ExpectedMethodCounts']]\n for x in d['ExpectedMethodCounts']:\n  if '.TrainingLevelPolicyTests.' in x['Name']:assert namesCounts[x['Name'].split('.')[-1]]==x['Cases']\nassert len(allmethods)==len(set(allmethods))==10 and sum(expected.values())==54\nassert summaries[1]['Selection']['PlannedDescriptors']==4 and summaries[1]['Selection']['PlannedCases']==54 and summaries[1]['Selection']['CompletedCases']==0\nassert catalog['binaryAfter']==planCmd['binaryBefore']==planCmd['binaryAfter'] and len(catalog['binaryAfter'])==4\nfor x in catalog['binaryAfter']:\n b=(R/x['path']).read_bytes();assert len(b)==x['bytes'] and h(b)==x['sha256']\n# Exact preserved design pair, unchanged accepted contract.\nfor ext,sha in [('md','1aa518f2a79cf7eaa074cc30f2795bbd807c64daa017068510173c9141c70728'),('json','587683c64cbb5b2f42b0e3ce5b490208903433ac1b84f99b8874ce38d7bd8313')]:\n p=P+'recovery/t179pd-training-level-a1-contract-independent-review-20261016.'+ext\n assert h(raw(C,p))==sha and raw(C,p)==pathlib.Path('/tmp/t179pd-training-level-a1-contract-independent-review-20261016.'+ext).read_bytes()\ndef recovery(receiptPath,sha,n,changed,committed=None):\n p=pathlib.Path(receiptPath);b=p.read_bytes();d=json.loads(b)\n if committed:assert b==raw(C,committed)\n assert d['sha']==sha and d['base_full_tree']==F and d['count']==n and d['changed_count']==changed and not d['deleted_paths'] and d['runtime']=='NOT_RUN'\n ns=git('diff','--name-status',F,sha).decode();assert ns==d['name_status'] and git('diff','--summary',F,sha).decode()==d['mode_change_summary']\n cp={l.split('\\t')[-1] for l in ns.splitlines()};rows={x['path'] for x in d['files']};assert len(cp)==changed and len(rows)==len(d['files'])==n and cp<=rows\n for x in d['files']:\n  p2=x['path'];r=raw(sha,p2);local=pathlib.Path(d['directory'])/p2\n  assert r==local.read_bytes() and h(r)==x['sha256'] and len(r)==x['bytes']\n  assert git('rev-parse',sha+':'+p2).decode().strip()==x['git_blob'] and git('ls-tree',sha,'--',p2).decode().split(None,1)[0]==x['mode']\n  assert stat.S_IMODE(local.stat().st_mode)==(0o755 if x['mode']=='100755' else 0o644)\n  if sha==C:assert r==(R/p2).read_bytes()\n assert d['remoteReadback']==sha+'\\trefs/heads/1536-wound-b2-cloud-20261012\\n'+'d0241e71e349fbe2020e4a41b6be7c627c81cbb4\\trefs/heads/main\\n'\n return dict(receiptPath=str(p),bytes=len(b),sha256=h(b),sha=sha,directory=d['directory'],filesVerified=n,allChangedPaths=changed,deletions=[],scope=d['scope'],recordedRemoteReadback=d['remoteReadback'],reviewerNetwork='NONE',inventorySha256=h(json.dumps(d['files'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()))\nsourceRec=P+'recovery/t179pd-training-level-red-source-delta-recovery-20261016.json';sr=json.loads(raw(C,sourceRec))\nsourceRecovery=recovery('/tmp/t179pd-training-level-red-source-delta-recovery-20261016.json',S,236,233,sourceRec)\ncurrentRecovery=recovery('/tmp/t179pd-training-level-red-prepared-delta-recovery-20261016.json',C,251,248)\nfp=pathlib.Path(sr['base_full_tree_receipt']);fb=fp.read_bytes();full=json.loads(fb);assert h(fb)=='0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0' and full['sha']==F\nfd=pathlib.Path(full['directory']);assert run(['git','rev-parse','HEAD'],cwd=fd).decode().strip()==F and run(['git','status','--porcelain=v1','--untracked-files=all'],cwd=fd)==b''\nassert not (fd/'.git/objects/info/alternates').exists() and not (fd/'.git/info/sparse-checkout').exists()\ndeps=[test,'tests/categories.json','tests/selection.json','BookOfEternityClient/Services/CharacteristicsService.cs','BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs','BookOfEternityClient/Core/FileSystemManager.cs','BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs','scripts/test-csharp.ps1','AGENTS.md','docs/development-workflow.md','docs/testing.md',P+'plan.md',P+'tasks.md',P+'design/lawful-active-joint-tail-b-implementation-plan.md',packetPath,P+'recovery/t179pd-training-level-red-preparation-root-inspection-20261016.json',sourceRec,P+'recovery/t179pd-training-level-a1-contract-independent-review-20261016.md',P+'recovery/t179pd-training-level-a1-contract-independent-review-20261016.json']\npins=[pin(C,p) for p in deps]+[pin(S,test),pin(S,'tests/categories.json'),pin(S,'tests/selection.json')]\nprojections=[proj(S,test,15,34),proj(S,test,36,120),proj(S,test,122,202),proj(C,'BookOfEternityClient/Services/CharacteristicsService.cs',283,334),proj(C,'BookOfEternityClient/Services/CharacteristicsService.cs',65,97),proj(C,'BookOfEternityClient/Services/CharacteristicsService.cs',147,189),proj(C,'BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs',96,108),proj(C,'BookOfEternityClient/Core/FileSystemManager.cs',1319,1357),proj(C,'BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs',175,210),proj(C,'tests/categories.json',1,101),proj(C,'tests/selection.json',1,33),proj(C,P+'tasks.md',1,9)]\ndiffs=[]\nfor label,base,target,paths,text in [('test-source',B,S,[test],True),('catalog',B,S,['tests/categories.json'],True),('selection',B,S,['tests/selection.json'],True),('compiled-to-carrier',S,C,[],False),('whole-stage',B,C,[],False),('protected',B,C,['BookOfEternityClient','BookOfEternityClient.IntegrationTests','scripts','.github','tests/selections','AGENTS.md','docs','.specify'],False)]:\n a=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',base,target]+(['--']+paths if paths else [])\n b=run(a,record=False);x=dict(label=label,argv=a,nativeExit=0,bytes=len(b),sha256=h(b))\n if text:x['text']=b.decode()\n diffs.append(x)\nprint(json.dumps(dict(reviewedSource=C,compiledSource=S,baseline=B,inspectionUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),sourcePins=pins,projections=projections,exactDiffs=diffs,readOnlyCommands=commands,sourceCounts=namesCounts,catalogNewOwners=newcat,selection=selection,preparation=dict(packetPin=pin(C,packetPath),commands=packet['commands'],chains=chains,catalog=ca,summaries=summaries,plan=plan,freshLiveBinaries=catalog['binaryAfter'],actualTests=0,buildWarnings=dict(integration=133,unit=35,newTrainingDiagnostics=0)),sourceRecovery=sourceRecovery,currentRecovery=currentRecovery,fullBase=dict(sha=F,directory=str(fd),receiptSha256=h(fb),historicallyVerifiedFiles=full['count'],currentIdentityAndClean=True,noAlternates=True,noSparse=True,newFullRescan=False),scope=dict(productIntegrationScriptsWorkflowsReleaseUnchangedFromBase=True,onlyChangedUnitTest=test,compiledToCarrierDocsOnly=post,missingMethodsStillAbsent=True,actuals='UNRUN')),ensure_ascii=False))\n",
+  "currentAuthority": {
+    "scope": "Narrow autonomous ordinary A1 TDD; concrete gate only first RED2",
+    "windowsPermission": "UNANSWERED",
+    "windowsEvidence": "WIN-E01 raw BLOCKED; job success separate",
+    "CIOrTransferReleased": false,
+    "broaderActivationReleased": false
+  },
+  "remainingLimits": [
+    "ZERO actuals at review",
+    "Later product forwarding requires fresh SOURCE/FIRSTLate2/separate EVIDENCE",
+    "No full3c/HOT/AP10/S/B/M3/F1/T197/newQTE qualification",
+    "D4/guidedUS5/DOMvisual/Windows/D8 and historical provenance unchanged"
+  ],
+  "finalStop": true,
+  "markdownPath": "/tmp/t179pd-training-level-red-source-independent-review-20261016.md",
+  "markdownSha256": "1f14289185bce5f56765e489fa79a669ec6c3a9e5ad195b103087396fa1edac4"
+}

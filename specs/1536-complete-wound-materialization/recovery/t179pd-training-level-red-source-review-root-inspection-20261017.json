@@ -1,0 +1,29 @@
+{
+  "reviewedSource": "119555f516d86e3d71081bead981e597223f393c",
+  "compiledSource": "c032138834ff35206c07ff673e06ab3dc40ab128",
+  "decision": "ACCEPTED_SOURCE_FIRST_A1_CAUSAL_RED2",
+  "sourcePins": 22,
+  "projections": 12,
+  "exactDiffs": 6,
+  "readonlyRecords": 8,
+  "rawChains": 12,
+  "fourDLLsVerified": true,
+  "releasedActuals": [
+    {
+      "category": "fr063-training-level-policy-boundary",
+      "expectedCases": 2,
+      "budgetMinutes": 5,
+      "platform": "local Linux",
+      "attempt": "FIRST_CAUSAL_RED_ONLY_AFTER_PERSISTENCE_READBACK_RECOVERY",
+      "expectedNativeExit": 1,
+      "expectedPassed": 0,
+      "expectedFailed": 2,
+      "expectedFailure": "Missing-helper Assert.NotNull at TrainingLevelPolicyTests.cs:128, each after actual ComputeAsync level2",
+      "requiredCleanup": "Two distinct actual owned roots removed/physically absent, complete receipts, no residue"
+    }
+  ],
+  "successImplementationReleased": false,
+  "markdownSha256": "1f14289185bce5f56765e489fa79a669ec6c3a9e5ad195b103087396fa1edac4",
+  "jsonSha256": "d4f4901ab4a4ab15016aa20caa57b80d61cdec57ebc669253b8ea1dfdf62d717",
+  "runtime": "NOT_RUN_IN_ROOT_REVIEW"
+}
