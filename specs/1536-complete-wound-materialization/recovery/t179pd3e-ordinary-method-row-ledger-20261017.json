@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "SOURCE_REVIEW_AND_FRESH_PREPARATION_PENDING_ALL_ACTUAL_UNRUN",
+  "status": "FIRST_CATALOG_PREPARATION_NATIVE1_STOP_ALL_CASES_UNRUN_CAUSE_PENDING",
   "counts": {
     "categories": 5,
     "methods": 18,
@@ -267,5 +267,16 @@
     "World33 pin Fact held with nine historical stale values",
     "A3 NO-PROCEED",
     "Windows ZIP403/CI and other branches"
-  ]
+  ],
+  "firstPreparation": {
+    "nativeExit": 1,
+    "rawChains": 8,
+    "actualExecuted": 0,
+    "planOnly": "NOT_STARTED",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-preparation-stop-files-20261017/archive.json",
+      "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
+      "rawChains": 8
+    }
+  }
 }
