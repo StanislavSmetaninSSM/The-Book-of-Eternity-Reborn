@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "16a82d3df66695d5b547440297f0265e6f0dfff149086718e6ade6259ad6d882"
+    "sha256": "a16b2ed05cad528fc066f39f59acf8898061f8e206b5e825fcc74d5903d2cab5"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1690,17 +1690,17 @@
       {
         "path": "recovery/tools/lifecycle-stage-preparation-run.py",
         "sha256": "46d94d8096dc5d63b8f6456e88110bcf754706eab2fcaec148dea8abe28fe2c2",
-        "status": "USED_ONCE_FOR_ACCEPTED_D8E_PREP_OR_328GREEN_OR_READONLYARCHIVE; originalsourcesunchanged"
+        "status": "EXECUTED_ONCE: accepted d8e selected-build PlanOnly,87.561832145s,native0,zero tests."
       },
       {
         "path": "recovery/tools/lifecycle-stage-green-first-run.py",
         "sha256": "aa15fec09fe70d6862f45dff20b17628b88829980ac6a53f9c46d30dd09691e8",
-        "status": "USED_ONCE_FOR_ACCEPTED_D8E_PREP_OR_328GREEN_OR_READONLYARCHIVE; originalsourcesunchanged"
+        "status": "EXECUTED_ONCE: accepted 328 SelectionFile-NoBuild,44.975354217s,native0,47PASS."
       },
       {
         "path": "recovery/tools/archive-lifecycle-stage.py",
         "sha256": "4aefe6de3fdd4ae7c73956f22f5c4f45d877f8c0b0ea176b868a483c4e776a05",
-        "status": "USED_ONCE_FOR_ACCEPTED_D8E_PREP_OR_328GREEN_OR_READONLYARCHIVE; originalsourcesunchanged"
+        "status": "READ_ONLY_FROZE_PREP9_AND_GREEN135_NO_TEST_EXECUTION; two archival invocations, not one native run."
       }
     ],
     "preparation": "FIRSTd8ebothbuildPlan47native0/0exec; coherentSource/Fixture/Selection/Prep accepted, reports persisted. No repetition required.",
