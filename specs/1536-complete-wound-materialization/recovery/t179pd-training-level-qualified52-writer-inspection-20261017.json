@@ -1,0 +1,624 @@
+{
+  "kind": "A1_QUALIFIED_FIRST_ACTUAL_52_WRITER_UNION_PENDING_INDEPENDENT_EVIDENCE",
+  "inspectedUtc": "2026-10-17T01:59:28.615171+00:00",
+  "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+  "packets": [
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-f01-corrected-boundary2-20261017.json",
+      "sha256": "16d5f222f24ba907868e1457295ae2142a1badfdf687bd6940ebd91de8d4f17b",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-f01-corrected-boundary2-20261017-writer-inspection.json",
+      "category": "fr063-training-level-policy-boundary",
+      "actualSource": "b2bdd663c9b8daef97a1b91c701f5afa57b7503a",
+      "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+      "cases": 2,
+      "nativeExit": 0,
+      "rawChains": 6
+    },
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017.json",
+      "sha256": "f65533695586dbc0b6db6a25b51be27a9aa348feb53d4e16cb88821a134649e9",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-writer-inspection.json",
+      "category": "fr063-training-level-policy",
+      "actualSource": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+      "cases": 33,
+      "nativeExit": 0,
+      "rawChains": 6
+    },
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017.json",
+      "sha256": "a4dc735cfb965a27214e79ec051e0abe56138bed10470e9b783543f1f06d8778",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-writer-inspection.json",
+      "category": "fr063-training-level-ordinary",
+      "actualSource": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+      "cases": 17,
+      "nativeExit": 0,
+      "rawChains": 6
+    }
+  ],
+  "qualifiedA1Cases": 52,
+  "nativePassed": 52,
+  "nativeFailed": 0,
+  "uniqueTestIds": 52,
+  "rawChains": 18,
+  "strictDistinctOwnedRoots": [
+    "/tmp/boe-training-level-a1-7145c2036e1c4f6caebb490f1d4f8b55",
+    "/tmp/boe-training-level-a1-222bd5d7b0d64335aa2f277226593ed3",
+    "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+    "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+    "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+    "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+    "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+    "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+    "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+    "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+    "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+    "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+    "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+    "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+    "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+    "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+    "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+    "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+    "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0"
+  ],
+  "pureCleanup": "NOT_APPLICABLE:33 pure cases own zero roots;19 roots belong only to boundary2+ordinary17",
+  "ordinaryRawSemanticChecks": [
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":\\\"3\\\",\\\"playerLevel\\\":7}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 7, sourceIndices: \"0\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":\"3\",\"playerLevel\":7}",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 7,
+      "actualRawReads": [
+        "game_state/player/experience.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "0E4E37E9081E2AF8021CE0B83F05E9CF9BC169F1CF43177D230D1451E969B86B"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 4, sourceIndices: \"0,1\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{}",
+        "{\"level\":4}",
+        "{\"level\":5}"
+      ],
+      "expectedLevel": 4,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"playerLevel\\\":4}\", soul: \"{\\\"level\\\":7}\", expected: 7, sourceIndices: \"0,1,2\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        null,
+        "{\"playerLevel\":4}",
+        "{\"level\":7}"
+      ],
+      "expectedLevel": 7,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": false,
+          "Sha256": null
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "5D9E559AB142EC8D0F527B25CE41B302E6883ED9DC41B8307F425C29B5C80DB8"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":-2}\", status: \"{\\\"level\\\":4}\", soul: null, expected: -2, sourceIndices: \"0\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":-2}",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": -2,
+      "actualRawReads": [
+        "game_state/player/experience.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "DBECE25E56B1C5A1283609CF245723F01873270930D10E7D206C2092B86D2E53"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2147483648,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":2147483648,\"playerLevel\":99}",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 4,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "240BFD6DDF4183FD503D9B6454E5F9DE43C87656D30D815A92EC9638A50A2113"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":3,\\\"playerLevel\\\":9}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 3, sourceIndices: \"0\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":3,\"playerLevel\":9}",
+        "{\"level\":4}",
+        "{\"level\":5}"
+      ],
+      "expectedLevel": 3,
+      "actualRawReads": [
+        "game_state/player/experience.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "B5A2D2C44CEF7B0F61A00343BCD2BAF4ADBCAD5267D8AA72DA916CE910168459"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":0}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 0, sourceIndices: \"0\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":0}",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 0,
+      "actualRawReads": [
+        "game_state/player/experience.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "BE50C1F73E51C75449CED868FCA9F09347D36BD8AB477852E55705776C37C7ED"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 4,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "96FC273CBF07104AD2B4057CAF5CA592C06B18F6CC5F5D5045F725C82D666B45"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"[]\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "[]",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 4,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "1B7A6AFB58CE9D1AB0DD41E566D637DBC98647399002C198AF5943C6F362A794"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"level\\\":3.5}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        null,
+        "{\"level\":3.5}",
+        "{\"level\":5}"
+      ],
+      "expectedLevel": 5,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": false,
+          "Sha256": null
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "A319E6E63F4610312F8C0407D3865741CE99C6DE632D84BE4D2B35BB8C019CA4"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 2, strengthBefore: 3, expectedStrength: 4)",
+      "kind": "real ApplyStatsIncreasedAsync; accepted source asserts ordered applied/blocked, cap and exact emitted bytes against existing projection; raw cleanup only",
+      "rawPostBody": "NOT_RETAINED after strict cleanup"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+      "kind": "actual owner read IOException identity escapes before parse catch, accepted source assertion reached",
+      "suppliedInputs": [
+        "{\"level\":2}",
+        "{\"level\":7}",
+        "{\"level\":9}"
+      ],
+      "expectedLevel": null,
+      "actualRawReads": [
+        "game_state/player/experience.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "6B945E39A4869989AD83340B97512F0B007B81D139C61E2B537EA247E2EA8200"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: null, soul: null, expected: 1, sourceIndices: \"0,1,2\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        null,
+        null,
+        null
+      ],
+      "expectedLevel": 1,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": false,
+          "Sha256": null
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": false,
+          "Sha256": null
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2.5,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "{\"level\":2.5,\"playerLevel\":99}",
+        "{\"level\":4}",
+        null
+      ],
+      "expectedLevel": 4,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "0C326F193A2AAB5D5DCFE053DD1454282870EF867157249E641F661859B5DC88"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": false,
+          "Sha256": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        null,
+        "{}",
+        "{\"level\":5}"
+      ],
+      "expectedLevel": 5,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": false,
+          "Sha256": null
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 100, strengthBefore: 99, expectedStrength: 100)",
+      "kind": "real ApplyStatsIncreasedAsync; accepted source asserts ordered applied/blocked, cap and exact emitted bytes against existing projection; raw cleanup only",
+      "rawPostBody": "NOT_RETAINED after strict cleanup"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"\", status: \"not json\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "kind": "actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order",
+      "suppliedInputs": [
+        "",
+        "not json",
+        "{\"level\":5}"
+      ],
+      "expectedLevel": 5,
+      "actualRawReads": [
+        "game_state/player/experience.json",
+        "game_state/core/player_status.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "exactRawPreimages": [
+        {
+          "Path": "game_state/player/experience.json",
+          "Present": true,
+          "Sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+        },
+        {
+          "Path": "game_state/core/player_status.json",
+          "Present": true,
+          "Sha256": "032E1F2698C25ECB5B42FFDF3AC809DC55345D353CB7DD469BEA74A49FCA0AD8"
+        },
+        {
+          "Path": "game_state/meta/soul_state.json",
+          "Present": true,
+          "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+        }
+      ]
+    }
+  ],
+  "liveBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+      "bytes": 29163520
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "bytes": 38509,
+      "sha256": "3dd1c53ac0bc7c6a7c801689178a12cc338b89ec01c5a882f9cdc94e8e1234bb",
+      "gitBlob": "df634337ba827c1942a348bc392affbd0b4c99f6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+      "bytes": 793,
+      "sha256": "4efa091f457d47594b6eb6b87992f1f503746dcdd4dbd334618386adcc68928d",
+      "gitBlob": "a9c26907731515c8e2b00c06fea2b6624a82cc06"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "bytes": 10096,
+      "sha256": "112ed9461999590e3cffd66264f0491c0485cac836fee8f9d10034da475d759c",
+      "gitBlob": "54f3fe49a31d06f6a775a70672777554d4e9b77e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "bytes": 12668,
+      "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4",
+      "gitBlob": "aadf31f92b8df81b37087a0fabfc1b5a9d6c2de8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584594,
+      "sha256": "73bd4db24c1294392f8e5f4ccc074095c2ec8696b1e69aae1066fb393a1608db",
+      "gitBlob": "6be846cbdf5957622bac6fc3d0e721fc3ec6fb23"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 3277,
+      "sha256": "94ba22f022bb1d6ff4d3467d0a446ab7fe913fe54cda909dc6485a7c16c1161e",
+      "gitBlob": "254ff3bacd0bf4f5fecd773f579c79f0c377a1af"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1972463,
+      "sha256": "7ad8409f03a1894c8af291fa46af46d5fcb159d42ccf5f50da5c73a5fda11c9c",
+      "gitBlob": "8f4882753a0c0a368de4db706ec1a61395c887d8"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a"
+    }
+  ],
+  "retainedPriorProof": {
+    "structuralRED": "original693b/compiledc032;2 intended NotNull FAIL; not rerun or counted as GREEN",
+    "protectedLate2": "original465/compilede247/a505+271 accepted2PASS and original proof limits; product/integration source unchanged, not rerun or recounted in A1 52",
+    "firstBoundary": "original271/compilede247/344 first2PASS unqualified source-byte proof; never counted in corrected52",
+    "F01": "corrected source accepted e259/b2; corrected firstboundary accepted39db/3a; no duplicate case count"
+  },
+  "limits": "Writer evidence inspection is not independent acceptance. Raw images hash exact preimages and accepted source post-byte assertions were reached. Deleted strict roots prevent post-cleanup body recovery. No broader family/platform/GM/new-QTE qualification.",
+  "checkerText": "from pathlib import Path\nimport json,hashlib,gzip,xml.etree.ElementTree as ET,re,subprocess,datetime\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn');rec=repo/'specs/1536-complete-wound-materialization/recovery';compiled='4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7'\nitems=[('t179pd-training-level-f01-corrected-boundary2-20261017','fr063-training-level-policy-boundary',2),('t179pd-training-level-pure33-20261017','fr063-training-level-policy',33),('t179pd-training-level-ordinary17-20261017','fr063-training-level-ordinary',17)]\nsources=['game_state/player/experience.json','game_state/core/player_status.json','game_state/meta/soul_state.json'];commands=[];caseids=[];roots=[];ordinary=[];proofs=[]\nprep=json.loads((rec/'t179pd-training-level-f01-preparation-20261017.json').read_text())['commands'][0]\nfor prefix,category,count in items:\n p=rec/(prefix+'.json');b=p.read_bytes();packet=json.loads(b);inspection=json.loads((rec/(prefix+'-writer-inspection.json')).read_text());cmd=packet['commands'][0];assert cmd['nativeExit']==0 and cmd['binaryBefore']==cmd['binaryAfter']==prep['binaryAfter'] and cmd['statusAfter']=='' and cmd['ownedPrefixesBefore']==cmd['ownedPrefixesAfter']==[]\n raw={}\n for row in packet['files']:\n  payload=(repo/row['storedPath']).read_bytes();v=gzip.decompress(payload);assert hashlib.sha256(payload).hexdigest()==row['storedSha256'] and hashlib.sha256(v).hexdigest()==row['sha256'] and len(v)==row['bytes'] and Path(row['rawPath']).read_bytes()==v;raw[Path(row['rawPath']).name]=v\n assert len(raw)==6;trx=ET.fromstring(next(v for k,v in raw.items() if k.endswith('.trx')));cases=trx.findall('.//{*}UnitTestResult');assert len(cases)==count\n for case in cases: assert case.attrib['outcome']=='Passed';caseids.append(case.attrib['testId'])\n assert inspection['category']==category and inspection['plannedCompletedPassed']==count\n roots+=inspection['strictOwnedRoots'];proofs.append(dict(packet=str(p.relative_to(repo)),sha256=hashlib.sha256(b).hexdigest(),inspection=str((rec/(prefix+'-writer-inspection.json')).relative_to(repo)),category=category,actualSource=cmd['sourceHead'],compiledSource=compiled,cases=count,nativeExit=0,rawChains=6))\n commands.append(cmd)\n if category=='fr063-training-level-ordinary':\n  for case in inspection['cases']:\n   name=case['testName'];observations=case['observations'];image=next((o for o in observations if o.get('Boundary')=='ordinary_training_level_sources'),None)\n   if 'OrdinaryOwner_PreservesSourceOrderAndBytes' in name:\n    token=r'(\"(?:\\\\.|[^\"\\\\])*\"|null)';m=re.search(r'experience: '+token+r', status: '+token+r', soul: '+token+r', expected: (-?\\d+), sourceIndices: '+token+r'\\)$',name);assert m,name\n    inputs=[json.loads(x) for x in m.groups()[:3]];expectedLevel=int(m.group(4));indices=json.loads(m.group(5));expectedReads=[sources[int(i)] for i in indices.split(',')];kind='actual ordinary GetPlayerLevel; accepted source asserts returned level and raw exact read order'\n   elif 'OrdinaryOwner_ReadFaultEscapesBeforeParseCatch' in name:\n    inputs=['{\"level\":2}','{\"level\":7}','{\"level\":9}'];expectedLevel=None;expectedReads=sources[:1];kind='actual owner read IOException identity escapes before parse catch, accepted source assertion reached'\n   else:\n    assert 'RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes' in name;ordinary.append(dict(testName=name,kind='real ApplyStatsIncreasedAsync; accepted source asserts ordered applied/blocked, cap and exact emitted bytes against existing projection; raw cleanup only',rawPostBody='NOT_RETAINED after strict cleanup'));continue\n   assert image is not None and image['Reads']==expectedReads and len(image['Images'])==3\n   for path,value,img in zip(sources,inputs,image['Images'],strict=True):\n    assert img['Path']==path and img['Present']==(value is not None)\n    h=None if value is None else hashlib.sha256(b'\\xef\\xbb\\xbf'+value.encode()).hexdigest().upper();assert img['Sha256']==h\n   ordinary.append(dict(testName=name,kind=kind,suppliedInputs=inputs,expectedLevel=expectedLevel,actualRawReads=image['Reads'],exactRawPreimages=image['Images']))\nassert len(caseids)==len(set(caseids))==52 and len(roots)==len(set(roots))==19 and all(not Path(x).exists() for x in roots) and len(ordinary)==17\nfor row in prep['binaryAfter']:assert hashlib.sha256((repo/row['path']).read_bytes()).hexdigest()==row['sha256']\nfiles=['BookOfEternityClient/Services/CharacteristicsService.cs','BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs','BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs','BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs','tests/selection.json','tests/categories.json','scripts/test-csharp.ps1']\npins=[]\nfor path in files:\n b=(repo/path).read_bytes();pins.append(dict(path=path,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),gitBlob=subprocess.check_output(['git','rev-parse','HEAD:'+path],cwd=repo,text=True).strip()))\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,'HEAD'],cwd=repo,text=True).splitlines())\nout=dict(kind='A1_QUALIFIED_FIRST_ACTUAL_52_WRITER_UNION_PENDING_INDEPENDENT_EVIDENCE',inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),compiledSource=compiled,packets=proofs,qualifiedA1Cases=52,nativePassed=52,nativeFailed=0,uniqueTestIds=52,rawChains=18,strictDistinctOwnedRoots=roots,pureCleanup='NOT_APPLICABLE:33 pure cases own zero roots;19 roots belong only to boundary2+ordinary17',ordinaryRawSemanticChecks=ordinary,liveBinaries=prep['binaryAfter'],sourcePins=pins,retainedPriorProof=dict(structuralRED='original693b/compiledc032;2 intended NotNull FAIL; not rerun or counted as GREEN',protectedLate2='original465/compilede247/a505+271 accepted2PASS and original proof limits; product/integration source unchanged, not rerun or recounted in A1 52',firstBoundary='original271/compilede247/344 first2PASS unqualified source-byte proof; never counted in corrected52',F01='corrected source accepted e259/b2; corrected firstboundary accepted39db/3a; no duplicate case count'),limits='Writer evidence inspection is not independent acceptance. Raw images hash exact preimages and accepted source post-byte assertions were reached. Deleted strict roots prevent post-cleanup body recovery. No broader family/platform/GM/new-QTE qualification.',checkerText=Path(__file__).read_text())\np=rec/'t179pd-training-level-qualified52-writer-inspection-20261017.json';p.write_text(json.dumps(out,indent=2)+'\\n');print('EXACT52_UNION_VERIFIED',52,'uniquePASS;',18,'chains;',19,'distinctroots;',15,'exactsourcevectors/readorders;',2,'realtraining controls;',p)\n"
+}

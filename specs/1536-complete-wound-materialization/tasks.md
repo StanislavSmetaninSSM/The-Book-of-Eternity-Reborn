@@ -1,3 +1,7 @@
+## A1 qualified52 first native PASS — final EVIDENCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): accepted correctedboundary2 plus separately released firstpure33/ordinary17 yield native52PASS0FAIL,3/3singleton descriptors. [Current checkpoint](plan.md) preserves remaining12rawchains/inspectors and exact52union18chains,15sourcevectors/readorders,19distinctstrictroots absent/pure0N-A/fresh4d1fourDLLs. Publish/readback/newcompleteGitHubdelta then final independent whole-A1 EVIDENCE before checked closeout. No more actual/rebuild/replay; oldRED2FAIL/oldunqualifiedboundary2PASS/oldqualifiedLate2 retain separate original provenance and are not counted into52. All broader holds remain.
+
 ## A1-F01 corrected boundary runtime EVIDENCE accepted (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact focused independent pair accepts corrected boundary2 and closes its F01 runtime gap, with6chains/exact3presentBOMhashes/strict2roots/fresh4d1DLLs/16fileall12delta verified. [Current decision](plan.md) requires persistence/readback/newdelta before root releases pure33 ONLY, then separately ordinary17. Remaining50 UNRUN; no boundary/base/preparation/oldRED/Late2 repeat, automatic release or final whole-A1 claim.
