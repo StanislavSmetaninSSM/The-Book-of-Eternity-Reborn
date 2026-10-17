@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: G2 own locked dependency setup0 and first frontend build0 at110e are frozen (113fresh dist files); original127 retained. Reviewer R04 exact V1 stream rewind corrected before any managed build. Frontend source/lock unchanged and retained with actual110provenance; fresh managed BOTH/catalog/PlanOnly next after corrected WIP publication/recovery. SOURCE/runtime GREEN and task completion remain held.
+**Current phase**: G2 implementation compiled at555; retained frontend0 at110e (113files). FIRST managed BOTH/catalog0 +exact GREEN PlanOnly0:17owners/19descriptors/50methods-or-files =42C#methods98cases +8frontendfile estimates,106estimated/0executed;21native/package/support rawchains and7newDLL pins frozen. Final independent SOURCE/FIXTURE/SELECTION/PREP and separate Root runtime release pending; no GREEN/browser/task completion.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

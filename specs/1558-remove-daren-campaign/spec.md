@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2 own locked dependency setup0 and first frontend build0 at110e are frozen (113fresh dist files); original127 retained. Reviewer R04 exact V1 stream rewind corrected before any managed build. Frontend source/lock unchanged and retained with actual110provenance; fresh managed BOTH/catalog/PlanOnly next after corrected WIP publication/recovery. SOURCE/runtime GREEN and task completion remain held.
+**Status**: G2 implementation compiled at555; retained frontend0 at110e (113files). FIRST managed BOTH/catalog0 +exact GREEN PlanOnly0:17owners/19descriptors/50methods-or-files =42C#methods98cases +8frontendfile estimates,106estimated/0executed;21native/package/support rawchains and7newDLL pins frozen. Final independent SOURCE/FIXTURE/SELECTION/PREP and separate Root runtime release pending; no GREEN/browser/task completion.
 
 ## Source issues and scope
 

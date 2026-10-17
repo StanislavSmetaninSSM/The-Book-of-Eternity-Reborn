@@ -1,0 +1,209 @@
+{
+  "kind": "FIRST_G2_MANAGED_PREPARATION_EXACT_RAW_NOT_RUNTIME_OR_SOURCE_ACCEPTANCE",
+  "utc": "2026-10-17T10:57:41.762497+00:00",
+  "sourceHead": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "commands": [
+    {
+      "mode": "catalog",
+      "sourceHead": "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "nativeExit": 0,
+      "wallSeconds": 92.88314014599746,
+      "startedUtc": "2026-10-17T10:54:49.173247+00:00",
+      "finishedUtc": "2026-10-17T10:56:22.125270+00:00",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories"
+      ]
+    },
+    {
+      "mode": "plan",
+      "sourceHead": "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "nativeExit": 0,
+      "wallSeconds": 5.789255365998542,
+      "startedUtc": "2026-10-17T10:57:18.384190+00:00",
+      "finishedUtc": "2026-10-17T10:57:24.242118+00:00",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/record.json.gz",
+      "bytes": 60330,
+      "sha256": "77caecccc8b0513d6b9801cb069a38f40c180363ef5f3b8aca69cdcbf9c385ea",
+      "storedSha256": "ca2c24b0f0395a3ed98434d92313f9c756e33feff6264b8256c2e9dc4b1b4b11",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/stdout.log.gz",
+      "bytes": 722,
+      "sha256": "a7a6e976242e1845a2c5b161a9ab9889e34f6ccc4dfbd84b3af2713c535c46e3",
+      "storedSha256": "1fbacf757e7847905fbc1d340c993d975465110f3a8784bb72bac24cd900bb70",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/process.json.gz",
+      "bytes": 256,
+      "sha256": "aad06ee7a818d962013ff7ab659bb281582f4397864307fa5cef920c63a2adae",
+      "storedSha256": "6e77f7f544d3fe1884216a8f84258b540c4a28b241a8fac16161bfb3cb055c35",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/555ceae66e10300d3cf76ff849fb110b79b15549-g2-catalog.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/sentinel.json.gz",
+      "bytes": 352,
+      "sha256": "43c4e8edea05c7214ea608157f7b1c120fe1e36d67465b9da074e577c1e5484b",
+      "storedSha256": "40e0dbb30eb598be2d46c5532964e20e45a4b23e2622c1819c217ec846bbe8a6",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/owned-output-clean.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/owned-output-clean.json.gz",
+      "bytes": 2588,
+      "sha256": "bee521b1f84707b0395e97142c0065e2245e8a2ae21a9a1a51b057db493ab206",
+      "storedSha256": "6a8ffc0233aec928fdda797dcb1baa1eed1572b98d7d6e4866f4e85f3ad78d67",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories/Build-integration.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/Build-integration.log.gz",
+      "bytes": 120784,
+      "sha256": "0a89990c5d146bed29d62d8ab664d7fb3a372ff46b5c217512137fa2d05fb7d7",
+      "storedSha256": "ec9491f2473a023f4e7797ddc7bb17bce78898622974cf120781229816b9733a",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories/Build-unit.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/Build-unit.log.gz",
+      "bytes": 29263,
+      "sha256": "3e09557960a2bba8288e576e6414d4f14fe7b9aac251f5ae14d11200d2d376a2",
+      "storedSha256": "b78275d035b48bf4c8103e5f976963d4bf7f966d6c8acdd1d3eb8f9f5ca5fa82",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories/catalog-audit.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "3f317c66b3b374b6201a53aecb74dda946a54df3cc407009b34e0db7ae9c5778",
+      "storedSha256": "0a259613804c12e4d21be80aea914c3ec9d9329bed36ae10da8b7cb597b0e851",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories/dotnet-test.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/dotnet-test.log.gz",
+      "bytes": 3568018,
+      "sha256": "51cb85c66f0eb46a9de187dc25e8fea79d94cfae967e203ca867232ac102a501",
+      "storedSha256": "3de9da7f149987f55ee8ff1f76353bab846b6b462e3690668e1d34830cb769ff",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105450-176-97909-55ef70af581747cbb1a6ea88a355e9d7-categories/summary.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/summary.json.gz",
+      "bytes": 1600,
+      "sha256": "090fc7cbfe09492c1b99ca9fdf0af92ebf68982112571f7a6c95815b5629b6ba",
+      "storedSha256": "b4d7abda5b74ecd031c8d707c7bffba2c335b1b21763d910d8dffe74927af006",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-plan-first-555ceae6-20261017t1057z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/record.json.gz",
+      "bytes": 60297,
+      "sha256": "c6dafb85b31d4825e454e251aa65fff431e4361e319750f4e98f1c305bbbd174",
+      "storedSha256": "d1be1d3f1ac125a4b363e4e13fcfda646de655b0451921dbab3888c66603246c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-plan-first-555ceae6-20261017t1057z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/stdout.log.gz",
+      "bytes": 20598,
+      "sha256": "6a5a7ed17c04c2b22773778ceeb9f170b18cd4b7ea29ea8436616f30c5c5bb45",
+      "storedSha256": "eba691c73ba7a422e6e17261c982ea09831b3319f96baecc388f3405e6f9f192",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-plan-first-555ceae6-20261017t1057z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/process.json.gz",
+      "bytes": 338,
+      "sha256": "98cf7ec6291095bcc2ea86b1658326f04584a4d4fdd6e1dd540e6e255fa99a1b",
+      "storedSha256": "f817fdb4ab5919a07a68c15fb9886fd9a797eee75516b7528b6f9e7d96aae53f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/555ceae66e10300d3cf76ff849fb110b79b15549-g2-plan.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/sentinel.json.gz",
+      "bytes": 355,
+      "sha256": "7b828e0ad95480a3ea8f5d3d0072df59fd33bcf16441a54e544358355f671639",
+      "storedSha256": "29085381365f6081e13958f6e34084b72631b4e37dc2a0bba6d9416076041bdb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories/dotnet-test.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/dotnet-test.log.gz",
+      "bytes": 3417977,
+      "sha256": "f4ab0f4dbbea5a7f4537d342436e7a5fdd85eacc0e2dbcb129097f675e49e12e",
+      "storedSha256": "a647ce538560cdca843088ab4ed647bff6621aaa1151f3bf7efb621ab993c4e2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories/plan.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/plan.json.gz",
+      "bytes": 31956,
+      "sha256": "ccc6088236540098df97459d7f375864d6f18f74127bc335c557f809fcd81d7a",
+      "storedSha256": "455f48b28cf2e869bed8e0a504a9ec94e3893736533f27a3647b90b7118228c8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories/summary.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/summary.json.gz",
+      "bytes": 10318,
+      "sha256": "013a13f4b73ef9ac2a8389fdd08d064c8b7eb3d92651ae83828a6e98cca311c7",
+      "storedSha256": "6b11cbd26f11bc2c814a9f3968bc7476ca0c8c5d0216cb92e9a75a31cad5d3c7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-managed-preparation-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/managed-preparation-helper.py.gz",
+      "bytes": 9152,
+      "sha256": "88ec7f2093ce2fbaf32b859c0f44c37ea2f2aa457b93cbd555987fc80f36bf3d",
+      "storedSha256": "f13cb3c5f07949df1cd9ea91e26f325cd105db6da5c0e4cd22d7110a9d6090e6",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/fresh-package-frontend-docs-manifest.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/fresh-package-frontend-docs-manifest.json.gz",
+      "bytes": 109184,
+      "sha256": "2ffbfa7a1b248ec4975d460e396b392f68feec81f0bda1fbba5bc3eb98a1a892",
+      "storedSha256": "cd7cb8f1e5ecfd98ec9411d46f1eae55e17fe4b1e3afc84a57638586d855a789",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-freeze-g2-managed-preparation-continuation.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/metadata-continuation-helper.py.gz",
+      "bytes": 6222,
+      "sha256": "ab29040b684ac21503010bdf1fab570d36d0efa9d33587c01e0ac57d95384c9d",
+      "storedSha256": "424864f658feaebb94bb93eabd3eec0845232ad30950b2d19fa6baa319e59ee7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-preparation-inspection-utility-outcome-555ceae6-20261017.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/metadata-inspection-utility-outcome.json.gz",
+      "bytes": 779,
+      "sha256": "5e8d00c69563ffc8079ea49650c93f5d8be7b5bba830b7b76329f7acfbb69565",
+      "storedSha256": "0fe1dd54b3f86d0e997c8cc4b4aa6f589bf006a63781d517df7a1f0e7a59e34e",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "scope": "All FIRST native/stdout/process/runner logs/Plan/owned output cleanup/source and7DLL namespace records. No test/producer/host/browser executed; native0 alone is not SOURCE or GREEN acceptance.",
+  "retainedFrontend": "recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017.json",
+  "metadataUtilityOutcome": {
+    "rawPath": "/tmp/gm1558-g2-preparation-inspection-utility-outcome-555ceae6-20261017.json",
+    "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/metadata-inspection-utility-outcome.json.gz",
+    "bytes": 779,
+    "sha256": "5e8d00c69563ffc8079ea49650c93f5d8be7b5bba830b7b76329f7acfbb69565",
+    "storedSha256": "0fe1dd54b3f86d0e997c8cc4b4aa6f589bf006a63781d517df7a1f0e7a59e34e",
+    "compression": "gzip mtime0"
+  }
+}
