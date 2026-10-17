@@ -1,5 +1,7 @@
 # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B
 
+> **Действующее поручение 2026-10-17 — только DESIGN F1 и независимое ревью.** Восстановление от `c4dde0629cc17aad75196ec509d2cdaf621945a3`; фактический удалённый descendant при начале этого прохода — `0734df4c63d7f6ecd0f9efee73d0314fee822850`. Все нижеследующие записи, называющие себя current/execution/continuation/release, относятся к своим историческим checkpoint и не разрешают новые действия в этом проходе. Разрешены только документы, статическое чтение, независимое DESIGN review, commit/push/readback и восстановление исходных документов из GitHub. Код, тесты, каталог/selection, runtime tools не менять; build/discovery/tests/application/GM/console/browser/native runtime не запускать. Ни прежнее SOURCE/EVIDENCE решение, ни новое review не выпускает Late2, Ready3, A1 или иной actual/implementation. После итогового review и сохранения — **STOP для обсуждения реализации**. Предыдущие source/evidence сохраняются с исходной provenance; D4 allocator, guided US5, actual DOM/visual/native platform и D8 остаются открытыми; F2 не выбран.
+
 > **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](../plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.
 
 > **Current delegation from f87, 2026-10-16:** document-only source/dependency audit in the [implementation plan](lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87), governed by [current authority](../plan.md). Windows permission is unanswered; failed hold delivery and technical reviews give no user permission. No runtime/CI/settings/transfer/release/catalog change or new QTE. Earlier continuation/release text is checkpoint history. This audit accepts no new evidence codec/issuer or full F1/T197; all D4/guided/DOM+visual/Windows/D8 limits remain.
@@ -785,7 +787,7 @@ terminal COMMIT не компенсирует already accepted waves и не д�
 имеет такой же ограниченный same-attempt four-member compensation до final projection; предыдущий
 P2/common/story не откатываются. Debt/mixed terminal или XPafter без ack — HOLD, не warning-success.
 **F1:** FD reservation retained; FT/child debt settles through same publisher. Candidate repair
-только §8.5.4, current M/headers/request/parent evidence никогда не generic restore targets.
+только §8.5.3, current M/headers/request/parent evidence никогда не generic restore targets.
 После child mechanics only frozen phase recovery, no rollback/resubmit. Child output/time
 только §8.5.3 / R2 accepted overlay, не освобождение guard inventory.
 **ACCEPT/DECLINE:** после known commit нет app-level resurrection старой continuation/offer,
@@ -964,3 +966,45 @@ on `bddf930414b12944b5383ec2857404c26f7b01a9` is READY FOR USER DISCUSSION, F1-R
 no material findings in correction scope. D9–D11 and T197 exact target protocol remain proposed
 and unapproved; T178–T198 unchecked/UNRUN. Metadata carrier does not change reviewed design
 semantics. STOP for contract/plan/implementation discussion.
+
+## 16. Восстановленный DESIGN F1: проверяемые обязательства
+
+Этот индекс фиксирует результат текущего **документационного** прохода от c4dde062 через
+сохранённый descendant 0734df4c. Canonical механический проект остаётся §8.5 и R2;
+не возвращаются первый F1 `n+1`/three-family ограничения. Статические источники показывают,
+какие существующие owners необходимо адаптировать; они **не доказывают реализованный F1**.
+Все future F1 acceptance/crash/platform/client checks ниже **UNRUN**. Предыдущие bounded
+исходники, PASS/RED и reviews сохраняют свои SHA и пределы, без ретроспективной переоценки.
+
+| Обязательство | Проектный proof и существующий source owner | Будущий решающий oracle / задача |
+|---|---|---|
+| **Источник той же нерешённой ситуации** | §8.5.1/R2 §6: GM до P0 объявляет непустые sourceRowRef units; genuine original capture закрепляет реестр структурных coordinates, committed ledger и actionBoundarySource до seals. Описание/declineHint, новый ID или похожая проза сами не создают authority. | F101/F102/F113, R201/R208: genuine непустой остаток U; empty/already-resolved/foreign coordinates отвергаются до P0. Смена labels/IDs не обходит consumed coordinate; допустимая другая операция по той же цели сохраняется. T179/T192/T193. |
+| **Source/request binding в том же M** | §8.5.2: FD сохраняет source+parent headers+reservation; FT использует существующих engine original/snapshot/request owners. Immutable FD image → child manifest/token → FT receipt/M — ациклическая цепочка. Existing CreateCanonicalBaselineSnapshotAsync начинает с cleanup и пишет по шагам: unchanged вызов непригоден; требуется pure preparation + atomic FT adapter, а не новый journal/path. | F103/F104/F107/F115: actual current G → child pair/request → FD → retained parent artifacts/common/P1–P4; foreign/missing/mixed/rehash не выпускает capability. Lost delivery сохраняет exact child/request/dice, no source action resubmit. T186 B08a/b; T189. |
+| **Реальный ordinary resolution** | §8.5.3/R2 §§4–6: ordinary transport/Ready/validation и genuine Plan\|ValidatedEmpty take; полный currently lawful Mortal owner DAG, отдельные child mechanics/progression/automatic/projection/story в M. Existing StateDistributor.DistributeAsync/normalizer writes не становятся atomic adapter. | F105/F106/F112, R205–R213: пройти U обычной проверкой с фактическим failure → W2/damage, success → validated no-consequence и mixed; все units закрыты, canonical result/output/story приняты. Intent/notification/Ready без результата — FAIL; законный outcome не выбрасывается как unsupported. T186 B08c/T193–T198. |
+| **Committed последствия ровно один раз** | R2 §6: structural source/producer/ordinal/family/target coordinate + genuine owner disposition, не только строка operationId. Prefix W1/T1/spend/XP/reward/+5 остаётся принятым. Новые child операции допускаются отдельными genuine источниками. | F102/F105/F108/F113/R215: byte/count proof старого W1/T1/spend/reward/+5 и новый ровно один W2; duplicate/conflicting reply, relabel и restart не дают повтор. T180/T186/T196. |
+| **Turn/time без transport penalty** | R2 §§2–3: child requestId/token новые, actionId и gameTurn=n прежние, segmentOrdinal=1; parent P4 неизменен. Shared D9 owner признаёт уже consumed closure n; новый request/repair/wave не создаёт turn/time/cost. Реальные elapsed/operation/source/scene последствия сохраняются; unresolved calendar time законен с existing nullable/fail-open policy. | F108/F111/R201–R204/R214: no second IncrementTurn/owner_turn_end; newly born effects не получают старый tick. Реальные 0/+duration/absolute jump/rewind/calendar-only случаи и accept/decline equivalent event traces; elapsed не выводится из UTC. T182/T186/T187/T192/T196. |
+| **Crash/restart и repair** | §8.5.2–4/§9: existing publisher settles debt, затем whole-before/whole-after или protective HOLD. До result commit repair только candidate-owned cohort к post-prefix child baseline; FD/M/headers/G/dice/artifacts guard-only. После accepted phase — frozen-basis recovery, без resubmit/rollback accepted result. | F103/F104/F107/F114/F115/R204/R210/R212: каждый FD/FT/child member+ack cut, lost reply, actual fresh PID и durable-only supported restore. Strict before/after images/absence и reached-oracle records; no warm registry/G mint. T186/T189/T191. |
+| **Handoff и cleanup** | §8.5.3: completion требует полного composite/event/time/automatic/projection/story proof и no debt; eligible life-end — durable target acceptance. KF1 = parent artifact-only K ∪ child K, shared slots consumed once под child binding; M released ack остаётся observational. T197 DEP-C/I/L ещё открыты; missing target owner не заменяется redirect/flag. | F109/R213 + T197 H-matrix: до completion/target receipt все source artifacts удержаны; partial deletion не completion, released marker не mutation capability, accepted history/mechanics/story не стираются. T186/T189/T197. |
+| **Console/browser/agent parity** | §8.5.4/R2 §6: один named dispatcher и source-specific readers, одинаковые pending/repair/result states после reload/restart. Console decline сейчас рекурсивно вызывает ProcessPlayerTurn(originalAction); browser QteWebInteractionService возвращает Declined с resolution=null и notification. Browser composer отдельно ставит новое действие. Эти unchanged пути не реализуют F1. Lease освобождается до UI/transport; allocation/input guarded. | F110/R218, T190/T191: реальный decline → waiting → repair/restart → actual ordinary result в каждом клиенте; no originalAction replay/composer queue/notification-only acceptance. Component/API evidence отдельно от actual DOM/visual/native Linux/Windows. |
+
+**Проверяемые source seams на 0734df4c:** `GameEngine.SessionAndSnapshots.cs`
+`CreateCanonicalBaselineSnapshotAsync` (cleanup и последовательная подготовка),
+`GameEngine.TurnLifecycle.cs` `HandleAcceptedQteOfferAsync` (recursive old decline), ordinary
+finalizer (RotateAfterAcceptedTurnAsync/IncrementTurn/story),
+`QteWebInteractionService.ResolveOfferDecisionBoundAsync` (decline/notification без result),
+`BrowserPlayerActionService.SubmitBoundAsync` (новая composer queue),
+`StoryService.AcceptedStoryAppend.cs` (closed schema1 console_turn/browser_turn only),
+StateDistributor/CanonicalStateNormalizer и R2 source inventory. Они не выдают предложенные
+F1 grants/issuers. Exact file pins/selected projections текущего static audit сохраняются в
+recovery вместе с новым review; ссылки на e7/106 в исходных таблицах остаются историческими.
+
+**Решение по F2:** отсутствие реализации pure adapters/full owner catalog, непринятые D9–D11,
+неполученная Windows evidence или открытый T197 — конкретные engineering/release dependencies,
+а не доказательство невозможности F1. Сначала предъявляется конкретный непреодолимый source/
+authority/atomicity conflict F1 и рассматривается узкая коррекция. F2 автоматически не выбран.
+
+**Граница результата:** обсуждать exact contracts/grants и очередность T178–T191/T192–T198.
+D4 allocator, guided US5, frontend visual qualification и D8 payload/earned-XP limits сохранены.
+Новый GM authoring/runtime contract этим документом не вводится; будущая реализация потребует
+same-change prompts/examples/manifests/source guards по §14. После итогового независимого
+DESIGN review, non-force сохранения и exact GitHub document recovery — **STOP**.

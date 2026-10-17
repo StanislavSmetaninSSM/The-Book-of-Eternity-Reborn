@@ -1,5 +1,7 @@
 # Lawful ACTIVE fixed joint-tail B Implementation Plan
 
+> **Действующее поручение 2026-10-17 — только DESIGN F1 и независимое ревью.** Восстановление от `c4dde0629cc17aad75196ec509d2cdaf621945a3`; фактический удалённый descendant при начале этого прохода — `0734df4c63d7f6ecd0f9efee73d0314fee822850`. Все нижеследующие записи, называющие себя current/execution/continuation/release, относятся к своим историческим checkpoint и не разрешают новые действия в этом проходе. Разрешены только документы, статическое чтение, независимое DESIGN review, commit/push/readback и восстановление исходных документов из GitHub. Код, тесты, каталог/selection, runtime tools не менять; build/discovery/tests/application/GM/console/browser/native runtime не запускать. Ни прежнее SOURCE/EVIDENCE решение, ни новое review не выпускает Late2, Ready3, A1 или иной actual/implementation. После итогового review и сохранения — **STOP для обсуждения реализации**. Предыдущие source/evidence сохраняются с исходной provenance; D4 allocator, guided US5, actual DOM/visual/native platform и D8 остаются открытыми; F2 не выбран.
+
 > **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](../plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.
 
 > **Current delegation at f87, 2026-10-16:** document-only T179-Pd-AUDIT-SBM below. Windows permission remains unanswered; failed hold delivery and technical reviews grant no permission. No runtime/CI/transfer/settings/release/catalog changes. Earlier continuation/release entries are checkpoint history, superseded for new actions by the [current plan authority](../plan.md). Prior13PASS+first2LinuxFAIL and separately reported Windows JOBsuccess remain; raw worker2 qualification BLOCKED. No full S/B/M3/F1/T197/new-QTE acceptance.
@@ -106,6 +108,25 @@ All T178–T198 remain future unchecked/UNRUN; after review STOP for implementat
 | T198 | R2 full universe / composite / accept-decline qualification | T192–T197 + B08/B09 source design; feeds B11/B12/B13 |
 
 Следующие sections задают точные будущие изменения; Q-D5 остаётся обязательным decision gate. Ни один implementation checkbox сейчас не выполнен.
+
+## Уточнение T178–T191 для восстановленного DESIGN-only поручения
+
+Это reconciliation существующих задач, не новый execution plan и не выдача разрешения.
+Обязательства/decisive future oracles сведены в [B §16](./lawful-active-joint-tail-b.md#16-восстановленный-design-f1-проверяемые-обязательства);
+полные F101–F115/R201–R218 остаются canonical future matrix, без новых selectors/counts.
+
+- **T178:** принять отдельно exact F1/D9–D11 contract/schema/owner grants и permission-to-implement. DESIGN review не закрывает этот gate. Исторические 3b/A1 разрешения не действуют в настоящем проходе.
+- **T179:** source/request/remaining/action proof должен войти в genuine S/C/raw B до seals. Retained C, reader/custody и kernel prerequisites не закрывают B01/M3/cold proof. Capture/freeze пока Capturing → irreversible CloseCapture → prepare/seal; no after-seal attachment.
+- **T180–T183:** automatic → actual projection → immutable original story/turn → no-offer completion. Не повторять parent phases для child; shared T192 event/time budget обязателен. D4 блокирует allocation до release, но ordinary allocator safety остаётся отдельным открытым контрактом.
+- **T184–T186:** grammar/capture/accept UI не активировать до полного B08a FD + B08b atomic FT/cold binding + B08c **реального ordinary результата**, T192–T198 и cleanup proof. B08a/b сами не удовлетворяют D5. Accepted empty требует actual validated unit resolution; простое отсутствие плана не completion.
+- **T187–T188:** exact D8 selected-terminal commit и post-QTE auto/projection остаются своей ветвью; ordinary child не проходит через QTE terminal/XP helper. Shared event/time admission не расширяет D8 responseFragment. Full ordinary outcomes не урезаются под D8 subset.
+- **T189:** branch-specific actual completion/target receipt precedes KF1/K cleanup; source artifacts не освобождаются по declined/Ready/notification. DEP-C/I/L T197 и весь target protocol остаются отдельными prerequisites, не обходятся general cleanup.
+- **T190–T191:** actual console/browser/agent decline-to-result и независимые native Linux/Windows проверки следуют всем applicable owner gates. 12 connected cases/ОС — planned smoke, не full fault/universe qualification; API/component/static checks не actual DOM/visual. Guided US5 остаётся открытым.
+
+В этом проходе не исполняется даже G1/G5 preparation/discovery. Main T178–T191 остаются
+уникальными unchecked, общие F1/T197/new-QTE gates открыты. Исторические bounded case results
+сохраняются со своими compiled/source SHA; ни один из них не переименовывается в full F1 PASS.
+После independent DESIGN review и document publication/recovery — STOP для обсуждения.
 
 ## File ownership и интерфейсы
 
