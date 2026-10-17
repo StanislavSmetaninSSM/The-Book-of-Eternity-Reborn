@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST G2 GREEN aggregate atd09 stopped native1/7.821s:1executed/0PASS/1FAIL in first affected-guard descriptor,18descriptors/105adapter estimates UNRUN. Exact13rawchains/activation/Rootrawreadback frozen; source274/7DLL/namespace unchanged, owned cleanuptrue. Independent causal EVIDENCE pending; all runtime/RootChromium held, no retry/correction or task completion.
+**Status**: G2-E01 causal EVIDENCE accepted: FIRST guard failure is five CRLF-pinned expectations against unchanged LF source, not retirement RED or product regression. Exact five existing signature literals corrected; 1of274 sourcepins updated, other273 and all source literals/oracles/rows/selectors unchanged. Fresh selected build/PlanOnly0 pending; managed GREEN and RootChromium held, original1FAIL/18UNRUN immutable.
 
 ## Source issues and scope
 

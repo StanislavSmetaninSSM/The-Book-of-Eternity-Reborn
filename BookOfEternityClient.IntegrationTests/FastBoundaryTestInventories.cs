@@ -75,14 +75,14 @@ internal static class FastBoundaryTestInventories
         Fact|EnsureRuntimeStateHealthyAsync_InvalidJsonFailsWithoutMutation
         Fact|EnsureRuntimeStateHealthyAsync_RemovesPendingOfferWithoutActiveScene
         Fact|EnsureRuntimeStateHealthyAsync_BrokenActiveSceneFailsWithoutMutation
-        Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)
-        Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)
+        Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)
+        Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)
         Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string:{"qteId":"qte_malformed_turn","sourceTurnNumber":
         Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=3,sha256=0aad7da77d2ed59c396c99a74e49f3a4524dcdbcb5163251b1433d640247aeb4)
         Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string:null
-        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)
-        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)
-        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)
+        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)
+        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)
+        Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)
         Fact|BindAcceptedTurnAuthorityAsync_PersistsTrustedPositiveSourceTurn
         Theory|BindAcceptedTurnAuthorityAsync_NonPositiveTurnFailsWithoutMutation|literal:0
         Theory|BindAcceptedTurnAuthorityAsync_NonPositiveTurnFailsWithoutMutation|syntax:-1

@@ -1,0 +1,116 @@
+{
+  "kind": "INDEPENDENT_FIRST_G2_GREEN_STOP_CAUSAL_EVIDENCE_REVIEW",
+  "utc": "2026-10-17T11:20:13.687808+00:00",
+  "carrier": "db749e462e88edbdc0690f57e68efefa0078e262",
+  "actualSource": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "verdicts": {
+    "EVIDENCE": "ACCEPTED_FIRST_FAILED_INVENTORY_GUARD_CAUSE_ESTABLISHED",
+    "CURRENT_GREEN": "NOT_QUALIFIED",
+    "PRODUCT_REGRESSION": "NOT_ESTABLISHED_BY_THIS_RUN",
+    "SOURCE": "Prior product/source review retained; affected inventory expectation binding requires narrow correction and fresh managed preparation before another actual."
+  },
+  "actual": {
+    "nativeExit": 1,
+    "wrapperWallSeconds": 7.821475133001513,
+    "firstDescriptorExecuted": 1,
+    "executedCases": 1,
+    "passed": 0,
+    "failed": 1,
+    "failedIdentity": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+    "remainingDescriptorsUnrun": 18,
+    "remainingNativeCsharpCasesUnrun": 97,
+    "remainingFrontendFileEstimatesUnrun": 8,
+    "selectionComplete": false,
+    "timedOut": false,
+    "duplicates": 0,
+    "strictRunnerCleanup": true,
+    "nativeProcessSettledAndAbsentAfterWait": true,
+    "newFixtureArtifactDirectories": []
+  },
+  "finding": {
+    "id": "G2-E01",
+    "classification": "TEST_INVENTORY_MANIFEST_EXPECTATION_BINDING_DEFECT",
+    "path": "BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs",
+    "rows": "Five multiline InlineData signatures in QteSceneService:2 TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer and3 ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+    "cause": "Expected length/SHA256 describe CRLF-valued raw strings; actual pinned unchanged source is LF. Existing TestArgumentSignature hashes exact Roslyn Token.ValueText UTF8 and exact value.Length without newline normalization. All five LF signatures equal TRX unexpected and all five LF-to-CRLF projections equal TRX missing.",
+    "sourcePath": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+    "sourceSha256": "b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed",
+    "sourceBytes": 104927,
+    "LFcount": 2573,
+    "CRLFcount": 0,
+    "sourceEqualRevisions": [
+      "46ff637a01390a27c45a7fc36dc30e31d688e499",
+      "023931661391926398a5c5ebe0897a66985235b2",
+      "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+      "db749e462e88edbdc0690f57e68efefa0078e262"
+    ],
+    "mappings": [
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)",
+        "lineBreaks": 4,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_duplicate_turn\",\n  \"sourceTurnNumber\": 12,\n  \"sourceTurnNumber\": 12\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_wrong_turn_type\",\n  \"sourceTurnNumber\": \"12\"\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)",
+        "lineBreaks": 11,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_duplicate_accepted_turn\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": 12,\n    \"acceptedAtTurn\": 12\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)",
+        "lineBreaks": 10,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_wrong_accepted_turn_type\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": \"12\"\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"acceptedAtTurn\":",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      }
+    ],
+    "consequence": "Final Assert.True at IntegrationTestBoundaryTests.cs:1379 fails the first descriptor. No underlying QteSceneService theory body or product owner was executed by this inventory Fact; no retirement/save/storage/practice behavior is qualified. Ten diagnostic lines describe one native failed test, not five or ten native failures.",
+    "minimalCorrection": "Replace only these five existing manifest length/hash signatures by the exact LF signatures in mappings. Keep source literals, test bodies, assertions, parser, TestArgumentSignature, Fact/Theory classification, duplicate-aware multiset and every other manifest row unchanged. No blanket regeneration, ignore rule, global newline normalization, category/count/budget change or product change.",
+    "crossPlatformBoundary": "This exact-source guard fingerprints literal values, including line endings. Correcting its five expectations binds current LF Git blobs; it does not qualify a future CRLF checkout or native Windows. Global whitespace normalization would alter the oracle and is not necessary for this bounded task."
+  },
+  "proof": {
+    "raw": "13 stored/committed gzip chains validated.12 match live raw; source-binding context is explicitly compared with actual d09 committed snapshot (current STOP metadata differs intentionally). Record/TRX/plan/summary/process/sentinel bind one FIRST invocation, no retry.",
+    "binaries": "All7 before/after/current hashes equal accepted555 pins; actual source d09 clean, record sourceBindingSha256 matches exact d09 snapshot. Product/test/selection bytes unchanged between actual and STOP metadata.",
+    "recovery": "27 exact recovered GitHub files/all23 changed featuremetadata paths independently checked bytes/SHA/blob/mode/current commit. No full-base or old-family replay.",
+    "cleanup": "Runner owned/runtime cleanup true, no timeout/duplicate, native launcher100735/birth3882301 settled and recorded absent after wait, boe namespace unchanged and no new fixture/evidence dirs. No actual user data or campaign owner instantiated by this guard."
+  },
+  "nextConditions": [
+    "Root first persists this exact causal evidence and retains original native1/raw/sentinel/history.",
+    "Publish only the concrete five-signature correction and its source binding; independently review the exact affected diff, without reopening unchanged product design or replaying old28/other accepted families.",
+    "Fresh canonical current SelectionFile -PlanOnly WITHOUT -NoBuild is sufficient to build both selected managed projects and discover exact unchanged membership with zero executions; preserve raw/pins and confirm both builds/plan completed. Unchanged catalog ownership does not require a separate broad ValidateCatalog replay.",
+    "Retain frontend110 source/tree/dist proof if hashes remain equal; rebind fresh managed DLL/package outputs and new source in a distinct recorder/sentinel. No unchanged555 runtime retry.",
+    "After affected SOURCE/PREP acceptance and separate exact Root activation, one corrected guard and remaining18 descriptors may be run through the agreed canonical finite selection. All prior currentGREEN functionality remains unrun; any further nonzero/incomplete/cleanup failure stops dependent work.",
+    "Root Chromium stays held until requisite native/frontend evidence qualifies. No browser/playthrough/Windows/CI/F1/HOT/M3/backend/provider/merge/issue-close claim."
+  ],
+  "history": "Original G1 causal28 and older fixture/capture/P01 failures retain exact accepted provenance; none replayed or reclassified. This new failure reopens only the affected guard binding, not proof of a product regression.",
+  "support": {
+    "path": "/tmp/gm1558-g2-first-green-stop-independent-check-20261017.json",
+    "sha256": "70b03be38e8eaf667454c1d07ad2c54cf34f59c2ec174506fb4faea53c8f5a5c"
+  },
+  "reviewActions": "Read-only raw/source/git/hash/decompression and five known raw-literal content calculations; no runtime, parser/extractor invocation, build or repository mutation."
+}

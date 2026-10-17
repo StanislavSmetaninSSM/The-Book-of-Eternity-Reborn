@@ -1,0 +1,86 @@
+{
+  "kind": "ROOT_E01_CAUSE_ACCEPTED_RELEASED_EXACT_TEST_MANIFEST_REPAIR_AND_ZEROEXEC_PREP",
+  "utc": "2026-10-17T11:20:48.826812+00:00",
+  "carrier": "db749e462e88edbdc0690f57e68efefa0078e262",
+  "firstActual": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "firstCompiled": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-first-green-stop-evidence-independent-20261017.md",
+      "sha256": "f3b8c970ed978d63f84e2bf0c4332e373c07b651a25f8542debd9d15a4aafaa5"
+    },
+    {
+      "path": "/tmp/gm1558-g2-first-green-stop-evidence-independent-20261017.json",
+      "sha256": "a4e347bd4884b289140b8d0e5fde223bd233415d9e369092382fadf1c75289de"
+    },
+    {
+      "path": "/tmp/gm1558-g2-first-green-stop-independent-check-20261017.json",
+      "sha256": "70b03be38e8eaf667454c1d07ad2c54cf34f59c2ec174506fb4faea53c8f5a5c"
+    }
+  ],
+  "causeAccepted": "Exactly five expected multiline raw literal signatures pinCRLF; unchanged currentGit source isLF. Root independently reconstructed all10length/SHA values. FIRST1FAIL retains history and qualifies neither productregression norGREEN.",
+  "authorizedCorrection": {
+    "path": "BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs",
+    "mappings": [
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)",
+        "lineBreaks": 4,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_duplicate_turn\",\n  \"sourceTurnNumber\": 12,\n  \"sourceTurnNumber\": 12\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_wrong_turn_type\",\n  \"sourceTurnNumber\": \"12\"\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)",
+        "lineBreaks": 11,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_duplicate_accepted_turn\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": 12,\n    \"acceptedAtTurn\": 12\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)",
+        "lineBreaks": 10,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_wrong_accepted_turn_type\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": \"12\"\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"acceptedAtTurn\":",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      }
+    ],
+    "scope": "ONLY exact5CRLFsignature\u2192LFsignature literals. Preserve parser/signature/multiset/allotherrows/testsource/assertions/category/membership/budgets. Updateexactonecorresponding sourcepin inexisting274 andboundedmetadata. No globalregeneration or normalization."
+  },
+  "persistence": "CombineexactcausalFINALpair/support,Rootdecision,db749complete receipt/108composition and fiveconstantfix in ONEcoherentWIP sourcecheckpoint; nonforcepush/exactremote/newcompleteGitHubdelta beforezeroexecprep. No separatereport-onlycheckpoint needed.",
+  "releasedPreparation": {
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "tests/selection.json",
+      "-PlanOnly"
+    ],
+    "scope": "ONE freshselectedmanagedbuilds+discovery/exactPlanOnly withoutNoBuild,0exec.17owners19descriptors42C#methods98cases+8FEfileestimates retained. No unchangedcatalog/nativefrontendrebuild/npmsetup/binreclean, no actual.",
+    "requirements": "Newsource-specificexclusiveFIRSThelper/record/sourcepins/new7DLL before/after/exactplan/retainedFE110113/packagecurrent370/source\u2192package52/nativeprocess/namespace; sourcebindingsall exact. Stopfreezeunexpected. PublishsuccessfulPREP WIP beforenextboundedSOURCEreview."
+  },
+  "nextGate": "IndependenttargetedE01SOURCE verifiesactual5constantdiff/unchangedallotherrows+source/dependencies/newPREP/firstrecorder,thenRootseparateactualactivation. Originalcompiled555FIRSTsentinel/raw remainsimmutable;18otherdescriptorsstillunrun.",
+  "rootRecovery": "/tmp/gm1558-root-recovery-composition-db749e46-20261017.json",
+  "limits": "No productsemanticchange/unchangedfamilynative/Windows/CI/Library/HOT/M3/main/merge/forcepush/branchdelete/issueclose. RootChromiumhelduntilwholeGREENqualified."
+}

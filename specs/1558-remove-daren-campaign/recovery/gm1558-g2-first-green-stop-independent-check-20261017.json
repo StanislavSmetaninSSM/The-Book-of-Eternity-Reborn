@@ -1,0 +1,323 @@
+{
+  "kind": "INDEPENDENT_FIRST_G2_GREEN_STOP_STATIC_CAUSAL_AND_RAW_BINDING",
+  "utc": "2026-10-17T11:19:02.467917+00:00",
+  "carrier": "db749e462e88edbdc0690f57e68efefa0078e262",
+  "actualSource": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "packet": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/g2-first-green-stop-d09b18c9-20261017.json",
+    "sha256": "2de7c02d353771031d27bc15221e8bb6f4ba4e6b079501cb403b3b78bdb21daa"
+  },
+  "archive": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/g2-first-green-stop-d09b18c9-20261017-files/archive.json",
+    "sha256": "ecd6831973e4c421c991dcbe09bce9ba2428f698e98fef3c2c5555439a1ee48b",
+    "chains": [
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/record.json",
+        "storedPath": "native/record.json.gz",
+        "bytes": 37130,
+        "sha256": "6af5d7c2deeaa64cf0e961cf9e68dfe7b590a6348dcf2f9ea4d3878cf7fbc234",
+        "storedSha256": "3c58027dca03b63302535ee3332637dcc1c91f189932f2f84714d8a49a896150",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/stdout.log",
+        "storedPath": "native/stdout.log.gz",
+        "bytes": 23939,
+        "sha256": "64d2ad85ec1d0e5d26302674409083b6f75434991e5afdef60208d9b70f8ac8d",
+        "storedSha256": "aaf035d45521cded01cd04602a38038354c7e5812307d23ea44bbc74de3b15ae",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/process.json",
+        "storedPath": "native/process.json.gz",
+        "bytes": 833,
+        "sha256": "9e532b1e7b1bfeb55ed5c5e81f0ad52f107299b67388e86758840ec88e79148a",
+        "storedSha256": "00f49545c6b59ba6e378f79a6c5bdd5015febe60a68c7e5696d871b3b04d039a",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/555ceae66e10300d3cf76ff849fb110b79b15549-g2-current-selection-green.first-launch.json",
+        "storedPath": "native/sentinel.json.gz",
+        "bytes": 472,
+        "sha256": "ffe74023f98f29f9d938c1bd6dde1772e06870c1a1bb84a301db4c1173907eb1",
+        "storedSha256": "bcf217505adf2f2a9bdf41532081334532ab256dc7efdf5c557a70e198a3cb23",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-g2-green-first-run.py",
+        "storedPath": "support/approved-first-recorder.py.gz",
+        "bytes": 10601,
+        "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c",
+        "storedSha256": "29ef165fc71b0874004aebfff37a5078606bec3777e67258c2644b46dac453ff",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-archive-g2-green-first.py",
+        "storedPath": "support/archive-helper.py.gz",
+        "bytes": 3507,
+        "sha256": "c880583b6630ad13a517fa73d960881ad6c1c02f9ca9b874ea31a2bf97c01a97",
+        "storedSha256": "dd3c8b1370f2e535dd149301ea3e43201199d2ac36ccd0c5550f70b6f3b17556",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/daren-retirement-affected-guards-integration-001.trx",
+        "storedPath": "runner/0/daren-retirement-affected-guards-integration-001.trx.gz",
+        "bytes": 8725,
+        "sha256": "01948b552fc0e1de79912a725ec7e510c621f7241b51863ab2cb6accd996bc14",
+        "storedSha256": "ef77403b25541b7e2a78bdc5043f7cb0f9538e402179595669367a569a0bfb89",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/dotnet-test.log",
+        "storedPath": "runner/0/dotnet-test.log.gz",
+        "bytes": 3421736,
+        "sha256": "6014386aad4f400de8a5e6f9b01d17e050a670b2259a8400550baf24bd254878",
+        "storedSha256": "9bdb75667885942811e28ef4aee76aab0ce57feef6ac0f1770c61d9e53712a18",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/plan.json",
+        "storedPath": "runner/0/plan.json.gz",
+        "bytes": 31956,
+        "sha256": "af0e078e162fcaee9c0f581a70771e6c4885324afdad102688c926fdef7275a4",
+        "storedSha256": "fab6aac8f8a241e8b5e2ace4f750a9635fe5ded27d5e28b7b45325201b75c686",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/summary.json",
+        "storedPath": "runner/0/summary.json.gz",
+        "bytes": 10311,
+        "sha256": "f06188f4e7df4a713aa8c726490f3e37ce85ad2a0add0cd2412afc0f036f95f6",
+        "storedSha256": "649e89e3dbc31152e27e88bc8cd77c63076977b12e50e7e1de8cfdca4ae8cf1e",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+        "storedPath": "support/current-source-binding.json.gz",
+        "bytes": 120997,
+        "sha256": "9280bcda61104901745343bb3cdc93ffc8f6610e7658e5d39f62767cb102db44",
+        "storedSha256": "f567dcfc5c2cca515f8cf9e71cdddb0fad9189875489214b47c1825b7bdf4691",
+        "rawComparison": "actualSource d09 committed snapshot; current carrier metadata legitimately differs"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories/plan.json",
+        "storedPath": "support/reviewed-plan.json.gz",
+        "bytes": 31956,
+        "sha256": "ccc6088236540098df97459d7f375864d6f18f74127bc335c557f809fcd81d7a",
+        "storedSha256": "455f48b28cf2e869bed8e0a504a9ec94e3893736533f27a3647b90b7118228c8",
+        "rawComparison": "live raw byte-equal"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/fresh-package-frontend-docs-manifest.json",
+        "storedPath": "support/fresh-package-manifest.json.gz",
+        "bytes": 109184,
+        "sha256": "2ffbfa7a1b248ec4975d460e396b392f68feec81f0bda1fbba5bc3eb98a1a892",
+        "storedSha256": "cd7cb8f1e5ecfd98ec9411d46f1eae55e17fe4b1e3afc84a57638586d855a789",
+        "rawComparison": "live raw byte-equal"
+      }
+    ],
+    "all13CommittedStoredRawQualified": true
+  },
+  "native": {
+    "record": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/record.json",
+    "recordSha256": "6af5d7c2deeaa64cf0e961cf9e68dfe7b590a6348dcf2f9ea4d3878cf7fbc234",
+    "nativeExit": 1,
+    "wrapperWallSeconds": 7.821475133001513,
+    "startedUtc": "2026-10-17T11:11:51.935114+00:00",
+    "finishedUtc": "2026-10-17T11:11:59.756573+00:00",
+    "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/daren-retirement-affected-guards-integration-001.trx",
+    "trxSha256": "01948b552fc0e1de79912a725ec7e510c621f7241b51863ab2cb6accd996bc14",
+    "identity": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+    "result": {
+      "executionId": "ec16b513-1a46-4b30-931a-212e796c6fe9",
+      "testId": "2caf4b33-971f-d69d-69bf-c455b5bfe833",
+      "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.1277580",
+      "startTime": "2026-10-17T11:11:59.4109447+00:00",
+      "endTime": "2026-10-17T11:11:59.4109539+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Failed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "ec16b513-1a46-4b30-931a-212e796c6fe9"
+    },
+    "error": "QteSceneServiceTests executable inventory differs from the reviewed manifest:\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)\nmissing (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)\nmissing (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)\nunexpected (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)\nunexpected (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)",
+    "stack": "   at BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs:line 1379\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
+    "summarySha256": "f06188f4e7df4a713aa8c726490f3e37ce85ad2a0add0cd2412afc0f036f95f6",
+    "selection": {
+      "PlannedDescriptors": 19,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 106,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [
+        "daren-retirement-affected-guards-unit-002",
+        "daren-retirement-browser-host-integration-003",
+        "daren-retirement-common-qte-integration-004",
+        "daren-retirement-common-qte-unit-005",
+        "daren-retirement-console-menu-integration-006",
+        "daren-retirement-console-practice-integration-007",
+        "daren-retirement-frontend-shell-frontend-008",
+        "daren-retirement-ordinary-storage-integration-009",
+        "daren-retirement-original-schema6-green-integration-010",
+        "daren-retirement-private-intent-integration-011",
+        "daren-retirement-save-rewards-integration-012",
+        "daren-retirement-source-guidance-unit-013",
+        "daren-retirement-storage-refusal-integration-014",
+        "frontend-qte-frontend-015",
+        "frontend-shell-types-frontend-016",
+        "gm-doc-afterlife-package-delivery-integration-017",
+        "portable-browser-protocol-admission-linux-integration-018",
+        "portable-original-remaining-owning-close-linux-integration-019"
+      ],
+      "Complete": false
+    },
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "timedOut": false,
+    "duplicateTests": [],
+    "runnerOwnedAndRuntimeCleanup": true,
+    "nativeProcessSettled": true,
+    "launchIdentity": {
+      "pid": 100735,
+      "birthTicks": 3882301,
+      "state": "R",
+      "parentPid": 100706,
+      "processGroup": 100735,
+      "session": 100735,
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-SelectionFile",
+        "tests/selection.json",
+        "-NoBuild"
+      ],
+      "status": "EXACT_STAT_CMDLINE_STAT"
+    },
+    "afterWait": {
+      "pid": 100735,
+      "status": "ABSENT"
+    },
+    "namespaceExact": true,
+    "newFixtureArtifacts": []
+  },
+  "sourceBinding": {
+    "actualSourcePacketSha256": "9280bcda61104901745343bb3cdc93ffc8f6610e7658e5d39f62767cb102db44",
+    "shaMatchesRecord": true,
+    "sourcePinsDigest": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb",
+    "sevenBinaryPinsCurrentEqual": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9309696,
+        "sha256": "92acbd4a828662f01a98468a1678bdaf8b7659f669bc2148b9af22d9305399fd"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29126144,
+        "sha256": "8a21ae30dcb0f020bc10466d5c606b187b9a21ad85f93e2bf26774ee7bc0f556"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      }
+    ],
+    "productAndSelectionUnchangedAfterSource": true
+  },
+  "causality": {
+    "class": "STALE_MULTILINE_MANIFEST_FINGERPRINTS_CRLF_VS_ACTUAL_LF",
+    "sourcePath": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+    "sourceBytes": 104927,
+    "sourceSha256": "b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed",
+    "CRLF": 0,
+    "LF": 2573,
+    "exactEqualRevisions": [
+      "46ff637a01390a27c45a7fc36dc30e31d688e499",
+      "023931661391926398a5c5ebe0897a66985235b2",
+      "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+      "db749e462e88edbdc0690f57e68efefa0078e262"
+    ],
+    "manifestPath": "BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs",
+    "retainedManifestQteSceneServiceSectionEqualsBase023": true,
+    "mappings": [
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)",
+        "lineBreaks": 4,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_duplicate_turn\",\n  \"sourceTurnNumber\": 12,\n  \"sourceTurnNumber\": 12\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+        "LFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)",
+        "CRLFsignature": "Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"qteId\": \"qte_wrong_turn_type\",\n  \"sourceTurnNumber\": \"12\"\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)",
+        "lineBreaks": 11,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_duplicate_accepted_turn\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": 12,\n    \"acceptedAtTurn\": 12\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)",
+        "lineBreaks": 10,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"offer\": {\n      \"qteId\": \"qte_wrong_accepted_turn_type\",\n      \"sourceTurnNumber\": 12\n    },\n    \"currentChapterId\": \"yard\",\n    \"acceptedAtTurn\": \"12\"\n  }\n}",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      },
+      {
+        "method": "ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+        "LFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)",
+        "CRLFsignature": "Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)",
+        "lineBreaks": 3,
+        "actualSourceLFValue": "{\n  \"pendingOffer\": null,\n  \"activeScene\": {\n    \"acceptedAtTurn\":",
+        "kind": "Static source literal-content reconstruction and hashes, no C# parser/test/producer invocation"
+      }
+    ],
+    "limits": "Only inventory guard executed; source read establishes line-ending fingerprint cause. No functional QTE/retirement/save/storage/practice runtime outcome inferred."
+  },
+  "delta": {
+    "path": "/tmp/gm1558-g2-first-green-stop-delta-github-db749e46-20261017.json",
+    "sha256": "bb28fb32d704f04779f131d36b0f7b6f6a1d504705ea8778db5e6ebce9c35f23",
+    "recoveredFiles": 27,
+    "changedPaths": 23,
+    "allBytesShaBlobModeCommittedLiveEqual": true,
+    "allFeatureMetadata": true
+  },
+  "reviewActions": "Read-only raw/source/git/hash/decompression and five known raw-literal content calculations; no runtime, parser/extractor invocation, build or repository mutation."
+}

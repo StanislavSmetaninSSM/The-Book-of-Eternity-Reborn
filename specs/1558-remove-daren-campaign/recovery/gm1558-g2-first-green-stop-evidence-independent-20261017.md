@@ -1,0 +1,15 @@
+FIRST G2 STOP causal EVIDENCE: **accepted as an inventory expectation defect; current GREEN is not qualified**.
+
+Carrier `db749e462e88edbdc0690f57e68efefa0078e262`, actual `d09b18c9ab7d877146eab3556b369ac51f1fa60f`, compiled `555ceae66e10300d3cf76ff849fb110b79b15549`. Native1,7.821475133s: exactly **1 executed /0 PASS /1 FAIL**. The first descriptor completed;18 descriptors remain UNRUN (97 C# cases and8 frontend file estimates). No timeout, duplicates, cleanup failure or new fixture artifacts; launcher settled, namespaces and7 DLLs unchanged.
+
+**G2-E01 — `FastBoundaryTestInventories.QteSceneService` has five stale multiline fingerprints.** The actual `QteSceneServiceTests.cs` is byte-identical at46ff,023,555,d09 and the STOP carrier (104927B, SHA256`b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed`,2573 LF/0 CRLF). Its two offer and three persisted-runtime raw string values have LF lengths87,64,230,207,66. Every LF SHA equals the TRX unexpected signature. Projecting only LF→CRLF yields lengths91,67,241,217,69 and every missing SHA. The guard hashes exact literal values without normalization.
+
+The failure reaches final `Assert.True` at `IntegrationTestBoundaryTests.cs:1379`. Its parser/class/multiset prerequisites are satisfied; ten missing/unexpected diagnostic lines represent one failed test. The inventory Fact does not execute the underlying theory bodies or QTE product owners. This is neither a retirement behavioral RED nor evidence that common QTE behavior regressed.
+
+The minimal correction is exactly **five existing expected length/SHA constants**. Preserve all literal bodies, assertions, parser/signature code, duplicate-aware multiset, every other row, method/category/count and budget. Do not globally regenerate or normalize fingerprints. This binds the actual LF source; a future CRLF checkout/native Windows remains outside this proof.
+
+Verified all13 frozen chains against stored/committed hashes and raw:12 live-byte matches; the source-binding context correctly matches **actual d09**, not subsequently changed STOP metadata. Also checked27 recovered GitHub files/all23 metadata paths and exact native/TRX/process/selection/binary provenance. Earlier source and G1 evidence are retained without replay; the affected guard binding is reopened.
+
+After persistence, Root may authorize the narrow tests-only correction. Fresh canonical current SelectionFile `-PlanOnly` **without `-NoBuild`** can rebuild both managed projects and discover the unchanged finite selection with zero executions; no separate unchanged-catalog audit or frontend rebuild is justified. Exact source diff, new managed pins/package, preparation and distinct FIRST recorder must be reviewed before another actual. The original555 failure/sentinel stays immutable. Chromium and completion remain held.
+
+Immutable support: `/tmp/gm1558-g2-first-green-stop-independent-check-20261017.json`, SHA256`70b03be38e8eaf667454c1d07ad2c54cf34f59c2ec174506fb4faea53c8f5a5c`. Reviewer performed no native/build/parser/producer/browser execution and no repository edit.
