@@ -226,13 +226,13 @@
     },
     {
       "owner": "ordinary ComputeAsync / ApplyStatsIncreasedAsync",
-      "change": "ComputeAsync(cs68/71) and ApplyStatsIncreasedAsync(cs148/155) directly call actual GetPlayerLevel. The retained two-row real training cap/write control invokes ApplyStatsIncreasedAsync at MortalJointAutomaticCalculationTests.cs:194 and checks ordered cap outcomes plus exact characteristics bytes.",
+      "change": "ComputeAsync(cs68/71) and ApplyStatsIncreasedAsync(cs148/155) directly call actual GetPlayerLevel. The retained two-row real training cap/write control invokes ApplyStatsIncreasedAsync at MortalJointAutomaticCalculationTests.cs:192 and checks ordered cap outcomes plus exact characteristics bytes.",
       "sourceRefs": [
         "BookOfEternityClient/Services/CharacteristicsService.cs:68",
         "BookOfEternityClient/Services/CharacteristicsService.cs:71",
         "BookOfEternityClient/Services/CharacteristicsService.cs:148",
         "BookOfEternityClient/Services/CharacteristicsService.cs:155",
-        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:194"
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:192"
       ]
     },
     {
@@ -250,13 +250,26 @@
     "fullBaseReceipt": "t179pd-training-level-current-full-source-recovery-20261017.json.gz",
     "fullBaseFiles": 54526,
     "fullBaseBytes": 3681361580,
-    "currentSourceAt": "3da75b412022f9268d10b289ddf620fee5ab63d3",
-    "currentTrackedFiles": 54546,
+    "currentSourceAt": "12498e69f9475d71e628e554cb1b86b77312a954",
+    "currentTrackedFiles": 54549,
     "currentDeltaReceipt": "t179pd-training-level-source-prepared-delta-recovery-20261017.json",
     "coverageReceipt": "t179pd-training-level-current-source-recovery-coverage-20261017.json",
-    "coverage": "All current tracked paths and Git blob/modes covered by full exact new GitHub sourcebase plus all changed exact GitHub delta paths; new source dependency LevelPolicies.cs included. This metadata checkpoint requires its own new delta after push."
+    "coverage": "All current tracked paths and Git blob/modes covered by full exact new GitHub sourcebase plus all changed exact GitHub delta paths; new source dependency LevelPolicies.cs included. This metadata checkpoint requires its own new delta after push.",
+    "metadataDeltaReceipt": "t179pd-training-level-source-recovery-correction-delta-recovery-20261017.json",
+    "independentFullVerification": "ALL54526rawfiles/3681361580bytes plus both complete exact deltas compose all54549currentpaths at12498; no uncovered/deleted path.",
+    "finalFullReceiptRawSha256": "51d5a45a739fe6f5342efa035ca45f4c41c61b10e671a4cf3bcb4d62aa16741e"
   },
-  "sourceGate": "PENDING independent affected SOURCE/FIXTURE/SELECTION. No actual release from writer packet.",
+  "sourceGate": {
+    "verdict": "ACCEPTED_SOURCE_FIXTURE_SELECTION_PREPARATION_AND_RECOVERY_CONDITIONAL_FIRST_LATE2",
+    "reviewedCarrier": "12498e69f9475d71e628e554cb1b86b77312a954",
+    "compiledSource": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+    "reviewer": "/root/a1_reviewer; independent GPT-6 Astra/XHigh assignment, backend telemetry unavailable",
+    "md": "t179pd-training-level-green-source-independent-review-20261017.md",
+    "mdSha256": "137ab7028ca20553ca3a7ffecf8eb8e918d6cb6dfa49e22c0ff4a546dee8a8f5",
+    "json": "t179pd-training-level-green-source-independent-review-20261017.json",
+    "jsonSha256": "e190efc79a254fb273c54b172a8f9a79de56c9871bf0b86144daf05231ec9263",
+    "release": "Conditional ONLY FIRST protected Late2 singleton after decision saved/pushed/readback/new complete delta and exact source/fourDLL continuity. Separate EVIDENCE before A1 actuals."
+  },
   "nextActual": "Only FIRST fr063-joint-late-completion after accepted saved/readback SOURCE and verified complete source recovery; freeze/persist/separate EVIDENCE before each specifically released A1 owner actual.",
   "actualCurrentSource": "UNRUN: Late2 and all52A1; no runtime PASS claim",
   "platform": "Debian13 linux-x64 / SDK10.0.401 / .NET8.0.31 / PowerShell7.5.4",
@@ -268,15 +281,16 @@
       "finding": "Source packet invented two ordinary consumer API names; confirmed by independent Astra and root, then writer checked actual source.",
       "previousOwner": "ordinary ComputeAsync/GetTrainingStateAsync/TrainAsync",
       "correctedOwner": "ordinary ComputeAsync / ApplyStatsIncreasedAsync",
-      "status": "CORRECTED_PENDING_INDEPENDENT_VERIFICATION",
+      "status": "RESOLVED_BY_INDEPENDENT_SOURCE_REVIEW_AT_12498e69f9475d71e628e554cb1b86b77312a954",
       "impact": "Metadata only; production/tests/catalog/selection/runner/fixtures and compiled e247/four DLLs/preparation unchanged; no rerun.",
       "refs": [
         "BookOfEternityClient/Services/CharacteristicsService.cs:68",
         "BookOfEternityClient/Services/CharacteristicsService.cs:71",
         "BookOfEternityClient/Services/CharacteristicsService.cs:148",
         "BookOfEternityClient/Services/CharacteristicsService.cs:155",
-        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:194"
-      ]
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:192"
+      ],
+      "nonblockingLinePrecision": "Invocation ref194 corrected to actual192 in normal accepted-SOURCE persistence;194 is adjacent result comparison. Independent report cites192; no source/build/test/selection change."
     }
   ]
 }
