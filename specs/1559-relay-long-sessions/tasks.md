@@ -2,7 +2,7 @@
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Inputs: [spec.md](spec.md), [plan.md](plan.md), [audit.md](audit.md), [source-inventory.json](source-inventory.json). Branch `1559-relay-long-sessions-20261017`, base `a82b3d8439f76f83baade6df8516e78eea86e546`.
 
-Current phase: ARCH accepted for G1 tests-only at25713634; exact independent closure and Root release persisted below. T001–T003 foundation complete; T004–T018 open. G1 source compiled fresh at d473, catalog/PlanOnly native0/0 observe8categories/9descriptors/21methods/49cases,0executed; independent concrete SOURCE and separate native release pending. Production, dependency changes and native execution remain held. One writer executes sequentially, with the existing independent reviewer and Root gates; no new implementer agents.
+Current phase: ARCH accepted for G1 tests-only at25713634; exact independent closure and Root release persisted below. T001–T003 foundation complete; T004–T018 open. G1 source compiled fresh at d473, catalog/PlanOnly native0/0 observe8categories/9descriptors/21methods/49cases,0executed; independent concrete SOURCE/FIXTURE/SELECTION/PREP accepted only for initial engine2; actual UNRUN until Root verifies this metadata successor and activates its exact SHA. All other owners/product held; C01–C06/G1-L01/L02 later gates remain open. Production, dependency changes and native execution remain held. One writer executes sequentially, with the existing independent reviewer and Root gates; no new implementer agents.
 
 ## Foundation / architecture
 

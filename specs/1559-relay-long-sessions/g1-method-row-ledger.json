@@ -312,7 +312,8 @@
     "C04: exact CRLF/CR/trailing-newline/tabs/Unicode neutral framing beyond128rows/65536columns; Mini unchanged",
     "C05: actual existing computer read/write exchange; descriptor optional, not Python worker-only proof",
     "C06: actual client story/history accepted turn, unavailable native Windows separately OPEN",
-    "Corresponding >32writes GREEN hold: assert actual physical exact contents/completeness of all33 targets, not only helper exit/terminal. Current G1 boundary is old32 cap only; no corresponding GREEN eligibility inferred."
+    "Corresponding >32writes GREEN hold: assert actual physical exact contents/completeness of all33 targets, not only helper exit/terminal. Current G1 boundary is old32 cap only; no corresponding GREEN eligibility inferred.",
+    "G1-L02: when bridge compact-retention representation changes, assert actual concrete receipt/schema fields before counting zero retained payload; missing reflection fields cannot qualify GREEN."
   ],
   "firstOutcomePolicy": "No actual execution authorized. After concrete review Root releases bounded meaningful causal owners separately; canonical runner fail-stops nonzero descriptors. FIRST compile/fixture/platform/cleanup failure is retained and cannot count as causal RED.",
   "authoringCorrections": [
@@ -458,5 +459,6 @@
     ],
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
-  }
+  },
+  "currentGate": "BOUNDED_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED_ENGINE2_ONLY_PENDING_ROOT_NAMED_ACTIVATION; ALL_ACTUAL_UNRUN"
 }

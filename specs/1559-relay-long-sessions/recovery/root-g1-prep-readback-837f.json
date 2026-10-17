@@ -1,0 +1,57 @@
+{
+  "kind": "ROOT_G1_FIRST_PREPARATION_AND_RECOVERY_READBACK_NOT_SOURCE_ACCEPTANCE",
+  "utc": "2026-10-17T13:34:48.755775+00:00",
+  "carrier": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "completeImmediateDelta": {
+    "path": "/tmp/gm1559-g1-preparation-delta-github-837ff3a8-20261017.json",
+    "exactFiles": 31,
+    "allChangedPaths": 27,
+    "metadataOnly": true
+  },
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-837ff3a8-20261017.json",
+  "completeDeltas": 126,
+  "trackedPaths": 56294,
+  "checks": {
+    "firstRawStoredGzipLengthShaDecompressedLiveExact": 16,
+    "managedInventoryStoredAndDecompressedLiveExact": true,
+    "managedOutputActualFilesVerified": 258,
+    "selectedActualDlls": 9,
+    "catalogToPlanToCurrentDllsEqual": true,
+    "currentSourcePinsVerified": 119,
+    "sourceOnlyHistoricalGitShowFallback": [
+      "specs/1536-complete-wound-materialization/recovery/qte-story-append-receipt-correction-first-blocker-20261012/live-validation_repair_request.json"
+    ],
+    "fixtureRuntimeSourcesChangedSinceCompiled": false,
+    "exactLiveRemoteAndClean": true
+  },
+  "catalog": {
+    "exit": 0,
+    "seconds": 94.30992044800223,
+    "categoriesAudited": 824,
+    "methodsFiles": 11695,
+    "testsExecuted": 0,
+    "strictCleanup": true
+  },
+  "plan": {
+    "exit": 0,
+    "seconds": 5.83777605999785,
+    "categories": 8,
+    "descriptors": 9,
+    "uniqueMethods": 21,
+    "plannedCases": 49,
+    "testsExecuted": 0,
+    "strictCleanup": true
+  },
+  "nativeRecorder": {
+    "path": "/tmp/gm1559-g1-engine-rollback-first-run.py",
+    "sha256": "f17fccc488c9e09101289fa631d7e3a7c57a55194d869d2b3a5ce3474b065b0b",
+    "status": "SOURCE_INSPECTED_UNRUN",
+    "fixedCategory": "gm-relay-operational-engine-rollback",
+    "methodCount": 1,
+    "cases": 2
+  },
+  "actualTests": "NOT_AUTHORIZED_NOT_RUN",
+  "decision": "Await independent concrete SOURCE/FIXTURE/SELECTION/PREP final and separate Root runtime activation."
+}

@@ -1,0 +1,131 @@
+{
+  "kind": "INDEPENDENT_1559_G1_CONCRETE_SOURCE_FIXTURE_SELECTION_PREP_REVIEW",
+  "utc": "2026-10-17T13:35:43.552311+00:00",
+  "carrier": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdict": "ACCEPT_BOUNDED_G1_COMPONENT_SOURCE_FOR_FIRST_ENGINE_ROLLBACK2_AFTER_ROOT_RELEASE",
+  "gates": {
+    "SOURCE": "ACCEPT_TESTS_ONLY_CURRENT_COMPONENT_SCOPE_PRODUCT_UNCHANGED",
+    "FIXTURE": "ACCEPT_INITIAL_CAUSAL_COMPONENTS_WITH_DECLARED_LIMITS_ACTUAL_PREREQUISITES_UNPROVEN",
+    "SELECTION": "ACCEPT_CURRENT8_CATEGORIES9_DESCRIPTORS21_METHODS49_PLANNED_ROWS_COMPONENTS_ONLY",
+    "PREP": "ACCEPT_FRESH_BOTH_CATALOG0_PLAN0_ZERO_EXECUTION_FROZEN_BINDINGS",
+    "EVIDENCE": "NOT_RUN_NOT_ACCEPTED",
+    "PRODUCTION": "HELD"
+  },
+  "materialBlockers": [],
+  "closedDraftFindings": [
+    "DRAFT01 actual driverExitCode checked separately from guardian cleanup exit",
+    "DRAFT02 partial-refusal branch no longer falls through to success assertion",
+    "Unit strict cleanup reference compiled in actual unit assembly"
+  ],
+  "firstEligibleRecommendation": {
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "gm-relay-operational-engine-rollback",
+      "-NoBuild"
+    ],
+    "recorder": {
+      "path": "/tmp/gm1559-g1-engine-rollback-first-run.py",
+      "sha256": "f17fccc488c9e09101289fa631d7e3a7c57a55194d869d2b3a5ce3474b065b0b",
+      "currently": "UNRUN"
+    },
+    "descriptorCount": 1,
+    "methodCount": 1,
+    "cases": 2,
+    "budgetMinutes": 3,
+    "expectedBaseline": "Native1/2FAIL can be causal only at final Assert.Empty for operational changes after ordinary restored/new ordinary removed and real RestorePreTurnBackup completed. false creates paths after snapshot; true changes existing paths and baseline rewinds them. No actual result is predicted as observed.",
+    "nextGate": "Persist this decision; Root verifies exact metadata carrier/bindings and names one activation. Freeze/publish first result before independent causal EVIDENCE. No automatic other owner or production release."
+  },
+  "remainingOwnerGuidance": [
+    {
+      "category": "gm-relay-long-session-exchange",
+      "plannedRows": 7,
+      "scope": "Later separate release:6 proposed causal boundaries+small-response positive. Fourth requires3 actual prior helper completions; every process/driver/cleanup prerequisite mandatory."
+    },
+    {
+      "category": "gm-relay-long-session-retention",
+      "plannedRows": 3,
+      "scope": "Later separate release: bridge256 and daemon256/restart proposed causal failures; controlled collaborators explicitly limited."
+    },
+    {
+      "category": "gm-relay-operational-live-preparation",
+      "plannedRows": 5,
+      "scope": "Later separate release: live exact exclusion1 and two exact draft paths proposed causal failures; suffix2positive."
+    },
+    {
+      "category": "gm-relay-operational-save-load",
+      "plannedRows": 1,
+      "scope": "Later separate release: actual save/load/generation/ordinary positive prerequisites before final two-path archive/restored absence failure."
+    },
+    {
+      "category": "gm-relay-publication-foundation",
+      "plannedRows": 2,
+      "scope": "Later positive real existing-publisher rollback/commit controls; not the future helper batch."
+    },
+    {
+      "category": "gm-relay-long-session-neighbors",
+      "plannedRows": 12,
+      "scope": "Later positive unchanged actual neighboring bodies; two descriptors."
+    },
+    {
+      "category": "gm-relay-reusable-contract",
+      "plannedRows": 17,
+      "scope": "Later unchanged baseline identity/winner/close controls; packet-bound expectation must be migrated honestly when budget behavior changes."
+    }
+  ],
+  "preparation": {
+    "catalogNative": 0,
+    "catalogSeconds": 94.30992044800223,
+    "catalogCategories": 824,
+    "catalogMethodsFiles": 11695,
+    "bothBuildSeconds": [
+      77.4892473,
+      10.5839957
+    ],
+    "planNative": 0,
+    "planSeconds": 5.83777605999785,
+    "categories": 8,
+    "descriptors": 9,
+    "uniqueMethods": 21,
+    "plannedRows": 49,
+    "newRows": 20,
+    "existingRows": 29,
+    "executed": 0,
+    "planCompleteFalseMeaning": "Intentional zero-execution PlanOnly; no underfill runtime result exists.",
+    "nineFreshBinaryCopiesStable": true,
+    "managedOutputFiles": 258,
+    "nativeRawChainsExact": 16
+  },
+  "conditions": [
+    {
+      "id": "G1-L01",
+      "status": "MANDATORY_LATER_GREEN_PROOF_LIMIT_NOT_INITIAL_RED_BLOCKER",
+      "path": "tests/fixtures/ProductionMain/relay-long-session-checks.py:181-185",
+      "detail": "many-writes currently establishes real helper exit and terminal identity, but does not inspect exact physical after-images of all33 targets. Those bytes/normalization/member hashes must be checked in subsequent concrete batch SOURCE/EVIDENCE before claiming full33-write GREEN/integrity. The current count-limit causal boundary can be qualified only from actual diagnostics and original prerequisites."
+    },
+    {
+      "id": "G1-L02",
+      "status": "MANDATORY_G2_SOURCE_BINDING_CONDITION",
+      "path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.LongSessions.cs:45-52",
+      "detail": "Current Snapshot public field/Text property exist in actual bridge source. If G2 changes that representation, missing reflection fields must not silently qualify retainedBodyBytes==0; bind the concrete compact-receipt shape and keep meaningful positive schema prerequisites. This does not invalidate the current256-cap causal probe."
+    }
+  ],
+  "mandatoryLaterGates": "C01-C06 retained OPEN exactly as accepted ARCH; actual helper/daemon+client journal cuts, full sequence/restart/concurrency/lateStop, resource/config accounting, neutral framing, actual existing-tool exchange, actual client acceptance and nativeWindows separate. This initial component selection is not full issue coverage.",
+  "limits": [
+    "No compiler/test/producer/host/browser execution by reviewer.",
+    "No causal RED or GREEN executed yet. No runtime release by this report.",
+    "No full ARCH/base/historical family replay.",
+    "Guardian fixture compilation is a future runtime prerequisite; its failure cannot qualify a relay defect.",
+    "Many-writes and reflection proof limits must be closed at the affected later SOURCE/GREEN gate."
+  ],
+  "support": {
+    "path": "/tmp/gm1559-g1-concrete-source-independent-check-20261017.json",
+    "sha256": "4948badc7026d87896b981aa7a3f0eb0e2d1fa4f308458767a83e977b8aea2a1"
+  }
+}

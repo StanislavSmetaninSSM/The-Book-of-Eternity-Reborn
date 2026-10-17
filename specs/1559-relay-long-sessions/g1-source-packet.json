@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "69c85777bb34576a5d392da7d99024dcd39967124f98e3623f305efa5eadae3c"
+    "sha256": "1fa57aa74289f783009166aa99c8f3c5ed291cdc51ee344483fa233ec19feca8"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
@@ -1186,5 +1186,19 @@
       "bytes": 25790464
     }
   ],
-  "additionalLaterGreenHold": "Many-writes must prove all33 actual target images/content before corresponding GREEN; baseline cap/terminal alone insufficient."
+  "additionalLaterGreenHold": "Many-writes must prove all33 actual target images/content before corresponding GREEN; baseline cap/terminal alone insufficient.",
+  "currentGate": {
+    "sourceCarrier": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+    "independentVerdict": "ACCEPT_BOUNDED_G1_COMPONENT_SOURCE_FOR_FIRST_ENGINE_ROLLBACK2_AFTER_ROOT_RELEASE",
+    "reports": [
+      "recovery/g1-concrete-source-independent.md",
+      "recovery/g1-concrete-source-independent.json",
+      "recovery/g1-concrete-source-independent-check.json"
+    ],
+    "rootDecision": "recovery/root-g1-source-engine2-conditional-release.json",
+    "eligibleAfterNamedActivation": "gm-relay-operational-engine-rollback:1descriptor/1method/2rows",
+    "actual": "UNRUN_HELD_UNTIL_ROOT_VERIFIES_SUCCESSOR_AND_NAMES_ACTIVATION",
+    "allOtherOwnersAndProduction": "HELD",
+    "proofLimits": "C01-C06 plusG1-L01/L02 remain mandatory OPEN; no fullissue or runtime acceptance."
+  }
 }

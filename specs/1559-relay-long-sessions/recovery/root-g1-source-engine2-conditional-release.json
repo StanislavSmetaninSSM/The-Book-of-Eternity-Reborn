@@ -1,0 +1,76 @@
+{
+  "kind": "ROOT_G1_CONCRETE_SOURCE_ACCEPTANCE_FIRST_ENGINE2_RELEASE_PENDING_PERSISTENCE_AND_NAMED_ACTIVATION",
+  "utc": "2026-10-17T13:38:47.253460+00:00",
+  "sourceCarrier": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "rootDecision": "ACCEPT_BOUNDED_SOURCE_FIXTURE_SELECTION_PREP_FOR_FIRST_ENGINE_ROLLBACK2",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1559-g1-concrete-source-independent-20261017.md",
+      "sha256": "b550e29309856321b12085d5ab15c316f319f85d95dc31c768806b280387aa60"
+    },
+    {
+      "path": "/tmp/gm1559-g1-concrete-source-independent-20261017.json",
+      "sha256": "df15ded7aefe0910abbb740a524bf3f33b9c83beca42154101d952f6221c894d"
+    },
+    {
+      "path": "/tmp/gm1559-g1-concrete-source-independent-check-20261017.json",
+      "sha256": "4948badc7026d87896b981aa7a3f0eb0e2d1fa4f308458767a83e977b8aea2a1"
+    }
+  ],
+  "rootReadback": {
+    "path": "/tmp/gm1559-root-g1-prep-readback-837ff3a8-20261017.json",
+    "sha256": "3418723270d2b6958b9461e09228ebb23320ca7e908ee9ba9ade74d99ba894cc"
+  },
+  "eligibleSingleFirst": {
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "gm-relay-operational-engine-rollback",
+      "-NoBuild"
+    ],
+    "recorder": {
+      "path": "/tmp/gm1559-g1-engine-rollback-first-run.py",
+      "sha256": "f17fccc488c9e09101289fa631d7e3a7c57a55194d869d2b3a5ce3474b065b0b",
+      "currently": "UNRUN"
+    },
+    "descriptorCount": 1,
+    "methodCount": 1,
+    "cases": 2,
+    "budgetMinutes": 3,
+    "expectedBaseline": "Native1/2FAIL can be causal only at final Assert.Empty for operational changes after ordinary restored/new ordinary removed and real RestorePreTurnBackup completed. false creates paths after snapshot; true changes existing paths and baseline rewinds them. No actual result is predicted as observed.",
+    "nextGate": "Persist this decision; Root verifies exact metadata carrier/bindings and names one activation. Freeze/publish first result before independent causal EVIDENCE. No automatic other owner or production release."
+  },
+  "conditions": [
+    {
+      "id": "G1-L01",
+      "status": "MANDATORY_LATER_GREEN_PROOF_LIMIT_NOT_INITIAL_RED_BLOCKER",
+      "path": "tests/fixtures/ProductionMain/relay-long-session-checks.py:181-185",
+      "detail": "many-writes currently establishes real helper exit and terminal identity, but does not inspect exact physical after-images of all33 targets. Those bytes/normalization/member hashes must be checked in subsequent concrete batch SOURCE/EVIDENCE before claiming full33-write GREEN/integrity. The current count-limit causal boundary can be qualified only from actual diagnostics and original prerequisites."
+    },
+    {
+      "id": "G1-L02",
+      "status": "MANDATORY_G2_SOURCE_BINDING_CONDITION",
+      "path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.LongSessions.cs:45-52",
+      "detail": "Current Snapshot public field/Text property exist in actual bridge source. If G2 changes that representation, missing reflection fields must not silently qualify retainedBodyBytes==0; bind the concrete compact-receipt shape and keep meaningful positive schema prerequisites. This does not invalidate the current256-cap causal probe."
+    }
+  ],
+  "beforeActivation": [
+    "Persist exact source MD/JSON/support, Root receipt and readback, reviewed UNRUN recorder exactbytes, existing837delta/composition into feature recovery; update existing plan current phase honestly. No production/fixture/catalog/selection/binary change.",
+    "Publish nonforce metadata-only successor, read exact remote and complete new-directory allchangedpath GitHub recovery. No build/catalog/PlanOnly repetition for unchanged source.",
+    "Return exact successor and recovery; Root independently verifies delta/report/recorder identity and names that exact activation. Until that message, native remains HELD."
+  ],
+  "afterNamedActivation": [
+    "Run only fixed reviewed recorder f17 for gm-relay-operational-engine-rollback through canonical runner -NoBuild, one integration method/two rows; retain original9DLL/119source and d473 compilation.",
+    "Freeze original native/TRX/summary/plan/stdout/process/ownedroot outcomes; native1 alone is not RED. Require actual ordinary restore/delete and final original Assert.Empty in both false/true rows; no compiler/fixture/platform/cleanup/timeout/underfill failure substitution.",
+    "Immediately preserve/publish first raw WIP and exact new remote/GitHub delta before independent causal EVIDENCE; no source fix/retry/other owner/production automatically authorized."
+  ],
+  "held": "All other actual tests and all production/dependency/behavior changes. No Windows/CI/artifact retry, main/merge/force/issue closure. C01\u2013C06 remain OPEN; no fullissue or runtime acceptance.",
+  "actual": "UNRUN_NOT_YET_ACTIVATED",
+  "next": "Sole writer persists accepted Source and exact reviewed recorder, publishes/readbacks metadata successor; Root names first two-row activation."
+}
