@@ -1,0 +1,91 @@
+{
+  "kind": "ROOT_DATA_SELECTOR_PREP_CARRIER_READBACK_NO_RUNTIME",
+  "createdUtc": "2026-10-17T09:30:10.757875+00:00",
+  "carrier": "7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c",
+  "preparedSource": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "metadataOnlyChangedPaths": 23,
+  "verifiedRawLiveGzipCommittedChains": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/record.json.gz",
+      "sha256": "a9ec24f5218b39ced6905ede5f343135c64ca5dcb9dc3eda2a5f54c1e2e17007",
+      "storedSha256": "d452a1002baf465073cf43d936a6bed4d51b0d100c67ab97ca690923c07bdf11"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/stdout.log.gz",
+      "sha256": "0a94cc3ebeffc6090c1310b6effbb56d951b57c00fda562a0071a9c334ff7005",
+      "storedSha256": "1ea7f81f931912abd898e9d8130c81749307d4f6d8ffcdf1ac224a0761570b7e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/process.json.gz",
+      "sha256": "391c0d1f690686419276936a40d7adddf6074e15cb323854c99cdede039f2c2f",
+      "storedSha256": "841bce7496f10400c95e3a5aea2fe5d48333fa77a1e06a2472f06ec7a011f2b2"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/first-launch-sentinel.json.gz",
+      "sha256": "8e663c3ff6d0d91d5f2abafe57b6c7f79949e57490a061a19f1c9ea3f6f4edd8",
+      "storedSha256": "5f362d749273bb4c17b0e095d23094445144b9f7b973364a8a69daed33854f3c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/runner0/catalog-audit.json.gz",
+      "sha256": "0bbd3d8117ebe42e977e44bf7d1ce86d17cbcd27fc1062149465840e74f3b185",
+      "storedSha256": "3856143d1005f8df87b2bd2852dad2a1425c1c1a841f3e486f0b7e84b77acb29"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/runner0/dotnet-test.log.gz",
+      "sha256": "0b85ae26f002c46f1708d9c1c18abbf0f381fd60c98245393aacbadba2237605",
+      "storedSha256": "015acf9ad84db49b727de08f21e237aed425179a0e195a85ec7ef3a8b53cb46c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/0-gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/runner0/summary.json.gz",
+      "sha256": "56545f5a30272c58081e6f62f65d4d182288bf97a39556438ded7c175dfb8d9a",
+      "storedSha256": "33d4c8309cd0633f66d126ac046f6a9ce91759d76f91bfdfa45f451745efe131"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/record.json.gz",
+      "sha256": "2b8f2a084daa73e996202332528bca581970c2ba73b5a9a6f38d74d9a6cbd532",
+      "storedSha256": "ef973e010840f9eba31385ff6bf686dc4967b989c00fe26cc2598680e1d629de"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/stdout.log.gz",
+      "sha256": "b5420bd788994969aba22ffeebbfe978b78fd643bafc847cd0ba2daa8fbba761",
+      "storedSha256": "36f70df761b23ad79bf1a064afcadef17fcfbd58a21c37705639df78c794829c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/process.json.gz",
+      "sha256": "8f03676a24425147a8023cece55b18f86e671bca5b466ee144128992ef942698",
+      "storedSha256": "410a1934fc1744fca251b1ddd94e01bc35ac53f0d768e85a29b39f0ae13209ba"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/first-launch-sentinel.json.gz",
+      "sha256": "1abb352a43b4486ec8f448752d401d777fafe40486abbe00c27c937dd4722a52",
+      "storedSha256": "45c28b675ccff5a30cb97cedc551e1e03030b667054abc887564d158b7d53ad8"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/runner0/dotnet-test.log.gz",
+      "sha256": "5d273f7768ca215db941c5d5c4e3df5af5d35257f2f94c3ba296ce215603787a",
+      "storedSha256": "e6e6622e2e61ae2763fc8dc4843d45130ea5bd397ea7dc7df601525997d0fd0e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/runner0/plan.json.gz",
+      "sha256": "70ca184812b8b8aad16fe64b07e5ca64b55e634cf601a7369324d771e3603401",
+      "storedSha256": "cceb0fc4b03b9cd0bb5c808434817ded4c8af294d0141951b2477c8aea3f477b"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-data-selector-first-preparation-20261017-files/1-gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/runner0/summary.json.gz",
+      "sha256": "85559b14d6eb62e035a0755d318981b269e1ab1e5c02945a8e120ab297dc115b",
+      "storedSha256": "83a4f67d369737af03b8d180285f77abb18fe6a760317fe1c5f1b3642476c20f"
+    }
+  ],
+  "rawChains": 14,
+  "completeDeltas": 92,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-7a3bf9a0-20261017.json",
+  "finiteRed": {
+    "owners": 5,
+    "descriptors": 5,
+    "methods": 10,
+    "cases": 28,
+    "executed": 0
+  },
+  "runtimeReleased": false
+}

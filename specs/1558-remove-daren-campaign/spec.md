@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST data/selector NoBuildcatalog0/822valid and finiteRED PlanOnly0 observed5owners/5integrationdescriptors/10methods/28cases,0exec;14raw chains and7unchanged compiled0bDLLs preserved. Exactdata/selector binding awaits targeted independent review and Root activation; actual source-derived transport/consumerRED/otheractual/production remain unrun/held. Accepted capture2 and original05d2FAIL history retained; T004–T020 unchecked.
+**Status**: Targeted DATA/FIXTURE/SELECTOR/PREP binding accepted on7a3/1f with retained compiled0b, exactfinite5owners/5descriptors/10methods/28cases,0exec. Exact reports and conditional Root per-owner gate persisted; next activation may release ONLY ordinary-storage2 after this metadata publication/readback/recovery. No consumer/retirementRED or other actual/production run; installeddata/currentselectors/7DLL unchanged. Capture2accepted and old05d2FAIL retained; T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -72,4 +72,7 @@ Historical [corrected capture2 raw outcome](recovery/g1-corrected-first-capture-
 Historical source-installation [capture and actual-byte transport EVIDENCE/SOURCE acceptance](recovery/gm1558-corrected-capture-evidence-independent-20261017.md) permits exact runtime JSON installation and selector partition only. [Current binding](g1-data-selector-source-packet-20261017.json) distinguishes57 unchanged compiled source pins/seven0b DLLs from current data/catalog/selectors. Fresh zero-execution discovery/finitePlanOnly and independent binding review still precede consumer runtime and meaningful retirement RED; no requirement/success criterion or production removal is complete.
 
 
-Current [NoBuild data/selector preparation](recovery/g1-data-selector-first-preparation-20261017.json) observes exact finite5owners/5descriptors/10methods/28cases with0test execution and unchanged compiled0b/sevenDLLs. Targeted independent binding review and explicit Root runtime activation remain pending; no source-derived consumer behavior, retirement RED or functional/success-criterion completion is claimed.
+Historical [NoBuild data/selector preparation](recovery/g1-data-selector-first-preparation-20261017.json) observes exact finite5owners/5descriptors/10methods/28cases with0test execution and unchanged compiled0b/sevenDLLs. Targeted independent binding review and explicit Root runtime activation remain pending; no source-derived consumer behavior, retirement RED or functional/success-criterion completion is claimed.
+
+
+Current [accepted data/selector/PREP binding](recovery/gm1558-g1-data-selector-independent-20261017.md) remains source/preparation qualification only. [Root conditional per-owner decision](recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json) requires exact metadata publication/readback/recovery and separately names ordinary2 first, then gates each other owner on preserved FIRST raw. No consumer behavior/retirement RED or requirement/success-criterion completion is declared here; product removal remains held.

@@ -1,0 +1,270 @@
+{
+  "kind": "INDEPENDENT_TARGETED_G1_DATA_SELECTOR_PREPARATION_SOURCE_REVIEW",
+  "utc": "2026-10-17T09:31:05.032138+00:00",
+  "carrier": "7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c",
+  "sourceCarrier": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verdict": "ACCEPTED_TARGETED_DATA_SELECTOR_PREP_BINDING__SEPARATE_ROOT_RUNTIME_RELEASE_REQUIRED",
+  "components": {
+    "DATA": "ACCEPTED_TWO_EXACT_ORIGINAL_JSON_INSTALLATIONS",
+    "FIXTURE_SOURCE": "ACCEPTED_TRANSPORT_RETAINED_UNCHANGED; ACTUAL_INSTANTIATION_PENDING",
+    "SELECTION": "ACCEPTED_SCHEMA6_ISOLATION_AND_EXACT_FINITE28",
+    "PREP": "ACCEPTED_FIRST_NOBUILD_CATALOG_AND_PLAN_ONLY_ZERO_EXECUTIONS",
+    "RECORDING": "ACCEPTED_PREPARED_SINGLE_OWNER_FIRST_RECORDING_AND_EXACT_ARCHIVAL_SCOPE",
+    "RUNTIME_EVIDENCE": "NO_CONSUMER_RED_OR_GREEN_EXECUTED_OR_ACCEPTED"
+  },
+  "findings": [],
+  "dataPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/TestData/DarenRetirement/browser7.json",
+      "bytes": 4267,
+      "sha256": "05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7",
+      "blobSha1": "439224fb2cc6bba63e91d78ded84a994d9070af6",
+      "mode": "100644",
+      "originalRaw": "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082/browser7.json",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "originalGeneration": "5fc5544e2a9c45b8a0adf0c7b0e52772",
+      "originalEvidencePath": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+      "installation": "EXACT_ORIGINAL_PACKET_BYTES_UNTRANSFORMED; runtime source-derived instantiation not run"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/TestData/DarenRetirement/standalone1.json",
+      "bytes": 2209,
+      "sha256": "06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53",
+      "blobSha1": "13f07decc00a559155312180afa5c886a7bc740c",
+      "mode": "100644",
+      "originalRaw": "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c/standalone1.json",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "originalGeneration": "4578ba8a389a4d29a56e8b4123a9edf5",
+      "originalEvidencePath": ".boe_runtime/trusted-local-publication-v1/active.json",
+      "installation": "EXACT_ORIGINAL_PACKET_BYTES_UNTRANSFORMED; runtime source-derived instantiation not run"
+    }
+  ],
+  "selectorPins": [
+    {
+      "path": "tests/categories.json",
+      "bytes": 2082358,
+      "sha256": "0173d8cc2c4c35e70c9e157d11a4967636fcc56b64e47685122d4713647a94cf",
+      "blobSha1": "aa8f2aa101c7af20ed7f8c0b69252a83bbbd1298",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 7344,
+      "sha256": "ddcd6ea9da2e0b06aeb8085fc44737a59bf75d408d287811bfa76b784ac66e13",
+      "blobSha1": "118c303dfba3dbf5a11c8ff25a452f72923db645",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selections/1558-daren-retirement-red.json",
+      "bytes": 2936,
+      "sha256": "17e7cb4e971d430dc6dd7f48344b3952f99c8e464f17c9b879b5028e60b45b9a",
+      "blobSha1": "fcd7d314e95d7b1393b285f8ecea425006c8f571",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selections/1558-daren-retirement.json",
+      "bytes": 7344,
+      "sha256": "ddcd6ea9da2e0b06aeb8085fc44737a59bf75d408d287811bfa76b784ac66e13",
+      "blobSha1": "118c303dfba3dbf5a11c8ff25a452f72923db645",
+      "mode": "100644"
+    }
+  ],
+  "ledgerPin": {
+    "path": "specs/1558-remove-daren-campaign/g1-method-row-ledger.json",
+    "bytes": 423273,
+    "sha256": "9537272e8fb2c1266c8c1b4005e41616586db5f1ef988cd82a293aa52eb79f27",
+    "blobSha1": "2f7f67f369f84420c8951ddfe29f144ca0d77746",
+    "mode": "100644"
+  },
+  "sourceContinuity": {
+    "compiledPinsHistorical": 60,
+    "retainedUnchangedNonSelectorPins": 57,
+    "explicitlyReboundHistoricalSelectorPins": 3,
+    "changes": "Two runtime-loaded original JSON files plus category/selection/ledger/feature metadata only. No C#, product, project, transport or runner change.",
+    "acceptedCaptureReview": "/tmp/gm1558-corrected-capture-evidence-independent-20261017.json",
+    "acceptedCaptureReviewSha256": "2baca7fb3770adec17b22952c8f59435047faa762ee199198d8b786c657aecff"
+  },
+  "partition": {
+    "unchangedRows": 820,
+    "oldRefusalCases": 5,
+    "currentRefusalCases": 4,
+    "separateSyntheticSchema6": 1,
+    "fullOwners": 17,
+    "full99": "Retained estimate from unchanged complete method set; only finite28 planned in this block"
+  },
+  "observedPreparation": {
+    "catalogNative": 0,
+    "catalogWall": 6.148797787001968,
+    "audit": {
+      "Valid": true,
+      "Methods": 11807,
+      "Categories": 822,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "planNative": 0,
+    "planWall": 3.1622457030025544,
+    "owners": 5,
+    "descriptors": 5,
+    "methods": 10,
+    "cases": 28,
+    "executed": 0,
+    "rows": [
+      {
+        "category": "daren-retirement-browser-host",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-browser-host",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "Cases": 11
+      },
+      {
+        "category": "daren-retirement-browser-host",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "Cases": 5
+      },
+      {
+        "category": "daren-retirement-console-menu",
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-ordinary-storage",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-ordinary-storage",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-save-rewards",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-save-rewards",
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "Cases": 3
+      },
+      {
+        "category": "daren-retirement-storage-refusal",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+        "Cases": 2
+      },
+      {
+        "category": "daren-retirement-storage-refusal",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+        "Cases": 2
+      }
+    ]
+  },
+  "freshCompiledBinaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "f8f9660806e43612aed5fd723c10280892d42a7d776f726481369361d239d71d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29326848,
+      "sha256": "6705066ce4b0ce40da308c45ec3264df3678168b8867313c285e064a7a9a53d8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    }
+  ],
+  "rawChainsVerified": 14,
+  "recovery": [
+    {
+      "path": "/tmp/gm1558-g1-data-selector-delta-github-1f978a82-20261017.json",
+      "sha256": "6a0d344c28b6a5f837a4971e5abcfe52185dcf4538c3c37a2b17e92615281138",
+      "sha": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "base": "46f916bd8b7848285d4ec4a369a2a7668f7219b1",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "path": "/tmp/gm1558-g1-data-selector-prep-delta-github-7a3bf9a0-20261017.json",
+      "sha256": "8f57c5b875f73123e6fd60d916ef4a8e0ed13ba2f78f0f14e315f777a5393877",
+      "sha": "7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c",
+      "base": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "files": 27,
+      "changedPaths": 23
+    }
+  ],
+  "recordingAssessment": {
+    "helperPins": [
+      {
+        "path": "/tmp/gm1558-consumer-red-run.py",
+        "sha256": "1b48849b4efe732c5e799630c59874820c35ee418ad0e4a28076008bb3defd1c",
+        "execution": "UNRUN"
+      },
+      {
+        "path": "/tmp/gm1558-archive-consumer-red.py",
+        "sha256": "6020e29ab28e39a69e2159fb281e7120804fb39ad0650421cd189ee9ab46a0a7",
+        "execution": "UNRUN"
+      },
+      {
+        "path": "/tmp/gm1558-consumer-red-inspection-recipe.md",
+        "sha256": "782e660eee9167e3105021ba7a6109f18d91ff4b21f51f6f6b307806e7ac85f5",
+        "execution": "UNRUN"
+      }
+    ],
+    "launcher": [
+      "Exactly one of five canonical integration owners per invocation, fixed3m descriptor budget, current PlanOnly record/descriptor and original packet hashes.",
+      "Clean exact released source descendant,57 non-selector source pins/seven binaries, separately current selectors; first-launch sentinel unique per compiled source and owner.",
+      "Preserves process/native/stdout/runner/packet/namespace references on first outcome. Nonzero is recorded, not automatically classified or retried; no next-owner loop or cleanup side action."
+    ],
+    "archiver": "Copies exact first raw into a new /tmp gzip archive with hashes; no execution, fixture transformation or owned-root deletion.",
+    "recipe": "Requires actual per-row owner prerequisites, source-derived transformation diagnostics, before/after hashes and callbacks, exact counts and strict cleanup. Distinguishes positive neighbors and expected causal failures from setup/platform/timeout/underfill/cleanup defects."
+  },
+  "releaseConditions": [
+    "Persist and recover this exact decision; Root alone may then release separately named exact-source first owner invocations bound to the reviewed finite Plan and seven binaries.",
+    "Run one canonical owner at a time; inspect and freeze each first result before any next release. No multi-owner keep-going workaround, no silent retry.",
+    "Expected native1 does not establish causal retirement RED. Stop on unexpected setup/platform/cleanup/incomplete evidence; retain failure history and unresolved roots rather than altering them for qualification.",
+    "Actual source-derived storage instantiation must validate accepted original packet hashes, fresh generation, only EvidencePath/GenerationPath substitutions and opaque profile/backup preservation.",
+    "Malformed-profile forbidden read can qualify only by actual owner stack and valid fixture prerequisites; do not invent completion/postcondition output. HTTP non404 requires registered-route causality and original profile witness.",
+    "Synthetic schema6 stays excluded from baseline RED and retained for future GREEN/source-order. Full99 remains an estimate outside this finite actual release; console11/frontend/Chromium and production remain separate gates."
+  ],
+  "preparedButUnexecuted": true,
+  "testsExecuted": 0,
+  "noRebuildRationale": "Data is read directly from TestRepoPaths.RepoRoot; unchanged C#/project source retains accepted fresh0b BOTH binaries. Current catalog validation and exact finite PlanOnly were performed with NoBuild, without recompilation.",
+  "support": {
+    "path": "/tmp/gm1558-g1-data-selector-independent-check-20261017.json",
+    "sha256": "c17ff81f038c5eda66658006f0b54255d87ff59294862fe6a44d635a7b289337"
+  },
+  "limits": [
+    "No native/build/test/producer/host/browser execution or repository mutation by reviewer.",
+    "No complete G0/371method, old capture raw, full60pin/prep or historical family replay.",
+    "Original05d two fixture failures remain unchanged; accepted capture2 proves original packet acquisition only, not retirement behavior.",
+    "No Windows/CI/Library/backend/general release claim."
+  ]
+}

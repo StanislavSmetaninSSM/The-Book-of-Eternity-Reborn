@@ -1,0 +1,15 @@
+# #1558 — targeted data/selector/preparation review
+
+**ACCEPTED**, with separate Root runtime release required. Carrier `7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c` binds data/selector source `1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f` and retained compiled tests `0b721c7c37207f1f1622172351fd515150eaf18d`; product remains `46ff637a01390a27c45a7fc36dc30e31d688e499`.
+
+The two installed TestData JSONs are byte-identical to the accepted original captures: browser7 SHA256 `05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7`, standalone1 `06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53`. They were not rebased or schema-edited. The accepted transport and all C#/product/project/runner source remain unchanged. Historical60 pins are distinguished correctly from57 unchanged non-selector pins and three explicitly rebound selectors.
+
+The existing synthetic schema6 Fact moves to `daren-retirement-original-schema6-green`; current-data refusal retains four rows. No method, row or budget is lost;820 other catalog rows are unchanged. Canonical full selection and its mirror match, with17owners and the retained99estimate. That full selection was not executed or newly claimed as native full-plan evidence.
+
+I verified **14 committed gzip/raw/live chains**, seven current binaries, source delta22files/all18paths and preparation delta27files/all23metadata paths. NoBuild catalog native0 took **6.148797787s**, with822categories/11807methods-files, no stale/unmapped entries. Finite PlanOnly native0 took **3.162245703s**: **5 integration descriptors,10 unique methods,28 cases, zero executions**. Exact cases are console menu1,save/rewards4,storage refusal4,ordinary storage2,HTTP host17. Schema6 is excluded. Current source/data-only changes do not require rebuilding unchanged0b binaries.
+
+Prepared launcher, archiver and inspection recipe have appropriate bounded scope: one owner, current exact Plan/source/data/binary bindings, distinct atomic FIRST sentinel, preserved first raw, no automatic next owner/retry or cleanup action. The recipe requires real owner/transport prerequisites and strict per-case cleanup; positive neighbors and unexpected failures are classified separately. Helper hashes are recorded in JSON; none was executed by this reviewer.
+
+After exact decision persistence/readback, Root may separately release each first canonical owner. Freeze and inspect each result before proceeding; expected native1 alone is not RED. Unexpected fixture/platform/timeout/underfill/cleanup evidence stops the block. Actual storage instantiation and causal outcomes remain unproven. Synthetic schema6, console11/frontend/Chromium, broad99 and production removal remain held. Old capture-failure history is unchanged.
+
+No material finding remains in this targeted binding. Supporting check: `/tmp/gm1558-g1-data-selector-independent-check-20261017.json`, SHA256 `c17ff81f038c5eda66658006f0b54255d87ff59294862fe6a44d635a7b289337`. This report grants no runtime authorization and repeats no accepted historical family.
