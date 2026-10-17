@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "CORRECTED_OWNER_FB6F_FRESH_COMPILED_DISCOVERED_0EXEC; TARGETED_SOURCE_FIXTURE_SELECTION_PREP_PENDING; NO_ACTUAL_OR_PRODUCTION_RELEASE",
+  "stage": "CORRECTED_OWNER_FB6F_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; F01_CLOSED_SOURCE_ONLY; CURRENT_GUARD_ACTUALS_UNRUN_HELD; PRODUCTION_HELD",
   "sourcePinCount": 136,
   "sourcePinDigest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
   "sourcePins": [
@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "730308001fa10d51e14f083756b4292f062e3be5c9cb43b48f403bf17b7f90a9"
+    "sha256": "3ffacaabd9593b146372112e11cc389405623bd8eeebb64d03a96ef57d988ef9"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1289,7 +1289,7 @@
       "cases": 32,
       "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141948-039-128017-72921438b8c547829499ccddc1939bc0-categories/plan.json"
     },
-    "appliesTo": "Historical original134source/7ff; corrected136source is UNCOMPILED/UNPREPARED."
+    "appliesTo": "Historical original134source/7ff zero-exec preparation. Corrected136source freshfb6f preparation is ownerFixPreparation; targeted SOURCE accepted, current actuals unrun."
   },
   "currentManagedProvenance": {
     "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
@@ -1388,7 +1388,7 @@
     "helperExecution": "New8 guards execute exact repo helper through unchanged ownership glue; future fresh managed helper must byte-equal repo helper. Genuine publisher proves current package chain separately.",
     "notTriggered": "Six other #1557 inverse entrypoints unchanged; no inverse-map edit/test by adjacency and no A255/B78/family replay."
   },
-  "runtimePolicy": "No native/prep/product run in this authoring block. Publish/readremote/new GitHub delta BEFORE long build/source review. First outcomes immutable; unknown setup/platform/underfill/cleanup is STOP, never automatic causal RED.",
+  "runtimePolicy": "Current corrected136source/freshfb6f9DLL SOURCE/PREP accepted only. No current testcase execution or production release. Exact persisted successor recovery and separate Root named owner activation required. First outcomes immutable; unexpected setup/authority/timeout/underfill/cleanup stops, never automatic RED.",
   "handoff": "Close only safe inactive lifecycle stage through affected GREEN/independent acceptance/durable checkpoint; then wounds T179-Pd.3d. Full relay backlog stays open/deferred.",
   "newFirstActualRecorder": {
     "path": "recovery/tools/lifecycle-guard-first-run.py",
@@ -1419,7 +1419,7 @@
     "laterEqualityFailures": 6,
     "remainingOwners": 3,
     "remainingRows": 16,
-    "qualification": "UNEXPECTED_FIRST_STOP_RAW_ONLY; CAUSAL_REVIEW_PENDING; NO_RETRY"
+    "qualification": "HISTORICAL_FIRST0771_NATIVE6PASS10FAIL; INDEPENDENT_CAUSE_ACCEPTED_6POLICYRED_6SUFFIXPASS_4UNQUALIFIED_F01; original raw unchanged, no double-count"
   },
   "privateFixtureCorrection": {
     "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
@@ -1430,8 +1430,8 @@
     "cause": "Actual ValidationService.PrivateImplementation.cs closes ValidationService before public ValidationIssue; IsClientOwnedSurfacePath is declared on ValidationIssue. Four original NotNull41 failures are fixture owner lookup failures, not product RED. Six other exact-name Eq46 failures have actual values; six suffix PASS remain distinct.",
     "reviewDisposition": "Root accepted exact independent first-causal pair/support. Four fixture prerequisite failures remain unqualified;6causalRED+6suffixPASS retained with original provenance and no double-counting. Old SOURCE report unchanged, four-row eligibility superseded.",
     "callees": "Root retained-fullbase coverage2, no clone/fetch: MortalItemRepairPacketBuilder direct to BOTH validation predicates; AfterlifeContractRegistry direct only to ValidationIssue surface.",
-    "preparation": "Freshfb6f stage-build-plan0 +guards-plan-NoBuild0 saved; targeted SOURCE pending.",
-    "actual": "NOT_RUN; all dependent native/production held. Future failed-private16 requalification is changed-fixture verification, not original accepted baseline8 replay.",
+    "preparation": "Freshfb6f stage-build-plan0 +guards-plan-NoBuild0 saved; targeted SOURCE/FIXTURE/SELECTION/PREP accepted, no actual release.",
+    "actual": "CORRECTED_SOURCE_UNRUN_HELD; originalFIRST0771 immutable; separate named Root activation required before relevant private16 requalification, no baseline8 replay.",
     "previous134SourceDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
     "unchangedPrior134Pins": 133,
     "changedPriorPin": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
@@ -1560,5 +1560,33 @@
     "status": "UNRUN; distinct corrected-source requalification after0771, not replacement of historical first16.",
     "archive": "recovery/tools/archive-lifecycle-guard.py",
     "archiveSha256": "140bf58b064c5b6d30c2fcbb3af33112ee3c6a1cec9e52edecd6374645c26ab8"
+  },
+  "ownerFixSourceDecision": {
+    "verdict": "ACCEPT_TARGETED_SOURCE_FIXTURE_SELECTION_PREP; F01_CLOSED_SOURCE_ONLY",
+    "carrier": "5ace63d19ba1c228106688a806421bcd50806b43",
+    "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+    "reports": [
+      {
+        "path": "recovery/ownerfix-source-independent.md",
+        "sha256": "c473a1f19b2a9792b17e3d02eba60e6eb0001144c2b549faf623cd094725364d"
+      },
+      {
+        "path": "recovery/ownerfix-source-independent.json",
+        "sha256": "743d4cbcf9db3a6233a2d433dc742ae7507e410930acf8f96700eebf167b85e9"
+      },
+      {
+        "path": "recovery/ownerfix-source-independent-check.json",
+        "sha256": "9af5ddd65b3d799852d7cd8003fd8acc1fff2489b0e4d88816d4b34233270292"
+      }
+    ],
+    "rootDisposition": "Root read/hashverified all three final reports and accepted source-only F01 closure with no material blocker. Persist/recover successor before separately named corrected-private16 activation. Other three owners require separate later releases; no production authority.",
+    "actual": "CORRECTED_PRIVATE16_AND_OTHER3_CURRENT_GUARD_OWNERS_ALL_UNRUN; no runtime release",
+    "retention": "Original0771 native6PASS10FAIL remains immutable:6qualifiedpolicyRED+6suffixPASS+4unqualifiedwrong-owner prerequisites; old Source miss retained. Requalification is not replacement or double-counting; originalbaseline8 retained without replay.",
+    "recovery": {
+      "completeDelta": "recovery/5ace-delta-github.json",
+      "rootComposition": "recovery/5ace-recovery-composition.json",
+      "retainedDeltas": 138,
+      "trackedPaths": 56454
+    }
   }
 }

@@ -1,0 +1,338 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "5ace63d19ba1c228106688a806421bcd50806b43",
+  "base": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "directory": "/tmp/gm1559-ownerfix-prep-recovered-5ace63d1-20261017",
+  "completedUtc": "2026-10-17T14:54:43.414294+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1559-relay-long-sessions/g1-method-row-ledger.json",
+    "M\tspecs/1559-relay-long-sessions/g1-source-packet.json",
+    "M\tspecs/1559-relay-long-sessions/lifecycle-source-packet.json",
+    "M\tspecs/1559-relay-long-sessions/plan.md",
+    "A\tspecs/1559-relay-long-sessions/recovery/fb6f-delta-github.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/fb6f-recovery-composition.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-first-preparation.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/000-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-guards-plan.FIRST.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/001-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-stage-build-plan.FIRST.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/002-process.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/003-record.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/004-stdout.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/005-process.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/006-record.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/007-stdout.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/008-gm1559-lifecycle-source-context-fb6f8989-20261017.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/009-Build-integration.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/010-Build-unit.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/011-dotnet-test.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/012-plan.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/013-summary.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/014-dotnet-test.log.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/015-plan.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/016-summary.json.gz",
+    "A\tspecs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/archive.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/private16-first-causal-independent-check.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/private16-first-causal-independent.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/private16-first-causal-independent.md",
+    "A\tspecs/1559-relay-long-sessions/recovery/root-ownerfix-prep-readback-fb6f8989.json",
+    "A\tspecs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-guard-first-run.py",
+    "A\tspecs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-preparation-run.py",
+    "M\tspecs/1559-relay-long-sessions/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 36,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "d3e22f0c0cb37131d9c13b94cdfe8c8f018df605",
+      "bytes": 11659,
+      "sha256": "45c51acef90383685b793c51b2695b6bfb677ae17e37bc14d498783d09119855",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/docs/testing.md"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
+      "mode": "100644",
+      "git_blob": "0da6f0971891792f5ad6d8df835027d59fef6214",
+      "bytes": 43091,
+      "sha256": "730308001fa10d51e14f083756b4292f062e3be5c9cb43b48f403bf17b7f90a9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/g1-method-row-ledger.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/g1-source-packet.json",
+      "mode": "100644",
+      "git_blob": "d3d7a69256250a09ddf0e2a926a0fc6cfffadeea",
+      "bytes": 53536,
+      "sha256": "3cbc2bcfb02f2037cc8bd244fa717482a243a17a7ce68f2a3e5634edd6424767",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/g1-source-packet.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/lifecycle-source-packet.json",
+      "mode": "100644",
+      "git_blob": "a05a7c5ce8426935d348f8a3369a779cec48db93",
+      "bytes": 68377,
+      "sha256": "bfc7a7f4529a9acf1381bc66071cfb08e8fa4169998f5a77b190757623a472aa",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/lifecycle-source-packet.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/plan.md",
+      "mode": "100644",
+      "git_blob": "7b9a8ba241d3631dfe67f2e652928aa7d195b3ff",
+      "bytes": 67831,
+      "sha256": "c3eef1eaa90c1af044c852ae64d70dc245f8c4889030802e1564f9fc4cab03c2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/plan.md"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/fb6f-delta-github.json",
+      "mode": "100644",
+      "git_blob": "9a0528eb40104d6610dff22e1d3f457a06b83ae0",
+      "bytes": 10728,
+      "sha256": "521755de2666e3ab314bbf42da83e4773f811c582f5065d290c51de6d8a1b65a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/fb6f-delta-github.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/fb6f-recovery-composition.json",
+      "mode": "100644",
+      "git_blob": "06868386c163e1f82c17945c8d645ed47edfd627",
+      "bytes": 47259,
+      "sha256": "e0f1baa840393faf40d4b78cf3728f7c7241ce919cbc72eb7e9fb1585eb65aa1",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/fb6f-recovery-composition.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-first-preparation.json",
+      "mode": "100644",
+      "git_blob": "980799e0b77fd935088c07821898ec1d372336ff",
+      "bytes": 9973,
+      "sha256": "ed4c6f4672ad8e7f7e9f14290876192faa3f04784abb90899d6e74b3d1c082f8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-first-preparation.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/000-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-guards-plan.FIRST.json.gz",
+      "mode": "100644",
+      "git_blob": "d068065ebcc92f9ce65a09596a41ffa7549a320a",
+      "bytes": 286,
+      "sha256": "68031316f822122c031b4e06e51c74730d9ca67efd2f44700a6a8820ec5f385b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/000-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-guards-plan.FIRST.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/001-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-stage-build-plan.FIRST.json.gz",
+      "mode": "100644",
+      "git_blob": "ff33201a487744b901ac54f7d24371bd6d8325c2",
+      "bytes": 290,
+      "sha256": "fe233ddd4a1b3b704f6b8812cb516d7727a30976593271db4a1f423b66c8e62b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/001-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-stage-build-plan.FIRST.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/002-process.json.gz",
+      "mode": "100644",
+      "git_blob": "53165edfe099392cbba4b138aa4ea90b5f132686",
+      "bytes": 418,
+      "sha256": "916d9b3c70c62ec18d917fccc6889944451f0ab41a4745665bf667b2e85d23f5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/002-process.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/003-record.json.gz",
+      "mode": "100644",
+      "git_blob": "cf38b48e245953f0adfe90ae21803924e9f4097f",
+      "bytes": 18507,
+      "sha256": "c239697064291588c8936c0b422eaa0b7c41e637fc0f8f9e3fd79548b5f12f35",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/003-record.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/004-stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "aaee24bf9c9abfd63f448d00678d3631e23143f6",
+      "bytes": 856,
+      "sha256": "f1b3da29f3ddf2995fec134a9aaa83a51448c27582e0312e6fbd678459917d00",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/004-stdout.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/005-process.json.gz",
+      "mode": "100644",
+      "git_blob": "96211c1490084a1d85c855695ad94974cab4c83d",
+      "bytes": 373,
+      "sha256": "a8328f158752c44ac653f5e3a119fb3a44cb0baec25a2212390ff7922b432349",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/005-process.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/006-record.json.gz",
+      "mode": "100644",
+      "git_blob": "99b87b77d40658c24234cef5c4728d7415dcad0e",
+      "bytes": 18715,
+      "sha256": "4623fd3802a821d84cc8ac77cbfb6d8448f3c0e9afb57a2ce43206dbf848bc26",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/006-record.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/007-stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "c7de2c80803cf6da53b5e715dc175e2621709e67",
+      "bytes": 1541,
+      "sha256": "9ace2810b39967ea14800b6165f4aedea9fafa348a5d9c3425ca3b7d4e3bfb9f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/007-stdout.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/008-gm1559-lifecycle-source-context-fb6f8989-20261017.json.gz",
+      "mode": "100644",
+      "git_blob": "b168ee0204503324cb07d26422d455cd9fc8d82c",
+      "bytes": 18204,
+      "sha256": "31b0ec5e7418e0a194932c5457a47a47dd0c6224fda526dbb3f3c0b7d4d7b4b5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/008-gm1559-lifecycle-source-context-fb6f8989-20261017.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/009-Build-integration.log.gz",
+      "mode": "100644",
+      "git_blob": "f5adc19b0db5151b81d92e03eb1b4f1e907075c3",
+      "bytes": 9268,
+      "sha256": "e5ac48fae9d0e1d91974990d36b11adf58c5968e63c937917fd4b2dcf1bd4904",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/009-Build-integration.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/010-Build-unit.log.gz",
+      "mode": "100644",
+      "git_blob": "b624cd0cee6421d488633dc6ba297be32e1fb5e6",
+      "bytes": 1894,
+      "sha256": "917f262f7c5886d63b66642db11e98c5044c274b061ee1306e80fc71ed466736",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/010-Build-unit.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/011-dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "8499c5bbc2c63d119f6bc336df609acfd2c5f8f6",
+      "bytes": 390807,
+      "sha256": "8020fd3fbf994e99150dcaa0d1d7e3bbccbdd668e27c098796951341b3350b49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/011-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/012-plan.json.gz",
+      "mode": "100644",
+      "git_blob": "3f064861f4ed02cbb67cbe7eb7997ab3dbd1f70d",
+      "bytes": 2349,
+      "sha256": "4f3a80f7c934287b27b2517daf596f9fadb87bd99657144661b4cb550d7afb47",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/012-plan.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/013-summary.json.gz",
+      "mode": "100644",
+      "git_blob": "e6804680c626f62c4a0f4762136a635c51faa2a1",
+      "bytes": 1759,
+      "sha256": "7a245c1864dc848d079164018f43334ab4cfc5f5d07d6149bdccf3c01fb067b8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/013-summary.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/014-dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "97417636d847f9027a5caeed56f2df1fd313af9d",
+      "bytes": 379511,
+      "sha256": "833f1ec45ca2821bed56b32d113128e7b88bbd14afce0f10be9f9bbed0b26d8e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/014-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/015-plan.json.gz",
+      "mode": "100644",
+      "git_blob": "acc11c92934585eef918e4aed9265d4d6c0eb4c5",
+      "bytes": 1318,
+      "sha256": "9ee219fdd80b5d3e733193a39db05e0af7e8074c994a0aac0b810b5dd20eb9af",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/015-plan.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/016-summary.json.gz",
+      "mode": "100644",
+      "git_blob": "e14686327f0d0a38e3e68a22f0354bebee135932",
+      "bytes": 1225,
+      "sha256": "726c6de8759bacb44f23f1f5376e0e85cabdfd9ebe86e34f92ae34617c0ec2c6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/016-summary.json.gz"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/archive.json",
+      "mode": "100644",
+      "git_blob": "f6db13550f929303d8f45c50497f9fa5c6bcf737",
+      "bytes": 7922,
+      "sha256": "22304a8d6b9a4112a302518e12eecdebe5271eb188cb79420e566c5be5b25a7a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/lifecycle-ownerfix-preparation-files/archive.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/private16-first-causal-independent-check.json",
+      "mode": "100644",
+      "git_blob": "2f6edea325751f3a788ba5e116b3c8a6e1c17026",
+      "bytes": 31462,
+      "sha256": "8d30f2ad66ab60422b63e4efd5e337e003dc209ff12c3073a5782f937bda4275",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/private16-first-causal-independent-check.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/private16-first-causal-independent.json",
+      "mode": "100644",
+      "git_blob": "292827fbc746e8dedfdf072aa213d97b90028665",
+      "bytes": 12048,
+      "sha256": "c801000f0f790ec8f099cfb836a2f781c8593dc092476d5c9b8fa546db1d4503",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/private16-first-causal-independent.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/private16-first-causal-independent.md",
+      "mode": "100644",
+      "git_blob": "60a443eb2cbea567c9b891d49d7469a504ad388b",
+      "bytes": 3072,
+      "sha256": "cd0f240515e4fee4c111e5595f556d69bff807a13caef51d298bac4e49b200fa",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/private16-first-causal-independent.md"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/root-ownerfix-prep-readback-fb6f8989.json",
+      "mode": "100644",
+      "git_blob": "1a4f77fa592c13549bdd66d9c3a4e85d840967a5",
+      "bytes": 3086,
+      "sha256": "ce679767276c14e6a8166a2517f268031e35ad62b2656427107befb9f12e2970",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/root-ownerfix-prep-readback-fb6f8989.json"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-guard-first-run.py",
+      "mode": "100644",
+      "git_blob": "1d510a5dcf3b6cc0927170a8d3043a9e3fe1f0da",
+      "bytes": 6831,
+      "sha256": "9b87152a0d37a6b44d85de9a8ab94495177decb8b2f96e46ecc64498d12d69cc",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-guard-first-run.py"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-preparation-run.py",
+      "mode": "100644",
+      "git_blob": "64f5115e5535f381cef1a4d201cf0c7bcc4b640a",
+      "bytes": 7122,
+      "sha256": "04cebd128fc02656662c96bb22e10a7c8cb2b78a86ed106b9d15e5a4ade778ea",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/recovery/tools/lifecycle-ownerfix-preparation-run.py"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/tasks.md",
+      "mode": "100644",
+      "git_blob": "c62202a6160487d696409c9867509180449ec58d",
+      "bytes": 8243,
+      "sha256": "5fd111a1106003fb9b39af2f4994677a35bd4b16465b0d5d22c772c1d6fffafb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5ace63d19ba1c228106688a806421bcd50806b43/specs/1559-relay-long-sessions/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "5ace63d19ba1c228106688a806421bcd50806b43\trefs/heads/1559-relay-long-sessions-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1559')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nbase=git('rev-parse',base).decode().strip();sha=git('rev-parse',sha).decode().strip()\nchanged=git('diff','--no-renames','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1559-relay-long-sessions-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

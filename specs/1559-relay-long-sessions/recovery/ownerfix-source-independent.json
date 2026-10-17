@@ -1,0 +1,141 @@
+{
+  "kind": "INDEPENDENT_TARGETED_F01_OWNER_CORRECTION_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "createdUtc": "2026-10-17T14:58:26.516260+00:00",
+  "carrier": "5ace63d19ba1c228106688a806421bcd50806b43",
+  "compiledCorrectedFixtureSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "unchangedProductSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdicts": {
+    "SOURCE": "ACCEPT_TARGETED_F01_SOURCE_CLOSURE",
+    "FIXTURE": "ACCEPT_CORRECT_DECLARING_OWNER_WITH_UNCHANGED_ORACLES",
+    "SELECTION": "ACCEPT_UNCHANGED_GUARDS32_AND_AFFECTED_STAGE47",
+    "PREPARATION": "ACCEPT_FRESH_BOTH_BUILD_PLAN_AND_GUARDS_PLAN_ZERO_EXECUTIONS",
+    "RUNTIME_EVIDENCE": "CORRECTED_FIXTURE_UNRUN_NOT_QUALIFIED",
+    "PRODUCTION_RELEASE": "NONE"
+  },
+  "materialBlockers": [],
+  "F01": {
+    "status": "CLOSED_AT_SOURCE_ONLY",
+    "change": "Only surface branch typeof(ValidationService) becomes typeof(ValidationIssue). Exact inverse reconstructs entire parent test file.",
+    "actualOwner": "Separate public BookOfEternityClient.Services.ValidationIssue; private static bool IsClientOwnedSurfacePath(string normalizedPath). Existing namespace import resolves corrected type; reflection flags match declaration.",
+    "unchanged": "All16 InlineData, method name, signature assertions, real invocation, witness and final equality; no fallback, count shrink, parser/product/selector change.",
+    "history": "Original0771 FIRST native6PASS10FAIL remains:6qualifiedRED6positive4unqualifiedowner failures. Previous SOURCE four-row eligibility was defective and remains superseded; correction is not retroactive runtime evidence."
+  },
+  "sourceBinding": {
+    "pins": 136,
+    "digest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
+    "priorPinsUnchanged": 133,
+    "changedPin": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+    "addedPins": [
+      "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs"
+    ],
+    "calleeRoles": "MortalItemRepairPacketBuilder direct to both predicates; AfterlifeContractRegistry direct only to ValidationIssue surface. Exact retained-base bytes verified; no new fetch or full-source replay.",
+    "currentLedgerSha256": "730308001fa10d51e14f083756b4292f062e3be5c9cb43b48f403bf17b7f90a9",
+    "productDeltaEmpty": true,
+    "metadataCarrierOnlySinceCompiled": true
+  },
+  "preparation": {
+    "phases": [
+      {
+        "mode": "stage-build-plan",
+        "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-stage-build-plan-fb6f8989-20261017/record.json",
+        "recordSha256": "75790d36a0640dd66af6b341348f734a4942a10cb2a0e67a83479b75f7b49146",
+        "nativeExit": 0,
+        "wallSeconds": 88.60193480300222,
+        "testsExecuted": 0,
+        "dimensions": [
+          9,
+          10,
+          15,
+          47
+        ],
+        "semanticPlanEqual": true,
+        "planSha256": "94f7b7c6803fb44e3e9a87a07c9e441fd43ad99624bfcdbcea4d3d730c084f96",
+        "buildPhases": [
+          {
+            "Name": "Build-integration",
+            "Seconds": 70.8974307,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 11.8120073,
+            "Completed": true
+          }
+        ],
+        "summarySha256": "f293bbf96207ee2c7cf7ae1513fd0f5ef41d01a9de536ec251e424c60f0a38b3"
+      },
+      {
+        "mode": "guards-plan",
+        "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-guards-plan-fb6f8989-20261017/record.json",
+        "recordSha256": "6bf661a075b06b71e3575ad1d047cda5937d5905e8e8be76531536372bdacffa",
+        "nativeExit": 0,
+        "wallSeconds": 6.016188679001061,
+        "testsExecuted": 0,
+        "dimensions": [
+          4,
+          4,
+          4,
+          32
+        ],
+        "semanticPlanEqual": true,
+        "planSha256": "568f4fe56bd5ce1d91c4b67aca549f75dc7ac643c460542de7f277cfca40128b",
+        "buildPhases": [],
+        "summarySha256": "4bc84b4f959513a47fa70203d327d3150c3792b3af56f62c6f0dabe76d58af24"
+      }
+    ],
+    "nativeExecutions": 0,
+    "frozenChains": 17,
+    "freshManagedBinaryCopies": 9,
+    "managedFiles": 258,
+    "helperSourcePackageSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+    "catalog": "Retain prior829/11699 audit because catalog ownership, selectors and method identities are byte-unchanged; fresh selected discovery observed here.",
+    "freshness": "stage-build-plan builds integration and unit without NoBuild, then guards PlanOnly with NoBuild. StageAfter=GuardBefore=GuardAfter=current9 pins. Generated revision is fb6f, not old7ff.",
+    "semanticPlans": "Categories/Reasons/Descriptors exactly equal accepted7ff: stage9categories10descriptors15methods47rows, guards4categories4descriptors4methods32rows.",
+    "plannedUnderfill": "Complete=false and zero completed descriptors are intentional PlanOnly facts, not failed runtime."
+  },
+  "recording": {
+    "controller": "/tmp/gm1559-lifecycle-ownerfix-guard-first-run.py",
+    "controllerSha256": "9b87152a0d37a6b44d85de9a8ab94495177decb8b2f96e46ecc64498d12d69cc",
+    "archiver": "/tmp/gm1559-archive-lifecycle-guard.py",
+    "archiverSha256": "140bf58b064c5b6d30c2fcbb3af33112ee3c6a1cec9e52edecd6374645c26ab8",
+    "status": "UNRUN; all four corrected-source actual FIRST sentinels absent",
+    "delta": "Only declaring-owner-corrected header, label/sentinel namespace, compiledfb6 and source136. Exact inverse equals accepted59d0 controller. Same fixed4owners, exactplan/method checks,9pins, helper binding, one Category-NoBuild, native-terminal original-file capture, no retry/advance/automaticRED."
+  },
+  "eligibleNextSteps": [
+    "Persist exact review and Root decision; verify successor carrier/recovery and unchanged bindings.",
+    "Root may separately activate corrected private16 on freshfb6. This is explicit changed-fixture requalification after0771, not replacement of original evidence.",
+    "Only after inspecting expected prerequisite/outcome/completeness/cleanup raw may Root separately activate the other three still-first-ever owners: enginealias4, livealias4, helper8.",
+    "Any unexpected setup/import/signature/owner/process/timeout/cleanup/underfill must stop and be frozen before correction.",
+    "Combined32 causal EVIDENCE remains required before the held coherent lifecycle-only product patch. No predictions are qualified results."
+  ],
+  "retentionAndScope": [
+    "Retain original12 qualified observations with original7ff provenance; do not double-count after corrected16 execution.",
+    "Retain accepted baseline8 and prior reports without replay. Stage47 remains future affected GREEN, not an authorized aggregate now.",
+    "No new relay schema/writer/reader/trust/dispatch/batch/sequence/budget; fullC01-C06 deferred. Lifecycle checkpoint then woundsT179-Pd.3d handoff.",
+    "No Windows/CI/ZIP or broader-family work."
+  ],
+  "recovery": [
+    {
+      "path": "/tmp/gm1559-private-owner-fix-source-delta-github-fb6f8989-20261017.json",
+      "sha256": "521755de2666e3ab314bbf42da83e4773f811c582f5065d290c51de6d8a1b65a",
+      "sha": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "base": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+      "files": 14,
+      "allChangedPaths": 10
+    },
+    {
+      "path": "/tmp/gm1559-ownerfix-prep-delta-github-5ace63d1-20261017.json",
+      "sha256": "1bfa2a635b11da0c84146b28fa61a7ed583d4009fb6c001921afd20c750162ef",
+      "sha": "5ace63d19ba1c228106688a806421bcd50806b43",
+      "base": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "files": 36,
+      "allChangedPaths": 32
+    }
+  ],
+  "support": {
+    "path": "/tmp/gm1559-ownerfix-source-independent-check-20261017.json",
+    "sha256": "9af5ddd65b3d799852d7cd8003fd8acc1fff2489b0e4d88816d4b34233270292"
+  },
+  "reviewActivity": "Read-only source/Git/JSON/gzip/hash/static-controller comparison. No build, test, native reflection invocation, runtime or repository edit."
+}

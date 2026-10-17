@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "F01_CAUSE_ACCEPTED_6CAUSAL6PASS4UNQUALIFIED; ONE_LINE_FIXTURE_CORRECTED_FRESH_PREP0; TARGETED_SOURCE_PENDING; ALL_CORRECTED_ACTUALS_AND_PRODUCTION_HELD",
+  "currentGate": "F01_SOURCE_ONLY_CLOSED; CORRECTED_FB6F_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; ALL_CURRENT_GUARD_ACTUALS_UNRUN_HELD_PENDING_NAMED_ROOT_ACTIVATION; PRODUCTION_HELD",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -606,7 +606,7 @@
           }
         ],
         "staticCount": 16,
-        "status": "CORRECTED_SOURCE_FB6F_PREPARED_UNRUN: freshcompiled/discovered0exec; original7ffFIRSTprivate16 history retained separately",
+        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
         "oracle": "Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only."
@@ -634,7 +634,7 @@
           }
         ],
         "staticCount": 4,
-        "status": "CORRECTED_SOURCE_FB6F_PREPARED_UNRUN: freshcompiled/discovered0exec; original7ffFIRSTprivate16 history retained separately",
+        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
         "oracle": "Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only."
@@ -662,7 +662,7 @@
           }
         ],
         "staticCount": 4,
-        "status": "CORRECTED_SOURCE_FB6F_PREPARED_UNRUN: freshcompiled/discovered0exec; original7ffFIRSTprivate16 history retained separately",
+        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
         "oracle": "Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only."
@@ -714,7 +714,7 @@
           }
         ],
         "staticCount": 8,
-        "status": "CORRECTED_SOURCE_FB6F_PREPARED_UNRUN: freshcompiled/discovered0exec; original7ffFIRSTprivate16 history retained separately",
+        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
         "oracle": "Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "Actual FilesModified policy consumer called first by Complete-BoeTurn; no Complete/client acceptance or terminal writer exercised. Read/writer children, original guardian.json driverExitCode0, scenario/helper-child/joined originals retained."
@@ -813,7 +813,7 @@
       "laterEqualityFailures": 6,
       "remainingOwners": 3,
       "remainingRows": 16,
-      "qualification": "UNEXPECTED_FIRST_STOP_RAW_ONLY; CAUSAL_REVIEW_PENDING; NO_RETRY"
+      "qualification": "HISTORICAL_FIRST0771_NATIVE6PASS10FAIL; INDEPENDENT_CAUSE_ACCEPTED_6POLICYRED_6SUFFIXPASS_4UNQUALIFIED_F01; original raw unchanged, no double-count"
     },
     "privateFixtureCorrection": {
       "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
@@ -824,8 +824,8 @@
       "cause": "Actual ValidationService.PrivateImplementation.cs closes ValidationService before public ValidationIssue; IsClientOwnedSurfacePath is declared on ValidationIssue. Four original NotNull41 failures are fixture owner lookup failures, not product RED. Six other exact-name Eq46 failures have actual values; six suffix PASS remain distinct.",
       "reviewDisposition": "Root accepted exact independent first-causal pair/support. Four fixture prerequisite failures remain unqualified;6causalRED+6suffixPASS retained with original provenance and no double-counting. Old SOURCE report unchanged, four-row eligibility superseded.",
       "callees": "Root retained-fullbase coverage2, no clone/fetch: MortalItemRepairPacketBuilder direct to BOTH validation predicates; AfterlifeContractRegistry direct only to ValidationIssue surface.",
-      "preparation": "Freshfb6f stage-build-plan0 +guards-plan-NoBuild0 saved; targeted SOURCE pending.",
-      "actual": "NOT_RUN; all dependent native/production held. Future failed-private16 requalification is changed-fixture verification, not original accepted baseline8 replay."
+      "preparation": "Freshfb6f stage-build-plan0 +guards-plan-NoBuild0 saved; targeted SOURCE/FIXTURE/SELECTION/PREP accepted, no actual release.",
+      "actual": "CORRECTED_SOURCE_UNRUN_HELD; originalFIRST0771 immutable; separate named Root activation required before relevant private16 requalification, no baseline8 replay."
     },
     "ownerFixPreparation": {
       "packet": "recovery/lifecycle-ownerfix-first-preparation.json",
@@ -847,6 +847,34 @@
         0
       ],
       "actualTestsExecuted": 0
+    },
+    "ownerFixSourceDecision": {
+      "verdict": "ACCEPT_TARGETED_SOURCE_FIXTURE_SELECTION_PREP; F01_CLOSED_SOURCE_ONLY",
+      "carrier": "5ace63d19ba1c228106688a806421bcd50806b43",
+      "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "reports": [
+        {
+          "path": "recovery/ownerfix-source-independent.md",
+          "sha256": "c473a1f19b2a9792b17e3d02eba60e6eb0001144c2b549faf623cd094725364d"
+        },
+        {
+          "path": "recovery/ownerfix-source-independent.json",
+          "sha256": "743d4cbcf9db3a6233a2d433dc742ae7507e410930acf8f96700eebf167b85e9"
+        },
+        {
+          "path": "recovery/ownerfix-source-independent-check.json",
+          "sha256": "9af5ddd65b3d799852d7cd8003fd8acc1fff2489b0e4d88816d4b34233270292"
+        }
+      ],
+      "rootDisposition": "Root read/hashverified all three final reports and accepted source-only F01 closure with no material blocker. Persist/recover successor before separately named corrected-private16 activation. Other three owners require separate later releases; no production authority.",
+      "actual": "CORRECTED_PRIVATE16_AND_OTHER3_CURRENT_GUARD_OWNERS_ALL_UNRUN; no runtime release",
+      "retention": "Original0771 native6PASS10FAIL remains immutable:6qualifiedpolicyRED+6suffixPASS+4unqualifiedwrong-owner prerequisites; old Source miss retained. Requalification is not replacement or double-counting; originalbaseline8 retained without replay.",
+      "recovery": {
+        "completeDelta": "recovery/5ace-delta-github.json",
+        "rootComposition": "recovery/5ace-recovery-composition.json",
+        "retainedDeltas": 138,
+        "trackedPaths": 56454
+      }
     }
   }
 }
