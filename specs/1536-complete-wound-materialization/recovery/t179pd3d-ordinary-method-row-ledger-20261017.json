@@ -1,210 +1,210 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "FRESH_COMPILED_DISCOVERED_PLAN_ONLY_ZERO_EXECUTION_SOURCE_PENDING",
+  "status": "NI_S01_TYPED_TEST_ORACLE_CORRECTED_WIP_FRESH_PREPARATION_REQUIRED_ALL_ACTUAL_UNRUN",
   "methods": [
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
       "declaredRows": 8,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "CURRENT_CORRECTED_WIP_UNCOMPILED_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
       "declaredRows": 5,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
       "declaredRows": 4,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
       "declaredRows": 4,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "integration",
       "method": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
       "declaredRows": 1,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     },
     {
       "project": "integration",
       "method": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_PREPARED_UNRUN_56DBE1DE"
+      "status": "UNCHANGED_METHOD_FIRST56_PREPARED_ALL_ACTUAL_UNRUN"
     }
   ],
   "methodCount": 29,
@@ -235,7 +235,7 @@
     "Old WorldReadPhase source fence remains unchanged and unselected with nine pre-existing stale pins.",
     "No baseline broad suites, old accepted family replay, build/discovery/native yet."
   ],
-  "nativeMembership": {
+  "initialNativeMembership": {
     "compiledSource": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
     "owners": 5,
     "descriptors": 5,
@@ -361,5 +361,16 @@
         "Cases": 1
       }
     ]
+  },
+  "currentDeclaredMembership": {
+    "owners": 5,
+    "methods": 29,
+    "cases": 52,
+    "changes": "Only one existing test body oracle corrected; no test method/data/selector/count/order change. Fresh affected preparation still required."
+  },
+  "sourceCorrection": {
+    "id": "NI-S01",
+    "scope": "Only typed continuation/result17/Completed/exact retained inner/finalization assertions; publictrue/overallfalse/oneclose/matching-image preserved.",
+    "history": "Initial56 test and valid18-chain zero-test prep remain immutable; initial SOURCE_NOT_READY retained exact; no actual failure reproduced or product change."
   }
 }

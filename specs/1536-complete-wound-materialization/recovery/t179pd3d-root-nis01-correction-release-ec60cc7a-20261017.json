@@ -1,0 +1,33 @@
+{
+  "kind": "ROOT_INITIAL_SOURCE_NOT_READY_ACCEPTED_AND_NARROW_TEST_ORACLE_CORRECTION_RELEASE",
+  "source": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+  "carrier": "ec60cc7afddffe306540f7e97f8e7dbabe8bce0a",
+  "review": [
+    {
+      "path": "/tmp/t179pd3d-ordinary-tests-source-independent-review-20261017.md",
+      "sha256": "38daf30ded5dbf873ae336310f5d1b597bab17ae544c2dfd75aa19edc4fb1dec"
+    },
+    {
+      "path": "/tmp/t179pd3d-ordinary-tests-source-independent-review-20261017.json",
+      "sha256": "020b2b4ebd9fe3a4c3a582fb76771b371a04903488398433a605757d0b88ff2b"
+    },
+    {
+      "path": "/tmp/t179pd3d-ordinary-tests-source-independent-check-v2-20261017.json",
+      "sha256": "78b62dbde8e1ebf1bc20bf6d54400db2c5422454f29c9233f3791bed515c6703"
+    }
+  ],
+  "finding": "NI-S01 sole material: new test line138 expects raw closing IOException; actual established17 closes through MainOperationContinuationException<int> with exact inner/finalization failure. Root independently read actual owner294-300 and exception declaration.",
+  "decision": "Preserve initial SOURCE_NOT_READY and valid zero-test PREP; correct only typed test oracle, add actual exception/outcome declaration pins, publish nonforce correctedWIP exactremote/newGitHubdelta. No product semantics change.",
+  "preserve": [
+    "public owner returned true",
+    "overall operation returned false",
+    "one actual closing hook",
+    "matching afterimage remains insufficient success",
+    "original56 tests/PREP/18raw chains and initial Source findings"
+  ],
+  "released": "Narrow tests-only NI-S01 code/binding/current-ledger-status/docs update and checkpoint publication.",
+  "held": "Fresh preparation awaits Root corrected-source/recovery readback; all actual tests and all production held. No old World/HOT/fullF1/Windows/CI/ZIP scope.",
+  "nativeTestsSoFar": 0,
+  "initialPreparation": "Catalog0/Plan0; 5descriptors/29methods/52planned/zeroexecuted; Root23b07e38 retains18rawchains and9freshDLLs.",
+  "utc": "2026-10-17T16:15:45.087746+00:00"
+}

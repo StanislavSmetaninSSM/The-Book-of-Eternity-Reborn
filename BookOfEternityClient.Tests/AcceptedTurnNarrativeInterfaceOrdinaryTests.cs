@@ -135,7 +135,13 @@ public sealed class AcceptedTurnNarrativeInterfaceOrdinaryTests(ITestOutputHelpe
         });
         Assert.True(publicOwnerReturned);
         Assert.False(overallReturned);
-        Assert.Same(failure, error);
+        var continuation = Assert.IsType<MainOperationContinuationException<int>>(error);
+        Assert.Equal(17, continuation.EstablishedResult);
+        Assert.Equal(BookOfEternityClient.Services.GmRuntime.MainOperationOutcome.Completed,
+            continuation.EstablishedOutcome);
+        Assert.Same(failure, continuation.InnerException);
+        Assert.Same(failure, continuation.Data["SessionFinalizationFailure"]);
+        Assert.True(Assert.IsType<bool>(failure.Data["SessionFinalizationFailure"]));
         Assert.Equal(1, closes);
         Assert.Equal(AcceptedTurnOutputProjector.ProjectNarrative(input).Json,
             File.ReadAllText(_fixture.Physical(path)));
