@@ -1,0 +1,345 @@
+{
+  "kind": "INDEPENDENT_A2_FINAL_GREEN57_EVIDENCE_REVIEW",
+  "createdUtc": "2026-10-17T03:07:55.276749+00:00",
+  "reviewer": {
+    "model": "GPT-6 Astra",
+    "reasoningEffort": "XHigh",
+    "role": "independent repository-read-only"
+  },
+  "carrier": "d43f3a71453378be7b32b68e883522f8164f37cb",
+  "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+  "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+  "verdict": {
+    "evidence": "ACCEPTED_COMPLETE_BOUNDED_ORDINARY_A2_GREEN57",
+    "sourceFixtureSelection": "RETAINED_PRIOR_ACCEPTANCE_BY_EXACT_PROVENANCE",
+    "materialOpenFindings": [],
+    "broaderQualification": false
+  },
+  "counts": {
+    "cases": 57,
+    "passed": 57,
+    "failed": 0,
+    "distinctTestIds": 57,
+    "distinctExecutionIds": 57,
+    "descriptors": 4,
+    "methods": 9,
+    "skipped": 0,
+    "duplicates": 0,
+    "underfilled": 0,
+    "timedOut": false,
+    "allNativeExits": 0
+  },
+  "actuals": [
+    {
+      "category": "fr063-award-level-policy-boundary",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017.json",
+        "sha256": "f77ae10f14f4ec2814acc0bea7cef9a2de621a1cac78a0b2d5846b77ac29f687"
+      },
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "fr063-award-level-policy-boundary",
+        "-NoBuild"
+      ],
+      "label": "a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e",
+      "nativeExit": 0,
+      "wallSeconds": 5.4613602710014675,
+      "categorySeconds": 2.0437283,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy": 2
+      },
+      "rawChainCount": 6
+    },
+    {
+      "category": "fr063-award-level-policy",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017.json",
+        "sha256": "7ec4fc8f8e860f7de16fac691cdcbedff7f4abc262f362adaa05740b3d7afc87"
+      },
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "fr063-award-level-policy",
+        "-NoBuild"
+      ],
+      "label": "a2-green-pure33-20261017T030025Z-attempt1-c0745a21",
+      "nativeExit": 0,
+      "wallSeconds": 4.795560225998997,
+      "categorySeconds": 1.6487309,
+      "tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 33,
+        "Failed": 0
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardParsedPolicy_PreservesConversionFailure": 4,
+        "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardParsedPolicy_PreservesNonObjectFailure": 6,
+        "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardStatusPolicy_ReturnsOnlyExactNumericLevel": 10,
+        "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardExperiencePolicy_ReturnsExactNumericPriority": 13
+      },
+      "rawChainCount": 6
+    },
+    {
+      "category": "fr063-award-level-owner",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017.json",
+        "sha256": "285386f5f973647d053cfb39ae3d1dfcb4711f3f165369698434b01c88f20a66"
+      },
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "fr063-award-level-owner",
+        "-NoBuild"
+      ],
+      "label": "a2-green-owner20-20261017T030101Z-attempt1-2f4b976c",
+      "nativeExit": 0,
+      "wallSeconds": 5.778178192998894,
+      "categorySeconds": 2.4469934,
+      "tests": {
+        "Total": 20,
+        "Executed": 20,
+        "Passed": 20,
+        "Failed": 0
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_PreservesFallbackAbortOrderAndBytes": 18,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_RealReadFaultIsLoggedAndStops": 2
+      },
+      "rawChainCount": 6
+    },
+    {
+      "category": "fr063-award-level-existing",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017.json",
+        "sha256": "c1d87c3e5baa65976b683c3b807367ad17715679d6ff8a112f2ca1748f99a185"
+      },
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "fr063-award-level-existing",
+        "-NoBuild"
+      ],
+      "label": "a2-green-existing2-20261017T030315Z-attempt1-9f28c651",
+      "nativeExit": 0,
+      "wallSeconds": 5.7785443070006295,
+      "categorySeconds": 2.2515465,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingMarkPublicationUncertaintyEscapes": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingRestartGuardHasStrictCleanup": 1
+      },
+      "rawChainCount": 6
+    }
+  ],
+  "rawChainsVerified": 24,
+  "caseIdentities": [
+    "34e8a75b-5229-1744-7ba4-5d8b80e7aea9",
+    "851e6897-0927-eab2-347d-7a3b072940c8",
+    "2322199c-837a-e253-82c2-2f812305e3b5",
+    "cdc59ad6-a7a1-8d01-1f30-032e3535a8e5",
+    "923bbc35-c3ab-ad36-0fa4-00f1f271550e",
+    "3018ab0a-a1bb-a309-27c1-babd4ffe2203",
+    "55ceb56c-e9c7-9728-736f-d66332ec3bb7",
+    "5a37c29b-355a-a7cb-87f1-4d166dea0d67",
+    "0a83422e-a892-49e2-17ed-8adfaeaecd31",
+    "61839b5e-8dd8-41ec-f4a5-727798a7903b",
+    "31ecf4d0-22d6-2d85-d2dd-99102807d10e",
+    "2cad2411-bc76-585e-d9f9-f6943ed19c43",
+    "fe35fee4-7619-1072-0ab0-9a16fa2348d1",
+    "91b3b2d0-9ff2-e8d5-7ac5-25d688abde63",
+    "29d7e27d-1a81-dd1a-569a-e5ba04d556b8",
+    "9dc0659a-de40-6419-f093-9956c6c80f80",
+    "748fa916-fc49-8838-a3e5-62d491db77a2",
+    "4e02e0e2-035a-76a0-dda1-f71bdd74cd35",
+    "84bdeed5-b117-40dd-cbea-32e467e8e3ae",
+    "ec1d7c67-1df9-988d-3a34-09d82a3fc836",
+    "952b4c91-077b-fdc8-fa09-74b561e42c3f",
+    "99585e0d-ba21-8f67-8f9f-50040c356f35",
+    "b78fdc64-9e50-65fa-aa9c-8b951e6e5839",
+    "73f5d82b-0e17-9f56-cb64-79ac05c999db",
+    "7edb222c-9c8a-6a59-2af7-e592e0737d2f",
+    "414161b4-1420-c10f-8a8c-4c1bc5bfd670",
+    "64eaec21-11a1-1161-ea53-290742f89fa4",
+    "f1f7233f-82da-38b2-2bd9-4d39f1834858",
+    "58f17b20-6234-1910-34b6-d8a2828dd6e3",
+    "1b81b536-1805-56f3-d569-f3a8bc6d9d60",
+    "19a25d46-be37-fd1d-7b12-9d4bb233b9ec",
+    "838ccd1a-8402-da15-d223-9c6b8aa51fef",
+    "273276e1-a42c-aedc-4318-1498fc91e695",
+    "2b81058e-7fff-13d7-39c0-c9b1244b0762",
+    "535adff9-08d5-4725-278d-7921d3b40263",
+    "0ee030a8-8785-da07-362f-12a6d25e584a",
+    "4caca5dd-dbb5-8823-2d43-5957b10e4919",
+    "fd1fbc7e-1995-42ee-23d3-b9ec70ab2a40",
+    "0e1110bc-6c26-6105-32b9-32945f0dc05d",
+    "858f4128-85c0-b810-ab87-47200e08db00",
+    "0751067a-2030-56a2-0328-3aaa3d6943d4",
+    "47b49d93-22be-f9ae-81e0-f8dc0a1a76f7",
+    "96b4c490-bd57-a122-a7f9-806449bff7a8",
+    "6f033ee9-27f6-9b27-5479-12c6ed66f506",
+    "b6d6b9a1-6a4e-7b50-60a1-2f4621de35c5",
+    "e2215668-bbbd-e75c-ff89-79b4cc1aea6e",
+    "f4af36dd-a130-b365-528f-8d32e466290f",
+    "8d7d4194-c883-74f5-7547-3717ee4f4515",
+    "5f0a4389-509f-683b-3e8c-e02fd7f90e6a",
+    "430bfeb7-2975-5465-70c7-a99d57a95848",
+    "dea0992c-31e8-3acb-9d89-cf819d5bb61d",
+    "599c1c86-58da-dbad-3c2a-815936a83192",
+    "e2b9618d-09a0-6ae8-f1cf-a673e486b595",
+    "444d29d3-6f39-b31c-4386-8ceb1f1ec4fd",
+    "1581f015-8212-04c3-8329-96a20875cf41",
+    "8760d324-b43b-1144-52cb-9b7ea17c77fb",
+    "c762e146-196a-9590-854e-0d2e857379db"
+  ],
+  "ownerVectors": {
+    "count": 22,
+    "presentImages": 107,
+    "absentImages": 3,
+    "imageCount": 110,
+    "errorTypes": {
+      "io": 2,
+      "json": 3,
+      "object": 2,
+      "format": 3
+    },
+    "sameOriginalIoFaults": 2,
+    "noInputNoMutationRows": 22
+  },
+  "cleanup": {
+    "strictDistinctRoots": 24,
+    "roots": [
+      "/tmp/boe-gameengine-turnlifecycle-15b8bd5eac044e7186784dce6743b009",
+      "/tmp/boe-gameengine-turnlifecycle-b485a38d0f004b4b925038ac68ff9276",
+      "/tmp/boe-gameengine-turnlifecycle-539a70b28155477383f2f89eef90f56a",
+      "/tmp/boe-gameengine-turnlifecycle-ab2d7266383b495d9053363a97475a5f",
+      "/tmp/boe-gameengine-turnlifecycle-25920052f48f43c3915aefac10b26456",
+      "/tmp/boe-gameengine-turnlifecycle-86272ce6e8794db6a75015b2914343cd",
+      "/tmp/boe-gameengine-turnlifecycle-da12a8f228784fb098c2be5c7a2e999c",
+      "/tmp/boe-gameengine-turnlifecycle-ad98a43e32a047a9b0e8a38484ebdcc1",
+      "/tmp/boe-gameengine-turnlifecycle-82098890e8d7464fb660df59062215d3",
+      "/tmp/boe-gameengine-turnlifecycle-6cee3815708547b68d337445a06c5069",
+      "/tmp/boe-gameengine-turnlifecycle-916eef0a1f1742f6a3ec970aa8e1ae11",
+      "/tmp/boe-gameengine-turnlifecycle-bd833168a9594774bd9ca50b0de8653d",
+      "/tmp/boe-gameengine-turnlifecycle-cec0999dcc594211b7c8a0d2a0f72c20",
+      "/tmp/boe-gameengine-turnlifecycle-c8ab94c72d744b3abf2cb4861220c498",
+      "/tmp/boe-gameengine-turnlifecycle-b8018b72f8ee4ee195ba531194646aa1",
+      "/tmp/boe-gameengine-turnlifecycle-056269cd56f04fcf9cca588bdc9429d6",
+      "/tmp/boe-gameengine-turnlifecycle-dca40a21ee094512a6486452c00e68af",
+      "/tmp/boe-gameengine-turnlifecycle-3ed3e55bf6b141c685fb5c1c90bb846b",
+      "/tmp/boe-gameengine-turnlifecycle-43dc193017d0423cba49d04fb090f3b1",
+      "/tmp/boe-gameengine-turnlifecycle-b316e0d117dc4eb2828b909204910313",
+      "/tmp/boe-gameengine-turnlifecycle-c3636a7e9e084a008be3823f278db40a",
+      "/tmp/boe-gameengine-turnlifecycle-c79d283a4e034d8981515d113f3d24c0",
+      "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c",
+      "/tmp/boe-gameengine-turnlifecycle-03bc82a86b15450dbbef98d410f3801e"
+    ],
+    "allPhysicallyAbsent": true,
+    "runnerOwned": true,
+    "runnerRuntime": true,
+    "pureRoots": 0,
+    "pureCleanup": "N/A"
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "3dcbfa13318ddfb87bb54701ccddea899232a97d5ac49f5ab1c06c21be0c869d",
+      "bytes": 9503232
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "aa5d3cab29c8e456850b5e2d29d79c5d1b6203282f5190d7e39583ae2c939a39",
+      "bytes": 29179904
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.Tests/AwardLevelPolicyTests.cs",
+      "sha256": "48770eee6af29d67c9be08c54829ab441dc9068745565f67c63ee8ddb6b3db91"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs",
+      "sha256": "1068ee1ad07db1bb1ac0f52130d14b6640e5d803515126f1b4d27589746383b8"
+    }
+  ],
+  "existingControls": {
+    "restart": "Actual awarding/distribution/restart result supported by unchanged compiled assertions and PASS; raw cleanup only",
+    "levelMark": "Actual member-published cut, retained journal/foreign target, marker2/unspent0 and propagated original coordinated uncertainty; object identity supported by executed Assert.Same"
+  },
+  "proofLimits": [
+    "Owner negative/zero current scalar not independently visible through lastKnown=max(1,current); pure values plus exact nullable source assignment provide coverage",
+    "Raw source vectors contain preimage hashes; reached compiled assertions prove postimage equality",
+    "Restart raw emits cleanup only; no invented stat body",
+    "Retained NEW Late2 final computed body absent; only final digest/inert equality"
+  ],
+  "boundaryResumeReconciliation": {
+    "recordSha256": "63d523996951815db0369dbef6c8a1fb97610420212d6f3b5846ffd9c809090e",
+    "classification": "Existing first successful record discovered after resume; no replay; initial all57UNRUN statement stale; missing launch conversation not reconstructed or claimed",
+    "startedUtc": "2026-10-17T02:48:47.040663+00:00",
+    "finishedUtc": "2026-10-17T02:48:52.686615+00:00"
+  },
+  "retainedNewLate2": {
+    "report": "/tmp/a2-first-late2-evidence-independent-review-20261017.json",
+    "sha256": "fb0cea191d908ca5899e1572c9de0ab86524a0fa90c48017f93c02fc4ab92d89",
+    "decisionCarrier": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+    "actualSource": "505ffc926665fc250a72794d37f1c4a2538b3268",
+    "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+    "rawReopened": false
+  },
+  "historicalEvidence": "A2 causalRED2FAIL and A2P01/P02 zero-execution compiler failures/closures; A1/old Late2/F01 retained with original provenance, no replay or recount",
+  "recovery": {
+    "receipt": "/tmp/a2-green57-delta-github-d43f3a71-20261017.json",
+    "sha256": "69791437672373c01e5bf9d29b4312f9270de5483052c0b8fe1ad95535b1d2f6",
+    "filesVerified": 41,
+    "changedPathsVerified": 37,
+    "remoteReadback": "d43f3a71453378be7b32b68e883522f8164f37cb\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n"
+  },
+  "independentCheck": {
+    "script": "/tmp/a2-final-evidence-independent-check-20261017.py",
+    "scriptSha256": "c4dcc1029047164b80b5541eba354cd56c16c80b02deb8721ffc5c6c073e89e3",
+    "results": "/tmp/a2-final-evidence-independent-check-results-20261017.json",
+    "resultsSha256": "fa111dbc243b559386fa6113c1a5caf7f2d9e2044c1eb1b93610238c3cc52d25"
+  },
+  "closeout": "Persist/recover exact final decision; no further actual needed on unchanged source. No merge/issue closure/broader family/Windows artifact authority.",
+  "GM": "Retained no-update rationale: internal behavior-preserving parsed extraction",
+  "reviewerBuildTestRuntime": "NOT_RUN",
+  "repositoryWrites": false
+}

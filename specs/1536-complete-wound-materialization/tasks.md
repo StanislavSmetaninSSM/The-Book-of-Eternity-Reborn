@@ -1,3 +1,7 @@
+## Bounded ordinary3c-A2 complete — independently accepted (2026-10-17)
+
+- [x] #1536 ordinary3c-A2: two named nullable award readers and two immediate real CheckLevelUp leaf replacements, accepted contract/causalTDD/affectedSOURCE/EVIDENCE; FIRST57unique nativePASS (2+33+20+2), 24rawchains/24strictroots/fourfreshDLLs, separately new affectedLate2 2PASS. [Final checkpoint](plan.md) preserves exact reports/recovery, two PREPFAIL0tests, structuralRED2expectedFAIL, honest boundary-resume reconciliation and all limits. OriginalA1/oldLate2 retain separate provenance; no replay or broader stage/GM/platform acceptance. Final non-force publication/readback/newexactdelta/clean continuity required, no more actual.
+
 ## A2 FIRST GREEN57 complete — final EVIDENCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): all4 FIRST singleton owners at actual6104/compileda4 native0/exact57PASS (2+33+20+2), 24rawchains/24strictroots/33pure0roots, 22realownerrows107present3absent images, fourDLLstable. [Current checkpoint](plan.md) honestly reconciles already-completed boundary after brief environment resume without replay/invented launch trace. Freeze/publish/readback/newcompletechanged recovery, then final whole-A2 independent EVIDENCE; no more actual/preparation/source/base/oldfamily repetition. Accepted newLate22PASS, causalRED2FAIL, PREPFAIL0tests and originalA1 remain separately scoped. All broader holds/no-GM-update rationale remain.
