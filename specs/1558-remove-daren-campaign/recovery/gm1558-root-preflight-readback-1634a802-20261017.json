@@ -1,0 +1,27 @@
+{
+  "kind": "ROOT_SOURCE_PIN_SCOPE_INITIAL_GITHUB_RECOVERY_READBACK_NOT_PLAN_ACCEPTANCE",
+  "head": "1634a802f474b24e003061659a361c32282af152",
+  "base": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "checkedUtc": "2026-10-17T07:48:04.972822+00:00",
+  "sourceInventoryExactPins": 80,
+  "initialGovernanceNewGitHubFilesExact": 4,
+  "metadataOnlyChangedPaths": [
+    ".specify/feature.json",
+    "AGENTS.md",
+    "specs/1558-remove-daren-campaign/plan.md",
+    "specs/1558-remove-daren-campaign/recovery/gm1558-compatibility-shared-dependency-reconnaissance-20261017.json",
+    "specs/1558-remove-daren-campaign/recovery/gm1558-compatibility-shared-dependency-reconnaissance-20261017.md",
+    "specs/1558-remove-daren-campaign/recovery/initial-branch-github-recovery-20261017.json",
+    "specs/1558-remove-daren-campaign/recovery/preflight-metadata-self-check-20261017.json",
+    "specs/1558-remove-daren-campaign/recovery/preflight-source-inventory-20261017.json",
+    "specs/1558-remove-daren-campaign/spec.md",
+    "specs/1558-remove-daren-campaign/tasks.md"
+  ],
+  "productionTestsSelectionsDocsUnchanged": true,
+  "exactReconnaissancePair": true,
+  "specFR": 10,
+  "specSC": 5,
+  "tasksUnchecked": 20,
+  "runtimeOrBuildExecuted": false,
+  "planAcceptance": "Independent review pending; no TDD/product release from this Root observation."
+}

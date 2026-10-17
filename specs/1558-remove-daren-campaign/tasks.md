@@ -2,13 +2,13 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: metadata-only preflight candidate. Independent technical review pending. No product/test changes or runtime released. All tasks stay unchecked until their bounded evidence/review/published recovery is actually accepted; creation of this list is not implementation acceptance.
+**Current phase**: original G0 accepted independently and by Root; exact reports/support/preflight/delta/composition persisted. T001–T003 record that original completed gate only. CLI API addendum targeted confirmation and separate Root G1 release are pending; no product/test changes or runtime released. T004–T020 remain unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
-- [ ] T001 Verify/publish isolated `1558-remove-daren-campaign-20261017` from exact46ff and retain the full78-delta base plus first exact GitHub/new-directory recovery in `recovery/`; preserve all other branches/trees.
-- [ ] T002 Review `recovery/preflight-source-inventory-20261017.json`, current issue and `plan.md` ownership table: campaign-only vs common QTE/practice/ScenarioCore/data/docs/frontend/category consumers.
-- [ ] T003 Obtain independent Astra XHigh acceptance of `spec.md`'s explicit inert-save/grant/retired-evidence exception, preclassification/whole-journal refusal order, authentic fixture provenance and affected verification plan; persist exact decision and Root release.
+- [x] T001 Verify/publish isolated `1558-remove-daren-campaign-20261017` from exact46ff and retain the full78-delta base plus first exact GitHub/new-directory recovery in `recovery/`; preserve all other branches/trees.
+- [x] T002 Review `recovery/preflight-source-inventory-20261017.json`, current issue and `plan.md` ownership table: campaign-only vs common QTE/practice/ScenarioCore/data/docs/frontend/category consumers.
+- [x] T003 Obtain independent Astra XHigh acceptance of `spec.md`'s explicit inert-save/grant/retired-evidence exception, preclassification/whole-journal refusal order, authentic fixture provenance and affected verification plan; persist exact decision and Root G0 acceptance (not G1 execution release).
 
 ## Phase 2 — Tests-first safe removal boundaries
 
@@ -26,7 +26,7 @@ Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [ ] T012 [US1] Remove CLI Daren menu/dispatch and MainMenu fresh-soul grant/announcements; preserve practice, normal start/load and existing earned data.
 - [ ] T013 [US1] Remove Daren host endpoints/DTOs/web service attempt paths and browser menu/route/view/API/fixtures/exclusive styles; preserve practice/ordinary token/generation/canonical behavior and safe stale navigation.
 - [ ] T014 [US3] Apply reviewed shared test migration/retirement and catalog/current-selection changes with no assertion weakening, dangling selectors or duplicate ownership; keep generic ScenarioCore and unrelated story services intact.
-- [ ] T015 [US3] Synchronize `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, `TaskGuides/CLI_Step_Main.txt`, active quickstart and precise docs/source-boundary guards; preserve no-reward practice/ordinary scoring and D01 authority.
+- [ ] T015 [US3] Synchronize Root-found `CLI_API_Specification.md` (pinned addendum), `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, `TaskGuides/CLI_Step_Main.txt`, active quickstart and actual CLI API/Step Main #1557 after-image/inverse/package/source-boundary guard dependencies in the affected selection; preserve no-reward practice/ordinary scoring and D01 authority.
 - [ ] T016 Verify fresh owned output/package excludes orphan campaign assets (incremental bin is insufficient); publish coherent implementation WIP/readback/recovery, then fresh selected build/catalog/PlanOnly0 and independent affected SOURCE review before GREEN actuals.
 
 ## Phase 4 — Affected verification and handoff

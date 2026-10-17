@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: preflight contract/inventory candidate; independent technical review pending. User authorized removal of the entire campaign and autonomous implementation. This checkpoint implements no product or tests and releases no runtime.
+**Status**: original G0 plan/scope/verification sufficiency accepted independently and by Root on1634; exact verdict/support persisted. Root-found CLI API active-document addendum is recorded for targeted confirmation. User authorized complete removal/autonomous implementation; G1 tests, product and runtime remain held until Root release.
 
 ## Source issues and scope
 
@@ -60,4 +60,4 @@ No old campaign is supported or resumed. No compatibility profile reader, normal
 
 ## Provenance and open engineering gate
 
-The read-only [inventory](recovery/preflight-source-inventory-20261017.json) pins 80 current files, 14 existing category candidates, 15 campaign spine beats and 11 practice types. These are source counts, not executed cases or an approved runtime selection. [plan.md](plan.md) owns the bounded dependency/migration decisions; [tasks.md](tasks.md) owns execution status. Independent Astra XHigh technical review must accept this inventory, save-safety boundary and verification plan before test/product changes.
+The historical read-only [initial inventory](recovery/preflight-source-inventory-20261017.json) pins 80 baseline files, 14 existing category candidates, 15 campaign spine beats and 11 practice types. [The active-document addendum](recovery/preflight-active-doc-addendum-20261017.json) adds exact CLI API baseline byte/blob/mode/line pins without rewriting that snapshot; total81 distinct baseline files. These are source counts, not executed cases or an approved runtime selection. [plan.md](plan.md) owns the bounded dependency/migration decisions; [tasks.md](tasks.md) owns execution status. [Independent G0 acceptance](recovery/gm1558-g0-plan-independent-review-20261017.md) covers the original inventory/save-safety/verification plan; its exact support and Root readback are retained. Targeted confirmation of the added CLI API dependency and separate Root release still precede G1.
