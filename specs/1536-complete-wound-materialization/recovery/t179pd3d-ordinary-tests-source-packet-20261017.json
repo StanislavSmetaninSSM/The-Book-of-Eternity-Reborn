@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "AFFECTED_PRODUCT_SOURCE_PREP_ACCEPTED_FIRST_PROTECTED_LATE2_CONDITIONAL_ACTUALS_UNRUN",
+  "status": "FIRST_POST_PRODUCT_PROTECTED_LATE2_RAW_FROZEN_INDEPENDENT_EVIDENCE_PENDING_ORDINARY52_HELD",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1577292,
-      "sha256": "b732a4c205fae01f0a4d9b9efa904200010b815d27dced6b4e7edf863075321f",
-      "gitBlob": "9961bed7ce36fc792d305d9a113c9cc377956e7a",
+      "bytes": 1577555,
+      "sha256": "4d84b18b27de84baac0fd2688eb52062579bab5040d4d73b19d4ee8020731f3d",
+      "gitBlob": "1c40af774ea93062931d132e4907c9b3776e9f3f",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -551,7 +551,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "370083864d66b1b147d91a2e717b4539a42b4a93927ca05c64eee45d5960b848"
+    "sha256": "5c25f13a34c0034980ada558b6b3043da11bc629bef938a7f924779596fcbd89"
   },
   "preflightReferences": [
     {
@@ -637,7 +637,7 @@
   ],
   "futureChecks": {
     "first": "Product BOTH/Plan0 and affected SOURCE/PREP accepted on0f/a06. Publish/readback/recover SOURCE decision; Root names FIRST protectedLate2 exact successor. No new preparation/rebuild.",
-    "actual": "All post-product cases UNRUN. After exact named activation, FIRST protectedLate2 only; freeze/publish/recover and separate EVIDENCE before any ordinary52 release.",
+    "actual": "FIRST protectedLate2 outcome frozen; publish exactremote/newcomplete recovery and separate independent EVIDENCE before ordinary52 activation. No retries/other native.",
     "remaining": "Ordinary52 and separateprotected2 require genuine affected post-product execution; retained structural2RED remains historical, not GREEN."
   },
   "counts": {
@@ -656,6 +656,103 @@
       "independentCausalEvidence": "ACCEPTED_STRUCTURAL_RED2_NOT_GREEN",
       "otherOrdinaryCasesUnrun": 50,
       "protectedLate2Unrun": 2
+    },
+    "postProductActuals": {
+      "protectedLate2": [
+        {
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "executionId": "3c85fca6-7f34-42ac-b761-0807160bba1d",
+          "outcome": "Passed",
+          "message": null,
+          "stack": null,
+          "stdoutBytes": 7319087,
+          "stdoutSha256": "612f2d40926f27566540b05b2e8d71adadf773fee654d0b12f4e9f0f43c81a2b",
+          "diagnosticBoundaries": [
+            "fr063_guaranteed_native_pre_original_npc_shape",
+            "qte_story_actual_client_append",
+            "qte_story_actual_engine_result",
+            "qte_physical_actual_occurrence",
+            "fr063_joint_actual_prior42_inactive_tail",
+            "fr063_joint_original_progression_reader_before_owner",
+            "fr063_joint_signed_original_schedule_before_owner",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_confirmed_claim_inspection",
+            "fr063_joint_completion_actual_prerequisites",
+            "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+            "fr063_joint_completion_actual_owner_outcome",
+            "fr063_joint_complete_union",
+            "fr063_joint_progression_phase_report_arithmetic",
+            "fr063_joint_completion_inert_repeat"
+          ]
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "executionId": "cbedd795-04e1-4f23-8840-a360863364f6",
+          "outcome": "Passed",
+          "message": null,
+          "stack": null,
+          "stdoutBytes": 6645709,
+          "stdoutSha256": "e152f590fadb770a86ad2372ad899882241901d240d856d00e509e13bb6d1ae7",
+          "diagnosticBoundaries": [
+            "fr063_guaranteed_native_pre_original_npc_shape",
+            "qte_story_actual_client_append",
+            "qte_story_actual_engine_result",
+            "qte_physical_actual_occurrence",
+            "fr063_joint_actual_prior42_inactive_tail",
+            "fr063_joint_original_progression_reader_before_owner",
+            "fr063_joint_signed_original_schedule_before_owner",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_confirmed_claim_inspection",
+            "fr063_joint_completion_actual_prerequisites",
+            "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+            "fr063_joint_completion_actual_owner_outcome",
+            "fr063_joint_complete_union",
+            "fr063_joint_progression_phase_report_arithmetic",
+            "fr063_joint_completion_inert_repeat"
+          ]
+        }
+      ],
+      "ordinary52": "UNRUN_HELD_PENDING_PROTECTED_EVIDENCE"
     }
   },
   "docsDisposition": "Internal semantics-preserving extraction; no GM-authored or Mortal/afterlife rule/pending/schema/normalizer contract change. Existing projector/text/tag/clock/writers remain byte-identical. No gameplay/docs/example/manifest change intended; reassess only if actual production scope changes.",
@@ -666,7 +763,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "e7c19c9a425c33b9339da13064984af07b1db421ba55adb9ee735e55a8082949",
+  "sourcePinDigest": "1178ca1be8cd9b10853665c945ca97976fbb0aa44a6e85d19bdbb1e556703345",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -1496,5 +1593,268 @@
     ],
     "materialBlockers": 0,
     "scope": "Bounded source/fixture/selection/prep accepted on0f/a06 only; not GREEN/runtime. Root names FIRST protectedLate2 only after decision publication/readback; separate EVIDENCE before ordinary52 release."
+  },
+  "firstProtectedLate2": {
+    "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+    "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+    "nativeExit": 0,
+    "wallSeconds": 122.81164877299307,
+    "categories": [
+      "fr063-joint-late-completion"
+    ],
+    "summaries": [
+      {
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "timedOut": false,
+        "ownedCleanup": true,
+        "runtimeCleanup": true
+      }
+    ],
+    "observedRows": [
+      {
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "executionId": "3c85fca6-7f34-42ac-b761-0807160bba1d",
+        "outcome": "Passed",
+        "message": null,
+        "stack": null,
+        "stdoutBytes": 7319087,
+        "stdoutSha256": "612f2d40926f27566540b05b2e8d71adadf773fee654d0b12f4e9f0f43c81a2b",
+        "diagnosticBoundaries": [
+          "fr063_guaranteed_native_pre_original_npc_shape",
+          "qte_story_actual_client_append",
+          "qte_story_actual_engine_result",
+          "qte_physical_actual_occurrence",
+          "fr063_joint_actual_prior42_inactive_tail",
+          "fr063_joint_original_progression_reader_before_owner",
+          "fr063_joint_signed_original_schedule_before_owner",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_original_inventory_structural_absence_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_original_inventory_structural_absence_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_confirmed_claim_inspection",
+          "fr063_joint_completion_actual_prerequisites",
+          "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+          "fr063_joint_completion_actual_owner_outcome",
+          "fr063_joint_complete_union",
+          "fr063_joint_progression_phase_report_arithmetic",
+          "fr063_joint_completion_inert_repeat"
+        ]
+      },
+      {
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "executionId": "cbedd795-04e1-4f23-8840-a360863364f6",
+        "outcome": "Passed",
+        "message": null,
+        "stack": null,
+        "stdoutBytes": 6645709,
+        "stdoutSha256": "e152f590fadb770a86ad2372ad899882241901d240d856d00e509e13bb6d1ae7",
+        "diagnosticBoundaries": [
+          "fr063_guaranteed_native_pre_original_npc_shape",
+          "qte_story_actual_client_append",
+          "qte_story_actual_engine_result",
+          "qte_physical_actual_occurrence",
+          "fr063_joint_actual_prior42_inactive_tail",
+          "fr063_joint_original_progression_reader_before_owner",
+          "fr063_joint_signed_original_schedule_before_owner",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_original_inventory_structural_absence_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_original_inventory_structural_absence_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_joint_natural_stage43_image_before_assert",
+          "fr063_confirmed_claim_inspection",
+          "fr063_joint_completion_actual_prerequisites",
+          "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+          "fr063_joint_completion_actual_owner_outcome",
+          "fr063_joint_complete_union",
+          "fr063_joint_progression_phase_report_arithmetic",
+          "fr063_joint_completion_inert_repeat"
+        ]
+      }
+    ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/archive.json",
+      "bytes": 6240,
+      "sha256": "5dde4d38443ea054d2692f5b3b616a97a358376617bd6274098bcff2cf43665b"
+    },
+    "rawChains": 9,
+    "strictCleanup": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a93f8f42785e4aaa9c2ed49bdc5fe7bc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null,
+        "physicallyAbsentAtReadback": true
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-211c3f854b55464c9435fd2e9655468f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null,
+        "physicallyAbsentAtReadback": true
+      }
+    ],
+    "binaryBefore": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9550336,
+        "sha256": "c95b812309af506012ae8a289a0b091d6cea59111925fa6967d869f5438dfce7"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "56e77b607a7654c8e41512a666713c7d49461b875789a0c940d2bf94b59ac85c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "73757ac7f528eaccb8fcfc0a034ed287d5a26fbbd56f6d1bc2f4dd0b54bc8fcd"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      }
+    ],
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9550336,
+        "sha256": "c95b812309af506012ae8a289a0b091d6cea59111925fa6967d869f5438dfce7"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "56e77b607a7654c8e41512a666713c7d49461b875789a0c940d2bf94b59ac85c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "73757ac7f528eaccb8fcfc0a034ed287d5a26fbbd56f6d1bc2f4dd0b54bc8fcd"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-product-late2-activation-e1d9885a-20261017.json",
+        "bytes": 1667,
+        "sha256": "2dce70d9e675451295f8748f6c67a4af36b351dcb96d4b7c50438470edc9f72b"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-source-decision-delta-github-e1d9885a-20261017.json",
+        "bytes": 12558,
+        "sha256": "ab96cddf079f73ec4750b77148c96369dcbee4294349e5e02e3851185710d64d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-e1d9885a-20261017.json",
+        "bytes": 15162,
+        "sha256": "1a44f15ff1155dd0fa72c800bf1380919a930b667c34cc4f23466c0c87162c88"
+      }
+    ],
+    "independentEvidence": "PENDING; raw first native/case outcome is not self-accepted EVIDENCE. Ordinary52 held; no retry.",
+    "proofLimits": "Exact existing staged/Late2 actual consumers only; current raw semantic observations require separate independent EVIDENCE. No broader HOT/history/ProcessPlayerTurn/World/fullF1/Windows qualification. Do not infer unretained final file bodies from digests."
   }
 }
