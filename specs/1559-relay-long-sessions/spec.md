@@ -1,5 +1,7 @@
 # Feature Specification: Long-lived GM relay sessions
 
+> Current user-priority staging (2026-10-17): finish only the nearest safe inactive reservation/lifecycle of two operational names, with causal RED, coherent protections, affected GREEN, independent review and saved checkpoint; then hand off wounds T179-Pd.3d. This does not complete the full relay requirements below. No new relay writer/reader/dispatch/batch/recovery/sequence/budget mechanism is activated; remaining fullissue/platform/tool/client gates stay open.
+
 **Source issue**: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559) (open; read-only snapshot, 2026-10-17).
 **Branch**: `1559-relay-long-sessions-20261017`
 **Base**: `a82b3d8439f76f83baade6df8516e78eea86e546`

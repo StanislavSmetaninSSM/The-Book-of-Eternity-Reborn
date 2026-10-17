@@ -1,0 +1,58 @@
+{
+  "kind": "ROOT_ENGINE2_CAUSAL_EVIDENCE_ACCEPTANCE_AND_LIFECYCLE_ONLY_PRIORITY_RULING",
+  "utc": "2026-10-17T13:49:38.619258+00:00",
+  "carrier": "a6f181af7642868036627bfac7509ab1c95c94fa",
+  "rootDecision": "ACCEPT_GENUINE_A01_ENGINE_LIFETIME_CAUSAL_RED_2_OF_2",
+  "reports": [
+    {
+      "path": "/tmp/gm1559-first-engine2-evidence-independent-20261017.md",
+      "sha256": "be120c2e4e5e986c38d96d85ed29b5145fc65a8079422fc930c710f1e55074fa"
+    },
+    {
+      "path": "/tmp/gm1559-first-engine2-evidence-independent-20261017.json",
+      "sha256": "89e0e9ca69ee7020a1bd005f1d97acbc538c41c597a53526d6d40492198faa2d"
+    },
+    {
+      "path": "/tmp/gm1559-first-engine2-evidence-independent-check-20261017.json",
+      "sha256": "8f0205bbfab8b096735c6f577f665434556a149e89d3a7ccbd887287aff095e2"
+    }
+  ],
+  "rootLiteralRawInspection": {
+    "path": "/tmp/gm1559-root-engine2-first-raw-inspection-a6f181af-20261017.json",
+    "sha256": "4c11e6b11bba583a0f4243622c2ff13dd937793ddc7ea3c170ad8513eb178b5b"
+  },
+  "priorityChange": "Explicit user/upstream steering: finish nearest safe independently verified #1559 operational-record lifecycle stage, then handoff to wounds T179-Pd.3d narrative/interface shared kernels and actual ordinary consumers. Do not automatically expand relay backlog.",
+  "safeIntendedBoundary": "Exactly two inactive client-owned operational path reservations, with current actual snapshot/rollback/live/archive/load and ownership/classification guards coherent. No new relay writer, reader, dispatch, batch, sequence, retry/resume, limits policy or trusted receipt meaning is activated. Ordinary/suffix neighbors retain existing behavior.",
+  "currentFacts": {
+    "causalEngineRows": 2,
+    "passed": 0,
+    "failed": 2,
+    "otherCurrentPlannedRowsUnrun": 47,
+    "green": "NOT_RUN",
+    "product": "UNCHANGED_FROM_A82"
+  },
+  "nextAllowed": [
+    "Persist exact EVIDENCE pair/support, Root raw inspection/this priority ruling and a6f raw delta/composition128.",
+    "Finish read-only exact scope/dependency recommendation and UNRUN minimal FIRST recorder for only already-reviewed live/draft5 or save/load1. Recorder must validate each original semantic Plan descriptor, source119,9DLL, immutable compiled d473, own per-category FIRST identity and exact raw. No runtime until targeted recorder inspection and Root named activation.",
+    "Publish/recover metadata-only successor before any long review/runtime; return recorder hash and exact remote/delta."
+  ],
+  "baselineEligibleAfterSeparateRelease": [
+    {
+      "category": "gm-relay-operational-live-preparation",
+      "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-relay-operational-live-preparation -NoBuild",
+      "plannedCases": 5,
+      "expectedBaseline": "Actual live preparation exclusion1 and exact-name frozen-draft classification2 may be causal RED; exact-name suffix neighbors2 should PASS. These outcomes are not yet observed.",
+      "qualification": "Actual live preparation and ordinary-control inclusion prerequisites; exact two-name classifier boundaries and unchanged suffix-positive behavior; complete exact native identities and strict cleanup."
+    },
+    {
+      "category": "gm-relay-operational-save-load",
+      "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-relay-operational-save-load -NoBuild",
+      "plannedCases": 1,
+      "expectedBaseline": "Final operational archive/load exclusion oracle may be causal RED; not yet observed.",
+      "qualification": "Actual save succeeds, archive includes ordinary neighbor, real load succeeds, ordinary value restores and generation changes before final Assert.Empty. Opaque marker bytes do not prove valid relay authority."
+    }
+  ],
+  "laterImplementation": "After qualifying required baseline controls, release minimal coherent lifetime-only patch. Add focused TDD controls for any changed protection/predicate not covered by current cases; preserve old engine RED without replay. Source/docs/package guards only when actual dependencies change.",
+  "held": "All production changes and all native execution until separately named. Remaining relay/Windows/client/tool/batch C01\u2013C06 stay OPEN future work, not inactive lifecycle stage acceptance. No CI/ZIPworkaround/main/merge/force/issue closure.",
+  "handoffAfterStage": "Report verified lifecycle code/tests/review/remote SHA and remaining fullrelay gates; next task wounds T179-Pd.3d, no automatic broad relay continuation."
+}

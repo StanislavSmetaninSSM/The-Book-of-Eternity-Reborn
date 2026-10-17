@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "FIRST_ENGINE2_ONLY_NATIVE1_2EXECUTED_0PASS_2FAIL_RAW; CAUSAL_EVIDENCE_PENDING",
+  "actual": "ONLY_FIRST_ENGINE2_2EXECUTED_0PASS_2ACCEPTED_CAUSAL_RED; OTHER47_UNRUN",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "1c5bc4b11ed899d44ad66e139080c73947fe6120c51df9842abfdb71f80b44bd"
+    "sha256": "e31ad946478796ff04b739a9960c0528f181cc9b4bae3ee9fbd297d536f437fb"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
@@ -1210,5 +1210,35 @@
     "failed": 2,
     "remainingUnrun": 47,
     "qualification": "NOT_YET_INDEPENDENTLY_ACCEPTED"
+  },
+  "currentPriority": {
+    "kind": "EXPLICIT_USER_NEAREST_SAFE_LIFECYCLE_STAGE_ONLY",
+    "scope": "Reserve/protect/exclude only2exact operational paths across existing owners; no writer/reader/schema/dispatch/batch/sequence/retry/budget activation.",
+    "stopAfter": "Affected GREEN + independent review + durable remote checkpoint for lifecycle stage, then handoff wounds T179-Pd.3d narrative/interface shared kernels and real ordinary consumers.",
+    "fullRelayBacklog": "DEFERRED_OPEN_NOT_AUTOMATICALLY_AUTHORIZED",
+    "baselineNext": "Already reviewed live/draft5 and save/load1 require targeted recorder inspection and separate Root named activations; both currently UNRUN.",
+    "implementation": "HELD_PENDING_BASELINE_AND_ROOT_RELEASE",
+    "source": "recovery/root-engine2-evidence-lifecycle-ruling.json"
+  },
+  "engine2Evidence": {
+    "verdict": "ACCEPT_GENUINE_A01_ENGINE_LIFETIME_CAUSAL_RED_2_OF_2",
+    "reports": [
+      "recovery/first-engine2-evidence-independent.md",
+      "recovery/first-engine2-evidence-independent.json",
+      "recovery/first-engine2-evidence-independent-check.json"
+    ],
+    "root": "recovery/root-engine2-evidence-lifecycle-ruling.json"
+  },
+  "nextBaselineRecorder": {
+    "path": "recovery/tools/g1-operational-baseline-first-run.py",
+    "sha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
+    "status": "UNRUN_PENDING_TARGETED_INSPECTION_AND_NAMED_ROOT_ACTIVATION",
+    "allowed": {
+      "gm-relay-operational-live-preparation": 5,
+      "gm-relay-operational-save-load": 1
+    },
+    "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+    "sourcePins": 119,
+    "managedCopies": 9
   }
 }

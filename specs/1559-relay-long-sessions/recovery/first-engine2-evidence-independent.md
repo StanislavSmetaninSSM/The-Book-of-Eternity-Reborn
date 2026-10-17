@@ -1,0 +1,17 @@
+# #1559 FIRST engine rollback2 — independent causal EVIDENCE, 2026-10-17
+
+**ACCEPT genuine A01 engine lifetime causal RED: 2/2.** Carrier `a6f181af7642868036627bfac7509ab1c95c94fa`, actual `360b3a39f725f391e96d73c29457d9a32fd73596`, compiled tests `d473ed332fe7443f93759e44973ba963a790a13b`, unchanged product `a82b3d8439f76f83baade6df8516e78eea86e546`. No material evidence blocker.
+
+The single FIRST command returned native1 in5.552704323s: one complete descriptor,2 executed,0PASS/2FAIL; no underfill, duplicate, timeout or cleanup defect. Both `existedBefore` rows reached the original final `Assert.Empty` at `GameEngineTurnLifecycleTests.RelayOperational.cs:33`. Actual ordinary before-image restoration, deletion of the newly created ordinary neighbor and real restore completion precede that oracle. Only `game_state/control/gm_prompt_delivery.json` and `game_state/control/gm_relay_apply_receipt.json` fail it.
+
+The unchanged engine enumerator tracks both names. Its restore deletes newly tracked files in the false row and restores captured older bytes in the true row. This mechanism is established from exact tested source; raw diagnostics prove the final missing/not-latest oracle, not a retained physical afterimage dump. The roots were deliberately removed. Opaque marker bytes exercise lifecycle only and do not establish trusted relay-record authority.
+
+Independently checked8 native gzip/raw/live/committed chains plus1 support chain, actual-source binding,9 unchanged managed binary copies, empty before/after owned namespace,2 distinct physically absent owned roots and complete23-file/all19-changed-path immediate GitHub recovery. Full-plan descriptor ordinal005 becoming singleton001 is expected; every semantic descriptor field matches. The first FAILs and accepted SOURCE history remain unchanged. Other47 rows are UNRUN.
+
+The next bounded stage should finish **operational record lifecycle only**, followed by the requested T179-Pd.3d handoff. After separate Root persistence/release, the already reviewed `gm-relay-operational-live-preparation`5 and `gm-relay-operational-save-load`1 are eligible FIRST baseline probes, separately invoked with `-NoBuild`. Expected baseline behavior is3 causal failures+2 suffix-positive passes for live/draft, and1 final-oracle failure after real successful save/load and generation replacement. These are predictions, not executed evidence. Stop and preserve any unexpected prerequisite, platform, incomplete or cleanup outcome.
+
+Then apply the coherent exact-two-name lifetime/protection patch across genuinely affected engine/live snapshot, save/load-generation and accepted ownership/classification boundaries. Preserve ordinary and suffix neighbors; add focused controls for any changed predicate not covered by those cases. Fresh affected SOURCE/PREP, engine2+live/draft5+save/load1 and necessary ordinary-neighbor GREEN/EVIDENCE must precede stage completion. Do not activate a relay writer/reader/dispatch/batch or grant receipt authority. No broad control-directory exemption, unrelated historical replay or file-adjacency-driven Late2 is implied.
+
+C01–C06 remain OPEN for future full relay work, not prerequisites to completing this intentionally inactive reservation stage. This verdict grants no native/production permission and makes no GREEN, full-issue, actual tool-exchange, client/platform or restart/publication claim.
+
+Support: `/tmp/gm1559-first-engine2-evidence-independent-check-20261017.json` SHA256`8f0205bbfab8b096735c6f577f665434556a149e89d3a7ccbd887287aff095e2`.

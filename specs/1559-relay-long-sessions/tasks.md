@@ -2,7 +2,7 @@
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Inputs: [spec.md](spec.md), [plan.md](plan.md), [audit.md](audit.md), [source-inventory.json](source-inventory.json). Branch `1559-relay-long-sessions-20261017`, base `a82b3d8439f76f83baade6df8516e78eea86e546`.
 
-Current phase: ARCH accepted for G1 tests-only at25713634; exact independent closure and Root release persisted below. T001–T003 foundation complete; T004–T018 open. G1 source compiled fresh at d473, catalog/PlanOnly native0/0 observe8categories/9descriptors/21methods/49cases,0executed; independent concrete SOURCE/FIXTURE/SELECTION/PREP accepted only for initial engine2; Root activated exact360b and first engine2 ran once: native1/2executed/0PASS/2FAIL raw saved, independent causal review pending. Other47 planned cases/product held; C01–C06/G1-L01/L02 later gates remain open. Production, dependency changes and native execution remain held. One writer executes sequentially, with the existing independent reviewer and Root gates; no new implementer agents.
+Current phase: engine2 causal EVIDENCE ACCEPTED2/2, exact reports/Root priority ruling persisted. User priority is only the safe inactive two-name operational-record lifecycle stage, then saved independent handoff to wounds T179-Pd.3d. Remaining reviewed live/draft5 and save/load1 are UNRUN/HELD pending fixed-recorder targeted inspection and Root named activation. All production held; no new relay schema/writer/reader/dispatch/batch/recovery/sequence/budget behavior. T001–T003 checked; original broader tasks remain open/deferred. Current T011/T014/T015/T016/T018 apply only as needed to close this lifecycle stage; no fullissue completion is claimed.
 
 ## Foundation / architecture
 

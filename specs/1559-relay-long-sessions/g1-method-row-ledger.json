@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "FIRST_ENGINE2_NATIVE_RAW_SAVED_2EXECUTED_0PASS_2FAIL; CAUSAL_REVIEW_PENDING; OTHER47UNRUN; ALL_PRODUCT_HELD",
+  "currentGate": "ENGINE2_CAUSAL_RED_ACCEPTED_2OF2; NEXT_REVIEWED_A01_BASELINE6_UNRUN_HELD; PRODUCTION_HELD; REMAINING_RELAY_DEFERRED",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -469,6 +469,15 @@
     "passed": 0,
     "failed": 2,
     "remainingUnrun": 47,
-    "qualification": "NOT_YET_INDEPENDENTLY_ACCEPTED"
+    "qualification": "Accepted causal engine lifetime RED2/2 by exact first-engine2 independent pair and Root lifecycle ruling; original raw unchanged."
+  },
+  "currentPriority": {
+    "kind": "EXPLICIT_USER_NEAREST_SAFE_LIFECYCLE_STAGE_ONLY",
+    "scope": "Reserve/protect/exclude only2exact operational paths across existing owners; no writer/reader/schema/dispatch/batch/sequence/retry/budget activation.",
+    "stopAfter": "Affected GREEN + independent review + durable remote checkpoint for lifecycle stage, then handoff wounds T179-Pd.3d narrative/interface shared kernels and real ordinary consumers.",
+    "fullRelayBacklog": "DEFERRED_OPEN_NOT_AUTOMATICALLY_AUTHORIZED",
+    "baselineNext": "Already reviewed live/draft5 and save/load1 require targeted recorder inspection and separate Root named activations; both currently UNRUN.",
+    "implementation": "HELD_PENDING_BASELINE_AND_ROOT_RELEASE",
+    "source": "recovery/root-engine2-evidence-lifecycle-ruling.json"
   }
 }

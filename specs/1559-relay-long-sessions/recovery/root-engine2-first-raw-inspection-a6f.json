@@ -1,0 +1,42 @@
+{
+  "kind": "ROOT_LITERAL_FIRST_ENGINE2_RAW_INSPECTION_PENDING_INDEPENDENT_CAUSAL_VERDICT",
+  "utc": "2026-10-17T13:44:38.657332+00:00",
+  "carrier": "a6f181af7642868036627bfac7509ab1c95c94fa",
+  "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "rawRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/record.json",
+  "archiveSha256": "3b9bf3f33067dd0737e4d274a0fc90f992150c86644d955c570a1017c0545b1b",
+  "rawChainsVerified": 8,
+  "additionalObservationChainVerified": true,
+  "nativeExit": 1,
+  "seconds": 5.552704322995851,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 0,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualTrueAndFalseRowsFinalAssertEmpty33": true,
+  "actualOrdinaryRestoreDeletePrerequisitesInBothRows": true,
+  "twoDistinctOwnedRootsVerifiedRemoved": [
+    "/tmp/boe-gameengine-turnlifecycle-e150431838fd4883aac7e6c1e2070585",
+    "/tmp/boe-gameengine-turnlifecycle-e3bcdebc0e2f4df69aaa2125f09be95e"
+  ],
+  "sourceBindingExactGitShowAtActual360": true,
+  "nineBinariesStable": true,
+  "namespaceStable": true,
+  "strictCleanup": true,
+  "nativeRedQualification": "PENDING_INDEPENDENT_CAUSAL_EVIDENCE_NOT_INFERRED_FROM_EXIT1",
+  "remainingCasesUnrun": 47,
+  "production": "HELD",
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-a6f181af-20261017.json"
+}

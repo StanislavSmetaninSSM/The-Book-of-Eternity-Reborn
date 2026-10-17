@@ -1,0 +1,106 @@
+{
+  "kind": "INDEPENDENT_FIRST_ENGINE2_CAUSAL_EVIDENCE_VERDICT",
+  "utc": "2026-10-17T13:47:41.612660+00:00",
+  "carrier": "a6f181af7642868036627bfac7509ab1c95c94fa",
+  "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdict": "ACCEPT_GENUINE_A01_ENGINE_LIFETIME_CAUSAL_RED_2_OF_2",
+  "materialBlockers": [],
+  "runtime": {
+    "nativeExit": 1,
+    "wallSeconds": 5.552704322995851,
+    "descriptorsPlanned": 1,
+    "descriptorsCompleted": 1,
+    "casesPlanned": 2,
+    "casesExecuted": 2,
+    "passed": 0,
+    "failed": 2,
+    "causalRedQualified": 2,
+    "complete": true,
+    "underfilled": [],
+    "duplicateCases": [],
+    "timedOut": false,
+    "runnerCleanupComplete": true,
+    "ownedRoots": 2,
+    "distinctOwnedRootsPhysicallyAbsent": 2,
+    "remainingPlannedRowsUnrun": 47
+  },
+  "causality": {
+    "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+    "rows": [
+      {
+        "existedBefore": false,
+        "observed": "Actual real restore completed; ordinary baseline restored; newly created ordinary neighbor deleted; both exact operational names fail latest-image final oracle.",
+        "sourceBackedMechanism": "Both operational files enter the baseline tracked-file enumerator after snapshot capture and are deleted as newly tracked files."
+      },
+      {
+        "existedBefore": true,
+        "observed": "Actual real restore completed; ordinary baseline restored; newly created ordinary neighbor deleted; both exact operational names fail latest-image final oracle.",
+        "sourceBackedMechanism": "Both names were captured in the baseline snapshot and their earlier bytes are restored over the newer operational images."
+      }
+    ],
+    "failureOracle": "Original Assert.Empty at GameEngineTurnLifecycleTests.RelayOperational.cs:33",
+    "exactOperationalNames": [
+      "game_state/control/gm_prompt_delivery.json",
+      "game_state/control/gm_relay_apply_receipt.json"
+    ],
+    "ordinaryPrerequisitesReached": true,
+    "actualOwner": "GameEngine.CreatePreTurnBackup / RestorePreTurnBackup / RestorePreTurnBackupAsync",
+    "actualOwnerSource": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:1939-2040,2405-2445",
+    "classification": "Genuine baseline engine lifetime behavior violates accepted A01 reservation; not setup, missing API, import, synthetic restore, timeout or cleanup failure.",
+    "physicalEvidenceLimit": "Raw captures final issue names and reached ordinary assertions; physical operational afterimage bytes were not retained before strict root deletion. Delete-versus-restore explanation is exact source-backed inference, not an invented raw-byte observation."
+  },
+  "binding": {
+    "nativeChainsVerified": 8,
+    "sourceResultSupportChainsVerified": 1,
+    "committedAndLiveBytesEqual": true,
+    "sourceBindingMatchesGitShowAtActual": "360b3a39f725f391e96d73c29457d9a32fd73596",
+    "currentNineManagedCopiesUnchanged": true,
+    "namespaceBeforeAfterEmpty": true,
+    "sourceProductUnchanged": true,
+    "immediateGitHubFilesVerified": 23,
+    "allChangedPathsVerified": 19,
+    "metadataOnly": true,
+    "firstRawAndPreviousSourceVerdictPreserved": true
+  },
+  "nextStage": {
+    "scope": "Nearest independently checkable OPERATIONAL RECORD LIFECYCLE stage only; then handoff to T179-Pd.3d. No automatic expansion of relay backlog.",
+    "recommendation": "After this decision is persisted and Root independently checks/release-gates it, qualify the already source-reviewed remaining A01 baseline controls, then implement the minimal coherent exact-two-name lifecycle/protection change and fresh affected SOURCE/PREP/GREEN/EVIDENCE checkpoint.",
+    "baselineEligibleOwners": [
+      {
+        "category": "gm-relay-operational-live-preparation",
+        "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-relay-operational-live-preparation -NoBuild",
+        "plannedCases": 5,
+        "expectedBaseline": "Actual live preparation exclusion1 and exact-name frozen-draft classification2 may be causal RED; exact-name suffix neighbors2 should PASS. These outcomes are not yet observed.",
+        "qualification": "Actual live preparation and ordinary-control inclusion prerequisites; exact two-name classifier boundaries and unchanged suffix-positive behavior; complete exact native identities and strict cleanup."
+      },
+      {
+        "category": "gm-relay-operational-save-load",
+        "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-relay-operational-save-load -NoBuild",
+        "plannedCases": 1,
+        "expectedBaseline": "Final operational archive/load exclusion oracle may be causal RED; not yet observed.",
+        "qualification": "Actual save succeeds, archive includes ordinary neighbor, real load succeeds, ordinary value restores and generation changes before final Assert.Empty. Opaque marker bytes do not prove valid relay authority."
+      }
+    ],
+    "baselineOrchestration": "Separate Root-named canonical owner invocations: runner fail-stops nonzero descriptors. Freeze each FIRST result, stop for unexpected prerequisites/platform/native ownership/underfill/timeout/cleanup; no automatic retry or broad aggregate.",
+    "implementationBoundary": [
+      "Reserve only the two accepted exact operational names; preserve ordinary and similarly suffixed control paths.",
+      "Use accepted actual engine/live snapshot, physical inventory, save/archive/load ephemeral-generation, client-owned validation and recoverable FilesModified/frozen-draft boundaries as applicable to the concrete patch; no broad control-directory exemption.",
+      "Generation replacement invalidates old operational authority; ordinary rejection, repair and rollback must not rewind the reserved records.",
+      "No relay writer, reader, dispatch, batch application, sequence protocol or receipt-consumption activation in this lifecycle-only stage; no half-active runtime or trusted meaning granted to opaque markers."
+    ],
+    "affectedQualification": "Review concrete changed callers and exact-name protections; strengthen/add focused controls where current six baseline rows do not cover a changed predicate. Fresh preparation and affected GREEN must include retained engine2, live/draft5, save/load1 and genuinely affected existing ordinary neighbors. Preserve initial RED; do not replay unrelated historical families or require Late2 by file adjacency.",
+    "fullIssueGates": "C01-C06 stay OPEN for later full relay work; they are not completion requirements for the intentionally inactive lifecycle reservation. Do not claim full #1559 acceptance.",
+    "authority": "This is evidence qualification and next-step engineering guidance, not production/native authorization; Root owns exact release."
+  },
+  "limits": [
+    "Reviewer ran no test/build/native/producer/host/browser and made no repository edits.",
+    "Only these two cases have newly qualified causal EVIDENCE; other47 planned rows remain unrun.",
+    "No GREEN, live session/restart/lost-ACK/partial batch publication, client acceptance, actual agent-tool exchange, Windows or resource-budget claim."
+  ],
+  "support": {
+    "path": "/tmp/gm1559-first-engine2-evidence-independent-check-20261017.json",
+    "sha256": "8f0205bbfab8b096735c6f577f665434556a149e89d3a7ccbd887287aff095e2"
+  }
+}
