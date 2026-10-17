@@ -1,3 +1,7 @@
+## A2 newLate2 EVIDENCE accepted — namedGREEN57 next after persistence (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent newLate2 pair accepts actual505/compileda4/exact2PASS and fullrawsemantic/strictcleanup/15all11delta, with finalcomputedbodylimit. [Currentdecision](plan.md): publish/readback/newdelta/fourDLLcontinuity then rootGREENboundary2→pure33→owner20→existing2 pernormalfirstrecord, samecleanHEAD; coherent57publication/finalEVIDENCE, no passinggroup-onlycheckpoint/review. AllGREEN57UNRUN now; no oldproof/base/prep/Late2 replay or broaderqualification.
+
 ## A2 FIRST newLate2 nativePASS — separate EVIDENCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): sole actuallyaffectedLate2 actual505/compileda4 native0/exact2PASS/category117.5861666s≤5m;6chains/fullrawsemantic/strict2roots/fourDLLstable frozen in [currentcheckpoint](plan.md). Publish/readback/newdelta then focusedindependentEVIDENCE before A2GREEN57. Finalcomputedbodylimit retained; no broaderqualification/oldproof/base replay or otheractual. Afteraccepteddecision rootnamed4owners thencoherent57packet/finalreview.
