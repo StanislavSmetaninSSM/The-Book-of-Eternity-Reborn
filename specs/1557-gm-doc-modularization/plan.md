@@ -1,5 +1,13 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Current B all FIRST actuals78PASS; independent EVIDENCE pending (2026-10-17)
+
+All9separately released canonical categories completed on actual `a8e0456fd1208984b23a0c6813d3d199a900411c`, compiled `69dc7c928246c9b389cedcf391f017ae6620acd9`: **78uniquePASS/28methods/9descriptors,0unrun**, no retries/duplicates/underfill or source/sevenpin drift. [54frozen native raw chains](recovery/current-B-first-green-20261017.json), [21fixture artifacts across4diagnostics](recovery/current-B-first-green-fixture-artifacts-20261017.json), [writer inspection](recovery/current-B-first-green-writer-inspection-20261017.json) and [exact Root union raw observation](recovery/current-B-root-first-green-union-inspection-20261017.json) are distinct from independent EVIDENCE acceptance.
+
+Actual fullsource AST-only control completed without publication; genuine writer/driver+twohelpers published exact52paths/roles and all52source/package/sessionhashes matched. Physical Wounds negatives reached distinct beforeproducer package-source and afterproducer session-copy boundaries, with actual preimage/hash/presence and expected closure issues. All8owned package/sessionroots are physically absent;4diagnosticdirs and generated12977B template raw are retained. Sessiondoc bodies were read/hash-pinned beforecleanup; no separate full rawsessioncopy is claimed. Logicalprofile availability does not prove worker execution. Native timings are per-command only.
+
+Publish/readback/full immediate recovery before independent finalGREEN EVIDENCE. **No furtheractual/build/source changes.** Historical2FIRSTcausalFAIL remain distinct (B total80nativeexecutions:78PASS/2expectedFAIL); FIRSTstatic6/3 and metadatahelperfailure are not native executions and remain unchanged. SOURCE remainsaccepted; EVIDENCE/T029/finalcompletion pending. T021alone checked until finalreviewed disposition; no broaderA1/A2/F1/Windows/CI/provider/HOT/M3 qualification.
+
 ## Current B production SOURCE accepted; all78 actuals held (2026-10-17)
 
 Root read and accepted the exact [independent SOURCE/FIXTURE/SELECTION/PREP pair](recovery/current-B-production-source-independent-review-20261017.md), compiled `69dc7c928246c9b389cedcf391f017ae6620acd9` / carrier `245a4940b99245b304cbea2aacd1a2bd61bc5fa0`, material blockers0. The report binds55original byteparts/14XML/144+19IDs/51examples, B-AS01 exact843Bframing, all9original inputs7/2, only2manifest locators, conditionalscope/52docSpecs/fiveReadPaths-only profiles and current package/dependency closure. Fresh native9categories/9descriptors/28methods/78cases/0executed,12rawchains/sevenDLL/258packagefiles are accepted SOURCE preparation, not session52/GREEN evidence.

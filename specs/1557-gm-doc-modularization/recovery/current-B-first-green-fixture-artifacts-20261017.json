@@ -1,0 +1,183 @@
+{
+  "kind": "IMMUTABLE_FIRST_B_GREEN_FIXTURE_ARTIFACTS_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE",
+  "createdUtc": "2026-10-17T07:01:55.389383+00:00",
+  "actualSource": "a8e0456fd1208984b23a0c6813d3d199a900411c",
+  "compiledSource": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "artifactDirectories": [
+    "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+    "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+    "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+    "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb"
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/ast-and-publication.json.gz",
+      "bytes": 710083,
+      "sha256": "26d81f1d795f0475ced9fb2055a7ea7259d7528a4c43289db84ac14ac869cf79",
+      "storedSha256": "1a7f992b1affa4b6d273e195a9a1ee4a48d97b83678465e2ff2765016b2008e0",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/outcome.json.gz",
+      "bytes": 738070,
+      "sha256": "9d16638d3911c0bfa37fcdf66fd6faadeb39c16a75116d1a16932f6d319d2bc3",
+      "storedSha256": "4d5614ac9cb6b2090ed52a5f437a03d039893f7117facd686982692e8dc15ef9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/ast-and-publication.json.gz",
+      "bytes": 710209,
+      "sha256": "cbb6955889d7641ed18b308c2eb7665862e9071076fed3ba9972a5f3b4998dfd",
+      "storedSha256": "beef67421316be37c71722da82a59dade5f8eaa2a0b8973240f7156b23e5ed50",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/generated-MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/generated-MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "bytes": 12977,
+      "sha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "storedSha256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/outcome.json.gz",
+      "bytes": 940739,
+      "sha256": "3ce5193dae4db4695d6e1322c9166a1ea4eea74fbde862bbb9159880cd95801a",
+      "storedSha256": "23f592341a1aad59a9c4f5df61c8fc097ca9278b8ada234fc0c3b76628d8658e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/ast-and-publication.json.gz",
+      "bytes": 710209,
+      "sha256": "e67765bcf9ad12c6f4c4c02fd998e17374c607c3c9c78bd6024d1319127b13a0",
+      "storedSha256": "c5df4bbead9d53681c5aef0cdb70116f44ac4d1fa408815356f433ca734ffe50",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/outcome.json.gz",
+      "bytes": 923031,
+      "sha256": "e836a3fbc4100659778fa990ea1212326e57098250f64578f13438f3da97f085",
+      "storedSha256": "be7c733d87d1d78d0411e414ab4ebf71ecbad75c0bf2f69074a45768e0be0bf5",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/ast-and-publication.json.gz",
+      "bytes": 710209,
+      "sha256": "85eeb21bfb6e6ca2960acb62fa0f88a9b6c3a5d2c45545bc6e35e1aa3d044ef5",
+      "storedSha256": "69e28f539fd8c3d988ce0bbb4b4f459fe3c3511d6abbc1b76df52e17db2a77ca",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/outcome.json.gz",
+      "bytes": 942616,
+      "sha256": "5d8471af6900ce75f28b6f4279d36aa99162162c5d583e17c0ac710e43df8432",
+      "storedSha256": "ebeef8cc3a73e982f4ffad5018c3beaad48340f3b380ea324a46193ae0382947",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-green-fixture-artifacts-20261017-files/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,re\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-B-first-green-20261017.json').read_text());source='a8e0456fd1208984b23a0c6813d3d199a900411c';compiled='69dc7c928246c9b389cedcf391f017ae6620acd9';assert len(packet['commands'])==9 and len(packet['files'])==54\ncommands=[];artifacts=[];allroots=[];rootproof=Path('/tmp/gm1557-B-root-first-green-union-inspection-20261017.json');proofraw=rootproof.read_bytes();rootdest=rec/'current-B-root-first-green-union-inspection-20261017.json';assert not rootdest.exists();rootdest.write_bytes(proofraw)\nfor n,c in enumerate(packet['commands']):\n assert c['nativeExit']==0 and c['sourceHead']==c['headAfter']==source and c['compiledSource']==compiled and not c['statusAfter'];assert len(c['binaryAfter'])==7 and c['binaryBefore']==c['binaryAfter']==packet['commands'][0]['binaryBefore']\n s=json.loads((Path(c['resultDirectories'][0])/'summary.json').read_text());assert s['ExitCode']==0 and s['Tests']['Total']==s['Tests']['Executed']==s['Tests']['Passed'] and s['Tests']['Failed']==0 and s['Selection']['Complete'] and not s['Selection']['UnderfilledDescriptors'] and not s['TimedOut'] and not s['DuplicateTests'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'];assert n==0 or c['ownedPrefixesBefore']==packet['commands'][n-1]['ownedPrefixesAfter'];assert set(c['ownedPrefixesBefore']).issubset(c['ownedPrefixesAfter'])\n new=set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore']);assert len(new)==([0]*6+[1,1,2])[n];commands.append(dict(label=c['label'],category=c['argv'][-2],nativeExit=0,seconds=c['wallSeconds'],tests=s['Tests'],selection=s['Selection'],diagnosticDirectories=sorted(new)))\n for value in sorted(new):\n  d=Path(value);assert d.name.startswith('boe-gm1557-evidence-') and not d.is_symlink();e=json.loads((d/'outcome.json').read_text());assert e['failure'] is None and e['exitCode']==0 and e['ast']['completed'] and e['ast']['sourceHash']==e['packagedDaemonHash']==e['sourceDaemonHash'];assert e['exitConfirmed'] and e['rootsRemoved'] and e['stdoutEof'] and e['stderrEof'] and e['stdoutFailure'] is None and e['stderrFailure'] is None;assert not e['remaining'] and not e['cleanupFailures'] and not e['ownershipUnresolved'] and not e['unknownDescendants'];assert e['initialIdentityProved'] and e['pipesStarted'] and e['initialCensusProved'];assert all(not Path(e[k]).exists() for k in ['root','package']);allroots += [e['root'],e['package']]\n  if not e['publish']:\n   assert not e['ast']['runtimeExecuted'] and len(e['identities'])==1 and not e['issues'];kind='FULL_SOURCE_AST_ONLY_NOT_SESSIONPUBLICATION'\n  else:\n   assert e['ast']['runtimeExecuted'] and len(e['identities'])==3\n   for p,h in e['copiedPins'].items():assert hashlib.sha256((r/p).read_bytes()).hexdigest().upper()==h\n   if 'physicalFault' not in e:\n    kind='REAL_CURRENT52_PACKAGE_TO_SESSION_PUBLICATION';assert not e['issues'] and len(e['manifest']['docs'])==len(e['copiedPins'])==52;g=e['generatedTemplate'];b=Path(g['retainedRawPath']).read_bytes();assert g['generated'] and g['physicalPresent'] and g['containedWithoutSymlink'] and len(b)==g['bytes']==12977 and hashlib.sha256(b).hexdigest().upper()==g['sha256']==g['expectedSha256']=='2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239'\n   else:\n    fault=e['physicalFault'];kind='REAL_PHYSICAL_'+fault['kind'];target='Rules/Block_5_Wounds.txt';assert fault['relativePath']==target and fault['presentBefore'] and not fault['presentAfter'] and fault['beforeSha256']==hashlib.sha256((r/target).read_bytes()).hexdigest().upper();assert len(e['copiedPins'])==51 and target not in e['copiedPins'];assert 'delivery.copy_missing:'+target in e['issues'];assert all(x in ['delivery.manifest_inventory','delivery.manifest_missing_or_duplicate:'+target,'delivery.copy_missing:'+target,'delivery.link_missing:'+target,'delivery.link_missing:Block_5_Wounds.txt','delivery.link_missing:../Rules/Block_5_Wounds.txt'] for x in e['issues'])\n    if fault['kind']=='missing_package_source':assert len(e['manifest']['docs'])==51 and fault['phase']=='before unchanged real producer' and 'delivery.manifest_inventory' in e['issues'] and 'delivery.manifest_missing_or_duplicate:'+target in e['issues']\n    else:assert fault['kind']=='missing_session_copy' and len(e['manifest']['docs'])==52 and fault['phase']=='after unchanged real producer, before closure check' and 'delivery.manifest_inventory' not in e['issues'] and 'delivery.manifest_missing_or_duplicate:'+target not in e['issues']\n  artifacts.append(dict(directory=str(d),kind=kind,evidence=e))\nassert len(artifacts)==4 and len(allroots)==len(set(allroots))==8 and sum(c['tests']['Passed'] for c in commands)==78\nfor pin in packet['commands'][-1]['binaryAfter']:\n b=(r/pin['path']).read_bytes();assert len(b)==pin['bytes'] and hashlib.sha256(b).hexdigest()==pin['sha256']\nfolder=rec/'current-B-first-green-fixture-artifacts-20261017-files';assert not folder.exists();folder.mkdir();files=[]\nfor artifact in artifacts:\n d=Path(artifact['directory'])\n for p in sorted(d.rglob('*')):\n  assert not p.is_symlink()\n  if not p.is_file():continue\n  b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/d.name/(str(p.relative_to(d))+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nassert len(files)==21\nfor f in packet['files']+files:\n z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nmanifest=dict(kind='IMMUTABLE_FIRST_B_GREEN_FIXTURE_ARTIFACTS_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=source,compiledSource=compiled,artifactDirectories=[x['directory'] for x in artifacts],files=files,helperText=Path(__file__).read_text());(rec/'current-B-first-green-fixture-artifacts-20261017.json').write_text(json.dumps(manifest,indent=2)+'\\n')\ninspection=dict(kind='FIRST_B_GREEN_WRITER_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=source,compiledSource=compiled,commands=commands,observed=dict(categories=9,descriptors=9,uniqueMethods=28,uniqueCases=78,executed=78,passed=78,failed=0,unrun=0),rootIndependentRawObservation=dict(path=str(rootdest.relative_to(r)),bytes=len(proofraw),sha256=hashlib.sha256(proofraw).hexdigest(),classification='ROOT_RAW_OBSERVATION_NOT_INDEPENDENT_REVIEWER_VERDICT; exactfresh-plan/per-method/78unique identity union read by Root, not recomputed as a new test.'),rawChainsVerified=54,fixtureArtifactChainsVerified=len(files),fixtureSemantics=artifacts,strictOwnedRootCount=8,strictOwnedRoots=allroots,allStrictRootsPhysicallyAbsent=True,retainedDiagnosticsOnly=[x['directory'] for x in artifacts],sevenLivePins=packet['commands'][-1]['binaryAfter'],sourceCleanAllNative=True,namespaceSnapshotsContinuous=True,historical='Current78PASS distinct from original2FIRSTexpectedFAIL, source-only FIRST6/3 and proof-helper failure; no oldA family/prep/RED replay.',limits='Actual52 session docs were read and hash-pinned before strict removal; complete session doc bodies are not separately retained as raw copies. Their source/package current exact GitHub bytes plus actualcopied52pins and closure assertions support equality. Generatedtemplate12977raw retained. Logicalprofile paths are not backend execution. Timings are per-command, no end-to-end speedup claim. EVIDENCE/final tasks pending independent reviewer and finalpublication.',helperText=Path(__file__).read_text());(rec/'current-B-first-green-writer-inspection-20261017.json').write_text(json.dumps(inspection,indent=2)+'\\n')\nprint('FROZEN_FIRST_GREEN54NATIVE21FIXTURECHAINS/9COMMANDS/78PASS/4DIAGNOSTICS/8STRICTROOTS;INDEPENDENTEVIDENCEPENDING')\n"
+}

@@ -1,6 +1,6 @@
 # #1557 Block B: current source and bounded implementation contract
 
-Status: **independent productionSOURCE/FIXTURE/SELECTION/PREP accepted on69dc/245a, materialblockers0; exact9categories/9descriptors/28methods/78cases, ZEROproductionactual; runtime held pending decision publication/recovery and separate Root release**. Accepted contract below and2FIRSTcausalRED remain historical; static6/3 and metadata-helperfailure retained. [Current source decision](../recovery/current-B-production-source-independent-review-20261017.md); onlyT021complete, T022–T029open. Source/catalog/selection/package/pins unchanged; main/original1557/A1A2 unchanged.
+Status: **productionSOURCE accepted; all9firstcanonicalcategories observed78uniquePASS/28methods/9descriptors on a8e/69dc,0unrun; independentGREEN EVIDENCE/finalpublication pending**. Historical2causalRED/static6:3/helperfailure retained separately; no retry or current source/pin change. [Runtime/raw packet](../recovery/current-B-first-green-20261017.json); T029 and finalcompletion remainopen, no broaderqualification.
 
 ## Exact current inventory
 

@@ -1,0 +1,119 @@
+{
+  "kind": "ROOT_READ_ONLY_NATIVE_GREEN_UNION_INSPECTION_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE",
+  "actualSource": "a8e0456fd1208984b23a0c6813d3d199a900411c",
+  "compiledSource": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "categories": 9,
+  "uniqueMethods": 28,
+  "uniquePassedCases": 78,
+  "nativeInvocationSecondsSum": 61.31992119499773,
+  "rows": [
+    {
+      "category": "gm-doc-block5-content-boundary",
+      "passed": 1,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-content-boundary-a8e0456f-20261017/record.json",
+      "recordSha256": "f740aa12f9df1bc9488c0312687c5066196a88f17d2395f26107c7ad37757509"
+    },
+    {
+      "category": "gm-doc-block5-preservation",
+      "passed": 19,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-preservation-a8e0456f-20261017/record.json",
+      "recordSha256": "48e2a62d95d4fc29765becd2644f2a5a5b6e88b403c3cb9c7546e19910f429f2"
+    },
+    {
+      "category": "gm-doc-block5-reading",
+      "passed": 20,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-reading-a8e0456f-20261017/record.json",
+      "recordSha256": "fea00c298ce9fdb84a370b5f1ab576e546ac2e417b85495ccbe9d297312bf65f"
+    },
+    {
+      "category": "gm-doc-block5-permissions-links",
+      "passed": 8,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-permissions-links-a8e0456f-20261017/record.json",
+      "recordSha256": "b83bb4531c02f591937eebe1a5a1c3b08ae445aa569131e3e5250c8a17e25513"
+    },
+    {
+      "category": "gm-doc-block5-current-body-guards",
+      "passed": 14,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-body-guards-a8e0456f-20261017/record.json",
+      "recordSha256": "6fc94389d2ad07c7f4d073bfb8c4a81c9d3be69ffa1c89f28f46fb5c39e94cfa"
+    },
+    {
+      "category": "gm-doc-block5-shared-preservation",
+      "passed": 12,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-shared-preservation-a8e0456f-20261017/record.json",
+      "recordSha256": "b3f8e179bb4db035ac94474860ba10ba41b154975e49ee1c87ee480dfcd2692c"
+    },
+    {
+      "category": "gm-doc-block5-delivery-source",
+      "passed": 1,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-delivery-source-a8e0456f-20261017/record.json",
+      "recordSha256": "a759e1b421fcefb5f53257eaed51580f478b26a2fc198b77a73abe182a7d4daa"
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "passed": 1,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-genuine-publisher-a8e0456f-20261017/record.json",
+      "recordSha256": "6cb12e4201b769d343b30b57a5e426a08a42fca3cb341823eea9b655faa7bae8"
+    },
+    {
+      "category": "gm-doc-block5-package-negatives",
+      "passed": 2,
+      "native": 0,
+      "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-package-negatives-a8e0456f-20261017/record.json",
+      "recordSha256": "a24c0c9d0623ef632dd813d731bc789432179cd23d7b7df11fb1f9981c98930e"
+    }
+  ],
+  "methodCounts": {
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles": 10,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators": 3,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody": 2,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope": 12,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract": 8,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion": 5,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36": 1,
+    "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape": 2,
+    "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous": 7,
+    "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority": 1,
+    "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract": 1,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites": 1,
+    "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure": 9,
+    "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte": 1,
+    "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources": 1,
+    "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority": 1,
+    "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch": 1,
+    "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure": 1,
+    "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries": 2
+  },
+  "retainedActualArtifactDirectories": [
+    "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+    "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+    "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+    "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb"
+  ],
+  "namespaceChainContinuous": true,
+  "currentUnexpectedNativeFailures": 0,
+  "historicalCausalRed": {
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "keptSeparate": true
+  },
+  "evidence": "PENDING independent raw evidence review after persistence; no production/session/source changes or test re-execution by this inspection"
+}
