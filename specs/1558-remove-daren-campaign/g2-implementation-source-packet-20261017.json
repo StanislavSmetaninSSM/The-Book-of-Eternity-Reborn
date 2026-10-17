@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "G2 implementation compiled at555; retained frontend0 at110e (113files). FIRST managed BOTH/catalog0 +exact GREEN PlanOnly0:17owners/19descriptors/50methods-or-files =42C#methods98cases +8frontendfile estimates,106estimated/0executed;21native/package/support rawchains and7newDLL pins frozen. Final independent SOURCE/FIXTURE/SELECTION/PREP and separate Root runtime release pending; no GREEN/browser/task completion.",
+  "status": "Final G2 SOURCE/FIXTURE/SELECTION/PREP accepted by independent review and Root atbc6 (compiled555, retainedfrontend110). Sole LOW G2-L01 ledger digest corrected;274sourcepins/7DLL/frontend113/selectors unchanged. Prepared ONE17owner/19descriptor GREEN aggregate (98C#cases+8frontendfile estimates) remains UNRUN pending Root exact carrier activation; EVIDENCE/interactive browser/task completion not claimed.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2052,7 +2052,7 @@
   ],
   "currentLedger": {
     "path": "g2-method-row-ledger-20261017.json",
-    "sha256": "a35225f165a4fdc3e9206d4432bef2f7531bcd767b85eeeeb6fb4e9c7a02b539"
+    "sha256": "da64f05960e994d48f70dad956f74b84f76968a382ebdb1742e6a6ee5b94bf66"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -2593,5 +2593,21 @@
       "bytes": 25790464,
       "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
     }
-  ]
+  ],
+  "finalSourceAcceptance": {
+    "independentMd": "recovery/gm1558-g2-final-source-independent-20261017.md",
+    "independentJson": "recovery/gm1558-g2-final-source-independent-20261017.json",
+    "support": "recovery/gm1558-g2-source-independent-check-20261017.json",
+    "rootConditionalDecision": "recovery/gm1558-root-g2-source-accepted-green-conditional-release-bc6c28a1-20261017.json",
+    "verdict": "SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED_RUNTIME_UNRUN",
+    "materialBlockers": 0,
+    "lowMetadataCorrection": {
+      "field": "currentLedger.sha256",
+      "before": "a35225f165a4fdc3e9206d4432bef2f7531bcd767b85eeeeb6fb4e9c7a02b539",
+      "after": "da64f05960e994d48f70dad956f74b84f76968a382ebdb1742e6a6ee5b94bf66",
+      "sourcePinsDigestUnchanged": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb"
+    },
+    "approvedRecorder": "recovery/tools/gm1558-g2-green-first-run.py",
+    "approvedRecorderSha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+  }
 }

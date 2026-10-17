@@ -1,0 +1,165 @@
+{
+  "kind": "ROOT_INDEPENDENT_FROZEN_PREP_AND_GITHUB_BINDING_NOT_RUNTIME",
+  "carrier": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "frontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "rawChains": [
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/record.json.gz",
+      "bytes": 60330,
+      "sha256": "77caecccc8b0513d6b9801cb069a38f40c180363ef5f3b8aca69cdcbf9c385ea"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/stdout.log.gz",
+      "bytes": 722,
+      "sha256": "a7a6e976242e1845a2c5b161a9ab9889e34f6ccc4dfbd84b3af2713c535c46e3"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/process.json.gz",
+      "bytes": 256,
+      "sha256": "aad06ee7a818d962013ff7ab659bb281582f4397864307fa5cef920c63a2adae"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/sentinel.json.gz",
+      "bytes": 352,
+      "sha256": "43c4e8edea05c7214ea608157f7b1c120fe1e36d67465b9da074e577c1e5484b"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/owned-output-clean.json.gz",
+      "bytes": 2588,
+      "sha256": "bee521b1f84707b0395e97142c0065e2245e8a2ae21a9a1a51b057db493ab206"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/Build-integration.log.gz",
+      "bytes": 120784,
+      "sha256": "0a89990c5d146bed29d62d8ab664d7fb3a372ff46b5c217512137fa2d05fb7d7"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/Build-unit.log.gz",
+      "bytes": 29263,
+      "sha256": "3e09557960a2bba8288e576e6414d4f14fe7b9aac251f5ae14d11200d2d376a2"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "3f317c66b3b374b6201a53aecb74dda946a54df3cc407009b34e0db7ae9c5778"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/dotnet-test.log.gz",
+      "bytes": 3568018,
+      "sha256": "51cb85c66f0eb46a9de187dc25e8fea79d94cfae967e203ca867232ac102a501"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/0/runner0/summary.json.gz",
+      "bytes": 1600,
+      "sha256": "090fc7cbfe09492c1b99ca9fdf0af92ebf68982112571f7a6c95815b5629b6ba"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/record.json.gz",
+      "bytes": 60297,
+      "sha256": "c6dafb85b31d4825e454e251aa65fff431e4361e319750f4e98f1c305bbbd174"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/stdout.log.gz",
+      "bytes": 20598,
+      "sha256": "6a5a7ed17c04c2b22773778ceeb9f170b18cd4b7ea29ea8436616f30c5c5bb45"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/process.json.gz",
+      "bytes": 338,
+      "sha256": "98cf7ec6291095bcc2ea86b1658326f04584a4d4fdd6e1dd540e6e255fa99a1b"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/sentinel.json.gz",
+      "bytes": 355,
+      "sha256": "7b828e0ad95480a3ea8f5d3d0072df59fd33bcf16441a54e544358355f671639"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/dotnet-test.log.gz",
+      "bytes": 3417977,
+      "sha256": "f4ab0f4dbbea5a7f4537d342436e7a5fdd85eacc0e2dbcb129097f675e49e12e"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/plan.json.gz",
+      "bytes": 31956,
+      "sha256": "ccc6088236540098df97459d7f375864d6f18f74127bc335c557f809fcd81d7a"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/1/runner0/summary.json.gz",
+      "bytes": 10318,
+      "sha256": "013a13f4b73ef9ac2a8389fdd08d064c8b7eb3d92651ae83828a6e98cca311c7"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/managed-preparation-helper.py.gz",
+      "bytes": 9152,
+      "sha256": "88ec7f2093ce2fbaf32b859c0f44c37ea2f2aa457b93cbd555987fc80f36bf3d"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/fresh-package-frontend-docs-manifest.json.gz",
+      "bytes": 109184,
+      "sha256": "2ffbfa7a1b248ec4975d460e396b392f68feec81f0bda1fbba5bc3eb98a1a892"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/metadata-continuation-helper.py.gz",
+      "bytes": 6222,
+      "sha256": "ab29040b684ac21503010bdf1fab570d36d0efa9d33587c01e0ac57d95384c9d"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-managed-preparation-555ceae6-20261017-files/metadata-inspection-utility-outcome.json.gz",
+      "bytes": 779,
+      "sha256": "5e8d00c69563ffc8079ea49650c93f5d8be7b5bba830b7b76329f7acfbb69565"
+    }
+  ],
+  "packageFiles": 370,
+  "frontendFiles": 113,
+  "sevenFreshBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9309696,
+      "sha256": "92acbd4a828662f01a98468a1678bdaf8b7659f669bc2148b9af22d9305399fd"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29126144,
+      "sha256": "8a21ae30dcb0f020bc10466d5c606b187b9a21ad85f93e2bf26774ee7bc0f556"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    }
+  ],
+  "observedPlan": {
+    "categories": 17,
+    "descriptors": 19,
+    "uniqueMethodsOrFiles": 50,
+    "csharpMethods": 42,
+    "csharpCases": 98,
+    "frontendMethodsOrFiles": 8,
+    "frontendEstimatedCases": 8,
+    "totalEstimated": 106,
+    "executed": 0
+  },
+  "remoteRecoveryReceipt": "/tmp/gm1558-g2-first-managed-preparation-delta-github-bc6c28a1-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-bc6c28a1-20261017.json"
+}

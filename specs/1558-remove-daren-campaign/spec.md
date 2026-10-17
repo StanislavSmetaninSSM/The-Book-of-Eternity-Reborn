@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2 implementation compiled at555; retained frontend0 at110e (113files). FIRST managed BOTH/catalog0 +exact GREEN PlanOnly0:17owners/19descriptors/50methods-or-files =42C#methods98cases +8frontendfile estimates,106estimated/0executed;21native/package/support rawchains and7newDLL pins frozen. Final independent SOURCE/FIXTURE/SELECTION/PREP and separate Root runtime release pending; no GREEN/browser/task completion.
+**Status**: Final G2 SOURCE/FIXTURE/SELECTION/PREP accepted by independent review and Root atbc6 (compiled555, retainedfrontend110). Sole LOW G2-L01 ledger digest corrected;274sourcepins/7DLL/frontend113/selectors unchanged. Prepared ONE17owner/19descriptor GREEN aggregate (98C#cases+8frontendfile estimates) remains UNRUN pending Root exact carrier activation; EVIDENCE/interactive browser/task completion not claimed.
 
 ## Source issues and scope
 

@@ -1,0 +1,17 @@
+{
+  "kind": "ROOT_GREEN_RECORDER_SOURCE_ONLY_UNRUN",
+  "reviewedCarrier": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+  "helper": {
+    "path": "/tmp/gm1558-g2-green-first-run.py",
+    "bytes": 10601,
+    "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+  },
+  "scope": "One reviewed current SelectionFile-NoBuild canonical aggregate. Current42C#methods98cases and8frontendfile estimates require actual complete raw qualification. No runtime release from helper source check.",
+  "inspected": [
+    "freshPlan/source274/7DLL/frontend110/package/currentselector continuity",
+    "atomic compiled555 FIRST sentinel; no repeats",
+    "one canonical runner command; runner own failstop and budgets remain",
+    "stdout/native/process settlement/result files/namespace/raw artifact recording",
+    "no deletion, build, dependency, host/browser launch or source mutation"
+  ]
+}

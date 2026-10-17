@@ -1,0 +1,61 @@
+{
+  "kind": "ROOT_ACCEPTED_FINAL_G2_SOURCE_CONDITIONAL_GREEN_RELEASE_NOT_ACTUAL",
+  "utc": "2026-10-17T11:08:19.598131+00:00",
+  "reviewedCarrier": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-final-source-independent-20261017.md",
+      "sha256": "5f718b569c0fa06992e4b768701f53b3c0ba926bee3733e2031d543f375620f9"
+    },
+    {
+      "path": "/tmp/gm1558-g2-final-source-independent-20261017.json",
+      "sha256": "33506dc456db6027781a87c4f9f7f99f3bb26acc818042db38f1cd32406b26be"
+    },
+    {
+      "path": "/tmp/gm1558-g2-source-independent-check-20261017.json",
+      "sha256": "4d3bd54d98661a680befa6b0ece41d29469830b6c189f2374ffa488476864ab0"
+    }
+  ],
+  "decision": "Accept bounded final SOURCE/FIXTURE/SELECTION/PREP with sole LOW metadata correction. No current GREEN/EVIDENCE acceptance.",
+  "requiredMetadataCorrection": {
+    "field": "g2-implementation-source-packet-20261017.json:currentLedger.sha256",
+    "requiredValue": "da64f05960e994d48f70dad956f74b84f76968a382ebdb1742e6a6ee5b94bf66",
+    "sourcePinsDigestMustRemain": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb"
+  },
+  "rootEvidence": [
+    "/tmp/gm1558-root-fresh-prep-binding-bc6c28a1-20261017.json",
+    "/tmp/gm1558-root-g2-green-recorder-source-check-20261017.json",
+    "/tmp/gm1558-root-recovery-composition-bc6c28a1-20261017.json"
+  ],
+  "nextCheckpoint": "Sole writer persists exact FINAL pair/support/Root decision/readbacks/previouscomplete delta+composition/approved FIRST recorder and exact G2-L01 correction in featuremetadata only; nonforce push and fresh complete immediate Github recovery before Root activation.",
+  "conditionalExecution": {
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "tests/selection.json",
+      "-NoBuild"
+    ],
+    "helper": {
+      "path": "/tmp/gm1558-g2-green-first-run.py",
+      "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+    },
+    "membership": {
+      "owners": 17,
+      "descriptors": 19,
+      "csharpMethods": 42,
+      "csharpCases": 98,
+      "frontendFileEstimates": 8,
+      "estimatedTotalNotActualTests": 106
+    },
+    "activation": "Only after clean metadata carrier exactremote/fullrecovery, correctedledgerpointer and unchanged274sourcepins/new7DLL/FE113, Root separately names actualSource. One aggregate FIRST only; no perowner repeat.",
+    "failurePolicy": "Canonical stop at first unexpected native/semantic/identity/underfill/duplicate/timeout/cleanup outcome. Freeze/publish FIRST raw before independent causal review or retry. No hidden replacement invocation.",
+    "postGreen": "Root actual Chromium helper may be separately released only after entire GREEN raw completeness/semantics/cleanup qualified. One desktopBranchChoice sample; its raw/snapshots and independent final EVIDENCE still required."
+  },
+  "limits": "No main/merge/forcepush/branchdelete/issueclose/credentials/settings/Windows download or CI. No unrelated A1/A2/Late2 replay, HOT/M3 integration, fullsuite or unsupported legacy save compatibility. Preserve all original FAIL/RED/capture/support raw and private Windows blocker outside Git."
+}

@@ -1,0 +1,585 @@
+{
+  "kind": "INDEPENDENT_FINAL_G2_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "utc": "2026-10-17T11:07:05.852009+00:00",
+  "reviewer": "/root/a1_reviewer; retained independent Astra/XHigh role",
+  "carrier": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+  "compiledManagedSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "implementationBase": "023931661391926398a5c5ebe0897a66985235b2",
+  "priorProductBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verdicts": {
+    "SOURCE": "ACCEPTED_WITH_LOW_METADATA_CORRECTION",
+    "FIXTURE": "ACCEPTED_FOR_BOUNDED_CURRENT_SELECTION",
+    "SELECTION": "SUFFICIENT_FOR_BOUNDED_G2_VERIFICATION",
+    "PREP": "ACCEPTED_ZERO_EXECUTION",
+    "RUNTIME_EVIDENCE": "NOT_EVALUATED_CURRENT_GREEN_UNRUN",
+    "release": "No automatic authorization. Exact G2-L01 correction, immutable decision persistence/recovery and separate Root release required."
+  },
+  "materialBlockers": [],
+  "findings": [
+    {
+      "id": "G2-R01",
+      "status": "CLOSED_SOURCE",
+      "origin": "Root authoring finding retained",
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "scenario": "Daren external rollback cut also removed shared restore tail during authoring",
+      "closure": "Original generic 1690-byte tail restored before published ee2433; retained SHA256 0394bf05f4be38e642990885dac4ec711ed1096e9df0472ae8368c5cf15b99af. No runtime success inferred."
+    },
+    {
+      "id": "G2-R02",
+      "status": "CLOSED_SOURCE",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "scenario": "Retained ordinary QteWebInteractionService rollback caller requires PrepareStateManagerRollback",
+      "closure": "Exact original five-line /193-byte helper restored, SHA256 9bd0d840444939cf5de502734f5940dd8f3c59e1567c00158b0ef989bcd8341e. Generic callback and ordinary rollback contract retained."
+    },
+    {
+      "id": "G2-R03",
+      "status": "CLOSED_SOURCE",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "scenario": "No-active private intent cleanup could discard recognized retired evidence; initial refinement could also swallow image/path authority failure and obscure active Format2 retirement reason",
+      "closure": "Strict existing Format1/2 envelope decoder separated from effect admission. Owned journal open remains outside malformed-codec catch; exact retired identity refusal is outside that catch and before image or member filesystem authority checks. Default active validation is outside Format2 codec wrapping. Whole ordinary generation/member/image validation retained. Nine source-derived cases in four methods cover Format1/2 retired intent, invalid later image retention, ordinary/truncated scratch neighbors and exact active Format2 refusal. No profile-body read, alias compatibility reader or new profile writer."
+    },
+    {
+      "id": "G2-R04",
+      "status": "CLOSED_SOURCE",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "scenario": "Prefix probe advanced Format1 stream before replacement stream.CopyTo, unlike original full-file read",
+      "closure": "555ceae6 restores stream.Position=0 immediately before CopyTo; existing actual Format1 recovery/refusal and new source-derived Format1 controls exercise this path. Fixed before managed preparation, not represented as a runtime failure or pass."
+    },
+    {
+      "id": "G2-L01",
+      "severity": "LOW",
+      "status": "EXACT_METADATA_CORRECTION_REQUIRED_BEFORE_RELEASE",
+      "path": "specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+      "field": "currentLedger.sha256",
+      "currentValue": "a35225f165a4fdc3e9206d4432bef2f7531bcd767b85eeeeb6fb4e9c7a02b539",
+      "requiredValue": "da64f05960e994d48f70dad956f74b84f76968a382ebdb1742e6a6ee5b94bf66",
+      "consequence": "Pointer names old ledger bytes despite current nativeMembership already matching exact native plan; no product, selector, fixture or binary mismatch. Correct the hash in decision metadata and verify readback; no rebuild/replay required."
+    }
+  ],
+  "checkedScope": {
+    "core": "Published cumulative G2 cuts and real shared callers reviewed in the same retained review context; final refined R03 and Format1 rewind checked without restarting accepted G1/G0 reviews. Retired original/current browser classification precedes recovery siblings; complete shared journal/mixed-member admission refuses before effects; recognized private intent retained before target image/path admission; ordinary pending/generation/unknown/recovery/close paths retained. No save/profile/reward/history deletion, grant, clawback or automatic migration. Shared ScenarioCore and eleven practice implementations retained.",
+    "clients": "Actual CLI/HTTP/React campaign entrypoints/resources removed; common practice, scoring, retry/exit and ordinary engine retained. Deleted API test rows explicitly retired or migrated to ordinary subjects, generic close core retained.",
+    "docs": "Active instructions remove Daren campaign/reward promises; ordinary no-reward practice and scored GM QTE contracts retained. Exact N026–28 inverse restores affected CLI_API and Step_Main baseline; prior navigation edits/D01 retained. Genuine package writer and current CLI wildcard source-byte guard are selected.",
+    "fixtures": "Accepted original two producer packets and opaque source-derived fresh-root/generation transport retained with honest provenance; original schema6 case remains synthetic/source-order control. Save/fresh-soul/HTTP/real-console fixtures preserve meaningful prerequisites, data comparisons and settled-task/strict-root oracles. Capture-only APIs/tests retired after archival. New nine private-intent controls assert real whole-root/callback/evidence behavior without forging a new authentic capture.",
+    "selection": "17 categories /19 descriptors /50 unique method-or-file entries =42 C# methods,98 C# cases and8 frontend file estimates (2 node,4 vitest,2 typecheck),106 adapter estimate. Exact membership and budgets match canonical selection/mirror and native PlanOnly. These are not106 executed tests. Current changed dependencies are covered; no Late2/A1/A2 replay merely for adjacency or assembly hash.",
+    "preparation": "Retained locked npm setup and frontend build native0 on110e; frontend tree unchanged through555/bc6. Fresh managed BOTH/catalog native0 on555 (92.88314014599746s;816categories/11686methods-files), exact PlanOnly-NoBuild native0 (5.789255365998542s). Both zero executions. Seven current binaries and namespace/dist chain match.",
+    "recovery": "Immediate34 exact recovered GitHub files/all30 changed metadata paths checked against committed/live bytes, SHA256, Git blobs and modes. All21 current frozen gzip/raw/live/committed chains checked.274 current source pins byte/SHA/blob/mode checked;18 explicit deleted paths absent. Retained prior recovery composition was not replayed.",
+    "package": "370-file fresh managed package and113 retained served frontend files bound; all52 current source documents match package bytes/roles. CLI_API is separately wildcard-copied to three outputs, not a53rd session document. No new session52 runtime proof claimed."
+  },
+  "selection": {
+    "path": "tests/selection.json",
+    "sha256": "fca8f8872d90fc035a030901a80e2c08f71fc844f42647db1571d6e74cecc5ea",
+    "mirrorExact": true,
+    "categories": 17,
+    "descriptors": 19,
+    "uniqueMethodsOrFiles": 50,
+    "csharpMethods": 42,
+    "csharpCases": 98,
+    "frontendFiles": 8,
+    "frontendEstimated": 8,
+    "totalEstimated": 106,
+    "rows": [
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "Cases": 11
+      },
+      {
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "Cases": 5
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "Cases": 11
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-console-menu",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-console-practice",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "Cases": 11
+      },
+      {
+        "category": "daren-retirement-frontend-shell",
+        "adapter": "node",
+        "Name": "BookOfEternityClient.WebFrontend/test/gameLauncherMenuLayout.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-frontend-shell",
+        "adapter": "node",
+        "Name": "BookOfEternityClient.WebFrontend/test/uiStructure.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-ordinary-storage",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-ordinary-storage",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-original-schema6-green",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-private-intent",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-private-intent",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard",
+        "Cases": 2
+      },
+      {
+        "category": "daren-retirement-private-intent",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
+        "Cases": 4
+      },
+      {
+        "category": "daren-retirement-private-intent",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence",
+        "Cases": 2
+      },
+      {
+        "category": "daren-retirement-save-rewards",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-save-rewards",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "Cases": 3
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "Cases": 4
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.CampaignResourcesAndDispatchAreRemovedWhileCommonScenarioAndPracticeRemain",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.FreshBuildCopiesCurrentCliApiBytesWithoutClaimingSessionMembership",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-storage-refusal",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+        "Cases": 2
+      },
+      {
+        "category": "daren-retirement-storage-refusal",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+        "Cases": 2
+      },
+      {
+        "category": "frontend-qte",
+        "adapter": "vitest",
+        "Name": "BookOfEternityClient.WebFrontend/test/darenRetirement.test.tsx",
+        "Cases": 1
+      },
+      {
+        "category": "frontend-qte",
+        "adapter": "vitest",
+        "Name": "BookOfEternityClient.WebFrontend/test/qteLayoutInput.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "frontend-qte",
+        "adapter": "vitest",
+        "Name": "BookOfEternityClient.WebFrontend/test/qteMiniGameHelpers.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "frontend-qte",
+        "adapter": "vitest",
+        "Name": "BookOfEternityClient.WebFrontend/test/qteScenePanelMiniGames.test.tsx",
+        "Cases": 1
+      },
+      {
+        "category": "frontend-shell-types",
+        "adapter": "typecheck",
+        "Name": "BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "frontend-shell-types",
+        "adapter": "typecheck",
+        "Name": "BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts",
+        "Cases": 1
+      },
+      {
+        "category": "gm-doc-afterlife-package-delivery",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "Cases": 1
+      },
+      {
+        "category": "portable-browser-protocol-admission-linux",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest",
+        "Cases": 1
+      },
+      {
+        "category": "portable-browser-protocol-admission-linux",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "Cases": 4
+      },
+      {
+        "category": "portable-original-remaining-owning-close-linux",
+        "adapter": "integration",
+        "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "Cases": 8
+      }
+    ],
+    "budgets": [
+      {
+        "Name": "daren-retirement-affected-guards-integration-001",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 1,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-affected-guards-unit-002",
+        "Adapter": "unit",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 6,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-browser-host-integration-003",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 17,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-common-qte-integration-004",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 6,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-common-qte-unit-005",
+        "Adapter": "unit",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 13,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-console-menu-integration-006",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 1,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-console-practice-integration-007",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 11,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-frontend-shell-frontend-008",
+        "Adapter": "node",
+        "BudgetMinutes": 2,
+        "EstimatedCases": 2,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-ordinary-storage-integration-009",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 2,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-original-schema6-green-integration-010",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 1,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-private-intent-integration-011",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 9,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-save-rewards-integration-012",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 4,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-source-guidance-unit-013",
+        "Adapter": "unit",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 9,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "daren-retirement-storage-refusal-integration-014",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 4,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "frontend-qte-frontend-015",
+        "Adapter": "vitest",
+        "BudgetMinutes": 5,
+        "EstimatedCases": 4,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "frontend-shell-types-frontend-016",
+        "Adapter": "typecheck",
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "gm-doc-afterlife-package-delivery-integration-017",
+        "Adapter": "integration",
+        "BudgetMinutes": 2,
+        "EstimatedCases": 1,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "portable-browser-protocol-admission-linux-integration-018",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 5,
+        "FrontendBuild": false
+      },
+      {
+        "Name": "portable-original-remaining-owning-close-linux-integration-019",
+        "Adapter": "integration",
+        "BudgetMinutes": 3,
+        "EstimatedCases": 8,
+        "FrontendBuild": false
+      }
+    ]
+  },
+  "sevenFreshBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9309696,
+      "sha256": "92acbd4a828662f01a98468a1678bdaf8b7659f669bc2148b9af22d9305399fd"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29126144,
+      "sha256": "8a21ae30dcb0f020bc10466d5c606b187b9a21ad85f93e2bf26774ee7bc0f556"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+    }
+  ],
+  "rootBrowserHelpers": {
+    "gm1558-root-browser-first-run.py": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0",
+    "gm1558-root-browser-smoke.mjs": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818",
+    "gm1558-root-cdp-client.mjs": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23"
+  },
+  "aggregateRecorder": {
+    "path": "/tmp/gm1558-g2-green-first-run.py",
+    "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c",
+    "unrunSentinelAbsent": true,
+    "sourceReview": "One separately activated currentSelection-NoBuild; source274/sevenDLL/frontend/package pins, exclusive FIRST sentinel, canonical stop-on-first-nonzero, raw/process/namespace recording; no retry, build, browser or automatic runtime authority."
+  },
+  "retainedHistory": {
+    "baseline": "Accepted28 distinct causal baseline cases/10 methods =14PASS+14 causalRED; execution history32 includes4 separate original save decoder fixture failures. Retained by exact accepted decision, not replayed. Corrected original capture2PASS retained; prior capture2NRE history unchanged.",
+    "frontendP01": "First frontend native127/tsc:notfound remains immutable causal dependency-setup failure, not retirementRED. Accepted report hashes MD2f54977fe1d435f1b2f72bd297a7cbf565505be81cc9046414b2a1992e323c32 /JSON602897a42fca968f469295b7ecfaedeb4e927cc8188632363704c281b781bcfd. Successful locked setup/frontend is a separate later outcome.",
+    "metadataUtility": "Inspection KeyError:Adapter and continuation preserved in final21chains; no native/source/selector retry or product failure inferred."
+  },
+  "conditions": [
+    "Persist this exact decision and LOW ledger-hash correction, verify exact remote/recovery and unchanged source274/pin digest/selection/binaries before Root runtime activation.",
+    "Future canonical currentSelection-NoBuild recorder must preserve FIRST outcome, stop on first failed/incomplete descriptor and not fill gaps via retry. Actual frontend totals, semantics, no underfill and cleanup require separate EVIDENCE.",
+    "Root Chromium is a separate bounded live mouse BranchChoice/retry/exit/stale-route sample with explicit owned-process cleanup, not eleven interactive playthroughs or a save/world compatibility certification.",
+    "Current GREEN, new package/session delivery, real browser and final task completion remain unproven; no Windows/CI/F1/HOT/M3/provider/backend/Library or main/merge/issue-close claims."
+  ],
+  "support": {
+    "path": "/tmp/gm1558-g2-source-independent-check-20261017.json",
+    "sha256": "4d3bd54d98661a680befa6b0ece41d29469830b6c189f2374ffa488476864ab0"
+  },
+  "reviewActions": "Read-only source/git/hash/decompression/JSON analysis only; no test/build/install/extractor/producer/host/browser run and no repository writes.",
+  "reportAuthoringNote": "Final artifact corrects only the R01 source-file locator from an undelivered draft; verdict, evidence and other findings unchanged."
+}
