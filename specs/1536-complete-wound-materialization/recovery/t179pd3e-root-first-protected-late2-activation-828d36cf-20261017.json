@@ -1,0 +1,13 @@
+{
+  "kind": "ROOT_NAMED_FIRST_PROTECTED_LATE2_PRODUCT_ACTUAL_ACTIVATION",
+  "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "sourceDecisionSaved": true,
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-828d36cf-20261017.json",
+  "mode": "protected-late2",
+  "controller": "/tmp/t179pd3e-product-first-run.py",
+  "controllerSha256": "a679cb0016abd5aa4f756d3cc904901c5aba14a9ebd42a61ea38d59de4bcf4e7",
+  "prepRecord": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-prep-first-build-plan-f766d9d0-20261017/record.json",
+  "scope": "Exactly one FIRST -Category fr063-joint-late-completion -NoBuild,2named real joint Full consumers on freshf766 binaries. All4namespaceempty and current55/new9 strict continuity preflight. No build/retry/ordinary45/othercategory; preserve any failure/raw. Archive original outcome then Root literal retained predicate on NEWraw and separate independent EVIDENCE before ordinary45.",
+  "utc": "2026-10-17T18:29:03.499820+00:00"
+}

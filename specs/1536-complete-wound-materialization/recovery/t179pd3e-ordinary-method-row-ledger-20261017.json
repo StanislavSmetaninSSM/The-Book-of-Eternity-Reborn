@@ -1,14 +1,14 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED_CURRENT_PRODUCT_ACTUAL0_PROTECTED_LATE2_PENDING",
+  "status": "FIRST_NEW_PRODUCT_PROTECTED_LATE2_RAW2PASS_SEPARATE_EVIDENCE_PENDING_ORDINARY45_HELD",
   "counts": {
     "categories": 6,
     "methods": 20,
     "declaredRows": 47,
     "ordinaryRows": 45,
     "protectedRows": 2,
-    "actualExecutedOnCurrentProduct": 0
+    "actualExecutedOnCurrentProduct": 2
   },
   "methods": [
     {
@@ -253,7 +253,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION"
+      "status": "FIRST_NEW_PRODUCT_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING"
     },
     {
       "category": "fr063-joint-late-completion",
@@ -262,7 +262,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION"
+      "status": "FIRST_NEW_PRODUCT_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING"
     }
   ],
   "fixtures": {
@@ -533,5 +533,18 @@
     "next": "Persist/push/exactremote/new GitHub recovery/Root readback, then only separately named FIRST protectedLate2; save/qualify separate new evidence before ordinary45 activation. No new code/build/retry or actual authorized by this persistence.",
     "nonmaterialReviewMetadata": "Immutable reviewJSON controllers[] contains stale generic UNRUN labels for all4 tools. Root accepts actual authoritative raw/freshPreparation/MD: dc959 prep and0461 prep archive each ran once; a679 actual and023d actual archive are still UNRUN. Exact reports stay unchanged; no repeat build/review needed.",
     "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay."
+  },
+  "firstProtectedLate2": {
+    "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "passed": 2,
+    "failed": 0,
+    "status": "FIRST_RAW_ROOT_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-late2-files-20261017/archive.json",
+      "sha256": "9e253dcbd49c31c6b9a3f459df0fb77e164bb0e6e59e51160c0567f00d7ea06c",
+      "rawChains": 9
+    }
   }
 }

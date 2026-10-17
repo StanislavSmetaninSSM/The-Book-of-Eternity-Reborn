@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_MINIMAL_PRODUCT_CURRENT_SOURCE_BINDING_FRESH_PREPARATION_NOT_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED_CURRENT_PRODUCT_ACTUAL0_PROTECTED_LATE2_PENDING",
+  "status": "FIRST_NEW_PRODUCT_PROTECTED_LATE2_RAW2PASS_SEPARATE_EVIDENCE_PENDING_ORDINARY45_HELD",
   "productDelta": [
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
@@ -12,7 +12,7 @@
     "declaredRows": 47,
     "ordinaryRows": 45,
     "protectedRows": 2,
-    "actualExecutedOnCurrentProduct": 0
+    "actualExecutedOnCurrentProduct": 2
   },
   "sourcePins": [
     {
@@ -570,7 +570,7 @@
   "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "c2ae7f5abeaaadd8128c2136729932a68928b747f09262200a3854bcdd9964a9"
+    "sha256": "70c80c258a1efc3bfa497fa22a0f53a5ec8c27de5088d8654b154501e8305ee1"
   },
   "references": [
     {
@@ -929,7 +929,7 @@
     "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
   },
   "futureProduct": {
-    "status": "AFFECTED_SOURCE_PREP_ACCEPTED_PROTECTED_LATE2_PENDING_SEPARATE_ACTIVATION",
+    "status": "SOURCE_PREP_ACCEPTED_FIRST_NEW_PROTECTED2_RAWPASS_EVIDENCE_PENDING",
     "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
     "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
     "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
@@ -3403,7 +3403,7 @@
       }
     ],
     "scope": "Exact three frozen fragments to one new value-only partial and three owner adapters; parse/using/catch/timestamp/all IO/repeated reads/later Full tail remain with original owner; S02 two-vector test correction explicitly separate.",
-    "currentActuals": "NONE. Historical structural RED1 is retained from unmodified fe3 product; no old52/Late2 qualification replay.",
+    "currentActuals": "FIRST new-product protected2 rawPASS on828/f766, independent EVIDENCE pending; ordinary45 unrun/held. Historical tests-only structuralRED1 retained separately.",
     "futureOrder": "Saved product WIP/recovery ->Root FIRSTfreshBOTH PlanOnly0 ->full affected SOURCE ->separately named protectedLate2+EVIDENCE ->ordinary45+EVIDENCE. No automatic advance."
   },
   "protectedLate2Continuity": {
@@ -3449,7 +3449,7 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-product-first-run.py",
       "sha256": "a679cb0016abd5aa4f756d3cc904901c5aba14a9ebd42a61ea38d59de4bcf4e7",
-      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+      "status": "USED_ONCE_FIRST_PROTECTED_LATE2_828_NATIVE0_RAW2PASS_ORDINARY45_UNRUN"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-preparation.py",
@@ -3459,7 +3459,7 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-first.py",
       "sha256": "023d589a97f1d94158343e5f650998d38a7111b310dfc2836d325bf3bcf74a3c",
-      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+      "status": "USED_ONCE_READ_ONLY_FROZE_NEW_LATE2_9CHAINS_ORDINARY45_UNRUN_NO_TEST_EXECUTION"
     }
   ],
   "compiledSourceBinding": {
@@ -3559,5 +3559,164 @@
     "next": "Persist/push/exactremote/new GitHub recovery/Root readback, then only separately named FIRST protectedLate2; save/qualify separate new evidence before ordinary45 activation. No new code/build/retry or actual authorized by this persistence.",
     "nonmaterialReviewMetadata": "Immutable reviewJSON controllers[] contains stale generic UNRUN labels for all4 tools. Root accepts actual authoritative raw/freshPreparation/MD: dc959 prep and0461 prep archive each ran once; a679 actual and023d actual archive are still UNRUN. Exact reports stay unchanged; no repeat build/review needed.",
     "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay."
+  },
+  "firstProtectedLate2": {
+    "status": "FIRST_NEW_RAW2PASS_ROOT_LITERAL_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "wallSeconds": 121.93179388899443,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-late2-files-20261017/archive.json",
+      "sha256": "9e253dcbd49c31c6b9a3f459df0fb77e164bb0e6e59e51160c0567f00d7ea06c",
+      "rawChains": 9
+    },
+    "record": {
+      "originalPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-late2-first-828d36cf-20261017/record.json",
+      "sha256": "d9c255421b2009241901e2d73757f485cc18d37ea00886cdf47aec92019533c2"
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-protected-late2-activation-828d36cf-20261017.json",
+        "bytes": 1047,
+        "sha256": "7ca16747d1531bc8229623f1df6c0d27712a4481dd3fd2f0ee06e3bd70381f12"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-product-late2-inspection-828d36cf-20261017.json",
+        "bytes": 18784,
+        "sha256": "b2c367956085c5436abcfccd8efd2fd7220f4990ad65059a1810c36bfbfa3345"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-source-delta-github-828d36cf-20261017.json",
+        "bytes": 11772,
+        "sha256": "a67b400337168b1ce8e17b0478e4594afa1c8fbd6e72f956c4b92b22d7c74120"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-828d36cf-20261017.json",
+        "bytes": 19930,
+        "sha256": "10052a20c9f9d6b459a6ddfefb880be9b5766d7ad98cc0385be0c9a4fdffd9b0"
+      }
+    ],
+    "rootChecker": {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-root-inspect-product-late2.py",
+      "sha256": "f36c288d7c3195c8fb6723f6a2f2a69f4319a78cf7522c1fdd32b8cd7baf1990"
+    },
+    "rootLiteral": "Unchanged retained semantic predicate applied ONLY these new raw cases: source42/original43, sameIII->II, CREATE2/TREAT3, damage3/charge2, zero/nonzero progression/report/story, strict2roots and inert-image proof. Raw status and Root prequalification are not yet independent final EVIDENCE.",
+    "limits": "Fresh direct-consumer regression only, not replay of old protected2. Retained final computed body remains absent where prior predicate proves only digest/inert equality; no invented payload bodies/source authority/HOT/history or full realm acceptance.",
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "binaryBefore": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      }
+    ],
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      }
+    ],
+    "ordinary45": "UNRUN_HELD_UNTIL_THIS_EVIDENCE_INDEPENDENT_ACCEPTANCE_SAVED_AND_SEPARATE_NAMED_ROOT_ACTIVATION"
   }
 }
