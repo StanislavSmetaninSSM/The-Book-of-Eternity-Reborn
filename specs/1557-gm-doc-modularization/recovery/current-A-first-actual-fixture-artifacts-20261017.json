@@ -1,0 +1,619 @@
+{
+  "kind": "IMMUTABLE_FIRST_CURRENT_SOURCE_GUARD_FIXTURE_ARTIFACTS",
+  "createdUtc": "2026-10-17T04:21:06.529330+00:00",
+  "actualSource": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+  "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+  "fixtures": [
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+      "ownedRoot": "/tmp/boe-gm1557-session-01fc81242f9a4186bca15fbf01ad7a97",
+      "ownedPackage": "/tmp/boe-gm1557-package-01fc81242f9a4186bca15fbf01ad7a97",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": "System.IO.InvalidDataException: delivery.adapter_failure:System.Management.Automation.RuntimeException: ast.startup_boundary\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunAsync(String repo, Boolean publish, Func`2 sourceMutation, Func`2 sourceSeedMutation, String physicalFault) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 219",
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+      "ownedRoot": "/tmp/boe-gm1557-session-0a5183eb55c64ca0bd858b08a502847a",
+      "ownedPackage": "/tmp/boe-gm1557-package-0a5183eb55c64ca0bd858b08a502847a",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+      "ownedRoot": "/tmp/boe-gm1557-session-0f780e877521494dad34584a303f7ce4",
+      "ownedPackage": "/tmp/boe-gm1557-package-0f780e877521494dad34584a303f7ce4",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+      "ownedRoot": "/tmp/boe-gm1557-session-2be0b2d261584b86a0dbbd62b455ffc7",
+      "ownedPackage": "/tmp/boe-gm1557-package-2be0b2d261584b86a0dbbd62b455ffc7",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+      "ownedRoot": "/tmp/boe-gm1557-session-7ab8fac845114257a042daa127e625af",
+      "ownedPackage": "/tmp/boe-gm1557-package-7ab8fac845114257a042daa127e625af",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+      "ownedRoot": "/tmp/boe-gm1557-session-a56ec64ddcf547bea36f85bab64a3f76",
+      "ownedPackage": "/tmp/boe-gm1557-package-a56ec64ddcf547bea36f85bab64a3f76",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+      "ownedRoot": "/tmp/boe-gm1557-session-a9aa8455b47a47529d73615fc82b8316",
+      "ownedPackage": "/tmp/boe-gm1557-package-a9aa8455b47a47529d73615fc82b8316",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+      "ownedRoot": "/tmp/boe-gm1557-session-d3e83b0fa7c742cf84359912fd4f7bce",
+      "ownedPackage": "/tmp/boe-gm1557-package-d3e83b0fa7c742cf84359912fd4f7bce",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc",
+      "ownedRoot": "/tmp/boe-gm1557-session-ed25b79fdef74354ad167b8d960b24cc",
+      "ownedPackage": "/tmp/boe-gm1557-package-ed25b79fdef74354ad167b8d960b24cc",
+      "physicalAbsence": {
+        "root": true,
+        "package": true
+      },
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "failure": null,
+      "issues": [],
+      "stdoutEof": true,
+      "stderrEof": true
+    }
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.gz",
+      "bytes": 740492,
+      "sha256": "90adf3ac1128e66c6c6d7cad60caeaa0df678bed89c897908d8ba60248f2fdda",
+      "storedSha256": "6e036f29c20d10182cf3bac8d9827b391d9ade86eb9ae04bae3d0ed8d4080a84",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "c1f9792508567fc46c84b7c63cc86bce408334003596b1eba0b3a2a73ec2a8db",
+      "storedSha256": "452edaa78d28c0d45265102656ff13dde9a21d567375155022ae9d49d23489a3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/outcome.json.gz",
+      "bytes": 771444,
+      "sha256": "fabd309ae152dc3c3fdc0a2e234c8853a54f0782f4686e9ac7473692a3e9aed4",
+      "storedSha256": "ca17e4cdd5e535e5f0331e48e86828b3078e2dcddffd0cab56594118b67ba4e2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.gz",
+      "bytes": 1448512,
+      "sha256": "9a4dc21491843e702728d5a8c30505c6a455e90af69beade090457c88dd03ee8",
+      "storedSha256": "d9298a020cd1070f57d1f2c15215529e4d3b40cc1014755ed2abd368446cdb2c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "f79049d8139c54cf0618d92749081d91e6f3b3bd4991861fd097d58bf7a1113c",
+      "storedSha256": "cc5bc05189c650362a61847cb43763b20e69fc79b1daf1909fb99636d1d1b620",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/outcome.json.gz",
+      "bytes": 1473857,
+      "sha256": "41101158f5a341ee83e6ae3f7ba889768cc2c88238b835cbdb599c27632087ab",
+      "storedSha256": "f7af4f74c3f0a50d6197e2a56dd1f40bee1a45fb84a808665a29b895c271ce4f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/ast-and-publication.json.gz",
+      "bytes": 707819,
+      "sha256": "dc9a217d06716093bed3bc25862e3e4177dccf69225277aaabdee6de04f8caa5",
+      "storedSha256": "ada2b4fe93c0118df2d7797dd546efd4190314fe5ac8d3b509fb799469239cef",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/outcome.json.gz",
+      "bytes": 742925,
+      "sha256": "e563a3f1125ee2ccbe40d38b0eb8ce39b53b763aed56e5cb50479de795d93008",
+      "storedSha256": "34d8948a0c8f0692d4d93adc890eb3cfbb3975ee2735a8fdfcfeed92e2f17f93",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.gz",
+      "bytes": 1448014,
+      "sha256": "63fe2d79be398bb542bf756f7f972fb66ddf02342a1163760312effc42b2f8bb",
+      "storedSha256": "1f12883e9eb438a69a58d2c0825bb986987c59539fba4931b4670f852f97931a",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "c0ce62f411637e85978b36eca4c63030908a725d4dc9fb9daf13d8a3e7f35115",
+      "storedSha256": "ec11c428cac93fec71fc0a3cfcd291cb77242d552fab338a4d73e86bb6a52659",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/outcome.json.gz",
+      "bytes": 1467341,
+      "sha256": "f83eb93b917c2c87b325812873893b024d7944e318d9a6e9a686200708a63714",
+      "storedSha256": "2455d215b1eae2bd6f426deb98192654baed98d3722e39076e3febe58f73c454",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.gz",
+      "bytes": 1448424,
+      "sha256": "c6a69e81016f47d6f6f7473a664919bd105d3ebb5e4eeed4618703147bf97bfb",
+      "storedSha256": "967849eaaf5cccbe1d25779abac09e0f09fd8f5a2cd521b00553392339c8f409",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "4a218fb58480d94af4512b58adef84b27fd88d4beb86c3501c78f2d03c7184e5",
+      "storedSha256": "36752597895209df5250bec4e00b9648594a0a1b852d23e2b0a651a8f5fff7e7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/outcome.json.gz",
+      "bytes": 1466149,
+      "sha256": "ae8081bcd398f5087d4cb50b4de64c0870be5327a818ac8d4538e89c1d5cd79b",
+      "storedSha256": "a3824b45918db33b858ec82b484976cbb840c6f7ca535c20db16484deb151270",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.gz",
+      "bytes": 1448387,
+      "sha256": "5c89cd4c47b6e06c1830004a897a145aaf47fc652cd74f16d598b7e6acbd7ddf",
+      "storedSha256": "f38a588ebc1511c46005deb33d9540420f0928ed630379ed3bb15f66714c39eb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "067dacd5d1abbbbd0885b1be29500aad428a76811106dcaa3e1e6ff8591c4fd2",
+      "storedSha256": "5f9f3483f8ab5e090a3b983ae912e48429977a7fdd984f8eddcb31949f2f06fd",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/outcome.json.gz",
+      "bytes": 1470701,
+      "sha256": "1f46bd60523214623b1f2611e971cc506b1c7a81764b3df702f66e3300f8d264",
+      "storedSha256": "c7f0ab33bb2e92c86a76a7fe32ee1fc86446960f0a09399b0f2b8538815b4297",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.gz",
+      "bytes": 1448083,
+      "sha256": "a8b9eb358b688b308aa055b5e927365ebc30280cc445eef6d28f81bab590f698",
+      "storedSha256": "3b53b9a136ac04caea3c1889fc9192f31a1a8a99ea4c2cb5f8950cb1ea7bc5f1",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "bf7b48855f70951d201c111f77e9aec99b6559052d65ba620333ab95db0ba2c6",
+      "storedSha256": "968e1eb2e50aad3ff72455a687680569a10ec4b7abe4c10b7fae070fe8895729",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/outcome.json.gz",
+      "bytes": 1466864,
+      "sha256": "60ed97a08ef8181b78495cfd30960ca03d0746a2998c27b1e61e9e8fa5205391",
+      "storedSha256": "83c7729ceb912ac11a84c4651299c6e03921ef83ae566e52d8b00f81df95da48",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.gz",
+      "bytes": 1448328,
+      "sha256": "38d3f9d3886bf1a92159a50b6acdb5a0bf5b27b0ddfe6e1eee6763ded700f784",
+      "storedSha256": "4741b3c571e44bda557c368ab34ffb50d5917c1963f3c4473d82b9555c1bcc82",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.seed",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.seed.gz",
+      "bytes": 707774,
+      "sha256": "e33682ce344c533c44dd8a251a3d8ea3fa2ad1e129c2fdeb28308c4111d6a6b8",
+      "storedSha256": "e5105055d3fb09e32a936a12462f583455860b06e511e99e1bd4206571496145",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/nonexecuting-source-seed.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/nonexecuting-source-seed.ps1.gz",
+      "bytes": 404444,
+      "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+      "storedSha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/outcome.json.gz",
+      "bytes": 1461526,
+      "sha256": "614281f31e11a017b96fc3738c6315126cdf15a6f3c07d7cbdaf0bcab59466e8",
+      "storedSha256": "279b9f03e655ce206ca046160b9023d7a64ea41404b7cd100e4399986ab79d9c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/ast-and-publication.json.gz",
+      "bytes": 707819,
+      "sha256": "316fe201079021bb51b86118e03511e9fb9f50d9d8827f2093f58f6e8f722fa6",
+      "storedSha256": "86abe689ca5db501c8d5f7dd3bd335eea637a31fd7b3c01f8e7908e710ca0753",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/outcome.json.gz",
+      "bytes": 745557,
+      "sha256": "82c3a0b41a89878232c51dcd38f13bea290817fa7cd0c7146661aa269ca30b62",
+      "storedSha256": "4d2d22f05f440d199995fef65e567f5439d69d37dde3ba7090b763dea72fbe21",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "freezeHelperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,xml.etree.ElementTree as ET\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=root/'specs/1557-gm-doc-modularization/recovery'\nrecords=[Path('/tmp/gm1557-implementation-tools')/('gm1557-current-A-'+name+'-first-1a48d0c2')/'record.json' for name in ['preservation','reading','source-guards']]\nfolder=rec/'current-A-first-actual-fixture-artifacts-20261017';assert not folder.exists();folder.mkdir()\nfiles=[];fixtures=[]\ndef save(p,relative):\n b=p.read_bytes();target=folder/(relative+'.gz');target.parent.mkdir(parents=True,exist_ok=True);g=gzip.compress(b,mtime=0);target.write_bytes(g);assert gzip.decompress(g)==b\n files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(root)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(g).hexdigest(),compression='gzip mtime0'))\nj=json.loads(records[-1].read_text());new=set(j['ownedPrefixesAfter'])-set(j['ownedPrefixesBefore']);assert len(new)==9\nfor directory in sorted(new):\n p=Path(directory);assert p.name.startswith('boe-gm1557-evidence-') and p.is_dir()\n data=json.loads((p/'outcome.json').read_text());assert data['artifacts']==directory\n for q in sorted(p.rglob('*')):\n  assert not q.is_symlink()\n  if q.is_file():save(q,p.name+'/'+str(q.relative_to(p)))\n gone={key:not Path(data[key]).exists() for key in ['root','package']};assert all(gone.values())\n assert data['exitConfirmed'] and data['rootsRemoved'] and not data['remaining'] and not data['cleanupFailures'] and not data['ownershipUnresolved']\n fixtures.append(dict(artifacts=directory,ownedRoot=data['root'],ownedPackage=data['package'],physicalAbsence=gone,exitConfirmed=data['exitConfirmed'],rootsRemoved=data['rootsRemoved'],failure=data['failure'],issues=data['issues'],stdoutEof=data['stdoutEof'],stderrEof=data['stderrEof']))\nmanifest=dict(kind='IMMUTABLE_FIRST_CURRENT_SOURCE_GUARD_FIXTURE_ARTIFACTS',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['sourceHead'],compiledSource=j['compiledSource'],fixtures=fixtures,files=files,freezeHelperText=Path(__file__).read_text(),scope='All native files in all nine newly retained fixture evidence directories. Evidence directories are outside the strictly removed package/session owned roots; they are retained diagnostic artifacts, not cleanup leaks. No source diagnosis or retry.')\npacket=rec/'current-A-first-actual-fixture-artifacts-20261017.json';assert not packet.exists();packet.write_text(json.dumps(manifest,indent=2)+'\\n')\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};commands=[];identities=set();failed=[];symlinks=[]\nfor n,p in enumerate(records):\n a=json.loads(p.read_text());d=Path(a['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());expected=[18,60,15][n];native=[0,0,1][n]\n assert a['nativeExit']==native and a['binaryBefore']==a['binaryAfter'] and len(a['binaryAfter'])==7 and not a['statusAfter'] and a['sourceHead']==a['headAfter']==j['sourceHead'] and a['compiledSource']==j['compiledSource']\n assert not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests']\n assert s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True)\n results=[]\n for t in sorted(d.glob('*.trx')):\n  for row in ET.parse(t).findall('.//t:UnitTestResult',ns):\n   key=(row.attrib['testId'],row.attrib['testName']);assert key not in identities;identities.add(key)\n   outcome=row.attrib['outcome'];assert outcome in ['Passed','Failed']\n   entry=dict(name=row.attrib['testName'],testId=row.attrib['testId'],outcome=outcome,duration=row.attrib['duration'])\n   if outcome=='Failed':\n    entry['error']=row.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);entry['stack']=row.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);failed.append(entry)\n   for line in row.findtext('t:Output/t:StdOut',default='',namespaces=ns).splitlines():\n    if line.strip().startswith('{'):\n     try:o=json.loads(line.strip())\n     except ValueError:continue\n     if 'CleanupOwnedRoot' in o:\n      assert o['Removed'] and not Path(o['CleanupOwnedRoot']).exists();symlinks.append(o)\n   results.append(entry)\n assert len(results)==expected\n commands.append(dict(record=str(p),category=a['argv'][-2],nativeExit=native,seconds=a['wallSeconds'],tests=s['Tests'],selection=s['Selection'],results=results,sevenPinsUnchanged=True,sourceClean=True,runnerOwnedCleanup=True,runnerRuntimeCleanup=True))\nassert len(identities)==93 and len(failed)==1 and len(symlinks)==1\nassert failed[0]['name'].endswith('.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch') and 'source.bootstrap_source_exception' in failed[0]['error']\nfor packetname in ['current-A-first-actual-stop-20261017.json','current-A-first-actual-fixture-artifacts-20261017.json']:\n for f in json.loads((rec/packetname).read_text())['files']:\n  stored=(root/f['storedPath']).read_bytes();raw=gzip.decompress(stored);assert hashlib.sha256(stored).hexdigest()==f['storedSha256'] and len(raw)==f['bytes'] and hashlib.sha256(raw).hexdigest()==f['sha256'] and raw==Path(f['rawPath']).read_bytes()\ninspection=dict(kind='FIRST_CURRENT_ACTUAL_STOP_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['sourceHead'],compiledSource=j['compiledSource'],commands=commands,caseTotals=dict(executed=93,passed=92,failed=1),firstFailure=failed[0],rawChains=18,fixtureArtifactChains=len(files),fixtureDirectories=9,strictFixtureOwnedRootsVerifiedAbsent=18,strictSymlinkRoot=symlinks,remainingCasesUnrun=160,remainingCategoriesHeld=7,retainedEvidenceDirectories=sorted(new),classification='UNEXPECTED FIRST ACTUAL FAIL; causal independent review pending. Preservation18 and reading60 are first PASS; source guards14PASS1FAIL. No retry/product diagnosis/new runtime.',inspectorHelperText=Path(__file__).read_text())\nout=rec/'current-A-first-actual-stop-writer-inspection-20261017.json';assert not out.exists();out.write_text(json.dumps(inspection,indent=2)+'\\n')\nprint('FROZEN_AND_INSPECTED',18,'nativechains',len(files),'fixturechains',93,'firstcases',92,'pass',1,'fail',18,'fixtureownedroots+1symlinkgone')\n",
+  "scope": "All native files in all nine newly retained fixture evidence directories. Evidence directories are outside the strictly removed package/session owned roots; they are retained diagnostic artifacts, not cleanup leaks. No source diagnosis or retry."
+}

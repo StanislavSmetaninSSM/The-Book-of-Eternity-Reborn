@@ -1,0 +1,684 @@
+{
+  "kind": "FIRST_CURRENT_ACTUAL_STOP_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE",
+  "createdUtc": "2026-10-17T04:21:06.673884+00:00",
+  "actualSource": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+  "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+  "commands": [
+    {
+      "record": "/tmp/gm1557-implementation-tools/gm1557-current-A-preservation-first-1a48d0c2/record.json",
+      "category": "gm-doc-afterlife-preservation",
+      "nativeExit": 0,
+      "seconds": 5.621252422000907,
+      "tests": {
+        "Total": 18,
+        "Executed": 18,
+        "Passed": 18,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 18,
+        "CompletedCases": 18,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "results": [
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"context\")",
+          "testId": "6f5c98f7-7c38-8f46-ff0a-03f12f8910a6",
+          "outcome": "Passed",
+          "duration": "00:00:00.0471376"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"companion\")",
+          "testId": "52e9b2bc-3e77-1032-d35b-7ac2c26ee77f",
+          "outcome": "Passed",
+          "duration": "00:00:00.0149380"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+          "testId": "17a1c2bc-0727-d282-df81-797729d15b10",
+          "outcome": "Passed",
+          "duration": "00:00:00.0051053"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"orphan\")",
+          "testId": "8b36f4d6-92d4-dfaa-822c-ccf470766f31",
+          "outcome": "Passed",
+          "duration": "00:00:00.0816118"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"missing\")",
+          "testId": "9f125dc7-7d41-08e3-db2e-171367c7dee4",
+          "outcome": "Passed",
+          "duration": "00:00:00.0135788"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"semantics\")",
+          "testId": "9724826e-ff4d-dc40-dbe7-1e478e863429",
+          "outcome": "Passed",
+          "duration": "00:00:00.0115203"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"unlisted_edit\")",
+          "testId": "269f5132-72e6-4e4e-0a66-ac9c43bf326f",
+          "outcome": "Passed",
+          "duration": "00:00:00.0488875"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
+          "testId": "cf37d259-efbf-e4f1-7bf1-c00c05971628",
+          "outcome": "Passed",
+          "duration": "00:00:00.0035856"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate\")",
+          "testId": "d97e5c40-f468-1d8d-0b57-5d369bc404bb",
+          "outcome": "Passed",
+          "duration": "00:00:00.0479757"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"reordered_fences\")",
+          "testId": "6eae5db2-311e-82fe-0944-f4af8cc367d5",
+          "outcome": "Passed",
+          "duration": "00:00:00.0520190"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"missing\")",
+          "testId": "609dc782-b1c9-8925-9f0e-70eca4a8dd2c",
+          "outcome": "Passed",
+          "duration": "00:00:00.0765551"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+          "testId": "2cda6651-361a-5041-9efb-1657198df210",
+          "outcome": "Passed",
+          "duration": "00:00:00.0323528"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"lost_companion\")",
+          "testId": "6939f4ac-e8e1-b6e9-dcc4-afb01bf8e518",
+          "outcome": "Passed",
+          "duration": "00:00:00.0505808"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate_owner\")",
+          "testId": "232ed021-e2f5-f3d5-f2b1-194cb1c42c34",
+          "outcome": "Passed",
+          "duration": "00:00:00.0521387"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+          "testId": "4c942b36-fdaa-5219-9e39-15d8bb8e1db9",
+          "outcome": "Passed",
+          "duration": "00:00:00.0167334"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"invalid_context\")",
+          "testId": "86086de8-fe75-c7b9-3469-3c0090f8cbf7",
+          "outcome": "Passed",
+          "duration": "00:00:00.0563434"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualFlatDiscoveryRetainsEveryMovedExampleAndClassification",
+          "testId": "7032ce62-75d0-cc4a-85e0-67b3f06121e0",
+          "outcome": "Passed",
+          "duration": "00:00:00.0903204"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"duplicate\")",
+          "testId": "514c527d-0563-d58f-93b0-c5dd9d337c88",
+          "outcome": "Passed",
+          "duration": "00:00:00.0092806"
+        }
+      ],
+      "sevenPinsUnchanged": true,
+      "sourceClean": true,
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true
+    },
+    {
+      "record": "/tmp/gm1557-implementation-tools/gm1557-current-A-reading-first-1a48d0c2/record.json",
+      "category": "gm-doc-afterlife-reading",
+      "nativeExit": 0,
+      "seconds": 5.231052825998631,
+      "tests": {
+        "Total": 60,
+        "Executed": 60,
+        "Passed": 60,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 60,
+        "CompletedCases": 60,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "results": [
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"bootstrap\", required: \"\", core: False)",
+          "testId": "80c69220-7c1e-eb3a-afb5-e598685a701e",
+          "outcome": "Passed",
+          "duration": "00:00:00.0005423"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"L\", marker: \"Source-of-Light\")",
+          "testId": "a828c7b3-2696-3726-0fdf-8cf1cf5114eb",
+          "outcome": "Passed",
+          "duration": "00:00:00.0038411"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"L\", active: \"L\", inactive: \"\")",
+          "testId": "ce12ff22-a921-9b77-7731-4d633035d4a4",
+          "outcome": "Passed",
+          "duration": "00:00:00.0017747"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"pending_archive_consultation_request\")",
+          "testId": "11d20728-cbe3-f562-c958-ce00e265702d",
+          "outcome": "Passed",
+          "duration": "00:00:00.0094793"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"E\", active: \"L,E\", inactive: \"L\")",
+          "testId": "72062a3b-ed03-08d5-be2c-b5b508b520c0",
+          "outcome": "Passed",
+          "duration": "00:00:00.0017123"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"C\", active: \"L,C,P,E\", inactive: \"L\")",
+          "testId": "5ed83a1a-1bce-6149-3b64-1d46902597ae",
+          "outcome": "Passed",
+          "duration": "00:00:00.0047866"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"frontier_ordinary\")",
+          "testId": "14bed331-d2a6-e02c-5778-14b33d6348d2",
+          "outcome": "Passed",
+          "duration": "00:00:00.0177403"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"bootstrap\", seeds: \"\", expected: \"\")",
+          "testId": "e1667462-f720-7eb0-87da-46e5c8ec8b89",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031914"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"pending_abode_offering\")",
+          "testId": "b19389af-e3d4-6adf-cb60-0b807d1591cb",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031874"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"second_pending\")",
+          "testId": "12be8ac0-a99e-5606-df18-131141c6c017",
+          "outcome": "Passed",
+          "duration": "00:00:00.0184062"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"P\", marker: \"training-showcase\")",
+          "testId": "8d12478b-bd1b-d7bd-7ee5-8fefe1961d43",
+          "outcome": "Passed",
+          "duration": "00:00:00.0115531"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"pending_guardian_social_interactions\")",
+          "testId": "c2cb596f-6a82-d625-277d-8fda5da05406",
+          "outcome": "Passed",
+          "duration": "00:00:00.0040238"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"ordinary\", seeds: \"L\", expected: \"L\")",
+          "testId": "953db8b0-53ea-5ac0-6140-4fd76d3ba87f",
+          "outcome": "Passed",
+          "duration": "00:00:00.0035949"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"S\", active: \"L,S,G\", inactive: \"L\")",
+          "testId": "e3bedfbc-0a8a-17b1-9eb5-4f488ce67851",
+          "outcome": "Passed",
+          "duration": "00:00:00.0018579"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"H\", marker: \"pendingNativeFactionDiscovery\")",
+          "testId": "0ae91141-d49c-1971-448f-42f07b21023d",
+          "outcome": "Passed",
+          "duration": "00:00:00.0043938"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"E\", marker: \"resource definition/capacity/mutation\")",
+          "testId": "216ccbd6-1f8a-3cc8-39e4-f0d916e4dec8",
+          "outcome": "Passed",
+          "duration": "00:00:00.0032784"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"ordinary\", seeds: \"G,A\", expected: \"L,G,A\")",
+          "testId": "58e1c4a2-538f-d996-e4a4-92c7a1df0243",
+          "outcome": "Passed",
+          "duration": "00:00:00.0041923"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"ordinary\", required: \"L\", core: True)",
+          "testId": "eaf730fe-d964-e1f1-cfd5-6d615b0fbc45",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002516"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"due_flag_inverse\")",
+          "testId": "ed352f82-4695-7799-5630-997c0acf933c",
+          "outcome": "Passed",
+          "duration": "00:00:00.0303248"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"frontier_stale_private\")",
+          "testId": "bf7884f1-3463-24bb-3463-3e14ae07ec7d",
+          "outcome": "Passed",
+          "duration": "00:00:00.0184268"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"A\", active: \"L,A\", inactive: \"L\")",
+          "testId": "4c7f01b1-f833-7a5b-813b-2841c1823751",
+          "outcome": "Passed",
+          "duration": "00:00:00.0016445"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"repair\", seeds: \"G\", expected: \"G\")",
+          "testId": "90000dba-3b37-fd89-1e46-a85141ca30db",
+          "outcome": "Passed",
+          "duration": "00:00:00.0029889"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"pending_guardian_trade_request\")",
+          "testId": "ad19a6ad-d648-3e89-45b1-8e4ab16a3658",
+          "outcome": "Passed",
+          "duration": "00:00:00.0064081"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateChaosSeaProgression\")",
+          "testId": "86cd5a6f-3e60-f259-4906-2c5dffd01aa6",
+          "outcome": "Passed",
+          "duration": "00:00:00.0099148"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"active_inactive_swapped\")",
+          "testId": "85fc588b-808c-de24-1301-3685706f2188",
+          "outcome": "Passed",
+          "duration": "00:00:00.0188827"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"A\", marker: \"chaos_sea_abode_search\")",
+          "testId": "e30eac8f-efd2-d2e6-7363-2893c9b0ade7",
+          "outcome": "Passed",
+          "duration": "00:00:00.0036604"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant(mutation: \"restored_grant\")",
+          "testId": "c4ab40c9-3a91-1b4b-d6f0-324ae5ab3608",
+          "outcome": "Passed",
+          "duration": "00:00:00.0230463"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"multi_pending\", required: \"L,G,A\", core: True)",
+          "testId": "8d9cc8a1-4c75-85e0-c158-8d45ddf08e44",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002776"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"receipt_ordinary\")",
+          "testId": "aa58c0d1-fdb5-a3ac-132f-1ce5e756de6e",
+          "outcome": "Passed",
+          "duration": "00:00:00.0177920"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"M\", marker: \"pending_saref_wings_infiltration\")",
+          "testId": "fe54364a-448c-4b30-727b-24df2015eaba",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031675"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"W\", active: \"W,C,P,E\", inactive: \"\")",
+          "testId": "616f6d9a-02d0-b0fc-dec7-77eacebf3674",
+          "outcome": "Passed",
+          "duration": "00:00:00.0044666"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"C\", marker: \"[AFTERLIFE_SPIRITUAL_ACTION: conflictId]\")",
+          "testId": "6bf968cf-9ba8-762c-3c36-09a4d90ae7bb",
+          "outcome": "Passed",
+          "duration": "00:00:00.0096699"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant(mutation: \"owner_loss\")",
+          "testId": "64d390da-7268-4ed6-835a-77437877c7f9",
+          "outcome": "Passed",
+          "duration": "00:00:00.0182170"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"frontier\", seeds: \"W\", expected: \"W,C,P,E\")",
+          "testId": "add08250-a073-9098-d677-45eeb1fbeae9",
+          "outcome": "Passed",
+          "duration": "00:00:00.0046605"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.HeaderDependencyMutationsRefuseTransitiveLifecycleExpansion(scope: \"repair\", seeds: \"G\", expected: \"G\", dependency: \"G\")",
+          "testId": "0a0828c4-abf9-25c7-8c7b-02c33f1f2814",
+          "outcome": "Passed",
+          "duration": "00:00:00.0039814"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"receipt_only\", required: \"\", core: False)",
+          "testId": "60899ef8-30f3-8e97-3a56-1edfa57b207e",
+          "outcome": "Passed",
+          "duration": "00:00:00.0008017"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"bootstrap_core\")",
+          "testId": "476e390f-1aa8-2d92-7022-49529992d9ff",
+          "outcome": "Passed",
+          "duration": "00:00:00.0173491"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateShiningTradeProgression\")",
+          "testId": "7f1db0ab-a978-ce92-aa9e-9072e912b138",
+          "outcome": "Passed",
+          "duration": "00:00:00.0321207"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
+          "testId": "9a31ec61-4eec-595a-d223-ed1621adbf5c",
+          "outcome": "Passed",
+          "duration": "00:00:00.0033076"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"H\", active: \"L,H\", inactive: \"L\")",
+          "testId": "ffdab8ea-3821-6748-a95b-28f7fc07d710",
+          "outcome": "Passed",
+          "duration": "00:00:00.0028709"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateResidentAgencyProgression\")",
+          "testId": "8149a60b-0f6d-92d5-e3b5-cce48d2795e2",
+          "outcome": "Passed",
+          "duration": "00:00:00.0038788"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"M\", active: \"L,M\", inactive: \"L\")",
+          "testId": "71a25880-7480-d7b3-65d8-71c7914c66fe",
+          "outcome": "Passed",
+          "duration": "00:00:00.0040828"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"G\", active: \"L,G\", inactive: \"L\")",
+          "testId": "959e85e0-a7ad-fc10-2202-0f574d802481",
+          "outcome": "Passed",
+          "duration": "00:00:00.0016398"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"repair\", seeds: \"P\", expected: \"P\")",
+          "testId": "1d2ee424-9f07-685c-f695-06d2809c5ec2",
+          "outcome": "Passed",
+          "duration": "00:00:00.0030281"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"W\", marker: \"dependent_draft\")",
+          "testId": "0b5aa7d3-1ccb-8c5e-90a1-f234cd03f1b3",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031755"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"repair\", required: \"G\", core: True)",
+          "testId": "d8639f42-d655-530c-cbdc-e3f8fe67234b",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002575"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl(topic: \"P\", active: \"L,P\", inactive: \"L\")",
+          "testId": "0a9380b1-1e3b-04ec-15c9-9bac06036401",
+          "outcome": "Passed",
+          "duration": "00:00:00.0077780"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.HeaderDependencyMutationsRefuseTransitiveLifecycleExpansion(scope: \"frontier\", seeds: \"W\", expected: \"W,C,P,E\", dependency: \"E\")",
+          "testId": "78b261b8-c3b8-84ea-8875-2515f8fda68f",
+          "outcome": "Passed",
+          "duration": "00:00:00.0034725"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateGuardianProjectProgression\")",
+          "testId": "641a0992-44a2-441e-e6c6-06fcc099251f",
+          "outcome": "Passed",
+          "duration": "00:00:00.0214588"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"ordinary\", seeds: \"S,G\", expected: \"L,S,G\")",
+          "testId": "b95ffa24-8014-0020-801f-69757dd40035",
+          "outcome": "Passed",
+          "duration": "00:00:00.0030380"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"wound_frontier\", required: \"W,C,P,E\", core: True)",
+          "testId": "cc14b230-a380-4f61-b623-ca97021fedbc",
+          "outcome": "Passed",
+          "duration": "00:00:00.0043429"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"ordinary\", seeds: \"C\", expected: \"L,C,P,E\")",
+          "testId": "642c0c5e-1767-6069-7288-8ef2b12167b4",
+          "outcome": "Passed",
+          "duration": "00:00:00.0030483"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"pending_archive_project_fuel_request\")",
+          "testId": "4b5b956c-ba1b-a42b-9c8a-9477e18dce1a",
+          "outcome": "Passed",
+          "duration": "00:00:00.0121129"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateShiningFactionProgression\")",
+          "testId": "cb36a731-83df-8f52-c9f2-2c720f54f0c9",
+          "outcome": "Passed",
+          "duration": "00:00:00.0035233"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"mustEvaluateShiningAbodeProgression\")",
+          "testId": "dd86a4d0-bcbf-36bb-bba6-62b0d75d49ed",
+          "outcome": "Passed",
+          "duration": "00:00:00.0031614"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(mutation: \"universal_read\")",
+          "testId": "3f609c23-6a36-cdac-e512-ec6327b7b8fe",
+          "outcome": "Passed",
+          "duration": "00:00:00.0311017"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"S\", marker: \"afterlifeCatchupRequired\")",
+          "testId": "d0872a9a-c5d6-64bd-59f8-46a5c3a2c27c",
+          "outcome": "Passed",
+          "duration": "00:00:00.0042716"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies(topic: \"G\", marker: \"[CHAOS_SEA_DIRECT_GACHA]\")",
+          "testId": "f31b955f-739e-8468-70dc-9f5d86b1a881",
+          "outcome": "Passed",
+          "duration": "00:00:00.0036837"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(scope: \"receipt_only\", seeds: \"\", expected: \"\")",
+          "testId": "c9c773c4-c635-930d-6a3c-fe520ef8716b",
+          "outcome": "Passed",
+          "duration": "00:00:00.0052995"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(family: \"scheduler\", required: \"L,S,G\", core: True)",
+          "testId": "0b294cef-c88d-a010-f1c2-f89f9168da20",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002150"
+        }
+      ],
+      "sevenPinsUnchanged": true,
+      "sourceClean": true,
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true
+    },
+    {
+      "record": "/tmp/gm1557-implementation-tools/gm1557-current-A-source-guards-first-1a48d0c2/record.json",
+      "category": "gm-doc-afterlife-delivery-source-guards",
+      "nativeExit": 1,
+      "seconds": 27.6553714340007,
+      "tests": {
+        "Total": 15,
+        "Executed": 15,
+        "Passed": 14,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 15,
+        "CompletedCases": 15,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "results": [
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"repair_ban\")",
+          "testId": "2b7cef66-c879-2c82-41b3-44f3b3f52242",
+          "outcome": "Passed",
+          "duration": "00:00:02.9359504"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"late_empty_reset\")",
+          "testId": "968c40d9-ea5b-68b2-1a18-9d3d0ece373f",
+          "outcome": "Passed",
+          "duration": "00:00:02.8385539"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"receipt_ordinary\")",
+          "testId": "94ce8c9f-15f4-4f69-1d57-af24b6f0dbb0",
+          "outcome": "Passed",
+          "duration": "00:00:03.0937430"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedDaemonAstCutsOnlyCompleteTwoCommandStartup",
+          "testId": "46fc86b4-5f1b-1228-5842-25f5c52fe6d9",
+          "outcome": "Passed",
+          "duration": "00:00:01.5056542"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.RelativeLinkVerifierRejectsARootPrefixEvenWhenThatRootTargetExists",
+          "testId": "11d28da7-f881-f916-5722-2464506ea2ed",
+          "outcome": "Passed",
+          "duration": "00:00:00.0005222"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalLinkVerifierRefusesSymlinkEscape",
+          "testId": "d23bbb4b-9eb8-d380-13f8-ede0485118e0",
+          "outcome": "Passed",
+          "duration": "00:00:00.0035158"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"fenced_anchor\")",
+          "testId": "37c1242d-99ed-f573-7b62-a8861a4901a9",
+          "outcome": "Passed",
+          "duration": "00:00:00.0077433"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"escape\")",
+          "testId": "9a711d98-029e-263a-1d2e-9ac26e878cfa",
+          "outcome": "Passed",
+          "duration": "00:00:00.0000958"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"late_override\")",
+          "testId": "ccee9315-5204-eb13-0eaf-fd2107340f38",
+          "outcome": "Passed",
+          "duration": "00:00:02.7570071"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"receipt_post_builder\")",
+          "testId": "ed99c404-9700-d731-4fae-4aabc0fc9563",
+          "outcome": "Passed",
+          "duration": "00:00:02.9313835"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles(mutation: \"wrong_boundary\")",
+          "testId": "845076ca-0f73-b0f0-c58e-55d1b956ebd1",
+          "outcome": "Passed",
+          "duration": "00:00:01.7266251"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+          "testId": "9449d783-222f-077b-b5ce-1ff58838274a",
+          "outcome": "Failed",
+          "duration": "00:00:01.5731300",
+          "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"source.bootstrap_source_exception\"]",
+          "stack": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 141\n--- End of stack trace from previous location ---"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles(mutation: \"read_all\")",
+          "testId": "a932d0dc-9b3c-3f98-a04c-be475de830a8",
+          "outcome": "Passed",
+          "duration": "00:00:02.8192184"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"broken_anchor\")",
+          "testId": "e61dd45f-e76e-a29c-bfa9-aed769df7d07",
+          "outcome": "Passed",
+          "duration": "00:00:00.0007605"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"missing_copy\")",
+          "testId": "a0722e01-84d8-2b34-cd9f-6f66eb0d810c",
+          "outcome": "Passed",
+          "duration": "00:00:00.0001812"
+        }
+      ],
+      "sevenPinsUnchanged": true,
+      "sourceClean": true,
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true
+    }
+  ],
+  "caseTotals": {
+    "executed": 93,
+    "passed": 92,
+    "failed": 1
+  },
+  "firstFailure": {
+    "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+    "testId": "9449d783-222f-077b-b5ce-1ff58838274a",
+    "outcome": "Failed",
+    "duration": "00:00:01.5731300",
+    "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"source.bootstrap_source_exception\"]",
+    "stack": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 141\n--- End of stack trace from previous location ---"
+  },
+  "rawChains": 18,
+  "fixtureArtifactChains": 59,
+  "fixtureDirectories": 9,
+  "strictFixtureOwnedRootsVerifiedAbsent": 18,
+  "strictSymlinkRoot": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gm1557-link-2c4630e1223e45ecb4a513dc40eda6ed",
+      "Removed": true
+    }
+  ],
+  "remainingCasesUnrun": 160,
+  "remainingCategoriesHeld": 7,
+  "retainedEvidenceDirectories": [
+    "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+    "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+    "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+    "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+    "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+    "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+    "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+    "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+    "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+  ],
+  "classification": "UNEXPECTED FIRST ACTUAL FAIL; causal independent review pending. Preservation18 and reading60 are first PASS; source guards14PASS1FAIL. No retry/product diagnosis/new runtime.",
+  "inspectorHelperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,xml.etree.ElementTree as ET\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=root/'specs/1557-gm-doc-modularization/recovery'\nrecords=[Path('/tmp/gm1557-implementation-tools')/('gm1557-current-A-'+name+'-first-1a48d0c2')/'record.json' for name in ['preservation','reading','source-guards']]\nfolder=rec/'current-A-first-actual-fixture-artifacts-20261017';assert not folder.exists();folder.mkdir()\nfiles=[];fixtures=[]\ndef save(p,relative):\n b=p.read_bytes();target=folder/(relative+'.gz');target.parent.mkdir(parents=True,exist_ok=True);g=gzip.compress(b,mtime=0);target.write_bytes(g);assert gzip.decompress(g)==b\n files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(root)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(g).hexdigest(),compression='gzip mtime0'))\nj=json.loads(records[-1].read_text());new=set(j['ownedPrefixesAfter'])-set(j['ownedPrefixesBefore']);assert len(new)==9\nfor directory in sorted(new):\n p=Path(directory);assert p.name.startswith('boe-gm1557-evidence-') and p.is_dir()\n data=json.loads((p/'outcome.json').read_text());assert data['artifacts']==directory\n for q in sorted(p.rglob('*')):\n  assert not q.is_symlink()\n  if q.is_file():save(q,p.name+'/'+str(q.relative_to(p)))\n gone={key:not Path(data[key]).exists() for key in ['root','package']};assert all(gone.values())\n assert data['exitConfirmed'] and data['rootsRemoved'] and not data['remaining'] and not data['cleanupFailures'] and not data['ownershipUnresolved']\n fixtures.append(dict(artifacts=directory,ownedRoot=data['root'],ownedPackage=data['package'],physicalAbsence=gone,exitConfirmed=data['exitConfirmed'],rootsRemoved=data['rootsRemoved'],failure=data['failure'],issues=data['issues'],stdoutEof=data['stdoutEof'],stderrEof=data['stderrEof']))\nmanifest=dict(kind='IMMUTABLE_FIRST_CURRENT_SOURCE_GUARD_FIXTURE_ARTIFACTS',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['sourceHead'],compiledSource=j['compiledSource'],fixtures=fixtures,files=files,freezeHelperText=Path(__file__).read_text(),scope='All native files in all nine newly retained fixture evidence directories. Evidence directories are outside the strictly removed package/session owned roots; they are retained diagnostic artifacts, not cleanup leaks. No source diagnosis or retry.')\npacket=rec/'current-A-first-actual-fixture-artifacts-20261017.json';assert not packet.exists();packet.write_text(json.dumps(manifest,indent=2)+'\\n')\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};commands=[];identities=set();failed=[];symlinks=[]\nfor n,p in enumerate(records):\n a=json.loads(p.read_text());d=Path(a['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());expected=[18,60,15][n];native=[0,0,1][n]\n assert a['nativeExit']==native and a['binaryBefore']==a['binaryAfter'] and len(a['binaryAfter'])==7 and not a['statusAfter'] and a['sourceHead']==a['headAfter']==j['sourceHead'] and a['compiledSource']==j['compiledSource']\n assert not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests']\n assert s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True)\n results=[]\n for t in sorted(d.glob('*.trx')):\n  for row in ET.parse(t).findall('.//t:UnitTestResult',ns):\n   key=(row.attrib['testId'],row.attrib['testName']);assert key not in identities;identities.add(key)\n   outcome=row.attrib['outcome'];assert outcome in ['Passed','Failed']\n   entry=dict(name=row.attrib['testName'],testId=row.attrib['testId'],outcome=outcome,duration=row.attrib['duration'])\n   if outcome=='Failed':\n    entry['error']=row.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);entry['stack']=row.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);failed.append(entry)\n   for line in row.findtext('t:Output/t:StdOut',default='',namespaces=ns).splitlines():\n    if line.strip().startswith('{'):\n     try:o=json.loads(line.strip())\n     except ValueError:continue\n     if 'CleanupOwnedRoot' in o:\n      assert o['Removed'] and not Path(o['CleanupOwnedRoot']).exists();symlinks.append(o)\n   results.append(entry)\n assert len(results)==expected\n commands.append(dict(record=str(p),category=a['argv'][-2],nativeExit=native,seconds=a['wallSeconds'],tests=s['Tests'],selection=s['Selection'],results=results,sevenPinsUnchanged=True,sourceClean=True,runnerOwnedCleanup=True,runnerRuntimeCleanup=True))\nassert len(identities)==93 and len(failed)==1 and len(symlinks)==1\nassert failed[0]['name'].endswith('.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch') and 'source.bootstrap_source_exception' in failed[0]['error']\nfor packetname in ['current-A-first-actual-stop-20261017.json','current-A-first-actual-fixture-artifacts-20261017.json']:\n for f in json.loads((rec/packetname).read_text())['files']:\n  stored=(root/f['storedPath']).read_bytes();raw=gzip.decompress(stored);assert hashlib.sha256(stored).hexdigest()==f['storedSha256'] and len(raw)==f['bytes'] and hashlib.sha256(raw).hexdigest()==f['sha256'] and raw==Path(f['rawPath']).read_bytes()\ninspection=dict(kind='FIRST_CURRENT_ACTUAL_STOP_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['sourceHead'],compiledSource=j['compiledSource'],commands=commands,caseTotals=dict(executed=93,passed=92,failed=1),firstFailure=failed[0],rawChains=18,fixtureArtifactChains=len(files),fixtureDirectories=9,strictFixtureOwnedRootsVerifiedAbsent=18,strictSymlinkRoot=symlinks,remainingCasesUnrun=160,remainingCategoriesHeld=7,retainedEvidenceDirectories=sorted(new),classification='UNEXPECTED FIRST ACTUAL FAIL; causal independent review pending. Preservation18 and reading60 are first PASS; source guards14PASS1FAIL. No retry/product diagnosis/new runtime.',inspectorHelperText=Path(__file__).read_text())\nout=rec/'current-A-first-actual-stop-writer-inspection-20261017.json';assert not out.exists();out.write_text(json.dumps(inspection,indent=2)+'\\n')\nprint('FROZEN_AND_INSPECTED',18,'nativechains',len(files),'fixturechains',93,'firstcases',92,'pass',1,'fail',18,'fixtureownedroots+1symlinkgone')\n"
+}
