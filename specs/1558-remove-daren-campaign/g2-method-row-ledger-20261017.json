@@ -10312,19 +10312,31 @@
     "R02": "Exact original shared193B rollback helper restored; retained ordinary caller",
     "R03": "Refined before first managed compiler: strict envelope decoder separated from effect admission, journal transport outside malformed-codec catch, exact retired identity before image/physicalmember checks;9cases4methods pending native."
   },
-  "status": "G2_COMPILED_CURRENT_RETIREMENT_MIGRATION_AND_ZEROEXEC_NATIVE_MEMBERSHIP_FINAL_SOURCE_PENDING",
-  "nativeMembershipSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "status": "E02 full and remaining fresh native discovery/PlanOnly accepted as zeroexec observations; targeted SOURCE and runtime pending; counts are discovery minima.",
+  "nativeMembershipSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
   "nativeMembership": {
-    "categories": 17,
-    "descriptors": 19,
+    "categories": 18,
+    "descriptors": 20,
     "uniqueMethodsOrFiles": 50,
     "csharpMethods": 42,
-    "csharpCases": 98,
+    "csharpMinimumEstimatedCases": 98,
     "frontendMethodsOrFiles": 8,
-    "frontendEstimatedCases": 8,
+    "frontendFileEstimates": 8,
     "totalEstimated": 106,
     "executed": 0,
     "rows": [
+      {
+        "category": "daren-retirement-affected-client-contracts",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "Cases": 1
+      },
+      {
+        "category": "daren-retirement-affected-client-contracts",
+        "adapter": "unit",
+        "Name": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "Cases": 1
+      },
       {
         "category": "daren-retirement-affected-guards",
         "adapter": "integration",
@@ -10340,19 +10352,7 @@
       {
         "category": "daren-retirement-affected-guards",
         "adapter": "unit",
-        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
-        "Cases": 1
-      },
-      {
-        "category": "daren-retirement-affected-guards",
-        "adapter": "unit",
         "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
-        "Cases": 1
-      },
-      {
-        "category": "daren-retirement-affected-guards",
-        "adapter": "unit",
-        "Name": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
         "Cases": 1
       },
       {
@@ -10627,7 +10627,7 @@
       }
     ]
   },
-  "freshNativePacket": "recovery/g2-first-managed-preparation-555ceae6-20261017.json",
+  "freshNativePacket": "recovery/g2-e02-corrected-first-preparation-5441e49f-20261017.json",
   "e02Partition": {
     "base": "386ca3c206d4ea7564374470acdb5624e848b269",
     "oldOwner": "daren-retirement-affected-guards",
@@ -10726,7 +10726,41 @@
       "remainingEntries": 45,
       "remainingCsharpMinimumEstimate": 93
     },
-    "currentNativePlans": "PENDING_FRESH_PREPARATION",
+    "currentNativePlans": {
+      "source": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+      "full": {
+        "categories": 18,
+        "descriptors": 20,
+        "uniqueMethodsOrFiles": 50,
+        "csharpMethods": 42,
+        "csharpMinimumEstimatedCases": 98,
+        "frontendMethodsOrFiles": 8,
+        "frontendFileEstimates": 8,
+        "totalEstimated": 106,
+        "executed": 0
+      },
+      "remaining": {
+        "categories": 17,
+        "descriptors": 18,
+        "uniqueMethodsOrFiles": 45,
+        "csharpMethods": 37,
+        "csharpMinimumEstimatedCases": 93,
+        "frontendMethodsOrFiles": 8,
+        "frontendFileEstimates": 8,
+        "totalEstimated": 101,
+        "executed": 0
+      },
+      "fullPlanRecord": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-full-plan-first-5441e49f-20261017t1155z/record.json",
+      "remainingPlanRecord": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-remaining-plan-first-5441e49f-20261017t1156z/record.json",
+      "exactRetainedFive": [
+        "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions"
+      ],
+      "executed": 0
+    },
     "oldNativeMembership": "Historical555 snapshot; do not present as current E02 membership. MemberData11actual rows vs1discoveryestimate."
   }
 }

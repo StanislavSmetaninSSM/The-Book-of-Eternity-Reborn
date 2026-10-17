@@ -1,0 +1,158 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "base": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+  "directory": "/tmp/gm1558-g2-e02-p01-repair-recovered-5441e49f-20261017",
+  "completedUtc": "2026-10-17T11:52:01.272771+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+    "M\tspecs/1558-remove-daren-campaign/plan.md",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-independent-check-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-prep-stop-delta-github-a208c99d-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-e02-catalog-prep-stop-readback-a208c99d-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-e02-p01-catalog-repair-release-a208c99d-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-a208c99d-20261017.json",
+    "M\tspecs/1558-remove-daren-campaign/spec.md",
+    "M\tspecs/1558-remove-daren-campaign/tasks.md",
+    "M\ttests/categories.json"
+  ],
+  "deletedPaths": [],
+  "fileCount": 16,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "b2a17d32279219977280fa1e9936c5af2ff30575",
+      "bytes": 11661,
+      "sha256": "8bedaee7fd91504b6cd20dddf08fe03c1b987381cbba9792f45485b70dce45f2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/docs/testing.md"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+      "mode": "100644",
+      "git_blob": "433811537a6d0da6aa977423824d208eaad055da",
+      "bytes": 136136,
+      "sha256": "a2ee232864bfc3c3d5cab3ffe011a5095ef9dc50fe6645f74b50c71c7eced707",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/plan.md",
+      "mode": "100644",
+      "git_blob": "33d93f8ae79efbdbc46d2e7eb5688c1688ea5fc8",
+      "bytes": 107792,
+      "sha256": "e4cf16599c0ba28140dfcc7db61020c72e735f78b871ae393b54dae522a5e87f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/plan.md"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.json",
+      "mode": "100644",
+      "git_blob": "b50eb3b8802ce1b9271408db04b7817602798536",
+      "bytes": 2944,
+      "sha256": "30187f18d090b69931694b280a59c06bf24284c0667e20ad1ba958efae28a88d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md",
+      "mode": "100644",
+      "git_blob": "e5bf43c9e076da3b0f2aa8e9e7c4a2e14d70ebe2",
+      "bytes": 2741,
+      "sha256": "5f9f3cc05d0d91002df9e940c0dc60eab6bb15263df7f5478ff9d32ecd3d5ba3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-independent-check-20261017.json",
+      "mode": "100644",
+      "git_blob": "3e2d93b2b8739f53cb2f557f8bb5aa50d667c249",
+      "bytes": 35440,
+      "sha256": "7d93044b120aa8a0ec12b1489400d0f49999753d4f248f6034f707559144f6ca",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-catalog-stop-independent-check-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-prep-stop-delta-github-a208c99d-20261017.json",
+      "mode": "100644",
+      "git_blob": "88291a20e1fa1f46f1653721156de430637d271d",
+      "bytes": 19613,
+      "sha256": "224431959aef5657eee23f4085260a28ac2c329217d01e8f466e1771a56a9434",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-g2-e02-prep-stop-delta-github-a208c99d-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-e02-catalog-prep-stop-readback-a208c99d-20261017.json",
+      "mode": "100644",
+      "git_blob": "6d78e85f311c185f2eb772d14d7b2a71e486cb43",
+      "bytes": 5430,
+      "sha256": "32a1f29e055d808479b31aac8cd4afefae69f43ec066d154ff5840d691bb4b79",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-root-e02-catalog-prep-stop-readback-a208c99d-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-e02-p01-catalog-repair-release-a208c99d-20261017.json",
+      "mode": "100644",
+      "git_blob": "af56634c2859a42fbd77977b33582187a6f4a810",
+      "bytes": 3559,
+      "sha256": "c63de7071e35b9d5427ac2772bda081c0bd5de552f6e1ee96d77526c6842b3ba",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-root-e02-p01-catalog-repair-release-a208c99d-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-a208c99d-20261017.json",
+      "mode": "100644",
+      "git_blob": "4f39f9a46642e43537ba474bca6ee55ec059a505",
+      "bytes": 39375,
+      "sha256": "7da5db41b45e27826e30d1925487c9ef7c034ae7a15ef30205fa49211003b203",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-a208c99d-20261017.json"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/spec.md",
+      "mode": "100644",
+      "git_blob": "317099cf1a00642d35c067ea86224d7ffa456716",
+      "bytes": 16127,
+      "sha256": "15bc9f933521ca01a026a958bee43d1fa7f531a5edfb9987dc05d497526c0b8c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/spec.md"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/tasks.md",
+      "mode": "100644",
+      "git_blob": "f8b028c7a291b67354ad5f52cc14daacd983bce0",
+      "bytes": 14764,
+      "sha256": "d09f62fad7f7c2048b502b3267054b16dfb081372f0f01af54f46e3247fd8674",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/specs/1558-remove-daren-campaign/tasks.md"
+    },
+    {
+      "path": "tests/categories.json",
+      "mode": "100644",
+      "git_blob": "16ca51b0423629e8921ce1f7e05d01be1bde84e5",
+      "bytes": 2071690,
+      "sha256": "b709e94237c85b303f86f7c71889dcf32299460293d6f9a6fe227d51827a9e96",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/5441e49f3662dd319de9f5935910a3a37fd14fd9/tests/categories.json"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "5441e49f3662dd319de9f5935910a3a37fd14fd9\trefs/heads/1558-remove-daren-campaign-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1558')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nbase=git('rev-parse',base).decode().strip();sha=git('rev-parse',sha).decode().strip()\nchanged=git('diff','--no-renames','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1558-remove-daren-campaign-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

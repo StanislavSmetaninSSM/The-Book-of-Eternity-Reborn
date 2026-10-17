@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: E02-P01 catalog relation cause accepted and only new related entry repaired to existing id/when schema;1of277pins changed, selectors/product/fixtures/React guard unchanged. Successful17329frontend113 retained; fresh corrected BOTH/catalog/full+remainingPlan0 pending. Original catalog1 and all earlier raw/sentinels immutable; retain5qualified PASS, all further actual/RootChromium held.
+**Current phase**: E02 corrected freshBOTH/catalog0, fullPlan0 and remainingPlan0 frozen; native full18owners20desc50entries/98C#minimum+8FEest, remaining17owners18desc45entries/93C#minimum+8FEest,0tests. New7DLL/package370/docs52/retained17329frontend113 bound; current ledger/pointer synchronized after native updates. Retain5earlier independentPASS, originalfailures immutable; targetedSOURCE and distinct remaining-FIRST Rootactivation pending, no actual/browser/task completion.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

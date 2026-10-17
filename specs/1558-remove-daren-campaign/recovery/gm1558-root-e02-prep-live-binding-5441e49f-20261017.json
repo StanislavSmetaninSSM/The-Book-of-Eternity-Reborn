@@ -1,0 +1,93 @@
+{
+  "kind": "ROOT_E02_THREE_SUCCESSFUL_FIRST_ZEROEXEC_LIVE_BINDINGS_NOT_RUNTIME",
+  "utc": "2026-10-17T11:55:36.676271+00:00",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "nativeRecords": [
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-catalog-first-5441e49f-20261017t1153z/record.json",
+      "sha256": "7e7b3c0d65812f8130f6d2596b4520b4387195385e7406a5d436f757918cc1f3",
+      "mode": "catalog",
+      "wallSeconds": 94.053764864002
+    },
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-full-plan-first-5441e49f-20261017t1155z/record.json",
+      "sha256": "fe154bd2e6115bacfb89d7958f5a8fff0313775bb4efea5c752b9462bab10d8f",
+      "mode": "full-plan",
+      "wallSeconds": 5.939687566999055
+    },
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-remaining-plan-first-5441e49f-20261017t1156z/record.json",
+      "sha256": "926e28f3efa907636f0bc146a324c1d24aed1b9d343a49c49d53e268556e283e",
+      "mode": "remaining-plan",
+      "wallSeconds": 5.906775707000634
+    }
+  ],
+  "full": {
+    "owners": 18,
+    "descriptors": 20,
+    "entries": 50,
+    "csharpMethods": 42,
+    "csharpMinimum": 98,
+    "frontendFilesEstimated": 8
+  },
+  "remaining": {
+    "owners": 17,
+    "descriptors": 18,
+    "entries": 45,
+    "csharpMethods": 37,
+    "csharpMinimum": 93,
+    "frontendFilesEstimated": 8
+  },
+  "exactRetainedFiveDifference": [
+    "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+    "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+    "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+    "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+    "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions"
+  ],
+  "firstOwner": "daren-retirement-affected-client-contracts",
+  "nativeTests": 0,
+  "sevenNewBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "4962b5701f0c15682412a747f5bf9548cd57f3a1b0b57fda8a7a18824d932e11"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9311232,
+      "sha256": "20334882abb545cd74ff0fa494d919c337ed5bbe948452bbfa6ab06d78b08bff"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "4962b5701f0c15682412a747f5bf9548cd57f3a1b0b57fda8a7a18824d932e11"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29126144,
+      "sha256": "2fd3b6e5288b16b75bba7dceda4d796242f5a75ee4fb0a6a2a571e8326041703"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "593f2f8e59b4708552169bd5a887d3f1ba7c9c36ad3883e8cbe1b8fb8bafe5e3"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "593f2f8e59b4708552169bd5a887d3f1ba7c9c36ad3883e8cbe1b8fb8bafe5e3"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "4962b5701f0c15682412a747f5bf9548cd57f3a1b0b57fda8a7a18824d932e11"
+    }
+  ],
+  "frontend113RetainedAndServedExact": true,
+  "productPackageFiles": 370,
+  "productPackageManifestDigest": "863d2799b2b791a9c767168146c760ba7c7568cc5fe0b07d80ce9a7b547b5c16",
+  "namespaceAndNativeCleanup": true,
+  "held": "Frozenprep/newhelper/publication/independenttargetedSOURCE thenRootactualremainingactivation"
+}

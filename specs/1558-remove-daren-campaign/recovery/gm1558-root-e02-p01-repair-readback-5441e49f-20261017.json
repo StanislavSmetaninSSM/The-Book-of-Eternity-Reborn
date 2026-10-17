@@ -1,0 +1,16 @@
+{
+  "kind": "ROOT_E02_P01_EXACT_RELATION_ONLY_SOURCE_AND_GITHUB_READBACK_ZERO_RUNTIME",
+  "utc": "2026-10-17T11:52:31.759067+00:00",
+  "source": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "base": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+  "catalogDelta": "Oneexistingrelatedstringbecomesexisting-schemaobjectsameid+nonemptywhen; inverseexactparentsemanticcatalog andsinglelinediff. No selectors/ownership/budgets/loaderchanges.",
+  "sourcePins": "Onlycatalog1of277pin changes; other276exact",
+  "sourcePinsDigest": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "retainedFullFrontendGitTree": "8c9c5236b91d587407b2b6ba89070ee25c888d57",
+  "recovery": "/tmp/gm1558-g2-e02-p01-repair-delta-github-5441e49f-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-5441e49f-20261017.json",
+  "newGitHubFiles": 16,
+  "allChangedPaths": 12,
+  "tests": "UNRUN; authorizedremainingBOTHcatalog/fullPlan/remainingPlan0exec, independenttargetedSource/PREPnext"
+}
