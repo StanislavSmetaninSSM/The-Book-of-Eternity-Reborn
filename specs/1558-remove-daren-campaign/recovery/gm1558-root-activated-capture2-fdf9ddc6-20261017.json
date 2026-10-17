@@ -1,0 +1,64 @@
+{
+  "kind": "ROOT_ACTIVATED_EXACT_SOURCE_FIRST_CAPTURE_ONLY_RELEASE",
+  "createdUtc": "2026-10-17T08:43:13.867922+00:00",
+  "status": "ACTIVATED_CAPTURE2_ONLY",
+  "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "persistedDecisionSha256": "87f3c22d49fc51e95bcdc03870acf8364ea4b5a8ce2eae60c6f59d231c4cabb9",
+  "independentDecisionSha256": "cca802559a1fbe536ea6965fe9dc358ec96aa7a68474498c62c8cbbf7dd59fa3",
+  "verifiedRemoteHead": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-fdf9ddc6-20261017.json",
+  "completeDeltas": 85,
+  "trackedPaths": 55718,
+  "scope": {
+    "eligibleAfterDecisionPersistenceAndRootRelease": true,
+    "category": "daren-retirement-producer-capture",
+    "methods": [
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      }
+    ],
+    "cases": 2,
+    "budgetMinutes": 3,
+    "arguments": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "daren-retirement-producer-capture",
+      "-NoBuild"
+    ],
+    "reason": "Both facts call the unchanged original producers, own unique temporary roots, explicitly close canonical leases and browser access before freezing, retain physical current/generation/journal/backup bytes and require strict original-root cleanup. Standalone committed observer cut is swallowed only as the original durable committed outcome; no test-synthetic recovery packet substitutes for the producer. No consumer TestData installation or runtime is included."
+  },
+  "launcher": {
+    "path": "/tmp/gm1558-capture-run.py",
+    "sha256": "3852e1c4b9f8b4dbfa0ddbe6a9121bde820da39074879e4ccb797e7f307858bb",
+    "bytes": 6948
+  },
+  "preflight": "All7current DLLs and launcher match; cleanexactbranch;85-delta recovery/all9metadata paths verified; six exactreview/Root files match committed bytes; no prior capture root/sentinel.",
+  "held": [
+    "All other categories, console11, consumerRED, frontend/typecheck/runtime and Root Chromium sample",
+    "Production/API/UI/content/prompt removal or recovery admission implementation",
+    "Fixture TestData installation/transformation until independently accepted frozen capture evidence",
+    "Full G1/99 selection acceptance; G1-S01 andG1-S02 remain open and must be corrected together before subsequent freshprep/SOURCE"
+  ],
+  "afterFirstActual": [
+    "Preserve FIRST actual/native/stdout/TRX/summary/plan/raw packet bytes and hashes, actualSource/compiledSource/productSource, and strict fixture-root cleanup before semantic classification or source corrections.",
+    "Run only the prepared read-only inspector and first-raw archival into new owned /tmp locations. No fixture TestData installation or root/generation transformation.",
+    "Publish the FIRST capture evidence checkpoint before independent EVIDENCE review; native success alone does not qualify packet authenticity, lifetime or oracle.",
+    "Stop and retain FIRST output on any unexpected native, qualification or cleanup failure. Diagnose causally; no automatic retry or replacement raw."
+  ],
+  "runtimeExecutedByThisReceipt": false
+}

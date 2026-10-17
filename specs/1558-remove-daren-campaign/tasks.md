@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: G0+A01 accepted; G1 independent SOURCE/PREP accepts capture2 ONLY, broader readiness CHANGES_REQUIRED. Exact conditional Root decision persisted; actual remains held until this carrier remote/recovery check and separately named Root release. G1-S01 console lifetime and G1-S02 retired Windows API ledger stay open/unfixed. Other G1/99 estimated selection, consumer RED and production/prompts held. No #1558 actual; T001–T003 complete, T004–T020 unchecked.
+**Current phase**: FIRST released capture2 native1/2FAIL/0PASS atfdf9/compiled05d, no packet artifacts; strict roots/runner cleanup passed. Exact FIRST raw preserved for independent causal EVIDENCE, not a retirement RED or completed T006. G1-S01/S02 open; no retry/corrections/other actual/consumer/TestData/production release. T001–T003 complete, T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -39,3 +39,5 @@ Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 Dependencies: T001–T003 before T004–T009; accepted meaningful causal RED and Root release before T010–T016; accepted fresh implementation SOURCE before T017–T019; evidence/remote/recovery before T020 completion. One writer; independent reviewer does not edit implementation. Routine autonomous continuation is already authorized.
 
 Current G1 review disposition: [independent review](recovery/gm1558-g1-concrete-source-independent-20261017.md) and [conditional Root decision](recovery/gm1558-root-g1-capture-only-release-de37954f-20261017.json) accept only the two original-producer capture fixtures/source/selection/preparation, not execution or full G1. T004/T008/T009 remain open because G1-S01 console input/task-settling and G1-S02 Windows removed-API ledger classification require a later coherent tests-only correction. T006 remains open until authentic FIRST capture evidence is actually collected/frozen/reviewed. No consumer or production release is inferred. External Windows artifact byte/hash/CRC evidence remains open after first proxy403; private transfer details are outside Git and no retry/CI/alternate route is included.
+
+FIRST capture STOP: [outcome/raw binding](recovery/g1-first-capture-stop-20261017.json) records both NullReference failures in Capture:48 before Freeze and2 strict physical root-removal receipts. T006 remains incomplete because no original packet was frozen; T009 does not have an accepted retirement RED. Independent causal review must precede any retry/casing fix, and open G1-S01/S02 remain for the later coherent tests-only correction.

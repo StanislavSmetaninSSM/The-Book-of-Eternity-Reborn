@@ -1,0 +1,99 @@
+{
+  "kind": "FIRST_ACTUAL_CAPTURE_STOP_PRESERVED_NOT_RETIREMENT_RED_OR_ACCEPTED_CAPTURE",
+  "utc": "2026-10-17T08:45:40.897795+00:00",
+  "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "category": "daren-retirement-producer-capture",
+  "nativeExit": 1,
+  "wallSeconds": 5.357310117000452,
+  "startedUtc": "2026-10-17T08:43:30.254821+00:00",
+  "finishedUtc": "2026-10-17T08:43:35.680602+00:00",
+  "counts": {
+    "total": 2,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "plannedDescriptors": 1,
+    "completedDescriptors": 1,
+    "complete": true
+  },
+  "timedOut": false,
+  "runnerOwnedCleanup": true,
+  "rawArchive": "specs/1558-remove-daren-campaign/recovery/g1-first-capture-stop-20261017-files",
+  "archiveManifestSha256": "34ca51c8afd49c5c135de1aa0938b2760351a9b3d15737c929189a196dcc8cba",
+  "rawChains": 8,
+  "originalPacketArtifacts": 0,
+  "strictPhysicalCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-7068fad6b3c645999db6711cea661ae1",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-ef97307c422148bbbf89ab71075cb6f1",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "failures": [
+    {
+      "method": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+      "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 44\n--- End of stack trace from previous location ---"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+      "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 82\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "sevenUnchangedBinaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "7f464e32acbd477796756d225e1343f793475157666ddc299b5a8bc03c66db58"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29313024,
+      "sha256": "a297dcb2c2d0cbce4310fb2bfee0e42c9de6daa2ccfd4bc7c5ebc08f980a14e8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+    }
+  ],
+  "readOnlyInspector": "specs/1558-remove-daren-campaign/recovery/gm1558-first-capture-stop-inspection-20261017.json",
+  "inspectorScope": "Eight expected completeness/qualification issues on actual2FAIL/zero packets; this is not another native test result or independent causal verdict.",
+  "sourceCauseStatus": "Root read-only source observation: original generation file serializes PascalCase GenerationId/SchemaVersion; Capture line48 dereferences lowercase generationId. Independent causal EVIDENCE pending. No product fault or legacy fallback inferred.",
+  "held": [
+    "All capture retry and producer replay",
+    "Frozen TestData installation/path or generation transformation",
+    "Consumer RED/all remaining G1 categories",
+    "G1-S01 console lifetime and G1-S02 Windows removed-API ledger correction",
+    "Production/prompts/removal"
+  ],
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,shutil,xml.etree.ElementTree as ET,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn-1558');F=R/'specs/1558-remove-daren-campaign';rec=F/'recovery'\ndef h(b):return hashlib.sha256(b).hexdigest()\narchive=Path('/tmp/gm1558-first-capture-stop-archive-20261017');manifest=json.loads((archive/'archive.json').read_text());assert manifest['nativeExit']==1 and len(manifest['files'])==8\nfolder=rec/'g1-first-capture-stop-20261017-files';assert not folder.exists();shutil.copytree(archive,folder)\nfor row in manifest['files']:\n z=(folder/row['storedPath']).read_bytes();raw=gzip.decompress(z);assert h(z)==row['storedSha256'] and len(raw)==row['bytes'] and h(raw)==row['sha256'] and raw==Path(row['rawPath']).read_bytes()\nsource=Path('/tmp/gm1558-first-capture-stop-inspection-20261017.json');shutil.copyfile(source,rec/source.name);assert source.read_bytes()==(rec/source.name).read_bytes()\nfiles=[('/tmp/gm1558-root-activated-capture2-fdf9ddc6-20261017.json','18200831018faa39f70d663809a1309e3d4a92e685f6d43d81134a54ce983a3a'),('/tmp/gm1558-g1-capture-decision-delta-github-fdf9ddc6-20261017.json',None),('/tmp/gm1558-root-recovery-composition-fdf9ddc6-20261017.json',None)]\nfor src,expected in files:\n p=Path(src);b=p.read_bytes()\n if expected:assert h(b)==expected\n shutil.copyfile(p,rec/p.name);assert b==(rec/p.name).read_bytes()\nr=json.loads(Path(manifest['recordPath']).read_text());assert r['nativeExit']==1 and r['actualSource']=='fdf9ddc664f844a3e89263956fd9065e1e706872' and r['compiledSource']=='05d481d684fe0831ea060a1e9853e91f6b9749a0' and not r['fixtureArtifactFiles'] and not r['newRetainedArtifactDirectories']\nassert r['headAfter']==r['actualSource'] and not r['statusAfter'] and r['binaryBefore']==r['binaryAfter']\nfor pin in r['binaryAfter']:assert h((R/pin['path']).read_bytes())==pin['sha256']\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};failures=[];cleanup=[]\nfor d in r['resultDirectories']:\n s=json.loads((Path(d)/'summary.json').read_text());assert s['Tests']==dict(Total=2,Executed=2,Passed=0,Failed=2);assert not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'];assert s['Selection']['Complete'] and s['Selection']['CompletedCases']==2 and s['Selection']['CompletedDescriptors']==1\n for trx in Path(d).rglob('*.trx'):\n  t=ET.parse(trx).getroot()\n  for result in t.findall('t:Results/t:UnitTestResult',ns):\n   assert result.get('outcome')=='Failed';failures.append(dict(method=result.get('testName'),message=result.findtext('t:Output/t:ErrorInfo/t:Message','',ns),stack=result.findtext('t:Output/t:ErrorInfo/t:StackTrace','',ns)))\n   for line in result.findtext('t:Output/t:StdOut','',ns).splitlines():\n    if line.startswith('{'):\n     row=json.loads(line)\n     if 'CleanupOwnedRoot' in row:\n      assert row['OwnedFixtureRemoved'] and row['CleanupFailure'] is None and not Path(row['CleanupOwnedRoot']).exists();cleanup.append(row)\nassert len(failures)==len(cleanup)==2\npacket=dict(kind='FIRST_ACTUAL_CAPTURE_STOP_PRESERVED_NOT_RETIREMENT_RED_OR_ACCEPTED_CAPTURE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=r['actualSource'],compiledSource=r['compiledSource'],productSource=r['productSource'],category=r['category'],nativeExit=1,wallSeconds=r['wallSeconds'],startedUtc=r['startedUtc'],finishedUtc=r['finishedUtc'],counts=dict(total=2,executed=2,passed=0,failed=2,plannedDescriptors=1,completedDescriptors=1,complete=True),timedOut=False,runnerOwnedCleanup=True,rawArchive=str(folder.relative_to(R)),archiveManifestSha256=h((folder/'archive.json').read_bytes()),rawChains=8,originalPacketArtifacts=0,strictPhysicalCleanupReceipts=cleanup,failures=failures,sevenUnchangedBinaryPins=r['binaryAfter'],readOnlyInspector=str((rec/source.name).relative_to(R)),inspectorScope='Eight expected completeness/qualification issues on actual2FAIL/zero packets; this is not another native test result or independent causal verdict.',sourceCauseStatus='Root read-only source observation: original generation file serializes PascalCase GenerationId/SchemaVersion; Capture line48 dereferences lowercase generationId. Independent causal EVIDENCE pending. No product fault or legacy fallback inferred.',held=['All capture retry and producer replay','Frozen TestData installation/path or generation transformation','Consumer RED/all remaining G1 categories','G1-S01 console lifetime and G1-S02 Windows removed-API ledger correction','Production/prompts/removal'],helperText=Path(__file__).read_text())\n(rec/'g1-first-capture-stop-20261017.json').write_text(json.dumps(packet,indent=2)+'\\n')\nplan=F/'plan.md';s=plan.read_text();lines=s.splitlines();i=next(i for i,l in enumerate(lines) if l.startswith('**Current status**:'));lines[i]='**Current status**: FIRST released capture2 actual atfdf9/compiled05d completed native1:2executed/0PASS/2FAIL, full descriptor completion, strict2-root/runner cleanup,0 frozen original packets. FIRST raw is preserved in this evidence-only checkpoint; independent causal EVIDENCE is pending. This is a capture fixture failure, not retirement RED or accepted data. G1-S01/S02 remain open, all retry/other actual/consumer/TestData/production/prompts held; T004\u2013T020 unchecked.';s='\\n'.join(lines)+'\\n';s=s.replace('## Current conditional capture2 SOURCE decision','## Historical conditional capture2 SOURCE decision atfdf9ddc6')\ns+='''\\n## Current FIRST capture2 STOP \u2014 evidence-only publication\\n\\nRoot activated exactly one canonical `daren-retirement-producer-capture -NoBuild` at actualfdf9 / compiled05d / unchanged product46ff through the [exact activation receipt](recovery/gm1558-root-activated-capture2-fdf9ddc6-20261017.json). [FIRST outcome packet](recovery/g1-first-capture-stop-20261017.json), [exact8 native/raw gzip chains](recovery/g1-first-capture-stop-20261017-files/archive.json) and [read-only inspection](recovery/gm1558-first-capture-stop-inspection-20261017.json) preserve native1,2 executed/0PASS/2FAIL,1complete descriptor/2planned-completed cases, no timeout and strict runner cleanup. Both unique owned fixture roots have explicit successful removal receipts and are physically absent. No original packet artifact was created or installed. Actual timestamps in the record are authoritative; the0845 label is only a unique label.\\n\\nBoth TRX failures are `System.NullReferenceException` at `DarenRetirementEvidenceFixtures.Capture:48`, after their real producer calls/preconditions and before Freeze. Root's separate source observation identifies the lowercase `generationId` dereference versus current `GenerationId`/`SchemaVersion` serialization; exact causal classification remains for independent EVIDENCE. This is not a campaign-removal RED or a successful authentic capture, and no data validity/transformation has been accepted. The inspector's eight missing-PASS/packet completeness issues are raw qualification observations, not additional test failures. No retry, replacement packet or source fix occurred.\\n\\nThe [fdf9 complete immediate delta](recovery/gm1558-g1-capture-decision-delta-github-fdf9ddc6-20261017.json) and [85-delta composition](recovery/gm1558-root-recovery-composition-fdf9ddc6-20261017.json) retain the exact pre-actual SOURCE/conditional-decision checkpoint. Tests/catalog/selection/54sourcepins/current seven05d DLLs and FIRST preparation raw remain unchanged. Only this evidence/metadata is added before long causal review. G1-S01 console input/lifetime and G1-S02 Windows API ledger remain open; any capture casing correction must await independent causal review and one later coherent tests-only block with those findings. All consumer RED/TestData installation, other actuals, product/UI/GM edits and removal remain held. T004\u2013T020 stay unchecked.\\n''';plan.write_text(s)\np=F/'tasks.md';lines=p.read_text().splitlines();i=next(i for i,l in enumerate(lines) if l.startswith('**Current phase**:'));lines[i]='**Current phase**: FIRST released capture2 native1/2FAIL/0PASS atfdf9/compiled05d, no packet artifacts; strict roots/runner cleanup passed. Exact FIRST raw preserved for independent causal EVIDENCE, not a retirement RED or completed T006. G1-S01/S02 open; no retry/corrections/other actual/consumer/TestData/production release. T001\u2013T003 complete, T004\u2013T020 unchecked.';s='\\n'.join(lines)+'\\n';s+='\\nFIRST capture STOP: [outcome/raw binding](recovery/g1-first-capture-stop-20261017.json) records both NullReference failures in Capture:48 before Freeze and2 strict physical root-removal receipts. T006 remains incomplete because no original packet was frozen; T009 does not have an accepted retirement RED. Independent causal review must precede any retry/casing fix, and open G1-S01/S02 remain for the later coherent tests-only correction.\\n';p.write_text(s)\nprint('FROZEN FIRST capture2 FAIL:8raw,0packets,2strict roots gone,7DLLstable; no source edits/retry')\n"
+}
