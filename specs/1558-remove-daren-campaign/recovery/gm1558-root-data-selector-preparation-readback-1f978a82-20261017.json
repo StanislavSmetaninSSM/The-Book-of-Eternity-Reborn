@@ -1,0 +1,38 @@
+{
+  "kind": "ROOT_DATA_SELECTOR_FIRST_NOBUILD_PREPARATION_RAW_READBACK_NOT_INDEPENDENT_ACCEPTANCE",
+  "createdUtc": "2026-10-17T09:28:25.463594+00:00",
+  "carrier": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+  "records": [
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g1-data-catalog-first-1f978a82-20261017T0930Z/record.json",
+      "sha256": "a9ec24f5218b39ced6905ede5f343135c64ca5dcb9dc3eda2a5f54c1e2e17007",
+      "nativeExit": 0,
+      "wallSeconds": 6.148797787001968,
+      "sourceHead": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+      "mode": "catalog"
+    },
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/record.json",
+      "sha256": "2b8f2a084daa73e996202332528bca581970c2ba73b5a9a6f38d74d9a6cbd532",
+      "nativeExit": 0,
+      "wallSeconds": 3.1622457030025544,
+      "sourceHead": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+      "mode": "plan"
+    }
+  ],
+  "catalogCategories": 822,
+  "unmapped": 0,
+  "stale": 0,
+  "finiteRed": {
+    "owners": 5,
+    "descriptors": 5,
+    "methods": 10,
+    "cases": 28,
+    "executed": 0
+  },
+  "seven0bBinariesUnchanged": true,
+  "namespacesContinuous": true,
+  "consumerRuntimeReleased": false
+}

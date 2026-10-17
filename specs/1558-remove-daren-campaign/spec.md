@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: Independent capture2 EVIDENCE and actual-byte transport SOURCE accepted. Exact original2JSON installed; existing synthetic6 Fact moved to separate GREEN owner, current/full17owners and finiteRED5owners/28cases authored. Compiled0b57 nonselector pins/sevenDLL unchanged; historical60pins retained. FIRST NoBuildcatalog/finitePlanOnly and targetedbinding review pending; no consumer or retirementRED/production actual. T004–T020 unchecked.
+**Status**: FIRST data/selector NoBuildcatalog0/822valid and finiteRED PlanOnly0 observed5owners/5integrationdescriptors/10methods/28cases,0exec;14raw chains and7unchanged compiled0bDLLs preserved. Exactdata/selector binding awaits targeted independent review and Root activation; actual source-derived transport/consumerRED/otheractual/production remain unrun/held. Accepted capture2 and original05d2FAIL history retained; T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -69,4 +69,7 @@ Historical pre-activation G1 source-only disposition was [accepted independently
 Historical [corrected capture2 raw outcome](recovery/g1-corrected-first-capture-20261017.json) preserves two original-producer PASS results and exact packets, with independent frozen-data/derived-transport EVIDENCE pending. No consumer retirement RED or functional/success-criterion completion is claimed; production and all noncapture actuals remain held.
 
 
-Current [capture and actual-byte transport EVIDENCE/SOURCE acceptance](recovery/gm1558-corrected-capture-evidence-independent-20261017.md) permits exact runtime JSON installation and selector partition only. [Current binding](g1-data-selector-source-packet-20261017.json) distinguishes57 unchanged compiled source pins/seven0b DLLs from current data/catalog/selectors. Fresh zero-execution discovery/finitePlanOnly and independent binding review still precede consumer runtime and meaningful retirement RED; no requirement/success criterion or production removal is complete.
+Historical source-installation [capture and actual-byte transport EVIDENCE/SOURCE acceptance](recovery/gm1558-corrected-capture-evidence-independent-20261017.md) permits exact runtime JSON installation and selector partition only. [Current binding](g1-data-selector-source-packet-20261017.json) distinguishes57 unchanged compiled source pins/seven0b DLLs from current data/catalog/selectors. Fresh zero-execution discovery/finitePlanOnly and independent binding review still precede consumer runtime and meaningful retirement RED; no requirement/success criterion or production removal is complete.
+
+
+Current [NoBuild data/selector preparation](recovery/g1-data-selector-first-preparation-20261017.json) observes exact finite5owners/5descriptors/10methods/28cases with0test execution and unchanged compiled0b/sevenDLLs. Targeted independent binding review and explicit Root runtime activation remain pending; no source-derived consumer behavior, retirement RED or functional/success-criterion completion is claimed.
