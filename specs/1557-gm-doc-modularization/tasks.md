@@ -1,20 +1,16 @@
 # Tasks: GM Documentation Modularization
 
-## Current final handoff — exact independent decision persisted; targeted readback pending
+## Accepted final handoff — completion recorded; final carrier gate pending
 
-Root read the exact [final independent handoff MD/JSON decision](recovery/current-final-handoff-independent-review-20261017.md) and accepts `ACCEPTED_FINAL_HANDOFF_SUBJECT_TO_PUBLICATION_AND_EDITORIAL_READBACK` on9fca: no material blockers, H-L01LOW only. The [supporting check](recovery/current-final-handoff-independent-check-20261017.json) is persisted unchanged. The two T006/T018 A-selection phrases now say “at the accepted A checkpoint; retained A mirror”; current canonical remains B9, with no selector/criterion/source/raw change.
+Root read and accepted both exact independent decisions: [coherent final handoff review](recovery/current-final-handoff-independent-review-20261017.md) and [targeted H-L01 readback](recovery/current-final-handoff-targeted-readback-independent-review-20261017.md). H-L01 is CLOSED; no material blocker remains. The original MD/JSON/supporting check are persisted unchanged. T006/T018 explicitly refer to the full A selection **at its accepted checkpoint** and retained A15 mirror; current canonical selection remains B9.
 
-**T030–T032 remain unchecked.** Targeted wording confirmation and Root's exact newremote/recovery verification have not yet happened. Only after those gates may the final task-completion checkpoint be made. [Reviewed9fca delta](recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json) and [Root75-delta composition](recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json) retain the verified prior checkpoint. No new runtime/build/CI or broader qualification.
+**T001–T032 are recorded complete for the approved #1557 documentation/delivery/handoff scope.** Root verified preceding `8520f55719787eddb63dbd1254e2394638e83ecd` publication and [complete delta](recovery/current-final-handoff-accepted-github-delta-8520f557-20261017.json)/[76-delta composition](recovery/current-final-handoff-accepted-root-recovery-8520f557-20261017.json). **This final task-completion carrier still requires its own Root remote/readback/recovery verification before the completion report. That final gate is not claimed already performed.**
 
-## Current final handoff WIP — T030–T032 (2026-10-17)
+[Analysis](analysis.md) is the authoritative13FR/6SC/evidence/limits handoff: A255 mixed-source qualified cases and B78 current cases (including12sharedA, not333unique), actual52delivery/two physicalnegatives/strictcleanup, D01resolved, B-CONTEXT-01preserved. Accepted implementation baseline f458; B actuala8e/compiled69dc and exact historical raw/verdicts remain unchanged. The [Root final-tree audit chain](recovery/current-final-handoff-root-static-audit-chain-20261017.json) retains final source/package/accepted session52/link binding. No source/selection/raw/runtime/build/CI replay or wider platform/gameplay claim is introduced.
 
-Authoritative current coverage and dispositions are in [analysis.md](analysis.md):13FR/6SC mapped to accepted source/runtime evidence. A255 qualified cases are a retained mixed-source union; B78 are current actuala8e/compiled69dc with12shared-A cases, so no333unique count. A source/evidence chain and [final B verdict](recovery/current-B-final-evidence-independent-review-20261017.md) are accepted; f458 remote/recovery is verified. Real current52 delivery/physical negatives/strict cleanup are qualified, while logical profile paths do not prove backend execution.
+Current branch `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`; issue remains open and no issue/PR/merge/main action is performed. Earlier WIP/pending statements below the explicit historical boundaries are dated snapshots, not current status.
 
-This authorized handoff changes metadata only. **T001–T029 accepted; T030–T032 remain unchecked** pending exact WIP publication/recovery, independent coherent review and final readback. D01 is resolved (normal/repair source-code reading remains forbidden); B-CONTEXT-01 and FR063/platform/backend/HOT/M3/Windows/F1/performance limits remain explicit. No new source, selection, raw, tests/builds/CI, issue/PR/merge/main action. Root-owned final static audit: [exact Root static audit chain](recovery/current-final-handoff-root-static-audit-chain-20261017.json) (136376raw bytes/SHA`2f1b776caa0f6b7681b508ff3b2a0037acf2ddd1533b0d4416c781dafffcd7eb`; deterministic gzip retained).
-
-Current branch `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`; accepted implementation baseline `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423`. Tested source/runtime versions are separate from this later metadata carrier. See [quickstart](quickstart.md) for selection/evidence pointers; no unchanged runtime replay is needed.
-
-**Source Issue:** [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557). **Current status:** accepted A/B T001–T029; T030–T032 handoff WIP/open. Older statuses are dated history, not current blockers.
+**Source Issue:** [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557). **Current status:** accepted A/B/final handoff; T001–T032 recorded complete, final carrier Root gate pending. Older statuses are dated history, not current blockers.
 
 ## Phase 1 — Setup at the agreed boundary
 
@@ -68,9 +64,9 @@ Goal: seven rule/example pairs preserve all original hierarchical IDs, nested XM
 
 ## Phase 6 — Coherent handoff
 
-- [ ] T030 Reconcile spec→plan→tasks FR001–013/SC001–006 coverage, full module/content/link/manifest inventory and explicit D01 disposition in `specs/1557-gm-doc-modularization/analysis.md`; preserve unresolved findings instead of suppressing guards.
-- [ ] T031 Publish final feature checkpoint and verify recovery from actual GitHub objects into a clean directory per workflow; record tested-source versus metadata-carrier SHA and unrun platforms in `plan.md`.
-- [ ] T032 Deliver concise #1557 handoff with artifacts, actual selected results, independent verdicts and residual limits in `plan.md`/`tasks.md`; do not close issue/create PR/merge/main or claim performance/gameplay qualification.
+- [x] T030 Reconcile spec→plan→tasks FR001–013/SC001–006 coverage, full module/content/link/manifest inventory and explicit D01 disposition in `specs/1557-gm-doc-modularization/analysis.md`; preserve unresolved findings instead of suppressing guards.
+- [x] T031 Publish final feature checkpoint and verify recovery from actual GitHub objects into a clean directory per workflow; record tested-source versus metadata-carrier SHA and unrun platforms in `plan.md`.
+- [x] T032 Deliver concise #1557 handoff with artifacts, actual selected results, independent verdicts and residual limits in `plan.md`/`tasks.md`; do not close issue/create PR/merge/main or claim performance/gameplay qualification.
 
 ## Dependencies and execution strategy
 
@@ -78,7 +74,7 @@ T001–T002 precede repository edits. T003 freezes map inputs; T005–T007 and T
 
 No tasks are marked `[P]`: a single writer is explicitly required and several phases share map/manifest/daemon/guard files. Independent read-only review of preserved artifacts can overlap unrelated analysis at coordinator direction; this is not permission to spawn agents or competing writers now. US1 and US2 are independently testable contracts but jointly accepted as one delivered A result. MVP is A; unfinished A cannot be “completed” by starting B.
 
-32 tasks: setup 2; foundations 4; US1 5; US2 9; US3 9; handoff 3. T001–T029 are accepted/checked; T030–T032 remain unchecked pending this final handoff review/publication/recovery. Concrete future theory rows and runtime counts are deliberately not inferred from task count.
+32 tasks: setup 2; foundations 4; US1 5; US2 9; US3 9; handoff 3. All32tasks are recorded complete after accepted coherent/targeted review and verified8520recovery; the final completion carrier still awaits Root remote/recovery before reporting completion. Concrete future theory rows and runtime counts are deliberately not inferred from task count.
 
 ## Historical task execution records (superseded status)
 

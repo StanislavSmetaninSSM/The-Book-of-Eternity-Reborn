@@ -1,0 +1,140 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "8520f55719787eddb63dbd1254e2394638e83ecd",
+  "base": "9fcab07b653e1f4453788f67eb14fc1621909f66",
+  "directory": "/tmp/gm1557-final-handoff-review-recovery-github-8520f557-20261017",
+  "completedUtc": "2026-10-17T07:30:48.208072+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1557-gm-doc-modularization/analysis.md",
+    "M\tspecs/1557-gm-doc-modularization/plan.md",
+    "M\tspecs/1557-gm-doc-modularization/quickstart.md",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-check-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.md",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json",
+    "M\tspecs/1557-gm-doc-modularization/spec.md",
+    "M\tspecs/1557-gm-doc-modularization/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 14,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/docs/testing.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/analysis.md",
+      "mode": "100644",
+      "git_blob": "e6277cdfb18be424c813c5c825e1b9c7a27537e3",
+      "bytes": 27902,
+      "sha256": "82b9ba14f23c450d06466664dc2cd1696323031b8de68580c34d3c84fa505578",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/analysis.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "mode": "100644",
+      "git_blob": "1c2afe79cc5554a9f686724e1a3f88bedac3ccd0",
+      "bytes": 154533,
+      "sha256": "cfca9f571646db876003cb621e5b48969218902c362e5e5e81f1d4d50679c2eb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/plan.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/quickstart.md",
+      "mode": "100644",
+      "git_blob": "6d26d8bcad88548eac59afd91c1df007fe91a718",
+      "bytes": 27448,
+      "sha256": "c7d0d6590b5b3a787634df6beef1917e870b464c34d3824a924307b71323d8ac",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/quickstart.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-check-20261017.json",
+      "mode": "100644",
+      "git_blob": "1469f7c8ec8e2e91f03f2f2aa13d80f90f229b19",
+      "bytes": 15348,
+      "sha256": "cbc8e8fcc61764986b80b82cc6bb52d90bff283231f873e3536c3a61dac68a76",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-check-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.json",
+      "mode": "100644",
+      "git_blob": "830af38eb111f701946bb92a94d5dd2d6d03b238",
+      "bytes": 7796,
+      "sha256": "a1f0f3cbc81e7cd603d29f0930dc77fc338990d56da55833b49202c85a2724b2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.md",
+      "mode": "100644",
+      "git_blob": "8fd432c81119eb80346bf7bef984412fa8f0a09e",
+      "bytes": 4419,
+      "sha256": "91f7b1ca22c2365da31333a35d3fc604d23044e117fefe3a4a7c62ea6064d659",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json",
+      "mode": "100644",
+      "git_blob": "6e703174f9ae4c96841d460dcd535931f31a1177",
+      "bytes": 6939,
+      "sha256": "91c5364cd3a7b9a04eb0afe7372f8ff7822b36acecc7275ea4f15d24807866bb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json",
+      "mode": "100644",
+      "git_blob": "fc092a4c98942ab98384e995027f6246555cb29c",
+      "bytes": 26024,
+      "sha256": "6548f9dee43de3c5ff9477d654175525125bd59ce664f3df3e65dec796770a7b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "mode": "100644",
+      "git_blob": "59fc9e0fb294c85f4bdb3abb4f58004ec9c72a73",
+      "bytes": 95909,
+      "sha256": "0ac8341ebff50a6a0a7736fe7df0dd07c1973c048bded0f85d6c0df7a7aa439f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/spec.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "mode": "100644",
+      "git_blob": "bd481338216332aea49fee93977c90b5aaee9261",
+      "bytes": 147955,
+      "sha256": "e13fe8ceabcce7c884709cad8888afda673dd2fee33019052094f66f92be5bd9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8520f55719787eddb63dbd1254e2394638e83ecd/specs/1557-gm-doc-modularization/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "8520f55719787eddb63dbd1254e2394638e83ecd\trefs/heads/1557-gm-doc-modularization-continuation-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nchanged=git('diff','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1557-gm-doc-modularization-continuation-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

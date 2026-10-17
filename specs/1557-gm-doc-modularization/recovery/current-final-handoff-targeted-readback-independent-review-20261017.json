@@ -1,0 +1,66 @@
+{
+  "kind": "INDEPENDENT_SHORT_TARGETED_HANDOFF_READBACK",
+  "createdUtc": "2026-10-17T07:32:11.032653+00:00",
+  "verdict": "ACCEPTED_TARGETED_READBACK_H_L01_CLOSED",
+  "base": "9fcab07b653e1f4453788f67eb14fc1621909f66",
+  "reviewedCarrier": "8520f55719787eddb63dbd1254e2394638e83ecd",
+  "compiledProductionUnchanged": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "materialBlockers": [],
+  "H-L01": {
+    "status": "CLOSED",
+    "tasks": [
+      "T006",
+      "T018"
+    ],
+    "exactAfter": "(full A selection at the accepted A checkpoint; retained A mirror `tests/selections/1557-gm-doc-current-A.json`)",
+    "onlyTwoTaskDescriptionsChanged": true,
+    "taskStatusesUnchanged": true
+  },
+  "persistedExactReports": {
+    "current-final-handoff-independent-review-20261017.md": "91f7b1ca22c2365da31333a35d3fc604d23044e117fefe3a4a7c62ea6064d659",
+    "current-final-handoff-independent-review-20261017.json": "a1f0f3cbc81e7cd603d29f0930dc77fc338990d56da55833b49202c85a2724b2",
+    "current-final-handoff-independent-check-20261017.json": "cbc8e8fcc61764986b80b82cc6bb52d90bff283231f873e3536c3a61dac68a76"
+  },
+  "newDelta": {
+    "path": "/tmp/gm1557-final-handoff-review-delta-github-8520f557-20261017.json",
+    "sha256": "f87c51bd7c48516467feb155c3dcd6654aefee129af47f76dbd349336422dbf1",
+    "files": 14,
+    "allChangedPaths": 10,
+    "deleted": 0,
+    "byteShaBlobModeSetChecksPassed": true,
+    "changedPaths": [
+      "M\tspecs/1557-gm-doc-modularization/analysis.md",
+      "M\tspecs/1557-gm-doc-modularization/plan.md",
+      "M\tspecs/1557-gm-doc-modularization/quickstart.md",
+      "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-check-20261017.json",
+      "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.json",
+      "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-independent-review-20261017.md",
+      "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json",
+      "A\tspecs/1557-gm-doc-modularization/recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json",
+      "M\tspecs/1557-gm-doc-modularization/spec.md",
+      "M\tspecs/1557-gm-doc-modularization/tasks.md"
+    ]
+  },
+  "tasksAtReviewedCarrier": {
+    "unique": 32,
+    "completed": 29,
+    "open": [
+      "T030",
+      "T031",
+      "T032"
+    ]
+  },
+  "currentConditionalPanelsAccurate": true,
+  "currentCanonicalB9AndHistoricalA15ClearlySeparated": true,
+  "featureMetadataOnly": true,
+  "productionTestsSelectorsRawUntouched": true,
+  "repositoryWritten": false,
+  "runtimeOrBuildExecuted": false,
+  "oldAcceptedFamiliesOrFullBaseReplayed": false,
+  "completionDisposition": "After exact persistence of this confirmation and Root final remote/recovery verification, T030–T032 may be completed in the final metadata checkpoint. Pure decision/status recording requires no recursive independent full review or runtime replay.",
+  "retainedLimits": "All source/evidence/provenance/platform limits in the accepted 91f7b1ca/a1f0f3cb final review remain unchanged.",
+  "markdown": {
+    "path": "/tmp/gm1557-final-handoff-targeted-readback-independent-review-20261017.md",
+    "sha256": "747ef9ae42c47feb0a266d202ba879163eb6868e2427832e3460196590a39b76"
+  }
+}
