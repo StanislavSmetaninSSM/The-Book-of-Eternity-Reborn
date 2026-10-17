@@ -1,0 +1,84 @@
+{
+  "kind": "G1_ADDITIVE_CURRENT_FIXTURE_DEPENDENCIES_EXACT_GITHUB_RECOVERY_NOT_RUNTIME",
+  "source": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
+  "retainedOriginalDistinct": 100,
+  "newPins": 9,
+  "combinedDistinct": 109,
+  "directory": "/tmp/gm1559-g1-additive-dependencies-recovered-eda1a34c-20261017",
+  "sourcePins": [
+    {
+      "path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "mode": "100644",
+      "gitBlob": "ded2598300347206869ba213add7395a86c2bc6d",
+      "bytes": 9633,
+      "sha256": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/tests/fixtures/LinuxHost/host-guardian.c"
+    },
+    {
+      "path": "scripts/build-linux-supervisor.ps1",
+      "mode": "100644",
+      "gitBlob": "05a9d8ecc3e2b15b19c06bba599b2fff97257a6a",
+      "bytes": 4910,
+      "sha256": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/scripts/build-linux-supervisor.ps1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "mode": "100644",
+      "gitBlob": "e19014edd1382362120ed836d100878d421134d6",
+      "bytes": 21834,
+      "sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "mode": "100644",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs",
+      "mode": "100644",
+      "gitBlob": "4d4671bfe466bdb12ebdecdee2c26f7fb36eaf9d",
+      "bytes": 15848,
+      "sha256": "08f95e4ed639789ff60cef19dd1c3927ded5b28fa230a475cab92f03ea42e935",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs"
+    },
+    {
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "mode": "100644",
+      "gitBlob": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "bytes": 24566,
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/native/linux/boe-lineage-supervisor.c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "mode": "100644",
+      "gitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "mode": "100644",
+      "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "mode": "100644",
+      "gitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c",
+      "bytes": 1054,
+      "sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/eda1a34c356d6ac1812eff1ac0643f0e698572fd/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj"
+    }
+  ],
+  "completedUtc": "2026-10-17T13:23:06.268956+00:00",
+  "runtime": "NOT_RUN"
+}

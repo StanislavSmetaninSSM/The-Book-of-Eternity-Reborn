@@ -1,0 +1,323 @@
+{
+  "kind": "G1_CONCRETE_METHOD_ROW_AND_ORACLE_LEDGER_NOT_NATIVE_DISCOVERY_OR_ACCEPTANCE",
+  "stage": "AUTHORED_UNCOMPILED_UNRUN",
+  "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "newMethods": 9,
+  "newStaticCases": 20,
+  "existingSelectedMethods": 12,
+  "existingStaticCases": 29,
+  "proposedTotalMethods": 21,
+  "proposedTotalCases": 49,
+  "proposedCategories": 8,
+  "proposedDescriptors": 9,
+  "countsAreNotObservedNative": true,
+  "methods": [
+    {
+      "method": "BookOfEternityClient.Tests.GmRelayLongSessionTests.CurrentRelay_CompleteExactExchangeWithoutArtificialSessionCaps",
+      "project": "unit",
+      "cases": [
+        "fourth-submit",
+        "prompt-over-old-lines",
+        "prompt-over-old-characters",
+        "response-over-old-mib",
+        "many-writes",
+        "partial-apply",
+        "small-response"
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "6_PROPOSED_CAUSAL_BOUNDARIES_PLUS_1_POSITIVE",
+      "requiredPrerequisite": "Real initialized generation/config; original native guardian with echild/deadline/emergency/failures AND driverExitCode; real maintained relay/helper and exact request witnesses. Fourth submit requires three actual completions first.",
+      "finalOracle": "Exact request/response/terminal identity; untruncated bytes; third protected input denied with no terminal/input mutation/prior writes.",
+      "proofLimit": "Controlled synthetic packets only. Not real game acceptance, shell-less agent or current measured >1MiB workload. Native Windows unsupported/unrun."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.SettledPromptRetention_Crosses256WithoutRepasteOrGrowingLiveTasks",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual bridge pipe + controlled input/view OR actual daemon function AST + controlled current status/launcher. Old production still admits first256/first process positive.",
+      "finalOracle": "272 settle with bounded records/tasks/no payload growth; same current pending and binding retains original operation/no second dispatch after process restart.",
+      "proofLimit": "Daemon collaborator is controlled, not full daemon lifecycle/helper storage or game acceptance; new G2 callees must be explicitly bound, never missing-function RED."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmDaemonLongSessionTests.CurrentDaemonAllocator_AdvancingSourcesContinueBeyond256SettledDispatches",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual bridge pipe + controlled input/view OR actual daemon function AST + controlled current status/launcher. Old production still admits first256/first process positive.",
+      "finalOracle": "272 settle with bounded records/tasks/no payload growth; same current pending and binding retains original operation/no second dispatch after process restart.",
+      "proofLimit": "Daemon collaborator is controlled, not full daemon lifecycle/helper storage or game acceptance; new G2 callees must be explicitly bound, never missing-function RED."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmDaemonLongSessionTests.DaemonRestart_SameCurrentSourceAndBindingRetainsOriginalOperationWithoutRedispatch",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual bridge pipe + controlled input/view OR actual daemon function AST + controlled current status/launcher. Old production still admits first256/first process positive.",
+      "finalOracle": "272 settle with bounded records/tasks/no payload growth; same current pending and binding retains original operation/no second dispatch after process restart.",
+      "proofLimit": "Daemon collaborator is controlled, not full daemon lifecycle/helper storage or game acceptance; new G2 callees must be explicitly bound, never missing-function RED."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+      "project": "integration",
+      "cases": [
+        false,
+        true
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_A01_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual engine backup/restore completes and ordinary neighbor is restored/new ordinary removed.",
+      "finalOracle": "Both exact operational files retain post-snapshot bytes whether created after or modified from before.",
+      "proofLimit": "Opaque marker images exercise classification/lifetime, not valid trusted relay receipt/dispatch authority; rejected repair/lostACK reader proof later OPEN."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_A01_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual PrepareAsync normal current canonical fixture writes linked request/manifest/authority and ordinary control neighbor.",
+      "finalOracle": "Two exact operational names excluded from both actual snapshot maps while ordinary neighbor retained.",
+      "proofLimit": "No browser/backend execution or receipt trust claim."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+      "project": "unit",
+      "cases": [
+        [
+          "game_state/control/gm_prompt_delivery.json",
+          false
+        ],
+        [
+          "game_state/control/gm_relay_apply_receipt.json",
+          false
+        ],
+        [
+          "game_state/control/gm_prompt_delivery.json.neighbor",
+          true
+        ],
+        [
+          "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          true
+        ]
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "2_PROPOSED_CAUSAL_PLUS_2_POSITIVE",
+      "requiredPrerequisite": "Actual SpiritualOriginalDraftInputs.IsDraftPath, no mirrored predicate.",
+      "finalOracle": "Only two names excluded; suffix neighbors remain ordinary.",
+      "proofLimit": "One classification seam only, not both validation predicates/FilesModified/helper/repair proof."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+      "project": "integration",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "PROPOSED_A01_CAUSAL_BOUNDARY",
+      "requiredPrerequisite": "Actual SaveGameAsync and LoadGameAsync complete; ordinary archive member present/restored; actual session generation changes.",
+      "finalOracle": "Neither operational name appears in archive or restored new session.",
+      "proofLimit": "No historical save migration or valid old relay authority; owned fixture only."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.ExistingPublisher_CutBeforeOrAfterCommitPreservesOneWholeDecision",
+      "project": "unit",
+      "cases": [
+        false,
+        true
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "2_POSITIVE_EXISTING_PUBLISHER_PREREQUISITES",
+      "requiredPrerequisite": "Actual PublishLocalFilesAsync of2ordinary+opaque receipt+terminal members; observer reached member2 or actual commit; full original generation.",
+      "finalOracle": "Typed RolledBack/Committed matches all-before/whole-after, fresh lease settles real journal cleanup.",
+      "proofLimit": "Not yet dedicated helper batch/actual daemon+client terminal-reader ordering; those C01 gates remain OPEN."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
+      "project": "unit",
+      "cases": [
+        "false-draft-uncertain",
+        "true-unknown-outcome"
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+      "project": "unit",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+      "project": "integration",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+      "project": "integration",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+      "project": "integration",
+      "cases": [
+        null
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_NEIGHBOR",
+      "requiredPrerequisite": "Existing original test prerequisites/bodies unchanged.",
+      "finalOracle": "Retain original assertions and row counts.",
+      "proofLimit": "No broad category/body substitution or old acceptance inferred; source changes later require exact dependency analysis."
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose",
+      "project": "unit",
+      "cases": [
+        "read",
+        "incomplete",
+        "changed-prompt",
+        "wrong-queue",
+        "changed-request",
+        "closed",
+        "duplicate",
+        "packet-bound",
+        "missing-adapter",
+        "atomic-no-replace",
+        "partial-publication",
+        "close-unconfirmed",
+        "malformed-packet",
+        "wrong-turn",
+        "changed-authority",
+        "repair-read",
+        "close-gate-timeout"
+      ],
+      "stage": "AUTHORED_UNCOMPILED_UNRUN",
+      "classification": "EXISTING_SELECTED_CONTRACT",
+      "requiredPrerequisite": "Actual relay_contract current request/witness/winner/closure API.",
+      "finalOracle": "Original actual negative and positive body/classification assertions; old1MiB negative explicitly current baseline only.",
+      "proofLimit": "G2 must update obsolete cap expectation rather than weaken parser/identity or count proof; no actual agent evidence."
+    }
+  ],
+  "mandatoryLaterOpenGates": [
+    "C01: dedicated helper batch and real daemon+client authoritative-reader held cuts, uncertain/cleanup/lostACK/missing receipt/generation controls",
+    "C02: sequence gaps/concurrent producers/expired query/late Stop/CTS disposal and actual full daemon same-binding/rejected repair restart",
+    "C03: invalid config and at/over configurable budget plus peak parser/base64/before-after image/journal/scratch/unresolved/log/disk accounting, real packet binding",
+    "C04: exact CRLF/CR/trailing-newline/tabs/Unicode neutral framing beyond128rows/65536columns; Mini unchanged",
+    "C05: actual existing computer read/write exchange; descriptor optional, not Python worker-only proof",
+    "C06: actual client story/history accepted turn, unavailable native Windows separately OPEN"
+  ],
+  "firstOutcomePolicy": "No actual execution authorized. After concrete review Root releases bounded meaningful causal owners separately; canonical runner fail-stops nonzero descriptors. FIRST compile/fixture/platform/cleanup failure is retained and cannot count as causal RED.",
+  "authoringCorrections": [
+    "Root DRAFT01: assert actual guardian.driverExitCode separately from guardian process cleanup exit.",
+    "Root DRAFT02: partial-apply refusal returns after original input/no terminal/no mutation positives; no contradictory success fallthrough.",
+    "Unit draft referenced integration-only internal CleanupOwnedFixture; local test-owned strict cleanup now used, no product change.",
+    "Retention current-binding sequence metadata ignored by baseline permits genuine256 cap; current G2 wire contract source review remains required."
+  ]
+}

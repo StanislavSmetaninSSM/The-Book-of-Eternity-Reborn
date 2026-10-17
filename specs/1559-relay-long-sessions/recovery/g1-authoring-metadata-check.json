@@ -1,0 +1,8 @@
+{
+  "kind": "AUTHORING_METADATA_UTILITY_ONLY_NOT_TEST_PREPARATION_OR_PRODUCT_FAILURE",
+  "first": "Source binder expected4 changed baseline paths; actual6 also contains intentional catalog/current selection. Dependent read found output absent.",
+  "cause": "Already-audited selector paths were also included in new candidate pin list; distinct union is119, not121.",
+  "correction": "Classify6 actual paths and119 distinct current pins; source/test behavior unchanged.",
+  "nativeExecution": "NOT_RUN",
+  "utc": "2026-10-17T13:26:26.253940+00:00"
+}

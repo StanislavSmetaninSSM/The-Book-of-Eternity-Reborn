@@ -2,6 +2,213 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "gm-relay-long-session-exchange",
+      "responsibility": "#1559 G1 Maintained original relay/helper synthetic exact-byte and lifetime boundaries: actual first three completions precede fourth-submission cap; >120lines/>65000characters/>1MiB/>32writes; protected-third-member all-before rejection; small exact response positive.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayLongSessionTests.CurrentRelay_CompleteExactExchangeWithoutArtificialSessionCaps"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-long-session-retention",
+      "responsibility": "#1559 G1 Real bridge pipe >256 retained operations plus actual daemon functions with controlled current launcher/status: advancing source retention and cold process same-binding operation identity.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.SettledPromptRetention_Crosses256WithoutRepasteOrGrowingLiveTasks",
+            "BookOfEternityClient.Tests.GmDaemonLongSessionTests.CurrentDaemonAllocator_AdvancingSourcesContinueBeyond256SettledDispatches",
+            "BookOfEternityClient.Tests.GmDaemonLongSessionTests.DaemonRestart_SameCurrentSourceAndBindingRetainsOriginalOperationWithoutRedispatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-engine-rollback",
+      "responsibility": "#1559 G1 Actual engine backup/restore with created-after and changed-preexisting two exact operational records, ordinary restore and delete neighbors.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-live-preparation",
+      "responsibility": "#1559 G1 Actual live preparation snapshot and exact frozen-draft two-name exclusions with ordinary suffix neighbors.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+            "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-save-load",
+      "responsibility": "#1559 G1 Actual save then load: two operational records excluded from archive/new generation; ordinary canonical neighbor restored.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-publication-foundation",
+      "responsibility": "#1559 G1 Actual existing multi-member publisher controlled member/commit cuts preserve all-before or whole-after and settle cleanup on a fresh real admission. Prerequisite proof, not dedicated helper batch/client acceptance.",
+      "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
+      "changeHints": [
+        "specs/1559-relay-long-sessions",
+        "tools/gm-relay",
+        "BookOfEternityGMBridge",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.ExistingPublisher_CutBeforeOrAfterCommitPreservesOneWholeDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-long-session-neighbors",
+      "responsibility": "#1559 Narrow existing positive/negative neighbors of the reviewed prompt and two-name lifetime seams: idempotent/changed/stale/two-live/partial-input, ordinary snapshot/load and unsafe-draft paths.",
+      "excludes": "No broad bridge/storage/afterlife/1557/1558 replay; not current-source game acceptance or Windows qualification.",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+            "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-doc-block5-content-boundary",
       "responsibility": "#1557 B One causal actual filesystem owner: complete pinned baseline/full XML/ancestor/example positive context and readonly source diagnostics precede the intended missing-module oracle. Separate canonical owner makes genuine first RED executable without unrelated discovery/manifest/memory rows.",
       "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",

@@ -24,7 +24,7 @@ public sealed class GmRelayLongSessionTests(ITestOutputHelper output)
         var root = Path.Combine(Path.GetTempPath(), "boe-relay1559-" + Guid.NewGuid().ToString("N"));
         var diagnostics = Path.Combine(TestRepoPaths.RepoRoot, "TestResults/relay1559", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root); Directory.CreateDirectory(diagnostics);
-        using var cleanup = new CleanupOwnedFixture(root, output.WriteLine);
+        using var cleanup = new OwnedRoot(root, output.WriteLine);
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             files.BootstrapLocalStorage(lease, null, JsonSerializer.SerializeToUtf8Bytes(new GameSettings()));
@@ -48,6 +48,20 @@ public sealed class GmRelayLongSessionTests(ITestOutputHelper output)
         Assert.False(owned.RootElement.GetProperty("deadline").GetBoolean());
         Assert.Equal(initialGeneration, File.ReadAllBytes(files.SessionGenerationPath));
         output.WriteLine(JsonSerializer.Serialize(new { Scenario = scenario, Diagnostics = diagnostics, OriginalGenerationUnchanged = true, Scope = "CONTROLLED_PROTOCOL_NOT_CLIENT_ACCEPTANCE" }));
-        Assert.True(native == 0, File.ReadAllText(Path.Combine(diagnostics, "scenario.log")));
+        var originalOutput = File.ReadAllText(Path.Combine(diagnostics, "scenario.log"));
+        Assert.True(native == 0, originalOutput);
+        Assert.True(owned.RootElement.GetProperty("driverExitCode").GetInt32() == 0, originalOutput);
+    }
+    internal sealed class OwnedRoot(string root, Action<string> write) : IDisposable
+    {
+        public void Dispose()
+        {
+            Exception? failure = null;
+            try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
+            catch (Exception error) { failure = error; }
+            write(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = !Directory.Exists(root), CleanupFailure = failure?.ToString() }));
+            Assert.Null(failure);
+            Assert.False(Directory.Exists(root));
+        }
     }
 }

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class LiveTurnPreparationServiceTests : IDisposable
+public sealed partial class LiveTurnPreparationServiceTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;

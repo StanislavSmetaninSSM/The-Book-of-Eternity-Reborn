@@ -1,0 +1,42 @@
+{
+  "kind": "ROOT_DRAFT_STATIC_FINDINGS_NOT_INDEPENDENT_REVIEW_OR_RUNTIME",
+  "utc": "2026-10-17T13:16:21.248526+00:00",
+  "source": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayLongSessionTests.cs",
+      "sha256": "aa84e87796fccc10ad40cdff6037f6e33f681043e8243ffe30bf3e05de322dd4",
+      "bytes": 3623
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-long-session-checks.py",
+      "sha256": "51d2676010fb3596ffa2e839afc24fee849e68196c8d53ebb426530fb5efca45",
+      "bytes": 11598
+    },
+    {
+      "path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "sha256": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+      "bytes": 9633
+    }
+  ],
+  "findings": [
+    {
+      "id": "DRAFT01",
+      "file": "BookOfEternityClient.Tests/GmRelayLongSessionTests.cs",
+      "scenario": "Python assertion returns nonzero while guardian safely settles all descendants",
+      "confirmedSource": "guardian.c records driverExitCode but returns failures?98:0; draft checks only guardian zero, omitting driverExitCode",
+      "consequence": "False C# PASS on causal driver failure",
+      "required": "Assert actual original driverExitCode==0 with log binding and retained cleanup checks"
+    },
+    {
+      "id": "DRAFT02",
+      "file": "tests/fixtures/ProductionMain/relay-long-session-checks.py",
+      "scenario": "Future batch correctly refuses protected third member and preserves all before-images",
+      "confirmedSource": "partial-apply asserts child ExitCode!=0 then falls through to unconditional ExitCode==0",
+      "consequence": "Correct all-before rejection cannot GREEN",
+      "required": "End refusal case after no-mutation/no-terminal/original-input checks; separate successful completion assertion"
+    }
+  ],
+  "runtime": "NOT_RUN",
+  "action": "Sent precise static findings to sole writer while draft authoring; fix before concrete SOURCE/PREP. No test failure or architecture rejection claimed."
+}

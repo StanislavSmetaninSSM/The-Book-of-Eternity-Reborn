@@ -163,6 +163,7 @@ def terminal_case():
                 writes = [dict(Path='output/relay_probe_' + str(i) + '.json', ExpectedSHA256='missing', Data=dict(message='Controlled helper output ' + str(i))) for i in range(total)]
                 if MODE == 'partial-apply':
                     writes.append(dict(Path='input/turn_request.json', ExpectedSHA256=digest((SESSION / 'input/turn_request.json').read_bytes()), Data=turn))
+            original_input = (SESSION / 'input/turn_request.json').read_bytes()
             packet = json.dumps(dict(Completion='repair' if repair else 'turn', Writes=writes, FilesModified=[x['Path'] for x in writes if not x['Path'].startswith('input/')])).encode()
             contract.publish_response(request, packet, adapter_id='controlled-current-packet')
             until(lambda: (directory / 'execution.json').exists(), 'actual fixed consumer completion', 20)
@@ -172,7 +173,11 @@ def terminal_case():
                 assert execution['ExitCode'] != 0, 'Protected third target must be rejected'
                 changed = [x['Path'] for x in writes[:2] if (SESSION / x['Path']).exists()]
                 proof.update(PrerequisitesComplete=True, ActualRejectedThirdMember='input/turn_request.json', ActualMutationPaths=changed, Execution=execution)
+                proof.update(OriginalInputUnchanged=(SESSION / 'input/turn_request.json').read_bytes() == original_input,
+                             TerminalAbsent=not (SESSION / 'ready/turn_complete.json').exists())
+                assert proof['OriginalInputUnchanged'] and proof['TerminalAbsent'], proof
                 assert not changed, ('Rejected whole response must leave every beforeimage unchanged; sequential baseline mutated prior members', changed)
+                return
             assert execution['ExitCode'] == 0, execution
             signal_path = SESSION / ('game_state/control/validation_repair_ready.json' if repair else 'ready/turn_complete.json')
             signal_value = json.loads(signal_path.read_text(encoding='utf-8-sig'))
