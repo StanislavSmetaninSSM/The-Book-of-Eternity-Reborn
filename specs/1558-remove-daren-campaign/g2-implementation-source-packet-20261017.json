@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "FIRST E02 preparation STOP: freshfrontend0/2.935s then catalog1/0.665s during Read-TestCategoryCatalog property id lookup before compiler/discovery;0tests, full+remainingPlan NOT_STARTED. Exact13raw/dist/helperchains frozen; priorf076sevenDLL/source277/namespaces unchanged. Independent causal review pending; no correction/retry/actual/RootChromium/task completion.",
+  "status": "E02-P01 catalog relation cause accepted and only new related entry repaired to existing id/when schema;1of277pins changed, selectors/product/fixtures/React guard unchanged. Successful17329frontend113 retained; fresh corrected BOTH/catalog/full+remainingPlan0 pending. Original catalog1 and all earlier raw/sentinels immutable; retain5qualified PASS, all further actual/RootChromium held.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -1907,9 +1907,9 @@
     },
     {
       "path": "tests/categories.json",
-      "bytes": 2071534,
-      "sha256": "3a8d72c8d53b20a08872867128eaf48fe70600bcc2a551c68e06eb20e8221c99",
-      "gitBlob": "0a4ca41b4744609405a1d19a34770080128d5892",
+      "bytes": 2071690,
+      "sha256": "b709e94237c85b303f86f7c71889dcf32299460293d6f9a6fe227d51827a9e96",
+      "gitBlob": "16ca51b0423629e8921ce1f7e05d01be1bde84e5",
       "mode": "100644"
     },
     {
@@ -2751,7 +2751,7 @@
       "tests/selections/1558-daren-retirement-remaining-green.json"
     ],
     "sourcePinCount": 277,
-    "sourcePinsDigest": "b9264d21b9f5592275efd672651188d58dc4f0ac40e484ad2f2920d6080e8fd9",
+    "sourcePinsDigest": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
     "retainedFive": [
       {
         "executionId": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
@@ -2855,5 +2855,38 @@
     "nativeTestsExecuted": 0,
     "causalVerdict": "PENDING",
     "allRuntime": "HELD_NO_RETRY"
+  },
+  "e02CatalogRepair": {
+    "independentMd": "recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md",
+    "rootDecision": "recovery/gm1558-root-e02-p01-catalog-repair-release-a208c99d-20261017.json",
+    "changedPin": {
+      "before": {
+        "path": "tests/categories.json",
+        "bytes": 2071534,
+        "sha256": "3a8d72c8d53b20a08872867128eaf48fe70600bcc2a551c68e06eb20e8221c99",
+        "gitBlob": "0a4ca41b4744609405a1d19a34770080128d5892",
+        "mode": "100644"
+      },
+      "after": {
+        "path": "tests/categories.json",
+        "bytes": 2071690,
+        "sha256": "b709e94237c85b303f86f7c71889dcf32299460293d6f9a6fe227d51827a9e96",
+        "gitBlob": "16ca51b0423629e8921ce1f7e05d01be1bde84e5",
+        "mode": "100644"
+      }
+    },
+    "sourcePinsBeforeSha256": "b9264d21b9f5592275efd672651188d58dc4f0ac40e484ad2f2920d6080e8fd9",
+    "sourcePinsAfterSha256": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
+    "retainedFrontend": {
+      "actualSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+      "gitTree": "8c9c5236b91d587407b2b6ba89070ee25c888d57",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json",
+      "recordSha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf",
+      "nativeExit": 0,
+      "wallSeconds": 2.935344375000568,
+      "distFiles": 113,
+      "conditions": "EntirefrontGitTree/current113manifest/localtools/package/lock unchanged; newsourceonlycatalog+featuremetadata. No npmreplay. No runtimetest/browserproof."
+    },
+    "preparation": "PENDING_FIRST_CORRECTED_BOTH_CATALOG_FULL_AND_REMAINING_PLAN_ZEROEXEC_NO_FRONTEND_REPLAY"
   }
 }

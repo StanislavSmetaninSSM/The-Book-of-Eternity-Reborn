@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST E02 preparation STOP: freshfrontend0/2.935s then catalog1/0.665s during Read-TestCategoryCatalog property id lookup before compiler/discovery;0tests, full+remainingPlan NOT_STARTED. Exact13raw/dist/helperchains frozen; priorf076sevenDLL/source277/namespaces unchanged. Independent causal review pending; no correction/retry/actual/RootChromium/task completion.
+**Status**: E02-P01 catalog relation cause accepted and only new related entry repaired to existing id/when schema;1of277pins changed, selectors/product/fixtures/React guard unchanged. Successful17329frontend113 retained; fresh corrected BOTH/catalog/full+remainingPlan0 pending. Original catalog1 and all earlier raw/sentinels immutable; retain5qualified PASS, all further actual/RootChromium held.
 
 ## Source issues and scope
 

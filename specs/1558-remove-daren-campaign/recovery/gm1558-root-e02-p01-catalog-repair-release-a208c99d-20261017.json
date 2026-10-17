@@ -1,0 +1,42 @@
+{
+  "kind": "ROOT_E02_P01_CAUSE_ACCEPTED_RELEASED_EXACT_CATALOG_RELATION_REPAIR_AND_RETAINED_FRONTEND_PREP",
+  "utc": "2026-10-17T11:50:40.401464+00:00",
+  "carrier": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+  "source": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md",
+      "sha256": "5f9f3cc05d0d91002df9e940c0dc60eab6bb15263df7f5478ff9d32ecd3d5ba3"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.json",
+      "sha256": "30187f18d090b69931694b280a59c06bf24284c0667e20ad1ba958efae28a88d"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-catalog-stop-independent-check-20261017.json",
+      "sha256": "7d93044b120aa8a0ec12b1489400d0f49999753d4f248f6034f707559144f6ca"
+    }
+  ],
+  "decision": "Acceptexactcatalogschemafailurecause andfrontend0retention. ManagedSOURCE/PREPnotready. No gameplay/test/REDqualification.",
+  "authorizedCorrection": "ONLY tests/categories.json newdaren-retirement-affected-client-contracts related[0]: replaceexistingstring with existing-schemaobject {id:\"daren-retirement-affected-guards\",when:<nonemptytrueexplanation>}. Keepsameidtarget; allothercatalogfield/selectors/ownership/budgets/body/source/JSON/runtimeproduct unchanged. Corresponding1of277sourcepin/digest andboundedmetadata updateonly. No loader/schema bypass.",
+  "retainedFrontend": {
+    "actualSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+    "gitTree": "8c9c5236b91d587407b2b6ba89070ee25c888d57",
+    "record": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json",
+    "recordSha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf",
+    "nativeExit": 0,
+    "wallSeconds": 2.935344375000568,
+    "distFiles": 113,
+    "conditions": "EntirefrontGitTree/current113manifest/localtools/package/lock unchanged; newsourceonlycatalog+featuremetadata. No npmreplay. No runtimetest/browserproof."
+  },
+  "sourcePersistence": "OnecoherentconfigfixWIP includesexactcausal3/Rootdecision/Rootraw32a1/a208complete114composition; nonforcepush/exactremote/newGitHubcompleterecovery beforeprep. Original17329 catalog1/raw/sentinelimmutable.",
+  "releasedPreparation": [
+    "ONEFIRSTfreshcanonical ValidateCatalog WITHBOTHbuild; no frontendbuild/cleanupreplay",
+    "Onnative0 ONEFIRSTfullcurrentSelectionPlanOnly-NoBuild (18owners20desc50entries98C#minimum+8FEestimate106)",
+    "Onnative0 ONEFIRSTremainingSelectionPlanOnly-NoBuild (17owners18desc45entries93C#minimum+8FEestimate101), exactfive-retained exclusion"
+  ],
+  "prepRequirements": "DistinctnewsourceFIRSTrecorder/checkretainedfrontend17329context/new7DLL/freshpackage370/source\u2192package52/CLIoutside52/newfullRemainingplans/source277pins/nativeprocess/ns. Freeze/publishFIRST onunexpected; successfulcompletePREPpublishedbeforependingtargetedE02SOURCEreview. No tests/producer/host/browsernow.",
+  "retentionAndNext": "E02fixsourcecontext alreadyreviewed; onlyconfigrelation/PREP/newremainingFIRSThelperawaitfinaltargetedSOURCE. Runtime lateronecanonicalremainingselection, retain5c5e/f076actualPASS, actualMemberData11countsnotforced98/106. RootChromiumonlyafterqualifiedfullunion.",
+  "rootProof": "/tmp/gm1558-root-e02-catalog-prep-stop-readback-a208c99d-20261017.json",
+  "limits": "No unrelatednative/allcategories/fullsuite/A1A2Late2/Windows/CI/Library/main/merge/forcepush/branchdelete/issueclose/credentials/settings/HOT/M3; no newsemantics or changedassertionstrength."
+}

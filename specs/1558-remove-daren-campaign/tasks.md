@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: FIRST E02 preparation STOP: freshfrontend0/2.935s then catalog1/0.665s during Read-TestCategoryCatalog property id lookup before compiler/discovery;0tests, full+remainingPlan NOT_STARTED. Exact13raw/dist/helperchains frozen; priorf076sevenDLL/source277/namespaces unchanged. Independent causal review pending; no correction/retry/actual/RootChromium/task completion.
+**Current phase**: E02-P01 catalog relation cause accepted and only new related entry repaired to existing id/when schema;1of277pins changed, selectors/product/fixtures/React guard unchanged. Successful17329frontend113 retained; fresh corrected BOTH/catalog/full+remainingPlan0 pending. Original catalog1 and all earlier raw/sentinels immutable; retain5qualified PASS, all further actual/RootChromium held.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

@@ -1,0 +1,111 @@
+{
+  "kind": "ROOT_FIRST_E02_PREP_STOP_RAW_AND_TARGETED_CATALOG_SCHEMA_OBSERVATION",
+  "utc": "2026-10-17T11:46:35.026015+00:00",
+  "carrier": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+  "actualSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "raw13Chains": [
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/record.json.gz",
+      "sha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/stdout.log.gz",
+      "sha256": "6791375c801a5c66d0ea3d7aa37b1972693278f80d08225684e574b6cc57cf83"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/process.json.gz",
+      "sha256": "ce365fa15343bb79c6ccf0d0915f0a2d19ecda0fa48dd3ee965831f9b2fba509"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/sentinel.json.gz",
+      "sha256": "827763a99f4f483a5a6a1fc4aa22bdb737364076eb89e5e6a3e84c08c71a871e"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/source-binding-before.json.gz",
+      "sha256": "de31877260d5ecdbe96dccd5f31a4576093e523aa24882fcc3e43fcc7b368271"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/record.json.gz",
+      "sha256": "d5c8adef1021a91adc5350cb50b45168cc9b23eae63164c919781e03be28d7c5"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/stdout.log.gz",
+      "sha256": "b9ad83ad94c9eecf3261c546e6c2c0286472fbf889c0c2edd527fcbb5566f83e"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/process.json.gz",
+      "sha256": "ac7d2b622d09460346ac4d777ab42d47ea8d8517d3b653fed4e02b613ec6faa0"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/sentinel.json.gz",
+      "sha256": "1ecf4f8e7f6c9829497fd57e87081fd0afab74550d2782b41303a2b46331cbc3"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/source-binding-before.json.gz",
+      "sha256": "de31877260d5ecdbe96dccd5f31a4576093e523aa24882fcc3e43fcc7b368271"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/first-preparation-helper.py.gz",
+      "sha256": "a8064f721f275fe7de0416f6d1f58ca5ee8003792afd759cefcb958421bf7af2"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/freeze-helper.py.gz",
+      "sha256": "292772457b4c65e6253e809686ff107f1575bb736d86c7e29ff72f84d0b6b5d0"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/fresh-dist-manifest.json.gz",
+      "sha256": "04b0b2933d33705c7e57e871e1ed416c085ed5d3bba4f3fd6d033e72a92847b0"
+    }
+  ],
+  "frontend": {
+    "record": {
+      "mode": "frontend",
+      "nativeExit": 0,
+      "wallSeconds": 2.935344375000568,
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json",
+      "recordSha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf"
+    },
+    "distFiles": 113,
+    "frontendGitTree": "8c9c5236b91d587407b2b6ba89070ee25c888d57",
+    "distManifestSha256": "1c564634c90b819a62da3950c3c4c6fd12451390553b942da5bc1eec91786239",
+    "scope": "BothTSchecks+freshVite0; exactcurrent113retained; noapp/testproof"
+  },
+  "catalog": {
+    "record": {
+      "mode": "catalog",
+      "nativeExit": 1,
+      "wallSeconds": 0.6647165329995914,
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-ValidateCatalog"
+      ],
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/record.json",
+      "recordSha256": "d5c8adef1021a91adc5350cb50b45168cc9b23eae63164c919781e03be28d7c5"
+    },
+    "beforeManagedBuildAndDiscovery": true,
+    "results": [],
+    "schemaViolation": [
+      {
+        "owner": "daren-retirement-affected-client-contracts",
+        "related": "daren-retirement-affected-guards"
+      }
+    ],
+    "sourceContract": "Read-TestCategoryCatalog lines76-80 requires eachrelatedobject.id andnonempty.when; publishednewstringelement violatesexactmemberaccess"
+  },
+  "oldSevenDllAndNamespaceContinuous": true,
+  "nativeProcessesSettled": true,
+  "nativeTests": 0,
+  "fullAndRemainingPlans": "UNRUN",
+  "recovery": "/tmp/gm1558-g2-e02-prep-stop-delta-github-a208c99d-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-a208c99d-20261017.json",
+  "scope": "Rootraw/sourceobservation; awaitindependentcausalreviewbeforeexactconfigrepair. No nativererun."
+}

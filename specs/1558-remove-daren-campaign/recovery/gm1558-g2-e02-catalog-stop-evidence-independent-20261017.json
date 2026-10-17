@@ -1,0 +1,43 @@
+{
+  "kind": "INDEPENDENT_CAUSAL_EVIDENCE_VERDICT",
+  "verdict": "ACCEPTED_PREPARATION_FAILURE_CAUSE; SOURCE/PREP_NOT_READY",
+  "source": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "carrier": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+  "evidence": "13 raw/gzip/live/committed chains and complete 25-file/21-path recovery independently verified. Frontend0; catalog1; zero test executions.",
+  "finding": {
+    "id": "G2-E02-P01",
+    "severity": "BLOCKING_PREPARATION",
+    "path": "tests/categories.json:28515",
+    "scenario": "Read-TestCategoryCatalog processes new category related entry as object under StrictMode.",
+    "cause": "Authored related[0] is a string; existing schema requires object with id and nonempty when. Access to .id throws before build/discovery.",
+    "consequence": "Managed compilation, catalog discovery and both current/remaining PlanOnly are unstarted; no runtime GREEN result exists."
+  },
+  "minimalCorrection": "Replace only that related element with {id:\"daren-retirement-affected-guards\",when:<accurate nonempty relationship text>}. Preserve loader/strict schema, selectors/ownership, budgets, C#/React/fixtures, product and assertions. Update exact catalog source pin/digest and metadata.",
+  "retained": {
+    "frontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+    "frontendTree": "8c9c5236b91d587407b2b6ba89070ee25c888d57",
+    "nativeExit": 0,
+    "wallSeconds": 2.935344375000568,
+    "distFiles": 113,
+    "qualification": "Fresh build output only; retain without npm replay if frontend source/tree/lock and all113 output bytes remain exact.",
+    "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+    "sevenDllsUnchanged": true,
+    "priorFiveQualifiedGuardCases": "Retained accepted provenance; not replayed or requalified here."
+  },
+  "nextGates": [
+    "Persist this causal decision and publish the bounded catalog correction with exact recovery.",
+    "Run the remaining authorized preparation steps on corrected source: canonical BOTH/catalog, full current PlanOnly-NoBuild, and remaining PlanOnly-NoBuild; zero tests. Bind fresh managed DLLs, exact category partition and case estimates.",
+    "Targeted corrected SOURCE/SELECTION/PREP and distinct remaining-run recorder review must precede Root runtime release. No runtime/browser authorization in this verdict."
+  ],
+  "limits": [
+    "No product runtime failure or retirement RED inferred from catalog configuration failure.",
+    "Frontend build success does not qualify frontend tests or interactive behavior.",
+    "MemberData case estimates remain estimates; no 98-case final actual count claim.",
+    "Original FIRST failed prep and all accepted earlier failure/provenance history remain immutable."
+  ],
+  "support": {
+    "path": "/tmp/gm1558-g2-e02-catalog-stop-independent-check-20261017.json",
+    "sha256": "7d93044b120aa8a0ec12b1489400d0f49999753d4f248f6034f707559144f6ca",
+    "bytes": 35440
+  }
+}

@@ -28512,7 +28512,7 @@
         "BookOfEternityClient.Tests/BrowserFrontendWorkspaceTests.cs"
       ],
       "related": [
-        "daren-retirement-affected-guards"
+        {"id": "daren-retirement-affected-guards", "when": "Retained owner preserves the five unchanged PASS methods; this owner requalifies only the existing API DTO theory and React source Fact."}
       ],
       "requirements": {
         "frontendBuild": false,
