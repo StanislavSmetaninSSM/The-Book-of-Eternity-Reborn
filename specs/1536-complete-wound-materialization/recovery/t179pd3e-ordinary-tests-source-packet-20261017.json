@@ -1,7 +1,7 @@
 {
-  "kind": "PD3E_ORDINARY_DEBUG_PREFIX_TESTS_ONLY_CURRENT_SOURCE_NOT_PRODUCT_OR_RUNTIME_ACCEPTANCE",
+  "kind": "PD3E_MINIMAL_PRODUCT_CURRENT_SOURCE_BINDING_FRESH_PREPARATION_NOT_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "MINIMAL_TWO_FILE_PRODUCT_PLUS_ISOLATED_S02_VECTOR_CAPSULE_WIP_UNCOMPILED_ALL_CURRENT_PRODUCT_ACTUALS_HELD",
+  "status": "MINIMAL_PRODUCT_FRESH_BOTH_PLAN_NATIVE0_ZEROEXEC_FULL_AFFECTED_SOURCE_PENDING",
   "productDelta": [
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
@@ -570,7 +570,7 @@
   "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "c7bdbb493cfd6d8507bd7e454774bfb10f6259ba09b64a9bd55723a394a6d750"
+    "sha256": "e5a0a27bcdafca07b3d3927ac196d16bd60bb9b8a897437b5898e42ef18dd26d"
   },
   "references": [
     {
@@ -619,7 +619,7 @@
       "sha256": "e0652dbb44b9bb5805ce970d4332f5e8d7ce52aa5152adc7b13e4f79f9f78a1d"
     }
   ],
-  "authority": "Explicit user autonomous continuation and Root tests-only release; accepted necessity v2 is scope-only, not a runtime release.",
+  "authority": "Root named minimal product source activation e9f55c14 (3e03c598) and fresh product zero-execution preparation activation f766d9d0 (f27c7824), after accepted separate structuralRED1. These grant no testcase execution; full affected SOURCE and separately named protectedLate2/ordinary45 actual gates remain.",
   "categoryDelta": {
     "added": [
       "fr063-reasoning-prefix-boundary",
@@ -639,21 +639,297 @@
     ]
   },
   "preparation": {
-    "status": "CURRENT_PRODUCT_FRESH_BOTH_PLAN_UNRUN_AWAIT_SAVED_WIP_RECOVERY_AND_ROOT_PREP_ACTIVATION",
-    "recipe": "ONE canonical SelectionFile tests/selection.json -PlanOnly WITHOUT NoBuild builds selected BOTH/discovers6owners20methods47 then ZEROexecution; no unchanged catalog replay. Preserve FIRST unexpected; no retries. All4 fixture prefixes must be EMPTY before each preparation/actual, not merely equal after.",
-    "namespaces": [
-      "boe-pd3e-reasoning-*",
-      "boe-guardian-system-regressions-*",
-      "boe-guardian-system-template-*",
-      "boe-gameengine-turnlifecycle-*"
-    ]
+    "status": "FIRST_FRESH_PRODUCT_BOTH_PLAN_NATIVE0_ZEROEXEC_NOT_RUNTIME_ACCEPTANCE",
+    "actualSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "actualTestsExecuted": 0,
+    "wallSeconds": 87.41372441299609,
+    "record": {
+      "originalPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-prep-first-build-plan-f766d9d0-20261017/record.json",
+      "sha256": "177b49d129dc9e2a523549ed1960b0f95ffa4ca18f00e2d730dc84dca79b1ffb"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-preparation-files-20261017/archive.json",
+      "sha256": "b14e77a923a5639718359f0e52cd9a40f72864ba73e7f1a8a620f3f764683c63",
+      "rawChains": 10
+    },
+    "counts": {
+      "categories": 6,
+      "descriptors": 6,
+      "methods": 20,
+      "plannedRows": 47,
+      "ordinaryRows": 45,
+      "protectedRows": 2,
+      "executed": 0
+    },
+    "freshManagedPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      }
+    ],
+    "managedOutputFileCount": 335,
+    "managedOutputManifestSha256": "e6bb94bca081883b9e6942f9005473d8d30e41fb8c18c1deebdcc542ce1ebc1e",
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "nativeDescriptors": [
+      {
+        "Name": "fr063-joint-late-completion-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-late-completion",
+        "Categories": [
+          "fr063-joint-late-completion"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-ordinary-output-policy-source-unit-002",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-ordinary-output-policy-source",
+        "Categories": [
+          "fr063-ordinary-output-policy-source"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-reasoning-prefix-boundary-unit-003",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-reasoning-prefix-boundary",
+        "Categories": [
+          "fr063-reasoning-prefix-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-reasoning-prefix-existing-integration-004",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-reasoning-prefix-existing",
+        "Categories": [
+          "fr063-reasoning-prefix-existing"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope|FullyQualifiedName=BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+        "Adapter": "integration",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-reasoning-prefix-regression-unit-005",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-reasoning-prefix-regression",
+        "Categories": [
+          "fr063-reasoning-prefix-regression"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 40,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+            "Cases": 3
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+            "Cases": 3
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+            "Cases": 4
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+            "Cases": 12
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+            "Cases": 7
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+            "Cases": 2
+          }
+        ]
+      },
+      {
+        "Name": "fr063-reasoning-prefix-source-unit-006",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-reasoning-prefix-source",
+        "Categories": [
+          "fr063-reasoning-prefix-source"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+            "Cases": 1
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-fresh-product-prep-activation-f766d9d0-20261017.json",
+        "bytes": 860,
+        "sha256": "f27c78245a348c4c959e45c9f6e5637cde7220fae100b5b049382b3ebfc187cf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-product-preparation-readback-f766d9d0-20261017.json",
+        "bytes": 29132,
+        "sha256": "629250cca6dfe3ab01842895ffe450e2d91cbc4227af860557c99e025ada4484"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-wip-delta-github-f766d9d0-20261017.json",
+        "bytes": 15715,
+        "sha256": "7ea23346ddfbce255f67b0f8b35eab623df7578b92511097c0539ebe97c69bef"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-f766d9d0-20261017.json",
+        "bytes": 19247,
+        "sha256": "861e7a7e1adfa6d9f4deb6886e3b441e12ff5fd105558e4fcbaf25147353352c"
+      }
+    ],
+    "rootChecker": {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-root-inspect-product-prep.py",
+      "sha256": "be4d374580603ed5a22a7bc10b138a2f8f09301cc32cb3ea0abcaa4d22c4147d"
+    },
+    "sourceContext": "All55 primary code/selection/fixture pins and exact S02 capsule are compiledf766; archived source-binding and compiled ledger bytes remain immutable. Current metadata ledger below changes only phase/status. All4 actual root namespaces were explicitly empty before the FIRST command; no original prior process remained."
   },
   "historicalBindings": {
     "previous3d": "fe3 is accepted ordinary-A52 and separate protected2; old immutable3d packet67pins/9DLL and all evidence remain historical, not rehashed as new3e context.",
     "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
   },
   "futureProduct": {
-    "status": "MINIMAL_PRODUCT_AUTHORED_UNCOMPILED_NOT_SOURCE_OR_RUNTIME_ACCEPTED",
+    "status": "FRESH_COMPILED_PRODUCT_ZEROEXEC_FULL_SOURCE_PENDING",
     "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
     "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
     "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
@@ -3098,7 +3374,7 @@
     }
   },
   "productionImplementation": {
-    "status": "WIP_UNCOMPILED_AWAIT_FULL_AFFECTED_SOURCE_AND_FRESH_PREP",
+    "status": "COMPILED_DISCOVERED_ZEROEXEC_FULL_AFFECTED_SOURCE_PENDING",
     "sourceCapsule": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-edit-capsule-e9f55c14-20261017.json",
       "sha256": "c815875b11baefecd46d50fd3bb571e1583e7f8847c5698061baea337685a777",
@@ -3168,7 +3444,7 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-product-preparation-run.py",
       "sha256": "dc95995b1ed3c2c79dca3dc09906bdcb56547a018b9a7cb3d1499b55ed10cadd",
-      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+      "status": "USED_ONCE_FIRST_F766_BOTH_PLAN_NATIVE0_87_413724413S_ZERO_TESTS"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-product-first-run.py",
@@ -3178,12 +3454,66 @@
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-preparation.py",
       "sha256": "04610e299e618a0f2b25bec8164bd17023670e0a6c8f116ea3f9043a6845d8d5",
-      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+      "status": "USED_ONCE_READ_ONLY_FROZE_FIRST_PRODUCT_PREP10_NO_TEST_EXECUTION"
     },
     {
       "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-first.py",
       "sha256": "023d589a97f1d94158343e5f650998d38a7111b310dfc2836d325bf3bcf74a3c",
       "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
     }
-  ]
+  ],
+  "compiledSourceBinding": {
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "sourcePinCount": 55,
+    "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+    "freshManagedPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+      }
+    ],
+    "planSha256": "588264eb1061f13bfa6e2a0e99c0e450d9b6f21679d077840ccde5f3520ff10a",
+    "actualProductTestsExecuted": 0
+  }
 }

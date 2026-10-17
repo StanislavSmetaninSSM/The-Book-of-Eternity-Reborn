@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "MINIMAL_TWO_FILE_PRODUCT_PLUS_ISOLATED_S02_VECTOR_CAPSULE_WIP_UNCOMPILED_ALL_CURRENT_PRODUCT_ACTUALS_HELD",
+  "status": "MINIMAL_PRODUCT_FRESH_BOTH_PLAN_NATIVE0_ZEROEXEC_FULL_AFFECTED_SOURCE_PENDING",
   "counts": {
     "categories": 6,
     "methods": 20,
@@ -14,7 +14,7 @@
     {
       "category": "fr063-reasoning-prefix-boundary",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 17,
@@ -25,7 +25,7 @@
     {
       "category": "fr063-reasoning-prefix-source",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 50,
@@ -36,7 +36,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 17,
@@ -60,7 +60,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 58,
@@ -71,7 +71,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 90,
@@ -82,7 +82,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 101,
@@ -97,7 +97,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 124,
@@ -116,7 +116,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 151,
@@ -130,7 +130,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 167,
@@ -144,7 +144,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 191,
@@ -155,7 +155,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 209,
@@ -166,7 +166,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 219,
@@ -182,7 +182,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 253,
@@ -196,7 +196,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 267,
@@ -211,7 +211,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 297,
@@ -222,7 +222,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
       "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
       "declaredRows": 1,
@@ -231,7 +231,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
       "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
       "declaredRows": 1,
@@ -244,7 +244,7 @@
       "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
       "declaredRows": 1,
       "kind": "Fact",
-      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING"
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING"
     },
     {
       "category": "fr063-joint-late-completion",
@@ -253,7 +253,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "PROTECTED_DIRECT_CONSUMER_UNRUN_ON_CURRENT_PRODUCT"
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING"
     },
     {
       "category": "fr063-joint-late-completion",
@@ -262,7 +262,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "PROTECTED_DIRECT_CONSUMER_UNRUN_ON_CURRENT_PRODUCT"
+      "status": "FRESH_COMPILED_DISCOVERED_UNRUN_FULL_AFFECTED_SOURCE_PENDING"
     }
   ],
   "fixtures": {
@@ -394,7 +394,7 @@
     "actualExecuted": 1
   },
   "S02Correction": {
-    "status": "AUTHORED_NOT_YET_INDEPENDENT_SOURCE_OR_RUNTIME_QUALIFIED",
+    "status": "COMPILED_CORRECTION_PENDING_FULL_AFFECTED_SOURCE_AND_RUNTIME",
     "capsule": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-edit-capsule-e9f55c14-20261017.json",
       "sha256": "c815875b11baefecd46d50fd3bb571e1583e7f8847c5698061baea337685a777",
@@ -470,5 +470,24 @@
       "safeBoundary": "Separate public Full boundary class/Scene-local fixture remains unchanged and unaffected. Seek eligibility ONLY structural boundary1; no semantic execution/acceptance of known-wrong regression method or blanket45-source acceptance.",
       "disposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held."
     }
-  ]
+  ],
+  "freshProductPreparation": {
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "actualExecuted": 0,
+    "counts": {
+      "categories": 6,
+      "descriptors": 6,
+      "methods": 20,
+      "plannedRows": 47,
+      "ordinaryRows": 45,
+      "protectedRows": 2,
+      "executed": 0
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-preparation-files-20261017/archive.json",
+      "sha256": "b14e77a923a5639718359f0e52cd9a40f72864ba73e7f1a8a620f3f764683c63",
+      "rawChains": 10
+    }
+  }
 }
