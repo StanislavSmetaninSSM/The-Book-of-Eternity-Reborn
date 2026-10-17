@@ -1,3 +1,7 @@
+## A2 FIRST newLate2 nativePASS — separate EVIDENCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): sole actuallyaffectedLate2 actual505/compileda4 native0/exact2PASS/category117.5861666s≤5m;6chains/fullrawsemantic/strict2roots/fourDLLstable frozen in [currentcheckpoint](plan.md). Publish/readback/newdelta then focusedindependentEVIDENCE before A2GREEN57. Finalcomputedbodylimit retained; no broaderqualification/oldproof/base replay or otheractual. Afteraccepteddecision rootnamed4owners thencoherent57packet/finalreview.
+
 ## A2 implementation SOURCE accepted — FIRSTLate2 release conditional (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent affectedSOURCE pair accepts f42/compileda4 minimalimplementation/freshprep/unchangedfixture reuse/22all18recovery, no material finding. [Current decision](plan.md): persist/readback/newdelta/foura4DLLcontinuity then root onlyFIRSTnewprotectedLate2; separateEVIDENCE before individuallyreleasedA2GREEN57. AllactualcurrentlyUNRUN; no oldproof/base/prep/source replay or broadenedscope.
