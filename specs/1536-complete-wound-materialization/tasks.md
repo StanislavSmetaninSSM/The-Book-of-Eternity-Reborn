@@ -1,3 +1,7 @@
+## A3 necessity reviewed — deferred, no implementation (2026-10-17)
+
+- [x] #1536 A3 necessity/contract review complete: independent A3-N01 confirms no concrete current continuation need; [NO-PROCEED checkpoint](plan.md) retains original proposal/exact report/recovery. No A3 tests/product/preparation/runtime were implemented or executed;44+2 remains proposal only. A1/A2 remain accepted unchanged. Proceed to separately scoped #1557 fallback; no broader authority follows.
+
 ## A3 / AP06 contract WIP — necessity review before tests (2026-10-17)
 
 - [ ] #1536 ordinary3c-A3: independent source-backed necessity/shortCONTRACT for watermark initializer and processed-award data policies; proposed44A3+separate2Late2 cases. [Current checkpoint](plan.md) preserves unchecked arithmetic and exact owner timing; publish/readback/recover then contract review. Product/tests/preparation/runtime HELD; acceptedA1/A2 remain separate, no full3c/HOT/M3/F1/QTE/Windows/#1557 expansion or proof replay.

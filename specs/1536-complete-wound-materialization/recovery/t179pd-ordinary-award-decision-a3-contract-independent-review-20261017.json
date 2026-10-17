@@ -1,0 +1,82 @@
+{
+  "review": "A3/AP06 independent necessity and short contract",
+  "reviewerRole": "independent reviewer; repository read-only",
+  "carrier": "387c4f481f5722aa3318af49033b1401ca49aaf7",
+  "acceptedBase": "9416298b144c836aaa88e98e4545ea23626929f3",
+  "verdict": "NECESSITY_NOT_ESTABLISHED_DO_NOT_SELECT_STANDALONE_A3",
+  "findings": [
+    {
+      "id": "A3-N01",
+      "severity": "material scope/necessity",
+      "location": "specs/1536-complete-wound-materialization/design/ordinary-award-decision-a3-contract.md:7; plan.md:3",
+      "scenario": "Extract two ordinary helpers and add finite controls while actual Capturing consumer remains future/excluded",
+      "consequence": "No concrete current main continuation gap is resolved; cited post-QTE P2 fence uses distinct strict checked/no-init policy",
+      "disposition": "Defer A3; follow user-authorized #1557 fallback unless a concrete required main consumer or defect establishes necessity"
+    }
+  ],
+  "technicalContract": "No material semantic defect found in the proposed two pure helpers; proposal only, not concrete fixture/source acceptance",
+  "gate": {
+    "testsPreparationProductionReleased": false,
+    "actualsReleased": false,
+    "acceptedA1A2Retained": true
+  },
+  "runtimeExecutedByReviewer": false,
+  "historicalRawOrFullBaseRepeated": false,
+  "binding": {
+    "path": "/tmp/a3-contract-independent-binding-20261017.json",
+    "sha256": "eca13c2bfe93682e8e7f7a1023b68af1762d2796802219c599ab673e2d1523f4",
+    "files": 8,
+    "allChangedPaths": 4,
+    "codeTestsCatalogRunnerWorkflowsUnchanged": true
+  },
+  "inspectedSourceHashes": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/ordinary-award-decision-a3-contract.md",
+      "sha256": "b43a47d1ec2726114ce90cdcb8ef7365d2de48d2cb372d313bd65609da30028e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+      "sha256": "5971594f73c1389ed21bda0f8b6c838c42e9640af8386aa15610ad0e63e21a94"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "sha256": "19a0a81294befe1b28113d0f0c0f4f370840f80bf12d61647e273773df751a35"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "sha256": "ae9fa9eaa3cb88e9ce4214badafc050708de7a87b667bf54887c7f499ec26783"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+      "sha256": "d6633c4b2ffe21508bffe7d31e5d3881c75c6fce0876a1abad9c6626d1710267"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "sha256": "e628d6d382eef03a8535a3db192a27944d6a545fd797566e09c96ca8ea74ee6e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "sha256": "3dd1c53ac0bc7c6a7c801689178a12cc338b89ec01c5a882f9cdc94e8e1234bb"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    }
+  ],
+  "report": {
+    "path": "/tmp/a3-contract-independent-review-20261017.md",
+    "sha256": "ee2576d10674ee3ffd80f5fe19c5aa121d4e2b804d1b5159a7f8c8dc48b23fa5"
+  },
+  "limits": [
+    "No actual Capturing/HOT consumer in this proposal",
+    "P2 strict automatic calculation does not inherit ordinary heuristic or lastKnown state",
+    "No concrete fixtures built or executed",
+    "No broader stage/platform/CI/Windows qualification",
+    "No assertion that A3 can never become useful"
+  ],
+  "remainingBlocker": "Necessity not established; no tooling/recovery blocker"
+}

@@ -1,5 +1,7 @@
 # Ordinary award decisions A3 / AP06 — bounded contract
 
+> **DEFERRED / NOT SELECTED, 2026-10-17.** [Independent necessity review A3-N01](../recovery/t179pd-ordinary-award-decision-a3-contract-independent-review-20261017.md) found no concrete currently unblocked continuation dependency beyond moving working ordinary decisions. The cited B10/P2 uses a distinct strict checked/no-init calculator; source42 shows regression impact, not necessity. The original proposal below is retained as history, not accepted implementation authority. No A3 tests/preparation/product/runtime are released; user fallback is separately scoped #1557.
+
 Task [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), branch1536-wound-b2-cloud-20261012, accepted base `9416298b144c836aaa88e98e4545ea23626929f3`. User authorizes autonomous contract→independent review→causal TDD→minimal implementation→affected checks→published checkpoint. This carrier changes documents only; no test/product/catalog/selection/preparation/runtime before independent contract acceptance/root release.
 
 ## Necessity and exact seam
