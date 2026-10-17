@@ -1,0 +1,111 @@
+{
+  "kind": "PARTIAL_G2_LOCKED_DEPENDENCY_SETUP_AND_FRESH_FRONTEND_PREPARATION_0_0_MANAGED_UNRUN",
+  "utc": "2026-10-17T10:53:29.705964+00:00",
+  "commands": [
+    {
+      "kind": "FIRST_OWN_LOCKFILE_DEPENDENCY_SETUP_NOT_APP_RUNTIME",
+      "sourceHead": "110e7ac516789fb923adefde04997c04b4685ed7",
+      "nativeExit": 0,
+      "wallSeconds": 1.9205949469978805,
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z/record.json",
+      "stdoutPath": "/tmp/gm1558-implementation-tools/gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z/stdout.log",
+      "distFileCount": 0,
+      "runtimeExecuted": false
+    },
+    {
+      "kind": "FIRST_G2_AFTER_EXPLICIT_DEPENDENCY_SETUP_ZERO_EXECUTION_PREPARATION",
+      "sourceHead": "110e7ac516789fb923adefde04997c04b4685ed7",
+      "nativeExit": 0,
+      "wallSeconds": 2.935422804999689,
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z/record.json",
+      "stdoutPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z/stdout.log",
+      "distFileCount": 113,
+      "runtimeExecuted": false
+    }
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/0/record.json.gz",
+      "bytes": 6498,
+      "sha256": "7034d59330de5da42670589e6bc312b89660a6cdc8546efdd61b4d727fc59250",
+      "storedSha256": "2ce29dfba73895f5305e34e55bb0715cfacfaa94e40c6cc80217871466aa0650",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/0/stdout.log.gz",
+      "bytes": 233,
+      "sha256": "0613663156e5538b2ccc03d8c2bf12ea60cf463e1a25e3362c3e2c33d24d6ffa",
+      "storedSha256": "ec6b90bffc2a3ba2f0288ff715768b7c5404de183f068e14eb540d0248d5c76f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/0/process.json.gz",
+      "bytes": 306,
+      "sha256": "1fc4fa581b381ec6ce8638bd69366aa88d1ddba8347829c6d8bb77a826c9136e",
+      "storedSha256": "72a9d259b8faa8cee5f8ad7413aff299ef7d6ccc5385b09dca81218a2faa65f1",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/110e7ac516789fb923adefde04997c04b4685ed7-g2-owned-locked-dependency-setup.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/0/110e7ac516789fb923adefde04997c04b4685ed7-g2-owned-locked-dependency-setup.first-launch.json.gz",
+      "bytes": 298,
+      "sha256": "c567c65e947bdd33662ff543bc262b4aa840c2235a982a09004b16270527014b",
+      "storedSha256": "91f1f1801bbe537a164c882b2009f04d2a420f0eb6218568fbf9a4e841dbe53e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-dependency-setup-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/0/gm1558-g2-dependency-setup-run.py.gz",
+      "bytes": 3620,
+      "sha256": "008ad0ef89edbdcdb94485c0f337e388b7520a0e870604c6ec1d8dafe1043a22",
+      "storedSha256": "9b320a30f7dee1cf32c4b212584d4e98c50aefbf96f1786964ed2149e1755bad",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/1/record.json.gz",
+      "bytes": 37674,
+      "sha256": "c37b4f13b5da9ad2b5088f8383cf597b24cc20b6f6ec982075015b1b1ceba1ea",
+      "storedSha256": "b51bbc02954d4aaac30d6192bb6c1090023720e7a645218477f21b2faa65bd6b",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/1/stdout.log.gz",
+      "bytes": 9070,
+      "sha256": "583572cf9bb54d3f89ae8850ee10b5d87cf95509145594c167987cb73c4aabd6",
+      "storedSha256": "41541fd1fa19488371f963fa8f53f164cdd63de2df5df893186d7f046f59e958",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/1/process.json.gz",
+      "bytes": 211,
+      "sha256": "b8e80030c3d70c34d233e4a617132eebc326915d161d9d52861aaf624307462e",
+      "storedSha256": "b54821315df3862310e9599c3eecc7414703f3fda97449b1aeddf8bbf8544f06",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/110e7ac516789fb923adefde04997c04b4685ed7-g2-frontend.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/1/110e7ac516789fb923adefde04997c04b4685ed7-g2-frontend.first-launch.json.gz",
+      "bytes": 379,
+      "sha256": "030428dcd701107f3d07f0d263395c84efc11f3d522140b823f7dddc987607df",
+      "storedSha256": "e35cce0c21d4a67cbe17c6d9598c2b0377b7773adc1acf25e2ace42a02b6538c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-post-setup-preparation-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files/1/gm1558-g2-post-setup-preparation-run.py.gz",
+      "bytes": 8108,
+      "sha256": "434fd5963b9d91715c35842e1f9292b5f154d933206c304cb5ed920ff50d8909",
+      "storedSha256": "2b8666f0cc442464fa1d7207321ffb12b8a16d1444ad4e945a92bd16747ac6ad",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "scope": "Exact setup/frontend FIRST native raw; old127 preserved, no managed cleanup/build/catalog/Plan or runtime yet. R04 source review found V1 cursor defect before any managed build.",
+  "continuity": "Frontend/package/lock bytes are unchanged by the one-line C# R04 rewind; retain frontend113files/0 with actualsource110 and bind next managed source separately. No repeated unchanged compiler.",
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,subprocess\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1558');f=r/'specs/1558-remove-daren-campaign';p=r/'BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs';s=p.read_text();needle='''                using var bytes = new MemoryStream();\n                stream.CopyTo(bytes);''';assert s.count(needle)==1;s=s.replace(needle,'''                using var bytes = new MemoryStream();\n                stream.Position = 0; // The prefix probe has advanced the owned stream.\n                stream.CopyTo(bytes);''',1);p.write_text(s)\ncommands=[Path('/tmp/gm1558-implementation-tools')/name/'record.json'for name in ['gm1558-g2-locked-setup-first-110e7ac5-20261017t1050z','gm1558-g2-frontend-after-setup-first-110e7ac5-20261017t1053z']];rows=[];observed=[];folder=f/'recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017-files';assert not folder.exists();folder.mkdir()\nfor i,p in enumerate(commands):\n j=json.loads(p.read_text());assert j['nativeExit']==0 and j['sourceHead']==j['headAfter']=='110e7ac516789fb923adefde04997c04b4685ed7' and not j['statusAfter'];assert not j.get('resultDirectories',[])\n helper=Path('/tmp/gm1558-g2-dependency-setup-run.py'if i==0 else'/tmp/gm1558-g2-post-setup-preparation-run.py');raw=[p,Path(j['stdoutPath']),p.parent/'process.json',Path(j['firstLaunchSentinel']),helper]\n for source in raw:\n  b=source.read_bytes();z=gzip.compress(b,mtime=0);dest=folder/str(i)/(source.name+'.gz');dest.parent.mkdir(exist_ok=True);dest.write_bytes(z);assert gzip.decompress(dest.read_bytes())==b;rows.append(dict(rawPath=str(source),storedPath=str(dest.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\n observed.append(dict(kind=j['kind'],sourceHead=j['sourceHead'],nativeExit=0,wallSeconds=j['wallSeconds'],recordPath=str(p),stdoutPath=j['stdoutPath'],distFileCount=len(j.get('distAfter',[])),runtimeExecuted=False))\np=f/'recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017.json';packet=dict(kind='PARTIAL_G2_LOCKED_DEPENDENCY_SETUP_AND_FRESH_FRONTEND_PREPARATION_0_0_MANAGED_UNRUN',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),commands=observed,files=rows,scope='Exact setup/frontend FIRST native raw; old127 preserved, no managed cleanup/build/catalog/Plan or runtime yet. R04 source review found V1 cursor defect before any managed build.',continuity='Frontend/package/lock bytes are unchanged by the one-line C# R04 rewind; retain frontend113files/0 with actualsource110 and bind next managed source separately. No repeated unchanged compiler.',helperText=Path(__file__).read_text());p.write_text(json.dumps(packet,indent=2)+'\\n')\nfor name in ['gm1558-g2-refined-r03-source-delta-github-110e7ac5-20261017.json','gm1558-root-recovery-composition-110e7ac5-20261017.json']:\n src=Path('/tmp')/name\n if src.exists():\n  dest=f/'recovery'/name;assert not dest.exists();dest.write_bytes(src.read_bytes());assert src.read_bytes()==dest.read_bytes()\nstatus='G2 own locked dependency setup0 and first frontend build0 at110e are frozen (113fresh dist files); original127 retained. Reviewer R04 exact V1 stream rewind corrected before any managed build. Frontend source/lock unchanged and retained with actual110provenance; fresh managed BOTH/catalog/PlanOnly next after corrected WIP publication/recovery. SOURCE/runtime GREEN and task completion remain held.'\nfor n,m in [('plan.md','**Current status**:'),('spec.md','**Status**:'),('tasks.md','**Current phase**:')]:\n p=f/n;s=p.read_text();a=s.index(m);b=s.index('\\n',a);s=s[:a]+m+' '+status+s[b:];p.write_text(s)\np=f/'plan.md';s=p.read_text();s+='''\\n### R04 pre-managed-build stream rewind and retained frontend0\\n\\nThe first explicit locked setup native0/1.920595s and first-after-setup frontend `npm run build` native0/2.935423s at source110e produced113fresh dist files. [Exact ten raw chains](recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017.json) preserve both commands, local compiler/bundler versions/hashes, unchanged package/lock and prior7DLL/namespace context. App/node typechecks and Vite bundling passed; this is not frontend component/runtime/browser evidence and does not replace selected frontend-test-contract compilation.\\n\\nBefore managed preparation, independent source review found R04: the v1 prefix probe advances the stream, unlike old cursor-independent `File.ReadAllBytes`. The reader now explicitly rewinds to0 immediately before copying its existing strict v1 bytes. No parser/fields/aliases or expected data changed; existing Format1 controls cover it, with no new method/count. No managed output cleanup/build/catalog/Plan had begun. This is an authoring finding, not a new native failure. Frontend sources/package/lock and actual113-file dist remain byte-identical, so retain their first successful110e provenance without repeating unchanged app/node compilation; next managed record explicitly binds the corrected current source separately to that exact prior frontend record and dependency graph. Runtime remains held.\\n''';p.write_text(s)\np=f/'g2-implementation-source-packet-20261017.json';j=json.loads(p.read_text());j['utc']=datetime.datetime.now(datetime.timezone.utc).isoformat();j['status']=status;j['preparation']['dependencySetup']['status']='FIRST_NATIVE0_AT110E_EXACT_LOCK_LOCAL_TOOLS_PINNED';j['preparation']['frontend']='FIRST_AFTER_SETUP_NATIVE0_AT110E_APP_NODE_AND_VITE;113freshfiles retained by unchanged frontend/package/lock dependency hashes; exact partial packet links next current managed source';j['preparation']['retainedFrontendPacket']='recovery/g2-locked-setup-first-frontend-success-110e7ac5-20261017.json';j['authoringOutcomes'].append('R04 independently found V1 HasPlausibleV1Prefix advances stream; explicitPosition0 before MemoryStreamcopy restores old exact bytes. Corrected before first managed compiler, no new runtime/PREP failure. Retain unchanged firstfrontend0 with110e actualsource provenance, no replay.');j['recovery']='Retainedfull7a+104completeRootdeltas at110e, plus new correction immediate delta before managed prep; exactpartialsetup/frontend10chains and original127 unchanged.'\nfor pin in j['sourcePins']:\n b=(r/pin['path']).read_bytes();pin.update(bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),gitBlob=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest())\nj['allChangedPathsFromImplementationBase']=subprocess.check_output(['git','diff','--no-renames','--name-status','023931661391926398a5c5ebe0897a66985235b2'],cwd=r,text=True).splitlines();p.write_text(json.dumps(j,indent=2)+'\\n');print('R04 one-line source correction + twoFIRSTnative0 frozen10chains; managed preparation unrun')\n"
+}

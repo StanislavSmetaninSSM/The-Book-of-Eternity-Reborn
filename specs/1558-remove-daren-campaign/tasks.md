@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: G2 P01 FIRST frontend127 independently classified missing local dependencies, not retirement RED; original raw preserved. Refined R03 decoder/admission and nine source-derived controls authored; UNCOMPILED/UNRUN, static17owners/816catalog. After this published/recovered WIP: one owned locked npmci, then first-after-setup frontend→fresh managed BOTH/catalog→exact GREEN PlanOnly0. SOURCE/runtime acceptance and task completion remain held.
+**Current phase**: G2 own locked dependency setup0 and first frontend build0 at110e are frozen (113fresh dist files); original127 retained. Reviewer R04 exact V1 stream rewind corrected before any managed build. Frontend source/lock unchanged and retained with actual110provenance; fresh managed BOTH/catalog/PlanOnly next after corrected WIP publication/recovery. SOURCE/runtime GREEN and task completion remain held.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

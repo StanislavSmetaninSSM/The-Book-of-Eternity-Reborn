@@ -105,6 +105,7 @@ internal sealed partial class TrustedLocalFilePublication
                 // Supported v1 JSON keeps its original decoding and required
                 // fields. A new frame is never interpreted as legacy byte data.
                 using var bytes = new MemoryStream();
+                stream.Position = 0; // The prefix probe has advanced the owned stream.
                 stream.CopyTo(bytes);
                 journal = StrictJsonAuthority.Deserialize<Journal>(bytes.ToArray(), JsonOptions, "Trusted-local publication")
                     ?? throw Conflict("The publication journal is null.");
