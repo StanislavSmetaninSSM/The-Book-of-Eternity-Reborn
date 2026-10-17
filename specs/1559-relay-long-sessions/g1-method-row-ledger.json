@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "ENGINE2_CAUSAL_RED_ACCEPTED_2OF2; NEXT_REVIEWED_A01_BASELINE6_UNRUN_HELD; PRODUCTION_HELD; REMAINING_RELAY_DEFERRED",
+  "currentGate": "ENGINE2_CAUSAL_RED_ACCEPTED_2OF2; REMAINING_A01_RECORDER_SOURCE_ACCEPTED; LIVE5_AND_SAVE1_UNRUN_REQUIRE_SEPARATE_ROOT_NAMED_ACTIVATIONS; PRODUCTION_HELD",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",

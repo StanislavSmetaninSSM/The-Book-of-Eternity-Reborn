@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "e31ad946478796ff04b739a9960c0528f181cc9b4bae3ee9fbd297d536f437fb"
+    "sha256": "7022ece73dd4c98c5206d26675c8e36dfe19ee755b97c89b33ab1281a2937093"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
@@ -1232,7 +1232,7 @@
   "nextBaselineRecorder": {
     "path": "recovery/tools/g1-operational-baseline-first-run.py",
     "sha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
-    "status": "UNRUN_PENDING_TARGETED_INSPECTION_AND_NAMED_ROOT_ACTIVATION",
+    "status": "TARGETED_SOURCE_ACCEPTED; UNRUN; EACH_OWNER_REQUIRES_NAMED_ROOT_ACTIVATION",
     "allowed": {
       "gm-relay-operational-live-preparation": 5,
       "gm-relay-operational-save-load": 1
@@ -1240,5 +1240,14 @@
     "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
     "sourcePins": 119,
     "managedCopies": 9
+  },
+  "remainingA01TargetedSource": {
+    "reports": [
+      "recovery/remaining-a01-recorder-source-independent.md",
+      "recovery/remaining-a01-recorder-source-independent.json"
+    ],
+    "rootConditional": "recovery/root-remaining-a01-source-live5-conditional-release.json",
+    "actual": "LIVE5_UNRUN_AND_SAVE1_UNRUN",
+    "next": "Root verifies exact successor/newdelta then names first live5 activation; save1 separate after first outcome inspection."
   }
 }

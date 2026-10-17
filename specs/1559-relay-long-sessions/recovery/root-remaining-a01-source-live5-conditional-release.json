@@ -1,0 +1,41 @@
+{
+  "kind": "ROOT_REMAINING_A01_RECORDER_SOURCE_ACCEPTANCE_AND_CONDITIONAL_FIRST_LIVE5_RELEASE",
+  "utc": "2026-10-17T13:54:06.078680+00:00",
+  "currentCarrier": "1fd2f4803be838bbd82466100f591f6753d2c27d",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "rootDecision": "ACCEPT_TARGETED_REMAINING_A01_RECORDER_SOURCE",
+  "reports": [
+    {
+      "path": "/tmp/gm1559-remaining-a01-recorder-source-independent-20261017.md",
+      "sha256": "ecca1ac50509e00440deb8dc8cce45e1c223d3cf989c6cf376d1f3260472dc6d"
+    },
+    {
+      "path": "/tmp/gm1559-remaining-a01-recorder-source-independent-20261017.json",
+      "sha256": "b0f8b3564d8b40ab1d116d7baf17bff857e24e6577b922c399d875a50b4fe53f"
+    }
+  ],
+  "recorder": {
+    "path": "/tmp/gm1559-g1-operational-baseline-first-run.py",
+    "sha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
+    "status": "UNRUN"
+  },
+  "sourceRecovery": "/tmp/gm1559-root-recovery-composition-1fd2f480-20261017.json",
+  "completeDeltas": 129,
+  "trackedPaths": 56326,
+  "sourceAndEvidencePriority": "Operational lifecycle ONLY; engine2causalaccepted, preserveunrepeated. Currentproductunchanged. No relay runtime activation; laterhandoffT179-Pd.3d.",
+  "next": "Persist exact targetedpair/thisrelease/1fdDeltaComposition; metadata-onlynonforcepublication/liveSHA/newGitHubdelta, Root independentlyverifies then names exactlive5activation. No recompile/catalog/Plan repetition.",
+  "eligibleFirstCategoryAfterNamedActivation": {
+    "category": "gm-relay-operational-live-preparation",
+    "adapter": "unit",
+    "descriptors": 1,
+    "methods": 2,
+    "rows": 5,
+    "expectedPredictionOnly": "3causal failures (live snapshot1, exactdraft2),2suffixpositivepasses; actualproducer/ordinary inclusion/prerequisite/cleanup must be observed. Native1 alone never accepted."
+  },
+  "notYetActivated": [
+    "gm-relay-operational-live-preparation",
+    "gm-relay-operational-save-load"
+  ],
+  "held": "UntilRootnamesexactsuccessor, no native. AfterliveFIRSTfreeze/publishRootinspect; save/load1 stillrequiresseparatenamedactivation. Allproduction/test/predicate/helper changes held untilbaselinequalificationandfurtherTDDcoverage. No otherrelaybacklog/CI/ZIP/main/merge/force/issueclose.",
+  "scope": "Exactly8 existingownerfiles for futurecoherenttwo-name reservation/protections, no newproducer/reader/schema/authority/dispatch/batch. Newfocusedguardsandactualhelperpackage1requiredonlybyconcretechangeddependencies."
+}

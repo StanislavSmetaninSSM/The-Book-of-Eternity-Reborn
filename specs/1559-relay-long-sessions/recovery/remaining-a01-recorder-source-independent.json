@@ -1,0 +1,145 @@
+{
+  "kind": "TARGETED_REMAINING_A01_RECORDER_SOURCE_REVIEW",
+  "utc": "2026-10-17T13:52:57.107786+00:00",
+  "reviewedCurrentHead": "1fd2f4803be838bbd82466100f591f6753d2c27d",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "verdict": "ACCEPT_TARGETED_RECORDER_SOURCE_FOR_SEPARATE_ROOT_RELEASED_FIRST_BASELINE_OWNERS",
+  "materialBlockers": [],
+  "reviewedFiles": [
+    {
+      "path": "/tmp/gm1559-g1-operational-baseline-first-run.py",
+      "sha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
+      "bytes": 5731
+    },
+    {
+      "path": "/tmp/gm1559-archive-operational-baseline-owner.py",
+      "sha256": "2b58a5252939d8ba85dfeecf10879b29ef84cf69d62e9efc636f9d53e75debdf",
+      "bytes": 1872
+    },
+    {
+      "path": "/tmp/gm1559-a01-lifecycle-boundary-notes-20261017.md",
+      "sha256": "ab38e0462cf8f2162f260f92053d04b1c170b732a96d597984971d9ca8371a97",
+      "bytes": 6399
+    },
+    {
+      "path": "/tmp/gm1559-g1-engine-rollback-first-run.py",
+      "sha256": "f17fccc488c9e09101289fa631d7e3a7c57a55194d869d2b3a5ce3474b065b0b",
+      "bytes": 5232
+    }
+  ],
+  "controllerDelta": "Fixed two-value category allow-list/adapter/exact method-case mappings; distinct label/kind/scope/per-category exclusive sentinel. Canonical command, source119/DLL9/metadata-only ancestry checks, process/raw recording and native exit propagation inherited unchanged from accepted f17. No loop across owners, retry or automatic RED classification.",
+  "originalPlan": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
+    "sha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da",
+    "record": "/tmp/gm1559-implementation-tools/gm1559-g1-plan-first-d473ed33-20261017t1330z/record.json",
+    "bindings": [
+      {
+        "category": "gm-relay-operational-live-preparation",
+        "descriptor": {
+          "Name": "gm-relay-operational-live-preparation-unit-006",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "gm-relay-operational-live-preparation",
+          "Categories": [
+            "gm-relay-operational-live-preparation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+          "Adapter": "unit",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 5,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+              "Cases": 4
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+              "Cases": 1
+            }
+          ]
+        },
+        "firstSentinel": "/tmp/gm1559-implementation-tools/d473ed332fe7443f93759e44973ba963a790a13b-gm-relay-operational-live-preparation.FIRST.json",
+        "firstSentinelAbsentAtReview": true,
+        "command": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-Category",
+          "gm-relay-operational-live-preparation",
+          "-NoBuild"
+        ]
+      },
+      {
+        "category": "gm-relay-operational-save-load",
+        "descriptor": {
+          "Name": "gm-relay-operational-save-load-integration-007",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "gm-relay-operational-save-load",
+          "Categories": [
+            "gm-relay-operational-save-load"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+              "Cases": 1
+            }
+          ]
+        },
+        "firstSentinel": "/tmp/gm1559-implementation-tools/d473ed332fe7443f93759e44973ba963a790a13b-gm-relay-operational-save-load.FIRST.json",
+        "firstSentinelAbsentAtReview": true,
+        "command": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-Category",
+          "gm-relay-operational-save-load",
+          "-NoBuild"
+        ]
+      }
+    ]
+  },
+  "ownedNamespace": {
+    "prefixChecks": [
+      {
+        "source": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+        "prefix": "boe-live-turn-prep-",
+        "recorderPattern": "boe-live-turn-prep-*"
+      },
+      {
+        "source": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+        "prefix": "boe-save-load-tests-",
+        "recorderPattern": "boe-save-load-tests-*"
+      }
+    ],
+    "pureDraftFourRows": "Actual classifier theory owns no physical fixture root; unrelated real publisher method is not selected, so boe-relay-publication prefix is not required for these owners.",
+    "cleanup": "Actual strict fixture receipts and physical absence remain runtime qualification prerequisites; recorder only records namespaces and does not itself delete roots or classify cleanup."
+  },
+  "archiver": "Reads already-terminal raw/result files and writes exact gzip/hash archive to a new directory; no subprocess invocation, runtime, cleanup/deletion or causal classification.",
+  "scopeBoundary": "Only lifecycle reservation of two exact names with coherent existing T014 protections. No writer/reader/schema/dispatch/batch/journal activation. After affected GREEN and independently reviewed remote checkpoint, handoff T179-Pd.3d; broader relay C01-C06 remain open.",
+  "futurePackageDependency": {
+    "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:136-157",
+    "observation": "Actual genuine package scenario requires and hashes Launcher/GM_Turn_Helper.ps1. If helper bytes change, fresh source/package helper binding plus the exact genuine PackagedProductionWriter1 is affected; no52-document or full-family replay follows solely from this dependency.",
+    "status": "Future concrete SOURCE/selection gate, not reviewed implementation or permission."
+  },
+  "conditions": [
+    "Root persists exact scripts and decision, verifies clean metadata successor and immediate recovery, then gives each owner a separate named activation.",
+    "No inferred permission to run the second owner from completion of the first; inspect/freeze every FIRST outcome and stop on unexpected prerequisite/platform/underfill/timeout/cleanup.",
+    "Keep ordinary/suffix-positive controls and original final oracles. No capture/RED/GREEN is claimed by this source review.",
+    "No native/build/test/producer or repository mutation was performed."
+  ],
+  "acceptedPriorReports": [
+    "/tmp/gm1559-g1-concrete-source-independent-20261017.json",
+    "/tmp/gm1559-first-engine2-evidence-independent-20261017.json"
+  ]
+}
