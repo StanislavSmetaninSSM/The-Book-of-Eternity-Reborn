@@ -1,5 +1,11 @@
 # Tasks: GM Documentation Modularization
 
+## A-E04 affected SOURCE accepted — corrected orphan1 held (2026-10-17)
+
+[Exact independent SOURCE verdict](recovery/current-A-orphan-source-independent-review-20261017.md), MD`35996b0b…`/JSON`72098f63…`, accepts compiledc385/preparationc09fa: two bounded post-signal call sites and unchanged identity observer, direct-child waits, deadlines, producer, driver and assertions. The original genuine/negative no-signal and prestart no-launch paths retain all254qualifiedPASS with exact provenance. [Complete preparation recovery](recovery/current-orphan-preparation-complete-delta-recovery-c09fa06b-20261017.json) covers24GitHubfiles/all20paths. SevenfreshDLLs/package244/all36docs and observed15categories/17descriptors/167methods/255cases remain unchanged; no new execution.
+
+After this metadata-only decision is pushed/read back/recovered, root separately releases only existing singleton `gm-doc-afterlife-owned-orphan`1 with canonical NoBuild/freshc385catalog. Preserve first corrected outcome; stop at any unexpected result, no retry or retained254 replay. Original controlled orphanFAIL269history/10FAIL/14superseded and separate later housekeeping remain distinct; correctedGREEN/finalwholeA EVIDENCE stillpending. No Block5/provider/gameplay/Windows/CI or broader completion.
+
 ## A-E04 fresh preparation frozen — orphan SOURCE pending (2026-10-17)
 
 [Complete source recovery](recovery/current-orphan-fix-complete-delta-recovery-c385a875-20261017.json) binds `c385a875e39a8a13c4e5738b136aa6bcdd377e37`,13GitHubfiles/all9changedpaths. [Fresh first preparation](recovery/current-A-orphan-fix-fresh-preparation-20261017.json) freezes12raw chains: BOTH/catalog native0 **89.09632147899902s**,800categories/11773methods/no stale/unmapped, **0tests**. ExactSelectionFilePlanOnly native0 **5.7385299039997335s**, observed **15categories/17descriptors/167unique methods/255cases**, exact prior method/case tuples preserved and singleton orphan1 separately owned. [Inspection](recovery/current-A-orphan-fix-preparation-writer-inspection-20261017.json) binds sevenstablefreshDLLs, unchanged observer/Clock/directchild waits/product/assertion/driver bytes and package244files/45038544bytes/all36source-package docs. Fullplan contains the exact affected singleton descriptor; no extra test execution.
