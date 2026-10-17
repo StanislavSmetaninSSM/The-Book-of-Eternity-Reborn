@@ -1,0 +1,101 @@
+{
+  "review": "Independent coherent #1557 A SOURCE/FIXTURE/SELECTION",
+  "source": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+  "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "prepFailureCarrier": "aadd4222b1fe1ad86a09965d20b8e117a84d7b62",
+  "verdict": "SOURCE_NOT_READY",
+  "findings": [
+    {
+      "id": "A-S01",
+      "severity": "material",
+      "path": "OtherGuides/Afterlife_Wound_Continuation.md:4; C/E/P/G topic prerequisite headers; CLI_Rules_Index.md",
+      "scenario": "Restricted frontier/repair transitive dependency closure",
+      "consequence": "Excluded lifecycle reading reintroduced through unconditional prerequisites"
+    },
+    {
+      "id": "A-S02",
+      "severity": "material",
+      "path": "OtherGuides/Afterlife_Scheduler.md:3; OtherGuides/Afterlife_Guardian_Contracts.md:3; router and paired example headers",
+      "scenario": "Resident/Shining/Chaos/catchup debt or Guardian non-trade contract without illustrative trigger",
+      "consequence": "Applicable owned policy body omitted or wrong dependencies selected"
+    },
+    {
+      "id": "A-S03",
+      "severity": "material",
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.GmDocumentation.cs:22; Effects_Resources named sections",
+      "scenario": "Two historical overlapping named parser spans split across five module owners",
+      "consequence": "135 ordered input occurrences become71; expected counts fail despite byte preservation"
+    },
+    {
+      "id": "A-S04",
+      "severity": "material fixture cleanup",
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:55; finally exitConfirmed/root cleanup",
+      "scenario": "File.Copy fails after owned roots created but before Process.Start",
+      "consequence": "No-start setup cannot satisfy semantic orphan/identity/pipe-success gate; owned roots retained unnecessarily"
+    },
+    {
+      "id": "A-P01",
+      "severity": "blocking preparation",
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:152",
+      "scenario": "First fresh compilation",
+      "consequence": "CS0136 local original shadows outer Identity original; native1/0tests, no fresh BOTH or PlanOnly premise"
+    }
+  ],
+  "confirmed": {
+    "payloadBlocks": 137,
+    "sourceFiles": 3,
+    "destinations": 24,
+    "declaredEdits": 24,
+    "exactExternalEntryFiles": 6,
+    "sourceSnippetRecords": 188,
+    "flatExampleSnippets": 187,
+    "manifestOnlyRecordedLocatorChanges": 80,
+    "newerWoundRowsPreserved": 2,
+    "standardRelativeHrefTargetsPresent": 218,
+    "selectionDescriptors": 10,
+    "distinctSelectedMethods": 160,
+    "proposedNotObservedCases": 216,
+    "namedOriginalInputs": 135,
+    "namedCurrentInputs": 71,
+    "sourceDeltaFiles": 61,
+    "sourceDeltaChangedPaths": 57,
+    "preparationDeltaFiles": 13,
+    "preparationDeltaChangedPaths": 9,
+    "newPreparationRawChains": 4
+  },
+  "prep": {
+    "nativeExit": 1,
+    "wrapperSeconds": 49.419344928999635,
+    "executedTests": 0,
+    "catalogAudit": null,
+    "planOnlyRan": false,
+    "runnerCleanup": true
+  },
+  "withdrawnOrNotConfirmed": [
+    "Directory setup outside try: false at exactb592, actual A-S04 concerns conditional finally cleanup",
+    "Dedicated receipt-only worker regression: no actual call path established",
+    "Long old-router navigation labels alone are not a duplicate full-authority defect"
+  ],
+  "runtimeByReviewer": false,
+  "repositoryWritesByReviewer": false,
+  "historicalRawOrFullBaseRepeated": false,
+  "gate": "Hold actuals; one coherent correction + successful fresh BOTH/catalog/exactPlanOnly + affected independent review",
+  "report": {
+    "path": "/tmp/gm1557-A-source-independent-review-20261017.md",
+    "sha256": "83c4aee60acb975cfaef5eacb6bd8e895c9979fe2704850fc8967a719a342023"
+  },
+  "supporting": [
+    {
+      "path": "/tmp/gm1557-b592-independent-static-results.json",
+      "sha256": "5c06cfd106409a779947cfb24dc588454161023d092bd3ef53e06b65741e76e2"
+    },
+    {
+      "path": "/tmp/gm1557-b592-independent-static-check.py",
+      "sha256": "6c3de4eadf123e8f88c0560fd42014fe148f2717fdc6d5e7c072af9569bfb66c"
+    },
+    {
+      "path": "/tmp/gm1557-b592-named-span-finding-details.json",
+      "sha256": "b490f58cff9de9e4e67fe31e58068bc17a9e3bbf9e3c08337958402c43901e4d"
+    }
+  ]
+}

@@ -4452,11 +4452,7 @@ public sealed partial class ExampleDocumentationValidationTests
         string file,
         string contractId)
     {
-        var path = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "Examples",
-            file);
-        var source = File.ReadAllText(path);
+        var source = GmDocumentationNamedSectionSource.Read(TestRepoPaths.RepoRoot, file, contractId);
         var heading = $"### {contractId}";
         var alternateHeading = $"## {contractId}";
         var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
@@ -4678,8 +4674,7 @@ public sealed partial class ExampleDocumentationValidationTests
         string file,
         string contractId)
     {
-        var path = Path.Combine(TestRepoPaths.RepoRoot, "Examples", file);
-        var source = File.ReadAllText(path);
+        var source = GmDocumentationNamedSectionSource.Read(TestRepoPaths.RepoRoot, file, contractId);
         var heading = $"### {contractId}";
         var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
         if (headingIndex < 0)

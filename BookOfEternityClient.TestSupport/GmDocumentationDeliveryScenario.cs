@@ -149,12 +149,12 @@ internal static partial class GmDocumentationDeliveryScenario
             {
                 const string relative = "OtherGuides/GM_Common_Core.md";
                 var physical = Path.Combine(package, "operational-resources", relative);
-                var original = File.ReadAllBytes(physical);
-                if (!original.SequenceEqual(File.ReadAllBytes(Path.Combine(repo, relative))))
+                var sourceBeforeFault = File.ReadAllBytes(physical);
+                if (!sourceBeforeFault.SequenceEqual(File.ReadAllBytes(Path.Combine(repo, relative))))
                     throw new InvalidDataException("delivery.physical_source_fault_seed_mismatch");
                 File.Delete(physical);
                 evidence["physicalFault"] = new JsonObject { ["kind"] = physicalFault, ["relativePath"] = relative,
-                    ["physicalPath"] = physical, ["beforeSha256"] = Hash(original), ["presentBefore"] = true,
+                    ["physicalPath"] = physical, ["beforeSha256"] = Hash(sourceBeforeFault), ["presentBefore"] = true,
                     ["presentAfter"] = File.Exists(physical), ["phase"] = "before unchanged real producer" };
             }
             if (publish && (sourceMutation is not null || sourceSeedMutation is not null)) throw new InvalidDataException("Only nonexecuting AST fixtures may mutate source.");

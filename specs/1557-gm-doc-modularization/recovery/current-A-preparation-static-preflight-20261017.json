@@ -1,150 +1,150 @@
 {
   "kind": "CURRENT_A_PREPARATION_STATIC_PREFLIGHT_NOT_COMPILE_OR_RUNTIME_ACCEPTANCE",
-  "createdUtc": "2026-10-17T03:49:47.077561+00:00",
-  "retainedPayloadProof": "reuse independent root f55 static proof; all137 blocks/188snippets/80semanticrows remain byte-identical; only inventoried24prefix bytes change",
+  "createdUtc": "2026-10-17T04:08:15.181773+00:00",
+  "retainedPayloadProof": "reuse independent root b592/f55 byte proofs; all137 blocks/188snippets/80semanticrows remain byte-identical; only21inventoriedprefixes change in this correction",
   "wrapperOnlyChanges": [
     {
       "path": "OtherGuides/GM_Common_Core.md",
-      "oldPrefixSha256": "170d03ff65a7655433a5646c4ca768cd485744c219bfbb325c57463eecf0f77a",
+      "oldPrefixSha256": "f7ef4707849fbb63655d48ecebabf92bf82a535fa03e8f766fa6a912c0f4ad6a",
       "newPrefixSha256": "f7ef4707849fbb63655d48ecebabf92bf82a535fa03e8f766fa6a912c0f4ad6a",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Effects_Resources.md",
-      "oldPrefixSha256": "4662b2b88aaa7a8fc5674c5f70ca890038e56fc0634234eca81d139aaae85333",
-      "newPrefixSha256": "f789a2f02f211a0d1a12cfd6876cae14eea8dc2e855449f487505cc13392340e",
+      "oldPrefixSha256": "f789a2f02f211a0d1a12cfd6876cae14eea8dc2e855449f487505cc13392340e",
+      "newPrefixSha256": "f04c0a3697b40add4f0591e8252a422452a170ec51ff36ae80f584839aa098ba",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Wound_Continuation.md",
-      "oldPrefixSha256": "79e4ecb7fe74f5adbc47d1f8f90aea9771cabe2b6c8fabdf6f967cc61cab3de6",
-      "newPrefixSha256": "4af8a54a0f57ffd63416f52fdbf1f2d5a6480f98cbf06fac87894eac03b6b48f",
+      "oldPrefixSha256": "4af8a54a0f57ffd63416f52fdbf1f2d5a6480f98cbf06fac87894eac03b6b48f",
+      "newPrefixSha256": "cc3e4075681995b6afc9c9af6e69f258b7f9e7186609457ecc2dda05db298f4d",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Actor_Profiles.md",
-      "oldPrefixSha256": "31c3bcbdbc4f8769b4425ffbca034f2e4e95addedb242de23c98cf747104dba7",
-      "newPrefixSha256": "31680f854d913b627230083b0c50809b44eb06058d0020e64b86041f07a9eb23",
+      "oldPrefixSha256": "31680f854d913b627230083b0c50809b44eb06058d0020e64b86041f07a9eb23",
+      "newPrefixSha256": "bff69da2f3370e9e162c2206a5f4941d1508555436bf034df4585c7a140d53f8",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Lifecycle.md",
-      "oldPrefixSha256": "ed16ccc4c8eadeaf74610f0a664ace6355b391cb2a377aebcac1b0e1f5ff44b8",
-      "newPrefixSha256": "1bd4b9c100f9c2adc121b0259b6ffffcd50ba1846e7ef5a953481b10a73c4637",
+      "oldPrefixSha256": "1bd4b9c100f9c2adc121b0259b6ffffcd50ba1846e7ef5a953481b10a73c4637",
+      "newPrefixSha256": "e2760f7c0c8f6a0966a5754aa38dc2921a952c921dda1021d5813c1688cc66c6",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Scheduler.md",
-      "oldPrefixSha256": "a0461429e8df4d77453c31630705be3696bb96695b1742c78d246ff323294d97",
-      "newPrefixSha256": "2c15bb75f81d4fe6e2e15221c9cc5a2dbd4d3b9ec7462331be4f03730f815164",
+      "oldPrefixSha256": "2c15bb75f81d4fe6e2e15221c9cc5a2dbd4d3b9ec7462331be4f03730f815164",
+      "newPrefixSha256": "5db8766e0b9a2fc9d834483c492e818db2a72d445cb2711fd6c3301d4feb77a5",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Spiritual_Conflict.md",
-      "oldPrefixSha256": "88b6fd16a0685e5b32741e32dff90a7a9ffd2d3c2fc3c5449452d27291b04da4",
-      "newPrefixSha256": "c3ccb7e57e1aff9dd8977fc6acff3cc1fa198ae7be52fba48a6e241e93642e46",
+      "oldPrefixSha256": "c3ccb7e57e1aff9dd8977fc6acff3cc1fa198ae7be52fba48a6e241e93642e46",
+      "newPrefixSha256": "a82196d13894f756d392f51d4a44ef3a650ae2bb4acb6b8dfe8a2e38a814dd32",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Story_Memory.md",
-      "oldPrefixSha256": "10234f55b9d89111a48e00c2c04c2320fe71456e43aef7fa179fae3549541658",
-      "newPrefixSha256": "e5f0aa5bf4f3bfacb9acf9e880b50827192f9bcb945f0f34a92d383f83b13384",
+      "oldPrefixSha256": "e5f0aa5bf4f3bfacb9acf9e880b50827192f9bcb945f0f34a92d383f83b13384",
+      "newPrefixSha256": "a3f4b27db153b7c83d565099bbc99f64c612a21b09572d73a54062dab0ad5b9a",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Guardian_Contracts.md",
-      "oldPrefixSha256": "73c6c5d801c31ac6de3f5813305e5d1e9b3aff243cdaa122a630d54847edab1e",
-      "newPrefixSha256": "2115abd00e3c5bed286d1ba4eece2b95a04ad0905a216753fdd998441cf2dbaa",
+      "oldPrefixSha256": "2115abd00e3c5bed286d1ba4eece2b95a04ad0905a216753fdd998441cf2dbaa",
+      "newPrefixSha256": "0251e2f14f7b18f8110d653121ef75b4b835cbbfbc25aa5f6bfd9131ed1874a5",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Abodes_Residents.md",
-      "oldPrefixSha256": "05842660c0a7bbef64803d5c7fcc50745230fa705737591d7642e568795b7285",
-      "newPrefixSha256": "13393730e89ee169d79eb2a9be7cece3faa11750cd6939e629fc001d28fb6d67",
+      "oldPrefixSha256": "13393730e89ee169d79eb2a9be7cece3faa11750cd6939e629fc001d28fb6d67",
+      "newPrefixSha256": "e81243a755b8ec1d7602e2120873da7d18b1bad47864873f6d28337e7a94ccb9",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Shining_Actions.md",
-      "oldPrefixSha256": "cc6e74751f29e7a67da6002d2af6a58b1679a970f3313bf9f256b202d8b4a4a9",
-      "newPrefixSha256": "25ce3b911df5d05f7f6e4ef381be280b4c4f7c54abc556a7cec31b1831bed26d",
+      "oldPrefixSha256": "25ce3b911df5d05f7f6e4ef381be280b4c4f7c54abc556a7cec31b1831bed26d",
+      "newPrefixSha256": "0f7467d9c80a1d6f7659068f494954db29dab0b15c416c9d1e105971994f0ffb",
       "payloadTailUnchanged": true
     },
     {
       "path": "OtherGuides/Afterlife_Contract_Matrix.md",
-      "oldPrefixSha256": "221541e88e0332a540dc9c24c1560dddd0e2af1dc0d7c885e7924213413a7f0f",
+      "oldPrefixSha256": "0aa07a40885428f6800e4b978b217a7263e36057b55e0174be996497a9a5b777",
       "newPrefixSha256": "0aa07a40885428f6800e4b978b217a7263e36057b55e0174be996497a9a5b777",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Turns.txt",
-      "oldPrefixSha256": "ebcb00d7270637eb417d6e7f173301f25f4f1460cc87af77911c792941170e9a",
+      "oldPrefixSha256": "ac615be3a74ac86e07e39d62aa195d0c9196dd616f215656f691fed612a5d9a5",
       "newPrefixSha256": "ac615be3a74ac86e07e39d62aa195d0c9196dd616f215656f691fed612a5d9a5",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
-      "oldPrefixSha256": "f2685acd8548d70cb656e26ce196469d7ff114582c3f9c968703c880e237afb0",
-      "newPrefixSha256": "40e73fe1129a34349742d086b95a8af7cb4ff1ebb0fca64fbef42032efc48f36",
+      "oldPrefixSha256": "40e73fe1129a34349742d086b95a8af7cb4ff1ebb0fca64fbef42032efc48f36",
+      "newPrefixSha256": "f8588b75e0998fd12b3132cd7fe24c7458e6751b49bff7565a848cccdf9ad24f",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
-      "oldPrefixSha256": "5ddd91cc8e5d761de50506d7c383eab6d1afec5cb28a782aa9c2fc66762219d0",
-      "newPrefixSha256": "55d87aadd537dfb1a4336afcb935d1fd7b1d10d135edbda5d14c9aaeea9c52b4",
+      "oldPrefixSha256": "55d87aadd537dfb1a4336afcb935d1fd7b1d10d135edbda5d14c9aaeea9c52b4",
+      "newPrefixSha256": "162b25c1be582516b549fe0c448404ee5413ea8038b0ba7fe17e11e7d57bd1d7",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
-      "oldPrefixSha256": "2c1ee39eb1672ab389d75240ba861f715fa738ef6f93afcb5318b2ffbe1c6d9e",
-      "newPrefixSha256": "1347fefdcfe4d2681ae12107c05d94e53063df84874036bb77993f9c0866d04a",
+      "oldPrefixSha256": "1347fefdcfe4d2681ae12107c05d94e53063df84874036bb77993f9c0866d04a",
+      "newPrefixSha256": "a810fff93a17a8ac0a7b9c17d19b77494ec192cc72a26174167822bbd4b32354",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Scheduler.txt",
-      "oldPrefixSha256": "0b8367ba03b7d702a237afcf299370e7eb1a9108a307fba45f1aa6734ed460ae",
-      "newPrefixSha256": "935ae3f7983bbe88242f416e69406efb56fa2bd7edbe99f9e48009d2491714d3",
+      "oldPrefixSha256": "935ae3f7983bbe88242f416e69406efb56fa2bd7edbe99f9e48009d2491714d3",
+      "newPrefixSha256": "d01a85d41a409a37e929250ad476881b58943dad000928b23e4fe3f0ee84c49e",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
-      "oldPrefixSha256": "189a616f5e27a7e33ef998cc8d3642caaeb90de1608489b1da2374773352cae5",
-      "newPrefixSha256": "1aaa4adfca7bd16d6cc8e786fde3d0e0851757a06e307003a984e0df2e4066fa",
+      "oldPrefixSha256": "1aaa4adfca7bd16d6cc8e786fde3d0e0851757a06e307003a984e0df2e4066fa",
+      "newPrefixSha256": "11675414ba78f25b545d46fb4f5e3b3a3f28d83fd1aa51cd89b421d2e8844999",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Lifecycle.txt",
-      "oldPrefixSha256": "c32062f86d64733c863a6da24ac82ffe3739f8ae3d29e9b886ef2d3f97624fe2",
-      "newPrefixSha256": "44e9d601d1f8ba586191c015334b09987a428cc82ba184162d26952344c519cf",
+      "oldPrefixSha256": "44e9d601d1f8ba586191c015334b09987a428cc82ba184162d26952344c519cf",
+      "newPrefixSha256": "040106a3629e990748b85d2f5dde2f74eb9103590f043cae2e833a9067132ebd",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
-      "oldPrefixSha256": "9c59c0517c232aadccb82fad11d99d4e0cb90785768c2aabd7ffac5addb4ea75",
-      "newPrefixSha256": "5587bd1e116e0cb744bd4a2303808830f81279f3405491508b72802f8acc02e8",
+      "oldPrefixSha256": "5587bd1e116e0cb744bd4a2303808830f81279f3405491508b72802f8acc02e8",
+      "newPrefixSha256": "26f6dd6c15facac8f16f71ff311c588e9746c5eaa78796fa4b4f854fe8c44c65",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
-      "oldPrefixSha256": "a47403cf5cc6fd22cfceba8fa60d7604cb9b4781356bba89a1305db9ca50f71c",
-      "newPrefixSha256": "ecb63d09237e8395f19fd427a2f321b571ec02c31aa6fd2b6639015b3fa24df3",
+      "oldPrefixSha256": "ecb63d09237e8395f19fd427a2f321b571ec02c31aa6fd2b6639015b3fa24df3",
+      "newPrefixSha256": "a3c499083502c3a4454f3690ba50dff1985a9f62b0a8d37dcfa294dc045c9db1",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
-      "oldPrefixSha256": "cc3e10d936fc03405659c01b1c0576365ddcb39d1cb13433769069ecf3711a6a",
-      "newPrefixSha256": "92ad8ee1bdfb0eaeea5d44e8c2b7b5332d68379a3ce9d059d1462def8dc8bd00",
+      "oldPrefixSha256": "92ad8ee1bdfb0eaeea5d44e8c2b7b5332d68379a3ce9d059d1462def8dc8bd00",
+      "newPrefixSha256": "12e956807eb8c75cebf69ae523a4c63ed297d42f3648438811568ef652e3a91a",
       "payloadTailUnchanged": true
     },
     {
       "path": "Examples/E_CLI_Afterlife_Story_Memory.txt",
-      "oldPrefixSha256": "40c1b03fbc6d3faa5eda0317c4862e44712b6d87d8de05e27bc706274ad7ba8d",
-      "newPrefixSha256": "21ecb49bf146abad25b3495e5112af92c02d64bce5986da0f08ab793e2c1a403",
+      "oldPrefixSha256": "21ecb49bf146abad25b3495e5112af92c02d64bce5986da0f08ab793e2c1a403",
+      "newPrefixSha256": "e1b5510a34678a49ba513efd201418699dc65d06051e42455e5413e8ae504a3c",
       "payloadTailUnchanged": true
     },
     {
       "path": "CLI_Rules_Index.md",
       "oldPrefixSha256": "6bef728c4ad56b16d43fc02c3824e77cb8ae03754d0aabe77ab4e2dc49503dfb",
-      "newPrefixSha256": "6bef728c4ad56b16d43fc02c3824e77cb8ae03754d0aabe77ab4e2dc49503dfb",
+      "newPrefixSha256": "b56cebde9acd5d25b2141c77be87dd3a15bc8b76df268a321ff5bb6c7b00f4b4",
       "payloadTailUnchanged": true
     }
   ],
@@ -181,10 +181,10 @@
     }
   ],
   "allNavigationEdits": 24,
-  "standardFileRelativeResolvedLinks": 218,
+  "standardFileRelativeResolvedLinks": 262,
   "categories": 795,
-  "exactSelectedMethods": 160,
-  "proposedCases": 216,
+  "exactSelectedMethods": 165,
+  "proposedCases": 253,
   "selection": [
     {
       "category": "gm-doc-afterlife-preservation",
@@ -193,8 +193,8 @@
     },
     {
       "category": "gm-doc-afterlife-reading",
-      "methods": 5,
-      "proposedCases": 28
+      "methods": 8,
+      "proposedCases": 60
     },
     {
       "category": "gm-doc-afterlife-delivery-source-guards",
@@ -218,8 +218,8 @@
     },
     {
       "category": "gm-doc-afterlife-named-consumers",
-      "methods": 1,
-      "proposedCases": 1
+      "methods": 2,
+      "proposedCases": 5
     },
     {
       "category": "gm-doc-afterlife-repair-consumers",
@@ -233,12 +233,28 @@
     },
     {
       "category": "gm-doc-afterlife-owned-lifetime",
-      "methods": 1,
-      "proposedCases": 1
+      "methods": 2,
+      "proposedCases": 2
     }
   ],
-  "sourceChanges": "read availability/instructions/TemplateRefs only; A1/A2 leaves/ordinary owner/Late2/gameplay writers unchanged; no successful source42 path reaches changed repair-error metadata branches",
-  "bindingPreflight": "new partial classes/namespaces/implicit imports/JsonNode+Process APIs/worker Permissions.ProposalOnly/factory return signatures/9 existing Task methods/CleanupOwnedFixture/IConsole contracts checked against actual declarations; no new console implementations",
+  "sourceChanges": "A-S01..04+A-P01 coherent correction: same-scope complete operational headers, two pinned clipped test-only source views, physical-exit/no-start cleanup distinction and compile local rename; production difference in current correction is restricted worker reading wording only; A1/A2/TurnLifecycle/gameplay writers unchanged",
+  "bindingPreflight": "all new and corrected partial classes/imports/JsonNode+Process+Task APIs/VerifiedSection record with-expression/List.Reverse/helper visibility/worker Permissions.ProposalOnly/factory9existingTask methods/CleanupOwnedFixture checked against actual declarations; physical byte local shadow renamed; no new console interfaces",
   "status": "WIP UNCOMPILED/UNRUN; fresh BOTH/catalog and PlanOnly0 next; independent affected SOURCE before actual",
-  "remaining": "fresh build/discovery/package/protected-source and independent SOURCE/FIXTURE/SELECTION, all first current actuals and independent EVIDENCE/A acceptance"
+  "remaining": "fresh build/discovery/package/protected-source and independent SOURCE/FIXTURE/SELECTION, all first current actuals and independent EVIDENCE/A acceptance",
+  "correctedHeaderStaticChecks": {
+    "completeOwnedTriggerControls": 21,
+    "actualRuleAndExampleScopeClosures": 18,
+    "conditionalScopePreserved": true,
+    "unchangedExistingParserAlgorithms": true
+  },
+  "namedViews": {
+    "planSha256": "b490f58cff9de9e4e67fe31e58068bc17a9e3bbf9e3c08337958402c43901e4d",
+    "clippedViews": [
+      "afterlife_effect_conditions_five_kinds_v1",
+      "afterlife_effect_conditions_projection_v1"
+    ],
+    "original23sections135orderedInputsExact": true,
+    "goldenFixtureUnchanged": true,
+    "missingAndReorderedSegmentsRejectedStatically": true
+  }
 }

@@ -27,4 +27,25 @@ public sealed partial class ExampleDocumentationValidationTests
                 Assert.True(JsonNode.DeepEquals(JsonNode.Parse(expected[i]), actual[i]), contract + ":" + i);
         }
     }
+    [Theory]
+    [InlineData("afterlife_effect_conditions_five_kinds_v1", "missing")]
+    [InlineData("afterlife_effect_conditions_five_kinds_v1", "reordered")]
+    [InlineData("afterlife_effect_conditions_projection_v1", "missing")]
+    [InlineData("afterlife_effect_conditions_projection_v1", "reordered")]
+    public void CrossOwnerNamedViewsRefuseMissingOrReorderedActualSegments(string contract, string mutation)
+    {
+        var section = GmDocumentationNamedSectionSource.Retrieve(TestRepoPaths.RepoRoot,
+            "E_CLI_Afterlife_Effects_Resources.txt", contract);
+        Assert.Equal(5, section.Segments.Count);
+        var complete = GmDocumentationNamedSectionSource.Assemble(section);
+        Assert.StartsWith("##" + (contract.Contains("projection", StringComparison.Ordinal) ? "# " : " ") + contract,
+            complete, StringComparison.Ordinal);
+        var pieces = section.Segments.ToList();
+        if (mutation == "missing") pieces.RemoveAt(2);
+        else pieces.Reverse();
+        var error = Assert.Throws<InvalidDataException>(() =>
+            GmDocumentationNamedSectionSource.Assemble(section with { Segments = pieces }));
+        Assert.StartsWith("named.section_order_or_bytes:" + contract, error.Message, StringComparison.Ordinal);
+    }
+
 }

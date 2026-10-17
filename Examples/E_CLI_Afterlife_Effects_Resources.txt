@@ -1,8 +1,20 @@
 # E_CLI_Afterlife_Effects_Resources.txt
 
-Read when: Current ordinary bounded resource/effect safe packet. Follow only the current dispatch/contract; No resource/effect work; not dedicated receipt-only does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](../OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](../OtherGuides/Afterlife_Lifecycle.md).
-Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Read when: Current safe bounded effect/resource packet, actual `effectChanges`/resource definition/capacity/mutation authoring, active conflict costs/effects, or same-turn resource materialization.
+Prerequisites: Existing shared Effect contract/examples; Mortal resource example only when explicitly needed by the already-approved cross-realm resource contract. E alone does not imply C or W. A dedicated QTE receipt-only dispatch uses its narrow packet branch below, **not** this entire ordinary module.
+Keep the actual dispatch scope before every dependency step. Ordinary lifecycle classification applies only to ordinary afterlife work; it is not a frontier or repair overlay. Read only [common-core paragraphs](../OtherGuides/GM_Common_Core.md) applicable to that current dispatch. Frontier core is correlation/terminal only; repair remains inside its exact permitted-read packet; bootstrap and dedicated receipt-only read no topic/core bodies.
+The frontier row applies only to the existing issued spiritual-conflict source; another issued source uses only its own explicitly supplied prerequisites. The following edges apply only when this topic is already selected in that same scope. Other dependencies above are conditional on their stated actual mutation/contour; they never activate every owner or change dispatch mode. Repair adds only sections explicitly permitted by its current packet.
+
+| Reading scope | Required topic edges |
+|---|---|
+| ordinary | L |
+| frontier | - |
+| repair | - |
+| bootstrap | - |
+| receipt_only | - |
+
+Conditional prerequisite lookup (availability only; links add no automatic reading edges): [Afterlife_Lifecycle.md](../OtherGuides/Afterlife_Lifecycle.md).
+Author here: only the existing owner-scoped response fields, canonical state and receipts defined in the complete original bodies below; this navigation grants no new authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
 Worked examples: [E_CLI_Afterlife_Effects_Resources.txt](E_CLI_Afterlife_Effects_Resources.txt); paired rules: [Afterlife_Effects_Resources.md](../OtherGuides/Afterlife_Effects_Resources.md). Whole original examples/negative labels remain below.
 

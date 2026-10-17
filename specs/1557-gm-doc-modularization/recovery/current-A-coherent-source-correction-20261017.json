@@ -1,0 +1,144 @@
+{
+  "kind": "COHERENT_CORRECTION_SOURCE_NOT_RUNTIME_ACCEPTANCE",
+  "findings": [
+    "A-S01",
+    "A-S02",
+    "A-S03",
+    "A-S04",
+    "A-P01"
+  ],
+  "headerChanges": [
+    {
+      "path": "OtherGuides/Afterlife_Lifecycle.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Scheduler.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Scheduler.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Abodes_Residents.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Shining_Actions.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Effects_Resources.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Actor_Profiles.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Story_Memory.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "kind": "inventoried wrapper only; payload tail unchanged",
+      "sourceAuthority": "accepted delivery-routing-disposition-supplement.md section2 complete topic activation and scope-first conditional closure"
+    }
+  ],
+  "namedViews": "Only2exactbaselineclippedspans fromindependentb490 inventory/5actualownedsegments; pinned23sections135orderedinputs unchanged; both original extraction algorithms unchanged after source retrieval",
+  "activationAuthority": "approved delivery-routing-disposition-supplement.md section2, not27finiteillustration seeds",
+  "status": "COHERENT_WIP_NOT_ACCEPTED; fresh changed-source BOTH/catalog/PlanOnly0 then affected independent SOURCE/FIXTURE/SELECTION; all actuals HELD",
+  "correctedAtUtc": "2026-10-17T04:08:46.478828+00:00",
+  "independentFindingPair": {
+    "md": "83c4aee60acb975cfaef5eacb6bd8e895c9979fe2704850fc8967a719a342023",
+    "json": "3ec72d462532dec576fe69441615d3d0cb6c089c240f008ea60b694262017db9",
+    "verdict": "SOURCE_NOT_READY retained; proposed fixes not yet independently accepted"
+  },
+  "compileFailure": "A-P01 byte local renamed only; firstnativeFAIL0tests remains immutable",
+  "lifetimeCorrection": "A-S04 launchAttempted/no-start vs exact-owned-terminal authority; semantic orphan/EOF qualification independent, pre-Start actual File.Copy fault2roots/no invented pipes. Initial helper parent mismatch stays sticky before signal authority. Unknown identities/attempted-unproved starts retain roots; no new process framework.",
+  "proposedSelection": {
+    "descriptors": 10,
+    "methods": 165,
+    "cases": 253,
+    "preservation": 18,
+    "reading": 60,
+    "deliverySourceAndLinks": 15,
+    "realWriter": 1,
+    "currentBodies": 122,
+    "currentConsumers": 19,
+    "namedConsumers": 5,
+    "realRepairConsumers": 9,
+    "physicalNegatives": 2,
+    "adapterLifetime": 2
+  },
+  "retainedProof": "all137payload blocks/188snippet records/80manifest semantic records unchanged;23namedsections135orderedinputs and expectedfixtureSHA92dcf515fe28f2c5293cac321878d33357011dcb6d16c956dd711d167f3602d5unchanged"
+}

@@ -1,0 +1,119 @@
+{
+  "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "carrier": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+  "sourceSha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+  "rows": [
+    {
+      "contractId": "afterlife_effect_conditions_five_kinds_v1",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sourceStart": 429991,
+      "sourceEnd": 618734,
+      "startLine": 7938,
+      "endLineExclusive": 11582,
+      "sha256": "d778273d8e9c686a39170e45f5a26261a81ecf3df5d432fe26c8da86e3c12814",
+      "segments": [
+        {
+          "block": "A127",
+          "owner": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+          "sourceStart": 429991,
+          "sourceEnd": 472257,
+          "withinBlockStart": 10338,
+          "withinBlockEnd": 52604,
+          "sha256": "cb8f43f33f64366a5e1a31c91de624b57e28a1f9f134eeb09d9355e6f2651b54"
+        },
+        {
+          "block": "A128",
+          "owner": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+          "sourceStart": 472257,
+          "sourceEnd": 482082,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 9825,
+          "sha256": "b9be2a3db4046a01e157cdf4d1972e00d9b9a42615f45758bb32f51e92d4ac00"
+        },
+        {
+          "block": "A129",
+          "owner": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+          "sourceStart": 482082,
+          "sourceEnd": 540696,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 58614,
+          "sha256": "0af3ff4e905497bbd75e0ea243d863e405fd6977abb780a97645e3f2beb11cfa"
+        },
+        {
+          "block": "A130",
+          "owner": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+          "sourceStart": 540696,
+          "sourceEnd": 617293,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 76597,
+          "sha256": "33ef7707d54ec126a86669658f7a7166a7205bcce27670673f173b0f85f77092"
+        },
+        {
+          "block": "A131",
+          "owner": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+          "sourceStart": 617293,
+          "sourceEnd": 618734,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 1441,
+          "sha256": "22a2dc58170d904a8d87c39c9608a632576cff24058d13d065ffc44bebda9667"
+        }
+      ]
+    },
+    {
+      "contractId": "afterlife_effect_conditions_projection_v1",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sourceStart": 445340,
+      "sourceEnd": 618734,
+      "startLine": 8406,
+      "endLineExclusive": 11582,
+      "sha256": "ee44b1e176b58d3fa1817b3d73d105147f7b661f61ff5ff83f646a6adfe6bfd7",
+      "segments": [
+        {
+          "block": "A127",
+          "owner": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+          "sourceStart": 445340,
+          "sourceEnd": 472257,
+          "withinBlockStart": 25687,
+          "withinBlockEnd": 52604,
+          "sha256": "353255e5d88a9cf94f26fc900b91c39e289858208cd16f7be2602887c30b0a3c"
+        },
+        {
+          "block": "A128",
+          "owner": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+          "sourceStart": 472257,
+          "sourceEnd": 482082,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 9825,
+          "sha256": "b9be2a3db4046a01e157cdf4d1972e00d9b9a42615f45758bb32f51e92d4ac00"
+        },
+        {
+          "block": "A129",
+          "owner": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+          "sourceStart": 482082,
+          "sourceEnd": 540696,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 58614,
+          "sha256": "0af3ff4e905497bbd75e0ea243d863e405fd6977abb780a97645e3f2beb11cfa"
+        },
+        {
+          "block": "A130",
+          "owner": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+          "sourceStart": 540696,
+          "sourceEnd": 617293,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 76597,
+          "sha256": "33ef7707d54ec126a86669658f7a7166a7205bcce27670673f173b0f85f77092"
+        },
+        {
+          "block": "A131",
+          "owner": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+          "sourceStart": 617293,
+          "sourceEnd": 618734,
+          "withinBlockStart": 0,
+          "withinBlockEnd": 1441,
+          "sha256": "22a2dc58170d904a8d87c39c9608a632576cff24058d13d065ffc44bebda9667"
+        }
+      ]
+    }
+  ]
+}

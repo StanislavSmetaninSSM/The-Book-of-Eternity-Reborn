@@ -60,6 +60,8 @@ public sealed class GmDocumentationDeliveryTests
         Assert.Empty(result.Issues);
         Assert.Equal("CONTROLLED_ADAPTER_LIFETIME_NOT_PRODUCER_DELIVERY", result.Evidence["kind"]!.GetValue<string>());
         Assert.True(result.Evidence["orphanObserved"]!.GetValue<bool>());
+        Assert.True(result.Evidence["orphanPrerequisitesProved"]!.GetValue<bool>());
+        Assert.Equal("all_exact_retained_owned_identities_closed", result.Evidence["exitProof"]!.GetValue<string>());
         var identities = result.Evidence["identities"]!.AsArray();
         Assert.Equal(2, identities.Count);
         Assert.All(identities, identity => Assert.NotNull(identity));
@@ -77,6 +79,35 @@ public sealed class GmDocumentationDeliveryTests
         Assert.True(result.Evidence["exitConfirmed"]!.GetValue<bool>());
         Assert.True(result.Evidence["rootsRemoved"]!.GetValue<bool>());
         Assert.True(result.Evidence["elapsedSeconds"]!.GetValue<double>() <= 60);
+        Assert.False(Directory.Exists(result.Evidence["root"]!.GetValue<string>()));
+        Assert.False(Directory.Exists(result.Evidence["package"]!.GetValue<string>()));
+    }
+
+    [Fact]
+    public async Task ControlledLifetimePreStartCopyFailureRemovesActualOwnedRootsWithoutInventedPipeProof()
+    {
+        var result = await GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(TestRepoPaths.RepoRoot,
+            missingDriver: true);
+        _output.WriteLine("GM1557_LIFETIME_PRESTART " + result.Evidence.ToJsonString());
+        Assert.Contains("FileNotFoundException", result.Failure, StringComparison.Ordinal);
+        Assert.True(result.Evidence["ownedRootsPresentBeforeDriverCopy"]!.GetValue<bool>());
+        Assert.True(result.Evidence["setupFaultSourceAbsent"]!.GetValue<bool>());
+        Assert.False(result.Evidence["launchAttempted"]!.GetValue<bool>());
+        Assert.Equal(2, result.Evidence["identities"]!.AsArray().Count);
+        Assert.All(result.Evidence["identities"]!.AsArray(), identity => Assert.Null(identity));
+        Assert.Empty(result.Evidence["remaining"]!.AsArray());
+        Assert.False(result.Evidence["initialHelperParentProved"]!.GetValue<bool>());
+        Assert.False(result.Evidence["orphanObserved"]!.GetValue<bool>());
+        Assert.False(result.Evidence["orphanPrerequisitesProved"]!.GetValue<bool>());
+        Assert.Equal("not_started", result.Evidence["pipeQualification"]!.GetValue<string>());
+        Assert.False(result.Evidence["stdoutEof"]!.GetValue<bool>());
+        Assert.False(result.Evidence["stderrEof"]!.GetValue<bool>());
+        Assert.False(result.Evidence["ownershipUnresolved"]!.GetValue<bool>());
+        Assert.Equal("demonstrably_no_process_start", result.Evidence["exitProof"]!.GetValue<string>());
+        Assert.True(result.Evidence["exitConfirmed"]!.GetValue<bool>());
+        Assert.True(result.Evidence["rootsRemoved"]!.GetValue<bool>());
+        Assert.Empty(result.Evidence["cleanupFailures"]!.AsArray());
+        Assert.Empty(result.Issues);
         Assert.False(Directory.Exists(result.Evidence["root"]!.GetValue<string>()));
         Assert.False(Directory.Exists(result.Evidence["package"]!.GetValue<string>()));
     }

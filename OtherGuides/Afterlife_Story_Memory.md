@@ -1,8 +1,20 @@
 # Afterlife_Story_Memory.md
 
-Read when: Current afterlife threat/story/Saref change. Follow only the current dispatch/contract; No current story/state delta does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
-Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Read when: Current threat/politics/story-outline/Saref/chronicle/archive-memory/global-flag contract, including exact `pending_saref_wings_infiltration` and supported `sarefMainStoryUpdate.mode`.
+Prerequisites: Durable new Saref/other actor→P; actual conflict→C; owner-side Guardian or Shining mutation→G/H. Private story planning stays private. Reading an old chronicle alone does not authorize new state or a Saref transition.
+Keep the actual dispatch scope before every dependency step. Ordinary lifecycle classification applies only to ordinary afterlife work; it is not a frontier or repair overlay. Read only [common-core paragraphs](GM_Common_Core.md) applicable to that current dispatch. Frontier core is correlation/terminal only; repair remains inside its exact permitted-read packet; bootstrap and dedicated receipt-only read no topic/core bodies.
+The frontier row applies only to the existing issued spiritual-conflict source; another issued source uses only its own explicitly supplied prerequisites. The following edges apply only when this topic is already selected in that same scope. Other dependencies above are conditional on their stated actual mutation/contour; they never activate every owner or change dispatch mode. Repair adds only sections explicitly permitted by its current packet.
+
+| Reading scope | Required topic edges |
+|---|---|
+| ordinary | L |
+| frontier | - |
+| repair | - |
+| bootstrap | - |
+| receipt_only | - |
+
+Conditional prerequisite lookup (availability only; links add no automatic reading edges): [Afterlife_Actor_Profiles.md](Afterlife_Actor_Profiles.md), [Afterlife_Spiritual_Conflict.md](Afterlife_Spiritual_Conflict.md), [Afterlife_Guardian_Contracts.md](Afterlife_Guardian_Contracts.md), [Afterlife_Shining_Actions.md](Afterlife_Shining_Actions.md), [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
+Author here: only the existing owner-scoped response fields, canonical state and receipts defined in the complete original bodies below; this navigation grants no new authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
 Worked examples: [E_CLI_Afterlife_Story_Memory.txt](../Examples/E_CLI_Afterlife_Story_Memory.txt); paired rules: [Afterlife_Story_Memory.md](Afterlife_Story_Memory.md). Whole original examples/negative labels remain below.
 

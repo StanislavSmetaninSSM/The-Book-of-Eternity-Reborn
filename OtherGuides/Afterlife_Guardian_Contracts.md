@@ -1,8 +1,20 @@
 # Afterlife_Guardian_Contracts.md
 
-Read when: Current nonempty pending_guardian_trade_request. Follow only the current dispatch/contract; Stale/empty Guardian trade bundle without contract does not independently activate this topic.
-Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
-Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Read when: Current `pending_abode_offering`, `pending_guardian_trade_request`, `pending_guardian_social_interactions`, `pending_archive_consultation_request`, `pending_archive_project_fuel_request`; their exact pending-backed tags; direct `[CHAOS_SEA_DIRECT_GACHA]` or actual Guardian-mediated contracts/project/quest closure.
+Prerequisites: Actor creation/promotion/profile change→P; actual resource/effect mutation→E; archive memory/story changes→M; resident changes→A. A stale empty bundle or mention of a Guardian alone does not activate every Guardian pending contract.
+Keep the actual dispatch scope before every dependency step. Ordinary lifecycle classification applies only to ordinary afterlife work; it is not a frontier or repair overlay. Read only [common-core paragraphs](GM_Common_Core.md) applicable to that current dispatch. Frontier core is correlation/terminal only; repair remains inside its exact permitted-read packet; bootstrap and dedicated receipt-only read no topic/core bodies.
+The frontier row applies only to the existing issued spiritual-conflict source; another issued source uses only its own explicitly supplied prerequisites. The following edges apply only when this topic is already selected in that same scope. Other dependencies above are conditional on their stated actual mutation/contour; they never activate every owner or change dispatch mode. Repair adds only sections explicitly permitted by its current packet.
+
+| Reading scope | Required topic edges |
+|---|---|
+| ordinary | L |
+| frontier | - |
+| repair | - |
+| bootstrap | - |
+| receipt_only | - |
+
+Conditional prerequisite lookup (availability only; links add no automatic reading edges): [Afterlife_Actor_Profiles.md](Afterlife_Actor_Profiles.md), [Afterlife_Effects_Resources.md](Afterlife_Effects_Resources.md), [Afterlife_Story_Memory.md](Afterlife_Story_Memory.md), [Afterlife_Abodes_Residents.md](Afterlife_Abodes_Residents.md), [Afterlife_Lifecycle.md](Afterlife_Lifecycle.md).
+Author here: only the existing owner-scoped response fields, canonical state and receipts defined in the complete original bodies below; this navigation grants no new authority.
 Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
 Worked examples: [E_CLI_Afterlife_Guardian_Contracts.txt](../Examples/E_CLI_Afterlife_Guardian_Contracts.txt); paired rules: [Afterlife_Guardian_Contracts.md](Afterlife_Guardian_Contracts.md). Whole original examples/negative labels remain below.
 

@@ -376,4 +376,118 @@ public sealed class GmDocumentationModularizationTests
         Assert.Contains(fixture.VerifyD01(candidate), issue => issue.StartsWith(
             mutation == "owner_loss" ? "d01.owner_missing:N002" : "d01.restored_grant:N002:", StringComparison.Ordinal));
     }
+    [Theory]
+    [InlineData("S", "mustEvaluateChaosSeaProgression")]
+    [InlineData("S", "mustEvaluateGuardianProjectProgression")]
+    [InlineData("S", "mustEvaluateResidentAgencyProgression")]
+    [InlineData("S", "mustEvaluateShiningAbodeProgression")]
+    [InlineData("S", "mustEvaluateShiningFactionProgression")]
+    [InlineData("S", "mustEvaluateShiningTradeProgression")]
+    [InlineData("S", "afterlifeCatchupRequired")]
+    [InlineData("G", "pending_abode_offering")]
+    [InlineData("G", "pending_guardian_trade_request")]
+    [InlineData("G", "pending_guardian_social_interactions")]
+    [InlineData("G", "pending_archive_consultation_request")]
+    [InlineData("G", "pending_archive_project_fuel_request")]
+    [InlineData("G", "[CHAOS_SEA_DIRECT_GACHA]")]
+    [InlineData("L", "Source-of-Light")]
+    [InlineData("A", "chaos_sea_abode_search")]
+    [InlineData("H", "pendingNativeFactionDiscovery")]
+    [InlineData("C", "[AFTERLIFE_SPIRITUAL_ACTION: conflictId]")]
+    [InlineData("E", "resource definition/capacity/mutation")]
+    [InlineData("P", "training-showcase")]
+    [InlineData("M", "pending_saref_wings_infiltration")]
+    [InlineData("W", "dependent_draft")]
+    public void ActualOperationalActivationIncludesTheOwnedContractFamilies(string topic, string marker)
+    {
+        var router = Read("CLI_Rules_Index.md");
+        var first = router.IndexOf("## Operational topic activation and conditional closure", StringComparison.Ordinal);
+        Assert.True(first >= 0);
+        var last = router.IndexOf("## Current-dispatch reading routes", first, StringComparison.Ordinal);
+        Assert.True(last > first);
+        var operational = router[first..last].Split('\n').Single(line => line.StartsWith("| " + topic + " |", StringComparison.Ordinal));
+        Assert.Contains(marker, operational, StringComparison.Ordinal);
+        foreach (var examples in new[] { false, true })
+        {
+            var header = ReadActualTopicHeaders(examples)[topic];
+            var activation = header.Split('\n').Single(line => line.StartsWith("Read when:", StringComparison.Ordinal));
+            Assert.Contains(marker, activation, StringComparison.Ordinal);
+            if (topic == "S")
+            {
+                Assert.Contains("exact true flag", activation, StringComparison.Ordinal);
+                Assert.Contains("No true flag/no catch-up", header, StringComparison.Ordinal);
+            }
+            if (topic == "G") Assert.Contains("stale empty bundle", header, StringComparison.Ordinal);
+        }
+    }
+
+    [Theory]
+    [InlineData("ordinary", "L", "L")]
+    [InlineData("ordinary", "S,G", "L,S,G")]
+    [InlineData("ordinary", "G,A", "L,G,A")]
+    [InlineData("ordinary", "C", "L,C,P,E")]
+    [InlineData("frontier", "W", "W,C,P,E")]
+    [InlineData("repair", "G", "G")]
+    [InlineData("repair", "P", "P")]
+    [InlineData("bootstrap", "", "")]
+    [InlineData("receipt_only", "", "")]
+    public void ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope(string scope, string seeds, string expected)
+    {
+        foreach (var examples in new[] { false, true })
+            Assert.Empty(VerifyHeaderClosure(ReadActualTopicHeaders(examples), scope, seeds, expected));
+    }
+
+    [Theory]
+    [InlineData("frontier", "W", "W,C,P,E", "E")]
+    [InlineData("repair", "G", "G", "G")]
+    public void HeaderDependencyMutationsRefuseTransitiveLifecycleExpansion(string scope, string seeds,
+        string expected, string dependency)
+    {
+        foreach (var examples in new[] { false, true })
+        {
+            var headers = ReadActualTopicHeaders(examples);
+            Assert.Empty(VerifyHeaderClosure(headers, scope, seeds, expected));
+            var before = "| " + scope + " | - |";
+            Assert.Equal(1, headers[dependency].Split(before, StringSplitOptions.None).Length - 1);
+            headers[dependency] = headers[dependency].Replace(before, "| " + scope + " | L |", StringComparison.Ordinal);
+            Assert.Contains("route.header_scope_expanded", VerifyHeaderClosure(headers, scope, seeds, expected));
+        }
+    }
+
+    private static Dictionary<string, string> ReadActualTopicHeaders(bool examples)
+    {
+        var fixture = Fixture(); var headers = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var topic in GmDocumentationPreservationFixtures.Topics)
+        {
+            var path = fixture.Map["topicLegend"]![topic]![examples ? "example" : "rule"]!.GetValue<string>();
+            var text = Read(path); var end = text.IndexOf("<!-- GM1557:", StringComparison.Ordinal);
+            Assert.True(end > 0, path);
+            headers.Add(topic, text[..end]);
+        }
+        Assert.Equal(10, headers.Count);
+        return headers;
+    }
+
+    // A finite verifier of explicit documentation rows, never a GM/runtime selector.
+    private static IReadOnlyList<string> VerifyHeaderClosure(IReadOnlyDictionary<string, string> headers,
+        string scope, string seedText, string expectedText)
+    {
+        static string[] Ids(string text) => text == "-" ? [] :
+            text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var current = Ids(seedText).ToHashSet(StringComparer.Ordinal);
+        var queue = new Queue<string>(current);
+        while (queue.TryDequeue(out var topic))
+        {
+            var rows = headers[topic].Split('\n').Where(line => line.StartsWith("| " + scope + " |", StringComparison.Ordinal)).ToArray();
+            Assert.Single(rows);
+            var dependencies = Ids(rows[0].Split('|')[2].Trim());
+            foreach (var dependency in dependencies)
+            {
+                Assert.True(headers.ContainsKey(dependency), dependency);
+                if (current.Add(dependency)) queue.Enqueue(dependency);
+            }
+        }
+        return current.SetEquals(Ids(expectedText)) ? [] : ["route.header_scope_expanded"];
+    }
+
 }

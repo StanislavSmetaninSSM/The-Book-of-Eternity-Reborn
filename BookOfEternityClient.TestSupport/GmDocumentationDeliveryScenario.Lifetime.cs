@@ -8,7 +8,7 @@ internal static partial class GmDocumentationDeliveryScenario
 {
     // Adapter qualification only. The independent actual production writer remains
     // RunAsync(publish:true); this controlled probe never loads its source/prefix.
-    internal static async Task<Result> RunOwnedLifetimeProbeAsync(string repo)
+    internal static async Task<Result> RunOwnedLifetimeProbeAsync(string repo, bool missingDriver = false)
     {
         if (!OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("Linux-only owned lifetime probe.");
         var clock = new Clock(); var id = Guid.NewGuid().ToString("N");
@@ -29,6 +29,7 @@ internal static partial class GmDocumentationDeliveryScenario
         Process? launcher = null; Identity? original = null, helper = null; Task? stdout = null, stderr = null;
         using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(60));
         var issues = new List<string>(); var cleanupErrors = new List<string>(); string? failure = null;
+        bool launchAttempted = false, initialHelperParentProved = false;
         bool orphanObserved = false, exitConfirmed = false, rootsRemoved = false;
         void CensusProbe()
         {
@@ -53,16 +54,27 @@ internal static partial class GmDocumentationDeliveryScenario
         try
         {
             Directory.CreateDirectory(artifacts); Directory.CreateDirectory(package); Directory.CreateDirectory(root);
-            File.Copy(Path.Combine(repo, "tests/fixtures/GmDocumentationDelivery/owned-lifetime.ps1"), driver);
+            evidence["ownedRootsPresentBeforeDriverCopy"] = Directory.Exists(package) && Directory.Exists(root);
+            var driverSource = Path.Combine(repo, "tests/fixtures/GmDocumentationDelivery",
+                missingDriver ? "missing-owned-lifetime-" + id + ".ps1" : "owned-lifetime.ps1");
+            if (missingDriver && File.Exists(driverSource)) throw new InvalidDataException("delivery.setup_fault_not_absent");
+            evidence["setupFaultSourceAbsent"] = missingDriver && !File.Exists(driverSource);
+            File.Copy(driverSource, driver);
             evidence["driverHash"] = Hash(File.ReadAllBytes(driver));
+            launchAttempted = true;
             launcher = Process.Start(start) ?? throw new InvalidOperationException("Controlled launcher did not start.");
             stdout = output.PumpAsync(launcher.StandardOutput, clock, cancellation.Token);
             stderr = errors.PumpAsync(launcher.StandardError, clock, cancellation.Token);
             original = ReadIdentity(launcher.Id, "pwsh", ownership.Observations, start.ArgumentList.ToArray());
             while (!File.Exists(pidPath)) await Task.Delay(20).WaitAsync(clock.Work);
             var pid = int.Parse(File.ReadAllText(pidPath), System.Globalization.CultureInfo.InvariantCulture);
-            helper = ReadIdentity(pid, "controlled-helper", ownership.Observations, expectedHelper);
-            if (helper.ParentPid != original.Pid) throw new InvalidDataException("delivery.initial_helper_parent_unproved");
+            var discovered = ReadIdentity(pid, "controlled-helper", ownership.Observations, expectedHelper);
+            if (discovered.ParentPid != original.Pid)
+            {
+                ownership.Unresolved = true;
+                throw new InvalidDataException("delivery.initial_helper_parent_unproved");
+            }
+            helper = discovered; initialHelperParentProved = true;
             CensusProbe();
             if (ownership.Unresolved) throw new InvalidDataException("delivery.initial_lifetime_census_unproved");
             File.WriteAllText(ackPath, "Exact helper birth/argv and initial parent observed.");
@@ -101,21 +113,31 @@ internal static partial class GmDocumentationDeliveryScenario
                     process.Kill(); await process.WaitForExitAsync().WaitAsync(clock.Cleanup);
                 }
                 if (launcher is not null) await launcher.WaitForExitAsync().WaitAsync(clock.Cleanup);
-                if (stdout is not null && stderr is not null) await Task.WhenAll(stdout, stderr).WaitAsync(clock.Cleanup);
                 CensusProbe();
                 var remaining = new[] { helper, original }.OfType<Identity>().Where(identity =>
                     ObserveOwned(identity, identity == original ? launcher : null, ownership, clock, "lifetime_final_exit")).ToArray();
                 evidence["remaining"] = JsonSerializer.SerializeToNode(remaining);
-                exitConfirmed = original is not null && helper is not null && orphanObserved && !ownership.Unresolved &&
-                    remaining.Length == 0 && launcher?.HasExited == true && stdout is not null && stderr is not null &&
-                    output.Eof && errors.Eof && output.Error is null && errors.Error is null;
-                if (!exitConfirmed) throw new InvalidDataException("delivery.lifetime_exit_or_eof_unproved");
+                var noStart = !launchAttempted && launcher is null && original is null && helper is null;
+                // Physical cleanup authority is independent of successful orphan/pipe semantics.
+                // An attempted launch without retained identity, or any unknown identity, stays unproved.
+                exitConfirmed = !ownership.Unresolved && (noStart ||
+                    original is not null && helper is not null && initialHelperParentProved &&
+                    remaining.Length == 0 && launcher?.HasExited == true);
+                evidence["exitProof"] = !exitConfirmed ? "unproved" : noStart
+                    ? "demonstrably_no_process_start" : "all_exact_retained_owned_identities_closed";
+                if (!exitConfirmed) throw new InvalidDataException("delivery.lifetime_owned_exit_unproved");
                 foreach (var path in new[] { package, root })
                 {
-                    _ = clock.Cleanup; Directory.Delete(path, recursive: true);
+                    _ = clock.Cleanup;
+                    if (Directory.Exists(path)) Directory.Delete(path, recursive: true);
                     if (Directory.Exists(path)) throw new IOException("delivery.lifetime_root_removal_unproved");
                 }
                 rootsRemoved = true;
+                if (stdout is not null && stderr is not null)
+                    await Task.WhenAll(stdout, stderr).WaitAsync(clock.Cleanup);
+                if (!noStart && (stdout is null || stderr is null || !output.Eof || !errors.Eof ||
+                    output.Error is not null || errors.Error is not null))
+                    cleanupErrors.Add("delivery.lifetime_pipe_qualification_failed");
             }
             catch (Exception error) { cleanupErrors.Add(error.ToString()); }
             finally
@@ -127,6 +149,12 @@ internal static partial class GmDocumentationDeliveryScenario
                 evidence["stdoutFailure"] = output.Error; evidence["stderrFailure"] = errors.Error;
                 evidence["identities"] = JsonSerializer.SerializeToNode(new[] { original, helper });
                 evidence["ownershipObservations"] = ownership.Observations; evidence["ownershipUnresolved"] = ownership.Unresolved;
+                evidence["launchAttempted"] = launchAttempted;
+                evidence["initialHelperParentProved"] = initialHelperParentProved;
+                evidence["pipeQualification"] = !launchAttempted ? "not_started" :
+                    output.Eof && errors.Eof && output.Error is null && errors.Error is null ? "complete" : "failed";
+                evidence["orphanPrerequisitesProved"] = initialHelperParentProved && orphanObserved &&
+                    !ownership.Unresolved && output.Eof && errors.Eof && output.Error is null && errors.Error is null;
                 evidence["orphanObserved"] = orphanObserved; evidence["exitConfirmed"] = exitConfirmed; evidence["rootsRemoved"] = rootsRemoved;
                 evidence["elapsedSeconds"] = clock.Watch.Elapsed.TotalSeconds;
                 if (clock.Watch.Elapsed.TotalSeconds > 60) cleanupErrors.Add("delivery.absolute_deadline_exceeded");

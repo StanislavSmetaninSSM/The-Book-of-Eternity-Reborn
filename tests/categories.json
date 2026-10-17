@@ -27513,7 +27513,7 @@
         },
         {
             "id": "gm-doc-afterlife-reading",
-            "responsibility": "#1557 A seven family and ten topic active/inactive documentation-reading fixtures independently check actual predicate/precedence and topic/exclusion/core cells. Eight scope/union mutations include three condition-only changes; one mapped-active D01 guard and two owner-loss/restored-grant negatives: five unit methods/twenty-eight finite cases. Actual router/D01 positives remain intended RED until approved navigation bodies are applied. Pure fixtures create no runtime authorization fields. Corrected checks UNRUN.",
+            "responsibility": "#1557 Full approved operational activation families and same-dispatch transitive rule/example-header closure, alongside retained finite route illustrations and D01. The21real owned-trigger controls,9scope closures and2restored-lifecycle negatives guard A-S01/S02; no new runtime selector or write authority.",
             "excludes": "Final AST entry/dataflow and real production package delivery remain a later bounded adapter block. No universal reads, new game/source-reading exception, Block_5, broad existing documentation tests, production dispatch or provider execution.",
             "changeHints": [
                 "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
@@ -27537,7 +27537,10 @@
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
-                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant"
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualOperationalActivationIncludesTheOwnedContractFamilies",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualTransitiveHeaderDependenciesKeepTheCurrentDispatchScope",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.HeaderDependencyMutationsRefuseTransitiveLifecycleExpansion"
                     ]
                 }
             ]
@@ -27732,7 +27735,7 @@
         },
         {
             "id": "gm-doc-afterlife-named-consumers",
-            "responsibility": "#1557 Actual existing single- and multi-fence readers resolve23 moved named sections/135 ordered baseline JSON inputs from direct topic filenames. Separate flat187/classification and80manifest semantics preserve the other inputs.",
+            "responsibility": "#1557 Existing actual single/multi-fence algorithms retain23named sections/135ordered exact a5 inputs. Only2cross-owner spans retrieve pinned actual owned segments transiently; the other21sections read direct physical owners. Four missing/reordered-segment mutations protect the source view; physical GM payload authority remains single.",
             "excludes": "Does not replay unchanged engine writers or relabel input equality as new gameplay runtime qualification. Expected inputs are pinned exact a5 bytes; no router/body concatenation.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests*.cs",
@@ -27750,7 +27753,8 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MovedNamedConsumersResolveEveryFrozenSectionThroughTheActualParsers"
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MovedNamedConsumersResolveEveryFrozenSectionThroughTheActualParsers",
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CrossOwnerNamedViewsRefuseMissingOrReorderedActualSegments"
                     ]
                 }
             ]
@@ -27807,7 +27811,7 @@
         },
         {
             "id": "gm-doc-afterlife-owned-lifetime",
-            "responsibility": "#1557 Separately labeled adapter-only controlled orphan/helper timeout. Prove exact birth/argv/parent before ack, helper live after launcher exit, concurrent two-pipe drain and owned-only timeout cleanup under45+15/60 deadline.",
+            "responsibility": "#1557 Separately labeled controlled orphan/timeout and real pre-Start File.Copy failure. Prove exact birth/argv/parent before helper authority, preserve two concurrent pipes and45+15/60deadline; distinguish demonstrable-no-start or all-owned-terminal cleanup authority from orphan/pipe semantic qualification. Unknown identities retain roots and are never signaled.",
             "excludes": "Never a replacement producer/prefix or real delivery proof; no new production endpoint/supervisor/framework, unknown-identity kills or provider.",
             "changeHints": [
                 "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs",
@@ -27825,7 +27829,8 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup"
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledLifetimePreStartCopyFailureRemovesActualOwnedRootsWithoutInventedPipeProof"
                     ]
                 }
             ]
