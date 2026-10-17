@@ -1,0 +1,17 @@
+{
+  "kind": "ROOT_TESTS_ONLY_WIP_CURRENT_PIN_AND_SOURCE_SEGMENT_READBACK",
+  "head": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+  "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "packetSha256": "c4e8040895a7bc90836a39be9f7734d22800515f3855fc206c3bae2fdf929872",
+  "sourcePinsChecked": 55,
+  "fourFrozenSegmentsExactlyOnceInBaselineA": true,
+  "all21ChangedPathsRecoveredPending": true,
+  "productDeltaEmpty": true,
+  "oldWorldFenceUnchangedHeld": true,
+  "declaredMethods": 29,
+  "declaredRows": 52,
+  "categoryOwners": 5,
+  "discoveryOrRuntime": "NONE; static authoring counts only",
+  "scope": "Concrete fixture/code/category semantics independent review still required after fresh zero-execution preparation. No acceptance of old World closure or HOT/runtime evidence.",
+  "utc": "2026-10-17T16:06:18.226580+00:00"
+}

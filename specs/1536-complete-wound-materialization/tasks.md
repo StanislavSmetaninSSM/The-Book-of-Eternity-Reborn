@@ -1,8 +1,9 @@
 ## T179-Pd.3d current ordinary-A implementation authority (2026-10-17)
 
 - [x] Read accepted NI-D01/current ordinary owners, preserve immutable design/preflight/disposition and latest user/Root tests-only implementation authority. Historical DESIGN ONLY/A3 blocks below do not replace this separate ordinary-A scope.
-- [ ] Publish concrete tests-only shared-policy/public-owner/source-inverse WIP with finite categories/current selection, exact remote and first a5-based changed-path GitHub recovery; [current plan](plan.md) and [ledger](recovery/t179pd3d-ordinary-method-row-ledger-20261017.json). Product/build/discovery/native UNRUN.
-- [ ] After Root publication readback release only: fresh selected BOTH/catalog + exact PlanOnly0, preserve FIRST raw/source/binary/root custody; independent SOURCE/FIXTURE/SELECTION/PREP before named structural boundary2 actual.
+- [x] Publish concrete tests-only shared-policy/public-owner/source-inverse WIP with finite categories/current selection, exact remote and first a5-based changed-path GitHub recovery; [current plan](plan.md) and [ledger](recovery/t179pd3d-ordinary-method-row-ledger-20261017.json). WIP56dbe exactremote/newGitHub25/all21 verified. Product unchanged; subsequent FIRST prep0/0/52planned/ZEROactual frozen.
+- [x] After Root publication readback release: FIRST fresh selected BOTH/catalog0 + PlanOnly-NoBuild0, exact5/5/29/52 and ZEROactual,18rawchains/new9copies/namespace continuity preserved.
+- [ ] Publish/recover prepared raw/source context and obtain independent SOURCE/FIXTURE/SELECTION/PREP; then persist accepted decision/exact successor recovery before named structural boundary2 actual. Product/all actuals remain HELD. Static NI-S01 close-exception test oracle is OPEN pending consolidated review; original56 tests/prep preserved, no runtime failure claimed.
 - [ ] Preserve genuine causal RED, then bounded value-only kernels plus real ordinary adapters, coherent WIP/source review and affected GREEN/EVIDENCE. No unused-kernel completion, old33-pin World migration, HOT/history/full F1/Windows/ZIP/CI claims. Existing timestamps/parsers/catch/order/projectors/writers unchanged; NI-D01 contrasts mandatory.
 
 All following checkpoint sections are retained historical snapshots, not new runtime authority.

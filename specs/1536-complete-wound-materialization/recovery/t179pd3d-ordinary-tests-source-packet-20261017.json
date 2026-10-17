@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "TESTS_ONLY_WIP_UNCOMPILED_UNDISCOVERED_UNRUN",
+  "status": "PREPARED_ZERO_EXECUTION_WIP_SOURCE_NI_S01_OPEN_NO_ACTUAL_RELEASE",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1575146,
-      "sha256": "5f7541356422a722c3c907a4959a20bbde8a365bbe2ce8000c17307afa73f94f",
-      "gitBlob": "6f99a9f32e4e4787f3b5c1e73368c46491275673",
+      "bytes": 1575563,
+      "sha256": "0028fb05e834dcb699a2467eb3ac43f41deb533e29576d2003f47866971810ae",
+      "gitBlob": "bbd9d2cb65ce7ca537f49b9421e6550bcfa9829f",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -442,11 +442,74 @@
       "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
       "mode": "100644",
       "role": "concrete_ordinary_fixture_or_runner_dependency"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+      "mode": "100644",
+      "gitBlob": "9ecb1092e79f721443e767b939007012f8761e22",
+      "bytes": 10450,
+      "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2",
+      "role": "actual CreateAsync/raw writer/ordinary ValidationService construction and best-effort DisposeAsync",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Owners.cs",
+      "mode": "100644",
+      "gitBlob": "ff99dadcfb14e8dc24ad590f28b8f9ade3bd89e7",
+      "bytes": 4749,
+      "sha256": "a4e06bea4709ce448799abfdabfb3217cfe30eefa071cbe9bfce859e98b6a9aa",
+      "role": "actual same context ownership methods",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+      "mode": "100644",
+      "gitBlob": "97d3cf283208112529fb471f3a9ddc7d8a6daa12",
+      "bytes": 3868,
+      "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192",
+      "role": "actual same context publication methods used by original context",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "mode": "100644",
+      "gitBlob": "2871c6e14b84313d0bfe6b5d4059762c259f0088",
+      "bytes": 2463,
+      "sha256": "ffc80c190ee24c3af5b915329f7072e6a66937c7423030068c452343e981ef2a",
+      "role": "immutable prepared tree materializes per-test owned session bytes",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrameCache.cs",
+      "mode": "100644",
+      "gitBlob": "dd2c34504d3ff615cae077506ddd86e06d0fa4e3",
+      "bytes": 36430,
+      "sha256": "b135e7d4c55e4ae956bab545a12159d862c1287b56837168459bb04c1e4dfce5",
+      "role": "actual trusted immutable original-intake template factory; independent materialized per-test copy",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualIntakeAllocations.cs",
+      "mode": "100644",
+      "gitBlob": "4e35f4dfb2b3adef0a70eba74f50f784f16717a3",
+      "bytes": 13671,
+      "sha256": "fcbbd2c220740ff6c77a581075529c4ca01a131a5e7a6de38ffae8a18cecc880",
+      "role": "actual SeedOriginalIntakeBaselinesAsync callback directly selected by both ordinary SP methods",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs",
+      "mode": "100644",
+      "gitBlob": "f5a329d84953689c1c4aec828f068afc4163f6c6",
+      "bytes": 160519,
+      "sha256": "dcbbffd874bb0a097b63b447ceb0fc9703b554fd24f6897cf77d142541e1b3ea",
+      "role": "shared selected integration partial helper definitions",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
     }
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "d8b8436fec43749e65a867e361d256b5a7ead4da1936d810999d81966c35b9e3"
+    "sha256": "11787118f3b7df210e0800ccb72823564a473eb6d766aacf00251195f7af91d6"
   },
   "preflightReferences": [
     {
@@ -498,6 +561,26 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-writer-preflight-guard-addendum-a5a41cfa-20261017.json",
       "bytes": 5950,
       "sha256": "aaaf591b2e412a21ef74a5fab21a85620784a03ad1dd123997973b84c0aefa14"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-tests-wip-delta-github-56dbe1de-20261017.json",
+      "bytes": 18391,
+      "sha256": "a9b46cadae9d8259e5effdf73c1d752a570155578f9ae2acec744979c9bdf303"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-56dbe1de-20261017.json",
+      "bytes": 12053,
+      "sha256": "f2fc417dd571a9e6ab763efaf98030c4de89605404b6f4c4b2cb6c9ff1f9a7ba"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-tests-wip-readback-56dbe1de-20261017.json",
+      "bytes": 831,
+      "sha256": "7f4d6d0d468d09b1ab7c23e166b096ac7dea761fc84f51f71c9494dda4f38df4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-preparation-readback-56dbe1de-20261017.json",
+      "bytes": 3018,
+      "sha256": "23b07e383dcc2735b4ed420f1f23b47653b42f357d073a57c532634343be7897"
     }
   ],
   "supersededProposal": "Original2243 exactly-A-only World pin migration proposal is superseded by aaaf addendum and independent0876/Root6455: original33-pin World Fact intact, HELD/unselected; no automatic blessing of nine historical changes. New A inverse/sharedpartial guard is separate ordinary SOURCE preservation.",
@@ -508,15 +591,15 @@
     "Projector/text/tag/serializer/writer/engine/common timestamp leaf byte unchanged."
   ],
   "futureChecks": {
-    "first": "Fresh selected BOTH build/catalog + exact PlanOnly0 only after published WIP and Root release.",
-    "actual": "SOURCE/FIXTURE/SELECTION/PREP then separate named boundary2 release; preserve FIRST original full raw.",
+    "first": "COMPLETED FIRST fresh BOTH/catalog0 and PlanOnly-NoBuild0; all5owners/5descriptors/29methods/52cases, ZEROexecutions. No repeat preparation.",
+    "actual": "Independent SOURCE/FIXTURE/SELECTION/PREP plus persisted decision/exact successor recovery and named Root boundary2 activation still required; all actual tests UNRUN.",
     "remaining": "Ordinary semantic/existing/SP/source parity controls only after relevant production SOURCE/root release."
   },
   "counts": {
     "categoryOwners": 5,
     "declaredMethods": 29,
     "declaredRows": 52,
-    "discovery": "UNRUN; static declared rows are not executed/native cases"
+    "discovery": "FIRST canonical discovery/Plan confirmed5descriptors29methods52cases;0actual tests"
   },
   "docsDisposition": "Internal semantics-preserving extraction; no GM-authored or Mortal/afterlife rule/pending/schema/normalizer contract change. Existing projector/text/tag/clock/writers remain byte-identical. No gameplay/docs/example/manifest change intended; reassess only if actual production scope changes.",
   "authoringUtilityOutcomes": [
@@ -526,5 +609,189 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "8df28e6d6ac59458813cbf2ee45d884146f3b3f8cef6e4dec4f4528f9513c02f"
+  "sourcePinDigest": "02076a31491450a9cc66800e0c2799edb36c0bdd496b482b4cc872e880f4e5a3",
+  "compiledSourceBinding": {
+    "source": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+    "pinCount": 55,
+    "pinDigest": "8df28e6d6ac59458813cbf2ee45d884146f3b3f8cef6e4dec4f4528f9513c02f",
+    "archive": "t179pd3d-ordinary-first-preparation-files-20261017/archive.json",
+    "fact": "The exact original55-source context is frozen twice with catalog/plan raw. Subsequent supplemental bindings/status metadata do not pretend to have been used by that original recorder."
+  },
+  "supplementalFixturePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+      "mode": "100644",
+      "gitBlob": "9ecb1092e79f721443e767b939007012f8761e22",
+      "bytes": 10450,
+      "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2",
+      "role": "actual CreateAsync/raw writer/ordinary ValidationService construction and best-effort DisposeAsync",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Owners.cs",
+      "mode": "100644",
+      "gitBlob": "ff99dadcfb14e8dc24ad590f28b8f9ade3bd89e7",
+      "bytes": 4749,
+      "sha256": "a4e06bea4709ce448799abfdabfb3217cfe30eefa071cbe9bfce859e98b6a9aa",
+      "role": "actual same context ownership methods",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+      "mode": "100644",
+      "gitBlob": "97d3cf283208112529fb471f3a9ddc7d8a6daa12",
+      "bytes": 3868,
+      "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192",
+      "role": "actual same context publication methods used by original context",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "mode": "100644",
+      "gitBlob": "2871c6e14b84313d0bfe6b5d4059762c259f0088",
+      "bytes": 2463,
+      "sha256": "ffc80c190ee24c3af5b915329f7072e6a66937c7423030068c452343e981ef2a",
+      "role": "immutable prepared tree materializes per-test owned session bytes",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrameCache.cs",
+      "mode": "100644",
+      "gitBlob": "dd2c34504d3ff615cae077506ddd86e06d0fa4e3",
+      "bytes": 36430,
+      "sha256": "b135e7d4c55e4ae956bab545a12159d862c1287b56837168459bb04c1e4dfce5",
+      "role": "actual trusted immutable original-intake template factory; independent materialized per-test copy",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualIntakeAllocations.cs",
+      "mode": "100644",
+      "gitBlob": "4e35f4dfb2b3adef0a70eba74f50f784f16717a3",
+      "bytes": 13671,
+      "sha256": "fcbbd2c220740ff6c77a581075529c4ca01a131a5e7a6de38ffae8a18cecc880",
+      "role": "actual SeedOriginalIntakeBaselinesAsync callback directly selected by both ordinary SP methods",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.cs",
+      "mode": "100644",
+      "gitBlob": "f5a329d84953689c1c4aec828f068afc4163f6c6",
+      "bytes": 160519,
+      "sha256": "dcbbffd874bb0a097b63b447ceb0fc9703b554fd24f6897cf77d142541e1b3ea",
+      "role": "shared selected integration partial helper definitions",
+      "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
+    }
+  ],
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "wallSeconds": 93.49550946799718,
+      "actualSource": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+      "compiledSource": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+      "actualTestsExecuted": 0,
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-160719-381-147856-3930fcdd28474cd596ef2f4e7e52fd88-categories"
+      ],
+      "stdoutSha256": "4767add15ef65fa42a0bdb7bbb1bb227ff6114388f92da533cdf09ff0e9dc591"
+    },
+    "plan": {
+      "nativeExit": 0,
+      "wallSeconds": 5.596282999998948,
+      "actualSource": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+      "compiledSource": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+      "actualTestsExecuted": 0,
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-160900-549-148434-f350f0ee73c8442a85138e160f4ae543-categories"
+      ],
+      "stdoutSha256": "88eb741580536a4a62134930db23ddf57ff249e5ca24430ddac26be1a3ebede2"
+    },
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-first-preparation-files-20261017/archive.json",
+    "archiveSha256": "435c5d1f6b9fa24dda2c467893e32a7c8ded6f79fe6ece5155947ec17ca66991",
+    "rawChains": 18,
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "cb962b785832a6a84686275af3701875c6748dea95932f4492eea3e1a531c038"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9549824,
+        "sha256": "b95419e30d87e9bb198ec3479245d6072256b7a1e9754f4270a284ec28b66a89"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "cb962b785832a6a84686275af3701875c6748dea95932f4492eea3e1a531c038"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "d8ed18d81b75a16e6d49d3a70a9872dfb25988f52e05f8ed75bb60de9fab1f1b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "7544c0a8105c9d675b00e9e7ad1cb59f9a19d97df1e1b7f84168bd88ef74abc2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "7544c0a8105c9d675b00e9e7ad1cb59f9a19d97df1e1b7f84168bd88ef74abc2"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "cb962b785832a6a84686275af3701875c6748dea95932f4492eea3e1a531c038"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "ecf1f10370fe54cc317cb834aca783073544d1a4cf2711c02622c712c0a0f0ef"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "cb962b785832a6a84686275af3701875c6748dea95932f4492eea3e1a531c038"
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "rootReferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-tests-wip-delta-github-56dbe1de-20261017.json",
+        "bytes": 18391,
+        "sha256": "a9b46cadae9d8259e5effdf73c1d752a570155578f9ae2acec744979c9bdf303"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-56dbe1de-20261017.json",
+        "bytes": 12053,
+        "sha256": "f2fc417dd571a9e6ab763efaf98030c4de89605404b6f4c4b2cb6c9ff1f9a7ba"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-tests-wip-readback-56dbe1de-20261017.json",
+        "bytes": 831,
+        "sha256": "7f4d6d0d468d09b1ab7c23e166b096ac7dea761fc84f51f71c9494dda4f38df4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-preparation-readback-56dbe1de-20261017.json",
+        "bytes": 3018,
+        "sha256": "23b07e383dcc2735b4ed420f1f23b47653b42f357d073a57c532634343be7897"
+      }
+    ],
+    "scope": "Build/discovery/Plan only, not native case or SOURCE acceptance. No product edit. Compilation changes revision metadata and all future actuals must use these new9copies; old unrelated DLL provenance is not reused."
+  },
+  "ownershipClarification": "SP original Dispose is best-effort, not strict. Future whole recorder must qualify physical absence/census. New OrdinaryOutputFixture strict receipt/Assert.False already source-defined. Unreachable CleanupPublicationCut not added as dependency.",
+  "sourceReviewKnownFindings": [
+    {
+      "id": "NI-S01",
+      "status": "CONFIRMED_STATIC_TEST_ORACLE_DEFECT_AWAIT_CONSOLIDATED_REVIEW",
+      "fact": "Completed callback17 followed by owning-close IOException is wrapped by existing MainOperationContinuationException<int>; original test Assert.Same(failure,error) is wrong. Original test and FIRST56 prep stay unchanged in this carrier.",
+      "scope": "Later bounded tests-only correction after consolidated reviewer/Root release; no actual test result, no production semantics change."
+    }
+  ]
 }
