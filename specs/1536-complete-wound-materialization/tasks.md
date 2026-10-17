@@ -1,3 +1,7 @@
+## A2 concrete SOURCE accepted — firstRED2 release conditional (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent SOURCE pair accepts778/compiled40ed tests/finite57+conditionalLate2/fresh12chains/fourDLLs/22all18delta, no material finding. [Current decision](plan.md): persistence/readback/newdelta/continuity then root may release FIRSTboundary2 only; raw realowner+fivephysicalimages/read/state/noUI/no-write/strictcleanup before expectedNotNull, separate causalEVIDENCE before product. No otheractual/prep/base/oldproof replay; prior2compileFAILs retained.
+
 ## A2 fresh preparation native0 — concrete SOURCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): corrected40ed whole-bindingpreflight then freshBOTH/catalog0(784/11741,knownwarnings0errors)+PlanOnly0(5desc/11methods/59planned/0executed),12chains/fourfreshDLLs/20sourcepins frozen in [current checkpoint](plan.md). Prior two compileFAILs retained; product/helpers unchanged/absent. Publish/readback/newcompletechanged recovery then independent concreteSOURCE before firstcausalboundaryRED2. Allactual/production HELD; no unchangedoldproof/base/Late2 replay or expanded scope.

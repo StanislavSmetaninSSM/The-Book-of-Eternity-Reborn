@@ -1,0 +1,329 @@
+{
+  "kind": "INDEPENDENT_A2_TESTS_ONLY_SOURCE_FIXTURE_SELECTION_REVIEW",
+  "createdUtc": "2026-10-17T02:29:21.005499+00:00",
+  "reviewer": {
+    "model": "GPT-6 Astra",
+    "reasoningEffort": "XHigh",
+    "role": "independent repository-read-only"
+  },
+  "carrier": "778cd02408da1a7859083c265b2fe1c08aa179c7",
+  "compiledSource": "40ed288b88a365b072deb81420f6e937565852f8",
+  "contractDecision": "851655c027b1aa9961540fccef76b80d1484f173",
+  "verdict": {
+    "source": "ACCEPTED",
+    "fixture": "ACCEPTED",
+    "selection": "ACCEPTED",
+    "freshPreparation": "ACCEPTED",
+    "boundedRecovery": "ACCEPTED",
+    "actualEvidence": "NOT_RUN",
+    "productionReleased": false,
+    "openMaterialFindings": []
+  },
+  "findings": [
+    {
+      "id": "A2-P01",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs:164",
+      "scenario": "First fresh integration compilation at1c85",
+      "consequence": "CS0535 missing IConsoleInputSource.AssertCompleted; native1 before discovery/tests",
+      "nativeExit": 1,
+      "wallSeconds": 45.72872180200011,
+      "executedTests": 0,
+      "closure": "Single AssertCompleted()=>Assert.Equal(0,Reads) addition atb764; final40ed BOTH successful",
+      "status": "CLOSED; failure retained"
+    },
+    {
+      "id": "A2-P02",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs:114",
+      "scenario": "Second fresh integration compilation atb764",
+      "consequence": "CS0103 Characteristics unresolved because partial-file using Configuration absent; native1 before discovery/tests",
+      "nativeExit": 1,
+      "wallSeconds": 37.21898194000005,
+      "executedTests": 0,
+      "closure": "Single using BookOfEternityClient.Configuration at40ed; targeted static preflight and final BOTH successful",
+      "status": "CLOSED; failure retained"
+    }
+  ],
+  "reviewerCorrection": "Preliminary static no-material comments missed two scaffolding defects; neither was SOURCE acceptance. Both preserved failures and closures explicitly reviewed.",
+  "selection": {
+    "a2Cases": 57,
+    "a2Methods": 9,
+    "a2Descriptors": 4,
+    "boundaryCases": 2,
+    "pureCases": 33,
+    "ordinaryCases": 20,
+    "existingCases": 2,
+    "a2OwnedRootsProspective": 24,
+    "pureRoots": 0,
+    "pureCleanup": "N/A",
+    "conditionalProtectedLate2": 2,
+    "totalCases": 59,
+    "totalMethods": 11,
+    "totalDescriptors": 5,
+    "actualExecutedCases": 0
+  },
+  "sourcePacket": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-source-20261017.json",
+    "sha256": "b99432ae719b1587820051605cfc3a80b24beefe6929a2e7dd66ee89773d5738",
+    "pins": 20,
+    "newRecoveredDependencies": 2
+  },
+  "preparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017.json",
+    "sha256": "9b184f707f2efc69017df7de905cfe2ae488966452b2c4aa16e2a6a08783c759",
+    "chains": [
+      {
+        "rawPath": "/tmp/a2-implementation-tools/a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/record.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/record.json.gz",
+        "bytes": 6874,
+        "sha256": "7b4b9ba3739ab5b24f7895c6909932625e55a36235c7b4217be324a076a726b5",
+        "storedSha256": "ac741c9c6cc1b41cd7431d417251c80daf990e416a970857ae2e8bb22b6ea463"
+      },
+      {
+        "rawPath": "/tmp/a2-implementation-tools/a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/stdout.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/stdout.log.gz",
+        "bytes": 712,
+        "sha256": "6aac4e80c22222ec93dcc25b755d13702a3819e4b8217f16a2bcb6321791fc9e",
+        "storedSha256": "dac0a4f3fdc1670bea476a821e0cf790de4db7cef46cc551d090b836da995260"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories/Build-integration.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/runner0/Build-integration.log.gz",
+        "bytes": 120171,
+        "sha256": "c97bffaa79a4753f55a27c016e8c225004bf98f566c00b84fbd59c9756a94f8b",
+        "storedSha256": "0c173b20681a1c7776bd4a5e4c78abaa4497254c47e010f0ee6192c926105a6a"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories/Build-unit.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/runner0/Build-unit.log.gz",
+        "bytes": 26198,
+        "sha256": "a835fad7f269d21a042561ef2f08ba65b7c4b93f1002a60fceae2ea814c40403",
+        "storedSha256": "fafcfa83b14a4cd66451c0103e0a5ada6556f705a1336f987bc7858a6a7fc273"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories/catalog-audit.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/runner0/catalog-audit.json.gz",
+        "bytes": 103,
+        "sha256": "5fb6f188c0026f69836dfb35cf6e68a3c02546ffd7ea9ee09097c2edd4647db4",
+        "storedSha256": "9a4d4193540519b00506ae16b94f543750ac638085616331c53c844b39f85db6"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories/dotnet-test.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/runner0/dotnet-test.log.gz",
+        "bytes": 3550489,
+        "sha256": "cd597d89bb13730abf74f4cdcb496a13d6ccd786d9c06d1ea42a227ec3b1345c",
+        "storedSha256": "c8e76ef6f1769b1fa3bdeabca884e096c55facc3dbc7ff8eb997e07cabec446c"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories/summary.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/0-a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/runner0/summary.json.gz",
+        "bytes": 1598,
+        "sha256": "c7c6c704953ce7e317510b60cc82b31865b930f843784cdd8372af5bdcc37307",
+        "storedSha256": "fcef3652123f15f49f8d5f3d0fc17f45a53eb104957a78c6f44624f75c9e60c3"
+      },
+      {
+        "rawPath": "/tmp/a2-implementation-tools/a2-red-plan-20261017T0226Z-attempt1-630de184/record.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/1-a2-red-plan-20261017T0226Z-attempt1-630de184/record.json.gz",
+        "bytes": 6908,
+        "sha256": "f5d1ab871b0473e3943a734abeadc8c3969eefdc6a5a7748bea4e017f4929702",
+        "storedSha256": "78de8601daad7841a7dd86a44a8710f23ca22cda6ea770c8dba181fcfcc5a477"
+      },
+      {
+        "rawPath": "/tmp/a2-implementation-tools/a2-red-plan-20261017T0226Z-attempt1-630de184/stdout.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/1-a2-red-plan-20261017T0226Z-attempt1-630de184/stdout.log.gz",
+        "bytes": 5427,
+        "sha256": "2748b3d16806794b7561e39aacb755826f171e6d0a2b72004d8322f80aad021f",
+        "storedSha256": "02e3210dede32bee684197d89eee0d734a53c96b419c231b532fc015b807565d"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022601-477-16914-2309ae2d40c3462ea75eece76a836f70-categories/dotnet-test.log",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/1-a2-red-plan-20261017T0226Z-attempt1-630de184/runner0/dotnet-test.log.gz",
+        "bytes": 3403704,
+        "sha256": "0ac541fa287dac58cbc41ef9294593e8269b50b2ff25f170319126227b601d68",
+        "storedSha256": "8ff9d2e9ffe652e11a6a3e4d1fdaa19c5b02dc5a740d0e09c16819aa309aecb1"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022601-477-16914-2309ae2d40c3462ea75eece76a836f70-categories/plan.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/1-a2-red-plan-20261017T0226Z-attempt1-630de184/runner0/plan.json.gz",
+        "bytes": 9428,
+        "sha256": "28b2c326ea35e1f863d0cee9c5a5b050890ccb82d80063ff72085df703d12509",
+        "storedSha256": "57da89976b076a1001dd9208fdfe7486047fb3c1f1cf1884eda3f96b1c5d1599"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022601-477-16914-2309ae2d40c3462ea75eece76a836f70-categories/summary.json",
+        "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-red-preparation-20261017-files/1-a2-red-plan-20261017T0226Z-attempt1-630de184/runner0/summary.json.gz",
+        "bytes": 4993,
+        "sha256": "1d29b2fb738edad9f07ae3b40f512c80e2adc36c4eb7a8b3c06f489ef38acaa6",
+        "storedSha256": "bc5a043b8225d25b6f66aa7e4723ce877da411e73972b36306631739184991a2"
+      }
+    ],
+    "catalog": {
+      "nativeExit": 0,
+      "wallSeconds": 48.09937325499959,
+      "audit": {
+        "Valid": true,
+        "Methods": 11741,
+        "Categories": 784,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "builds": {
+        "Build-integration": {
+          "seconds": 33.4946948,
+          "warnings": [
+            "133"
+          ],
+          "errors": 0
+        },
+        "Build-unit": {
+          "seconds": 8.2383591,
+          "warnings": [
+            "35"
+          ],
+          "errors": 0
+        }
+      }
+    },
+    "plan": {
+      "nativeExit": 0,
+      "wallSeconds": 5.521956960000352,
+      "counts": {
+        "fr063-award-level-existing": {
+          "cases": 2,
+          "methods": 2
+        },
+        "fr063-award-level-owner": {
+          "cases": 20,
+          "methods": 2
+        },
+        "fr063-award-level-policy": {
+          "cases": 33,
+          "methods": 4
+        },
+        "fr063-award-level-policy-boundary": {
+          "cases": 2,
+          "methods": 1
+        },
+        "fr063-joint-late-completion": {
+          "cases": 2,
+          "methods": 2
+        }
+      },
+      "descriptors": 5,
+      "methods": 11,
+      "plannedCases": 59,
+      "executedCases": 0
+    },
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+        "bytes": 26178048
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+        "bytes": 9503232
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+        "bytes": 26178048
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+        "bytes": 29179904
+      }
+    ]
+  },
+  "recovery": {
+    "retainedBase": "Previously accepted; not reopened",
+    "newDeltas": [
+      {
+        "receipt": "/tmp/a2-tests-wip-delta-github-1c85a092-20261017.json",
+        "receiptSha256": "84e6b6ef744e816374da2bd9774b4bad42a6d2a235f745682fb282e9ff00094b",
+        "sha": "1c85a0923d4d105a6a492b5d4787b9f793661294",
+        "base": "851655c027b1aa9961540fccef76b80d1484f173",
+        "files": 11,
+        "changedPaths": 7
+      },
+      {
+        "receipt": "/tmp/a2-first-preparation-fail-delta-github-47fa2227-20261017.json",
+        "receiptSha256": "1f879084b5aaaaef7e71d4883a57dfeff2af54fe787225732fa4783faec9ce90",
+        "sha": "47fa222755789e08d94eb3cd880221834548f210",
+        "base": "1c85a0923d4d105a6a492b5d4787b9f793661294",
+        "files": 12,
+        "changedPaths": 8
+      },
+      {
+        "receipt": "/tmp/a2-interface-fix-delta-github-b7648a2b-20261017.json",
+        "receiptSha256": "7cdfb8cba58bde967f5d5b4ae2f44c0d30c397e87ff78a0e682727c23be63cdc",
+        "sha": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+        "base": "47fa222755789e08d94eb3cd880221834548f210",
+        "files": 8,
+        "changedPaths": 4
+      },
+      {
+        "receipt": "/tmp/a2-second-preparation-fail-delta-github-a22c9280-20261017.json",
+        "receiptSha256": "e541b08251c9fa65d3b214a9179ff589e913455ad589af01f0ab82e2fbc332ed",
+        "sha": "a22c9280da99bfdbfdfc34ec7722b8c8c3c44afc",
+        "base": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+        "files": 13,
+        "changedPaths": 9
+      },
+      {
+        "receipt": "/tmp/a2-compile-import-fix-delta-github-40ed288b-20261017.json",
+        "receiptSha256": "aeeb31320c5a66239d2cbb48e237e9390f8299f1c2cac27ff6038648e47432c4",
+        "sha": "40ed288b88a365b072deb81420f6e937565852f8",
+        "base": "a22c9280da99bfdbfdfc34ec7722b8c8c3c44afc",
+        "files": 8,
+        "changedPaths": 4
+      },
+      {
+        "receipt": "/tmp/a2-red-prepared-delta-github-778cd024-20261017.json",
+        "sha256": "c17a4085551b10789af779635dca2f40671995a3c6e9d72f20032ac087baeb33",
+        "files": 22,
+        "allChangedPaths": 18
+      }
+    ]
+  },
+  "supportingChecks": [
+    {
+      "path": "/tmp/a2-red-source-prefinal-check-20261017.json",
+      "sha256": "21ee7b64c4b00553d981c64d8c0a350df9cf69dc08106f1e936338b640317ce4"
+    },
+    {
+      "path": "/tmp/a2-red-source-second-failure-check-20261017.json",
+      "sha256": "08f94b35d29bbb6de25420cf97e5daa7deb0c981f95ec862540ceca1adbb0604"
+    },
+    {
+      "path": "/tmp/a2-red-source-final-check-20261017.json",
+      "sha256": "7a737706695fb590600fb8fdfa1140018388440ab7f87677782df0f85d90099c"
+    }
+  ],
+  "proofLimits": [
+    "No actual runtime/EVIDENCE yet",
+    "Negative current scalar not independently visible through lastKnown=max(1,current)",
+    "No general UI qualification",
+    "Prior A1 and old Late2 remain exact historical provenance"
+  ],
+  "nextGate": {
+    "requires": "decision persistence and root release",
+    "onlyActualCategory": "fr063-award-level-policy-boundary",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "fr063-award-level-policy-boundary",
+      "-NoBuild"
+    ],
+    "expectedCausalRed": "native1;2 missing-named-helper assertion failures after actual owner/read/byte/no-input/no-mutation/strict-cleanup witnesses",
+    "afterActual": "preserve and independently qualify first causal RED before product changes",
+    "otherActualsReleased": false
+  },
+  "reviewerBuildTestRuntime": "NOT_RUN",
+  "repositoryWrites": false
+}
