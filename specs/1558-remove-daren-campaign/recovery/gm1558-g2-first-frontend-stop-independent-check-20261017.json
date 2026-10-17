@@ -1,0 +1,177 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_FIRST_FRONTEND_PREPARATION_STOP_CHECK",
+  "reviewedUtc": "2026-10-17T10:44:51.651145+00:00",
+  "carrier": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+  "source": "ce7cf01204c55016fc8da636e603690155f008a9",
+  "priorCompiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "priorProductBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "packet": {
+    "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json",
+    "bytes": 12557,
+    "sha256": "68818518ee0ba7516553ad3227311afaba00ca1da487b43e48b6049e24ef5940"
+  },
+  "chains": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/record.json.gz",
+      "bytes": 15351,
+      "sha256": "b711e078facda4798db55ac7c704e766944b9feebcc1d4291fe5afdb06f8f1c7",
+      "storedSha256": "1e6d1cf5b26f6d4a39772cb0500e23351d0b2a022e4cc2ec92eb9e476a9cc2b4",
+      "compression": "gzip mtime0",
+      "committedStoredRawLiveExact": true
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/stdout.log.gz",
+      "bytes": 238,
+      "sha256": "69f00b3ca662960d3ca72c91e0eef45fd42f396e7ad1835258607d10a077b056",
+      "storedSha256": "d92d6f6053ff8bb01622d7d5e85d723410c73f9b74ff3a001f6357aa5a5cf42b",
+      "compression": "gzip mtime0",
+      "committedStoredRawLiveExact": true
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/process.json.gz",
+      "bytes": 211,
+      "sha256": "bb853293beeeedaff0f3349dbfeeba0f442eea442319542126dc165aadaa5dd7",
+      "storedSha256": "c38ef0d56a0a106d58ed88821bdddc32ad8833156992d7a8920535cf03bf5b5f",
+      "compression": "gzip mtime0",
+      "committedStoredRawLiveExact": true
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json.gz",
+      "bytes": 355,
+      "sha256": "721ed70054f62bf1115780b4017d4a23d7a8198b96c691f4eb80f91e5f2b188a",
+      "storedSha256": "4e2f1ee148565b9cd43c427dfbe2641ea530d124aaf817cb70da3cd01f9a4a7c",
+      "compression": "gzip mtime0",
+      "committedStoredRawLiveExact": true
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-preparation-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/gm1558-g2-preparation-run.py.gz",
+      "bytes": 7522,
+      "sha256": "6ea8f61a2a29d762378865b1421c8f491bf003da21c00502a190be073550616b",
+      "storedSha256": "60707d1ea771df2230808e8ccfcf2c0e341bc354e1e8bd25480e9fe9dd3629b0",
+      "compression": "gzip mtime0",
+      "committedStoredRawLiveExact": true
+    }
+  ],
+  "native": {
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.WebFrontend",
+    "nativeExit": 127,
+    "wallSeconds": 0.28049916899908567,
+    "startedUtc": "2026-10-17T10:42:02.005335+00:00",
+    "finishedUtc": "2026-10-17T10:42:02.351082+00:00",
+    "sourceHead": "ce7cf01204c55016fc8da636e603690155f008a9",
+    "headAfter": "ce7cf01204c55016fc8da636e603690155f008a9",
+    "statusAfter": "",
+    "resultDirectories": [],
+    "distBefore": [],
+    "distAfter": [],
+    "ownedOutputCleanRecord": null
+  },
+  "sourceBinding": {
+    "path": "specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+    "sha256": "df8b263c7e1ccb8a2e6cc82fcc82bdf6b0bccabd96c6761a78cfc2f24e83d72a",
+    "pinCountDeclared": 274,
+    "limit": "Binding digest checked; no repeat of full source-pin audit."
+  },
+  "binaryContinuity": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "575557c4531a9d5a920ed8b4b98ee14655e68ef46c10c532d19b7dc13924ee04",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29326336,
+      "sha256": "30b12c57583a3fbd90f22cfc2459eba4f6614fb256d8a20cb0227ccddf96b111",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "currentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "currentExact": true
+    }
+  ],
+  "namespaceBeforeAfterEqual": true,
+  "namespaceCount": 23,
+  "newFixtureRoots": 0,
+  "package": {
+    "path": "BookOfEternityClient.WebFrontend/package.json",
+    "sha256": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "build": "npm run typecheck && vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
+  },
+  "lock": {
+    "path": "BookOfEternityClient.WebFrontend/package-lock.json",
+    "sha256": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "typescript": {
+      "version": "6.0.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-6.0.3.tgz",
+      "integrity": "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==",
+      "dev": true,
+      "license": "Apache-2.0",
+      "bin": {
+        "tsc": "bin/tsc",
+        "tsserver": "bin/tsserver"
+      },
+      "engines": {
+        "node": ">=14.17"
+      }
+    }
+  },
+  "readOnlyCurrentDependencyObservation": {
+    "nodeModulesExists": false,
+    "localTscExists": false,
+    "limit": "Current read-only observation corroborates literal FIRST shell error; no installation history inferred."
+  },
+  "recovery": {
+    "receipt": {
+      "path": "/tmp/gm1558-g2-first-frontend-stop-delta-github-9251c03c-20261017.json",
+      "bytes": 13060,
+      "sha256": "af3390ee29a27990ce9aa0089f5685ad6e2ad8183703ba90626cf3f488159fa5"
+    },
+    "sha": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+    "base": "ce7cf01204c55016fc8da636e603690155f008a9",
+    "fileCount": 16,
+    "changedPathCount": 12,
+    "exactBytesBlobModeAndSet": true,
+    "metadataOnly": true,
+    "remoteReadback": "9251c03cf86f2de74f66dda7f445965e96fd8882\trefs/heads/1558-remove-daren-campaign-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+    "limit": "Immediate new delta checked; retained whole-base composition is not replayed."
+  },
+  "reviewActions": "Read/hash/decompress/git metadata and exact published contents only; no npm/install/compiler/test/producer/host/browser/reproduction."
+}

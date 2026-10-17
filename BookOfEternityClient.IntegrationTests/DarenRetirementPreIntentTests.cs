@@ -50,13 +50,29 @@ public sealed class DarenRetirementPreIntentTests(ITestOutputHelper output)
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
-    public async Task RetiredPathWithInvalidLaterImage_IsMalformedScratchNotRecognizedEvidence(int format)
+    public async Task RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence(int format)
     {
         var root = NewRoot();
         using var cleanup = new CleanupOwnedFixture(root, output.WriteLine);
         var files = await SeedAsync(root);
         var intent = SeedIntent(files, format, retired: true, corruptImage: true);
-        await InspectAsync(root, intent, expectRetained: false);
+        await InspectAsync(root, intent, expectRetained: true);
+    }
+
+    [Fact]
+    public async Task ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence()
+    {
+        var root = NewRoot();
+        using var cleanup = new CleanupOwnedFixture(root, output.WriteLine);
+        var files = await SeedAsync(root);
+        var intent = SeedIntent(files, 2, retired: true, corruptImage: false);
+        var active = Path.Combine(Path.GetDirectoryName(intent)!, "active.json");
+        var bytes = File.ReadAllBytes(intent);
+        File.Move(intent, active);
+        Assert.Equal(bytes, File.ReadAllBytes(active));
+        Assert.False(File.Exists(intent));
+        output.WriteLine("SOURCE_DERIVED_FULL_FORMAT2_ACTIVE_NOT_AUTHENTIC_CAPTURE; same envelope promoted only within owned fixture");
+        await InspectAsync(root, active, expectRetained: true);
     }
 
     private static async Task<FileSystemManager> SeedAsync(string root)

@@ -1,0 +1,98 @@
+{
+  "kind": "ROOT_ACCEPTED_FIRST_FRONTEND127_CAUSAL_EVIDENCE_AND_RELEASED_REFINED_R03_DEPENDENCY_PREPARATION",
+  "utc": "2026-10-17T10:46:53.294211+00:00",
+  "carrier": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+  "independentVerdict": "ACCEPTED_CAUSAL_PREPARATION_DEPENDENCY_FAILURE_NOT_RETIREMENT_RED",
+  "rootDecision": "ACCEPT_G2_P01_DEPENDENCY_FAILURE__REFINE_RECOGNISED_RETIRED_ADMISSION__OWN_LOCKED_DEPENDENCY_SETUP_AND_FRESH_ZEROEXEC_PREP_AFTER_PUBLICATION",
+  "pins": [
+    {
+      "path": "/tmp/gm1558-g2-first-frontend-stop-evidence-independent-20261017.md",
+      "bytes": 2228,
+      "sha256": "2f54977fe1d435f1b2f72bd297a7cbf565505be81cc9046414b2a1992e323c32"
+    },
+    {
+      "path": "/tmp/gm1558-g2-first-frontend-stop-evidence-independent-20261017.json",
+      "bytes": 4612,
+      "sha256": "602897a42fca968f469295b7ecfaedeb4e927cc8188632363704c281b781bcfd"
+    },
+    {
+      "path": "/tmp/gm1558-g2-first-frontend-stop-independent-check-20261017.json",
+      "bytes": 8106,
+      "sha256": "872b9a3f7f2ff8d734183e27431ba0bd2bd393130651c4d7bbb0c4dbf7318444"
+    },
+    {
+      "path": "/tmp/gm1558-root-first-frontend127-carrier-readback-9251c03c-20261017.json",
+      "bytes": 2835,
+      "sha256": "123b6a674e46ace1d11d4bbf1bd0925588b6e3d2651d2c86ce0183130d96d92f"
+    },
+    {
+      "path": "/tmp/gm1558-root-first-frontend127-prerequisites-20261017.json",
+      "bytes": 1029,
+      "sha256": "8aeb294ecbcb2d4382608eea8b862c0b046be4542f8792994dd1474a2b92063f"
+    },
+    {
+      "path": "/tmp/gm1558-g2-first-frontend-stop-delta-github-9251c03c-20261017.json",
+      "bytes": 13060,
+      "sha256": "af3390ee29a27990ce9aa0089f5685ad6e2ad8183703ba90626cf3f488159fa5"
+    },
+    {
+      "path": "/tmp/gm1558-root-recovery-composition-9251c03c-20261017.json",
+      "bytes": 35609,
+      "sha256": "14e20393e617ac69124c24f2024c7e2a22e5fb8da136950aa926f3363a888e8f"
+    },
+    {
+      "path": "/tmp/gm1558-g2-refined-r03-approach-20261017.txt",
+      "bytes": 1744,
+      "sha256": "5ad497a5985b54e9c8a2bc2afa3a66e53639eda682165a2b784bd2e90c06a1fe"
+    },
+    {
+      "path": "/tmp/gm1558-root-browser-first-run.py",
+      "bytes": 16818,
+      "sha256": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0"
+    },
+    {
+      "path": "/tmp/gm1558-root-browser-smoke.mjs",
+      "bytes": 5747,
+      "sha256": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818"
+    },
+    {
+      "path": "/tmp/gm1558-root-cdp-client.mjs",
+      "bytes": 2296,
+      "sha256": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23"
+    }
+  ],
+  "qualifiedFailure": {
+    "actualSource": "ce7cf01204c55016fc8da636e603690155f008a9",
+    "nativeExit": 127,
+    "wallSeconds": 0.28049916899908567,
+    "cause": "Own node_modules/local tsc unavailable; no compiler diagnostic or package-install incompatibility inferred.",
+    "rawChains": 5,
+    "sevenPrior72aDllPinsUnchanged": true,
+    "distEmpty": true,
+    "managedCleanupBuildCatalogPlanAndRuntimeStarted": false
+  },
+  "sourceCorrection": [
+    "Implement refined R03 using existing strict Format1/2 codec decoded envelope separated from effect/admission validation. Open/validate owned journal transport outside malformed-codec catch. Recognised supported envelope with exact canonical retired profile identity refuses/retains before image or physical-member-authority errors; never read/stat/open profile contents for recognition, no aliases, partial-prefix parser, retained old profile service or new compatibility reader.",
+    "For no-active intent, ordinary structurally malformed/truncated scratch keeps prior discard policy; recognised exact retired member with bad images/authority retains all evidence and other bytes. Reverse rejected invalid-retired-image discard assertions. For default active Format2, retirement/admission exception must remain outside codec wrapper, preserving explicit retired-retained message and whole-journal/no-callback boundaries.",
+    "Add only actual affected controls: revised retired/ordinary/truncated Format1/2 rows and one activeFormat2 exact-message/byte/callback refusal neighbor (proposed9cases4methods, native membership pending). Keep meaningful ordinary shared/codec/path/generation/unknown/pending coverage; independent final SOURCE judges any additional real dependencies. R01/R02 byte-exact restored generic helpers remain preserved.",
+    "Persist exact independent PREPSTOP3reports, both Rootreadbacks, this decision,925complete GitHubreceipt/103composition plus approved UNRUN RootChromium3sources (recovery/tools) in same corrected source WIP. Existing127 raw/sentinel/helper/sourcece7 history and all prior28baseline/fixturefailures stay immutable. Update sourcepins/ledger/catalog/current+mirror/status honestly, publish nonforce [skip ci], exactremote/newGitHubdelta before dependency installation or any compiler."
+  ],
+  "allowedPreparationAfterOwnVerifiedPublication": [
+    "ONE recorded project-local npm ci --include=dev --no-audit --no-fund --cache /tmp/gm1558-npm-cache-20261017 from own1558frontend using unchanged accepted package.json/package-lock.json. Capture command/process/stdout/exit/Node+npm versions/lock hashes and installed local compiler+bundler availability/version/hash. No npx/global compiler substitute, lock/version changes, shared node_modules/symlink, new credentials or global settings.",
+    "Only on setup native0 and exact lock/source continuity, one first-after-dependency-setup npm run build at new corrected published source with distinct immutable record linked to original127. Preserve successful app+node typechecks/freshdist manifest; old127/sentinel/helper remains. No runtime frontend test yet.",
+    "Then clean only settled own1558generatedoutputs and ONE FIRST managed BOTH/ValidateCatalog, then on native0 ONE exact current affected GREEN SelectionFile PlanOnly-NoBuild0. Fresh servedReact/managedasset inventory/no-orphan campaignproof; exact observed native methods/cases/frontend estimates separate; new7DLL/source/ns pins. Publish coherent frozen PREP before final independent SOURCE.",
+    "If install/compiler/catalog/Plan or cleanup fails, stop dependent work, freeze first outcome and publish before causal review/correction. No automatic retry or broad suite/family replay."
+  ],
+  "rootChromiumHelper": {
+    "pythonSha256": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0",
+    "mjsSha256": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818",
+    "cdpSha256": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23",
+    "status": "Independent SOURCE-only ownership/cleanup refinements accepted, UNRUN. Actual still waits final implementation SOURCE/Root release."
+  },
+  "held": [
+    "ALLruntime/GREEN/browser until final freshSOURCE and Root actualrelease",
+    "Main/merge/forcepush/branchdelete/issueclosure/securitycredentials/userdata changes",
+    "Windows/CI/Library transfer retry, HOT/M3/F2/newQTE, acceptedunchangedfamily replay"
+  ],
+  "runtimeExecutedByThisReceipt": false
+}

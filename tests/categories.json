@@ -28558,7 +28558,7 @@
     },
     {
       "id": "daren-retirement-private-intent",
-      "responsibility": "1558 R03 quiescent pre-intent admission: complete source-derived Format1/2 retired-member evidence retained before scratch cleanup; ordinary/truncated private stages and invalid later image neighbors keep existing discard semantics. Exact owned root/current generation/opaque images, full snapshots/callbacks and strict cleanup.",
+      "responsibility": "1558 R03 quiescent pre-intent admission: recognized strict Format1/2 envelopes with exact canonical retired-member identity retain evidence before image or physical-member authority admission; ordinary/truncated scratch keeps discard policy. One active Format2 neighbor preserves explicit retired refusal outside codec wrapping. Exact source-derived owned root/generation/opaque images/snapshots/callbacks and strict cleanup; nine cases/four methods pending discovery.",
       "excludes": "Authentic producer capture, campaign execution, general journal redesign, Windows qualification, broad historical family replay.",
       "changeHints": [
         "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
@@ -28578,7 +28578,8 @@
           "tests": [
             "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard",
             "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
-            "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RetiredPathWithInvalidLaterImage_IsMalformedScratchNotRecognizedEvidence"
+            "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence",
+            "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence"
           ]
         }
       ]

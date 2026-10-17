@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01–R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.
+**Status**: G2 P01 FIRST frontend127 independently classified missing local dependencies, not retirement RED; original raw preserved. Refined R03 decoder/admission and nine source-derived controls authored; UNCOMPILED/UNRUN, static17owners/816catalog. After this published/recovered WIP: one owned locked npmci, then first-after-setup frontend→fresh managed BOTH/catalog→exact GREEN PlanOnly0. SOURCE/runtime acceptance and task completion remain held.
 
 ## Source issues and scope
 

@@ -1,0 +1,76 @@
+{
+  "kind": "INDEPENDENT_FIRST_G2_FRONTEND_PREPARATION_STOP_CAUSAL_EVIDENCE",
+  "reviewer": "independent Astra/XHigh, repository read-only",
+  "reviewedUtc": "2026-10-17T10:45:35.574518+00:00",
+  "verdict": "ACCEPTED_CAUSAL_PREPARATION_DEPENDENCY_FAILURE_NOT_RETIREMENT_RED",
+  "carrier": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+  "actualSource": "ce7cf01204c55016fc8da636e603690155f008a9",
+  "priorCompiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "priorProductBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "native": {
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 127,
+    "wallSeconds": 0.28049916899908567,
+    "startedUtc": "2026-10-17T10:42:02.005335+00:00",
+    "finishedUtc": "2026-10-17T10:42:02.351082+00:00",
+    "labelIsNotTimestamp": true,
+    "testsExecuted": 0,
+    "managedBuildCatalogPlanStarted": false,
+    "frontendCompilerOrBundleQualified": false
+  },
+  "finding": {
+    "id": "G2-P01",
+    "classification": "confirmed preparation dependency failure",
+    "path": "BookOfEternityClient.WebFrontend/package.json:scripts.build/typecheck",
+    "scenario": "FIRST npm build delegates to npm typecheck; its shell cannot resolve tsc. TypeScript application checking, node checking and Vite bundling do not run successfully.",
+    "evidence": "Exact stdout ends sh: 1: tsc: not found; process/record/sentinel bind the same clean ce7 source and invocation. Current read-only node_modules/.bin/tsc and node_modules are absent.",
+    "consequence": "No fresh React artifact, managed package, current G2 compiled code, discovery, plan or runtime acceptance can be inferred.",
+    "causalLimit": "The shell-resolution failure is proven. No TypeScript source error, package-install failure/history, dependency incompatibility or product regression is inferred."
+  },
+  "qualification": {
+    "allFiveCommittedStoredRawLiveChainsExact": true,
+    "sourceBindingSha256": "df8b263c7e1ccb8a2e6cc82fcc82bdf6b0bccabd96c6761a78cfc2f24e83d72a",
+    "sevenPriorDllPinsBeforeAfterCurrentExact": true,
+    "distBeforeAfterEmpty": true,
+    "ownedNamespacesBeforeAfterEqual": true,
+    "newFixtureRoots": 0,
+    "fixtureCleanup": "NOT_APPLICABLE; no test/host/browser/producer fixture launched. Existing evidence directories remained unchanged.",
+    "ownedManagedOutputCleanupNotStarted": true,
+    "immediateGitHubRecovery": {
+      "rawFiles": 16,
+      "changedPaths": 12,
+      "allMetadata": true,
+      "exactBytesBlobModeAndSet": true
+    },
+    "rootWholeRecoveryContext": "Root receipt records 103 consecutive deltas; prior fullbase was not independently replayed."
+  },
+  "support": {
+    "path": "/tmp/gm1558-g2-first-frontend-stop-independent-check-20261017.json",
+    "sha256": "872b9a3f7f2ff8d734183e27431ba0bd2bd393130651c4d7bbb0c4dbf7318444"
+  },
+  "rootSupportingReceipts": [
+    {
+      "path": "/tmp/gm1558-root-first-frontend127-carrier-readback-9251c03c-20261017.json",
+      "sha256": "123b6a674e46ace1d11d4bbf1bd0925588b6e3d2651d2c86ce0183130d96d92f"
+    },
+    {
+      "path": "/tmp/gm1558-root-first-frontend127-prerequisites-20261017.json",
+      "sha256": "8aeb294ecbcb2d4382608eea8b862c0b046be4542f8792994dd1474a2b92063f"
+    }
+  ],
+  "nextBoundedConditions": [
+    "Persist this diagnosis and Root disposition before changing the frozen failure or starting another preparation. Preserve the original raw, sentinel and failure unchanged.",
+    "Restore project-local dependencies from the unchanged accepted package-lock, including dev dependencies; record exact install command/outcome and compiler/bundler versions. Do not substitute a global/npx compiler or rewrite dependency versions to conceal the failure.",
+    "Finish and publish the coherent R03 source correction with exact recovery; bind the next fresh frontend build to that source and a distinct FIRST record. If successful, fresh managed BOTH/catalog and exact GREEN PlanOnly follow the established dependency order.",
+    "The one final G2 SOURCE/FIXTURE/SELECTION/PREP review remains pending. R03 recognised-retired intent preservation/admission placement and active Format2 error-copy controls must close there before runtime release."
+  ],
+  "limits": [
+    "No installation, compiler, test, producer, host, browser or replay executed by reviewer.",
+    "No GREEN/removal acceptance or retirement RED classification from this preparation failure. Accepted 28-case baseline and all earlier failure histories remain distinct and unchanged.",
+    "This report gives no runtime, Windows/CI, user-data deletion, main/merge or broader execution authorization."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "kind": "ROOT_FIRST_FRONTEND127_RAW_CARRIER_AND_PREREQUISITE_READBACK",
+  "utc": "2026-10-17T10:44:38.943449+00:00",
+  "carrier": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+  "source": "ce7cf01204c55016fc8da636e603690155f008a9",
+  "rawChains": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/record.json.gz",
+      "sha256": "b711e078facda4798db55ac7c704e766944b9feebcc1d4291fe5afdb06f8f1c7",
+      "storedSha256": "1e6d1cf5b26f6d4a39772cb0500e23351d0b2a022e4cc2ec92eb9e476a9cc2b4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/stdout.log.gz",
+      "sha256": "69f00b3ca662960d3ca72c91e0eef45fd42f396e7ad1835258607d10a077b056",
+      "storedSha256": "d92d6f6053ff8bb01622d7d5e85d723410c73f9b74ff3a001f6357aa5a5cf42b"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/process.json.gz",
+      "sha256": "bb853293beeeedaff0f3349dbfeeba0f442eea442319542126dc165aadaa5dd7",
+      "storedSha256": "c38ef0d56a0a106d58ed88821bdddc32ad8833156992d7a8920535cf03bf5b5f"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json.gz",
+      "sha256": "721ed70054f62bf1115780b4017d4a23d7a8198b96c691f4eb80f91e5f2b188a",
+      "storedSha256": "4e2f1ee148565b9cd43c427dfbe2641ea530d124aaf817cb70da3cd01f9a4a7c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/gm1558-g2-preparation-run.py.gz",
+      "sha256": "6ea8f61a2a29d762378865b1421c8f491bf003da21c00502a190be073550616b",
+      "storedSha256": "60707d1ea771df2230808e8ccfcf2c0e341bc354e1e8bd25480e9fe9dd3629b0"
+    }
+  ],
+  "sourceBindingExact": true,
+  "nativeExit": 127,
+  "wallSeconds": 0.28049916899908567,
+  "sevenOld72aPinsContinuous": true,
+  "namespaceContinuous": true,
+  "emptyDistBeforeAfter": true,
+  "managedOutputCleanupBuildCatalogPlanStarted": false,
+  "runtimeExecuted": false,
+  "recovery": {
+    "receipt": "/tmp/gm1558-g2-first-frontend-stop-delta-github-9251c03c-20261017.json",
+    "composition": "/tmp/gm1558-root-recovery-composition-9251c03c-20261017.json",
+    "completeDeltas": 103
+  },
+  "prerequisites": {
+    "receipt": "/tmp/gm1558-root-first-frontend127-prerequisites-20261017.json",
+    "sha256": "8aeb294ecbcb2d4382608eea8b862c0b046be4542f8792994dd1474a2b92063f"
+  },
+  "classification": "Raw confirms npm child shell could not find tsc before TypeScript/Vite. Root observes own node_modules absent. Independent causal EVIDENCE pending; no retry/installation/source correction by this receipt."
+}

@@ -1,12 +1,12 @@
 {
   "kind": "G2_COHERENT_IMPLEMENTATION_SOURCE_CANDIDATE_UNCOMPILED_UNRUN",
-  "utc": "2026-10-17T10:39:44.278932+00:00",
+  "utc": "2026-10-17T10:49:22.052694+00:00",
   "implementationBase": "023931661391926398a5c5ebe0897a66985235b2",
   "partialCarrier": "ee2433bca20d9af4f11bf61fcd1ee35dd526859d",
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01\u2013R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.",
+  "status": "G2 P01 FIRST frontend127 independently classified missing local dependencies, not retirement RED; original raw preserved. Refined R03 decoder/admission and nine source-derived controls authored; UNCOMPILED/UNRUN, static17owners/816catalog. After this published/recovered WIP: one owned locked npmci, then first-after-setup frontend\u2192fresh managed BOTH/catalog\u2192exact GREEN PlanOnly0. SOURCE/runtime acceptance and task completion remain held.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -87,9 +87,9 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/DarenRetirementPreIntentTests.cs",
-      "bytes": 9801,
-      "sha256": "730710e0ae75a8cf34d9d2076afb07c4ea9cd5f6d1b582e87401ff232248a503",
-      "gitBlob": "e83ed5ac3c45601f95175cd50e36d0d759412a59",
+      "bytes": 10592,
+      "sha256": "326c6578a5072f0d5ec8571d0b457d879e34ffbe907a1ef917f57bd2c8469377",
+      "gitBlob": "79a7157fc263f3c49605d27eb825cc1b617e59b0",
       "mode": "100644"
     },
     {
@@ -1690,16 +1690,16 @@
     },
     {
       "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
-      "bytes": 7877,
-      "sha256": "b80f2ef740057e6c4f27b20b3108d4f0d857f143a70d8b8d7e9c39b423cfd3bb",
-      "gitBlob": "748a0c58174cbaf324d36ccb9459488b5fe61ea0",
+      "bytes": 8089,
+      "sha256": "1c32f4174d98e4566154a51810526400c87d8ca137d6e72ffe2f91c4e83580ce",
+      "gitBlob": "ea3366c8becfd6c6e0352512671122e1be24095d",
       "mode": "100644"
     },
     {
       "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
-      "bytes": 35543,
-      "sha256": "c9e9150225125dae422a3612fb1b3610277ffab22ccfd9fadc87739c150e3b4c",
-      "gitBlob": "b7fe9a79768ba6cce8db4332d4048d35ceb3697e",
+      "bytes": 35867,
+      "sha256": "739ad506b373871ed91cc2be7ec9098429129b0ead8e181da3bb9b80e8005143",
+      "gitBlob": "3e5c3cbd48ca21d3271bb42109dd8b8d8be7989e",
       "mode": "100644"
     },
     {
@@ -1907,23 +1907,23 @@
     },
     {
       "path": "tests/categories.json",
-      "bytes": 2070258,
-      "sha256": "7ceb55d1684313877d058bec41777e54a24a7b11e5284ab79bfb5eea10e89672",
-      "gitBlob": "182cab137d88dd85d59892c27bed84e8f1166784",
+      "bytes": 2070522,
+      "sha256": "546fe9c9c562e60d1252ce84549bc357541a46fac83ee2ac85b5e43d6ae12e09",
+      "gitBlob": "450820c65b6f14bcc874e830eb95693b3708b946",
       "mode": "100644"
     },
     {
       "path": "tests/selection.json",
-      "bytes": 7325,
-      "sha256": "6aafb704dda4bcf2e21315998a9a576efaefc20eff5d9bee617a473037cb20e0",
-      "gitBlob": "cc7524a231a2391dfa5a1fb7f5d797127d65af84",
+      "bytes": 7360,
+      "sha256": "fca8f8872d90fc035a030901a80e2c08f71fc844f42647db1571d6e74cecc5ea",
+      "gitBlob": "5deddae8b152d0291808f30b0877ef7be9eb05ee",
       "mode": "100644"
     },
     {
       "path": "tests/selections/1558-daren-retirement.json",
-      "bytes": 7325,
-      "sha256": "6aafb704dda4bcf2e21315998a9a576efaefc20eff5d9bee617a473037cb20e0",
-      "gitBlob": "cc7524a231a2391dfa5a1fb7f5d797127d65af84",
+      "bytes": 7360,
+      "sha256": "fca8f8872d90fc035a030901a80e2c08f71fc844f42647db1571d6e74cecc5ea",
+      "gitBlob": "5deddae8b152d0291808f30b0877ef7be9eb05ee",
       "mode": "100644"
     }
   ],
@@ -1955,6 +1955,7 @@
     "M\tBookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.External.cs",
     "D\tBookOfEternityClient.IntegrationTests/DarenQteShowcaseTests.cs",
     "M\tBookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+    "A\tBookOfEternityClient.IntegrationTests/DarenRetirementPreIntentTests.cs",
     "D\tBookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs",
     "D\tBookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.Admission.cs",
     "D\tBookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.ConsoleAndCancel.cs",
@@ -2016,17 +2017,26 @@
     "A\tspecs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/g2-method-row-ledger-20261017.json",
     "M\tspecs/1558-remove-daren-campaign/plan.md",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json.gz",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/gm1558-g2-preparation-run.py.gz",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/process.json.gz",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/record.json.gz",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/stdout.log.gz",
+    "A\tspecs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g1-evidence-accepted-delta-github-02393166-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-coherent-source-delta-github-77547b99-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-partial-source-delta-github-ee2433bc-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-g2-r02-r03-source-delta-github-ce7cf012-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-02393166-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-77547b99-20261017.json",
+    "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-ce7cf012-20261017.json",
     "A\tspecs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-ee2433bc-20261017.json",
     "M\tspecs/1558-remove-daren-campaign/spec.md",
     "M\tspecs/1558-remove-daren-campaign/tasks.md",
     "M\ttests/categories.json",
     "M\ttests/selection.json",
-    "M\ttests/selections/1558-daren-retirement.json",
-    "A\tBookOfEternityClient.IntegrationTests/DarenRetirementPreIntentTests.cs"
+    "M\ttests/selections/1558-daren-retirement.json"
   ],
   "currentLedger": {
     "path": "g2-method-row-ledger-20261017.json",
@@ -2055,7 +2065,7 @@
       "portable-original-remaining-owning-close-linux"
     ],
     "ownerCount": 17,
-    "sha256": "6aafb704dda4bcf2e21315998a9a576efaefc20eff5d9bee617a473037cb20e0",
+    "sha256": "fca8f8872d90fc035a030901a80e2c08f71fc844f42647db1571d6e74cecc5ea",
     "nativeMembership": "UNRUN; no proposed total forced"
   },
   "sourceAdmission": {
@@ -2063,7 +2073,8 @@
     "shared": "TrustedLocalFilePublication.ValidateJournal traverses entire member list via ValidateMemberPath before RecoverCore Preflight/member callbacks; exact normalized BasePath/client_profile/qte_showcase_rewards.json refused, ordinary/mixed sibling not changed first.",
     "ownerRemoval": "No active Daren service/DTO/route/attempt/CLI launch/grant/profile-normalizer/React view remains. Constants/serialized historical external DTO fields are read-only retired evidence, no replacement writer/compatibility framework.",
     "preserved": "11practice/ordinaryQTE/scoring/input/accessibility/generation/token/ScenarioCore/sharedpublishers/unknown+pending precedence remain; no save/profile/grant/history scrub or clawback.",
-    "privateIntentBoundary": "R03 read-only complete Format1/2 inspection before no-active intent deletion; every other codec/path/generation/image validation retained; exact retired decision outside malformed-stage catch; ordinary discard semantics preserved"
+    "privateIntentBoundary": "R03 refined: owned journal ValidateFile/open outside malformed-codec catch; shared strict Format1/2 decoder yields envelope; exact canonical retired identity refuses outside catch before image or physicalmember checks. Active effect admission outside Format2 wrapper; ordinary malformed scratch discard unchanged.",
+    "positiveValidation": "ReadJournal -> OpenJournal -> DecodeJournal -> ValidateJournal; original positive path/generation/image/whole-set validation remains."
   },
   "changedDependencyClosure": [
     {
@@ -2150,7 +2161,7 @@
     }
   },
   "preparation": {
-    "frontend": "ONEFIRST npm runbuild with process/stdout/exit+freshdist manifest; includes app+nodecompiler",
+    "frontend": "ONE FIRST after explicit locked setup; distinct helper/sentinel linked to immutable original127; source/native/app+nodecompiler/freshdist manifest",
     "managed": "Clean only settled own1558generatedbin/Debug/net8.0; ONEFIRST canonicalBOTH/ValidateCatalog afterfreshdist; fresh managed servedassets and noorphan campaigninventory",
     "plan": "Only ifcompiler/catalog native0, ONEFIRST exact17owner SelectionFile PlanOnly-NoBuild0; observedC#cases/descriptor/frontendfile estimates separate",
     "stop": "FIRSTunexpected source/compiler/catalog/plan/cleanup outcome frozen/published, no automaticretry",
@@ -2161,17 +2172,25 @@
       "packet": "recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json",
       "observed": "tsc:not found",
       "managedCatalogPlan": "NOT_STARTED",
-      "runtime": "NOT_STARTED"
+      "runtime": "NOT_STARTED",
+      "independentClassification": "G2-P01_ACCEPTED_MISSING_LOCAL_DEPENDENCIES_NOT_COMPILER_DIAGNOSTIC_OR_RETIREMENT_RED"
+    },
+    "dependencySetup": {
+      "command": "npm ci --include=dev --no-audit --no-fund --cache /tmp/gm1558-npm-cache-20261017",
+      "status": "AUTHORIZED_AFTER_THIS_WIP_PUBLICATION_UNRUN",
+      "lockPolicy": "unchanged owned package/lock; local compiler only; no global/npx/shared dependency/credentials/version replacement"
     }
   },
   "futureRuntime": "HELD until independently accepted concreteSOURCE/PREP +persistedRootexactrelease; Root one realChromium BranchChoice/retry/exit/staleSPA sample with actualnewDLL/servedReact/owneddata binding",
-  "recovery": "Retainedfull7a+101completeconsecutiveGitHubdeltas at775; Rootcomposition775 and exactee\u2192775 receipt preserved. This R02/R03 correction extends recovery with a new complete immediate delta; no fullclone/basebyte rehash.",
+  "recovery": "Retainedfull7a+103completeRootdeltas at925; original127fivechains/oldhelpers unchanged. New immediate correctiondelta required before dependency setup/build.",
   "authoringOutcomes": [
     "Guarded /tmp sourceedit first ambiguousmarker stop beforeExplorerwrite; narrowedexactcontext, no native/PREP outcome.",
     "RootR01 identified inadvertently removedgenericRestoretail; restored exact1690B beforebuild, Rootconfirmed, no testoracle weakening.",
     "Partial api-error JSON escaping normalized unnecessarily; coherentcandidate restoredalloriginalbytes exceptexactcampaignactionobject.",
     "Reviewer R02 missing generic helper from broad campaign cut restored exact023 before first compiler.",
-    "Reviewer R03 recognized full Format1/2 private intent boundary added before first compiler; eight new GREEN controls UNRUN."
+    "Reviewer R03 recognized full Format1/2 private intent boundary added before first compiler; eight new GREEN controls UNRUN.",
+    "Refined R03 supersedes unexecuted invalid-image-discard proposal: recognized retired metadata retains before image/physicalauthority checks; nine rows/fourmethods pending native.",
+    "Metadata helper first stopped TypeError treating futureRuntime string as object, then continuation omitted status binding and stopped NameError; neither wrote sourcepacket. Corrected using actual schema/current status, without repeating earlier file/catalog/report mutations. No product/native/PREP failure."
   ],
   "limits": [
     "UNCOMPILED/UNRUN source candidate; no G2SOURCE/GREEN/requirement/task completion.",
@@ -2183,5 +2202,22 @@
     "carrier": "77547b99851d37f68313e31d9b573c4d578235f6",
     "receipt": "recovery/gm1558-g2-coherent-source-delta-github-77547b99-20261017.json",
     "rootComposition": "recovery/gm1558-root-recovery-composition-77547b99-20261017.json"
-  }
+  },
+  "rootBrowserHelpers": [
+    {
+      "path": "recovery/tools/gm1558-root-browser-first-run.py",
+      "sha256": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0",
+      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+    },
+    {
+      "path": "recovery/tools/gm1558-root-browser-smoke.mjs",
+      "sha256": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818",
+      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+    },
+    {
+      "path": "recovery/tools/gm1558-root-cdp-client.mjs",
+      "sha256": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23",
+      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+    }
+  ]
 }

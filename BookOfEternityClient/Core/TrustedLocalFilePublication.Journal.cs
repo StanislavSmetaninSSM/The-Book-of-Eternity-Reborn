@@ -68,18 +68,30 @@ internal sealed partial class TrustedLocalFilePublication
     /// <param name="path">
     /// The existing owned authority journal to read.
     /// </param>
-    /// <param name="inspectRetiredMembers">
-    /// Defers only the retired-member decision during read-only private intent inspection.
-    /// Every codec, path, generation and image check still runs before that decision.
-    /// </param>
     /// <returns>
-    /// A fully validated v1 or v2 journal with exact image sources.
+    /// A fully admitted v1 or v2 journal with exact image sources.
     /// </returns>
-    private Journal ReadJournal(string path, bool inspectRetiredMembers = false)
+    private Journal ReadJournal(string path)
     {
-        using var stream = new FileStream(_journalScope.ValidateFile(path, allowMissing: false),
-            FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
-            TrustedLocalFileImage.CopyBufferSize, FileOptions.SequentialScan);
+        using var stream = OpenJournal(path);
+        var journal = DecodeJournal(stream, path);
+        // Effect/member admission is outside the codec wrapper. In particular,
+        // retirement is not relabelled as a malformed v2 frame.
+        ValidateJournal(journal);
+        return journal;
+    }
+
+    private FileStream OpenJournal(string path) => new(
+        _journalScope.ValidateFile(path, allowMissing: false),
+        FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
+        TrustedLocalFileImage.CopyBufferSize, FileOptions.SequentialScan);
+
+    /// <summary>
+    /// Decodes a complete supported envelope from an already admitted owned stream.
+    /// Member/image admission remains the caller's separate effect boundary.
+    /// </summary>
+    private Journal DecodeJournal(FileStream stream, string path)
+    {
         Span<byte> magic = stackalloc byte[8];
         var count = stream.ReadAtLeast(magic, FrameMagic.Length, throwOnEndOfStream: false);
         stream.Position = 0;
@@ -92,12 +104,13 @@ internal sealed partial class TrustedLocalFilePublication
             {
                 // Supported v1 JSON keeps its original decoding and required
                 // fields. A new frame is never interpreted as legacy byte data.
-                journal = StrictJsonAuthority.Deserialize<Journal>(File.ReadAllBytes(path), JsonOptions, "Trusted-local publication")
+                using var bytes = new MemoryStream();
+                stream.CopyTo(bytes);
+                journal = StrictJsonAuthority.Deserialize<Journal>(bytes.ToArray(), JsonOptions, "Trusted-local publication")
                     ?? throw Conflict("The publication journal is null.");
             }
             catch (JsonException ex) { throw new InvalidDataException("The publication journal is invalid; evidence retained.", ex); }
             if (journal.Format != 1) throw Conflict("Unknown publication JSON format; evidence retained.");
-            ValidateJournal(journal, inspectRetiredMembers);
             return journal;
         }
 
@@ -109,7 +122,6 @@ internal sealed partial class TrustedLocalFilePublication
             if (length <= 0 || length > stream.Length - 16)
                 throw Conflict("The v2 metadata length is invalid.");
             var journal = ReadFrameMetadata(stream, length, path, checked(16 + length), stream.Length);
-            ValidateJournal(journal, inspectRetiredMembers); // Every exact region hash/path validates before member recovery.
             return journal;
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or EndOfStreamException or OverflowException)

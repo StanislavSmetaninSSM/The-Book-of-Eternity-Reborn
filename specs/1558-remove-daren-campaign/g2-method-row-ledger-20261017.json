@@ -1,6 +1,6 @@
 {
   "kind": "G2_ACTUAL_STATIC_RETIREMENT_AND_SHARED_MIGRATION_NOT_NATIVE_EXECUTION",
-  "utc": "2026-10-17T10:39:44.278932+00:00",
+  "utc": "2026-10-17T10:48:53.715405+00:00",
   "baseline": "023931661391926398a5c5ebe0897a66985235b2",
   "historicalG1Ledger": "g1-method-row-ledger.json",
   "historicalG1LedgerSha256": "9537272e8fb2c1266c8c1b4005e41616586db5f1ef988cd82a293aa52eb79f27",
@@ -10285,7 +10285,7 @@
       "status": "UNCOMPILED_UNRUN"
     },
     {
-      "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RetiredPathWithInvalidLaterImage_IsMalformedScratchNotRecognizedEvidence",
+      "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence",
       "path": "BookOfEternityClient.IntegrationTests/DarenRetirementPreIntentTests.cs",
       "rows": [
         1,
@@ -10294,10 +10294,20 @@
       "owner": "daren-retirement-private-intent",
       "provenance": "SOURCE_DERIVED; no authentic original-producer capture claimed",
       "status": "UNCOMPILED_UNRUN"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence",
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementPreIntentTests.cs",
+      "rows": [
+        "Fact"
+      ],
+      "owner": "daren-retirement-private-intent",
+      "provenance": "SOURCE_DERIVED_FORMAT2_ACTIVE_NOT_AUTHENTIC_CAPTURE",
+      "status": "UNCOMPILED_UNRUN"
     }
   ],
   "sourceAuthoringCorrections": {
     "R02": "Exact original shared193B rollback helper restored; retained ordinary caller",
-    "R03": "Eight new private intent boundary controls; default active admission remains retired refusal; ordinary malformed scratch cleanup retained"
+    "R03": "Refined before first managed compiler: strict envelope decoder separated from effect admission, journal transport outside malformed-codec catch, exact retired identity before image/physicalmember checks;9cases4methods pending native."
   }
 }

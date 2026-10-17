@@ -1,0 +1,37 @@
+{
+  "kind": "ROOT_READ_ONLY_FRONTEND_PREREQUISITE_OBSERVATION_AFTER_FIRST_NATIVE127",
+  "utc": "2026-10-17T10:43:33.353178+00:00",
+  "head": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+  "paths": {
+    "node_modules": {
+      "exists": false,
+      "isSymlink": false
+    },
+    "node_modules/typescript/bin/tsc": {
+      "exists": false,
+      "isSymlink": false
+    },
+    "node_modules/.bin/tsc": {
+      "exists": false,
+      "isSymlink": false
+    },
+    "node_modules/vite/bin/vite.js": {
+      "exists": false,
+      "isSymlink": false
+    }
+  },
+  "package.json": {
+    "bytes": 1227,
+    "sha256": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7"
+  },
+  "package-lock.json": {
+    "bytes": 50877,
+    "sha256": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c"
+  },
+  "scripts": {
+    "build": "npm run typecheck && vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json"
+  },
+  "lockedCompiler": "6.0.3",
+  "lockedBundler": "8.0.14"
+}
