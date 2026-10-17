@@ -1,0 +1,32 @@
+{
+  "kind": "ROOT_CAUSAL_RED2_ACCEPTED_CONDITIONAL_MINIMAL_PRODUCTION_EXTRACTION",
+  "evidenceCarrier": "70953bdab6435745c3ac142f2be959313ab0922c",
+  "actualRedSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+  "compiledRedSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "acceptedEvidence": [
+    {
+      "path": "/tmp/t179pd3d-first-boundary2-evidence-independent-review-20261017.md",
+      "sha256": "a6cdb148daed8a4d9010aef7d530312762dba346fe1227f50f4679b120610398"
+    },
+    {
+      "path": "/tmp/t179pd3d-first-boundary2-evidence-independent-review-20261017.json",
+      "sha256": "84c903e143227893c9643f8f15f053e736e136bb3736ba21d2dd19b2a57a7113"
+    },
+    {
+      "path": "/tmp/t179pd3d-first-boundary2-evidence-independent-check-20261017.json",
+      "sha256": "3dfdca4b7ee85244f28d35584600262a0628dbcdc7c1edf126ba922960e8219e"
+    }
+  ],
+  "firstOutcome": "Exact2executed0PASS2FAIL/native1/5.142038714s; actual ordinary+rawseed assertions precede ONLYmissingprefixNotNull31; source/tail/delegation/correctedfault other50 remainUNRUN.",
+  "condition": "Publish this accepted decision plus immutable evidence/support/history and immediate GitHub raw recovery proof; Root verifies exactremote/completechanged recovery then names implementationHEAD. No new design/human approval gate.",
+  "minimumProduction": [
+    "Add one Services/Validation/ValidationService.NarrativeInterfacePolicy.cs partial containing the four value-only stages fixed in accepted frozen-segment contract.",
+    "Replace exactly four A owner segments with real prefix/tail calls. Keep named ambient timestamp leaf in SAME slot between stages; JsonDocument/JsonException boundaries, awaits and all physical/repeated/freshness/achievement/prose IO remain in actual owners.",
+    "Keep all projectors/text/tags/serializers/time semantics/public Changed-only writer/lease-close/engine files untouched. No HOT/history/source-aware adapter, no new writable authority DTO.",
+    "Use meaningful unchanged-source inverse against whole baseline A SHA6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936. Do not change tests to fit production."
+  ],
+  "futureValidation": "Ordinary5owners29methods52cases remain one scope. Actual direct joint caller requires separate existing protectedLate2 owner2methods2cases; futureunion6owners31methods54cases is a discovery prediction until fresh production PlanOnly. Update precise stable selection reasons and actual current dependencies; reuse unchanged accepted Late2 fixture/source proofs.",
+  "nextGates": "MinimalproductWIP exactremote/newGitHubdelta; fresh affected selected BOTH build+PlanOnly (unchanged catalog no replay); independent affected product SOURCE/FIXTURE/SELECTION/PREP. Then specifically released FIRSTprotectedLate2/separateEVIDENCE before specifically released ordinaryGREEN52. No runtime/product claim from RED.",
+  "held": "All actual runs afterRED and production before saveddecisionRootcheck; broaderHOT/fullwounds/F1/M3/T197/Windows/CI/ZIP/newQTE/main/merge/force/delete/issues/credentials/security held. OldWorld33unchangedHELD.",
+  "utc": "2026-10-17T16:39:21.626247+00:00"
+}

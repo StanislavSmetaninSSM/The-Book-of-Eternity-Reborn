@@ -1,14 +1,14 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "FIRST_BOUNDARY2_RAW_NATIVE1_0PASS2FAIL_CAUSAL_EVIDENCE_PENDING_OTHER50_UNRUN",
+  "status": "ACCEPTED_CAUSAL_STRUCTURAL_RED2_MINIMAL_PRODUCT_ACTIVATION_HELD",
   "methods": [
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FIRST_EXECUTED_2FAIL_FINAL_MISSING_PREFIX_NOTNULL_RAW_PENDING_INDEPENDENT_CAUSAL_QUALIFICATION"
+      "status": "ACCEPTED_CAUSAL_STRUCTURAL_RED2_RAW_FAILED2_NOT_GREEN"
     },
     {
       "project": "unit",
@@ -574,6 +574,31 @@
         "physicallyAbsentAtReadback": true
       }
     ],
-    "independentCausalStatus": "PENDING; Root literal readback is credited observation only. No production or other actual release."
+    "independentCausalStatus": "ACCEPTED_STRUCTURAL_RED2_ONLY; exact0PASS2FAIL raw retained, no semantic GREEN/HOT/history. Tail/delegation/other50 unrun."
+  },
+  "causalEvidenceAcceptance": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-review-20261017.md",
+        "sha256": "a6cdb148daed8a4d9010aef7d530312762dba346fe1227f50f4679b120610398",
+        "bytes": 2779
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-review-20261017.json",
+        "sha256": "84c903e143227893c9643f8f15f053e736e136bb3736ba21d2dd19b2a57a7113",
+        "bytes": 5826
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-check-20261017.json",
+        "sha256": "3dfdca4b7ee85244f28d35584600262a0628dbcdc7c1edf126ba922960e8219e",
+        "bytes": 12184
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-causal-red-accepted-minimal-product-conditional-70953bda-20261017.json",
+        "sha256": "fd36298785e888f1ce72b2d411f7d6610a6efd54aef0bb2791d238968c0a6a89",
+        "bytes": 3142
+      }
+    ],
+    "scope": "Structural RED2 after actual public-owner/byte prerequisites; Root conditional minimal extraction awaits saveddecision check and named implementationHEAD."
   }
 }

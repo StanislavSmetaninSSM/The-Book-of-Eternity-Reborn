@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "FIRST_BOUNDARY2_RAW_NATIVE1_0PASS2FAIL_CAUSAL_EVIDENCE_PENDING_OTHER50_UNRUN",
+  "status": "ACCEPTED_CAUSAL_STRUCTURAL_RED2_MINIMAL_PRODUCT_ACTIVATION_HELD",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1576417,
-      "sha256": "cfcf410c54676b3d9e54913171c95361678cfab6537e1cb07acfa0a9ee96e07d",
-      "gitBlob": "59a81405f840b1387feb7b6d818db40d7411a1ef",
+      "bytes": 1576660,
+      "sha256": "2bf40ed145dae7872f6ce86ba142b36f50d7898dfe2fd7eec200d4392c9dfc00",
+      "gitBlob": "a00dc0fb074901b2949a8a6001935457573973d4",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -527,7 +527,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "eba04bbdad86fdfbee10638c92bd5b44ee010e27869bb52024c4293db85848da"
+    "sha256": "e288d73f69f2492cf8dfbcca0dbc253020652195c0a8640869c96b3695de5273"
   },
   "preflightReferences": [
     {
@@ -610,7 +610,7 @@
   ],
   "futureChecks": {
     "first": "COMPLETED FIRST corrected b501 fresh selected BOTH+exact PlanOnly0 in87.504103396s; no repeated catalog. No more preparation until relevant changes.",
-    "actual": "FIRST boundary2 executed once, native1/exact0PASS2FAIL final missingprefix31 after real prerequisites; full9raw frozen. No retries. Publish/exactremote/recover for independent causal EVIDENCE; otheractual/product held.",
+    "actual": "Structural causal RED2 accepted. Save accepteddecision/exactremote/recovery then Root names minimal product activation. Other50/protectedLate2 actuals remain held. No old proof replay.",
     "remaining": "Ordinary semantic/existing/SP/source parity controls only after relevant production SOURCE/root release."
   },
   "counts": {
@@ -626,7 +626,7 @@
         "Narrative",
         "Interface"
       ],
-      "independentCausalEvidence": "PENDING",
+      "independentCausalEvidence": "ACCEPTED_STRUCTURAL_RED2_NOT_GREEN",
       "otherOrdinaryCasesUnrun": 50,
       "protectedLate2Unrun": 2
     }
@@ -639,7 +639,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "80b60c15b76062683a138f3441b27dd55558572ac263c40d4ff47e5efad1c228",
+  "sourcePinDigest": "8561281e2b3cf43a7ce786e7d9215a44d79c88233240609e317e16a87fca7732",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -1201,6 +1201,55 @@
     "toolUsage": {
       "recorder74c15": "EXECUTED_ONCE_EXACT_NAMED_BOUNDARY2",
       "archiver9f967": "READ_ONLY_FROZE_NINE_FIRST_RAW_CHAINS_NO_TEST_EXECUTION"
-    }
+    },
+    "independentCausalEvidence": "ACCEPTED a6cdb148/84c903e1/3dfdca4b; structural2RED only. Raw native1/0PASS2FAIL unchanged."
+  },
+  "acceptedCausalDecision": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-review-20261017.md",
+        "sha256": "a6cdb148daed8a4d9010aef7d530312762dba346fe1227f50f4679b120610398",
+        "bytes": 2779
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-review-20261017.json",
+        "sha256": "84c903e143227893c9643f8f15f053e736e136bb3736ba21d2dd19b2a57a7113",
+        "bytes": 5826
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-evidence-independent-check-20261017.json",
+        "sha256": "3dfdca4b7ee85244f28d35584600262a0628dbcdc7c1edf126ba922960e8219e",
+        "bytes": 12184
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-causal-red-accepted-minimal-product-conditional-70953bda-20261017.json",
+        "sha256": "fd36298785e888f1ce72b2d411f7d6610a6efd54aef0bb2791d238968c0a6a89",
+        "bytes": 3142
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary-outcome-delta-github-70953bda-20261017.json",
+        "sha256": "4973e49e5a51d224b6c0b08fec269b46a3d0701962abe242edd6181780f8f1dc",
+        "bytes": 17665
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-70953bda-20261017.json",
+        "sha256": "e044103275929b2a0fd7b69f0b682867837eb379e67bbd5e43fba422c7bdbf44",
+        "bytes": 13784
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-retained-late2-source-continuity-70953bda-20261017.json",
+        "sha256": "73d76c5957b064ecfa4d0ed4a4c6a7dab898227a4130378297e88f5d33f1d2b2",
+        "bytes": 1128
+      }
+    ],
+    "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_2",
+    "materialBlockers": 0,
+    "rootLiteralInspector": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-root-inspect-first-boundary.py",
+      "sha256": "d19505a27d25bb828ccb8d2901c00df0143bab12ebf13d0ba7be8b1b9d2f57b3",
+      "role": "Credited Root literal FIRST raw inspector; no runtime or independent-authority substitution."
+    },
+    "implementationNotYetActivated": "Root must verify exact published accepted decision/recovery and name implementationHEAD. No product edits in this carrier.",
+    "allowedAfterNamedActivation": "Only new four-stage value-only partial and exact four A replacements; timestamp/catch/IO/projectors/writers/engine unchanged. Stable ordinary52 + distinctprotectedLate2 selection futureunion54; fresh BOTH/PlanOnly0/productSOURCE before any actual."
   }
 }

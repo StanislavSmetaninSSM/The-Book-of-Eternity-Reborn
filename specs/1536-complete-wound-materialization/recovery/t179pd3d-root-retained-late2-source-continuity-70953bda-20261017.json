@@ -1,0 +1,16 @@
+{
+  "kind": "ROOT_PRE_EXTRACTION_RETAINED_PROTECTED_LATE2_SOURCE_CLOSURE_CONTINUITY",
+  "acceptedCompiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+  "currentPreProductCarrier": "70953bdab6435745c3ac142f2be959313ab0922c",
+  "wholePrefixGitTreeDiffEmpty": [
+    "BookOfEternityClient",
+    "BookOfEternityGMBridge",
+    "BookOfEternityClient.IntegrationTests",
+    "BookOfEternityClient.TestSupport",
+    "scripts/test-csharp.ps1",
+    "scripts/testing"
+  ],
+  "verification": "All production, integration fixtures, shared TestSupport and canonicalrunner implementation bytes/modes/tree membership unchanged from accepted A2 Late2 compiled source. This reuses retained SOURCE/fixture evidence; no old source-byte/raw/native replay. Current ordinary unit additions and category selection transfers are separately reviewed.",
+  "limits": "This is source continuity, not new runtime evidence. The imminent actual narrative/interface leaf extraction breaks exactwholeproductionequality and therefore independently requires only exact existingprotectedLate2 on fresh product.",
+  "utc": "2026-10-17T16:39:49.855257+00:00"
+}
