@@ -1,0 +1,79 @@
+{
+  "kind": "EXACT_FIRST_OWNER_ARCHIVE_NOT_CAUSAL_ACCEPTANCE",
+  "createdUtc": "2026-10-17T14:03:43.166433+00:00",
+  "actualSource": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "category": "gm-relay-operational-save-load",
+  "recordPath": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/record.json",
+  "nativeExit": 1,
+  "rawChainCount": 8,
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/d473ed332fe7443f93759e44973ba963a790a13b-gm-relay-operational-save-load.FIRST.json",
+      "storedPath": "000-d473ed332fe7443f93759e44973ba963a790a13b-gm-relay-operational-save-load.FIRST.json.gz",
+      "bytes": 344,
+      "sha256": "9d53f3ab2bec9d62a929260e851587280ff5acbabacde5db889eb6eabd1f3e2b",
+      "storedBytes": 265,
+      "storedSha256": "f9802fb7946fe04e44dfb505cdabfd7d8770c8f00bb4c1d5c9385c854cbbd1dd"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 740,
+      "sha256": "070ecf4e8e6afe93b103c30150ce8a0635453ecaf42468c3a9036da27410de82",
+      "storedBytes": 391,
+      "storedSha256": "82a4cd7044cb3414db0123dd1e8261a7c94a3249e2e6c1cc9b8345aa05826427"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 12873,
+      "sha256": "b8ded721724bb374936c7fbfea9d093eb062c1104cfe84845b07573e49178b72",
+      "storedBytes": 3846,
+      "storedSha256": "48ffbf160f63d3ee7c2eb8e3e61fbb1e14c388ac758e962a603271e734f41783"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/stdout.log",
+      "storedPath": "003-stdout.log.gz",
+      "bytes": 2909,
+      "sha256": "bb5c4840e15935a99c88060cb367bdb8334fff77b10cc2496e3548e6f0bc225f",
+      "storedBytes": 998,
+      "storedSha256": "7a3e08bd847898fba17f1fc5c8dd753109182fa2e24485c15e1defce39c5840d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140324-945-124961-3bf5f007a16442439cf8ad00870b3165-categories/dotnet-test.log",
+      "storedPath": "004-dotnet-test.log.gz",
+      "bytes": 1693849,
+      "sha256": "f82700a27cf7572385b4faf097555e91031e1531383ba91d0f35715cc6c60681",
+      "storedBytes": 188399,
+      "storedSha256": "08a8f793f0dfdee010d0b70cb67b5c733b7375b7710579e6775b5c491185cd9f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140324-945-124961-3bf5f007a16442439cf8ad00870b3165-categories/gm-relay-operational-save-load-integration-001.trx",
+      "storedPath": "005-gm-relay-operational-save-load-integration-001.trx.gz",
+      "bytes": 4939,
+      "sha256": "69bc5c7a5914dda50a21f65d3a052fe3f120e4ab767fdcfd238bafdc3e546978",
+      "storedBytes": 1647,
+      "storedSha256": "9d5fb2c95401d6edf078efd512589c25969c60329a9c06e594b2ae7762f4ef89"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140324-945-124961-3bf5f007a16442439cf8ad00870b3165-categories/plan.json",
+      "storedPath": "006-plan.json.gz",
+      "bytes": 1191,
+      "sha256": "b816c9724893ecc4112e203d94f745912bae82045f52ab125404254f2b699721",
+      "storedBytes": 530,
+      "storedSha256": "7e55b040f1f92a5f21d75b15fc529ae4ee8daf4a22148f0b299b3c583bb66756"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140324-945-124961-3bf5f007a16442439cf8ad00870b3165-categories/summary.json",
+      "storedPath": "007-summary.json.gz",
+      "bytes": 1370,
+      "sha256": "195a1c65f6ba4c9d99936b3f8b45e7957bd051fa4f5652707687bd50176b80b5",
+      "storedBytes": 590,
+      "storedSha256": "07c0882fe025fa95708070f75976a8d27687477b93b7ca1f93bd51d82bcc19c4"
+    }
+  ],
+  "scope": "Existing terminal raw only; no execution, cleanup/deletion, retry, source mutation or RED classification.",
+  "helperText": "\"\"\"Read-only archival of an already terminal FIRST owner; never invokes native code.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nraw_record=record.read_bytes();command=json.loads(raw_record);assert command['category'] in {'gm-relay-operational-live-preparation','gm-relay-operational-save-load'}\npaths=[record,Path(command['stdoutPath']),Path(command['processRecord']),Path(command['firstLaunchSentinel'])]\nfor result in command['resultDirectories']:paths.extend(p for p in sorted(Path(result).rglob('*')) if p.is_file())\nfiles=[]\ndef h(b):return hashlib.sha256(b).hexdigest()\nfor i,p in enumerate(sorted(set(paths))):\n data=p.read_bytes();name=str(i).zfill(3)+'-'+p.name+'.gz';out=destination/name;encoded=gzip.compress(data,compresslevel=9,mtime=0);out.write_bytes(encoded);assert gzip.decompress(out.read_bytes())==data\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(data),sha256=h(data),storedBytes=len(encoded),storedSha256=h(encoded)))\nmanifest=dict(kind='EXACT_FIRST_OWNER_ARCHIVE_NOT_CAUSAL_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=command['actualSource'],compiledSource=command['compiledSource'],productSource=command['productSource'],category=command['category'],recordPath=str(record),nativeExit=command['nativeExit'],rawChainCount=len(files),files=files,scope='Existing terminal raw only; no execution, cleanup/deletion, retry, source mutation or RED classification.',helperText=Path(__file__).read_text())\n(destination/'archive.json').write_text(json.dumps(manifest,indent=2)+'\\n')\nprint(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files),nativeExit=command['nativeExit'])))\n"
+}

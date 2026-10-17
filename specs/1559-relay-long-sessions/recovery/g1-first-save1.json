@@ -1,0 +1,45 @@
+{
+  "kind": "FIRST_SAVE_LOAD1_NATIVE_RAW_NOT_INDEPENDENT_CAUSAL_ACCEPTANCE",
+  "utc": "2026-10-17T14:04:40.911817+00:00",
+  "actualSource": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "nativeExit": 1,
+  "wallSeconds": 5.443158889000188,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "rawArchive": "recovery/g1-first-save1-files/archive.json",
+  "archiveSha256": "2b4d2d12d77584e142d3a96afb804fb6269f53226d63de3a9ccca03f39bd98cb",
+  "nativeRawChainCount": 8,
+  "nativeRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/record.json",
+  "resultDirectories": [
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-140324-945-124961-3bf5f007a16442439cf8ad00870b3165-categories"
+  ],
+  "creditedRootLiteralReadback": "recovery/root-first-save1-raw-inspection-52a2e71e.json",
+  "nineBinariesStable": true,
+  "namespaceUnchanged": true,
+  "strictRunnerCleanup": true,
+  "physicalOwnedRootAbsent": true,
+  "originalFailureSite": "SaveLoadServiceTests.RelayOperational.cs:30 Assert.Empty; two exact names listed",
+  "proofLimits": "Actual Save true, ordinary archive inclusion, Load true, restored ordinary revision1 and changed generation precede final assertion by original source order. The issue predicate is archiveContains OR liveFileExists; actual raw does not distinguish the disjuncts or retain per-file postload bytes. Opaque markers are not dispatch/receipt authority.",
+  "disposition": "FIRST_RAW_ONLY: combined live5/save1 independent causal EVIDENCE pending; original engine2 accepted under its original provenance. All production/other actuals held; no retry.",
+  "fullG1Membership": {
+    "planned": 49,
+    "executedDistinctToDate": 8,
+    "passed": 2,
+    "failed": 6,
+    "unrun": 41
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "ROOT_LITERAL_SAVE_LOAD1_FIRST_RAW_INSPECTION",
+  "utc": "2026-10-17T14:03:53.126331+00:00",
+  "actualSource": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-g1-operational-baseline-first-save1-52a2e71e-20261017/record.json",
+  "recordSha256": "b8ded721724bb374936c7fbfea9d093eb062c1104cfe84845b07573e49178b72",
+  "nativeExit": 1,
+  "wallSeconds": 5.443158889000188,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "complete": true,
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+      "outcome": "Failed",
+      "output": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"game_state/control/gm_prompt_delivery.json\", \"game_state/control/gm_relay_apply_receipt.json\"]\n             at BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.RelayOperational.cs:line 30\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-save-load-tests-b4ca72c536154a4a8fe4ade9acb7c63d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "physicalRootsAbsent": true,
+  "sourcePinDigest": "97fe785df1b33868876082cfd5907e2be9480274608f664390c7a252aaadc7a1",
+  "managedCopies": 9,
+  "binaryStable": true,
+  "sourcePrerequisites": "Original assertions before line30 prove SaveGameAsync/LoadGameAsync true, real archive ordinary inclusion, restored revision1 and actual changed sessiongeneration. Final aggregate lists both operational paths. It does not disambiguate archive inclusion versus restoredpresence or expose exact postload bytes.",
+  "disposition": "Expected bounded observation suitable for combined independent causal EVIDENCE with live5, no reruns or production release."
+}

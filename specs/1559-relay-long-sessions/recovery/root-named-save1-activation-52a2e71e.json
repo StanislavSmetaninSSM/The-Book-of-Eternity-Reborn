@@ -1,0 +1,23 @@
+{
+  "kind": "ROOT_NAMED_FIRST_SAVE_LOAD1_ACTIVATION",
+  "utc": "2026-10-17T14:03:11.006320+00:00",
+  "actualSource": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "category": "gm-relay-operational-save-load",
+  "descriptors": 1,
+  "methods": 1,
+  "plannedRows": 1,
+  "recorder": "/tmp/gm1559-g1-operational-baseline-first-run.py",
+  "recorderSha256": "b9053534da1c06770a4c1726d301a0ea90d6886d433c42170b1e050f04a2467e",
+  "planRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-plan-first-d473ed33-20261017t1330z/record.json",
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-52a2e71e-20261017.json",
+  "completeDeltas": 131,
+  "trackedPaths": 56345,
+  "previousLive5RawRootInspected": true,
+  "previousLive5ArchiveChainsExact": 8,
+  "rootRemoteAndCleanVerified": true,
+  "activate": "ONE_FIRST_SAVE_LOAD1_ONLY",
+  "expectedPrediction": "Native1 final Assert.Empty after real Save/Load, ordinary archive inclusion/restoredvalue and generationreplacement. Native1 alone not causal; unexpected setup/import/ownership/timeout/underfill/cleanup STOP.",
+  "after": "Freeze/publish all original raw and activation, exactremote+complete new GitHub delta; combined independent causal EVIDENCE over existing live5/save1 raw no reruns. Production/otherrelayactuals held. Lifecycle-only safe stage then wounds handoff."
+}
