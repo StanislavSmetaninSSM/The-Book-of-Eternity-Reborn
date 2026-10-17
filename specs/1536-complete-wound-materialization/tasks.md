@@ -1,3 +1,7 @@
+## A2 fresh preparation native0 — concrete SOURCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): corrected40ed whole-bindingpreflight then freshBOTH/catalog0(784/11741,knownwarnings0errors)+PlanOnly0(5desc/11methods/59planned/0executed),12chains/fourfreshDLLs/20sourcepins frozen in [current checkpoint](plan.md). Prior two compileFAILs retained; product/helpers unchanged/absent. Publish/readback/newcompletechanged recovery then independent concreteSOURCE before firstcausalboundaryRED2. Allactual/production HELD; no unchangedoldproof/base/Late2 replay or expanded scope.
+
 ## A2 Configuration import WIP — static preflight then preparation (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): secondFAIL preserved/recovered before one Configuration using correction; actual Characteristics in GameSettings.cs233. [Current checkpoint](plan.md): reconcile all9methods/input/logger/factory/hook bindings; targeted independent static preflight before thirdfresh prep. Immediate WIP persistence, no actual/production/causalRED or count/budget/scope change.
