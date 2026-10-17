@@ -1,0 +1,50 @@
+{
+  "kind": "ROOT_E02_SOURCE_ACCEPTED_CONDITIONAL_NAMED_REMAINING_GREEN_RELEASE_NOT_ACTUAL",
+  "utc": "2026-10-17T11:59:08.235648+00:00",
+  "reviewedCarrier": "f3eee2a1c2b9c9bd3cae1d666a4ba1ce3d4c2ba0",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-e02-source-independent-20261017.md",
+      "sha256": "250fe7f506dac6a05150b15078adc35d6c55f6ced60f7bc69e07b70695575cc3"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-source-independent-20261017.json",
+      "sha256": "c0f05387ccd25a9ea9ebf7ebda451573c617216543135dc804039c7e6dba936d"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-source-independent-check-20261017.json",
+      "sha256": "c494da36ce5b507cb7ae066841072e87cebec6f997fd9a158a545c2afea2470d"
+    }
+  ],
+  "decision": "AccepttargetedE02SOURCE/FIXTURE/SELECTION/PREP, noblockers. TwoexistingJSONnullfields/onecoherentReactsourceFact/newrelationformat/retained5partition/source277/new7DLL/370package/113dist/docs52/28raw+45GitHubbindingaccepted. PreviousfullG2SOURCEretained. No currentruntimeGREEN/EVIDENCEacceptance.",
+  "rootProofs": [
+    "/tmp/gm1558-root-e02-frozen-prep-readback-f3eee2a1-20261017.json",
+    "/tmp/gm1558-root-e02-prep-live-binding-5441e49f-20261017.json"
+  ],
+  "requiredDecisionCheckpoint": "ONEfeaturemetadata-onlycheckpoint exact3reports/Rootdecision/frozenreadback/f3eeecomplete116composition. Nonforcepush/exactremote/clean/newcompleteGitHubrecovery; RootseparatelynamesactualSHA. No source/data/catalog/selector/helper/pin changes orprepreplay.",
+  "conditionalRuntime": {
+    "helper": {
+      "path": "/tmp/gm1558-g2-e02-remaining-green-first-run.py",
+      "sha256": "88df9fd56e4fdf09514b02fce289f4eda57d4602b10ae1ba4d6b1f21e689b421"
+    },
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "tests/selections/1558-daren-retirement-remaining-green.json",
+      "-NoBuild"
+    ],
+    "scope": "ONEFIRSTremaining17owners18descriptors45entries,37C#methods93discoveryminimumcases+8FEfileestimates. Allactualcounts/identities mustcomefromraw. WholeexistingAPI11MemberDatarows+Reactrequalified first, no rowframework.",
+    "retained": "FiveunchangedindependentactualPASS atc5e/compiledf076 (inventory1+4otherunitFacts), exactfull-minusRemaining methodset. NineoldAPIpasses remainhistory andwillbesuperseded bywholemethodrequalification, notnewuniquecoverage.",
+    "sourcePinsDigest": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
+    "failurePolicy": "Firstunexpectednative/semantic/underfill/duplicate/timeout/cleanup STOPSdependents; freeze/publishFIRSTrawbeforecausalreview/correction. No hiddenretry/countfill/newowner invocation. Preserveallpriorfailures/sentinels.",
+    "successPolicy": "Immediatelyfreeze/publishactualoutcome raw/currentpins/fixturecleanup/frontendresults beforeindependentEVIDENCE. Rootindependentlyqualifiesobservedremaining+retained5 union; thenmayseparatelyreleaseoneactualdesktopChromium sampleonexactnewcarrier."
+  },
+  "held": "No actualreleasedbythisconditionalartifact; namedRootactivationstillrequired. FinalEVIDENCE/RootChromium/taskscompletionpending.",
+  "limits": "No fullaggregate rerun/unrelatedA1A2Late2/fullsuite/allcategories/Windowsartifact/CI/Library/main/merge/forcepush/branchdelete/issueclose/credentials/settings/HOT/M3. No changedbudgets ornewQTE."
+}

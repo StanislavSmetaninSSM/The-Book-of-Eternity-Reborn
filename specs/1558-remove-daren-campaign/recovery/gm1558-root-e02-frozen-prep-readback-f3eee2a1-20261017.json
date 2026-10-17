@@ -1,0 +1,129 @@
+{
+  "kind": "ROOT_E02_FROZEN_PREP_CHAIN_PACKAGE_LEDGER_HELPER_READBACK_NOT_RUNTIME",
+  "utc": "2026-10-17T11:57:22.228494+00:00",
+  "carrier": "f3eee2a1c2b9c9bd3cae1d666a4ba1ce3d4c2ba0",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "raw28Chains": [
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/record.json.gz",
+      "sha256": "7e7b3c0d65812f8130f6d2596b4520b4387195385e7406a5d436f757918cc1f3"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/stdout.log.gz",
+      "sha256": "074533b9c3e202c37e12ddb5e717ea3b58cd4d6b0e3927cf036fc7dac83532f0"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/process.json.gz",
+      "sha256": "c4a42ffc887fddec94e3c8929bc8cc81b92f371b1c5301d8b9dbc335d2d63a61"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/sentinel.json.gz",
+      "sha256": "73dea738f321f4f43352e6cb9ee02518da69f46264de8f0ce86affadc13ee1e7"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/source-binding-before.json.gz",
+      "sha256": "a2ee232864bfc3c3d5cab3ffe011a5095ef9dc50fe6645f74b50c71c7eced707"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/runner0/Build-integration.log.gz",
+      "sha256": "cc3c33e5dd5d23c6d3c89343b140975810c9aafc81ac6f442ffe9a69c3f8b8cd"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/runner0/Build-unit.log.gz",
+      "sha256": "34d819a1f4e00145d880e7fba3a4fe38382f7b35120c6b9ab4685b243bd8406c"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/runner0/catalog-audit.json.gz",
+      "sha256": "8397d24a50e7ab7589f845b6e1eb5ff844949b5affd40fde538cf0a20e120281"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/runner0/dotnet-test.log.gz",
+      "sha256": "f352bac09c7306d302eda2f52591b81020357cdd05020b6e99dbf94b5ae30621"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/0/runner0/summary.json.gz",
+      "sha256": "229ae2b019b3b9882a9f801aca4ac1537f236ab76093b68d108101113027da19"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/record.json.gz",
+      "sha256": "fe154bd2e6115bacfb89d7958f5a8fff0313775bb4efea5c752b9462bab10d8f"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/stdout.log.gz",
+      "sha256": "dded279dc64e3cd380c6cf1e1e96e6eb031be78cabf1109b538ca8fe907cc548"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/process.json.gz",
+      "sha256": "b4e01d7dbf0417736c3032f23c9bf9b550d6e5944c46f5102321b249dd961f11"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/sentinel.json.gz",
+      "sha256": "571316e766e24dc1cf11ccd2d7746fe013a93fb3af125b418c9a515c9ad65afd"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/source-binding-before.json.gz",
+      "sha256": "a2ee232864bfc3c3d5cab3ffe011a5095ef9dc50fe6645f74b50c71c7eced707"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/runner0/dotnet-test.log.gz",
+      "sha256": "53d58146befa8ad2957b6fe2a78a80453575eb868a07c1dbfb2dda60888aff08"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/runner0/plan.json.gz",
+      "sha256": "297cef736b9e8b221457f9026f15b1f437478e22a94f3d77245a9b58d4be940b"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/1/runner0/summary.json.gz",
+      "sha256": "f2ef67971dd8922c2ec6e07c4cfc78acbee96300aacd54c7189d8749cef60e5b"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/record.json.gz",
+      "sha256": "926e28f3efa907636f0bc146a324c1d24aed1b9d343a49c49d53e268556e283e"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/stdout.log.gz",
+      "sha256": "c242866b4e361a523b71de394c980a61ce42eba7d1186322af7a5f869c019f43"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/process.json.gz",
+      "sha256": "e1714c584cec7bc507381e4154c0f549b71893ea33bd443f32d4ac181d428ad4"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/sentinel.json.gz",
+      "sha256": "5465056a52fd44d10b5db41fd1cc36dd6e7615f264e68d85d9f688bd34717d76"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/source-binding-before.json.gz",
+      "sha256": "a2ee232864bfc3c3d5cab3ffe011a5095ef9dc50fe6645f74b50c71c7eced707"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/runner0/dotnet-test.log.gz",
+      "sha256": "7832926560dde5190d5481dbc5a4ce09e3f4ef83f842c59ea2aaea1e3db80a21"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/runner0/plan.json.gz",
+      "sha256": "ba9b84a2d92a63ba523ef1d6a694dcbc331cd4fb57f2b56551c1c046f8fb0f9d"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/2/runner0/summary.json.gz",
+      "sha256": "ab11d354ed0ab954750047a686ba719cbb52e68d758fd514608c3c134546a3de"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/corrected-preparation-helper.py.gz",
+      "sha256": "eb860e33885b7eaafc4dce14b463d7d2cf39232f4d3671ef22f17d97cb1bcd7f"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-corrected-preparation-5441e49f-20261017-files/fresh-package-frontend-docs-manifest.json.gz",
+      "sha256": "ed90a4f0e221f29636a40c1293cb40f88ab39da1f75628836cebcb251179699f"
+    }
+  ],
+  "sourceBindingContext": "exact5441gitblob",
+  "currentLedgerPointerExact": true,
+  "sourceToFreshPackage52Exact": true,
+  "remainingFirstHelpersExact": true,
+  "earlierLiveProof": "/tmp/gm1558-root-e02-prep-live-binding-5441e49f-20261017.json",
+  "recovery": "/tmp/gm1558-g2-e02-prep-delta-github-f3eee2a1-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-f3eee2a1-20261017.json",
+  "status": "HeldforindependentfinaltargetedE02SOURCE andseparateRootremainingruntimeactivation"
+}

@@ -1,0 +1,61 @@
+{
+  "kind": "INDEPENDENT_TARGETED_E02_SOURCE_FIXTURE_SELECTION_PREPARATION_VERDICT",
+  "source": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "carrier": "f3eee2a1c2b9c9bd3cae1d666a4ba1ce3d4c2ba0",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "verdicts": {
+    "SOURCE": "ACCEPTED_BOUNDED_E02_CORRECTION",
+    "FIXTURE": "ACCEPTED_SOURCE_ONLY_RUNTIME_REQUALIFICATION_PENDING",
+    "SELECTION": "ACCEPTED_FULL_AND_REMAINING_PARTITION",
+    "PREP": "ACCEPTED_ZERO_EXECUTION",
+    "RUNTIME_EVIDENCE": "NOT_ACCEPTED_NOT_EXECUTED_CURRENT_SOURCE"
+  },
+  "materialBlockers": [],
+  "closures": [
+    "API fixtures add only root main-menu.loadGeneration:null and api-error.menu.loadGeneration:null, matching existing DTO serialization; no serializer/product change.",
+    "React Fact checks actual core alias/wrapper/import/delegation and moves all seven existing getter checks to loadShellState.ts; no oracle removal. Two actual hook files are pinned, unchanged product.",
+    "New category owns exactly the two failed existing methods. Full selection retains every prior contract; remaining omits exactly the five previously qualified unchanged methods.",
+    "G2-E02-P01 corrected only related[0] to existing id/when schema; byte inverse equals failed catalog. Loader and strictness unchanged."
+  ],
+  "bindings": {
+    "sourcePins": 277,
+    "digest": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
+    "currentLedgerSha256": "10fe82d9424855708993962e85875cd497ee0b2742b3424302b654dcc1e6fcec",
+    "newManagedDlls": 7,
+    "retainedFrontendFiles": 113,
+    "packageFiles": 370,
+    "sourcePackageDocs": 52,
+    "frozenRawChains": 28,
+    "recoveryFiles": 45,
+    "changedMetadataHelperPaths": 41
+  },
+  "nativePreparation": {
+    "catalogExit": 0,
+    "fullPlanExit": 0,
+    "remainingPlanExit": 0,
+    "testExecutions": 0,
+    "full": "18 owners /20 descriptors /50 methods-or-files /98 C# minimum estimate +8 frontend file estimates",
+    "remaining": "17 owners /18 descriptors /45 methods-or-files /93 C# minimum estimate +8 frontend file estimates",
+    "runtimeCountCaveat": "MemberData expansion is not counted exactly by static PlanOnly; API11 re-executes as a whole existing method. No claim of98 final actual cases."
+  },
+  "retainedProof": "Five prior PASS methods remain accepted with actualc5e/compiledf076 provenance. Nine other prior API PASS rows remain history and are requalified via whole-method execution. Original runtime failures and frontend/catalog preparation failures remain immutable. Retained frontend17329 native0 is build-only.",
+  "nextGate": "After exact verdict persistence, remote/recovery readback and separate named Root activation, only one canonical remaining SelectionFile-NoBuild FIRST invocation is eligible using recorder88df. Stop/freeze any nonzero/incomplete/cleanup failure; no auto retry or broad aggregate. Later independent actual EVIDENCE and separate Root Chromium gate remain mandatory.",
+  "helper": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/tools/gm1558-g2-e02-remaining-green-first-run.py",
+      "sha256": "88df9fd56e4fdf09514b02fce289f4eda57d4602b10ae1ba4d6b1f21e689b421",
+      "bytes": 11292
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/tools/gm1558-archive-g2-e02-remaining-green-first.py",
+      "sha256": "4515e0e8695b1e6b5060f11b5d81e01e7c43f6f9e19ef22dbf91e3b832756fd9",
+      "bytes": 3523
+    }
+  ],
+  "support": {
+    "path": "/tmp/gm1558-g2-e02-source-independent-check-20261017.json",
+    "sha256": "c494da36ce5b507cb7ae066841072e87cebec6f997fd9a158a545c2afea2470d",
+    "bytes": 48721
+  },
+  "noAuthorityExpansion": "No CI/Windows/provider/gameplay/full-save/full1558 claim; no runtime authorization from this report."
+}
