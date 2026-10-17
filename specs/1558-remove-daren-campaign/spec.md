@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: Consolidated G1-S01/S02/S03 tests-only correction compiled at0b. FIRST freshBOTH/catalog0 +exactPlanOnly0:16owners/18descriptors/48methods-or-files/99estimated (91C#cases+8frontendfiles),0exec;12raw/new7pins preserved. Targeted independent SOURCE and separate exact-source Root newcapture release pending. Original2FAIL/no-packets retained; no consumer/TestData/console/frontend/production/removal actual. T004–T020 unchecked.
+**Status**: Independent targeted SOURCE/FIXTURE/SELECTION/PREP accepted on230d / compiled0b: G1-S01/S02/S03 closed at source only. Exact decision/support and conditional Root capture2 release persisted; remote/recovery verification and a separately named Root activation still precede any corrected capture. Fresh16owners/18descriptors/99estimated,0exec and seven0b pins unchanged. Original05d2FAIL/no packets retained; authentic packets/consumer RED/console/frontend/production remain absent or held. T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -61,3 +61,6 @@ No old campaign is supported or resumed. No compatibility profile reader, normal
 ## Provenance and open engineering gate
 
 The historical read-only [initial inventory](recovery/preflight-source-inventory-20261017.json) pins 80 baseline files, 14 existing category candidates, 15 campaign spine beats and 11 practice types. [The active-document addendum](recovery/preflight-active-doc-addendum-20261017.json) adds exact CLI API baseline byte/blob/mode/line pins without rewriting that snapshot; total81 distinct baseline files. These are source counts, not executed cases or an approved runtime selection. [plan.md](plan.md) owns the bounded dependency/migration decisions; [tasks.md](tasks.md) owns execution status. [Independent G0 acceptance](recovery/gm1558-g0-plan-independent-review-20261017.md) covers the original inventory/save-safety/verification plan; its exact support and Root readback are retained. [Targeted addition](recovery/gm1558-g0-cli-api-scope-independent-addendum-20261017.json) and [Root G1 release](recovery/gm1558-root-g1-authoring-release-c83396d2-20261017.json) are now accepted/persisted; publication/readback activates tests-only authoring. Concrete SOURCE/fresh preparation and separate Root release still precede any native capture/causal RED.
+
+
+Current G1 source-only disposition is [accepted independently](recovery/gm1558-g1-corrected-source-independent-20261017.md), with [conditional Root capture2 eligibility](recovery/gm1558-root-corrected-capture2-only-release-230d5980-20261017.json). Findings S01/S02/S03 are closed at source only; authentic packets, derived transport and consumer RED remain unaccepted. No functional requirement or success criterion is declared complete. Exact metadata persistence/readback/recovery and separate Root activation still precede a corrected capture; all other actuals and G2 remain held.

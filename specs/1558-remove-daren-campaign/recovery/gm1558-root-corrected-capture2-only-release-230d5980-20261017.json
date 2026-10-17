@@ -1,0 +1,161 @@
+{
+  "kind": "ROOT_CONDITIONAL_CORRECTED_CAPTURE2_ONLY_RELEASE",
+  "createdUtc": "2026-10-17T09:13:41.951909+00:00",
+  "reviewedCarrier": "230d598048e5e6521690aa9431d746f767d6fd21",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "status": "CONDITIONAL_ONLY__PERSISTENCE_READBACK_AND_EXACT_ACTIVATION_REQUIRED",
+  "independentVerdict": "ACCEPTED_TARGETED_CORRECTIONS__CAPTURE2_ELIGIBLE_AFTER_PERSISTENCE_AND_ROOT_RELEASE",
+  "immutablePins": [
+    {
+      "path": "/tmp/gm1558-g1-corrected-source-independent-20261017.md",
+      "sha256": "b95d4e0114c906cf49072d753b6a49a0a7361cf11761b391cd1002344a857cca",
+      "bytes": 3462
+    },
+    {
+      "path": "/tmp/gm1558-g1-corrected-source-independent-20261017.json",
+      "sha256": "74113abf587d9900f57608b715f43e8418d05c6ac3371fd742d9b46f6d77228a",
+      "bytes": 11293
+    },
+    {
+      "path": "/tmp/gm1558-g1-corrected-source-independent-check-20261017.json",
+      "sha256": "79e61037feebeb8f621475f212ce7c336746dab693b09cf6c99bd4d86b59ebe3",
+      "bytes": 21266
+    },
+    {
+      "path": "/tmp/gm1558-capture-corrected-run.py",
+      "sha256": "ab99a53cd4c7b3c442501a0666d62f47d567156862d0787404a4c244d71187da",
+      "bytes": 6993
+    },
+    {
+      "path": "/tmp/gm1558-inspect-capture-corrected.py",
+      "sha256": "154be2baca553fa5b91cb6e8964a493966e84f79389064880ca336d6b16c6111",
+      "bytes": 11079
+    },
+    {
+      "path": "/tmp/gm1558-archive-capture.py",
+      "sha256": "c5a8d7183509c8332f5ef6bd6ffcc61b07d3d4f8dc7d812fee433c1f6ede4654",
+      "bytes": 2900
+    },
+    {
+      "path": "/tmp/gm1558-root-corrected-prep-carrier-readback-230d5980-20261017.json",
+      "sha256": "1e60f2b6366e96153b248cb6be04c00fa0743739d0d4b5fbbac74b0c830452ce",
+      "bytes": 4855
+    }
+  ],
+  "scope": {
+    "category": "daren-retirement-producer-capture",
+    "methods": [
+      "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+      "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+    ],
+    "cases": 2,
+    "budgetMinutes": 3,
+    "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-retirement-producer-capture -NoBuild",
+    "conditions": [
+      "Exact review persisted and independently read back; Root explicitly releases a clean metadata descendant bound to compiled0b and the seven fresh pins.",
+      "Use corrected distinct first-launch recording; reconcile any interrupted/failed outcome without silent retry.",
+      "Freeze full original packet/raw/provenance and strict original-root cleanup before any consumer fixture installation."
+    ]
+  },
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f8f9660806e43612aed5fd723c10280892d42a7d776f726481369361d239d71d",
+      "bytes": 9560064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "6705066ce4b0ce40da308c45ec3264df3678168b8867313c285e064a7a9a53d8",
+      "bytes": 29326848
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c",
+      "bytes": 26183168
+    }
+  ],
+  "activationConditions": [
+    "Sole writer persists three immutable reviewer reports and this exact conditional release, latest Root receipt, immediate recovery and composition, with honest plan/tasks. Metadata-only descendant of230d; no test/catalog/selection/production changes.",
+    "Non-force push and read remote fullSHA; preserve immediate GitHub delta all changed paths in new empty owned directory. Root independently verifies exact carrier/delta/decisions/pins and names actualSource. No capture until explicit activation."
+  ],
+  "afterFirstActual": [
+    "Exactly one corrected canonical capture2 NoBuild invocation using distinct0b sentinel and helper. Keep original05d sentinel/raw/helper unchanged. Preserve FIRST result including unexpected failure; never silent retry.",
+    "Read-only corrected inspector and unchanged generic archiver into new owned tmp directories. Preserve native/stdout/process/TRX/summary/plan/packets/cleanup/binary/source provenance before classification. No fixture installation or transport.",
+    "Publish evidence-only carrier and exact remote/recovery before independent EVIDENCE. Authentic packet and derived transport require distinct acceptance before meaningful consumerRED."
+  ],
+  "held": [
+    "All noncapture actuals including console11,frontend,host,consumerRED,RootChromium",
+    "TestData installation or root/generation transformation before frozen capture evidence acceptance",
+    "Production/API/UI/content/prompts/removal/G2",
+    "Windows artifact transfer retries,alternate routes or CI; historical family replays"
+  ],
+  "priorFindingDisposition": [
+    {
+      "id": "G1-S01",
+      "verdict": "CLOSED_AT_SOURCE__ACTUAL_CONSOLE_UNRUN",
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs",
+      "evidence": [
+        "Real selected-index menu navigation uses one accepted key per ready snapshot; AppendEvent does not change snapshot timestamp, and consumption clears AwaitingInput. Rejected/misattributed normal input is asserted empty.",
+        "Exact easy offer chapter/result IDs follow current Practice offer builder and screen sanitizer. Catalog title, actual frame type/title and next-menu witnesses prevent silently running the wrong type. Three existing generic QteLive types are labelled honestly.",
+        "ChargeRelease receives two genuine Spacebar keys; other real timed outcomes and synchronous BranchChoice are not claimed as successful-score playthroughs.",
+        "Full owned Task must settle before input shutdown/disposal and root cleanup. Teardown keeps input live for Escape/continue/Exit, then cancels a pending read; if still unsettled, qualification fails and root is retained. No product timeout or budget expansion."
+      ],
+      "limit": "Static readiness of all eleven rows, not executed console or browser proof; runtime must still verify witnesses, task settling and physical cleanup."
+    },
+    {
+      "id": "G1-S02",
+      "verdict": "CLOSED_LEDGER_DISPOSITION__G2_RETIREMENT_PENDING",
+      "path": "specs/1558-remove-daren-campaign/g1-method-row-ledger.json",
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite",
+      "evidence": [
+        "Exact Windows-only method directly calling the campaign API is explicitly RETIRE_CAMPAIGN_SUBJECT, unselected; existing body remains while that API exists.",
+        "G2 must retire exact method/selector with removed subject, retaining unrelated generic junction and authority controls."
+      ],
+      "limit": "No Windows execution or removal already completed is claimed."
+    },
+    {
+      "id": "G1-S03",
+      "verdict": "CLOSED_AT_SOURCE__NEW_CAPTURE_EVIDENCE_PENDING",
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+      "evidence": [
+        "Capture, Instantiate and all four Storage generation reads use BOM-aware StreamReader followed by the existing strict FileSystemManager.ParseSessionGenerationText. Current physical generation uses SchemaVersion/GenerationId; browser manifest generation remains a separate lower-case field.",
+        "No product parser change, case-insensitive fallback, legacy schema support, profile decoding or backup rewriting is introduced.",
+        "Corrected inspector checks the actual physical generation object and source/binary bindings. Distinct corrected launcher/inspector leave original failure helpers and first-launch sentinel unchanged."
+      ],
+      "limit": "Old two failures remain fixture failures before Freeze: zero accepted packets, no retirement RED. Actual corrected bytes/provenance cannot be accepted before capture."
+    }
+  ],
+  "retainedHistory": {
+    "firstFailedCompiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+    "firstFailedActualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+    "nativeExit": 1,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "acceptedPackets": 0,
+    "classification": "G1-S03 capture fixture failure before Freeze; not retirement RED",
+    "historicalSourceEligibility": "Retained separately; not rewritten as runtime acceptance"
+  },
+  "runtimeExecutedByThisReceipt": false
+}
