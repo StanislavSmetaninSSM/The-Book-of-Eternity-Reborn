@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "ACCEPTED_CORRECTED_SOURCE_PREP_BOUNDARY2_ELIGIBLE_ACTUAL_ACTIVATION_HELD",
+  "status": "FIRST_BOUNDARY2_RAW_NATIVE1_0PASS2FAIL_CAUSAL_EVIDENCE_PENDING_OTHER50_UNRUN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1576149,
-      "sha256": "a37954a2ab4a274273aeacc2c0ca7e0bb2d81bb94b4eb809fc562af11e1cc361",
-      "gitBlob": "3950498162e42392893f532940e21406f7da095c",
+      "bytes": 1576417,
+      "sha256": "cfcf410c54676b3d9e54913171c95361678cfab6537e1cb07acfa0a9ee96e07d",
+      "gitBlob": "59a81405f840b1387feb7b6d818db40d7411a1ef",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -527,7 +527,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "bd071ab139808d031f47374dc0f8f91e0edb2d1d2ae81a69832b5b9f84f5cdad"
+    "sha256": "eba04bbdad86fdfbee10638c92bd5b44ee010e27869bb52024c4293db85848da"
   },
   "preflightReferences": [
     {
@@ -610,14 +610,26 @@
   ],
   "futureChecks": {
     "first": "COMPLETED FIRST corrected b501 fresh selected BOTH+exact PlanOnly0 in87.504103396s; no repeated catalog. No more preparation until relevant changes.",
-    "actual": "Source/PREP accepted. Persist decision/exact remote/complete recovery, then separate named Root actualSource activation for ONLY boundary2. Actual0; original future helpers/sentinels unrun.",
+    "actual": "FIRST boundary2 executed once, native1/exact0PASS2FAIL final missingprefix31 after real prerequisites; full9raw frozen. No retries. Publish/exactremote/recover for independent causal EVIDENCE; otheractual/product held.",
     "remaining": "Ordinary semantic/existing/SP/source parity controls only after relevant production SOURCE/root release."
   },
   "counts": {
     "categoryOwners": 5,
     "declaredMethods": 29,
     "declaredRows": 52,
-    "discovery": "Current b501 fresh BOTH/Plan confirms5owners5descriptors29methods52planned, ZEROactual; unchanged ownership catalog789/11755 accepted from initial56."
+    "discovery": "Current b501 fresh BOTH/Plan confirms5owners5descriptors29methods52planned, ZEROactual; unchanged ownership catalog789/11755 accepted from initial56.",
+    "currentActuals": {
+      "executed": 2,
+      "passed": 0,
+      "failed": 2,
+      "distinctOwnersObserved": [
+        "Narrative",
+        "Interface"
+      ],
+      "independentCausalEvidence": "PENDING",
+      "otherOrdinaryCasesUnrun": 50,
+      "protectedLate2Unrun": 2
+    }
   },
   "docsDisposition": "Internal semantics-preserving extraction; no GM-authored or Mortal/afterlife rule/pending/schema/normalizer contract change. Existing projector/text/tag/clock/writers remain byte-identical. No gameplay/docs/example/manifest change intended; reassess only if actual production scope changes.",
   "authoringUtilityOutcomes": [
@@ -627,7 +639,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "c7118d97ff5783c025d4c07a358046e4c6a21738940f58a2e646d0af102627aa",
+  "sourcePinDigest": "80b60c15b76062683a138f3441b27dd55558572ac263c40d4ff47e5efad1c228",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -1013,11 +1025,182 @@
     "materialBlockers": 0,
     "actualExecutions": 0,
     "eligibleAfterNamedActivationOnly": "fr063-ordinary-output-policy-boundary one existing unit method/two rows, real public prerequisite then missing shared-stage oracle.",
-    "held": "All other50 plus production/protectedLate2; preserve FIRST unexpected raw, no retry; separate causal EVIDENCE before any product release.",
+    "held": "Boundary2 FIRST completed raw only; other50, production and protectedLate2 held pending causal EVIDENCE/Root.",
     "archiveHelper": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-boundary.py",
       "sha256": "9f967f101e452c4c3ef8673ac51e94054ee37d23d7730cbc599aeac00171f11c",
-      "status": "UNRUN_READ_ONLY_FUTURE_BOUNDARY_ARCHIVE"
+      "status": "READ_ONLY_FROZE_FIRST_BOUNDARY9_NO_TEST_EXECUTION"
+    },
+    "actualPhaseDisposition": "SOURCE decision itself had zero actuals; distinct subsequent Root5b13 named execution2 is recorded only under firstBoundaryOutcome."
+  },
+  "firstBoundaryOutcome": {
+    "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+    "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+    "productSource": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+    "nativeExit": 1,
+    "wallSeconds": 5.14203871400241,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "runnerCleanup": {
+      "owned": true,
+      "runtime": true,
+      "timedOut": false
+    },
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-files-20261017/archive.json",
+    "archiveSha256": "523013adac060ff45e1168938ca81e8a1ddf9934906e73c76cb7ccc1e3bdaf57",
+    "rawChains": 9,
+    "binaryBefore": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9550336,
+        "sha256": "76a134e7afe6754f6fdddae866cb0641990ef30122c395585d6d54fe94f8d935"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "9b979d81b830845b9f1045e5f1c35a5042e59a63bf0e06c9ce39ee2451abdaf7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "51c6d88e716c5622e85e4a18afc3c48ef9f283ff1ed0afc8464831de558d0bf4"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      }
+    ],
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9550336,
+        "sha256": "76a134e7afe6754f6fdddae866cb0641990ef30122c395585d6d54fe94f8d935"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "9b979d81b830845b9f1045e5f1c35a5042e59a63bf0e06c9ce39ee2451abdaf7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "51c6d88e716c5622e85e4a18afc3c48ef9f283ff1ed0afc8464831de558d0bf4"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "strictCleanup": [
+      {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8",
+        "removed": true,
+        "physicallyAbsentAtReadback": true
+      },
+      {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703",
+        "removed": true,
+        "physicallyAbsentAtReadback": true
+      }
+    ],
+    "rootReferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-boundary2-activation-63aa451e-20261017.json",
+        "sha256": "5b137fe1ccbafd24d3c79a73cf5f6afed4e1094971935541c909eeb9e517e5bc",
+        "bytes": 1602
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-boundary2-inspection-63aa451e-20261017.json",
+        "sha256": "4ace305701edafbb4ccf314679e7874544bf294d5b7674a5e69e24b2316449c2",
+        "bytes": 3309
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-source-decision-delta-github-63aa451e-20261017.json",
+        "sha256": "7b437699c36d51ea7f37de56afe6f31a0bcc9813964d004bc53ed0daa8e98f8f",
+        "bytes": 12433
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-63aa451e-20261017.json",
+        "sha256": "f661dd676d728170eefb848b08986405cc03d36a98a510b6857bcdd12031ef1f",
+        "bytes": 13428
+      }
+    ],
+    "proofLimits": "Both actual ordinary public-owner returns and exact seed-byte comparisons precede stdout prerequisite witness and only final missing-prefix NotNull31. Tail/delegation assertions were not reached. Structural extraction contract observation, not gameplay defect/semantic GREEN/HOT/history. Other50 and protectedLate2 UNRUN. Separate independent causal EVIDENCE/Root release required before production.",
+    "toolUsage": {
+      "recorder74c15": "EXECUTED_ONCE_EXACT_NAMED_BOUNDARY2",
+      "archiver9f967": "READ_ONLY_FROZE_NINE_FIRST_RAW_CHAINS_NO_TEST_EXECUTION"
     }
   }
 }

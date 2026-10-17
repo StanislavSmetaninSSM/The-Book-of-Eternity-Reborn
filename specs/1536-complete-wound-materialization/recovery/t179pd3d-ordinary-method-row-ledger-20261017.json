@@ -1,14 +1,14 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "ACCEPTED_CORRECTED_SOURCE_PREP_BOUNDARY2_ELIGIBLE_ACTUAL_ACTIVATION_HELD",
+  "status": "FIRST_BOUNDARY2_RAW_NATIVE1_0PASS2FAIL_CAUSAL_EVIDENCE_PENDING_OTHER50_UNRUN",
   "methods": [
     {
       "project": "unit",
       "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
-      "status": "FRESH_B501_COMPILED_DISCOVERED_PREPARED_ALL_ACTUAL_UNRUN"
+      "status": "FIRST_EXECUTED_2FAIL_FINAL_MISSING_PREFIX_NOTNULL_RAW_PENDING_INDEPENDENT_CAUSAL_QUALIFICATION"
     },
     {
       "project": "unit",
@@ -526,5 +526,54 @@
     ],
     "scope": "SOURCE/FIXTURE/SELECTION/PREP only; first boundary2 source-eligible after decision persistence/exact successor readback/recovery and separate named Root activation. Other50/production/futureLate2 held.",
     "actualTestsExecuted": 0
+  },
+  "firstActual": {
+    "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+    "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+    "category": "fr063-ordinary-output-policy-boundary",
+    "nativeExit": 1,
+    "wallSeconds": 5.14203871400241,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-boundary2-files-20261017/archive.json",
+    "rawArchiveSha256": "523013adac060ff45e1168938ca81e8a1ddf9934906e73c76cb7ccc1e3bdaf57",
+    "rawChains": 9,
+    "observedRows": [
+      {
+        "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Interface\")",
+        "executionId": "41d2358e-e76a-48a2-a260-b9319dba10bc",
+        "outcome": "Failed",
+        "message": "Assert.NotNull() Failure: Value is null",
+        "stack": "   at BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(String owner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs:line 31\n--- End of stack trace from previous location ---",
+        "prerequisiteStdout": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Interface\n{\"kind\":\"PD3D_ORDINARY_STRICT_CLEANUP\",\"root\":\"/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8\",\"removed\":true}"
+      },
+      {
+        "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Narrative\")",
+        "executionId": "e5953ad9-dfbb-41a2-88d4-7375a2491857",
+        "outcome": "Failed",
+        "message": "Assert.NotNull() Failure: Value is null",
+        "stack": "   at BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(String owner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs:line 31\n--- End of stack trace from previous location ---",
+        "prerequisiteStdout": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Narrative\n{\"kind\":\"PD3D_ORDINARY_STRICT_CLEANUP\",\"root\":\"/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703\",\"removed\":true}"
+      }
+    ],
+    "strictCleanup": [
+      {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8",
+        "removed": true,
+        "physicallyAbsentAtReadback": true
+      },
+      {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703",
+        "removed": true,
+        "physicallyAbsentAtReadback": true
+      }
+    ],
+    "independentCausalStatus": "PENDING; Root literal readback is credited observation only. No production or other actual release."
   }
 }
