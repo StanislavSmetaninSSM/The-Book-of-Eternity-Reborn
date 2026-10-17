@@ -22,7 +22,7 @@
     "categories": 9,
     "methods": 28,
     "proposedCases": 78,
-    "native": "NOT_RUN; prior75belongs324 source only",
+    "native": "Observed fresh69dc exact9categories/9descriptors/28unique methods/78cases;0executed, sameglobal/mirror membership. Proposal below now native-confirmed.",
     "caseCounts": {
       "content": 1,
       "preservation": 19,
@@ -175,9 +175,13 @@
         "project": "integration",
         "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries"
       }
-    ]
+    ],
+    "observedCategories": 9,
+    "observedDescriptors": 9,
+    "observedMethods": 28,
+    "observedCases": 78
   },
-  "currentBlocker": "Prior FIRST6/3 static qualification corrected by scoped neutral843byte provenance framing only; all9exactbodies/7Valid2Invalid and twoactual locators60/78 now statically bound. FullproductionSOURCE/freshprep/runtime remain pending.",
+  "currentBlocker": "Full independent production SOURCE review/persistence/root release pending. No current GREEN or physical-negative actual executed.",
   "uncompiledChangedSourcePins": [
     {
       "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs",
@@ -292,8 +296,8 @@
   ],
   "sourceAuthoringToolScope": "Approved compiled324purelayout helper exported14modulebytes/router as temporary authoringdata, no tests/producer. B-S03navigator rows generatedfrompinned allRuleIds. Pythonbyteinverse checks55pieces/2sources; actual unchangedextractor is source-only binding. Tool text retained with artifact records, not a new production framework.",
   "authoringExportHelperText": "$ErrorActionPreference = 'Stop'\n$repo = '/workspace/The-Book-of-Eternity-Reborn-1557'\n$record = Get-Content '/tmp/gm1557-implementation-tools/gm1557-B-corrected-catalog-first-324594a9-20261017/record.json' -Raw | ConvertFrom-Json\n$relative = 'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll'\n$path = Join-Path $repo $relative\n$pin = @($record.binaryAfter | Where-Object path -CEQ $relative)\nif ($pin.Count -ne 1 -or (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin[0].sha256) { throw 'Compiled layout helper pin mismatch' }\n[Environment]::SetEnvironmentVariable('BOE_REPO_ROOT', $repo)\n$assembly = [Reflection.Assembly]::LoadFrom($path)\n$flags = [Reflection.BindingFlags]'Instance,NonPublic'\n$type = $assembly.GetType('BookOfEternityClient.Tests.GmDocumentationBlock5Fixtures', $true)\n$ctor = $type.GetConstructor($flags, $null, [Type[]]@([string]), $null)\n$fixture = $ctor.Invoke(@($repo))\n$docs = $type.GetMethod('CompleteFixture', $flags).Invoke($fixture, @())\n$router = $type.GetProperty('RouterAddition', $flags).GetValue($fixture)\n$encoded = [ordered]@{}\nforeach ($key in @($docs.Keys | Sort-Object)) { $encoded[$key] = [Convert]::ToBase64String($docs[$key]) }\n$output = '/tmp/gm1557-B-approved-layout-authoring-data-20261017.json'\nif (Test-Path $output) { throw 'Authoring export already exists' }\n$result = [ordered]@{ kind='SOURCE_AUTHORING_DATA_NOT_TEST_OR_PRODUCER_EXECUTION'; compiledSource=$record.sourceHead; assemblySha256=$pin[0].sha256; documents=$encoded; routerAddition=$router; limitation='14 module bytes and accepted conditional router only. Old navigator outputs are superseded by approved B-S03 complete-ID lookup in current source.'; helperText=[IO.File]::ReadAllText($PSCommandPath) }\n[IO.File]::WriteAllText($output, ($result | ConvertTo-Json -Depth 12))\nWrite-Output ('SOURCE_AUTHORING_EXPORT ' + $docs.Count + ' documents; no test/producer; ' + $output)\n",
-  "sourceRuntime": "No build or test/producer after production authoring. Corrected readonly authoring binding is7/2; prior FIRST6/3 immutable. Publish/readback/recover correction before Root source/recovery check, then fresh catalog and full independent productionSOURCE.",
-  "status": "CORRECTED_AUTHORING_STATIC_COMPLETE_UNCOMPILED_FULL_PRODUCTION_SOURCE_PENDING",
+  "sourceRuntime": "Fresh BOTH/catalog and exactSelectionFilePlanOnly/NoBuild native0/0executed on69dc; all12rawchains/sevenfreshDLL/scope/prefix invariants inspected. No test/producer after productionauthoring. Old2FIRSTexpectedcausalRED and originalstatic6/3/helperfailure remain separate history.",
+  "status": "PRODUCTION_SOURCE_REVIEW_CANDIDATE_FRESH_PREPARATION_NATIVE0_ZERO_EXECUTION",
   "correction": {
     "firstWip": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
     "framing": {
@@ -371,5 +375,183 @@
     "jsonSha256": "ae2a6c1533e429c74b0a65e483e642fca72a46b094fdeeee7124e92f33f03c3e",
     "rootReleased": "Only neutral BE001->BE019 provenance framing/canonical generation and2actualfile-line locators, staticauthoringbinding and WIPpublication/recovery; freshprep waitsrootrecovery.",
     "firstDiagnosticHelperFailure": "Preserved exact first helper/slice AssertionError inside corrected static proof, distinct from product/runtime; fixed metadata slice delimiter only; actual extractor not replayed."
-  }
+  },
+  "compiledSource": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "preparation": {
+    "packet": "current-B-production-fresh-preparation-20261017.json",
+    "inspection": "current-B-production-preparation-writer-inspection-20261017.json",
+    "packagePins": "current-B-production-package-pins-69dc7c92-20261017.json.gz",
+    "catalog": {
+      "exit": 0,
+      "seconds": 92.09301348999725,
+      "categories": 808,
+      "discoveredMethods": 11788,
+      "testExecutions": 0,
+      "phases": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0449984,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.037143,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0915533,
+          "Completed": true
+        },
+        {
+          "Name": "Build-integration",
+          "Seconds": 74.4725757,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 11.1479814,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0030439,
+          "Completed": true
+        }
+      ]
+    },
+    "plan": {
+      "exit": 0,
+      "seconds": 5.683437610998226,
+      "categories": 9,
+      "descriptors": 9,
+      "uniqueMethods": 28,
+      "cases": 78,
+      "testExecutions": 0,
+      "byCategory": {
+        "gm-doc-afterlife-package-delivery": 1,
+        "gm-doc-block5-content-boundary": 1,
+        "gm-doc-block5-current-body-guards": 14,
+        "gm-doc-block5-delivery-source": 1,
+        "gm-doc-block5-package-negatives": 2,
+        "gm-doc-block5-permissions-links": 8,
+        "gm-doc-block5-preservation": 19,
+        "gm-doc-block5-reading": 20,
+        "gm-doc-block5-shared-preservation": 12
+      },
+      "planSha256": "a7d0a5ad0e76781c31f9e209c96d0d5a252a9b0979c14beb814998f9b662675c",
+      "onlyFirstCausalBoundaries": [
+        {
+          "Name": "gm-doc-block5-content-boundary-unit-002",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "gm-doc-block5-content-boundary",
+          "Categories": [
+            "gm-doc-block5-content-boundary"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "gm-doc-afterlife-package-delivery-integration-001",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "gm-doc-afterlife-package-delivery",
+          "Categories": [
+            "gm-doc-afterlife-package-delivery"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+          "Adapter": "integration",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "f6cf4ea13e8215937448915faabf2497ba5e8153658d232de84dc4feff3af468",
+        "bytes": 9556480
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "c9bad7a7ca6b7327aa3c00736a7b32a4260deb96173ee189a51c472abe3cf1f2",
+        "bytes": 29221888
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      }
+    ],
+    "packagePinChain": {
+      "rawPath": "/tmp/gm1557-B-production-package-pins-69dc7c92-20261017.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-production-package-pins-69dc7c92-20261017.json.gz",
+      "bytes": 94639,
+      "sha256": "5e2643bd97fbb745876fb2c82cb76caf2b86bc5ff325c20c3bb8ef14c21bdacf",
+      "storedSha256": "a50cc68e80d0960602c6d98e772558538035c79a8a8afad484f6fc7d3446042b",
+      "compression": "gzip mtime0",
+      "files": 258,
+      "totalBytes": 45075028,
+      "all36SourcePackageDocsEqual": true,
+      "allCurrent52SourcePackageDocsEqual": true,
+      "manifestSourcePackageEqual": true,
+      "currentBSourcePackagePresent": [
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt",
+        "Rules/Block_5_Units_Ids.txt",
+        "Examples/E_Block_5_Units_Ids.txt",
+        "Rules/Block_5_Characteristics_Progression.txt",
+        "Examples/E_Block_5_Characteristics_Progression.txt",
+        "Rules/Block_5_Combat_Foundations.txt",
+        "Examples/E_Block_5_Combat_Foundations.txt",
+        "Rules/Block_5_Items_Resources.txt",
+        "Examples/E_Block_5_Items_Resources.txt",
+        "Rules/Block_5_Narrative_Social.txt",
+        "Examples/E_Block_5_Narrative_Social.txt",
+        "Rules/Block_5_Wounds.txt",
+        "Examples/E_Block_5_Wounds.txt",
+        "Rules/Block_5_World_Chronology.txt",
+        "Examples/E_Block_5_World_Chronology.txt"
+      ],
+      "currentBSourcePackageAbsent": []
+    }
+  },
+  "recovery": "Retained full7a plus69completeconsecutive exactGitHubdeltas cover compiled69dc,55532paths. This metadata carrier extends only via complete immediate delta, no fullclone/basebyte rehash."
 }

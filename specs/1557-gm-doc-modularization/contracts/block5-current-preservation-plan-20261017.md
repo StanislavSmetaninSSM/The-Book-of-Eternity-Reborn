@@ -1,6 +1,6 @@
 # #1557 Block B: current source and bounded implementation contract
 
-Status: **independent contract and tests-only SOURCE accepted; two FIRST causal RED accepted; production WIP authored, first static6/3 context stop retained, scoped framing correction statically binds9 exact inputs7/2 and only2 actual manifest locators; fresh preparation/full productionSOURCE/runtime pending**. Accepted A base remains `b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e`; latest user authorizes T021–T029, only T021 currently complete. Main, old1557 branch and accepted A1/A2 are unchanged. [Current source packet](../recovery/current-B-production-authoring-source-20261017.json) records the B namespace and precise shared A wrapper/after-image metadata updates; accepted contract below remains historical and unmodified.
+Status: **independent contract/tests-onlySOURCE and two FIRST causalRED accepted; production WIP/corrected context authored on69dc; fresh canonical BOTH/catalog0 and exactPlanOnly0 confirm9categories/9descriptors/28methods/78cases with0executed; full productionSOURCE and actuals pending**. FIRSTstatic6/3 is retained, corrected9exact inputs7/2 and only2actual manifest locators are source-bound. Accepted A base and accepted contract below remain historical; current [production packet](../recovery/current-B-production-authoring-source-20261017.json) binds allcurrent source/package52/sevenfreshDLLs. OnlyT021 complete; T022–T029 open. Main, original1557 and A1/A2 unchanged.
 
 ## Exact current inventory
 
