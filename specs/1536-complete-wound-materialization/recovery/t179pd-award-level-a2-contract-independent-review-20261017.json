@@ -1,0 +1,96 @@
+{
+  "kind": "INDEPENDENT_A2_CONTRACT_REVIEW",
+  "reviewer": {
+    "model": "GPT-6 Astra",
+    "reasoningEffort": "XHigh",
+    "role": "independent read-only reviewer"
+  },
+  "createdUtc": "2026-10-17T02:16:41.656405+00:00",
+  "carrier": "8af31391b4ccab5d332445954dacdce248307d17",
+  "base": "65fcce707ce63be31e2a1fb462f89998bc39bfd1",
+  "contractPath": "specs/1536-complete-wound-materialization/design/ordinary-award-level-a2-contract.md",
+  "contractSha256": "15e1ebdd5ddad45b470ad28456ff892198731af6c36c38c71766468b2ec767ab",
+  "verdict": {
+    "contract": "ACCEPTED",
+    "concreteSourceFixtureSelection": "FUTURE_GATE",
+    "runtimeEvidence": "NOT_RUN",
+    "productionRelease": false,
+    "materialOpenFindings": []
+  },
+  "acceptedPreparation": {
+    "a2Cases": 57,
+    "boundary": 2,
+    "pure": 33,
+    "ordinary": 20,
+    "existing": 2,
+    "a2Descriptors": 4,
+    "a2OwnedRoots": 24,
+    "protectedLate2Cases": 2,
+    "totalPlanned": 59,
+    "totalDescriptors": 5,
+    "pureCleanup": "N/A; zero roots",
+    "singleCategoryActualsOnly": true,
+    "fiveMinuteBudgets": true
+  },
+  "semanticConstraints": [
+    "two named parsed pure award leaves only; immediate real CheckLevelUpAsync consumer",
+    "nullable assignment only when present; preserve default1/experience0/negative",
+    "experience numeric level before alias; wrong-kind allows alias; conversion fault aborts before alias",
+    "status numeric level only; only read at currentLevel<=1",
+    "single enclosing ordinary abort/log catch; coordinated uncertainty rethrows",
+    "no IO/doc-lifetime/order/arithmetic/watermark/UI/lastKnown/caller redesign"
+  ],
+  "oracleLimits": [
+    "negative current scalar is not independently visible through lastKnown=max(1,current)",
+    "contract describes intended fixtures and cases; no concrete tests or discovery accepted yet"
+  ],
+  "reviewResolutions": [
+    {
+      "id": "A2-C01",
+      "topic": "Nullable no-value assignment",
+      "status": "specified correctly; retain existing nonpositive experience value"
+    },
+    {
+      "id": "A2-C02",
+      "topic": "Restart strict cleanup",
+      "status": "contract requires strict wrapper around unchanged real body"
+    },
+    {
+      "id": "A2-C03",
+      "topic": "Uncertainty exact subcase",
+      "status": "thin level_mark Fact reuses original cut/body and its existing strict cleanup; no duplicate wrapper"
+    },
+    {
+      "id": "A2-C04",
+      "topic": "Late2 actual dependency",
+      "status": "source42 real progression reaches changed CheckLevelUp; final joint43 bypass is separately acknowledged"
+    }
+  ],
+  "recoveryCheck": {
+    "path": "/tmp/a2-contract-independent-check-20261017.json",
+    "sha256": "b3fb22ed2b4084963ed16cec559cb678da777cc2b747808800bdfb2e7444e144",
+    "newDeltaFiles": 10,
+    "allChangedPaths": 6,
+    "currentDependencies": 21,
+    "receiptChecks": [
+      {
+        "path": "/tmp/a2-contract-delta-github-8af31391-20261017.json",
+        "sha256": "fb812176758705d8daa81caf01c13e6c78bcbbc53c50b555ad43acf8684c97d6",
+        "fileCount": 10,
+        "source": "8af31391b4ccab5d332445954dacdce248307d17"
+      },
+      {
+        "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-a2-contract-dependency-recovery-20261017.json",
+        "sha256": "b4c1185b364aec9754cd4314fdcf4f789062867722d3699d9ba41764b7c2c538",
+        "fileCount": 21,
+        "source": "65fcce707ce63be31e2a1fb462f89998bc39bfd1"
+      }
+    ]
+  },
+  "sourceScope": "product/tests/catalog/selection/scripts/workflows unchanged against accepted65fc",
+  "runtime": "NOT_RUN",
+  "repositoryWrites": false,
+  "nextGate": "persist decision/root release -> tests-only preparation -> fresh BOTH/catalog/PlanOnly and concrete SOURCE/FIXTURE/SELECTION -> FIRST boundary2 causal RED -> separate preserved independent RED EVIDENCE before production",
+  "retainedHistory": "A1 accepted52, initial missing-helper RED, F01 unqualified first2PASS/correction, old Late2 remain exact historical provenance without repeat or new claim",
+  "broaderQualification": false
+}

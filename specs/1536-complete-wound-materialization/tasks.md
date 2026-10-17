@@ -1,3 +1,7 @@
+## A2 contract accepted — tests-only preparation next after persistence (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent contract pair accepts two award leaves/57A2+separate2affectedLate2/no material finding; current [decision checkpoint](plan.md) preserves8af10file/all6delta. Publish/readback/newdelta then root may release tests-only fixtures/categoryselection/freshBOTH/catalog/PlanOnly0/frozen preparation for concreteSOURCE. Full realowner+byte/read/noUI/no-write+strictcleanup witness precedes missinghelper in boundary2. No production/actual yet, no oldproof/base replay or wider scope.
+
 ## A2 IMPLEMENTATION — bounded award-level leaves (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), from acceptedA1/65fc. [Current contract/checkpoint](plan.md) selects only two named award leaves plus immediate ordinary consumer, finite57A2+separate2affectedLate2. No product/test edits or runtime in this contract WIP.
