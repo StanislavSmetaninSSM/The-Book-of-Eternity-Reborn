@@ -1,0 +1,20 @@
+{
+  "kind": "ROOT_NAMED_ONCE_FIRST_PD3E_BOUNDARY1_ACTIVATION",
+  "actualSource": "479a23a95436351960916a2dde065c577e962202",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "controller": "/tmp/t179pd3e-ordinary-boundary-first-run.py",
+  "controllerSha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
+  "label": "t179pd3e-ordinary-boundary-first-479a23a9-20261017",
+  "prepRecord": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-plan-7307e8f8-20261017/record.json",
+  "savedConditionalArtifacts": {
+    "t179pd3e-tests-prep-source-independent-review-20261017.md": "ff954088d2bf868299f5458fea38fe5a2555622c96c269b86bb52fd428a061fa",
+    "t179pd3e-tests-prep-source-independent-review-20261017.json": "a72ce6362c993e5d0019a7fde68c58c64fb60b45dd5e5f9fe5e6427f9de3458a",
+    "t179pd3e-tests-prep-source-independent-check-20261017.json": "becf848cd8b2d693c92e8d4597f17a88f8f754a023b9f86c4886ca186679e44d",
+    "t179pd3e-root-source-boundary1-conditional-2dcfa0dd-20261017.json": "687a49ff4aca540ec0137a57f4cc6d4d86a3ddf62d930c8a29ae922cee6580d6"
+  },
+  "sourcePinsExact": 54,
+  "freshCurrentBinaryCopies": 9,
+  "release": "ONCE ONLY canonical fr063-reasoning-prefix-boundary/NoBuild/1Fact1case, actual479a/compiled7307; noothercategory. Capturefirstnative/allraw/strictcleanup/sourcebinding, unexpectedstopnoretry. Native1isnotcausalproofwithoutprerequisites+soleNotNull29. Save/push/exactremote/newGitHubdelta/separatecausalEVIDENCE beforeproduct.",
+  "held": "Allother44actuals;S02open;product/HOT/history/Full/S/B/M3/F1/T197/A3/WindowsZIPCI/infrastructure/main/merge/force/delete/issues/credentials/security.",
+  "utc": "2026-10-17T18:05:54.785864+00:00"
+}

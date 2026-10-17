@@ -1,13 +1,13 @@
 {
   "kind": "PD3E_ORDINARY_DEBUG_PREFIX_TESTS_ONLY_CURRENT_SOURCE_NOT_PRODUCT_OR_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY_ALL_ACTUALS_UNRUN_AWAIT_NAMED_ROOT_ACTIVATION",
+  "status": "FIRST_BOUNDARY1_NATIVE1_FINAL_MISSING_SEAM_RAW_FROZEN_CAUSAL_EVIDENCE_PENDING_OTHER44_HELD",
   "productDelta": [],
   "counts": {
     "categories": 5,
     "methods": 18,
     "declaredRows": 45,
-    "actualExecuted": 0
+    "actualExecuted": 1
   },
   "sourcePins": [
     {
@@ -555,7 +555,7 @@
   "sourcePinDigest": "a8c9e79b97dc51ac4a16c2ccfb7be1015979ea5c78264e1fdadf182928bbbfaf",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "2ee080c7b5e2ed2f96253d88fdfbd06ba2cb39cc667a1742ec563cc5f8eec778"
+    "sha256": "00874c7f22ef7529ef262090f759b6789fae302ac486db4451c96c05c30e9f6f"
   },
   "references": [
     {
@@ -918,7 +918,7 @@
     }
   ],
   "futureBoundaryRecorder": {
-    "status": "SOURCE_ACCEPTED_FOR_BOUNDARY1_ONLY_UNRUN_AWAIT_SEPARATE_NAMED_ROOT_ACTIVATION",
+    "status": "USED_ONCE_FOR_FIRST_BOUNDARY1_479A_RAW_FROZEN_AWAIT_CAUSAL_EVIDENCE",
     "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-ordinary-boundary-first-run.py",
     "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
     "category": "fr063-reasoning-prefix-boundary",
@@ -2829,5 +2829,161 @@
     "S02": "OPEN material expected-vector defect for future full45; whole3row method and all other44 actuals held. Only after qualified structuralRED may exact two vector correction join minimal product WIP as separate test capsule before fresh product BOTH/Plan and complete affected SOURCE.",
     "C01": "CLOSED by sole lambda correction and fresh catalog0/Plan0; original d377 compile failure and eight raw chains remain immutable, never semantic RED.",
     "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner."
+  },
+  "firstBoundaryOutcome": {
+    "status": "FIRST_RAW_OBSERVATION_NOT_INDEPENDENT_CAUSAL_ACCEPTANCE",
+    "actualSource": "479a23a95436351960916a2dde065c577e962202",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "semanticProductBaseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+    "nativeExit": 1,
+    "wallSeconds": 5.060049401996366,
+    "category": "fr063-reasoning-prefix-boundary",
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-files-20261017/archive.json",
+      "sha256": "cefdbb8fe08c3c57d653576904744b75f421c8d7bc58b44f973ed77983b82e83",
+      "rawChains": 9
+    },
+    "record": {
+      "originalPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-boundary-first-479a23a9-20261017/record.json",
+      "sha256": "7ef8894211579e2b08fb1709d5bf176aeb4c4b40d8f06a4b767ec335b448cfa8"
+    },
+    "observed": "Exactly one final Assert.NotNull failure line29 on missing document seam. REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE is emitted after actual default Full no-issue success and exact whole seed presence/bytes assertions. Root literal receipt checks sole failure and one strict physically absent root/nine DLL/source54 continuity; native1 alone is not an independent causal verdict.",
+    "limits": "Later unknown/scope/helper-order assertions were not reached. No semantic regression case, genuine preparer-original case, old ordinary52 or protectedLate2 ran. No full payload body retained beyond frozen source/actual assertion and marker; no new source authority or policy defect claimed. Other44 held, S02 open, product/vector correction prohibited pending separate causal review/Root release.",
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "binaryBefore": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "65be33a387e9d41f330fac2cd5820d201a61c5fcda837c53eab73967ca11dfaf"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "03835f9ded38de9645f29f213f31a064b3d9f76a51e8e3add928a4e9caffe501"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "f5f48369404a0bb7f79afebd8ab9df4145a6851636ecf0ca8821f9f3731b852d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "f5f48369404a0bb7f79afebd8ab9df4145a6851636ecf0ca8821f9f3731b852d"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "7d26de3d9693b0c78e3b9cfa45d953ef0461e6845952be357d20edcbc4bd1e50"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      }
+    ],
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "65be33a387e9d41f330fac2cd5820d201a61c5fcda837c53eab73967ca11dfaf"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "03835f9ded38de9645f29f213f31a064b3d9f76a51e8e3add928a4e9caffe501"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "f5f48369404a0bb7f79afebd8ab9df4145a6851636ecf0ca8821f9f3731b852d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "f5f48369404a0bb7f79afebd8ab9df4145a6851636ecf0ca8821f9f3731b852d"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "7d26de3d9693b0c78e3b9cfa45d953ef0461e6845952be357d20edcbc4bd1e50"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "2d42d81ebe071d4b1d53e8ad0b39ffc53ea2cff4992b15421f944dcc300e5bc1"
+      }
+    ],
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-boundary1-activation-479a23a9-20261017.json",
+        "bytes": 1725,
+        "sha256": "b9906684070711130c282f0850fe0600fc2aa8627c81994e7e33ea3725cd092e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-boundary1-inspection-479a23a9-20261017.json",
+        "bytes": 8731,
+        "sha256": "c2cae3c0321901b0b117b8caad287b0469720c65472b99f7a7a9dc6defd00046"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-source-decision-delta-github-479a23a9-20261017.json",
+        "bytes": 11740,
+        "sha256": "016082f73a8477a2c54bfff68346fed3c6780eb890af673016735fb2fa20aad7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-479a23a9-20261017.json",
+        "bytes": 18230,
+        "sha256": "c0f265f279c970b009ca3bfc7a12dd0c586ca3652aac9082c29190ee93bdb269"
+      }
+    ]
   }
 }

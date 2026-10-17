@@ -1,0 +1,88 @@
+{
+  "kind": "ROOT_FIRST_PD3E_BOUNDARY1_LITERAL_CAUSAL_INSPECTION_NOT_INDEPENDENT_VERDICT",
+  "actualSource": "479a23a95436351960916a2dde065c577e962202",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "nativeExit": 1,
+  "wallSeconds": 5.060049401996366,
+  "summary": {
+    "Categories": [
+      "fr063-reasoning-prefix-boundary"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "479a23a95436351960916a2dde065c577e962202",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-reasoning-prefix-boundary",
+        "Seconds": 1.8436042,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0314191,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0343009,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0953268,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:04.3729326",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "rawChains": 9,
+  "archiveSha256": "cefdbb8fe08c3c57d653576904744b75f421c8d7bc58b44f973ed77983b82e83",
+  "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+  "message": "Assert.NotNull() Failure: Value is null",
+  "stack": "   at BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs:line 29\n--- End of stack trace from previous location ---",
+  "stdout": "REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE\n{\"kind\":\"PD3E_REASONING_STRICT_CLEANUP\",\"root\":\"/tmp/boe-pd3e-reasoning-e6b491fca20e4470a4e0a4cece243c91\",\"removed\":true}",
+  "cleanupReceipts": [
+    {
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-e6b491fca20e4470a4e0a4cece243c91",
+      "removed": true
+    }
+  ],
+  "currentFreshNineExact": true,
+  "sourcePinsExactAtActual": 54,
+  "scope": "Only structural missing document seam RED after real public Full success and exact seed byte assertions. Unknown/scope seam assertions and delegation are unreached. NI-3E-S02 and other44 actuals remain held; no semantic failure or product/HOT/Full-family claim. Initial PREPcompileFAIL remains separate. Independent causal EVIDENCE/publication/recovery required before product.",
+  "helperSource": "from pathlib import Path\nimport datetime, gzip, hashlib, json, os, subprocess, sys, xml.etree.ElementTree as E\n\nrepo = Path('/workspace/The-Book-of-Eternity-Reborn')\nrecord_path, archive_dir = map(Path, sys.argv[1:])\nc = json.loads(record_path.read_text())\nar = json.loads((archive_dir / 'archive.json').read_text())\nh = lambda b: hashlib.sha256(b).hexdigest()\nassert c['kind'] == 'FIRST_PD3E_ORDINARY_BOUNDARY1_RAW_NOT_CAUSAL_ACCEPTANCE'\nassert c['nativeExit'] == 1 and c['compiledSource'] == '7307e8f8c74c53bd836de7906d305c794766e1a1'\nassert c['actualSource'] == c['headAfter'] and not c['statusAfter']\nexpected = {str(record_path), c['stdoutPath'], c['processRecord'], c['firstSentinel'], str(record_path.parent / 'source-binding.json')}\nfor directory in c['resultDirectories']:\n    expected.update(str(p) for p in Path(directory).rglob('*') if p.is_file())\nassert expected == {f['rawPath'] for f in ar['files']}\nraws = {}\nfor f in ar['files']:\n    b, z = Path(f['rawPath']).read_bytes(), (archive_dir / f['storedPath']).read_bytes()\n    assert len(b) == f['bytes'] and h(b) == f['sha256']\n    assert len(z) == f['storedBytes'] and h(z) == f['storedSha256'] and gzip.decompress(z) == b\n    name = Path(f['rawPath']).name\n    assert name not in raws\n    raws[name] = b\nassert json.loads(raws['record.json']) == c and h(raws['stdout.log']) == c['stdoutSha256']\nassert len(c['binaryBefore']) == 9 and c['binaryBefore'] == c['binaryAfter']\nfor f in c['binaryAfter']:\n    b = (repo / f['path']).read_bytes()\n    assert len(b) == f['bytes'] and h(b) == f['sha256']\nassert c['namespaceBefore'] == c['namespaceAfter'] == {'ownedRoots': []}\nbinding = json.loads(raws['source-binding.json'])\nassert len(binding['sourcePins']) == 54 and binding['productDelta'] == []\nassert h(json.dumps(binding['sourcePins'], ensure_ascii=False, separators=(',', ':')).encode()) == binding['sourcePinDigest']\nfor f in binding['sourcePins']:\n    b = subprocess.check_output(['git', 'show', c['actualSource'] + ':' + f['path']], cwd=repo)\n    assert len(b) == f['bytes'] and h(b) == f['sha256']\ndiff = subprocess.check_output(['git', 'diff', '--name-only', c['compiledSource'], c['actualSource']], cwd=repo, text=True).splitlines()\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in diff)\ns = json.loads(raws['summary.json'])\nassert s['Tests'] == dict(Total=1, Executed=1, Passed=0, Failed=1)\nselection = s['Selection']\nassert selection['Complete'] and selection['PlannedCases'] == selection['CompletedCases'] == 1\nassert selection['PlannedDescriptors'] == selection['CompletedDescriptors'] == 1 and not selection['UnderfilledDescriptors']\nassert s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['TimedOut'] and not s['DuplicateTests']\ntrxs = [b for n, b in raws.items() if n.endswith('.trx')]\nassert len(trxs) == 1\nx = E.fromstring(trxs[0]); ns = {'t': x.tag.split('}')[0].lstrip('{')}\nrows = x.findall('.//t:UnitTestResult', ns); assert len(rows) == 1\nrow = rows[0]; assert row.attrib['outcome'] == 'Failed'\ndefinition = x.find('.//t:UnitTest[@id=\"' + row.attrib['testId'] + '\"]/t:TestMethod', ns)\nassert definition is not None\nfqn = definition.attrib['className'].split(',')[0] + '.' + definition.attrib['name']\nassert fqn == 'BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix'\nmessage = row.findtext('t:Output/t:ErrorInfo/t:Message', '', ns)\nstack = row.findtext('t:Output/t:ErrorInfo/t:StackTrace', '', ns)\nstdout = row.findtext('t:Output/t:StdOut', '', ns)\nassert 'Assert.NotNull() Failure: Value is null' in message\nassert 'AcceptedTurnReasoningPolicyBoundaryTests.cs:line 29' in stack\nassert 'REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE' in stdout\nreceipts = []\nfor line in stdout.splitlines():\n    try: value = json.loads(line)\n    except json.JSONDecodeError: continue\n    if isinstance(value, dict) and value.get('kind') == 'PD3E_REASONING_STRICT_CLEANUP': receipts.append(value)\nassert len(receipts) == 1\nroot = receipts[0]['root']\nassert receipts[0]['removed'] and root.startswith('/tmp/boe-pd3e-reasoning-') and not os.path.lexists(root)\nout = dict(kind='ROOT_FIRST_PD3E_BOUNDARY1_LITERAL_CAUSAL_INSPECTION_NOT_INDEPENDENT_VERDICT', actualSource=c['actualSource'],\n           compiledSource=c['compiledSource'], nativeExit=1, wallSeconds=c['wallSeconds'], summary=s,\n           rawChains=len(ar['files']), archiveSha256=h((archive_dir / 'archive.json').read_bytes()), fqn=fqn,\n           message=message, stack=stack, stdout=stdout, cleanupReceipts=receipts, currentFreshNineExact=True,\n           sourcePinsExactAtActual=54, scope='Only structural missing document seam RED after real public Full success and exact seed byte assertions. Unknown/scope seam assertions and delegation are unreached. NI-3E-S02 and other44 actuals remain held; no semantic failure or product/HOT/Full-family claim. Initial PREPcompileFAIL remains separate. Independent causal EVIDENCE/publication/recovery required before product.',\n           helperSource=Path(__file__).read_text(), utc=datetime.datetime.now(datetime.timezone.utc).isoformat())\ndest = Path('/tmp/t179pd3e-root-first-boundary1-inspection-' + c['actualSource'][:8] + '-20261017.json')\nassert not dest.exists(); dest.write_text(json.dumps(out, indent=2) + '\\n')\nprint(dest, h(dest.read_bytes()))\n",
+  "utc": "2026-10-17T18:06:58.305450+00:00"
+}

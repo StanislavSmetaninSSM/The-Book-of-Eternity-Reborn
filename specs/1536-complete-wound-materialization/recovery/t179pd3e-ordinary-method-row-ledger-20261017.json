@@ -1,18 +1,18 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY_ALL_ACTUALS_UNRUN_AWAIT_NAMED_ROOT_ACTIVATION",
+  "status": "FIRST_BOUNDARY1_NATIVE1_FINAL_MISSING_SEAM_RAW_FROZEN_CAUSAL_EVIDENCE_PENDING_OTHER44_HELD",
   "counts": {
     "categories": 5,
     "methods": 18,
     "declaredRows": 45,
-    "actualExecuted": 0
+    "actualExecuted": 1
   },
   "methods": [
     {
       "category": "fr063-reasoning-prefix-boundary",
       "project": "unit",
-      "status": "SOURCE_ELIGIBLE_BOUNDARY1_ONLY_UNRUN_AWAIT_NAMED_ROOT",
+      "status": "FIRST_EXECUTED_FINAL_MISSING_SEAM_FAIL_RAW_FROZEN_CAUSAL_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 17,
@@ -374,5 +374,20 @@
     "S02": "OPEN material expected-vector defect for future full45; whole3row method and all other44 actuals held. Only after qualified structuralRED may exact two vector correction join minimal product WIP as separate test capsule before fresh product BOTH/Plan and complete affected SOURCE.",
     "C01": "CLOSED by sole lambda correction and fresh catalog0/Plan0; original d377 compile failure and eight raw chains remain immutable, never semantic RED.",
     "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner."
+  },
+  "firstBoundaryOutcome": {
+    "actualSource": "479a23a95436351960916a2dde065c577e962202",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "nativeExit": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "status": "RAW_FINAL_NOTNULL29_AFTER_PUBLIC_PREREQUISITES_CAUSAL_REVIEW_PENDING",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-files-20261017/archive.json",
+      "sha256": "cefdbb8fe08c3c57d653576904744b75f421c8d7bc58b44f973ed77983b82e83",
+      "rawChains": 9
+    },
+    "otherActualsHeld": 44
   }
 }
