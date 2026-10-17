@@ -28472,7 +28472,7 @@
     },
     {
       "id": "daren-retirement-affected-guards",
-      "responsibility": "1558 exact affected API fixture/interface, shell/QTE lease, source inventory and generic boundary guards. Campaign-only fixture row/assertions are retired; all remaining row semantics retained. No aggregate API or source suite.",
+      "responsibility": "1558 five retained independent inventory/API-interface/QTE-lease/boundary guards. E02 failed whole API DTO theory and React source Fact move to their narrow correction owner; remaining semantics unchanged.",
       "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
       "changeHints": [
         "specs/1558-remove-daren-campaign/spec.md"
@@ -28490,9 +28490,7 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
-            "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
             "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
-            "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
             "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
             "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests"
           ]
@@ -28501,6 +28499,34 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-affected-client-contracts",
+      "responsibility": "1558 E02 exact representative DTO fixture theory and actual React shell hook/loader source Fact. Existing MemberData method requalifies all11actual rows (discovery minimum1) with unchanged DeepEquals; no row framework or product/serializer mutation.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/api/contract-fixtures",
+        "BookOfEternityClient.Tests/BrowserFrontendWorkspaceTests.cs"
+      ],
+      "related": [
+        "daren-retirement-affected-guards"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+            "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState"
           ]
         }
       ]

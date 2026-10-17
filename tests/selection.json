@@ -75,10 +75,18 @@
     },
     {
       "category": "daren-retirement-affected-guards",
-      "reason": "1558 exact affected API fixture/interface, shell/QTE lease, source inventory and generic boundary guards. Obsolete Daren positive fixture row/assertions retire only with subject in G2; retain remaining row semantics. No aggregate API or source suite.",
+      "reason": "1558 five independently qualified PASS methods retained atc5e/f076: exact QteSplit inventory1 plus four unchanged unit Facts. Full membership retained; remaining execution excludes this owner without replay.",
       "contracts": [
         "#1558",
         "accepted G0+A01 removal/data-safety/client/common-regression contract"
+      ]
+    },
+    {
+      "category": "daren-retirement-affected-client-contracts",
+      "reason": "1558 E02 requalify existing whole11-row API DTO theory and React hook/loader source Fact after exact two null fields/source-acquisition correction; no generator/oracle weakening. Nine prior API PASS remain history and necessarily repeat at method granularity.",
+      "contracts": [
+        "#1558",
+        "G2-E02 exact fixture/sample and source-owner correction; independent causal retention boundary"
       ]
     },
     {

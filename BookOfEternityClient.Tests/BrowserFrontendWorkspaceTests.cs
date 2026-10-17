@@ -178,6 +178,7 @@ public sealed class BrowserFrontendWorkspaceTests
         var app = ReadFrontendSource("App.tsx");
         var shellContext = ReadFrontendSource("context", "ShellContext.tsx");
         var shellStateHook = ReadFrontendSource("hooks", "useShellState.ts");
+        var shellStateLoader = ReadFrontendSource("hooks", "loadShellState.ts");
         var styles = ReadFrontendStyles();
 
         Assert.Contains("import { ConnectionBanner } from './components/ConnectionBanner';", app, StringComparison.Ordinal);
@@ -207,20 +208,29 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("setActiveRouteState(tabToRoute(tab));", shellContext, StringComparison.Ordinal);
         Assert.Contains("setActiveRouteState('game');", shellContext, StringComparison.Ordinal);
         Assert.Contains("const [advancedEnabled, setAdvancedEnabledState] = useState(false);", shellContext, StringComparison.Ordinal);
-        Assert.Contains("const { shellState, loadBrowserState } = useShellState(advancedEnabled);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore,", shellContext, StringComparison.Ordinal);
+        Assert.Contains("refreshAfterLoad: refreshAfterLoadCore, invalidateRefresh } = useShellState(advancedEnabled);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const loadBrowserState = useCallback(async (isCurrent?: () => boolean) => {", shellContext, StringComparison.Ordinal);
+        Assert.Contains("if (continuationBlocked() || isLoadInProgress()) return;", shellContext, StringComparison.Ordinal);
+        Assert.Contains("await loadBrowserStateCore(() => !continuationBlocked() && !isLoadInProgress() && (isCurrent?.() ?? true));", shellContext, StringComparison.Ordinal);
+        Assert.Contains("}, [loadBrowserStateCore, continuationBlocked, isLoadInProgress]);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("import { useShellState } from '../hooks/useShellState';", shellContext, StringComparison.Ordinal);
+        Assert.Contains("import { loadShellState } from './loadShellState';", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("return loadShellState(browserApi, setShellState, publicationOwner, advancedEnabled, isCurrent);", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("export async function loadShellState(", shellStateLoader, StringComparison.Ordinal);
         Assert.Contains("browserApi.submitPlayerAction({ text: normalized })", shellContext, StringComparison.Ordinal);
         Assert.Contains("browserApi.executeExplorerCommand({ command, advancedEnabled })", shellContext, StringComparison.Ordinal);
         Assert.Contains("composerSubmissionInFlight", shellContext, StringComparison.Ordinal);
         Assert.DoesNotContain("`/prose ${normalized}`", shellContext, StringComparison.Ordinal);
         Assert.DoesNotContain("/prose", shellContext, StringComparison.OrdinalIgnoreCase);
 
-        Assert.Contains("await Promise.allSettled([", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getMainMenu()", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getGameScreen()", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getClientSettings()", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("if (advancedEnabled)", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getLifecycleDashboard()", shellStateHook, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getCommandCoverage()", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("await Promise.allSettled([", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getMainMenu()", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getGameScreen()", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getClientSettings()", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("if (advancedEnabled)", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getLifecycleDashboard()", shellStateLoader, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getCommandCoverage()", shellStateLoader, StringComparison.Ordinal);
 
         foreach (var staleSnippet in new[] { "./routes/", "<Sidebar />", "ActionPalette", "from './components/Composer'", "playerRoutes", "route-grid--primary", "route-grid--utility" })
         {

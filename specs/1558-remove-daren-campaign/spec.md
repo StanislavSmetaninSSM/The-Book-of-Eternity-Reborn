@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST E01-corrected G2 aggregate STOP atc5e/compiledf076: native1/10.033s, first two descriptors17executed14PASS3FAIL;17descriptors/81C#cases+8frontendfileestimates UNRUN. Exact14rawchains frozen, native/runner cleanuptrue, source274/new7DLL/namespaces unchanged. Independent causal EVIDENCE pending; all actuals/RootChromium stopped, no retry/correction/task completion.
+**Status**: E02 partial causal evidence accepted:14actualPASS3fixture/source-guardFAIL; retain5independent unchanged methods, wholeAPI11+React1 to requalify. Two sample JSON nulls/one React source Fact corrected without product/DTO/serializer/MemberData/oracle changes; new narrow owner and remaining selector authored. Full18/20 and remaining17/18 are discovery proposals; freshfrontend/BOTHcatalog/full+remainingPlan0 and targetedSOURCE pending, no actual/RootChromium release. Frozen81UNRUN projection corrected to91C#minimum+8FE; oldraw intact.
 
 ## Source issues and scope
 

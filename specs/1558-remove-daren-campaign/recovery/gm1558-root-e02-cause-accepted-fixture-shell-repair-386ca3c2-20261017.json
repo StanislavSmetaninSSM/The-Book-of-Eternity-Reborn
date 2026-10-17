@@ -1,0 +1,155 @@
+{
+  "kind": "ROOT_E02_CAUSE_ACCEPTED_RELEASED_BOUNDED_FIXTURE_SOURCEGUARD_OWNER_REPAIR_ZEROEXEC_PREP",
+  "utc": "2026-10-17T11:39:09.680688+00:00",
+  "carrier": "386ca3c206d4ea7564374470acdb5624e848b269",
+  "oldActualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+  "oldCompiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-e02-causal-evidence-independent-20261017.md",
+      "sha256": "2c88882dbcecc4f79b76c89913fd937cadad54d21f0828ade79d366026f0ed8a"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-causal-evidence-independent-20261017.json",
+      "sha256": "a3b17bcaf5fc96ac7d7b1eeced08e5b442233eb9f9ceb12bdfd215652fe9c54b"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e02-stop-independent-check-20261017.json",
+      "sha256": "9df6606019c48fe493e5a8ebf8cfacbd3de9a63e07aab2317a83196edf394119"
+    }
+  ],
+  "decision": "Accept17actual14PASS3FAIL partialevidence andexactDTO/source-guardcauses. No productbehaviorregression orcurrentGREEN established.",
+  "rootIndependentObservations": "StructuralJSONdiffonlymissing /loadGeneration:null and/menu/loadGeneration:null; line210oldalias plusunreachedgetterownerchecks requirecoherentactualhook->loader guard. No product changes needed.",
+  "correctionScope": {
+    "json": {
+      "BookOfEternityClient.WebFrontend/src/api/contract-fixtures/main-menu.json": "AddonlytoploadGeneration:null",
+      "BookOfEternityClient.WebFrontend/src/api/contract-fixtures/api-error.json": "Addonlymenu.loadGeneration:null"
+    },
+    "csharp": "Only existing ReactAppShell_RendersCurrentTabCommandShellAndSharedState Fact sourceacquisition/alias+currentwrapper/import/delegation checks; retainallseven Promise/getter/advancedoracles onactualhooks/loadShellState.ts andallotherassertions. Preserve DTO/serializer/DeepEquals/MemberData11rowgenerator/testmethods/literals/productionC#andfrontend runtimecode.",
+    "sourcePins": "Addactualdirect useShellState.ts andloadShellState.ts inputs plusnewremainingselector; updateonlyactualchangedpins. No fabricatedcompatibility or newrowframework.",
+    "catalog": "MoveonlyfailedAPItheory+failedReactFact unitselectors fromexistingAffectedguardsowner tonewnarrowcorrectionowner. Oldownerretainsinventory1+fourotherFacts. Fullcurrentselection18owners20descriptors50entries, samefullcontracts. Namedremainingselectionexcludesexactfive-retainedmethods, containsnewowner+16remainingoldowners. Currentmirrorconsistent.",
+    "ledger": "Updateonlyreal2methodowner/membershipmetadata; sourcepacket currentLedgerSHA mustfollowactualfinalledgerbytes afterfreshnativefullplan. Historicalfrozenpackets/reports unchanged."
+  },
+  "retainedFive": [
+    {
+      "executionId": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+      "testId": "2caf4b33-971f-d69d-69bf-c455b5bfe833",
+      "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.1307338",
+      "startTime": "2026-10-17T11:31:17.1968434+00:00",
+      "endTime": "2026-10-17T11:31:17.1968526+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-integration-001.trx",
+      "trxSha256": "3d2b52c3a8cf32891e2cf799177d97f457ffa2fb080b8284a706da55a3d2720e"
+    },
+    {
+      "executionId": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+      "testId": "ae130a80-35b0-cc94-5c74-551737979e3b",
+      "testName": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0077599",
+      "startTime": "2026-10-17T11:31:18.9252081+00:00",
+      "endTime": "2026-10-17T11:31:18.9252263+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+      "testId": "f41b3573-146a-a22c-463a-f2ecfc5a86d2",
+      "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0007076",
+      "startTime": "2026-10-17T11:31:19.1686775+00:00",
+      "endTime": "2026-10-17T11:31:19.1686775+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "8bd11711-07d7-44d6-86fc-417c821c6903",
+      "testId": "06477a30-f4ff-2d67-f848-7baf42f607c3",
+      "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0014060",
+      "startTime": "2026-10-17T11:31:19.1686553+00:00",
+      "endTime": "2026-10-17T11:31:19.1686554+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "8bd11711-07d7-44d6-86fc-417c821c6903",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+      "testId": "03011f09-1182-65b1-8913-e5db725ee840",
+      "testName": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.1246122",
+      "startTime": "2026-10-17T11:31:19.0353363+00:00",
+      "endTime": "2026-10-17T11:31:19.0353364+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    }
+  ],
+  "runtimePartition": "Retain5unchangedactualPASS atc5e/f076; wholeexistingAPI11rows+React1 requalified viaexistingcanonicalmethodfilter (9historicAPIpassesrepeatedforatomicmethodcoverage), plus17previouslyUNRUNdescriptors. No thirdfullaggregate. Futureactualcountsobserved, notforcedto98/106.",
+  "countClarification": "Oldremaining17desc=91C#discoveryestimates+8FEfileestimates, not81; frozenerrorpreserved andcurrentmetadata clarified. MemberData11 actualvs1discovery meansfull98C#isminimumestimate, notfinalcount.",
+  "persistence": "OnecoherentWIP sourcecheckpoint combinesexactE02pair/support/Rootdecision/Rootrawobservation+386complete112composition andboundedsource/catalog/selector/ledger/pins; nonforcepush/exactremote/newcompleteGitHubdelta beforeprep.",
+  "releasedZeroExecutionPreparation": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "scope": "ONEFIRSTfreshfrontendcurrentownedlockedtoolsetup;2JSONtreechanges justifyapp+nodeTSandfreshVite113inventory. No npmcisetup/versionchanges. Onunexpected STOPfreeze."
+    },
+    {
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-ValidateCatalog"
+      ],
+      "scope": "ONEFIRSTfreshBOTHbuild/catalog becauseownershipchanged; no generatedbinreclean needed unlessactualorphan. Recordnew7DLL/package370/servedfreshdist/docs52/CLIoutside52/source/process/namespace.0tests."
+    },
+    {
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-SelectionFile",
+        "tests/selection.json",
+        "-PlanOnly",
+        "-NoBuild"
+      ],
+      "scope": "ONEFIRSTnativefullnewownershipmembership18owners20desc50entries; expected98C#minimum+8FEestimate106,0exec."
+    },
+    {
+      "command": "Canonical newnamedremainingSelectionFile PlanOnly-NoBuild",
+      "scope": "ONEFIRSTexact17owners18desc45entries; expected93C#minimum+8FEestimate101,0exec; differenceexact5retainedmethods. Freshfull+remainingplanjustifiednewpartition, notoldacceptedpackage replay."
+    }
+  ],
+  "nextGate": "Freeze/publishallFIRSTprep/raw/currentledger/sourcebinding/newFIRS remainingrecorder beforeindependenttargetedE02SOURCE/PREP, thenRootseparateactualactivation. Original5551FAIL andf07617caseFIRST remainimmutable. No actualnow.",
+  "rootProof": "/tmp/gm1558-root-e01-first-green-stop-raw-observation-c5e62023-20261017.json",
+  "limits": "No productsemantics/DTO/serializer/normalization/generatorweakening; no unrelatedA1/A2/Late2/fullsuite/Windows/CI/Library/main/merge/forcepush/branchdelete/issueclose/credentials/settings/HOT/M3. RootChromiumhelduntilqualifiedGREENunion."
+}

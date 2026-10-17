@@ -2,6 +2,7 @@
   "error": "Загрузка сохранения сейчас недоступна: книга занята текущим ходом.",
   "loadedSaveId": "manual:sample.json",
   "menu": {
+  "loadGeneration": null,
   "schemaVersion": 1,
   "session": {
     "gameSessionExists": true,

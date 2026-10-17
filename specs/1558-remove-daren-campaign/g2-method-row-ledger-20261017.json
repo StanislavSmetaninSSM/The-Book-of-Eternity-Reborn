@@ -3383,7 +3383,8 @@
         "daren-retirement-affected-guards"
       ],
       "g1Selected": true,
-      "lineage": "Existing common declaration/tuple contract retained; precise file/source diff below and native membership pending"
+      "lineage": "Existing common declaration/tuple contract retained; precise file/source diff below and native membership pending",
+      "e02CurrentOwner": "daren-retirement-affected-client-contracts"
     },
     {
       "baselineMethod": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
@@ -3842,7 +3843,8 @@
         "daren-retirement-affected-guards"
       ],
       "g1Selected": true,
-      "lineage": "Existing common declaration/tuple contract retained; precise file/source diff below and native membership pending"
+      "lineage": "Existing common declaration/tuple contract retained; precise file/source diff below and native membership pending",
+      "e02CurrentOwner": "daren-retirement-affected-client-contracts"
     },
     {
       "baselineMethod": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserTabBar_UsesSharedShortcutContractAndBlocksTextInputs",
@@ -10625,5 +10627,106 @@
       }
     ]
   },
-  "freshNativePacket": "recovery/g2-first-managed-preparation-555ceae6-20261017.json"
+  "freshNativePacket": "recovery/g2-first-managed-preparation-555ceae6-20261017.json",
+  "e02Partition": {
+    "base": "386ca3c206d4ea7564374470acdb5624e848b269",
+    "oldOwner": "daren-retirement-affected-guards",
+    "newOwner": "daren-retirement-affected-client-contracts",
+    "movedExistingMethods": [
+      "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+      "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState"
+    ],
+    "retainedFive": [
+      {
+        "executionId": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+        "testId": "2caf4b33-971f-d69d-69bf-c455b5bfe833",
+        "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1307338",
+        "startTime": "2026-10-17T11:31:17.1968434+00:00",
+        "endTime": "2026-10-17T11:31:17.1968526+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-integration-001.trx",
+        "trxSha256": "3d2b52c3a8cf32891e2cf799177d97f457ffa2fb080b8284a706da55a3d2720e"
+      },
+      {
+        "executionId": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+        "testId": "ae130a80-35b0-cc94-5c74-551737979e3b",
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0077599",
+        "startTime": "2026-10-17T11:31:18.9252081+00:00",
+        "endTime": "2026-10-17T11:31:18.9252263+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+        "testId": "f41b3573-146a-a22c-463a-f2ecfc5a86d2",
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0007076",
+        "startTime": "2026-10-17T11:31:19.1686775+00:00",
+        "endTime": "2026-10-17T11:31:19.1686775+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "8bd11711-07d7-44d6-86fc-417c821c6903",
+        "testId": "06477a30-f4ff-2d67-f848-7baf42f607c3",
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0014060",
+        "startTime": "2026-10-17T11:31:19.1686553+00:00",
+        "endTime": "2026-10-17T11:31:19.1686554+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8bd11711-07d7-44d6-86fc-417c821c6903",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+        "testId": "03011f09-1182-65b1-8913-e5db725ee840",
+        "testName": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1246122",
+        "startTime": "2026-10-17T11:31:19.0353363+00:00",
+        "endTime": "2026-10-17T11:31:19.0353364+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      }
+    ],
+    "fullSelection": "tests/selection.json",
+    "remainingSelection": "tests/selections/1558-daren-retirement-remaining-green.json",
+    "proposal": {
+      "fullOwners": 18,
+      "fullDescriptors": 20,
+      "fullEntries": 50,
+      "fullCsharpMinimumEstimate": 98,
+      "frontendFileEstimates": 8,
+      "remainingOwners": 17,
+      "remainingDescriptors": 18,
+      "remainingEntries": 45,
+      "remainingCsharpMinimumEstimate": 93
+    },
+    "currentNativePlans": "PENDING_FRESH_PREPARATION",
+    "oldNativeMembership": "Historical555 snapshot; do not present as current E02 membership. MemberData11actual rows vs1discoveryestimate."
+  }
 }

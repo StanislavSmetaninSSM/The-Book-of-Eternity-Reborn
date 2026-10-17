@@ -1,0 +1,168 @@
+{
+  "kind": "INDEPENDENT_G2_E02_CAUSAL_STOP_EVIDENCE_REVIEW",
+  "utc": "2026-10-17T11:38:14.162954+00:00",
+  "carrier": "386ca3c206d4ea7564374470acdb5624e848b269",
+  "actualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "verdicts": {
+    "EVIDENCE": "ACCEPTED_FIRST_PARTIAL_RESULT_AND_CAUSES",
+    "CURRENT_GREEN": "INCOMPLETE_NOT_QUALIFIED",
+    "PRODUCT_BEHAVIOR_REGRESSION": "NOT_ESTABLISHED_BY_THESE_FIXTURE_SOURCE_GUARD_FAILURES",
+    "RETAINED": "14 actual PASS are valid history; retain5 unchanged independent methods for next qualified union, requalify whole11-row failed API method plus ReactFact under canonical method-granular selection."
+  },
+  "actual": {
+    "nativeExit": 1,
+    "wallSeconds": 10.032591380004305,
+    "completedDescriptors": 2,
+    "executedCases": 17,
+    "passed": 14,
+    "failed": 3,
+    "uniqueExecutionIds": 17,
+    "uniqueTestNames": 17,
+    "methodTestIds": 7,
+    "remainingDescriptorsUnrun": 17,
+    "remainingNativeEstimate": 91,
+    "remainingFrontendFileEstimate": 8,
+    "timedOut": false,
+    "duplicateCases": false,
+    "cleanupSucceeded": true,
+    "sevenDllsAndNamespaceStable": true
+  },
+  "findings": [
+    {
+      "id": "G2-E02a",
+      "path": "BookOfEternityClient.WebFrontend/src/api/contract-fixtures/main-menu.json; api-error.json",
+      "scenario": "FrontendContractFixtures_MatchRepresentativeCSharpDtos reaches final JsonNode.DeepEquals at BrowserApiContractTests.cs:132 for two parsed fixtures",
+      "cause": "Exact raw Expected/Actual structural diff is only missing $.loadGeneration:null and $.menu.loadGeneration:null. BrowserMainMenuDto declares nullable LoadGeneration defaultnull; representative BuildMainMenu leaves it default; current ordinary WebJson options serialize it. The same existing shape predates retirement.",
+      "minimalCorrection": "Add explicit loadGeneration:null at the two exact menu-object paths, preserve all other values/fields/order where practical. Keep production DTO/serializer/options, TypeScript contract and full JsonNode.DeepEquals oracle unchanged."
+    },
+    {
+      "id": "G2-E02b",
+      "path": "BookOfEternityClient.Tests/BrowserFrontendWorkspaceTests.cs:210",
+      "scenario": "ReactAppShell_RendersCurrentTabCommandShellAndSharedState assumes old hook destructuring; subsequent same-Fact checks217–223 are unreached",
+      "cause": "Current ShellContext uses loadBrowserState:loadBrowserStateCore plus guarded wrapper and save/load hooks. useShellState delegates loadShellState; all seven former inline Promise/getter/advanced checks belong in actual hooks/loadShellState.ts. Both hook sources are unchanged from023.",
+      "minimalCorrection": "Update only this source guard to actual destructuring and wrapper/import/delegation chain, read the real loadShellState.ts for all former getter/advanced checks. Preserve assertions of actual shared state, call ownership and current guards; no removal of requirements, fake inline code or production rewrite. Add exact pins for useShellState.ts and loadShellState.ts."
+    },
+    {
+      "id": "G2-E02-L01",
+      "severity": "LOW",
+      "path": "Frozen g2-e01-first-green-stop-c5e62023-20261017.json:scope",
+      "cause": "81C#unrun incorrectly subtracts17 actual rows from98 discoveryestimate. First descriptors estimate1+6 but MemberData expands11 runtime rows instead of1. Remaining17 descriptors sum91C#estimate+8frontend files.",
+      "minimalCorrection": "Retain frozen history; correct current projections/ledger and label discovery counts as estimates. Actual identity is executionId/testName; seven shared method testIds are expected, not duplicate cases."
+    }
+  ],
+  "retainedFive": [
+    {
+      "executionId": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+      "testId": "2caf4b33-971f-d69d-69bf-c455b5bfe833",
+      "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.1307338",
+      "startTime": "2026-10-17T11:31:17.1968434+00:00",
+      "endTime": "2026-10-17T11:31:17.1968526+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-integration-001.trx",
+      "trxSha256": "3d2b52c3a8cf32891e2cf799177d97f457ffa2fb080b8284a706da55a3d2720e"
+    },
+    {
+      "executionId": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+      "testId": "ae130a80-35b0-cc94-5c74-551737979e3b",
+      "testName": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0077599",
+      "startTime": "2026-10-17T11:31:18.9252081+00:00",
+      "endTime": "2026-10-17T11:31:18.9252263+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+      "testId": "f41b3573-146a-a22c-463a-f2ecfc5a86d2",
+      "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0007076",
+      "startTime": "2026-10-17T11:31:19.1686775+00:00",
+      "endTime": "2026-10-17T11:31:19.1686775+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "8bd11711-07d7-44d6-86fc-417c821c6903",
+      "testId": "06477a30-f4ff-2d67-f848-7baf42f607c3",
+      "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.0014060",
+      "startTime": "2026-10-17T11:31:19.1686553+00:00",
+      "endTime": "2026-10-17T11:31:19.1686554+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "8bd11711-07d7-44d6-86fc-417c821c6903",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    },
+    {
+      "executionId": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+      "testId": "03011f09-1182-65b1-8913-e5db725ee840",
+      "testName": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+      "computerName": "c151c60a176e",
+      "duration": "00:00:00.1246122",
+      "startTime": "2026-10-17T11:31:19.0353363+00:00",
+      "endTime": "2026-10-17T11:31:19.0353364+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+      "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+    }
+  ],
+  "wholeApiElevenFixtureNames": [
+    "api-error.json",
+    "audio-settings.json",
+    "client-settings.json",
+    "command-coverage.json",
+    "explorer-command-result.json",
+    "game-screen.json",
+    "lifecycle-dashboard.json",
+    "main-menu.json",
+    "qte-practice-state.json",
+    "qte-state.json",
+    "session-status.json"
+  ],
+  "qualifiedRetentionBoundary": "Inventory E01 Fact PASS retained, plus four unchanged unit Facts. Nine other API DTO rows passed truthfully; they remain historical and will be superseded only when the whole existing failed MemberData method is requalified. No new C# row framework or generator split is necessary.",
+  "nextScope": {
+    "implementation": "Two JSON null additions, single React source guard correction and exact two hook dependency pins; move only the two existing failed unit methods into a narrow correction owner. Existing ContractFixtures generator and11-row semantics/DeepEquals unchanged. Product/actual hooks unchanged.",
+    "fullSelectionProposal": "18owners/20descriptors/same50method-or-file entries; prior98C#discoveryestimate+8FE estimates. Fresh native Plan must confirm, not a promised executed count.",
+    "remainingSelectionProposal": "Exclude retained old owner containing integration1+unit4. Include new failed-method owner plus16 other untouched owners:17owners/18descriptors/45entries;93C#discoveryestimate+8FE=101estimated, with actual MemberData expansion qualified separately.",
+    "preparation": "Fresh frontend build because two frontend JSON source files change, fresh canonical BOTH/catalog because ownership changes, current full and named remaining PlanOnly-NoBuild once each, zero executions. Verify exact method identity difference equals the5 retained methods, source/currentLedger hashes and new binaries/package; retain original source/tests/raw history.",
+    "runtime": "Only after concrete affected SOURCE/PREP acceptance, exact decision persistence/recovery and Root activation: canonical remaining selection records whole API11+React1 and previouslyUNRUN17descriptors. Stop on any failure/incomplete/cleanup uncertainty. Root Chromium remains dependent and separately owned."
+  },
+  "rawBinding": {
+    "chains": 14,
+    "allCommittedGzipRawQualified": true,
+    "sourceContext": "Exact actualc5e sourcepacket, not updatedSTOPmetadata",
+    "deltaFiles": 27,
+    "deltaChangedPaths": 23,
+    "deltaAllExact": true,
+    "noNewFixtureArtifactDirectories": true,
+    "nativeProcessSettledAndAfterWaitAbsent": true
+  },
+  "limits": "These are successful inventory/source/representative DTO guards and failed fixture/source expectations, not live QTE/save/reward/storage/HTTP/browser playthrough evidence. No count-fitted fullGREEN, Windows/CI/F1/HOT/M3/backend/provider/merge/issue-close claim. Accepted product/source and prior G1 history retained without broad replay; affected fixture/selection readiness reopened only.",
+  "support": {
+    "path": "/tmp/gm1558-g2-e02-stop-independent-check-20261017.json",
+    "sha256": "9df6606019c48fe493e5a8ebf8cfacbd3de9a63e07aab2317a83196edf394119"
+  },
+  "reviewActions": "Read-only existing raw/source/hash/gzip/git and JSON structural comparison; no native/test/build/producer/browser/parser execution or repository mutation."
+}
