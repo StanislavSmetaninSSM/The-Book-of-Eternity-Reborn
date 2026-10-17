@@ -1,0 +1,167 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "440c81b66c3397e8f4d640e6190f6f4d1c47bbab",
+  "base": "47d0f4a33770f028963b5d112eb6b22859010a3b",
+  "directory": "/tmp/t179pd-rp01-source-wip-recovered-440c81b6-20261017",
+  "completedUtc": "2026-10-17T18:59:34.172325+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-next-retained-pass-root-selection-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-next-route-root-source-inspection-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3e-bounded-final-delta-github-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3e-root-final-checkpoint-47d0f4a3-20261017.json",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 17,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/docs/testing.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "mode": "100644",
+      "git_blob": "e3f022fc0dd6bf187b0fe4a8985a081539f8c820",
+      "bytes": 171854,
+      "sha256": "ff7fa5051dbf6084b81407a3e0dc84ba46a71080b92b7915b070f54dea93ab0f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "mode": "100644",
+      "git_blob": "a38b9af9bea3b6e24431503f1697b9c7eec2b956",
+      "bytes": 2348968,
+      "sha256": "a8d627e15eb15fa7aaad809ab0651e0bcc11ea92d6f2912a0125e6ee956db63d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-next-retained-pass-root-selection-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "4bd1a28d96bd9c9cb2d1fc260cbc3d8a2d425f20",
+      "bytes": 2172,
+      "sha256": "bd270abeb7f81923739a1580249484c79e4353c453ae5c3d43570018b0ca2447",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd-next-retained-pass-root-selection-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-next-route-root-source-inspection-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "b5a5d1c357e4253af83af4b212025f30369cd82d",
+      "bytes": 60506,
+      "sha256": "a9d7775cd3780f8c4d9fa0260ac008048f36d7214c482dae17bd414091cfa6f0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd-next-route-root-source-inspection-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "d440b64cbcdf425c3ab0e81d24a809e77ba972ba",
+      "bytes": 43485,
+      "sha256": "16d4d5bc6f2e7af9bd2b57bae54ed99148f52ca65540a547e3c290f835639348",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md",
+      "mode": "100644",
+      "git_blob": "b50ae932c9540c679aa9e4f11788506368d374d5",
+      "bytes": 10263,
+      "sha256": "62a7f10b418a6be31eafe91c718095a1bfe3a1a5b45beca35e019a7dc0e142ef",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "9cff9bb9318cd3d27dc049c55c9d124de0d1395b",
+      "bytes": 21300,
+      "sha256": "f0340bc63d099af318ca09a94e3771d36f5f42c955a8994be034c0f5aae2f25e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-bounded-final-delta-github-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "22981577be9c36d1e4c14106eb08633369bef731",
+      "bytes": 11907,
+      "sha256": "dad0dbe253d230dbb67b586e4ff99fcca6b8de9131c44f8506f9c5c011a06178",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3e-bounded-final-delta-github-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json",
+      "mode": "100644",
+      "git_blob": "7e47d9b8e3fa94f053872735fdc4b9cf9718c851",
+      "bytes": 18711,
+      "sha256": "bbd15d8ad87d8f6ef7c13b18468eff13445a58f4f3a0f8ea99e2d644b979c39c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "118689a9afbcd114dda53ef6e22cbc8a52906423",
+      "bytes": 10879,
+      "sha256": "120b73fb4c31415489a979d1ef0de56f40596c22bb11dc5e4cf088c365c4f5b5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.md",
+      "mode": "100644",
+      "git_blob": "b806a5faa9ab3eecca887713e119aff3f1d0aaff",
+      "bytes": 3591,
+      "sha256": "0922e6bac0f61f60b375c9ce7b012e6657ecf321adb397d946b33099affa2f90",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-final-checkpoint-47d0f4a3-20261017.json",
+      "mode": "100644",
+      "git_blob": "4b50198e9985a51665f6ccd6ff523235c3dcdfe0",
+      "bytes": 7188,
+      "sha256": "18c5a6ba9265ac5952d88a27bcbcc844d41daf817b7db30f5844ed43c1bd4817",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/recovery/t179pd3e-root-final-checkpoint-47d0f4a3-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "mode": "100644",
+      "git_blob": "2f63f89eac9344ce984437ac1e93322259c21509",
+      "bytes": 1590611,
+      "sha256": "61a98f1616e851ad97803b78b2248c28d7b57ab8c78546db7968b10e7b3fbf8b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/440c81b66c3397e8f4d640e6190f6f4d1c47bbab/specs/1536-complete-wound-materialization/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "440c81b66c3397e8f4d640e6190f6f4d1c47bbab\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nbase=git('rev-parse',base).decode().strip();sha=git('rev-parse',sha).decode().strip()\nchanged=git('diff','--no-renames','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1536-wound-b2-cloud-20261012','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}
