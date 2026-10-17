@@ -1,0 +1,386 @@
+{
+  "kind": "INDEPENDENT_CAUSAL_EVIDENCE_REVIEW",
+  "reviewerRole": "independent Astra/XHigh; repository read-only",
+  "createdUtc": "2026-10-17T06:24:26.234584+00:00",
+  "verdict": "ACCEPTED_EXPECTED_CAUSAL_RED",
+  "sourceVerdict": "RETAINED_SEPARATE_ACCEPTED_SOURCE",
+  "greenVerdict": "NOT_ESTABLISHED",
+  "carrier": "799f1c93b19b8e55be80f913f84e043ee5bb42c6",
+  "actualSource": "0709cf29646c0e2b40643ea6f138a5d01b3e9155",
+  "compiledSource": "324594a930dcb3aaf17aaf2441f47193f214957c",
+  "acceptedSourceReportPins": {
+    "specs/1557-gm-doc-modularization/recovery/current-B-corrected-tests-source-independent-review-20261017.md": "de0dc96558b5f8180ee50286daf36278dac72d6a9790f1936687e997f6f8cdce",
+    "specs/1557-gm-doc-modularization/recovery/current-B-corrected-tests-source-independent-review-20261017.json": "e4facd3aa65adff3dc4d128feec748497b1b4d7092545b05de398eca321d3878"
+  },
+  "executions": [
+    {
+      "category": "gm-doc-block5-content-boundary",
+      "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+      "nativeExit": 1,
+      "wrapperSeconds": 4.96779417200014,
+      "runnerWall": "00:00:04.3609927",
+      "testDuration": "00:00:00.1129480",
+      "counts": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-061231-632-60029-f8ac4557e3164fb5bdb285f0184fa0f3-categories/gm-doc-block5-content-boundary-unit-001.trx",
+      "trxSha256": "089aafbc9d777e99237f06d0f4f3116368fc0bce93282d3616efb2aba4e60ed9",
+      "recordSha256": "2a016bc90e80508c55914437d46b902feeb1ff48a740f3f44813df715c6a46d2",
+      "failureMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"destination.missing:Rules/Block_5_Units_Ids.txt\", \"destination.missing:Rules/Block_5_Characteristics_\"···, \"destination.missing:Rules/Block_5_Combat_Foundatio\"···, \"destination.missing:Rules/Block_5_Combat_Foundatio\"···, \"destination.missing:Rules/Block_5_Combat_Foundatio\"···, ···]",
+      "failureStack": "   at BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs:line 40\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
+      "runnerCleanup": true
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+      "nativeExit": 1,
+      "wrapperSeconds": 8.46641181599989,
+      "runnerWall": "00:00:07.8652467",
+      "testDuration": "00:00:03.0765349",
+      "counts": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-061356-477-60265-911af79470de46a4a3f8dd7f12285325-categories/gm-doc-afterlife-package-delivery-integration-001.trx",
+      "trxSha256": "e5590235e9161281b50a07ed7e90481b1cc64eba733152f64b59adcda9c792ef",
+      "recordSha256": "9994017407da861696c4adfb2900a2ac0616d60d8d595140a0ad495a8c5f7775",
+      "failureMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"delivery.manifest_inventory\", \"delivery.manifest_missing_or_duplicate:Rules/Block\"···, \"delivery.manifest_missing_or_duplicate:Examples/E_\"···, \"delivery.manifest_missing_or_duplicate:Rules/Block\"···, \"delivery.manifest_missing_or_duplicate:Examples/E_\"···, ···]",
+      "failureStack": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 23\n--- End of stack trace from previous location ---",
+      "runnerCleanup": true
+    }
+  ],
+  "counts": {
+    "commands": 2,
+    "descriptors": 2,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "unrunCurrentSelection": 73
+  },
+  "checked": {
+    "rawChains": 18,
+    "nativeChains": 12,
+    "fixtureArtifacts": 6,
+    "storedRawLiveCommittedExact": true,
+    "delta": {
+      "path": "/tmp/gm1557-B-first-red-delta-github-799f1c93-20261017.json",
+      "sha256": "970c4bcf9cd76df50ffaa6afa6c1388115880687b0b46436ba82516cec303b37",
+      "files": 30,
+      "changedPaths": 26,
+      "bytesBlobModePathSetExact": true
+    },
+    "sevenBinaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "1011d9ae97b576a48d4db95a5c7775ff1c9fe4a619b217246a45666b41ef6766",
+        "bytes": 9554432
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "4cdf4e622533f107bb3200725372331b68dd7b797cb445789ece8721a6984b32",
+        "bytes": 29221888
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "494046e31c385497097f6d416d81e8071a677bce0beff831b7299d03feafcbd7",
+        "bytes": 1985536
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "494046e31c385497097f6d416d81e8071a677bce0beff831b7299d03feafcbd7",
+        "bytes": 1985536
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+        "bytes": 26181632
+      }
+    ],
+    "runtimeScopeUnchanged": true,
+    "underfill": false,
+    "duplicates": false,
+    "skips": false,
+    "timeouts": false,
+    "runnerCleanupComplete": true
+  },
+  "causality": [
+    {
+      "id": "B-RED-01",
+      "path": "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs:40",
+      "scenario": "ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+      "classification": "EXPECTED_MISSING_IMPLEMENTATION",
+      "prerequisites": "VerifyBaseline, complete in-memory VerifyMoved, original extractor count9 and manifest locator count2 passed before actual filesystem final oracle. Independently verified live old2 equal frozen bytes and compiled source.",
+      "observed": "ActualPaths old2 only; all14 new physical modules absent. Final Assert.Empty over VerifyMoved(actual docs) fails.",
+      "limit": "The diagnostic Sources fields carry declared inventory pins, not measured live hashes; this review measured live bytes separately. The xUnit failure collection is truncated, so14 is the absent-file count, not a claim that the entire VerifyMoved collection has only14 issues."
+    },
+    {
+      "id": "B-RED-02",
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:23",
+      "scenario": "PackagedProductionWriterPublishesExactRequiredReadingClosure",
+      "classification": "EXPECTED_MISSING_IMPLEMENTATION",
+      "prerequisites": "Unmodified packaged daemon and dynamically bound UTF16 AST prefix; genuine producer native0; real manifest36 and matching physical-copy pins; pwsh plus2 helpers with exact argv/birth; EOF2 without pipe errors; both owned roots strictly removed. Preconditions Assert.Null Failure, exitConfirmed, rootsRemoved and runtimeExecuted passed.",
+      "observed": "Final Assert.Empty(result.Issues) fails with exactly49 B-only issues: inventory1 +manifest missing16 +copy missing16 +router edge missing16.",
+      "limit": "No proof of required current52 delivery. Actual generated template capture occurred before final oracle and was independently checked from raw12977 bytes/manifest/source binding; test assertions after line23 were not executed."
+    }
+  ],
+  "boundary": {
+    "diagnostic": {
+      "Kind": "BLOCK5_REAL_FILESYSTEM_AFTER_COMPLETE_BASELINE_BEFORE_MOVE_ORACLE",
+      "Sources": [
+        {
+          "Path": "Rules/Block_5.txt",
+          "Bytes": 262995,
+          "Hash": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+          "Rules": 144,
+          "Examples": 0
+        },
+        {
+          "Path": "Examples/E_Block_5.txt",
+          "Bytes": 268659,
+          "Hash": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+          "Rules": 19,
+          "Examples": 51
+        }
+      ],
+      "Missing": [
+        "Rules/Block_5_Units_Ids.txt",
+        "Examples/E_Block_5_Units_Ids.txt",
+        "Rules/Block_5_Characteristics_Progression.txt",
+        "Examples/E_Block_5_Characteristics_Progression.txt",
+        "Rules/Block_5_Combat_Foundations.txt",
+        "Examples/E_Block_5_Combat_Foundations.txt",
+        "Rules/Block_5_Items_Resources.txt",
+        "Examples/E_Block_5_Items_Resources.txt",
+        "Rules/Block_5_Narrative_Social.txt",
+        "Examples/E_Block_5_Narrative_Social.txt",
+        "Rules/Block_5_Wounds.txt",
+        "Examples/E_Block_5_Wounds.txt",
+        "Rules/Block_5_World_Chronology.txt",
+        "Examples/E_Block_5_World_Chronology.txt"
+      ],
+      "ActualPaths": [
+        "Examples/E_Block_5.txt",
+        "Rules/Block_5.txt"
+      ],
+      "MutableRoots": "N/A readonly source"
+    },
+    "liveSourcePins": [
+      {
+        "path": "Rules/Block_5.txt",
+        "bytes": 262995,
+        "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+        "ruleNodes": 144,
+        "examples": 0,
+        "cdataSections": 126
+      },
+      {
+        "path": "Examples/E_Block_5.txt",
+        "bytes": 268659,
+        "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+        "ruleNodes": 19,
+        "examples": 51,
+        "cdataSections": 81
+      }
+    ],
+    "baselinePreconditionsReached": true,
+    "missingModules": 14,
+    "finalFailureCollectionNotFullyEnumerated": true
+  },
+  "publisher": {
+    "nativeProducerExit": 0,
+    "requiredDocs": 52,
+    "deliveredDocs": 36,
+    "issues": [
+      "delivery.manifest_inventory",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Units_Ids.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Units_Ids.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Characteristics_Progression.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Characteristics_Progression.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Combat_Foundations.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Combat_Foundations.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Items_Resources.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Items_Resources.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Narrative_Social.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Narrative_Social.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_Wounds.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_Wounds.txt",
+      "delivery.manifest_missing_or_duplicate:Rules/Block_5_World_Chronology.txt",
+      "delivery.manifest_missing_or_duplicate:Examples/E_Block_5_World_Chronology.txt",
+      "delivery.copy_missing:Rules/Block_5.txt",
+      "delivery.copy_missing:Examples/E_Block_5.txt",
+      "delivery.copy_missing:Rules/Block_5_Units_Ids.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Units_Ids.txt",
+      "delivery.copy_missing:Rules/Block_5_Characteristics_Progression.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Characteristics_Progression.txt",
+      "delivery.copy_missing:Rules/Block_5_Combat_Foundations.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Combat_Foundations.txt",
+      "delivery.copy_missing:Rules/Block_5_Items_Resources.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Items_Resources.txt",
+      "delivery.copy_missing:Rules/Block_5_Narrative_Social.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Narrative_Social.txt",
+      "delivery.copy_missing:Rules/Block_5_Wounds.txt",
+      "delivery.copy_missing:Examples/E_Block_5_Wounds.txt",
+      "delivery.copy_missing:Rules/Block_5_World_Chronology.txt",
+      "delivery.copy_missing:Examples/E_Block_5_World_Chronology.txt",
+      "delivery.router_edge_missing:Rules/Block_5.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Units_Ids.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Units_Ids.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Characteristics_Progression.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Characteristics_Progression.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Combat_Foundations.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Combat_Foundations.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Items_Resources.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Items_Resources.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Narrative_Social.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Narrative_Social.txt",
+      "delivery.router_edge_missing:Rules/Block_5_Wounds.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_Wounds.txt",
+      "delivery.router_edge_missing:Rules/Block_5_World_Chronology.txt",
+      "delivery.router_edge_missing:Examples/E_Block_5_World_Chronology.txt"
+    ],
+    "manifestRolesExact": true,
+    "packageInventory244MatchesAcceptedPreparation": true,
+    "identities": [
+      {
+        "Pid": 60418,
+        "BirthTicks": 2095219,
+        "ParentPid": 60393,
+        "Args": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c/inspect-and-publish.ps1",
+          "-DaemonPath",
+          "/tmp/boe-gm1557-package-3429d6773557471aa0fe8e9b48e15a3c/game_master_daemon.ps1",
+          "-SessionPath",
+          "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c/game_session",
+          "-ReportPath",
+          "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c/ast-and-publication.json",
+          "-Mode",
+          "publish"
+        ],
+        "Role": "pwsh",
+        "State": "R"
+      },
+      {
+        "Pid": 60475,
+        "BirthTicks": 2095368,
+        "ParentPid": 60418,
+        "Args": [
+          "dotnet",
+          "/tmp/boe-gm1557-package-3429d6773557471aa0fe8e9b48e15a3c/BookOfEternityClient.dll",
+          "--gm-main-operation",
+          "--root",
+          "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c"
+        ],
+        "Role": "helper",
+        "State": "D"
+      },
+      {
+        "Pid": 60488,
+        "BirthTicks": 2095398,
+        "ParentPid": 60418,
+        "Args": [
+          "dotnet",
+          "/tmp/boe-gm1557-package-3429d6773557471aa0fe8e9b48e15a3c/BookOfEternityClient.dll",
+          "--gm-main-operation",
+          "--root",
+          "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c"
+        ],
+        "Role": "helper",
+        "State": "D"
+      }
+    ],
+    "observationCounts": {
+      "initial_live_identity": 1,
+      "census_owned_check": 208,
+      "cleanup_before_handle": 3,
+      "final_exit_check": 3
+    },
+    "allExactIdentitiesTerminalAbsent": true,
+    "pipes": {
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "bothEof": true,
+      "errors": null
+    },
+    "strictRemovedRoots": [
+      "/tmp/boe-gm1557-package-3429d6773557471aa0fe8e9b48e15a3c",
+      "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c"
+    ],
+    "artifacts": "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c",
+    "sourceDaemonSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+    "prefixSha256": "17e5b52b4789bd06b4029a8a4c6f29468cdc8e0eca743fd707c743047cccfc9c",
+    "prefixBytes": 202548,
+    "generatedTemplate": {
+      "relativePath": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "role": "compact_mortal_npc_update_template",
+      "generated": true,
+      "contextPackRoot": "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c/game_session/game_state/control/gm_context_pack",
+      "sessionPath": "/tmp/boe-gm1557-session-3429d6773557471aa0fe8e9b48e15a3c/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "physicalPresent": true,
+      "containedWithoutSymlink": true,
+      "bytes": 12977,
+      "sha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+      "expectedSha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+      "sourceSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+      "retainedRawPath": "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c/generated-MORTAL_NPC_UPDATE_TEMPLATE.md"
+    },
+    "postIssueTestAssertionsReached": false
+  },
+  "materialEvidenceDefects": [],
+  "nextGate": "After exact report persistence and parent release, minimal authorized Block5 implementation may proceed. Its affected SOURCE/FIXTURE/SELECTION and fresh preparation must be separately accepted before GREEN runtime. This report itself releases no actuals.",
+  "retainedLimits": [
+    "The accepted A255/A1/A2/F1 provenance remains unchanged; no family replay or wider qualification.",
+    "No Windows/provider/backend-worker/CI/HOT/M3 qualification.",
+    "The two native failures remain immutable failures; acceptance concerns their causal TDD evidence only.",
+    "Remaining73 cases have no current runtime evidence."
+  ],
+  "support": {
+    "path": "/tmp/gm1557-B-first-causal-red-evidence-independent-check-20261017.json",
+    "sha256": "aa1e7301be443fc7d5f19b00c488557f34ca7efcd5e773b0856ec9acadcdb6f6",
+    "script": "/tmp/gm1557-B-first-causal-red-evidence-independent-check-20261017.py",
+    "scriptSha256": "a3f7ca61a07ef380704676e24481cd3368441cd5159d2f7ab67eb03c3808f63b"
+  },
+  "reviewActions": {
+    "repositoryWrites": false,
+    "buildsTestsProducerRuns": false,
+    "historicalAcceptedRawOrFullBaseReplayed": false
+  }
+}

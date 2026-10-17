@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Current B causal RED accepted; implementation release pending — 2026-10-17
+
+[Exact accepted FIRST causal EVIDENCE](recovery/current-B-first-causal-red-evidence-independent-review-20261017.md):2expectedFAIL/0PASS,73UNRUN. Source324/actual0709/carrier799f and all first raw remain unchanged. Boundary baseline/full-memory XML passed; inventory counts9/2 are not executions of actual-extractor/whole-manifest tests. Genuine real36→expected52 gap is proved after strict cleanup; raw/capture proves generatedtemplate while post-failure assertions did not execute. Persist/recover this decision, then separate root implementation release; no further runtime or production change yet. Full9category75case membership is planned, not GREEN.
+
 ## Current B FIRST RED block — 2026-10-17
 
 [Two separately released FIRST outcomes](recovery/current-B-first-causal-red-20261017.json): content-boundary1 native1/finalmissingmodule oracle and genuinepublisher1 native1/real36→expected52 finalclosure. [Writer inspection](recovery/current-B-first-causal-red-writer-inspection-20261017.json) and [six raw fixture artifacts](recovery/current-B-first-causal-red-fixture-artifacts-20261017.json) bind source0709/compiled324/sevenpins/process/EOF/generatedraw/twostrictrootsgone. Full selection75 now has2executed0PASS2expectedFAIL/73UNRUN. Independent causalEVIDENCE and separate implementation release still required; no more actual/content/daemon/profile changes. All earlier prep/SOURCE dispositions remain historical source-bound records.
