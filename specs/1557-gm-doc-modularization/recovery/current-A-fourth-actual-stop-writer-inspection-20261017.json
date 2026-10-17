@@ -1,0 +1,305 @@
+{
+  "kind": "FOURTH_FIRST_ACTUAL_STOP_RAW_INSPECTION_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T05:05:45.906518+00:00",
+  "commands": [
+    {
+      "category": "gm-doc-afterlife-repair-corrected-consumers",
+      "native": 0,
+      "seconds": 5.506367150999722,
+      "tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "runnerCleanup": {
+        "owned": true,
+        "runtime": true
+      },
+      "rows": [
+        {
+          "testId": "c7a80039-bb54-711e-71c6-1fc890c49a5f",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_ActorMemoryError\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles,Story_Memory\", kind: \"actor_memory_persistence_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.1494993"
+        },
+        {
+          "testId": "036dd3a1-aca8-5c1b-b120-ac436f53b001",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_ActorMaterializa\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles\", kind: \"actor_materialization_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0578386"
+        },
+        {
+          "testId": "a346b03f-c199-cde6-f7f1-7960336497e6",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_FactionMateriali\"\u00b7\u00b7\u00b7, topics: \"Shining_Actions\", kind: \"faction_materialization_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0294755"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "native": 0,
+      "seconds": 8.503401934001886,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "runnerCleanup": {
+        "owned": true,
+        "runtime": true
+      },
+      "rows": [
+        {
+          "testId": "3aa9e4b6-1d6c-6a59-72f4-5ffe58134803",
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+          "outcome": "Passed",
+          "duration": "00:00:03.0544240"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-negatives",
+      "native": 0,
+      "seconds": 11.153536240999529,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "runnerCleanup": {
+        "owned": true,
+        "runtime": true
+      },
+      "rows": [
+        {
+          "testId": "0bb8bb0f-666c-ccf4-7bb0-ab85c529833a",
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalDeliveryFaultsReachTheRealWriterClosureOracle(fault: \"missing_package_source\")",
+          "outcome": "Passed",
+          "duration": "00:00:02.9377597"
+        },
+        {
+          "testId": "c30ba82f-8d77-6a92-adb5-3d527d664cf6",
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalDeliveryFaultsReachTheRealWriterClosureOracle(fault: \"missing_session_copy\")",
+          "outcome": "Passed",
+          "duration": "00:00:03.0677423"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-lifetime",
+      "native": 1,
+      "seconds": 24.448293333000038,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 1,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "runnerCleanup": {
+        "owned": true,
+        "runtime": true
+      },
+      "rows": [
+        {
+          "testId": "b8f6d182-578f-888c-0cdf-55c389e688d9",
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledLifetimePreStartCopyFailureRemovesActualOwnedRootsWithoutInventedPipeProof",
+          "outcome": "Passed",
+          "duration": "00:00:00.0428390"
+        },
+        {
+          "testId": "afb67be0-a1b6-8af2-8619-cfd0eea22ade",
+          "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
+          "outcome": "Failed",
+          "duration": "00:00:18.5925178",
+          "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"delivery.cleanup_failed\"]",
+          "stack": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 70\n--- End of stack trace from previous location ---"
+        }
+      ]
+    }
+  ],
+  "nativeRawChainsVerified": 24,
+  "fixtureAndSnapshotChainsVerified": 27,
+  "firstResults": {
+    "executed": 8,
+    "passed": 7,
+    "failed": 1
+  },
+  "qualifiedPartial": {
+    "retained": 247,
+    "correctedRepair": 3,
+    "genuinePackage": 1,
+    "physicalNegatives": 2,
+    "prestart": 1,
+    "total": 254,
+    "unresolvedControlledOrphan": 1,
+    "unrun": 0
+  },
+  "historicalTotals": {
+    "executions": 269,
+    "failed": 10,
+    "supersededExecutions": 14
+  },
+  "generatedTemplateActual": {
+    "relativePath": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+    "role": "compact_mortal_npc_update_template",
+    "generated": true,
+    "contextPackRoot": "/tmp/boe-gm1557-session-e8d8f29ef5184c62a370b3d5c6f8dfaa/game_session/game_state/control/gm_context_pack",
+    "sessionPath": "/tmp/boe-gm1557-session-e8d8f29ef5184c62a370b3d5c6f8dfaa/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+    "physicalPresent": true,
+    "containedWithoutSymlink": true,
+    "bytes": 12977,
+    "sha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+    "expectedSha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+    "sourceSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+    "retainedRawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/generated-MORTAL_NPC_UPDATE_TEMPLATE.md"
+  },
+  "strictRepairRootsGone": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-50a7145d68d24e9aaf1f1723b95f8c86",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-639a222742564ebfa739df0fbfaf924c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-2f3c72bc3be747ccb63a02c0d6464b0f",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "fixtureRootStates": [
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+      "root": "/tmp/boe-gm1557-session-162f451309064c328b404b8a8dc8ed16",
+      "package": "/tmp/boe-gm1557-package-162f451309064c328b404b8a8dc8ed16",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+      "root": "/tmp/boe-gm1557-session-be8fcb77879c40d9a119ef3226d3debe",
+      "package": "/tmp/boe-gm1557-package-be8fcb77879c40d9a119ef3226d3debe",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "root": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "package": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "exitConfirmed": false,
+      "rootsRemoved": false,
+      "rootPresent": true,
+      "packagePresent": true,
+      "failure": "System.TimeoutException: delivery.controlled_owned_lifetime_timeout\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 98",
+      "cleanupFailures": [
+        "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 113"
+      ],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "root": "/tmp/boe-gm1557-session-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "package": "/tmp/boe-gm1557-package-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64",
+      "root": "/tmp/boe-gm1557-session-fa787675ea2d49ee8927469401e81e64",
+      "package": "/tmp/boe-gm1557-package-fa787675ea2d49ee8927469401e81e64",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": "System.IO.FileNotFoundException: Could not find file '/workspace/The-Book-of-Eternity-Reborn-1557/tests/fixtures/GmDocumentationDelivery/missing-owned-lifetime-fa787675ea2d49ee8927469401e81e64.ps1'.\nFile name: '/workspace/The-Book-of-Eternity-Reborn-1557/tests/fixtures/GmDocumentationDelivery/missing-owned-lifetime-fa787675ea2d49ee8927469401e81e64.ps1'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.FileSystem.CopyFile(String sourceFullPath, String destFullPath, Boolean overwrite)\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 62",
+      "cleanupFailures": [],
+      "exitProof": "demonstrably_no_process_start"
+    }
+  ],
+  "retainedOwnedSnapshots": [
+    {
+      "path": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": true,
+      "mode": "0o700",
+      "entries": [
+        {
+          "path": "owned-lifetime.ps1",
+          "bytes": 1838,
+          "sha256": "5bc923ba19bfc0dbc376d143566f01cf2958728c5ced396ae4a68a6f72f562e8"
+        }
+      ],
+      "snapshot": "READ_ONLY retained first-failure namespace; no deletion or signaling"
+    },
+    {
+      "path": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": true,
+      "mode": "0o700",
+      "entries": [],
+      "snapshot": "READ_ONLY retained first-failure namespace; no deletion or signaling"
+    }
+  ],
+  "firstFailure": {
+    "testId": "afb67be0-a1b6-8af2-8619-cfd0eea22ade",
+    "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
+    "outcome": "Failed",
+    "duration": "00:00:18.5925178",
+    "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"delivery.cleanup_failed\"]",
+    "stack": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 70\n--- End of stack trace from previous location ---"
+  },
+  "cleanupLimit": "Runner cleanup success does not qualify internal controlled orphan cleanup: one15s process.WaitForExitAsync cleanup timeout, exitConfirmed/rootsRemovedfalse, both original owned roots retained. No retry/signaling/deletion; independentcausalreview pending.",
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,xml.etree.ElementTree as ET,stat\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-A-fourth-actual-stop-20261017.json').read_text());assert len(packet['files'])==24 and len(packet['commands'])==4\nfolder=rec/'current-A-fourth-actual-fixture-artifacts-20261017';assert not folder.exists();folder.mkdir();files=[];fixtures=[];owned=[]\ndef save(p,name):\n b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/(name+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nnew=set()\nfor c in packet['commands']:new.update(set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore']))\nfor directory in sorted(new):\n p=Path(directory)\n if p.name.startswith('boe-gm1557-evidence-'):\n  e=json.loads((p/'outcome.json').read_text());assert e['artifacts']==directory\n  for q in sorted(p.rglob('*')):\n   assert not q.is_symlink()\n   if q.is_file():save(q,p.name+'/'+str(q.relative_to(p)))\n  fixtures.append(dict(artifacts=directory,root=e['root'],package=e['package'],exitConfirmed=e['exitConfirmed'],rootsRemoved=e['rootsRemoved'],rootPresent=Path(e['root']).exists(),packagePresent=Path(e['package']).exists(),failure=e.get('failure'),cleanupFailures=e.get('cleanupFailures'),exitProof=e.get('exitProof')))\n else:\n  assert p.name.startswith(('boe-gm1557-package-','boe-gm1557-session-')) and p.is_dir()\n  entries=[]\n  for q in sorted(p.rglob('*')):\n   assert not q.is_symlink()\n   if q.is_file():save(q,'RETAINED_OWNED_SNAPSHOT/'+p.name+'/'+str(q.relative_to(p)));entries.append(dict(path=str(q.relative_to(p)),bytes=q.stat().st_size,sha256=hashlib.sha256(q.read_bytes()).hexdigest()))\n  owned.append(dict(path=directory,present=True,mode=oct(stat.S_IMODE(p.stat().st_mode)),entries=entries,snapshot='READ_ONLY retained first-failure namespace; no deletion or signaling'))\nassert len(fixtures)==5 and len(owned)==2\ncensus=Path('/tmp/gm1557-root-lifetime-postfail-census-20261017.json');assert census.is_file();save(census,'postfail-root-census.json')\nout=rec/'current-A-fourth-actual-fixture-artifacts-20261017.json';assert not out.exists();manifest=dict(kind='IMMUTABLE_FINAL8_FIRST_OUTCOME_ARTIFACTS_AND_RETAINED_FAILURE_NAMESPACE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),files=files,fixtures=fixtures,retainedOwnedSnapshots=owned,postfailObservation=dict(rawPath=str(census),sha256=hashlib.sha256(census.read_bytes()).hexdigest(),scope='Separate read-only post-failure census; never substitutes original FAIL or creates authority to remove/signal'),helperText=Path(__file__).read_text());out.write_text(json.dumps(manifest,indent=2)+'\\n')\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};groups=[];seen=set();fail=[];repairroots=[]\nfor n,c in enumerate(packet['commands']):\n assert c['sourceHead']==c['headAfter']=='b821b68549e9365281cf9c6e1167d924555f4d72' and c['compiledSource']=='17043cf18e72d8e5a62c48505abc2ef7eda3e42f' and not c['statusAfter'] and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7 and c['nativeExit']==[0,0,0,1][n]\n d=Path(c['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());expected=[3,1,2,2][n];assert s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests'];rows=[]\n for trx in sorted(d.glob('*.trx')):\n  for e in ET.parse(trx).findall('.//t:UnitTestResult',ns):\n   key=(e.attrib['testId'],e.attrib['testName']);assert key not in seen;seen.add(key);v=dict(testId=e.attrib['testId'],name=e.attrib['testName'],outcome=e.attrib['outcome'],duration=e.attrib['duration']);assert v['outcome'] in ['Passed','Failed']\n   if v['outcome']=='Failed':v['error']=e.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);v['stack']=e.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);fail.append(v)\n   if n==0:\n    for line in e.findtext('t:Output/t:StdOut',default='',namespaces=ns).splitlines():\n     if line.startswith('{'):\n      try:o=json.loads(line)\n      except ValueError:continue\n      if 'CleanupOwnedRoot' in o:assert o['OwnedFixtureRemoved'] and o['CleanupFailure'] is None and not Path(o['CleanupOwnedRoot']).exists();repairroots.append(o)\n   rows.append(v)\n assert len(rows)==expected;groups.append(dict(category=c['argv'][-2],native=c['nativeExit'],seconds=c['wallSeconds'],tests=s['Tests'],selection=s['Selection'],runnerCleanup=dict(owned=s['OwnedTreeCleanupSucceeded'],runtime=s['RuntimeCleanupSucceeded']),rows=rows))\nassert len(seen)==8 and len(fail)==1 and len(repairroots)==3 and 'delivery.cleanup_failed' in fail[0]['error']\nfor data in [packet,manifest]:\n for f in data['files']:\n  z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nnormal=next(e for e in fixtures if e['artifacts'].endswith('e8d8f29ef5184c62a370b3d5c6f8dfaa'));normalraw=json.loads((Path(normal['artifacts'])/'outcome.json').read_text());g=normalraw['generatedTemplate'];assert g['bytes']==12977 and g['sha256'].lower()==g['expectedSha256'].lower()=='2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239' and hashlib.sha256(Path(g['retainedRawPath']).read_bytes()).hexdigest()==g['sha256'].lower();assert any(f['rawPath']==g['retainedRawPath'] for f in files)\ninspection=dict(kind='FOURTH_FIRST_ACTUAL_STOP_RAW_INSPECTION_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),commands=groups,nativeRawChainsVerified=24,fixtureAndSnapshotChainsVerified=len(files),firstResults=dict(executed=8,passed=7,failed=1),qualifiedPartial=dict(retained=247,correctedRepair=3,genuinePackage=1,physicalNegatives=2,prestart=1,total=254,unresolvedControlledOrphan=1,unrun=0),historicalTotals=dict(executions=269,failed=10,supersededExecutions=14),generatedTemplateActual=g,strictRepairRootsGone=repairroots,fixtureRootStates=fixtures,retainedOwnedSnapshots=owned,firstFailure=fail[0],cleanupLimit='Runner cleanup success does not qualify internal controlled orphan cleanup: one15s process.WaitForExitAsync cleanup timeout, exitConfirmed/rootsRemovedfalse, both original owned roots retained. No retry/signaling/deletion; independentcausalreview pending.',helperText=Path(__file__).read_text());p=rec/'current-A-fourth-actual-stop-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(inspection,indent=2)+'\\n');print('FOURTHSTOP_FROZEN24native',len(files),'fixture/snapshotchains8executed7PASS1FAIL;generated12977rawsaved;2ownedrootsRETAINED')\n"
+}

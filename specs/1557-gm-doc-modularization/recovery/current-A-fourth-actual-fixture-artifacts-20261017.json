@@ -1,0 +1,314 @@
+{
+  "kind": "IMMUTABLE_FINAL8_FIRST_OUTCOME_ARTIFACTS_AND_RETAINED_FAILURE_NAMESPACE",
+  "createdUtc": "2026-10-17T05:05:45.817324+00:00",
+  "files": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/ast-and-publication.json.gz",
+      "bytes": 707804,
+      "sha256": "a2ca546d08ea1b2f4350c7ccff1d7cd1c4192c1473ecc002b57d214e65591082",
+      "storedSha256": "fc0a8d5197ea335b2c08b5786e1ae1d4d1f187094c62efd9ae1752c20c808af9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/outcome.json.gz",
+      "bytes": 913908,
+      "sha256": "68a97e413caeaac74cec22abcb2fd489dac96577e851bd18678cc9389ec27c23",
+      "storedSha256": "4475bb2f50c9106e8a7fb33824a1e9d4e3d82649c6bb6ac1e25654c3f332a4c3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/ast-and-publication.json.gz",
+      "bytes": 707804,
+      "sha256": "b27e653da8196c9667474860193b1742ce004e5406b7b47b1a5c50789fadb48a",
+      "storedSha256": "2e7a2b2a03dd9f17c0601c455ada4d73733fc1c031ecdc395aeef951a7d00a3e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/outcome.json.gz",
+      "bytes": 909743,
+      "sha256": "ebb60e1155e028f2c9ac6d44c40f01ce9b95a8b824ec2d4b2de3cadca9a701d0",
+      "storedSha256": "1da53c482b58d9d40598010234fcd0db162d30caa77c955070ae419a0fde0e04",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/helper.pid",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/helper.pid.gz",
+      "bytes": 5,
+      "sha256": "7a1eda3d4db05fa2932625f7ee8e6f33ee3c1606f9fa3d29bfcdaeab019ac041",
+      "storedSha256": "9a380cfe4d74306ec8d8fdab4d9226956dfbac23496042b3fce2634905b62460",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/helper.pid.ready",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/helper.pid.ready.gz",
+      "bytes": 12,
+      "sha256": "a4139059c5bb96f6a832484d255a27370c4b7447dc339392dc7a492b54373a56",
+      "storedSha256": "f4de166a33d5ec16c6284b7647fb01c8569169f3ec465c21f857d64f32ccc4c8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/identity-observed.ack",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/identity-observed.ack.gz",
+      "bytes": 52,
+      "sha256": "0043b7bf068a978baae9759d7bd592d0bf1ce0830cb04ebf89be3fb9ba27a356",
+      "storedSha256": "e1bb51b7b5a2c07605b1f5890382a6b45e6e20a568d43e2bbeb868ce053f2251",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/outcome.json.gz",
+      "bytes": 2921600,
+      "sha256": "4f81ad679485936067a9c68c8259f834f88aee190787972f540627e7b9b3366f",
+      "storedSha256": "dddfa71f58a1b2927b6f09f17fe9ff78ec97641867ae25718ecfd180f7b8fc24",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/stderr.log.gz",
+      "bytes": 1232550,
+      "sha256": "7407f8d0da61fb5698a57b12821400ce3ac33ec4f7cf1cd5ec9f90372536648a",
+      "storedSha256": "9710656b5eee8897a5ec03506d98bdfafc19710f95d8bc5b631fa74db486d049",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa/stdout.log.gz",
+      "bytes": 1232592,
+      "sha256": "5e2854c70e1bb8889c7d663462594d892d8886368fc9a83b60f0bd83a8dde2fa",
+      "storedSha256": "c50b71024f2967ab1616d6ad898046e2700a5e00abb44fde2558730be4cb1580",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/ast-and-publication.json.gz",
+      "bytes": 707804,
+      "sha256": "9db6a79b95abda80fd119bd50c237c0d147c8a12545c354aaa2f0ef64c1b574f",
+      "storedSha256": "144bab070489a5300ecd33e7276c85d37825cb1dced28a09a181fd2ddada7883",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/generated-MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/generated-MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "bytes": 12977,
+      "sha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "storedSha256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/outcome.json.gz",
+      "bytes": 907422,
+      "sha256": "f814bb7f7313081d501c48b39348ad69ac5a055006bf96581c62c3302dbf7c97",
+      "storedSha256": "e9537ad2dbdf982e879602c69dd2e55a2b9ec25980d9a6c40cea492b0026abbb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/outcome.json.gz",
+      "bytes": 2295,
+      "sha256": "0541c9a6bea9a014f60fc028fc4ca9e9e626ffa6eaf9862235ff4aec2579af10",
+      "storedSha256": "93e831152e714f349b0a1d9dcc3bd79abcee962fec493cd36329b5abd04667e1",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa/owned-lifetime.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/RETAINED_OWNED_SNAPSHOT/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa/owned-lifetime.ps1.gz",
+      "bytes": 1838,
+      "sha256": "5bc923ba19bfc0dbc376d143566f01cf2958728c5ced396ae4a68a6f72f562e8",
+      "storedSha256": "8e7573ce7741b80ea59eb7b6043127f4f4cb160878ad794580567531aa7ae861",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-root-lifetime-postfail-census-20261017.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017/postfail-root-census.json.gz",
+      "bytes": 689,
+      "sha256": "91a6ec4e62fdc84cacafa4c52f8a191367f8a7751e107e32bd7e375bbe66fca2",
+      "storedSha256": "3957ff41fb6ca85fb9ead01527d2d222aba352ff9a914e0e31fc88c0b9aa572e",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "fixtures": [
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+      "root": "/tmp/boe-gm1557-session-162f451309064c328b404b8a8dc8ed16",
+      "package": "/tmp/boe-gm1557-package-162f451309064c328b404b8a8dc8ed16",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+      "root": "/tmp/boe-gm1557-session-be8fcb77879c40d9a119ef3226d3debe",
+      "package": "/tmp/boe-gm1557-package-be8fcb77879c40d9a119ef3226d3debe",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "root": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "package": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "exitConfirmed": false,
+      "rootsRemoved": false,
+      "rootPresent": true,
+      "packagePresent": true,
+      "failure": "System.TimeoutException: delivery.controlled_owned_lifetime_timeout\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 98",
+      "cleanupFailures": [
+        "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 113"
+      ],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "root": "/tmp/boe-gm1557-session-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "package": "/tmp/boe-gm1557-package-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": null,
+      "cleanupFailures": [],
+      "exitProof": null
+    },
+    {
+      "artifacts": "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64",
+      "root": "/tmp/boe-gm1557-session-fa787675ea2d49ee8927469401e81e64",
+      "package": "/tmp/boe-gm1557-package-fa787675ea2d49ee8927469401e81e64",
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "rootPresent": false,
+      "packagePresent": false,
+      "failure": "System.IO.FileNotFoundException: Could not find file '/workspace/The-Book-of-Eternity-Reborn-1557/tests/fixtures/GmDocumentationDelivery/missing-owned-lifetime-fa787675ea2d49ee8927469401e81e64.ps1'.\nFile name: '/workspace/The-Book-of-Eternity-Reborn-1557/tests/fixtures/GmDocumentationDelivery/missing-owned-lifetime-fa787675ea2d49ee8927469401e81e64.ps1'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.FileSystem.CopyFile(String sourceFullPath, String destFullPath, Boolean overwrite)\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunOwnedLifetimeProbeAsync(String repo, Boolean missingDriver) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs:line 62",
+      "cleanupFailures": [],
+      "exitProof": "demonstrably_no_process_start"
+    }
+  ],
+  "retainedOwnedSnapshots": [
+    {
+      "path": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": true,
+      "mode": "0o700",
+      "entries": [
+        {
+          "path": "owned-lifetime.ps1",
+          "bytes": 1838,
+          "sha256": "5bc923ba19bfc0dbc376d143566f01cf2958728c5ced396ae4a68a6f72f562e8"
+        }
+      ],
+      "snapshot": "READ_ONLY retained first-failure namespace; no deletion or signaling"
+    },
+    {
+      "path": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": true,
+      "mode": "0o700",
+      "entries": [],
+      "snapshot": "READ_ONLY retained first-failure namespace; no deletion or signaling"
+    }
+  ],
+  "postfailObservation": {
+    "rawPath": "/tmp/gm1557-root-lifetime-postfail-census-20261017.json",
+    "sha256": "91a6ec4e62fdc84cacafa4c52f8a191367f8a7751e107e32bd7e375bbe66fca2",
+    "scope": "Separate read-only post-failure census; never substitutes original FAIL or creates authority to remove/signal"
+  },
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,xml.etree.ElementTree as ET,stat\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-A-fourth-actual-stop-20261017.json').read_text());assert len(packet['files'])==24 and len(packet['commands'])==4\nfolder=rec/'current-A-fourth-actual-fixture-artifacts-20261017';assert not folder.exists();folder.mkdir();files=[];fixtures=[];owned=[]\ndef save(p,name):\n b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/(name+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nnew=set()\nfor c in packet['commands']:new.update(set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore']))\nfor directory in sorted(new):\n p=Path(directory)\n if p.name.startswith('boe-gm1557-evidence-'):\n  e=json.loads((p/'outcome.json').read_text());assert e['artifacts']==directory\n  for q in sorted(p.rglob('*')):\n   assert not q.is_symlink()\n   if q.is_file():save(q,p.name+'/'+str(q.relative_to(p)))\n  fixtures.append(dict(artifacts=directory,root=e['root'],package=e['package'],exitConfirmed=e['exitConfirmed'],rootsRemoved=e['rootsRemoved'],rootPresent=Path(e['root']).exists(),packagePresent=Path(e['package']).exists(),failure=e.get('failure'),cleanupFailures=e.get('cleanupFailures'),exitProof=e.get('exitProof')))\n else:\n  assert p.name.startswith(('boe-gm1557-package-','boe-gm1557-session-')) and p.is_dir()\n  entries=[]\n  for q in sorted(p.rglob('*')):\n   assert not q.is_symlink()\n   if q.is_file():save(q,'RETAINED_OWNED_SNAPSHOT/'+p.name+'/'+str(q.relative_to(p)));entries.append(dict(path=str(q.relative_to(p)),bytes=q.stat().st_size,sha256=hashlib.sha256(q.read_bytes()).hexdigest()))\n  owned.append(dict(path=directory,present=True,mode=oct(stat.S_IMODE(p.stat().st_mode)),entries=entries,snapshot='READ_ONLY retained first-failure namespace; no deletion or signaling'))\nassert len(fixtures)==5 and len(owned)==2\ncensus=Path('/tmp/gm1557-root-lifetime-postfail-census-20261017.json');assert census.is_file();save(census,'postfail-root-census.json')\nout=rec/'current-A-fourth-actual-fixture-artifacts-20261017.json';assert not out.exists();manifest=dict(kind='IMMUTABLE_FINAL8_FIRST_OUTCOME_ARTIFACTS_AND_RETAINED_FAILURE_NAMESPACE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),files=files,fixtures=fixtures,retainedOwnedSnapshots=owned,postfailObservation=dict(rawPath=str(census),sha256=hashlib.sha256(census.read_bytes()).hexdigest(),scope='Separate read-only post-failure census; never substitutes original FAIL or creates authority to remove/signal'),helperText=Path(__file__).read_text());out.write_text(json.dumps(manifest,indent=2)+'\\n')\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};groups=[];seen=set();fail=[];repairroots=[]\nfor n,c in enumerate(packet['commands']):\n assert c['sourceHead']==c['headAfter']=='b821b68549e9365281cf9c6e1167d924555f4d72' and c['compiledSource']=='17043cf18e72d8e5a62c48505abc2ef7eda3e42f' and not c['statusAfter'] and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7 and c['nativeExit']==[0,0,0,1][n]\n d=Path(c['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());expected=[3,1,2,2][n];assert s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests'];rows=[]\n for trx in sorted(d.glob('*.trx')):\n  for e in ET.parse(trx).findall('.//t:UnitTestResult',ns):\n   key=(e.attrib['testId'],e.attrib['testName']);assert key not in seen;seen.add(key);v=dict(testId=e.attrib['testId'],name=e.attrib['testName'],outcome=e.attrib['outcome'],duration=e.attrib['duration']);assert v['outcome'] in ['Passed','Failed']\n   if v['outcome']=='Failed':v['error']=e.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);v['stack']=e.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);fail.append(v)\n   if n==0:\n    for line in e.findtext('t:Output/t:StdOut',default='',namespaces=ns).splitlines():\n     if line.startswith('{'):\n      try:o=json.loads(line)\n      except ValueError:continue\n      if 'CleanupOwnedRoot' in o:assert o['OwnedFixtureRemoved'] and o['CleanupFailure'] is None and not Path(o['CleanupOwnedRoot']).exists();repairroots.append(o)\n   rows.append(v)\n assert len(rows)==expected;groups.append(dict(category=c['argv'][-2],native=c['nativeExit'],seconds=c['wallSeconds'],tests=s['Tests'],selection=s['Selection'],runnerCleanup=dict(owned=s['OwnedTreeCleanupSucceeded'],runtime=s['RuntimeCleanupSucceeded']),rows=rows))\nassert len(seen)==8 and len(fail)==1 and len(repairroots)==3 and 'delivery.cleanup_failed' in fail[0]['error']\nfor data in [packet,manifest]:\n for f in data['files']:\n  z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nnormal=next(e for e in fixtures if e['artifacts'].endswith('e8d8f29ef5184c62a370b3d5c6f8dfaa'));normalraw=json.loads((Path(normal['artifacts'])/'outcome.json').read_text());g=normalraw['generatedTemplate'];assert g['bytes']==12977 and g['sha256'].lower()==g['expectedSha256'].lower()=='2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239' and hashlib.sha256(Path(g['retainedRawPath']).read_bytes()).hexdigest()==g['sha256'].lower();assert any(f['rawPath']==g['retainedRawPath'] for f in files)\ninspection=dict(kind='FOURTH_FIRST_ACTUAL_STOP_RAW_INSPECTION_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),commands=groups,nativeRawChainsVerified=24,fixtureAndSnapshotChainsVerified=len(files),firstResults=dict(executed=8,passed=7,failed=1),qualifiedPartial=dict(retained=247,correctedRepair=3,genuinePackage=1,physicalNegatives=2,prestart=1,total=254,unresolvedControlledOrphan=1,unrun=0),historicalTotals=dict(executions=269,failed=10,supersededExecutions=14),generatedTemplateActual=g,strictRepairRootsGone=repairroots,fixtureRootStates=fixtures,retainedOwnedSnapshots=owned,firstFailure=fail[0],cleanupLimit='Runner cleanup success does not qualify internal controlled orphan cleanup: one15s process.WaitForExitAsync cleanup timeout, exitConfirmed/rootsRemovedfalse, both original owned roots retained. No retry/signaling/deletion; independentcausalreview pending.',helperText=Path(__file__).read_text());p=rec/'current-A-fourth-actual-stop-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(inspection,indent=2)+'\\n');print('FOURTHSTOP_FROZEN24native',len(files),'fixture/snapshotchains8executed7PASS1FAIL;generated12977rawsaved;2ownedrootsRETAINED')\n"
+}
