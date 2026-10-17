@@ -1,0 +1,219 @@
+{
+  "kind": "INDEPENDENT_LIFECYCLE_GUARDS_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "createdUtc": "2026-10-17T14:31:30.795969+00:00",
+  "reviewerRole": "Independent read-only reviewer; no repository mutation or native execution",
+  "carrier": "ea5f605b2a9618feb2b66757433babbf32c35f9b",
+  "compiledTestSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "unchangedProductSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "overallVerdict": "ACCEPT_BOUNDED_SOURCE_FOR_SEPARATELY_RELEASED_GUARD_FIRSTS_WITH_LOW_METADATA_CORRECTION",
+  "verdicts": {
+    "SOURCE": "ACCEPT_FOR_EXACT_TWO_NAME_INACTIVE_LIFECYCLE_GUARDS",
+    "FIXTURE": "ACCEPT_SOURCE_ELIGIBILITY_ONLY",
+    "SELECTION": "ACCEPT_GUARDS32_AND_CONDITIONAL_AFFECTED_GREEN47",
+    "PREPARATION": "ACCEPT_FRESH_ZERO_EXECUTION_BINDING",
+    "EVIDENCE": "NOT_REVIEWED_NO_NEW_TESTCASE_EXECUTED",
+    "PRODUCTION_RUNTIME_RELEASE": "NONE_FROM_THIS_REPORT"
+  },
+  "materialBlockers": [],
+  "findings": [
+    {
+      "id": "LIFECYCLE-L01",
+      "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
+      "field": "lifecycleStage.newGuardRows[*].status",
+      "observed": "AUTHORED_UNCOMPILED_UNRUN",
+      "currentTruth": "Fresh compiled/discovered0exec; enclosing nativeDiscovery correct",
+      "disposition": "Relabel four row statuses in decision metadata and synchronize currentLedger SHA; no code/pin/binary/plan/rerun required."
+    }
+  ],
+  "fixtureAssessment": [
+    {
+      "scope": "private policy16",
+      "finding": "Four existing real private predicates, two exact names and two suffix neighbors each; signatures and boolean return checked before final expected-policy equality. No missing future API or fabricated owner.",
+      "limit": "Reflection policy control, not real caller end-to-end execution."
+    },
+    {
+      "scope": "engine physical aliases4",
+      "finding": "Actual constructed engine and real CreatePreTurnBackupAsync; physical case aliases, target before/after bytes, actual mutation observation and backup absence on refusal; suffix paths require actual backup bytes. Existing signed inventory detects case aliases before publication.",
+      "limit": "Current source eligibility; actual reachability and cleanup must be proven by FIRST raw."
+    },
+    {
+      "scope": "live physical aliases4",
+      "finding": "Actual PrepareAsync with valid owned canonical inputs, full before/after physical inventory and publication hook; aliases require pre-publication refusal and unchanged images, suffixes require actual manifest/baseline/request inclusion.",
+      "limit": "Two exact operational paths and their stated case aliases/suffixes only."
+    },
+    {
+      "scope": "dedicated helper8",
+      "finding": "Actual maintained helper loaded by unchanged contract fixture/driver/current helper control. Native guardian, real driver exit, natural child joins and helper report prerequisites precede policy qualification; opaque seeded before-image plus actual read marker; Write or direct FilesModified validation exercises both exact targets and suffix neighbors. UTF8 suffix JSON assertion matches actual writer encoding without BOM.",
+      "limit": "Direct FilesModified validator is first in Complete-BoeTurn, but these tests do not invoke completion or prove terminal/client acceptance. Setup, guardian, join, import, timeout and cleanup failures are not causal policy RED."
+    }
+  ],
+  "bindings": {
+    "sourcePins": 134,
+    "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
+    "retainedUnchangedPins": 117,
+    "changedSelectorPins": 2,
+    "newRecoveredDependencies": 9,
+    "newTestFiles": 4,
+    "newSelectors": 2,
+    "freshBinaryCopies": 9,
+    "managedFiles": 258,
+    "repoAndManagedHelperSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+    "generatedRevision": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+    "productSourceDiffEmpty": true,
+    "carrierChangesFeatureMetadataOnly": true,
+    "artifacts": [
+      {
+        "path": "specs/1559-relay-long-sessions/lifecycle-source-packet.json",
+        "sha256": "77b08e34a2455caca7c2fae12b6d26907dd0408e1f370bba239215b61d6dd849"
+      },
+      {
+        "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
+        "sha256": "d776edfe69b497e34f602de9b531398aaa4f4bab8a1005355cd2213d75d83fb3"
+      },
+      {
+        "path": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-preparation.json",
+        "sha256": "e615cad514268867c18a5ef751e449d216c73d614b0b6e7e9f8aed1d32e43342"
+      },
+      {
+        "path": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-preparation-files/archive.json",
+        "sha256": "8531524a8788485f8d18e4243db2baaf4bac9ea6e7787909a50206c1219fccfb"
+      }
+    ]
+  },
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "wallSeconds": 91.79860833800194,
+      "categories": 829,
+      "methodsFiles": 11699,
+      "unmapped": 0,
+      "stale": 0,
+      "bothBuildsCompleted": true
+    },
+    "plans": [
+      {
+        "scope": "stage",
+        "nativeExit": 0,
+        "categories": 9,
+        "descriptors": 10,
+        "methods": 15,
+        "rows": 47
+      },
+      {
+        "scope": "guards",
+        "nativeExit": 0,
+        "categories": 4,
+        "descriptors": 4,
+        "methods": 4,
+        "rows": 32
+      }
+    ],
+    "nativeTestExecutions": 0,
+    "rawChainsVerified": 24,
+    "plannedUnexecutedUnderfilledAndCompleteFalseAreNotRuntimeFailures": true,
+    "catalogAfterPlansBeforeAfterAndCurrentNineBinaryCopiesEqual": true,
+    "namespaceContinuous": true
+  },
+  "selection": {
+    "guardRows": 32,
+    "guardMethodCounts": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication": 4,
+      "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets": 8,
+      "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication": 4,
+      "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact": 16
+    },
+    "stageRows": 47,
+    "stageComposition": {
+      "acceptedBaseline": 8,
+      "newGuards": 32,
+      "ordinaryNeighbors": 6,
+      "genuinePackagedPublisher": 1
+    },
+    "uniqueStageMethods": 15,
+    "catalogNewOwners": 5,
+    "oldCategoryObjectsUnchanged": 823,
+    "oldNeighborsExactSixMovedWithoutDuplication": true,
+    "conditionalSufficiency": "Sufficient for the stated inactive exact-two-name lifecycle reservation, subject to concrete eight-file production diff review and full affected GREEN47. Not sufficient for active relay or C01-C06."
+  },
+  "eligibleFirstCommands": [
+    {
+      "category": "gm-relay-operational-private-policy",
+      "adapter": "unit",
+      "cases": 16,
+      "budgetMinutes": 2
+    },
+    {
+      "category": "gm-relay-operational-engine-alias",
+      "adapter": "integration",
+      "cases": 4,
+      "budgetMinutes": 2
+    },
+    {
+      "category": "gm-relay-operational-live-alias",
+      "adapter": "unit",
+      "cases": 4,
+      "budgetMinutes": 2
+    },
+    {
+      "category": "gm-relay-operational-helper-policy",
+      "adapter": "integration",
+      "cases": 8,
+      "budgetMinutes": 3
+    }
+  ],
+  "recording": {
+    "recorder": "/tmp/gm1559-lifecycle-guard-first-run.py",
+    "recorderSha256": "59d0f95f04c08b3aa0ea93057e74dcd7babc2e1d2c0e98373bce3b0d5b16356f",
+    "archiver": "/tmp/gm1559-archive-lifecycle-guard.py",
+    "archiverSha256": "140bf58b064c5b6d30c2fcbb3af33112ee3c6a1cec9e52edecd6374645c26ab8",
+    "status": "UNRUN",
+    "qualification": "Fixed one canonical owner/NoBuild; exact original guard-plan method/cases, 134 source pins, fresh9 binaries and managed helper; exclusive per-owner FIRST sentinel; process/stdout/TRX/summary/native-terminal original files retained and hashed; no automatic advance, retry or RED classification."
+  },
+  "requiredBeforeActual": [
+    "Correct LOW LIFECYCLE-L01 four row statuses and synchronize currentLedger SHA in decision metadata; preserve source/pins/native facts.",
+    "Persist exact independent report and Root decision; verify published successor/recovery and unchanged bindings.",
+    "Root separately activates each named owner. Unexpected fixture/import/type/guardian/process/timeout/cleanup/incomplete result stops and is frozen before any correction."
+  ],
+  "predictionsNotEvidence": {
+    "privatePolicy": "8 failure / 8 pass predicted",
+    "engineAliases": "2 failure / 2 pass predicted",
+    "liveAliases": "2 failure / 2 pass predicted",
+    "helperPolicy": "4 failure / 4 pass predicted"
+  },
+  "retainedHistory": {
+    "baseline8": "Accepted separate engine2 and remaining6 evidence; not rerun or requalified here.",
+    "oldCompiledRevision": "d473ed33; current fresh7ff binaries are separate even though product source is unchanged.",
+    "newGuardEvidence": "None; compilation/discovery is not causal RED or GREEN."
+  },
+  "futureBoundary": [
+    "No product changes authorized by this review; coherent exact-eight-owner lifecycle reservation remains held until genuine guard evidence and Root release.",
+    "Later GREEN47 includes only the actual packaged writer affected by helper packaging; no changed52-document content, broad1557, oldbridge or fullrelay replay by file adjacency.",
+    "No new schema, record writer, trust authority, dispatch, batch, budget or sequence activation. Full relay C01-C06 deferred; after safe lifecycle checkpoint hand off to wounds T179-Pd.3d.",
+    "No platform-wide, Windows/CI, game acceptance, relay delivery or completed-issue claim."
+  ],
+  "independentSupportingCheck": {
+    "path": "/tmp/gm1559-lifecycle-guards-source-independent-check-20261017.json",
+    "sha256": "c3b788d32e7634ed1a28397f0d327d038f255287bc771c0cc877ef734b2f0eca"
+  },
+  "recovery": [
+    {
+      "path": "/tmp/gm1559-lifecycle-guards-source-delta-github-7ff66d81-20261017.json",
+      "sha256": "69e8c1c317089bb2ef018d148d168af32735065c61539f86640fb5793dde3411",
+      "sha": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+      "base": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+      "files": 23,
+      "allChangedPaths": 19,
+      "exact": true
+    },
+    {
+      "path": "/tmp/gm1559-lifecycle-guard-prep-delta-github-ea5f605b-20261017.json",
+      "sha256": "b09dd494cbe681ef577f93670c20b513c633a14d11e8fe1e883668a3e0bb8595",
+      "sha": "ea5f605b2a9618feb2b66757433babbf32c35f9b",
+      "base": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+      "files": 41,
+      "allChangedPaths": 37,
+      "exact": true
+    }
+  ],
+  "inspectionNote": "A read-only verification utility initially queried absent ledger field category; corrected to actual method/cases schema before support creation. No test, build, source or PREP outcome was changed."
+}

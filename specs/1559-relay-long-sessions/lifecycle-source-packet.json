@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "FRESH_COMPILED_DISCOVERED_0EXEC; CONCRETE_SOURCE_FIXTURE_SELECTION_PREP_REVIEW_PENDING",
+  "stage": "SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; FRESH_COMPILED_DISCOVERED_0EXEC; ALL_GUARDS_UNRUN_ACTUAL_AND_PRODUCTION_HELD",
   "sourcePinCount": 134,
   "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
   "sourcePins": [
@@ -1101,7 +1101,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "d776edfe69b497e34f602de9b531398aaa4f4bab8a1005355cd2213d75d83fb3"
+    "sha256": "0130287d1edc9dd012190760d8d7e010b4fabf0e79492cbdd3ac1f8b415b38b1"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1373,5 +1373,17 @@
     "path": "recovery/tools/lifecycle-guard-first-run.py",
     "sha256": "59d0f95f04c08b3aa0ea93057e74dcd7babc2e1d2c0e98373bce3b0d5b16356f",
     "status": "UNRUN_SOURCE_REVIEW_AND_NAMED_ROOT_ACTIVATION_REQUIRED"
+  },
+  "sourceDecision": {
+    "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
+    "sha256": "0130287d1edc9dd012190760d8d7e010b4fabf0e79492cbdd3ac1f8b415b38b1",
+    "reports": [
+      "recovery/lifecycle-guards-source-independent.md",
+      "recovery/lifecycle-guards-source-independent.json",
+      "recovery/lifecycle-guards-source-independent-check.json"
+    ],
+    "root": "Explicit Root source acceptance recorded in plan.md; successor recovery required before any separately named owner activation.",
+    "actual": "ALL32_UNRUN",
+    "lowMetadata": "LIFECYCLE-L01 four row statuses corrected; exact134sourceDigest and fresh9DLL/selector/prep bindings unchanged."
   }
 }

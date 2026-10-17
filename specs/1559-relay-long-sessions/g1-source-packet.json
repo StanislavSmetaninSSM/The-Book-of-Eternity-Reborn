@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "Original stage baseline8 accepted; current lifecycle-source-packet.json binds new32guards fresh7ffcompiled/0executed pending Source review. Historical119/d473 native evidence retained.",
+  "actual": "Original baseline8 accepted. Current lifecycle-source-packet.json binds accepted new32guard SOURCE/PREP, fresh7ffcompiled/0executed; all32UNRUN require separately named Root activations. Historical119/d473 raw unchanged.",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "d776edfe69b497e34f602de9b531398aaa4f4bab8a1005355cd2213d75d83fb3"
+    "sha256": "0130287d1edc9dd012190760d8d7e010b4fabf0e79492cbdd3ac1f8b415b38b1"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
