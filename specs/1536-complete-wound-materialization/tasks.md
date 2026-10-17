@@ -1,3 +1,7 @@
+## A2 implementation prepared — affected SOURCE next (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): minimala4 freshBOTH/catalog0(784/11741/knownwarnings0errors),PlanOnly0(5desc11methods59planned/0executed),12chains/fourDLLs frozen. [Currentcheckpoint](plan.md): compact8pin affectedSOURCE proves entireowner only2leaf replacements, A1/tests/fixtures/runner/catalog unchanged; accepted40ed/causalRED reusedbyhash. Publish/readback/newdelta/affectedSOURCE before FIRSTnewprotectedLate2/separateEVIDENCE thenA2GREEN57. No actual yet or oldproof/base replay; allbroaderholds remain.
+
 ## A2 minimal production WIP — fresh affected preparation next (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): after savedaccepted causalRED/rootrelease, add only2awardhelpers+2immediate nullable leafreplacements; tests/training/strictjoint byteunchanged, selectionphase reasons only. [Current checkpoint](plan.md): WIPpersistence/recovery→freshchanged-product preparation→affectedSOURCE→oneactuallyaffectedFIRSTLate2/separateEVIDENCE→individualGREEN57. No actual yet/REDorA1 replay/expanded watermark-arithmetic/GM/platform scope.
