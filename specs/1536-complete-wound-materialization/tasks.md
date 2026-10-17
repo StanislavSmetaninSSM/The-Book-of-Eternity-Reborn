@@ -1,3 +1,7 @@
+## A1-F01 corrected boundary runtime EVIDENCE accepted (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact focused independent pair accepts corrected boundary2 and closes its F01 runtime gap, with6chains/exact3presentBOMhashes/strict2roots/fresh4d1DLLs/16fileall12delta verified. [Current decision](plan.md) requires persistence/readback/newdelta before root releases pure33 ONLY, then separately ordinary17. Remaining50 UNRUN; no boundary/base/preparation/oldRED/Late2 repeat, automatic release or final whole-A1 claim.
+
 ## A1-F01 first corrected boundary2 raw PASS — focused EVIDENCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): after root verified acceptedb2 decision/new9file5pathdelta/fresh4d1 continuity, sole corrected boundary2 actual returned native0/exact2PASS/category1.8478496s≤5m. [Current checkpoint](plan.md) preserves6rawchains/writer inspection: both3present exact level2/7/9 BOM hashes, genuine context/helper2, strict2roots absent/source4DLLstable. Freeze/publish/readback/newexactdelta then focused independent EVIDENCE before F01 runtime closure or later owners. Pure33/ordinary17 remain UNRUN/HELD; no self-approval, boundary repeat, oldRED/Late2/base/preparation replay or scope expansion.
