@@ -1,0 +1,28 @@
+{
+  "kind": "ROOT_CORRECTED_FIRST_PD3E_PREPARATION_LITERAL_READBACK_NOT_RUNTIME_ELIGIBILITY",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "catalogNative": 0,
+  "catalogWallSeconds": 52.073547478001274,
+  "planNative": 0,
+  "planWallSeconds": 5.783233119997021,
+  "catalog": {
+    "categories": 793,
+    "methods": 11770,
+    "unmapped": [],
+    "stale": []
+  },
+  "selected": {
+    "descriptors": 5,
+    "methods": 18,
+    "plannedRows": 45,
+    "executed": 0
+  },
+  "rawChains": 18,
+  "archiveSha256": "6c563dcfa8e17db72a48b1867853e09d87a4a96603e0c6a91baff1dd1175f805",
+  "compiledSourcePinsExact": 54,
+  "nineFreshCurrentExact": true,
+  "managedFilesCurrentExact": 335,
+  "namespaceEmpty": true,
+  "scope": "Preparationvalidonly. KnownNI-3E-S02 mode expectedvectors remainUNRUN/held; final independentSOURCE mayacceptONLYisolatedboundary1 afterpublishedcarrier/recovery. Initiald377CS0121/8chains preserved. NocausalRED/runtime/production/HOT/S/B/M3/F1claim.",
+  "utc": "2026-10-17T17:56:20.149938+00:00"
+}

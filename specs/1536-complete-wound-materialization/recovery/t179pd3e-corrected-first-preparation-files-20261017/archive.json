@@ -1,0 +1,169 @@
+{
+  "kind": "EXACT_PD3E_ORDINARY_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE",
+  "createdUtc": "2026-10-17T17:55:10.351649+00:00",
+  "actualSources": [
+    "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "7307e8f8c74c53bd836de7906d305c794766e1a1"
+  ],
+  "compiledSources": [
+    "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "7307e8f8c74c53bd836de7906d305c794766e1a1"
+  ],
+  "nativeExits": [
+    0,
+    0
+  ],
+  "actualTestExecutions": [
+    0,
+    0
+  ],
+  "rawChainCount": 18,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/7307e8f8c74c53bd836de7906d305c794766e1a1-pd3e-ordinary-catalog.FIRST.json",
+      "storedPath": "000-7307e8f8c74c53bd836de7906d305c794766e1a1-pd3e-ordinary-catalog.FIRST.json.gz",
+      "bytes": 271,
+      "sha256": "588fcee29fb4898734f31dcd2cd4d6ebb0e8be58a20db643467184e032a06ebf",
+      "storedBytes": 229,
+      "storedSha256": "c2364d5e7d9bd4a79d4ee16c3176d1713c8b4ae4c2016ff0d1726b909149aa39"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/7307e8f8c74c53bd836de7906d305c794766e1a1-pd3e-ordinary-plan.FIRST.json",
+      "storedPath": "001-7307e8f8c74c53bd836de7906d305c794766e1a1-pd3e-ordinary-plan.FIRST.json.gz",
+      "bytes": 265,
+      "sha256": "bbd63f9e03aa92dd0c16dfc8a2d991e07af0619f689d53bc0deecee896a5d200",
+      "storedBytes": 226,
+      "storedSha256": "0c8ac9b2d6a4ca4975e9ec527f08c0cbdca6dc9c33fa1f46ee0a252b71a88894"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-catalog-7307e8f8-20261017/process.json",
+      "storedPath": "002-process.json.gz",
+      "bytes": 660,
+      "sha256": "7702d324b74dd183e9446c19e3365e5b5a9c810adc724c2206b10399e7cb48a8",
+      "storedBytes": 353,
+      "storedSha256": "5776614663c98a98d6ed9c7a22dffe7db675acea319023f976a7024519615ba0"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-catalog-7307e8f8-20261017/record.json",
+      "storedPath": "003-record.json.gz",
+      "bytes": 76807,
+      "sha256": "ae8679235771cdb680728172d6eefd1e8f35760c9ba91038083c1c46289fb472",
+      "storedBytes": 23083,
+      "storedSha256": "07f4623455ab6ff9b83008d2442ff3d252d452e0b5fd5a88f7dd77553149107c"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-catalog-7307e8f8-20261017/source-binding.json",
+      "storedPath": "004-source-binding.json.gz",
+      "bytes": 108684,
+      "sha256": "0e8d39c68305eb80f63c236151264cb2fa110c8a177f0c12c427a848479695fd",
+      "storedBytes": 29199,
+      "storedSha256": "cc3e67ec41966673caf7349e4629d254d3ddf0c0d151a13304d38ce36a17c4e2"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-catalog-7307e8f8-20261017/stdout.log",
+      "storedPath": "005-stdout.log.gz",
+      "bytes": 714,
+      "sha256": "1744a33f7685a5b3c21fa7ae178cccd557931964519f6f9f45bbe5bbedb810ea",
+      "storedBytes": 396,
+      "storedSha256": "15e3ada950a0f579f62215dfef31ccb57b5cd32354f0988383aa784648f3e41a"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-plan-7307e8f8-20261017/process.json",
+      "storedPath": "006-process.json.gz",
+      "bytes": 757,
+      "sha256": "0f620f75a9300e9e184d2ea13689e0b7c365f7fad3ac3a6ef07fdaf74f83b27c",
+      "storedBytes": 381,
+      "storedSha256": "3a6b0140686b974864e0a937cb85b06b55982b6deb591ce9c5a2d2f6013f7a02"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-plan-7307e8f8-20261017/record.json",
+      "storedPath": "007-record.json.gz",
+      "bytes": 76850,
+      "sha256": "c537f41553d574bc560565d478d56ecae5ba812dcbf39aa3ec183b883b70597c",
+      "storedBytes": 22764,
+      "storedSha256": "4e8d446139855cc1ef87bd261dc33912cf168c195ecde73e10fdb4cf5c3ff2c5"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-plan-7307e8f8-20261017/source-binding.json",
+      "storedPath": "008-source-binding.json.gz",
+      "bytes": 108684,
+      "sha256": "0e8d39c68305eb80f63c236151264cb2fa110c8a177f0c12c427a848479695fd",
+      "storedBytes": 29199,
+      "storedSha256": "cc3e67ec41966673caf7349e4629d254d3ddf0c0d151a13304d38ce36a17c4e2"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-corrected-plan-7307e8f8-20261017/stdout.log",
+      "storedPath": "009-stdout.log.gz",
+      "bytes": 7761,
+      "sha256": "8d316edcc769a3519e6354084e9a8382cedb235f04e7488b055a85d9b370cfdb",
+      "storedBytes": 1457,
+      "storedSha256": "71623d13f544dbdf468ba42733d2d049edcd96917ec89d861d4a26282d8bbf86"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175343-774-163512-c86074a1d7e0403cb82deb93967b4f7e-categories/Build-integration.log",
+      "storedPath": "010-Build-integration.log.gz",
+      "bytes": 120171,
+      "sha256": "5e6e9e5b0bbde3019f0a8ffe1574a5fb9ee9f35ba2f54cc87e662a59b6633109",
+      "storedBytes": 9257,
+      "storedSha256": "d282414bb6448dc46cca9e7311484113fef65c080def61ee189dd5cc388c988c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175343-774-163512-c86074a1d7e0403cb82deb93967b4f7e-categories/Build-unit.log",
+      "storedPath": "011-Build-unit.log.gz",
+      "bytes": 27880,
+      "sha256": "6ff5e1810d685ed0d6aa8d2d0b55c1eb06e1d7e9a444250e0ff0d31f8214986e",
+      "storedBytes": 1747,
+      "storedSha256": "e6e2ec647980e0a4b1b5ce966777a6346a18c90b28c258806a86a30126c4f197"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175343-774-163512-c86074a1d7e0403cb82deb93967b4f7e-categories/catalog-audit.json",
+      "storedPath": "012-catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "54a45bef0b50e3a562b10e6042cd61fcd7ffa2265ce8022de356ce54d08fbf4f",
+      "storedBytes": 103,
+      "storedSha256": "fe85d6907cd48e2fa3c7ef932018806c78a13b672e1da10f2e50300c188ee529"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175343-774-163512-c86074a1d7e0403cb82deb93967b4f7e-categories/dotnet-test.log",
+      "storedPath": "013-dotnet-test.log.gz",
+      "bytes": 3565237,
+      "sha256": "277abb1284d639ed2fde3a913663140e46ca5950a58cf9894a47626329b383d2",
+      "storedBytes": 389608,
+      "storedSha256": "3983a7efc6db7142197c388e8328c859a91f9fa7654a4d7f7d72bcaf96f85e99"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175343-774-163512-c86074a1d7e0403cb82deb93967b4f7e-categories/summary.json",
+      "storedPath": "014-summary.json.gz",
+      "bytes": 1599,
+      "sha256": "90556af6d0d9de1e9ff9c8055aa5cc3cd6c1b4c844d4ed49a6c46ed7e12fcf42",
+      "storedBytes": 642,
+      "storedSha256": "bb5da17c8ad4c1fbea2d2841d812d1aae02455c0965fcb69ef281b0234881286"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175448-501-163999-cd3b5ff6d9f34ceea794e9c1c74d2243-categories/dotnet-test.log",
+      "storedPath": "015-dotnet-test.log.gz",
+      "bytes": 3416796,
+      "sha256": "aac4d013c8207d12eee222dde1fde874fe16f32018f59073a9390d05a11c9974",
+      "storedBytes": 378592,
+      "storedSha256": "440eafbb3f5abb2160eafa2e18aa3b2aade37dbca84b32abfe6179d96bf76ca3"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175448-501-163999-cd3b5ff6d9f34ceea794e9c1c74d2243-categories/plan.json",
+      "storedPath": "016-plan.json.gz",
+      "bytes": 11914,
+      "sha256": "e3b94b8a8d280208372f25c65eb5ecde62271b32e5d43e517bae23f314a632df",
+      "storedBytes": 2147,
+      "storedSha256": "005a0d08d9ad70453267e2093f91121ab8b3bef08a4e0d95234825e41450ea71"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-175448-501-163999-cd3b5ff6d9f34ceea794e9c1c74d2243-categories/summary.json",
+      "storedPath": "017-summary.json.gz",
+      "bytes": 4884,
+      "sha256": "bb3bd5b8ab98d62c93a037c75577b5659676815937ce831ca9364c423add7f37",
+      "storedBytes": 1482,
+      "storedSha256": "aad9440a89ef3999934ed51b0633da046152890e8904a0b2435851be3fe00f71"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact FIRST zero-test raw archive. No runtime, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_paths=[Path(x) for x in sys.argv[1:-1]];destination=Path(sys.argv[-1]);assert record_paths and not destination.exists();destination.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\nfiles=[];paths=[];records=[]\nfor p in record_paths:\n j=json.loads(p.read_text());assert j['kind']=='FIRST_PD3E_ORDINARY_ZERO_EXECUTION_PREPARATION_NOT_RUNTIME_ACCEPTANCE';records.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json'])\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_PD3E_ORDINARY_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in records],compiledSources=[x['compiledSource'] for x in records],nativeExits=[x['nativeExit'] for x in records],actualTestExecutions=[x['actualTestsExecuted'] for x in records],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs."
+}
