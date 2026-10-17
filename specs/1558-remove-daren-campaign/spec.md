@@ -1,0 +1,63 @@
+# Feature Specification: Remove the Daren campaign
+
+**Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
+**Branch**: `1558-remove-daren-campaign-20261017`.
+**Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
+**Status**: preflight contract/inventory candidate; independent technical review pending. User authorized removal of the entire campaign and autonomous implementation. This checkpoint implements no product or tests and releases no runtime.
+
+## Source issues and scope
+
+#1558 supersedes further development of the separate Daren manor-heist campaign. Preserve common QTE, minigames and training from #925; #955/#1080 and other historical issues are not automatically closed. Spec Kit is required because this removal crosses console/browser UI, host routes, reward storage, recovery, GM guidance and regression fixtures.
+
+The outcome removes campaign-only scenes, prose, outcomes, route/spine data, reward generation, menu entries, browser view/API/DTO/fixtures/styles and unused campaign-specific dependencies. It preserves generic `ScenarioCoreService` (next-life/world-directive assertions), ordinary campaign QTE, all eleven current practice types and useful generic transaction, generation, uncertainty and cleanup regressions. `RivalSoulArcService` substring `одарен` is unrelated and stays.
+
+Out of scope: new gameplay/campaign/rules, user-data deletion or bulk migration, save/archive rewriting, revocation of earned currency, repository history removal, issue/PR closure/merge, main, Windows/CI/F1/artifact workarounds, HOT/M3/provider/backend qualification. Accepted #1536 A1/A2 and #1557 A/B evidence remains historical and unchanged; it does not prove #1558.
+
+## User scenarios and testing
+
+### US1 — Both clients offer training without Daren (P1)
+
+Given the console main menu or browser launcher, Daren is absent and cannot be started through retained commands, route state or stale direct API requests. Practice remains reachable. All eleven supported types can start and complete through their supported real client paths, with existing scoring/input behavior and no permanent rewards. Stale browser navigation returns the ordinary safe/default route; removed host endpoints do not dispatch a campaign or mutate data. Ordinary QTE offer/action endpoints continue to function.
+
+Independent proof combines actual console input/owner calls, real local host requests, frontend interactions and a bounded local browser/visual check when available. A component test or HTTP response is not described as a completed interactive browser flow.
+
+### US2 — Existing data remains safe and campaign rewards stop (P1)
+
+Given existing `client_profile/qte_showcase_rewards.json` (valid, duplicate/old, malformed, BOM/non-UTF8 or arbitrary bytes), entering menus, practice, ordinary load and new-game flows does not read/normalize/rewrite/delete it. Already persisted `inkFeathers` and `clientRewardGrants.darenQteShowcase` are not revoked, regranted or scrubbed merely because the campaign was removed. A fresh soul receives no Daren bonus even if the old profile exists. Existing saves, histories, unknown fields and unrelated files remain intact through existing supported load/save behavior; no new round-trip compatibility promise is inferred for arbitrary schemas.
+
+Given interrupted Daren external publication evidence, acquisition/recovery refuses before mutation and retains exact evidence, profile and ordinary sibling bytes/absence. It does not silently ignore, migrate, roll back, commit, clean or delete those journals. Generic non-Daren recovery remains supported. Error copy should explain that unsupported retired-campaign evidence was retained, without inventing gameplay or recommending destructive cleanup.
+
+### US3 — Common regressions and guidance remain useful (P2)
+
+Campaign narrative/reward-success tests retire with their subject. Shared tests that used Daren as a convenient fixture either use an existing real ordinary/practice owner with independent test data, or explicitly retire only a now-absent publisher row while retaining the common invariant through existing ordinary controls. No production replacement profile or external-write mechanism is invented for tests. Active docs/examples no longer instruct players/GM to launch Daren or award its rewards; ordinary QTE and no-reward practice contracts remain synchronized.
+
+## Functional requirements
+
+- **FR-001**: Remove all active Daren launch/menu/view/host/API/action surfaces in console and browser, including stale-route/action reachability; no aliases or hidden launch fallback.
+- **FR-002**: Delete campaign-only authored route, scene/outcome prose, spine data, reward definitions and unused runtime/frontend resources. Preserve Git history and historical evidence; only tracked active repository content is in scope.
+- **FR-003**: Preserve common QTE offer/action/scoring/deferred-effect machinery, minigames, eleven practice types, accessibility/keyboard behavior and training start/complete/retry/exit flows in both clients.
+- **FR-004**: Remove every production campaign reward/profile caller, including read-normalization and fresh-soul grant. Existing stored profile bytes remain inert; already persisted currency/receipts remain unchanged by retirement.
+- **FR-005**: Reject retired Daren external browser journals before either original/current recovery branch and before generic mutation/cleanup, covering classifier admission and schema-specific handling.
+- **FR-006**: Reject shared trusted-local publication journals containing the exact retired profile member before any member is restored/deleted or cleanup runs. Validate the whole member list first, including mixed ordinary/retired-member evidence; keep unrelated ordinary recovery and path/generation checks intact.
+- **FR-007**: Preserve saves, archives, receipts/history and unrelated user files; no startup scan that erases/migrates/rewards old Daren data. Genuine current Linux interrupted-journal fixtures come from identified original producers in owned test roots, not a relabeled new journal. An unavailable original-schema producer is covered by explicitly source-derived old-shape refusal controls and source-order review; native Windows remains unverified.
+- **FR-008**: Migrate useful generic regression fixtures and category ownership without weakening assertions, silently deleting shared coverage, creating duplicate ownership or replaying entire obsolete campaign families.
+- **FR-009**: Synchronize relevant GM/player docs, examples, source guards and test-boundary inventories. Preserve ordinary QTE semantic authority and D01's prohibition of normal GM source-code reading; no new game rule or grant contract.
+- **FR-010**: Publish bounded WIP, exact remote readback/recovery and independent contract/SOURCE/EVIDENCE reviews; select actual changed dependencies and retain first RED/failure evidence. Prior #1557 B selection is not the #1558 selection.
+
+## Explicit narrow save-safety exception
+
+The pre-release default does not require general historical compatibility. #1558 expressly requires evaluation and safe behavior for existing campaign data; this specification narrows that exception to (a) inert `client_profile/qte_showcase_rewards.json`, (b) already persisted soul currency/grant markers and save/history bytes, and (c) interrupted original/current browser or trusted-local publication evidence targeting that exact retired member.
+
+No old campaign is supported or resumed. No compatibility profile reader, normalizer, grant adapter or automatic migration is retained. Recognized retired evidence fails closed before recovery effects and remains available for separate manual diagnosis. The support horizon is non-destructive refusal/preservation for the #1558 retirement release; any later migration or removal of this protection requires a separately tracked, accepted decision. The exception does not relax canonical authority, accepted-turn atomicity, schema/path/generation checks, or immutable history.
+
+## Success criteria
+
+- **SC-001**: Real menu/host/frontend reachability checks prove Daren unavailable in both clients and stale calls cannot execute/mutate the campaign.
+- **SC-002**: All eleven practice types and common ordinary QTE complete the selected real console/browser/host and frontend checks; limits of interactive/visual proof are explicit.
+- **SC-003**: Old-profile and existing-grant preservation plus fresh-soul no-grant checks pass; provenance-labelled original/current/standalone/mixed interrupted-evidence tests refuse before mutation with exact bytes/absence and owned cleanup.
+- **SC-004**: Active campaign resources/references are removed or correctly documented as retirement-only; useful shared regressions, category ownership and fresh selected build/discovery/actual membership are reconciled and accepted independently.
+- **SC-005**: Current docs/examples/guards agree with the removed capability, no unrelated gameplay/data/history changes occur, and final checkpoint is pushed/read back/recovered with explicit platform and historical-evidence limits.
+
+## Provenance and open engineering gate
+
+The read-only [inventory](recovery/preflight-source-inventory-20261017.json) pins 80 current files, 14 existing category candidates, 15 campaign spine beats and 11 practice types. These are source counts, not executed cases or an approved runtime selection. [plan.md](plan.md) owns the bounded dependency/migration decisions; [tasks.md](tasks.md) owns execution status. Independent Astra XHigh technical review must accept this inventory, save-safety boundary and verification plan before test/product changes.

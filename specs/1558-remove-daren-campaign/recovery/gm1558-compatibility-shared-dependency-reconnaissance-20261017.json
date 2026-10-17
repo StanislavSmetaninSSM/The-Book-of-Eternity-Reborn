@@ -1,0 +1,164 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_COMPATIBILITY_SHARED_DEPENDENCY_RECONNAISSANCE",
+  "createdUtc": "2026-10-17T07:43:45.319185+00:00",
+  "base": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558",
+  "issueReadViaAuthorizedConnector": true,
+  "verdict": "FINDINGS_FOR_CONCRETE_PLAN_NOT_IMPLEMENTATION_ACCEPTANCE",
+  "confirmed": [
+    "Reward service ReadProfile rewrites profile; new-game grant caller changes soul feathers/marker",
+    "Browser schema7 and original schema6 external-profile recovery dependencies",
+    "Standalone Daren profile uses common trusted-local journal; whole-member preflight needed before recovery",
+    "Training shares QteScene engine; ScenarioCore is generic next-life service",
+    "CLI/browser entrypoints and route/API/type removal closure",
+    "Mixed regression fixture coupling must be preserved by behavior"
+  ],
+  "proposedNarrowOldDataDisposition": [
+    "Ignore existing profile without parsing, writing, deleting or migrating",
+    "Preserve already-granted soul values/marker; stop new-game Daren grants",
+    "Retain and refuse unsupported retired-participant journal before any recovery/cleanup effect",
+    "Keep generic non-Daren recovery and user saves/history unchanged"
+  ],
+  "unverified": [
+    "Actual new-game behavior after removal",
+    "Actual supported old save/load marker and feather preservation",
+    "Actual Linux training/ordinary QTE and browser regressions after removal",
+    "Native Windows original recovery behavior; source/parser guarantee only if execution unavailable"
+  ],
+  "fixtureProvenanceLimits": [
+    "Current schema7 and standalone captures must bind real current producers/source",
+    "Original schema6 is separate generator, never schemaVersion relabel",
+    "Mixed journal negative may be shared-publisher-generated; standalone Daren producer itself is single-member",
+    "No new native Windows/CI requirement"
+  ],
+  "reviewedSourcePins": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "sha256": "1ad5d5e42a27a4dd6a53c3403c0084c1f945c57b7377833e5368131f98fb8503"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ScenarioCoreService.cs",
+      "sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Practice.cs",
+      "sha256": "d76b4042d4d27e5a8b4a653923f01823fe51d7e07e3de5d6c017f13759f8b310"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "sha256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "sha256": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.BrowserProtocol.cs",
+      "sha256": "2c94c73cffaf46b11440dbd62b7ef680934ea56a33fdb16096511aa7eb45eb1d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "sha256": "385e5b7d62360681e89ef506dddf5de67137295fc093cd3bf158131cf1c04b3f"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/App.tsx",
+      "sha256": "564f3bd490ff5b677154863ca979a210b33f151681ecbc1d84e5980dbe244545"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+      "sha256": "8fcec153cddcf8517f85cadebfe7ba3c7280b4ae2021458873f13c449cf8497c"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+      "sha256": "5a6eca1136f9713726012104a0c97b01f5f4834e5affd069938d8d68324085f5"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.External.cs",
+      "sha256": "facc58bb177cbfd924f03cc1c9bb0a3ec2800a78abbb4cc00cbe153f028e0e96"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
+      "sha256": "4279a5cc38e8b025cfed0cb666b68166fd47a3346c723d9274cf173f1c876181"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
+      "sha256": "2581e505392e3daa04a204cef8849505b694a88880049466d6e0baa71003b8e7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.cs",
+      "sha256": "37ecb0d7508ad687a789fa5844986fdc36fea35bbde5e99c7ffb6f1de95b3fbf"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs",
+      "sha256": "e142bb8378b1af869d883458853d0fad9164f970f4b21b2c3ccce235d83fb355"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/QtePracticeModeTests.cs",
+      "sha256": "b03653f26988f9c60920a126d9fd46b1f2466b0df57017cc25a25fa599c47deb"
+    }
+  ],
+  "reportMarkdown": {
+    "path": "/tmp/gm1558-compatibility-shared-dependency-reconnaissance-20261017.md",
+    "sha256": "250c8f5dab29dd9b0947a138a625dbdd44883df4a2fe040dd61b3e890e68b56c"
+  },
+  "repoWritten": false,
+  "testsBuildProducerExecuted": false,
+  "old1557RawOrFullBaseReplayed": false,
+  "nextGate": "Published concrete technical PLAN/SCOPE/SELECTION independent review before TDD release"
+}

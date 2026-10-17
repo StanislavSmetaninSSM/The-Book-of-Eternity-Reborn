@@ -1,0 +1,18 @@
+{
+  "kind": "METADATA_SELF_CHECK_NOT_INDEPENDENT_ACCEPTANCE",
+  "base": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "createdUtc": "2026-10-17T07:46:32.789900+00:00",
+  "requirements": 10,
+  "successCriteria": 5,
+  "tasks": 20,
+  "checkedTasks": 0,
+  "relativeMetadataLinks": "ALL_PRESENT",
+  "reconnaissancePair": "EXACT",
+  "trackedDiffBeforeCommit": [
+    ".specify/feature.json",
+    "AGENTS.md"
+  ],
+  "productTestsSelectionChanged": false,
+  "buildDiscoveryRuntime": "NOT_RUN",
+  "pendingGate": "independent technical contract/inventory/selection review after publication/recovery"
+}
