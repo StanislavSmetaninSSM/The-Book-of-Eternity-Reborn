@@ -1,3 +1,7 @@
+## A2 causalRED qualified — minimal production next after persistence (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent causalRED pair accepts2missing named helpers after fullrealowner/byte/read/strictcleanup witness, not semanticGREEN. [Current decision](plan.md): publish/readback/newdelta then root minimal2helpers+2leafcallsite/+phasewording release; WIPpersistence→freshchanged-source preparation→affectedSOURCE. Unchanged fixtures reused by hash/provenance; no RED/A1/oldLate2/base replay or broader integration.
+
 ## A2 FIRST causalRED2 preserved — separate EVIDENCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): sole actual38ea/compiled40ed boundary2 native1/exact2missinghelperNotNull32 after complete realExperience+Status lastKnown1→2/read/5byteimages/noUI-no-write/strict2roots. [Current checkpoint](plan.md) preserves6chains/writerinspection/limits; publish/readback/newdelta then independent causalEVIDENCE before product. A2GREEN57/Late2remainUNRUN; priorcompileFAILs separate, no retry/oldproof/base replay or broader gate closure.
