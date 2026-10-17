@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2 coherent implementation candidate authored afteraccepted28baseline/Root023activation: campaignremoved and retiredjournal refusal/testmigration/docs/catalog complete atsource; UNCOMPILED/UNRUN. Current815catalog/static16selectedowners; freshfrontendbuild→freshmanagedBOTH/catalog→exactGREENPlan0 next afterWIPpublication/recovery. IndependentimplementationSOURCE and separateRootruntime release remain; nofullGREEN/FRSC/task completion.
+**Status**: G2 implementation candidate revised before first build for reviewer R02/R03: exact shared rollback helper restored; complete retired Format1/2 private intent refuses before discard, with eight new source-derived GREEN controls. Current816catalog/static17selectedowners; UNCOMPILED/UNRUN. Fresh frontend→managed BOTH/catalog→exact GREEN PlanOnly0 follows published source recovery; SOURCE and runtime GREEN remain held, no task completion.
 
 ## Source issues and scope
 

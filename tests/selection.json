@@ -115,7 +115,7 @@
     },
     {
       "category": "gm-doc-afterlife-package-delivery",
-      "reason": "One existing genuine publisher is an actual changed StepMain source→package→session dependency after G2; other51 fixed-sessiondocs retained; CLIAPI is not a session53rd member. No old physical-negative/lifetime replay.",
+      "reason": "One existing genuine publisher is an actual changed StepMain source\u2192package\u2192session dependency after G2; other51 fixed-sessiondocs retained; CLIAPI is not a session53rd member. No old physical-negative/lifetime replay.",
       "contracts": [
         "#1558",
         "accepted G0+A01 removal/data-safety/client/common-regression contract"
@@ -127,6 +127,14 @@
       "contracts": [
         "#1558",
         "ordinary pending recovery before browser rollback; unknown evidence refuses before mutation"
+      ]
+    },
+    {
+      "category": "daren-retirement-private-intent",
+      "reason": "Root/reviewer R03: the real quiescent no-active path deletes intent.tmp before member validation. Eight new source-derived Format1/2 retention and ordinary/malformed scratch neighbors; no original-producer replay.",
+      "contracts": [
+        "#1558",
+        "retired evidence retained before ANY recovery or cleanup; generic ordinary scratch policy unchanged"
       ]
     }
   ]

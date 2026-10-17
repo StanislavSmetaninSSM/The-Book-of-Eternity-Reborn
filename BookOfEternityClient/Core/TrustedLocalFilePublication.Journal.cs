@@ -68,10 +68,14 @@ internal sealed partial class TrustedLocalFilePublication
     /// <param name="path">
     /// The existing owned authority journal to read.
     /// </param>
+    /// <param name="inspectRetiredMembers">
+    /// Defers only the retired-member decision during read-only private intent inspection.
+    /// Every codec, path, generation and image check still runs before that decision.
+    /// </param>
     /// <returns>
-    /// A fully admitted v1 or v2 journal with exact image sources.
+    /// A fully validated v1 or v2 journal with exact image sources.
     /// </returns>
-    private Journal ReadJournal(string path)
+    private Journal ReadJournal(string path, bool inspectRetiredMembers = false)
     {
         using var stream = new FileStream(_journalScope.ValidateFile(path, allowMissing: false),
             FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
@@ -93,7 +97,7 @@ internal sealed partial class TrustedLocalFilePublication
             }
             catch (JsonException ex) { throw new InvalidDataException("The publication journal is invalid; evidence retained.", ex); }
             if (journal.Format != 1) throw Conflict("Unknown publication JSON format; evidence retained.");
-            ValidateJournal(journal);
+            ValidateJournal(journal, inspectRetiredMembers);
             return journal;
         }
 
@@ -105,7 +109,7 @@ internal sealed partial class TrustedLocalFilePublication
             if (length <= 0 || length > stream.Length - 16)
                 throw Conflict("The v2 metadata length is invalid.");
             var journal = ReadFrameMetadata(stream, length, path, checked(16 + length), stream.Length);
-            ValidateJournal(journal); // Every exact region hash/path validates before member recovery.
+            ValidateJournal(journal, inspectRetiredMembers); // Every exact region hash/path validates before member recovery.
             return journal;
         }
         catch (Exception failure) when (failure is JsonException or InvalidDataException or EndOfStreamException or OverflowException)

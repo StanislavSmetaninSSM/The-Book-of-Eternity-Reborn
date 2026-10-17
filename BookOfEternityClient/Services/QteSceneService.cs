@@ -953,6 +953,12 @@ public sealed partial class QteSceneService
         }
     }
 
+    internal Action PrepareStateManagerRollback()
+    {
+        var snapshot = _stateManager.CaptureRuntimeSnapshot();
+        return () => _stateManager.RestoreRuntimeSnapshot(snapshot);
+    }
+
     private void EnsureCanonicalWriteLease(
         FileSystemManager.CanonicalWriteLease writeLease)
     {

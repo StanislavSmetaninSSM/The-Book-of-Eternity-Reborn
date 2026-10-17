@@ -434,8 +434,9 @@ internal sealed partial class TrustedLocalFilePublication
         {
             if (File.Exists(_journalScope.ValidateFile(CommitStage)))
                 throw Conflict("A commit stage without its active journal is unresolved evidence.");
-            // This private scratch file precedes the intent publication. Even a
-            // partially written intent cannot have authorized a member mutation.
+            // Complete retired evidence must remain even before publication.
+            // Incomplete/ordinary private scratch still has its existing discard policy.
+            RefuseRetiredIntentBeforeDiscard();
             _journalScope.DeleteOwnedFile(IntentStage);
             return;
         }
@@ -510,7 +511,29 @@ internal sealed partial class TrustedLocalFilePublication
         Observe(lease, observer, TrustedLocalPublicationPhase.CleanupComplete);
     }
 
-    private void ValidateJournal(Journal journal)
+    private void RefuseRetiredIntentBeforeDiscard()
+    {
+        if (!File.Exists(_journalScope.ValidateFile(IntentStage))) return;
+        Journal? staged;
+        try
+        {
+            // The same codec validates every field, image and member. Only the
+            // retirement decision is deferred for this read-only scratch inspection.
+            staged = ReadJournal(IntentStage, inspectRetiredMembers: true);
+        }
+        catch (InvalidDataException)
+        {
+            // An incomplete/invalid private stage never authorized publication.
+            // Preserve its existing discard policy; I/O/ownership failures propagate.
+            return;
+        }
+        // Outside the malformed-scratch catch: a recognized complete retired
+        // intent is retained, never interpreted as permission to read its profile.
+        if (staged.Members.Any(member => IsRetiredProfilePath(member.Path)))
+            throw Conflict("Retired Daren profile publication evidence retained without mutation.");
+    }
+
+    private void ValidateJournal(Journal journal, bool inspectRetiredMembers = false)
     {
         if (journal.Format is not (1 or 2) || !ValidId(journal.TransactionId) || journal.Members is not { Length: > 0 })
             throw Conflict("Unknown or invalid publication format; evidence retained.");
@@ -520,7 +543,7 @@ internal sealed partial class TrustedLocalFilePublication
         var paths = new HashSet<string>(MemberComparer);
         foreach (var member in journal.Members)
         {
-            if (member == null || !paths.Add(ValidateMemberPath(member.Path)) ||
+            if (member == null || !paths.Add(ValidateMemberPath(member.Path, inspectRetiredMembers)) ||
                 !string.Equals(member.Path, _scope.ValidateFile(member.Path), StringComparison.Ordinal))
                 throw Conflict("Invalid or duplicate publication member.");
             ValidateImage(member.Before);
@@ -539,22 +562,28 @@ internal sealed partial class TrustedLocalFilePublication
             if (!paths.Add(path)) throw Conflict("Publication member/scratch names overlap.");
     }
 
-    private string ValidateMemberPath(string path)
+    private string ValidateMemberPath(string path, bool inspectRetiredMembers = false)
     {
         var normalized = _scope.ValidateFile(path);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         // Retirement is an admission refusal, never a profile read/migration.
         // ValidateJournal checks every member before RecoverCore can mutate one.
-        var retiredProfile = NormalizeAuthorityPath(Path.Combine(_files.BasePath,
-            FileSystemManager.RetiredDarenProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),
-            OperatingSystem.IsWindows());
-        if (normalized.Equals(retiredProfile, comparison))
+        if (!inspectRetiredMembers && IsRetiredProfilePath(normalized))
             throw Conflict("Retired Daren profile publication evidence retained without mutation.");
         if (normalized.Equals(_journalRoot, comparison) || normalized.StartsWith(_journalRoot + Path.DirectorySeparatorChar, comparison) ||
             _journalRoot.StartsWith(normalized + Path.DirectorySeparatorChar, comparison) ||
             normalized.Equals(_canonicalWriteLockPath, comparison) || normalized.Equals(_sessionLifecycleLockPath, comparison))
             throw Conflict("A publication cannot mutate its journal or writer ownership paths.");
         return normalized;
+    }
+
+    private bool IsRetiredProfilePath(string normalized)
+    {
+        var retiredProfile = NormalizeAuthorityPath(Path.Combine(_files.BasePath,
+            FileSystemManager.RetiredDarenProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),
+            OperatingSystem.IsWindows());
+        return normalized.Equals(retiredProfile,
+            OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
     }
 
     private void ValidateJournalDirectory()
