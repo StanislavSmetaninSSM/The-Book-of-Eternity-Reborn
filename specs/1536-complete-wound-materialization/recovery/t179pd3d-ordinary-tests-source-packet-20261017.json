@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "NI_S01_CORRECTED_TESTS_ONLY_WIP_FRESH_PREP_AND_AFFECTED_SOURCE_REQUIRED",
+  "status": "NI_S01_CORRECTED_FRESH_BOTH_PLAN_ZERO_EXECUTION_AFFECTED_SOURCE_PENDING",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1575648,
-      "sha256": "7220c1cbcc920eebd8f532b72f7500c0663c3d4a7836b049ab2a13678c857833",
-      "gitBlob": "8ba82cf71e0811104dde06b668d9dd8358627d31",
+      "bytes": 1576058,
+      "sha256": "03923f2c15c38dc5ed6ee9f929649e137789b0b86e6ac882753df2ab627b84d9",
+      "gitBlob": "a8c31b3d87254823980ca9cc87bdf729b16f736e",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -527,7 +527,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "50ff5752ed7857deefb5c0fba2378aa736eb9ec3e638fed6095e309af923f6e2"
+    "sha256": "6253eac2255d5753c50cca5c8e5a7ecb5763f56c1d9ba7ef4352005e9a5f4b17"
   },
   "preflightReferences": [
     {
@@ -609,15 +609,15 @@
     "Projector/text/tag/serializer/writer/engine/common timestamp leaf byte unchanged."
   ],
   "futureChecks": {
-    "first": "Fresh affected BOTH build/catalog+PlanOnly0 only after corrected WIP publication/readback and new Root release; no native actual yet.",
-    "actual": "Independent SOURCE/FIXTURE/SELECTION/PREP plus persisted decision/exact successor recovery and named Root boundary2 activation still required; all actual tests UNRUN.",
+    "first": "COMPLETED FIRST corrected b501 fresh selected BOTH+exact PlanOnly0 in87.504103396s; no repeated catalog. No more preparation until relevant changes.",
+    "actual": "Independent affected SOURCE/PREP of correction/current64/new9/10raw+UNRUN boundary recorder, then persisted decision/exact successor recovery and named Root boundary2 activation; ALLactual tests remain UNRUN.",
     "remaining": "Ordinary semantic/existing/SP/source parity controls only after relevant production SOURCE/root release."
   },
   "counts": {
     "categoryOwners": 5,
     "declaredMethods": 29,
     "declaredRows": 52,
-    "discovery": "Initial56 discovery/Plan confirmed5/5/29/52; corrected test has same static membership; current fresh preparation UNRUN."
+    "discovery": "Current b501 fresh BOTH/Plan confirms5owners5descriptors29methods52planned, ZEROactual; unchanged ownership catalog789/11755 accepted from initial56."
   },
   "docsDisposition": "Internal semantics-preserving extraction; no GM-authored or Mortal/afterlife rule/pending/schema/normalizer contract change. Existing projector/text/tag/clock/writers remain byte-identical. No gameplay/docs/example/manifest change intended; reassess only if actual production scope changes.",
   "authoringUtilityOutcomes": [
@@ -627,14 +627,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "54f71d7dc83c53203f0e1535d2a376f898cedb495e8dfdb9ef3a910e6a8c3112",
-  "compiledSourceBinding": {
-    "source": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
-    "pinCount": 55,
-    "pinDigest": "8df28e6d6ac59458813cbf2ee45d884146f3b3f8cef6e4dec4f4528f9513c02f",
-    "archive": "t179pd3d-ordinary-first-preparation-files-20261017/archive.json",
-    "fact": "The exact original55-source context is frozen twice with catalog/plan raw. Subsequent supplemental bindings/status metadata do not pretend to have been used by that original recorder."
-  },
+  "sourcePinDigest": "cf8c59abbaf04f64855445eaab82cf48d64d73b3501d7ca6a3d22856803fc230",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -700,7 +693,69 @@
       "provenance": "Exact unchanged a5 source in Root retained full7a+34-delta complete54773tree; no duplicate GitHub fetch/full clone needed."
     }
   ],
-  "preparation": {
+  "ownershipClarification": "SP original Dispose is best-effort, not strict. Future whole recorder must qualify physical absence/census. New OrdinaryOutputFixture strict receipt/Assert.False already source-defined. Unreachable CleanupPublicationCut not added as dependency.",
+  "sourceReviewKnownFindings": [
+    {
+      "id": "NI-S01",
+      "status": "CORRECTED_FRESH_PREPARED_AWAIT_AFFECTED_SOURCE_VERDICT",
+      "fact": "Initial56/ec60 test expected raw IOException instead of actual typed continuation. That original test/preparation is preserved in prior Git/raw history; current b501 test asserts the actual wrapper/result/outcome/retained failures.",
+      "scope": "Later bounded tests-only correction after consolidated reviewer/Root release; no actual test result, no production semantics change.",
+      "correction": "Assert actual MainOperationContinuationException<int>, EstablishedResult17, Completed, exact InnerException and SessionFinalizationFailure. No OriginalClose nonnull/authority claim."
+    }
+  ],
+  "initialSourceNotReadyReferences": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-review-20261017.md",
+      "bytes": 3902,
+      "sha256": "38daf30ded5dbf873ae336310f5d1b597bab17ae544c2dfd75aa19edc4fb1dec"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-review-20261017.json",
+      "bytes": 5974,
+      "sha256": "020b2b4ebd9fe3a4c3a582fb76771b371a04903488398433a605757d0b88ff2b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-check-v2-20261017.json",
+      "bytes": 18536,
+      "sha256": "78b62dbde8e1ebf1bc20bf6d54400db2c5422454f29c9233f3791bed515c6703"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-check-20261017.json",
+      "bytes": 18180,
+      "sha256": "29d8961a0126df024429b1a4ceef6a764355065953043e3c6653313375e0bd98"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-nis01-correction-release-ec60cc7a-20261017.json",
+      "bytes": 2033,
+      "sha256": "787cb81120a121aad9d0d1d372bb3b70a56571ded49413f32e679dff2f13891a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-prepared-wip-delta-github-ec60cc7a-20261017.json",
+      "bytes": 26087,
+      "sha256": "c39554e856c855fcfbcf984668af7f69e321708637e3afbf9a20b6322159dd7d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-ec60cc7a-20261017.json",
+      "bytes": 12395,
+      "sha256": "83ade0426d57c2b222471bf4d9e6d8538d3a2e33276f31470b021d0fda2394ef"
+    }
+  ],
+  "initialCompiledSourceBinding": {
+    "source": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+    "pinCount": 55,
+    "pinDigest": "8df28e6d6ac59458813cbf2ee45d884146f3b3f8cef6e4dec4f4528f9513c02f",
+    "archive": "t179pd3d-ordinary-first-preparation-files-20261017/archive.json",
+    "fact": "The exact original55-source context is frozen twice with catalog/plan raw. Subsequent supplemental bindings/status metadata do not pretend to have been used by that original recorder."
+  },
+  "compiledSourceBinding": {
+    "source": "b501b2b77ed363e9135766082c47386e7562651a",
+    "pinCount": 64,
+    "pinDigest": "54f71d7dc83c53203f0e1535d2a376f898cedb495e8dfdb9ef3a910e6a8c3112",
+    "rawSourceBindingSha256": "95e6f7e5d9f3c43a07232a9b14e732d5294393442eb4e2cae0f57d7ab39cba6a",
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-first-preparation-files-20261017/archive.json",
+    "fact": "Exact64 current correction-source context frozen before status-only carrier updates; compiler/discovery/Plan0 with all nine new managed copies, no native cases."
+  },
+  "initialPreparation": {
     "catalog": {
       "nativeExit": 0,
       "wallSeconds": 93.49550946799718,
@@ -804,51 +859,122 @@
     "scope": "Build/discovery/Plan only, not native case or SOURCE acceptance. No product edit. Compilation changes revision metadata and all future actuals must use these new9copies; old unrelated DLL provenance is not reused.",
     "status": "HISTORICAL_INITIAL56_VALID_ZERO_TEST_PREP_NOT_CORRECTED_SOURCE_QUALIFICATION"
   },
-  "ownershipClarification": "SP original Dispose is best-effort, not strict. Future whole recorder must qualify physical absence/census. New OrdinaryOutputFixture strict receipt/Assert.False already source-defined. Unreachable CleanupPublicationCut not added as dependency.",
-  "sourceReviewKnownFindings": [
-    {
-      "id": "NI-S01",
-      "status": "SOURCE_CORRECTED_AWAIT_FRESH_PREPARATION_AND_TARGETED_REVIEW",
-      "fact": "Completed callback17 followed by owning-close IOException is wrapped by existing MainOperationContinuationException<int>; original test Assert.Same(failure,error) is wrong. Original test and FIRST56 prep stay unchanged in this carrier.",
-      "scope": "Later bounded tests-only correction after consolidated reviewer/Root release; no actual test result, no production semantics change.",
-      "correction": "Assert actual MainOperationContinuationException<int>, EstablishedResult17, Completed, exact InnerException and SessionFinalizationFailure. No OriginalClose nonnull/authority claim."
+  "preparation": {
+    "status": "CURRENT_CORRECTED_B501_VALID_ZERO_EXECUTION_PREPARATION",
+    "recordRawPath": "/tmp/t179pd3d-implementation-tools/t179pd3d-nis01-prep-first-build-plan-b501b2b7-20261017/record.json",
+    "recordSha256": "48f6d56dafdcc668bcbf6eedc0dc2217add186e3f1784856c5cfa9d29315bd4e",
+    "nativeExit": 0,
+    "wallSeconds": 87.50410339600057,
+    "actualSource": "b501b2b77ed363e9135766082c47386e7562651a",
+    "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+    "actualTestsExecuted": 0,
+    "resultDirectories": [
+      "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-161904-135-150508-706317a8b43c4888845b022bdcefc91f-categories"
+    ],
+    "binaryAfter": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9550336,
+        "sha256": "76a134e7afe6754f6fdddae866cb0641990ef30122c395585d6d54fe94f8d935"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29179904,
+        "sha256": "9b979d81b830845b9f1045e5f1c35a5042e59a63bf0e06c9ce39ee2451abdaf7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "51c6d88e716c5622e85e4a18afc3c48ef9f283ff1ed0afc8464831de558d0bf4"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-first-preparation-files-20261017/archive.json",
+    "archiveSha256": "5923bbc3517b93ddbc544d2148288b22c17e93c23492ffb25b52bbd163425dca",
+    "rawChains": 10,
+    "rootReferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-wip-delta-github-b501b2b7-20261017.json",
+        "bytes": 13073,
+        "sha256": "b0e89cc5a6f14c07a84eb8e53500067d008c96663bb0eb436237f921cfffc555"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-b501b2b7-20261017.json",
+        "bytes": 12742,
+        "sha256": "1cac8ab373946f015f3186f82aa323374f719c1ef6bb55846e8736bfcf41112b"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-nis01-source-readback-b501b2b7-20261017.json",
+        "bytes": 1054,
+        "sha256": "267a1185ee828a356576f684bb1fbbe94299948954655e450456a82333d8bc2f"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-nis01-preparation-readback-b501b2b7-20261017.json",
+        "bytes": 2908,
+        "sha256": "333be989f2d04efac08b9d08fbceae27ed1488db7c0281ee908e6a4201bc5942"
+      }
+    ],
+    "tools": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-nis01-preparation-run.py",
+        "sha256": "be657f3d4fed2f038102b5013f9583c84905fc7f37b6bed3660d367abc050386",
+        "status": "EXECUTED_ONCE_ZERO_TEST_PREPARATION_OR_READ_ONLY_ARCHIVE"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-nis01-preparation.py",
+        "sha256": "09fa52db2b2bfc5b7dcaaae77ac3f2152a59cee7ab0dc5aa16f4bb65690779e2",
+        "status": "EXECUTED_ONCE_ZERO_TEST_PREPARATION_OR_READ_ONLY_ARCHIVE"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-ordinary-boundary-first-run.py",
+        "sha256": "74c15e75ea4dc52f2847fb148a019d670dcaff63cefd3581783527913cfad45c",
+        "status": "UNRUN_REQUIRES_PERSISTED_ACCEPTED_SOURCE_AND_NAMED_ROOT_ACTIVATION"
+      }
+    ],
+    "scope": "One fresh selected BOTH build+PlanOnly without NoBuild. No unchanged catalog replay; exact5/5/29/52 equals initial56. Zero case execution. Initial valid18chains and SOURCE_NOT_READY history unchanged."
+  },
+  "futureProductionQualification": {
+    "ordinarySelection": "Current five owners/52cases unchanged; no current product or actual release.",
+    "protectedLate2": "Root/reviewer confirmed actual VR committed-joint branch→MortalJointRepairCompletionAsync→sealed narrative/ordinary interface→both planned changed internals. Therefore future production needs exact2 protected Late cases, separate from ordinary52, with current fixture/source pins and unchanged accepted fixture proof. Future production PlanOnly2, FIRSTLate2 and separate EVIDENCE before affected ordinary GREEN. No current Late2 selection/edit/run.",
+    "limits": "Concrete actual caller dependency, not DLL/file adjacency; no source-aware HOT adapter/history/fullF1/Windows or wider family claim.",
+    "protectedLate2Receipt": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-protected-late2-dependency-b501b2b7-20261017.json",
+      "sha256": "c1640c31ed50f031bcd44d402fcf8706cd2e3d64735884a15b9f346da46fd5a6"
     }
-  ],
-  "initialSourceNotReadyReferences": [
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-review-20261017.md",
-      "bytes": 3902,
-      "sha256": "38daf30ded5dbf873ae336310f5d1b597bab17ae544c2dfd75aa19edc4fb1dec"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-review-20261017.json",
-      "bytes": 5974,
-      "sha256": "020b2b4ebd9fe3a4c3a582fb76771b371a04903488398433a605757d0b88ff2b"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-check-v2-20261017.json",
-      "bytes": 18536,
-      "sha256": "78b62dbde8e1ebf1bc20bf6d54400db2c5422454f29c9233f3791bed515c6703"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-independent-check-20261017.json",
-      "bytes": 18180,
-      "sha256": "29d8961a0126df024429b1a4ceef6a764355065953043e3c6653313375e0bd98"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-nis01-correction-release-ec60cc7a-20261017.json",
-      "bytes": 2033,
-      "sha256": "787cb81120a121aad9d0d1d372bb3b70a56571ded49413f32e679dff2f13891a"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-prepared-wip-delta-github-ec60cc7a-20261017.json",
-      "bytes": 26087,
-      "sha256": "c39554e856c855fcfbcf984668af7f69e321708637e3afbf9a20b6322159dd7d"
-    },
-    {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-ec60cc7a-20261017.json",
-      "bytes": 12395,
-      "sha256": "83ade0426d57c2b222471bf4d9e6d8538d3a2e33276f31470b021d0fda2394ef"
-    }
-  ]
+  }
 }

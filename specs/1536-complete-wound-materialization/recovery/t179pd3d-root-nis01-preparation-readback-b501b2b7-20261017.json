@@ -1,0 +1,68 @@
+{
+  "kind": "ROOT_CORRECTED_NIS01_FRESH_BOTH_PLAN_ZERO_EXECUTION_LITERAL_READBACK",
+  "actualSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "nativeExit": 0,
+  "wallSeconds": 87.50410339600057,
+  "freshBothBuildComplete": true,
+  "owners": 5,
+  "descriptors": 5,
+  "exactMethods": 29,
+  "plannedCases": 52,
+  "executedCases": 0,
+  "all10NewRawLocalGzipChainsChecked": true,
+  "archiveSha256": "5923bbc3517b93ddbc544d2148288b22c17e93c23492ffb25b52bbd163425dca",
+  "nineLiveManagedPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9550336,
+      "sha256": "76a134e7afe6754f6fdddae866cb0641990ef30122c395585d6d54fe94f8d935"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29179904,
+      "sha256": "9b979d81b830845b9f1045e5f1c35a5042e59a63bf0e06c9ce39ee2451abdaf7"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "437011ad55d1083965504e7ea011ec1b411c34b5156a3c92c9539ec0b126566c"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "51c6d88e716c5622e85e4a18afc3c48ef9f283ff1ed0afc8464831de558d0bf4"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "a42403c8523a220d7e7f16c0bf2a95c52814ca7ebe15a8b3e668c6ae8e149726"
+    }
+  ],
+  "namespaceEmptyBeforeAfter": true,
+  "runnerCleanupComplete": true,
+  "unchangedCatalog": "Prior56 native0/catalog789/11755 ownership unchanged; not replayed.",
+  "initialHistory": "Original56/ec60 SOURCE_NOT_READY/18zeroexecraw preserved; current correction not a semantic runtime PASS.",
+  "scope": "Affected SOURCE/PREP pending; no actual tests or product released.",
+  "utc": "2026-10-17T16:21:29.759946+00:00"
+}

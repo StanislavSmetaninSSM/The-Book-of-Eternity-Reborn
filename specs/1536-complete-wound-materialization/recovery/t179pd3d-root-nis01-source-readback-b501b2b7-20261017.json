@@ -1,0 +1,11 @@
+{
+  "kind": "ROOT_NIS01_CORRECTED_SOURCE_AND_FRESH_SELECTED_BUILD_PLAN_RELEASE",
+  "head": "b501b2b77ed363e9135766082c47386e7562651a",
+  "currentSourcePins": 64,
+  "sourcePacketSha256": "95e6f7e5d9f3c43a07232a9b14e732d5294393442eb4e2cae0f57d7ab39cba6a",
+  "codeDelta": "Exactly one typed close-oracle assertion block; testmethod/case/category/selection/product unchanged. Exact established17/Completed/innerfailure/finalizationData with retained publicreturn=true overallreturn=false oneclose afterimage.",
+  "recovery": "Full7a+36complete consecutive deltas; independently verified16newGitHubfiles/all12changedpaths and entire targettree.",
+  "released": "FIRST fresh canonical test-csharp SelectionFile tests/selection.json -PlanOnly WITHOUT NoBuild. This builds both selected test projects, discovers current methods/cases then returns before any runtime. No repeated unchanged catalog audit.",
+  "held": "All actual tests and production until corrected SOURCE/PREP; no oldWorld/HOT/F1/Windows changes.",
+  "utc": "2026-10-17T16:18:21.502326+00:00"
+}
