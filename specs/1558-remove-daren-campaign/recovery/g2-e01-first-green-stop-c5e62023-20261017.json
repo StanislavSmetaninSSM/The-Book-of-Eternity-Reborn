@@ -1,0 +1,58 @@
+{
+  "kind": "FIRST_E01_CORRECTED_G2_AGGREGATE_STOP_RAW_ONLY_PENDING_CAUSAL_VERDICT",
+  "utc": "2026-10-17T11:32:00.312592+00:00",
+  "actualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "nativeExit": 1,
+  "wallSeconds": 10.032591380004305,
+  "nativeObservation": {
+    "ExitCode": 1,
+    "TimedOut": false,
+    "Selection": {
+      "PlannedDescriptors": 19,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 106,
+      "CompletedCases": 17,
+      "UnderfilledDescriptors": [
+        "daren-retirement-browser-host-integration-003",
+        "daren-retirement-common-qte-integration-004",
+        "daren-retirement-common-qte-unit-005",
+        "daren-retirement-console-menu-integration-006",
+        "daren-retirement-console-practice-integration-007",
+        "daren-retirement-frontend-shell-frontend-008",
+        "daren-retirement-ordinary-storage-integration-009",
+        "daren-retirement-original-schema6-green-integration-010",
+        "daren-retirement-private-intent-integration-011",
+        "daren-retirement-save-rewards-integration-012",
+        "daren-retirement-source-guidance-unit-013",
+        "daren-retirement-storage-refusal-integration-014",
+        "frontend-qte-frontend-015",
+        "frontend-shell-types-frontend-016",
+        "gm-doc-afterlife-package-delivery-integration-017",
+        "portable-browser-protocol-admission-linux-integration-018",
+        "portable-original-remaining-owning-close-linux-integration-019"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 17,
+      "Executed": 17,
+      "Passed": 14,
+      "Failed": 3
+    },
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true
+  },
+  "archive": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-green-stop-c5e62023-20261017-files/archive.json",
+  "archiveSha256": "3ae04fbe17fc32b4516761b41d304bc09016079edbeac4cf46288141a0b08845",
+  "rawChains": 14,
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e01-green-first-c5e62023-20261017t1134z/record.json",
+  "recordSha256": "e90c9679eb51c3f7f4538242c40df5c30c961862f0cc1bf330e1a5a840232682",
+  "source274AndSevenBinariesStable": true,
+  "nativeProcessSettled": true,
+  "namespaceContinuous": true,
+  "newFixtureArtifactDirectories": [],
+  "scope": "First two descriptors complete17cases14PASS3FAIL; seventeen remaining descriptors/81C#cases+8frontendfileestimates UNRUN. No gameplay/retirement causal classification or final EVIDENCE by this checkpoint. All dependents/RootChromium stopped. Original555 oneFAIL/18UNRUN and prior histories immutable.",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn-1558');F=R/'specs/1558-remove-daren-campaign';REC=F/'recovery';A=Path('/tmp/gm1558-g2-e01-first-green-stop-archive-c5e62023-20261017');a=json.loads((A/'archive.json').read_text());j=json.loads(Path(a['recordPath']).read_text())\ndef h(b):return hashlib.sha256(b).hexdigest()\nassert a['nativeExit']==1 and len(a['files'])==14 and not a['skippedNonRegularArtifacts']and j['nativeProcessSettled']\ns=j['summaryObservations'][0];assert s['Tests']==dict(Total=17,Executed=17,Passed=14,Failed=3)and s['Selection']['CompletedDescriptors']==2 and len(s['Selection']['UnderfilledDescriptors'])==17\nassert j['binaryBefore']==j['binaryAfter']and j['ownedPrefixesBefore']==j['ownedPrefixesAfter']and not j['statusAfter']and not j['newRetainedArtifactDirectories']\nfolder=REC/'g2-e01-first-green-stop-c5e62023-20261017-files';assert not folder.exists();folder.mkdir()\nfor row in a['files']:\n z=(A/row['storedPath']).read_bytes();b=gzip.decompress(z);assert h(z)==row['storedSha256']and h(b)==row['sha256']and b==Path(row['rawPath']).read_bytes();target=folder/row['storedPath'];target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z)\n(folder/'archive.json').write_bytes((A/'archive.json').read_bytes())\nfiles=[('gm1558-root-activated-e01-current-green-c5e62023-20261017.json','760ecfa6beff1769e0f6c438daa60bd091dc0aa5abdd8e716180cd7a7c708938'),('gm1558-g2-e01-accepted-source-delta-github-c5e62023-20261017.json',None),('gm1558-root-recovery-composition-c5e62023-20261017.json',None)]\nrawReceipt=Path('/tmp/gm1558-root-e01-first-green-stop-raw-observation-c5e62023-20261017.json')\nif rawReceipt.exists():files.append((rawReceipt.name,None))\nfor name,digest in files:\n p=Path('/tmp')/name;b=p.read_bytes();assert digest is None or h(b)==digest;target=REC/name;assert not target.exists();target.write_bytes(b)\npacket=dict(kind='FIRST_E01_CORRECTED_G2_AGGREGATE_STOP_RAW_ONLY_PENDING_CAUSAL_VERDICT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['actualSource'],compiledSource=j['compiledSource'],retainedFrontendSource=j['retainedFrontendSource'],nativeExit=1,wallSeconds=j['wallSeconds'],nativeObservation=s,archive=str((folder/'archive.json').relative_to(R)),archiveSha256=h((A/'archive.json').read_bytes()),rawChains=14,recordPath=a['recordPath'],recordSha256=a['recordSha256'],source274AndSevenBinariesStable=True,nativeProcessSettled=True,namespaceContinuous=True,newFixtureArtifactDirectories=[],scope='First two descriptors complete17cases14PASS3FAIL; seventeen remaining descriptors/81C#cases+8frontendfileestimates UNRUN. No gameplay/retirement causal classification or final EVIDENCE by this checkpoint. All dependents/RootChromium stopped. Original555 oneFAIL/18UNRUN and prior histories immutable.',helperText=Path(__file__).read_text())\npkt=REC/'g2-e01-first-green-stop-c5e62023-20261017.json';pkt.write_text(json.dumps(packet,indent=2)+'\\n')\nstatus='FIRST E01-corrected G2 aggregate STOP atc5e/compiledf076: native1/10.033s, first two descriptors17executed14PASS3FAIL;17descriptors/81C#cases+8frontendfileestimates UNRUN. Exact14rawchains frozen, native/runner cleanuptrue, source274/new7DLL/namespaces unchanged. Independent causal EVIDENCE pending; all actuals/RootChromium stopped, no retry/correction/task completion.'\nfor name,marker in [('plan.md','**Current status**:'),('spec.md','**Status**:'),('tasks.md','**Current phase**:')]:\n p=F/name;t=p.read_text();x=t.index(marker);y=t.index('\\n',x);p.write_text(t[:x]+marker+' '+status+t[y:])\np=F/'g2-implementation-source-packet-20261017.json';binding=json.loads(p.read_text());assert h(json.dumps(binding['sourcePins'],sort_keys=True,separators=(',',':')).encode())==j['sourcePinsDigest'];binding['status']=status;binding['firstE01RuntimeOutcome']=dict(packet=str(pkt.relative_to(F)),nativeExit=1,executed=17,passed=14,failed=3,completedDescriptors=2,plannedDescriptors=19,remainingUnderfilledDescriptors=17,remainingCsharpCases=81,remainingFrontendFileEstimates=8,causalQualification='PENDING_INDEPENDENT_REVIEW',allDependentRuntime='STOPPED_NO_RETRY');p.write_text(json.dumps(binding,indent=2)+'\\n')\np=F/'plan.md';t=p.read_text();t+='''\\n## FIRST E01-corrected aggregate STOP \u2014 preserve before diagnosis\\n\\n[Exact raw STOP packet](recovery/g2-e01-first-green-stop-c5e62023-20261017.json) and [archive](recovery/g2-e01-first-green-stop-c5e62023-20261017-files/archive.json) retain14FIRST native/runner/TRX/process/sentinel/helper/source/package chains after exact [Root activation](recovery/gm1558-root-activated-e01-current-green-c5e62023-20261017.json). At actualc5e/compiledf076/retainedfrontend110 one canonical current SelectionFile-NoBuild returned native1/10.032591s: first integration guard PASS, second unit descriptor16cases completed with3FAIL, aggregate17executed14PASS3FAIL. Remaining17descriptors/81C#cases+8frontendfileestimates are UNRUN; no invocation fills them.\\n\\nNative process settled with no timeout; runner owned-tree/runtime cleanuptrue. No new fixture directory; source274pins,sevenmanagedDLLs,namespaces and tracked source stayed unchanged. [c5e immediate delta](recovery/gm1558-g2-e01-accepted-source-delta-github-c5e62023-20261017.json) and [111-delta composition](recovery/gm1558-root-recovery-composition-c5e62023-20261017.json) are retained. Publish/recover FIRST raw before independent causal EVIDENCE or correction; no product/fixture diagnosis is declared here. All dependent actuals including RootChromium stop. Original5551FAIL, G1baseline28 and all older fixture/capture/P01/metadatautility outcomes remain immutable and distinct. No source/data/selector/helper/pin mutation, retry/build/browser or task completion occurs in this evidence-only checkpoint.\\n''';p.write_text(t)\nprint('FIRST_E01_STOP_FROZEN',pkt,'14chains17executed14PASS3FAIL17unrun',flush=True)\n"
+}

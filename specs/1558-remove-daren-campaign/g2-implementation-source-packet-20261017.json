@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "Targeted E01 SOURCE/FIXTURE/SELECTION/PREP accepted independently and by Root: five signature-only correction, fresh selected build/PlanOnly0/new7DLL/FE110113/package370/source\u2192package52 and distinct FIRST recorder all bound. Corrected aggregate98C#cases+8FEfileestimates remains UNRUN until exact new carrier Root activation. Original5551FAIL/18UNRUN and prior histories immutable; final EVIDENCE/RootChromium/tasks incomplete.",
+  "status": "FIRST E01-corrected G2 aggregate STOP atc5e/compiledf076: native1/10.033s, first two descriptors17executed14PASS3FAIL;17descriptors/81C#cases+8frontendfileestimates UNRUN. Exact14rawchains frozen, native/runner cleanuptrue, source274/new7DLL/namespaces unchanged. Independent causal EVIDENCE pending; all actuals/RootChromium stopped, no retry/correction/task completion.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2698,5 +2698,19 @@
       "path": "/tmp/gm1558-g2-e01-green-first-run.py",
       "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0"
     }
+  },
+  "firstE01RuntimeOutcome": {
+    "packet": "recovery/g2-e01-first-green-stop-c5e62023-20261017.json",
+    "nativeExit": 1,
+    "executed": 17,
+    "passed": 14,
+    "failed": 3,
+    "completedDescriptors": 2,
+    "plannedDescriptors": 19,
+    "remainingUnderfilledDescriptors": 17,
+    "remainingCsharpCases": 81,
+    "remainingFrontendFileEstimates": 8,
+    "causalQualification": "PENDING_INDEPENDENT_REVIEW",
+    "allDependentRuntime": "STOPPED_NO_RETRY"
   }
 }

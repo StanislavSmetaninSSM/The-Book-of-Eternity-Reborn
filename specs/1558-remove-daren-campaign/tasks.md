@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: Targeted E01 SOURCE/FIXTURE/SELECTION/PREP accepted independently and by Root: five signature-only correction, fresh selected build/PlanOnly0/new7DLL/FE110113/package370/source→package52 and distinct FIRST recorder all bound. Corrected aggregate98C#cases+8FEfileestimates remains UNRUN until exact new carrier Root activation. Original5551FAIL/18UNRUN and prior histories immutable; final EVIDENCE/RootChromium/tasks incomplete.
+**Current phase**: FIRST E01-corrected G2 aggregate STOP atc5e/compiledf076: native1/10.033s, first two descriptors17executed14PASS3FAIL;17descriptors/81C#cases+8frontendfileestimates UNRUN. Exact14rawchains frozen, native/runner cleanuptrue, source274/new7DLL/namespaces unchanged. Independent causal EVIDENCE pending; all actuals/RootChromium stopped, no retry/correction/task completion.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

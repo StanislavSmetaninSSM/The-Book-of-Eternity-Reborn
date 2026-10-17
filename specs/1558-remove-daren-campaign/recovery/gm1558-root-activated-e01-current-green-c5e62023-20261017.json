@@ -1,0 +1,25 @@
+{
+  "kind": "ROOT_ACTIVATED_ONE_FIRST_E01_CORRECTED_CURRENT_G2_GREEN",
+  "utc": "2026-10-17T11:30:59.199268+00:00",
+  "actualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "sourceVerdict": "gm1558-g2-e01-source-independent-20261017.md",
+  "conditionalDecision": "gm1558-root-e01-source-accepted-green-conditional-release-036d1262-20261017.json",
+  "recovery": "/tmp/gm1558-g2-e01-accepted-source-delta-github-c5e62023-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-c5e62023-20261017.json",
+  "independentlyVerified": "Exactcleanremote c5e;111deltas/56057paths/15newfiles/all11metadata;exactreports/Rootdecision/source274/new7DLL/approvedef4erecorder stable",
+  "helper": {
+    "path": "/tmp/gm1558-g2-e01-green-first-run.py",
+    "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0"
+  },
+  "invocation": [
+    "python",
+    "/tmp/gm1558-g2-e01-green-first-run.py",
+    "gm1558-g2-e01-green-first-c5e62023-20261017t1134z",
+    "c5e620236f30a02415cafb64e28d7c4d9ffea1f9"
+  ],
+  "scope": "ONE E01 FIRST canonical currentSelection-NoBuild aggregate17owners19descriptors42C#methods98cases+8FEfileestimates. No build, repeat, filledmissingcounts or sourcechange. Old555FIRST1FAILimmutable.",
+  "failurePolicy": "At firstunexpected native/semantic/underfill/duplicate/timeout/cleanup STOPall dependents. Freeze/publishFIRSTraw beforeindependentcausalreview or retry.",
+  "continuation": "Freeze/publishFIRSToutcome immediately; Rootrawqualification precedes separateRootactualChromiumactivation. IndependentfinalEVIDENCE required. No main/merge/CI/Windows/externalapp actions."
+}
