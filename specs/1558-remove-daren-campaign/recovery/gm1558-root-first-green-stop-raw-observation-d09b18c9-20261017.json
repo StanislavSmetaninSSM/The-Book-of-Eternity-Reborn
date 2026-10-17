@@ -1,0 +1,31 @@
+{
+  "kind": "ROOT_FIRST_GREEN_STOP_RAW_OBSERVATION_NOT_CAUSAL_VERDICT",
+  "utc": "2026-10-17T11:12:57.088727+00:00",
+  "actualSource": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "record": {
+    "path": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/record.json",
+    "sha256": "6af5d7c2deeaa64cf0e961cf9e68dfe7b590a6348dcf2f9ea4d3878cf7fbc234"
+  },
+  "nativeExit": 1,
+  "wallSeconds": 7.821475133001513,
+  "completeDescriptors": 1,
+  "completeCases": 1,
+  "passed": 0,
+  "failed": 1,
+  "remainingDescriptorsUnrun": 18,
+  "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+  "exactFailureMessage": "QteSceneServiceTests executable inventory differs from the reviewed manifest:\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=217,sha256=39be458899e7bcc3638858023379a2ac2d245a4cc78422bf3a2053ba806d6c8d)\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=241,sha256=ccf8bb8b52f7aa1c1cff148ffd9c2affe0c371a4f67c21c25a8465c05d1aa6a8)\nmissing (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=69,sha256=2085dfc828d07cf1a152d9fafdd9e110f0fb93d6663000e8c9ad592b0be11602)\nmissing (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=67,sha256=1298b8c3866256dd0e2fb2d9cc5dc27ab097919e68720de986a28a217d3a16fb)\nmissing (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=91,sha256=3d6f271fe3399e0a3d94edca5518760968f697eb0cfdfe8b16c6e19127b4faed)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=207,sha256=8b1d871fac47f51b15c9bdd07b5751be7bcf1f75761bac0df2b4ae529c7edb9c)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=230,sha256=bf14368236a6dc4446da34888968bb0bf1df50651a79bbf5099981f982df9ffd)\nunexpected (1x): Theory|ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation|string(len=66,sha256=a9543a36f3670728c9a43b49c75563f508936e5a926f0499e261adcd1b0452db)\nunexpected (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=64,sha256=6f6363b7760ca5b6973d79abd9aec445e57e40afe756740f319b162c627fe62f)\nunexpected (1x): Theory|TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|string(len=87,sha256=86265cd047bf563b9a05a16bad56b6fb2e816382e1627033c7dbc7cd4ec358ad)",
+  "trx": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/daren-retirement-affected-guards-integration-001.trx",
+    "sha256": "01948b552fc0e1de79912a725ec7e510c621f7241b51863ab2cb6accd996bc14"
+  },
+  "rawResultFileCount": 4,
+  "source274And7DllContinuous": true,
+  "nativeSettled": true,
+  "runnerCleanup": true,
+  "timeout": false,
+  "namespaceContinuous": true,
+  "newFixtureArtifacts": [],
+  "dependentWork": "STOP; no correction/retry/Chromium until published FIRST raw and independent causal verdict"
+}

@@ -1,0 +1,132 @@
+{
+  "kind": "EXACT_FIRST_G2_CURRENT_GREEN_RAW_ARCHIVE_NOT_EVIDENCE_ACCEPTANCE",
+  "utc": "2026-10-17T11:12:48.107431+00:00",
+  "actualSource": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "nativeExit": 1,
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/record.json",
+  "recordSha256": "6af5d7c2deeaa64cf0e961cf9e68dfe7b590a6348dcf2f9ea4d3878cf7fbc234",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/record.json",
+      "storedPath": "native/record.json.gz",
+      "bytes": 37130,
+      "sha256": "6af5d7c2deeaa64cf0e961cf9e68dfe7b590a6348dcf2f9ea4d3878cf7fbc234",
+      "storedBytes": 8895,
+      "storedSha256": "3c58027dca03b63302535ee3332637dcc1c91f189932f2f84714d8a49a896150",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/stdout.log",
+      "storedPath": "native/stdout.log.gz",
+      "bytes": 23939,
+      "sha256": "64d2ad85ec1d0e5d26302674409083b6f75434991e5afdef60208d9b70f8ac8d",
+      "storedBytes": 4162,
+      "storedSha256": "aaf035d45521cded01cd04602a38038354c7e5812307d23ea44bbc74de3b15ae",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-green-first-d09b18c9-20261017t1112z/process.json",
+      "storedPath": "native/process.json.gz",
+      "bytes": 833,
+      "sha256": "9e532b1e7b1bfeb55ed5c5e81f0ad52f107299b67388e86758840ec88e79148a",
+      "storedBytes": 424,
+      "storedSha256": "00f49545c6b59ba6e378f79a6c5bdd5015febe60a68c7e5696d871b3b04d039a",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/555ceae66e10300d3cf76ff849fb110b79b15549-g2-current-selection-green.first-launch.json",
+      "storedPath": "native/sentinel.json.gz",
+      "bytes": 472,
+      "sha256": "ffe74023f98f29f9d938c1bd6dde1772e06870c1a1bb84a301db4c1173907eb1",
+      "storedBytes": 323,
+      "storedSha256": "bcf217505adf2f2a9bdf41532081334532ab256dc7efdf5c557a70e198a3cb23",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-green-first-run.py",
+      "storedPath": "support/approved-first-recorder.py.gz",
+      "bytes": 10601,
+      "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c",
+      "storedBytes": 4342,
+      "storedSha256": "29ef165fc71b0874004aebfff37a5078606bec3777e67258c2644b46dac453ff",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-archive-g2-green-first.py",
+      "storedPath": "support/archive-helper.py.gz",
+      "bytes": 3507,
+      "sha256": "c880583b6630ad13a517fa73d960881ad6c1c02f9ca9b874ea31a2bf97c01a97",
+      "storedBytes": 1582,
+      "storedSha256": "dd3c8b1370f2e535dd149301ea3e43201199d2ac36ccd0c5550f70b6f3b17556",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/daren-retirement-affected-guards-integration-001.trx",
+      "storedPath": "runner/0/daren-retirement-affected-guards-integration-001.trx.gz",
+      "bytes": 8725,
+      "sha256": "01948b552fc0e1de79912a725ec7e510c621f7241b51863ab2cb6accd996bc14",
+      "storedBytes": 2276,
+      "storedSha256": "ef77403b25541b7e2a78bdc5043f7cb0f9538e402179595669367a569a0bfb89",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/dotnet-test.log",
+      "storedPath": "runner/0/dotnet-test.log.gz",
+      "bytes": 3421736,
+      "sha256": "6014386aad4f400de8a5e6f9b01d17e050a670b2259a8400550baf24bd254878",
+      "storedBytes": 380002,
+      "storedSha256": "9bdb75667885942811e28ef4aee76aab0ce57feef6ac0f1770c61d9e53712a18",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/plan.json",
+      "storedPath": "runner/0/plan.json.gz",
+      "bytes": 31956,
+      "sha256": "af0e078e162fcaee9c0f581a70771e6c4885324afdad102688c926fdef7275a4",
+      "storedBytes": 4984,
+      "storedSha256": "fab6aac8f8a241e8b5e2ace4f750a9635fe5ded27d5e28b7b45325201b75c686",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-111152-583-100735-83302c00bd4d4766a7fd4fd12922a5a9-categories/summary.json",
+      "storedPath": "runner/0/summary.json.gz",
+      "bytes": 10311,
+      "sha256": "f06188f4e7df4a713aa8c726490f3e37ce85ad2a0add0cd2412afc0f036f95f6",
+      "storedBytes": 2957,
+      "storedSha256": "649e89e3dbc31152e27e88bc8cd77c63076977b12e50e7e1de8cfdca4ae8cf1e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+      "storedPath": "support/current-source-binding.json.gz",
+      "bytes": 120997,
+      "sha256": "9280bcda61104901745343bb3cdc93ffc8f6610e7658e5d39f62767cb102db44",
+      "storedBytes": 32003,
+      "storedSha256": "f567dcfc5c2cca515f8cf9e71cdddb0fad9189875489214b47c1825b7bdf4691",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-105718-997-98817-5a7ae990dc684f6aa0ded052b07c5247-categories/plan.json",
+      "storedPath": "support/reviewed-plan.json.gz",
+      "bytes": 31956,
+      "sha256": "ccc6088236540098df97459d7f375864d6f18f74127bc335c557f809fcd81d7a",
+      "storedBytes": 4985,
+      "storedSha256": "455f48b28cf2e869bed8e0a504a9ec94e3893736533f27a3647b90b7118228c8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-catalog-first-555ceae6-20261017t1100z/fresh-package-frontend-docs-manifest.json",
+      "storedPath": "support/fresh-package-manifest.json.gz",
+      "bytes": 109184,
+      "sha256": "2ffbfa7a1b248ec4975d460e396b392f68feec81f0bda1fbba5bc3eb98a1a892",
+      "storedBytes": 25385,
+      "storedSha256": "cd7cb8f1e5ecfd98ec9411d46f1eae55e17fe4b1e3afc84a57638586d855a789",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "skippedNonRegularArtifacts": [],
+  "scope": "FIRST native/runner/TRX/frontend/process/sentinel/helper and observed retained fixture artifact bytes only. No execution/cleanup/migration/replay. A failed/incomplete command remains failed/incomplete; qualified counts and independent EVIDENCE remain separate.",
+  "helperText": "\"\"\"Exact FIRST G2 actual archive into a NEW /tmp directory; no launch/cleanup/retry.\"\"\"\nfrom pathlib import Path\nimport sys,json,hashlib,gzip,datetime\n\ndef sha(b):return hashlib.sha256(b).hexdigest()\ndef main():\n assert len(sys.argv)==3;record=Path(sys.argv[1]);dest=Path(sys.argv[2]);assert dest.is_absolute()and str(dest).startswith('/tmp/')and not dest.exists();dest.mkdir();j=json.loads(record.read_text());assert j['kind']=='FIRST_CURRENT_G2_GREEN_AGGREGATE_RAW_NOT_INDEPENDENT_ACCEPTANCE';assert j['nativeProcessSettled'],'Do not archive live/uncertain raw; reconcile exact owner first';rows=[];skipped=[]\n def save(p,name,expected=None):\n  p=Path(p)\n  if p.is_symlink():skipped.append(dict(path=str(p),kind='SYMLINK_NOT_FOLLOWED',target=p.readlink().as_posix()));return\n  assert p.is_file();b=p.read_bytes()\n  if expected:assert len(b)==expected['bytes']and sha(b)==expected['sha256'],str(p)\n  z=gzip.compress(b,mtime=0);target=dest/(name+'.gz');assert not target.exists();target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);assert gzip.decompress(target.read_bytes())==b;rows.append(dict(rawPath=str(p),storedPath=name+'.gz',bytes=len(b),sha256=sha(b),storedBytes=len(z),storedSha256=sha(z),compression='gzip mtime0'))\n save(record,'native/record.json');save(j['stdoutPath'],'native/stdout.log');save(j['processRecord'],'native/process.json');save(j['firstLaunchSentinel'],'native/sentinel.json');save('/tmp/gm1558-g2-green-first-run.py','support/approved-first-recorder.py');save(Path(__file__),'support/archive-helper.py')\n for p in j['resultFiles']:\n  path=Path(p['path']);matches=[(i,Path(d))for i,d in enumerate(j['resultDirectories'])if path.is_relative_to(Path(d))];assert len(matches)==1;i,d=matches[0];save(path,'runner/'+str(i)+'/'+str(path.relative_to(d)),p)\n for p in j['fixtureArtifactFiles']:\n  path=Path(p['path']);matches=[Path(d)for d in j['newRetainedArtifactDirectories']if path.is_relative_to(Path(d))];assert len(matches)==1;d=matches[0];assert d.parent==Path('/tmp')and d.name.startswith('boe-');save(path,'fixture-artifacts/'+d.name+'/'+str(path.relative_to(d)),p)\n root=Path(j['cwd']);save(root/j['sourceBindingPath'],'support/current-source-binding.json',dict(bytes=(root/j['sourceBindingPath']).stat().st_size,sha256=j['sourceBindingSha256']));save(j['reviewedPlanPath'],'support/reviewed-plan.json',dict(bytes=Path(j['reviewedPlanPath']).stat().st_size,sha256=j['reviewedPlanSha256']));save(j['packageManifestPath'],'support/fresh-package-manifest.json',dict(bytes=Path(j['packageManifestPath']).stat().st_size,sha256=j['packageManifestSha256']))\n result=dict(kind='EXACT_FIRST_G2_CURRENT_GREEN_RAW_ARCHIVE_NOT_EVIDENCE_ACCEPTANCE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['actualSource'],compiledSource=j['compiledSource'],retainedFrontendSource=j['retainedFrontendSource'],nativeExit=j['nativeExit'],recordPath=str(record),recordSha256=sha(record.read_bytes()),files=rows,skippedNonRegularArtifacts=skipped,scope='FIRST native/runner/TRX/frontend/process/sentinel/helper and observed retained fixture artifact bytes only. No execution/cleanup/migration/replay. A failed/incomplete command remains failed/incomplete; qualified counts and independent EVIDENCE remain separate.',helperText=Path(__file__).read_text());(dest/'archive.json').write_text(json.dumps(result,indent=2)+'\\n');print('EXACT_FIRST_G2_ARCHIVE',dest,'chains',len(rows),'native',j['nativeExit'],'skipped',len(skipped))\nif __name__=='__main__':main()\n"
+}

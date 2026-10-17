@@ -1,0 +1,25 @@
+{
+  "kind": "ROOT_ACTIVATED_ONE_FIRST_CURRENT_G2_GREEN",
+  "utc": "2026-10-17T11:11:30.624108+00:00",
+  "actualSource": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "sourceVerdict": "gm1558-g2-final-source-independent-20261017.md",
+  "rootConditionalDecision": "gm1558-root-g2-source-accepted-green-conditional-release-bc6c28a1-20261017.json",
+  "verifiedCarrierRecovery": "/tmp/gm1558-g2-source-accepted-delta-github-d09b18c9-20261017.json",
+  "verifiedFullComposition": "/tmp/gm1558-root-recovery-composition-d09b18c9-20261017.json",
+  "G2_L01": "CLOSED exact required currentledger SHA; unchanged274pins digest and7DLL independently verified",
+  "helper": {
+    "path": "/tmp/gm1558-g2-green-first-run.py",
+    "sha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+  },
+  "invocation": [
+    "python",
+    "/tmp/gm1558-g2-green-first-run.py",
+    "gm1558-g2-green-first-d09b18c9-20261017t1112z",
+    "d09b18c9ab7d877146eab3556b369ac51f1fa60f"
+  ],
+  "scope": "ONE canonical currentSelection-NoBuild aggregate at exact cleanremote d09.17owners19descriptors42C#methods98cases+8FEfileestimates. Preserve actualobservedcounts. No build or repeat.",
+  "failure": "Stopdependentwork at firstunexpected. Freeze/publish FIRSTraw beforecausalreview/correction. All original FAIL/RED provenance retained.",
+  "continuation": "Freeze and publish outcome raw without additional approval; no RootChromium until rawqualification and separately activated Rootsample. FinalindependentEVIDENCE stillrequired."
+}

@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "Final G2 SOURCE/FIXTURE/SELECTION/PREP accepted by independent review and Root atbc6 (compiled555, retainedfrontend110). Sole LOW G2-L01 ledger digest corrected;274sourcepins/7DLL/frontend113/selectors unchanged. Prepared ONE17owner/19descriptor GREEN aggregate (98C#cases+8frontendfile estimates) remains UNRUN pending Root exact carrier activation; EVIDENCE/interactive browser/task completion not claimed.",
+  "status": "FIRST G2 GREEN aggregate atd09 stopped native1/7.821s:1executed/0PASS/1FAIL in first affected-guard descriptor,18descriptors/105adapter estimates UNRUN. Exact13rawchains/activation/Rootrawreadback frozen; source274/7DLL/namespace unchanged, owned cleanuptrue. Independent causal EVIDENCE pending; all runtime/RootChromium held, no retry/correction or task completion.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2609,5 +2609,19 @@
     },
     "approvedRecorder": "recovery/tools/gm1558-g2-green-first-run.py",
     "approvedRecorderSha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+  },
+  "firstG2RuntimeOutcome": {
+    "packet": "recovery/g2-first-green-stop-d09b18c9-20261017.json",
+    "nativeExit": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "completedDescriptors": 1,
+    "plannedDescriptors": 19,
+    "remainingUnderfilledDescriptors": 18,
+    "remainingAdapterEstimates": 105,
+    "causalQualification": "PENDING_INDEPENDENT_REVIEW",
+    "allDependentRuntime": "STOPPED_NO_RETRY",
+    "sourcePinsDigestUnchanged": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb"
   }
 }
