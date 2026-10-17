@@ -1,5 +1,20 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Current final handoff WIP — T030–T032 (2026-10-17)
+
+Authoritative current coverage and dispositions are in [analysis.md](analysis.md):13FR/6SC mapped to accepted source/runtime evidence. A255 qualified cases are a retained mixed-source union; B78 are current actuala8e/compiled69dc with12shared-A cases, so no333unique count. A source/evidence chain and [final B verdict](recovery/current-B-final-evidence-independent-review-20261017.md) are accepted; f458 remote/recovery is verified. Real current52 delivery/physical negatives/strict cleanup are qualified, while logical profile paths do not prove backend execution.
+
+This authorized handoff changes metadata only. **T001–T029 accepted; T030–T032 remain unchecked** pending exact WIP publication/recovery, independent coherent review and final readback. D01 is resolved (normal/repair source-code reading remains forbidden); B-CONTEXT-01 and FR063/platform/backend/HOT/M3/Windows/F1/performance limits remain explicit. No new source, selection, raw, tests/builds/CI, issue/PR/merge/main action. Root-owned final static audit: [exact Root static audit chain](recovery/current-final-handoff-root-static-audit-chain-20261017.json) (136376raw bytes/SHA`2f1b776caa0f6b7681b508ff3b2a0037acf2ddd1533b0d4416c781dafffcd7eb`; deterministic gzip retained).
+
+Current branch `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`; accepted implementation baseline `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423`. Tested source/runtime versions are separate from this later metadata carrier. See [quickstart](quickstart.md) for selection/evidence pointers; no unchanged runtime replay is needed.
+
+## Historical planning and execution records (superseded status)
+
+Earlier pending/no-runtime/D01/frozen-branch claims below describe their recorded checkpoints; they are not current prerequisites or completion claims. Current scope/status is the handoff section above and analysis.md.
+
+<details>
+<summary>Accepted provenance and historical progress records</summary>
+
 ## Accepted bounded Block B: SOURCE + GREEN78 EVIDENCE; final checkpoint (2026-10-17)
 
 Root read and accepted the exact [independent final B EVIDENCE pair](recovery/current-B-final-evidence-independent-review-20261017.md): **78uniquePASS/28methods/9categories/9descriptors,0FAIL/0SKIP/0unrun**; compiled `69dc7c928246c9b389cedcf391f017ae6620acd9`, actual `a8e0456fd1208984b23a0c6813d3d199a900411c`, evidence carrier `99e38610c2c9aec2eb4753a3567b0524d669e0d9`. Seven complete paired modules, exact original55parts/144+19IDs/51examples/207CDATA, conditional/navigator reading, nine unchanged flat-input tuples7/2 and onlytwo manifest file/line relocations are source-bound and actual-selected. Real fixed writer publishes52approved path/roles with52source/package/sessionhashes equal; generated12977Braw preserved; beforeproducer package-source and afterproducer session-copy Wounds negatives qualified. Eight owned roots removed; four diagnostics retained with10established identities/EOF/no unresolved ownership.
@@ -1167,3 +1182,5 @@ Fresh selected PlanOnly/build, ownership audit as required for changed membershi
 External draft package → coordinator/artifact review → agreed FR063 freeze boundary → isolated #1557 feature metadata with exact base and remote branch → TDD/source/selection review → A actual evidence/review → B → final coherent review. No automatic create-issue/setup-plan/before_specify hook, branch, global feature-context or AGENTS marker mutation in the active checkout. Future agent-context marker update belongs only to isolated #1557 setup.
 
 D01 needs a scoped coordinator decision before common-core code-reading directives change. Source map, paths, delivery design and independent tests can proceed meanwhile. Final frozen-base pin reconciliation is mandatory because #1536 recommendation/FR063 work may change overlapping GM files later. All implementation tasks remain unchecked; see [analysis.md](analysis.md).
+
+</details>

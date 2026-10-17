@@ -1,3 +1,31 @@
+# Verification and handoff guide
+
+## Current final handoff WIP — T030–T032 (2026-10-17)
+
+Authoritative current coverage and dispositions are in [analysis.md](analysis.md):13FR/6SC mapped to accepted source/runtime evidence. A255 qualified cases are a retained mixed-source union; B78 are current actuala8e/compiled69dc with12shared-A cases, so no333unique count. A source/evidence chain and [final B verdict](recovery/current-B-final-evidence-independent-review-20261017.md) are accepted; f458 remote/recovery is verified. Real current52 delivery/physical negatives/strict cleanup are qualified, while logical profile paths do not prove backend execution.
+
+This authorized handoff changes metadata only. **T001–T029 accepted; T030–T032 remain unchecked** pending exact WIP publication/recovery, independent coherent review and final readback. D01 is resolved (normal/repair source-code reading remains forbidden); B-CONTEXT-01 and FR063/platform/backend/HOT/M3/Windows/F1/performance limits remain explicit. No new source, selection, raw, tests/builds/CI, issue/PR/merge/main action. Root-owned final static audit: [exact Root static audit chain](recovery/current-final-handoff-root-static-audit-chain-20261017.json) (136376raw bytes/SHA`2f1b776caa0f6b7681b508ff3b2a0037acf2ddd1533b0d4416c781dafffcd7eb`; deterministic gzip retained).
+
+Current branch `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`; accepted implementation baseline `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423`. Tested source/runtime versions are separate from this later metadata carrier. See [quickstart](quickstart.md) for selection/evidence pointers; no unchanged runtime replay is needed.
+
+## Accepted selection and evidence
+
+- [A final EVIDENCE](recovery/current-A-final-evidence-independent-review-20261017.md) / [composition index](recovery/current-A-final-evidence-independent-review-20261017.json):15owners/17descriptors/167methods/255qualified cases with explicit mixed provenance. Historical mirror `tests/selections/1557-gm-doc-current-A.json`; oldafterlife2owner subset is not the fullA selection.
+- [B SOURCE](recovery/current-B-production-source-independent-review-20261017.md) / [B final EVIDENCE](recovery/current-B-final-evidence-independent-review-20261017.md):9owners/9descriptors/28methods/78PASS; current `tests/selection.json` equals `tests/selections/1557-gm-doc-block5.json`. Fresh compiled69dc, actuala8e, rawcarrier99e, acceptedmetadataf458. No automatic runtime release.
+- [B native raw](recovery/current-B-first-green-20261017.json) and [fixture artifacts](recovery/current-B-first-green-fixture-artifacts-20261017.json) retain75chains; [compact inspection](recovery/current-B-first-green-writer-inspection-20261017.json) references original verbose99e and exact raw. Accepted real52 is distinct from preparation's source/package52 and A's historical36.
+- T030–T032 verification is static metadata consistency, independent coherent review and exact GitHub recovery. Do not rebuild/reexecute unchanged A/B, old causalRED, gameplay/lifetime or platform families for this handoff.
+
+## Publication and limits
+
+Use normal [skip ci] task-branch commits, non-force push, exact remote/main readback and a complete changed-path GitHub recovery into a new clean directory, extending retained full7a+consecutive exact deltas. No new fullclone/base-byte rehash. Report compiled/actual/runtime-carrier/metadata versions separately. Independent final review precedes final checked handoff; no issue closure/PR/merge/main action.
+
+D01 and residual B-CONTEXT-01/FR063/WindowsF1/backend/HOT/M3 limits are in analysis.md. No broad gameplay, provider, backend-worker, browser, Windows/CI or performance qualification; no new GM contract/example update is needed for feature metadata only.
+
+## Historical verification/planning guide (not current commands or release)
+
+<details>
+<summary>Original dated runner/progress instructions retained</summary>
+
 # Bounded Verification Guide
 
 ## Accepted bounded Block B: SOURCE + GREEN78 EVIDENCE; final checkpoint (2026-10-17)
@@ -129,3 +157,5 @@ After A acceptance, recheck current four Block_5 source/consumer pins. Repeat th
 ## Completion evidence
 
 Report tested source SHA separately from later metadata carrier; exact selected/completed counts and complete raw artifacts; reassembly/coverage/delivery results; accepted independent verdict and coordinator readback; remote/recovery verification; unrun OS/surfaces. Do not claim a GM gameplay run, frontend/player UI qualification, latency improvement or issue closure. Final checkpoint links #1557 and preserves all prior #1536 evidence. Main/PR/merge and further issue mutations remain outside scope.
+
+</details>

@@ -1,0 +1,12 @@
+{
+  "kind": "ROOT_FRESH_FINAL_TREE_STATIC_AUDIT_NOT_NEW_RUNTIME_OR_INDEPENDENT_FINAL_REVIEW",
+  "sourceHead": "f458631e15cb49bebdb7b1fefe72ae5b1fc6d423",
+  "createdUtc": "2026-10-17T07:20:00.161469+00:00",
+  "rawPath": "/tmp/gm1557-final-tree-static-audit-first-f458631e-20261017.json",
+  "storedPath": "specs/1557-gm-doc-modularization/recovery/current-final-handoff-root-static-audit-20261017.json.gz",
+  "bytes": 136376,
+  "sha256": "2f1b776caa0f6b7681b508ff3b2a0037acf2ddd1533b0d4416c781dafffcd7eb",
+  "storedSha256": "2b3b260e0180fc48047f7161a722effacd7c365c3bc1dbc179eb1063572fa3a0",
+  "compression": "gzip mtime0",
+  "scope": "Exact Root-owned final52source/package/accepted actual52 hashes+roles/navigation/anchors/A-B source retention audit; writer does not rerun or duplicate it. Metadata-only current handoff changes do not alter its source scope."
+}

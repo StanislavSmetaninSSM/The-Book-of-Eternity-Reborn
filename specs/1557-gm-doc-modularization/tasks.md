@@ -1,5 +1,84 @@
 # Tasks: GM Documentation Modularization
 
+## Current final handoff WIP — T030–T032 (2026-10-17)
+
+Authoritative current coverage and dispositions are in [analysis.md](analysis.md):13FR/6SC mapped to accepted source/runtime evidence. A255 qualified cases are a retained mixed-source union; B78 are current actuala8e/compiled69dc with12shared-A cases, so no333unique count. A source/evidence chain and [final B verdict](recovery/current-B-final-evidence-independent-review-20261017.md) are accepted; f458 remote/recovery is verified. Real current52 delivery/physical negatives/strict cleanup are qualified, while logical profile paths do not prove backend execution.
+
+This authorized handoff changes metadata only. **T001–T029 accepted; T030–T032 remain unchecked** pending exact WIP publication/recovery, independent coherent review and final readback. D01 is resolved (normal/repair source-code reading remains forbidden); B-CONTEXT-01 and FR063/platform/backend/HOT/M3/Windows/F1/performance limits remain explicit. No new source, selection, raw, tests/builds/CI, issue/PR/merge/main action. Root-owned final static audit: [exact Root static audit chain](recovery/current-final-handoff-root-static-audit-chain-20261017.json) (136376raw bytes/SHA`2f1b776caa0f6b7681b508ff3b2a0037acf2ddd1533b0d4416c781dafffcd7eb`; deterministic gzip retained).
+
+Current branch `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`; accepted implementation baseline `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423`. Tested source/runtime versions are separate from this later metadata carrier. See [quickstart](quickstart.md) for selection/evidence pointers; no unchanged runtime replay is needed.
+
+**Source Issue:** [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557). **Current status:** accepted A/B T001–T029; T030–T032 handoff WIP/open. Older statuses are dated history, not current blockers.
+
+## Phase 1 — Setup at the agreed boundary
+
+- [x] T001 Record the actual scoped FR063/A1/A2 evidence disposition and current user-authorized continuation, verified full remote base and isolated published GM branch/worktree in `specs/1557-gm-doc-modularization/plan.md`; reconcile planning pins before any content move.
+- [x] T002 Establish `specs/1557-gm-doc-modularization/{spec,plan,research,data-model,quickstart,tasks}.md`, `contracts/gm-reading-and-preservation.md`, requirements checklist and explicit feature context in the isolated worktree; preserve approved 13-FR spec semantics and add actual #1557/approval metadata; update its AGENTS Spec Kit plan marker only there.
+
+## Phase 2 — Shared foundations (test-first)
+
+- [x] T003 Freeze exact source bytes/hashes and complete nonoverlapping source-block ownership in `specs/1557-gm-doc-modularization/content-map.json`; cover preambles, rows, wrappers, separators, all example suffixes and named contracts, including corrected Shining faction range.
+- [x] T004 Inventory exact reversible reference/reading-direction replacements in `specs/1557-gm-doc-modularization/navigation-edits.json`; record D01 before-images and the accepted no-source-access coordinator disposition; apply only inventoried authority-conflict/navigation edits.
+- [x] T005 Author RED positive/negative reassembly, duplicate/omission/unlisted-edit and contextual snippet tests in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs`, with a minimal pure helper in `BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs` as needed; freeze first actual expected failures before content fixes.
+- [x] T006 Define exact responsibility/ownership and finite new-check selectors in `tests/categories.json` and `tests/selection.json` (current full accepted selection; committed mirror `tests/selections/1557-gm-doc-current-A.json`); retain global selection semantics and defer discovery/execution until fresh-source preparation gate.
+
+## Phase 3 — US1 (P1): conditional afterlife reading
+
+Goal: current GM task reaches complete applicable guidance without unconditional all-module reading. Independent source oracle: all seven reading situations and old-anchor routes have exact required/excluded module sets. This story is accepted together with US2 delivery, never before its advertised files exist.
+
+- [x] T007 [US1] Add RED situation-router/bootstrap/receipt-only/multi-pending union/old-anchor controls in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs` and adapt exact affected `AfterlifeDocumentationCoverageTests.cs` entrypoint guards to inspect actual module bodies.
+- [x] T008 [US1] Move complete scoped afterlife content into the ten approved `OtherGuides/Afterlife_*.md` and `Examples/E_CLI_Afterlife_*.txt` pairs according to `content-map.json`; retain stable identities/fence order and one owner per payload.
+- [x] T009 [US1] Extract `OtherGuides/GM_Common_Core.md` and the conditional reading table in `CLI_Rules_Index.md`; apply only approved navigation changes. **D01 is resolved: normal-play and validation-repair client-source reading remain forbidden; conflicting directions are reconciled only through the inventoried edits.**
+- [x] T010 [US1] Synchronize `TaskGuides/CLI_Step_Main.txt`, `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, `BookOfEternityClient/Launcher/CLI_Launch_Script.md` and `BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1`; preserve all capability clauses and record replacements. Resolved D01 keeps the source-access ban and safe documentation/packet/probe repair directions; independent path changes preserve existing capabilities.
+- [x] T011 [US1] Convert `OtherGuides/Afterlife_Contract_Matrix.md` and `Examples/E_CLI_Afterlife_Turns.txt` into compact old-path/heading/number navigators, with exact destinations and no duplicate full authority payload; complete wrapper/edit inventory.
+
+## Phase 4 — US2 (P1): coverage and actual delivery; acceptance A
+
+Goal: no lost source, example or guard coverage, and every advertised session-local file actually delivered. Independent tests compare reversed exact bytes, scenario semantics and real package/session copies; negative fixtures cannot pass with missing inventory.
+
+- [x] T012 [US2] Add RED original→moved occurrence/order/valid-invalid/companion/manifest semantic equality controls in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs`, using existing `BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs` extraction behavior.
+- [x] T013 [US2] Author bounded real Linux context-pack copy/link/manifest and missing-module RED controls in `BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs`; reuse production `Write-GmContextPack` and supported local publication prerequisites, no provider/turn dispatch, strict owned process/root cleanup.
+- [x] T014 [US2] Remap `Examples/example_validation_manifest.json`, exact `ExampleDocumentationValidationTests*.cs` named-file/fence callers and affected `AfterlifeDocumentationCoverageTests.cs`, `EffectMaterializationSourceGuardTests.cs`, `PromptDocumentationCoverageTests.Wounds.cs` file inventories; preserve runners, inputs, assertions, exemptions and truthful coverageLimit.
+- [x] T015 [US2] Update `BookOfEternityClient/game_master_daemon.ps1` fixed docSpecs, manifest/README, original/rebased directives and copy checks so every advertised core/router/afterlife dependency reaches the session context pack with source-equal bytes; preserve bootstrap restriction and unrelated docs.
+- [x] T016 [US2] Prove scoped operational-resources package inclusion through existing `BookOfEternityClient/BookOfEternityClient.csproj` and real delivery fixture; adjust packaging only if actual missing-file evidence requires it, never substitute source presence for packaged/session bytes.
+- [x] T017 [US2] Update affected documentation-only references/read scopes in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs` and actual launcher/daemon consumers; preserve worker/repair permissions and gameplay behavior.
+- [x] T018 [US2] Publish coherent A WIP; obtain separate Astra XHigh SOURCE/selection review of exact diff and `tests/selection.json` (current full accepted selection; committed mirror `tests/selections/1557-gm-doc-current-A.json`), including no-underfill coverage and genuine delivery fixture; coordinator checks actual diff and D01 disposition in `plan.md`.
+- [x] T019 [US2] Use official fresh selected PlanOnly/build, required ownership audit and selected actual run; freeze complete raw results/content/delivery artifacts with source/binary pins and cleanup under `specs/1557-gm-doc-modularization/recovery/`; record failures/skips/counts honestly in `plan.md`/`tasks.md`.
+- [x] T020 [US2] Obtain independent A EVIDENCE/coherent review and coordinator readback, verify published remote checkpoint/recovery and mark only proven A tasks complete in `plan.md`/`tasks.md`; leave B blocked until this acceptance.
+
+## Phase 5 — US3 (P2): Block_5 after A acceptance
+
+Goal: seven rule/example pairs preserve all original hierarchical IDs, nested XML/CDATA and applicability. Independent tests use the same byte/coverage/delivery contract plus exact Block_5 ownership.
+
+- [x] T021 [US3] Reconcile final accepted `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, manifest/consumer pins and freeze their complete byte map in separate `block5-content-map.json` (accepted current B contract/inventory a528; A map unchanged); absorb separately accepted #1536 documentation deltas before moving, not by overwriting.
+- [x] T022 [US3] Add RED seven-way component-aware rule/example ownership and XML/CDATA/good-bad preservation negatives in `BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs`; define exact B selector ownership in `tests/categories.json` and `tests/selections/1557-gm-doc-block5.json`.
+- [x] T023 [US3] Move complete source groups to the seven approved `Rules/Block_5_<topic>.txt` and `Examples/E_Block_5_<topic>.txt` pairs, preserving original rules 5.0–5.25, descendant IDs, CDATA and inherited instructionblock context.
+- [x] T024 [US3] Build compact navigation at `Rules/Block_5.txt`, `Examples/E_Block_5.txt` and `CLI_Rules_Index.md`; update only affected entrypoint references through reversible `navigation-edits.json`, without gameplay prose cleanup.
+- [x] T025 [US3] Remap applicable `Examples/example_validation_manifest.json` entries and Block_5 consumers in `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`, `EffectMaterializationSourceGuardTests.cs` and exact example validation callers; require unchanged payload/classification/coverage.
+- [x] T026 [US3] Extend fixed package/session documentation delivery for all newly advertised B files in `BookOfEternityClient/game_master_daemon.ps1` and `GmDocumentationDeliveryTests.cs`; verify actual bytes/links and no read-every-module regression.
+- [x] T027 [US3] Publish B WIP and obtain separate Astra XHigh SOURCE/finite-selection review; coordinator verifies exact diff and `tests/selections/1557-gm-doc-block5.json`, recording scope in `plan.md`.
+- [x] T028 [US3] Execute fresh official finite B preparation/actual checks, only justified shared A regressions, and strict cleanup; freeze complete raw artifacts/source pins in `specs/1557-gm-doc-modularization/recovery/` without re-running unrelated accepted gameplay.
+- [x] T029 [US3] Obtain independent B EVIDENCE/coherent review and coordinator readback; record accepted scope/limits and remote/recovery proof in `plan.md`/`tasks.md` before marking B tasks complete.
+
+## Phase 6 — Coherent handoff
+
+- [ ] T030 Reconcile spec→plan→tasks FR001–013/SC001–006 coverage, full module/content/link/manifest inventory and explicit D01 disposition in `specs/1557-gm-doc-modularization/analysis.md`; preserve unresolved findings instead of suppressing guards.
+- [ ] T031 Publish final feature checkpoint and verify recovery from actual GitHub objects into a clean directory per workflow; record tested-source versus metadata-carrier SHA and unrun platforms in `plan.md`.
+- [ ] T032 Deliver concise #1557 handoff with artifacts, actual selected results, independent verdicts and residual limits in `plan.md`/`tasks.md`; do not close issue/create PR/merge/main or claim performance/gameplay qualification.
+
+## Dependencies and execution strategy
+
+T001–T002 precede repository edits. T003 freezes map inputs; T005–T007 and T012–T013 establish failure oracles before corresponding content/delivery implementation. T004’s independent path inventory proceeds immediately; D01 decision gates only T009/T010 affected text/guard. T008/T011/T014–T017 form one coherent A source change. T018 → T019 → T020 is the source/evidence acceptance chain. T020 strictly precedes T021–T029; T030–T032 follow B.
+
+No tasks are marked `[P]`: a single writer is explicitly required and several phases share map/manifest/daemon/guard files. Independent read-only review of preserved artifacts can overlap unrelated analysis at coordinator direction; this is not permission to spawn agents or competing writers now. US1 and US2 are independently testable contracts but jointly accepted as one delivered A result. MVP is A; unfinished A cannot be “completed” by starting B.
+
+32 tasks: setup 2; foundations 4; US1 5; US2 9; US3 9; handoff 3. T001–T029 are accepted/checked; T030–T032 remain unchecked pending this final handoff review/publication/recovery. Concrete future theory rows and runtime counts are deliberately not inferred from task count.
+
+## Historical task execution records (superseded status)
+
+<details>
+<summary>Earlier task checkpoints and source-bound gates</summary>
+
 ## Accepted bounded Block B: SOURCE + GREEN78 EVIDENCE; final checkpoint (2026-10-17)
 
 Root read and accepted the exact [independent final B EVIDENCE pair](recovery/current-B-final-evidence-independent-review-20261017.md): **78uniquePASS/28methods/9categories/9descriptors,0FAIL/0SKIP/0unrun**; compiled `69dc7c928246c9b389cedcf391f017ae6620acd9`, actual `a8e0456fd1208984b23a0c6813d3d199a900411c`, evidence carrier `99e38610c2c9aec2eb4753a3567b0524d669e0d9`. Seven complete paired modules, exact original55parts/144+19IDs/51examples/207CDATA, conditional/navigator reading, nine unchanged flat-input tuples7/2 and onlytwo manifest file/line relocations are source-bound and actual-selected. Real fixed writer publishes52approved path/roles with52source/package/sessionhashes equal; generated12977Braw preserved; beforeproducer package-source and afterproducer session-copy Wounds negatives qualified. Eight owned roots removed; four diagnostics retained with10established identities/EOF/no unresolved ownership.
@@ -1083,66 +1162,5 @@ See recovery/ for approved original planning and source-gate conditions.
 
 **Source Issue:** [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557). **Current task status:** bounded A T001–T020 independently accepted2026-10-17; B/Block_5 and full-feature handoff remain OPEN. The former2026-10-13 external-draft/UNSTARTED status is historical and superseded by the acceptance checkpoint above. Current paths/selection refer to the isolated continuation from verified a5, preserving accepted A1/A2 and the original1557 provenance.
 
-## Phase 1 — Setup at the agreed boundary
 
-- [x] T001 Record the actual scoped FR063/A1/A2 evidence disposition and current user-authorized continuation, verified full remote base and isolated published GM branch/worktree in `specs/1557-gm-doc-modularization/plan.md`; reconcile planning pins before any content move.
-- [x] T002 Establish `specs/1557-gm-doc-modularization/{spec,plan,research,data-model,quickstart,tasks}.md`, `contracts/gm-reading-and-preservation.md`, requirements checklist and explicit feature context in the isolated worktree; preserve approved 13-FR spec semantics and add actual #1557/approval metadata; update its AGENTS Spec Kit plan marker only there.
-
-## Phase 2 — Shared foundations (test-first)
-
-- [x] T003 Freeze exact source bytes/hashes and complete nonoverlapping source-block ownership in `specs/1557-gm-doc-modularization/content-map.json`; cover preambles, rows, wrappers, separators, all example suffixes and named contracts, including corrected Shining faction range.
-- [x] T004 Inventory exact reversible reference/reading-direction replacements in `specs/1557-gm-doc-modularization/navigation-edits.json`; record D01 before-images and the accepted no-source-access coordinator disposition; apply only inventoried authority-conflict/navigation edits.
-- [x] T005 Author RED positive/negative reassembly, duplicate/omission/unlisted-edit and contextual snippet tests in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs`, with a minimal pure helper in `BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs` as needed; freeze first actual expected failures before content fixes.
-- [x] T006 Define exact responsibility/ownership and finite new-check selectors in `tests/categories.json` and `tests/selection.json` (current full accepted selection; committed mirror `tests/selections/1557-gm-doc-current-A.json`); retain global selection semantics and defer discovery/execution until fresh-source preparation gate.
-
-## Phase 3 — US1 (P1): conditional afterlife reading
-
-Goal: current GM task reaches complete applicable guidance without unconditional all-module reading. Independent source oracle: all seven reading situations and old-anchor routes have exact required/excluded module sets. This story is accepted together with US2 delivery, never before its advertised files exist.
-
-- [x] T007 [US1] Add RED situation-router/bootstrap/receipt-only/multi-pending union/old-anchor controls in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs` and adapt exact affected `AfterlifeDocumentationCoverageTests.cs` entrypoint guards to inspect actual module bodies.
-- [x] T008 [US1] Move complete scoped afterlife content into the ten approved `OtherGuides/Afterlife_*.md` and `Examples/E_CLI_Afterlife_*.txt` pairs according to `content-map.json`; retain stable identities/fence order and one owner per payload.
-- [x] T009 [US1] Extract `OtherGuides/GM_Common_Core.md` and the conditional reading table in `CLI_Rules_Index.md`; apply only approved navigation changes. **D01 is resolved: normal-play and validation-repair client-source reading remain forbidden; conflicting directions are reconciled only through the inventoried edits.**
-- [x] T010 [US1] Synchronize `TaskGuides/CLI_Step_Main.txt`, `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, `BookOfEternityClient/Launcher/CLI_Launch_Script.md` and `BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1`; preserve all capability clauses and record replacements. Resolved D01 keeps the source-access ban and safe documentation/packet/probe repair directions; independent path changes preserve existing capabilities.
-- [x] T011 [US1] Convert `OtherGuides/Afterlife_Contract_Matrix.md` and `Examples/E_CLI_Afterlife_Turns.txt` into compact old-path/heading/number navigators, with exact destinations and no duplicate full authority payload; complete wrapper/edit inventory.
-
-## Phase 4 — US2 (P1): coverage and actual delivery; acceptance A
-
-Goal: no lost source, example or guard coverage, and every advertised session-local file actually delivered. Independent tests compare reversed exact bytes, scenario semantics and real package/session copies; negative fixtures cannot pass with missing inventory.
-
-- [x] T012 [US2] Add RED original→moved occurrence/order/valid-invalid/companion/manifest semantic equality controls in `BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs`, using existing `BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs` extraction behavior.
-- [x] T013 [US2] Author bounded real Linux context-pack copy/link/manifest and missing-module RED controls in `BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs`; reuse production `Write-GmContextPack` and supported local publication prerequisites, no provider/turn dispatch, strict owned process/root cleanup.
-- [x] T014 [US2] Remap `Examples/example_validation_manifest.json`, exact `ExampleDocumentationValidationTests*.cs` named-file/fence callers and affected `AfterlifeDocumentationCoverageTests.cs`, `EffectMaterializationSourceGuardTests.cs`, `PromptDocumentationCoverageTests.Wounds.cs` file inventories; preserve runners, inputs, assertions, exemptions and truthful coverageLimit.
-- [x] T015 [US2] Update `BookOfEternityClient/game_master_daemon.ps1` fixed docSpecs, manifest/README, original/rebased directives and copy checks so every advertised core/router/afterlife dependency reaches the session context pack with source-equal bytes; preserve bootstrap restriction and unrelated docs.
-- [x] T016 [US2] Prove scoped operational-resources package inclusion through existing `BookOfEternityClient/BookOfEternityClient.csproj` and real delivery fixture; adjust packaging only if actual missing-file evidence requires it, never substitute source presence for packaged/session bytes.
-- [x] T017 [US2] Update affected documentation-only references/read scopes in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs`, `BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs` and actual launcher/daemon consumers; preserve worker/repair permissions and gameplay behavior.
-- [x] T018 [US2] Publish coherent A WIP; obtain separate Astra XHigh SOURCE/selection review of exact diff and `tests/selection.json` (current full accepted selection; committed mirror `tests/selections/1557-gm-doc-current-A.json`), including no-underfill coverage and genuine delivery fixture; coordinator checks actual diff and D01 disposition in `plan.md`.
-- [x] T019 [US2] Use official fresh selected PlanOnly/build, required ownership audit and selected actual run; freeze complete raw results/content/delivery artifacts with source/binary pins and cleanup under `specs/1557-gm-doc-modularization/recovery/`; record failures/skips/counts honestly in `plan.md`/`tasks.md`.
-- [x] T020 [US2] Obtain independent A EVIDENCE/coherent review and coordinator readback, verify published remote checkpoint/recovery and mark only proven A tasks complete in `plan.md`/`tasks.md`; leave B blocked until this acceptance.
-
-## Phase 5 — US3 (P2): Block_5 after A acceptance
-
-Goal: seven rule/example pairs preserve all original hierarchical IDs, nested XML/CDATA and applicability. Independent tests use the same byte/coverage/delivery contract plus exact Block_5 ownership.
-
-- [x] T021 [US3] Reconcile final accepted `Rules/Block_5.txt`, `Examples/E_Block_5.txt`, manifest/consumer pins and freeze their complete byte map in separate `block5-content-map.json` (accepted current B contract/inventory a528; A map unchanged); absorb separately accepted #1536 documentation deltas before moving, not by overwriting.
-- [x] T022 [US3] Add RED seven-way component-aware rule/example ownership and XML/CDATA/good-bad preservation negatives in `BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs`; define exact B selector ownership in `tests/categories.json` and `tests/selections/1557-gm-doc-block5.json`.
-- [x] T023 [US3] Move complete source groups to the seven approved `Rules/Block_5_<topic>.txt` and `Examples/E_Block_5_<topic>.txt` pairs, preserving original rules 5.0–5.25, descendant IDs, CDATA and inherited instructionblock context.
-- [x] T024 [US3] Build compact navigation at `Rules/Block_5.txt`, `Examples/E_Block_5.txt` and `CLI_Rules_Index.md`; update only affected entrypoint references through reversible `navigation-edits.json`, without gameplay prose cleanup.
-- [x] T025 [US3] Remap applicable `Examples/example_validation_manifest.json` entries and Block_5 consumers in `BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs`, `EffectMaterializationSourceGuardTests.cs` and exact example validation callers; require unchanged payload/classification/coverage.
-- [x] T026 [US3] Extend fixed package/session documentation delivery for all newly advertised B files in `BookOfEternityClient/game_master_daemon.ps1` and `GmDocumentationDeliveryTests.cs`; verify actual bytes/links and no read-every-module regression.
-- [x] T027 [US3] Publish B WIP and obtain separate Astra XHigh SOURCE/finite-selection review; coordinator verifies exact diff and `tests/selections/1557-gm-doc-block5.json`, recording scope in `plan.md`.
-- [x] T028 [US3] Execute fresh official finite B preparation/actual checks, only justified shared A regressions, and strict cleanup; freeze complete raw artifacts/source pins in `specs/1557-gm-doc-modularization/recovery/` without re-running unrelated accepted gameplay.
-- [x] T029 [US3] Obtain independent B EVIDENCE/coherent review and coordinator readback; record accepted scope/limits and remote/recovery proof in `plan.md`/`tasks.md` before marking B tasks complete.
-
-## Phase 6 — Coherent handoff
-
-- [ ] T030 Reconcile spec→plan→tasks FR001–013/SC001–006 coverage, full module/content/link/manifest inventory and explicit D01 disposition in `specs/1557-gm-doc-modularization/analysis.md`; preserve unresolved findings instead of suppressing guards.
-- [ ] T031 Publish final feature checkpoint and verify recovery from actual GitHub objects into a clean directory per workflow; record tested-source versus metadata-carrier SHA and unrun platforms in `plan.md`.
-- [ ] T032 Deliver concise #1557 handoff with artifacts, actual selected results, independent verdicts and residual limits in `plan.md`/`tasks.md`; do not close issue/create PR/merge/main or claim performance/gameplay qualification.
-
-## Dependencies and execution strategy
-
-T001–T002 precede repository edits. T003 freezes map inputs; T005–T007 and T012–T013 establish failure oracles before corresponding content/delivery implementation. T004’s independent path inventory proceeds immediately; D01 decision gates only T009/T010 affected text/guard. T008/T011/T014–T017 form one coherent A source change. T018 → T019 → T020 is the source/evidence acceptance chain. T020 strictly precedes T021–T029; T030–T032 follow B.
-
-No tasks are marked `[P]`: a single writer is explicitly required and several phases share map/manifest/daemon/guard files. Independent read-only review of preserved artifacts can overlap unrelated analysis at coordinator direction; this is not permission to spawn agents or competing writers now. US1 and US2 are independently testable contracts but jointly accepted as one delivered A result. MVP is A; unfinished A cannot be “completed” by starting B.
-
-32 tasks: setup 2; foundations 4; US1 5; US2 9; US3 9; handoff 3. All remain unchecked. Concrete future theory rows and runtime counts are deliberately not inferred from task count.
+</details>
