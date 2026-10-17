@@ -1,0 +1,24 @@
+{
+  "kind": "ROOT_MINIMAL_PRODUCTION_CANDIDATE_SOURCE_INVERSE_NO_RUNTIME",
+  "implementationBase": "e9823e84722e903176818ffcea8d39af1f7da394",
+  "candidatePins": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 447528,
+      "sha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409"
+    }
+  ],
+  "exactFourAdapterSites": true,
+  "wholeAInverseSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+  "actualPrefixAmbientTimestampTailOrder": true,
+  "partialHasExactlyFourNamedStages": true,
+  "partialDirectIoAwaitClockOrSessionTokensAbsent": true,
+  "scope": "Static source check only. Original test snapshots/bodies unchanged. Semantic helper closure and compiled SOURCE/PREP, protectedLate2 and ordinary52 GREEN require independent review/actuals. No HOT/history qualification.",
+  "helperSource": "from pathlib import Path\nimport json,hashlib,re,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn');h=lambda b:hashlib.sha256(b).hexdigest();inventory=json.loads((R/'BookOfEternityClient.Tests/TestData/t179pd3d-ordinary-source-segments.json').read_text());segments=inventory['segments'];p=R/inventory['sourcePath'];source=p.read_text();pairs=[('            if (!EvaluateAcceptedNarrativePrefix(doc.RootElement, issues, out var responseText))\\n                return issues;\\n\\n',segments['narrativePrefix']),('            EvaluateAcceptedNarrativeTail(doc.RootElement, responseText, issues);\\n\\n            if (!string.IsNullOrWhiteSpace(responseText))\\n            {\\n                await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues);\\n                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues);\\n            }\\n',segments['narrativeTail']),('            if (!EvaluateAcceptedInterfacePrefix(doc.RootElement, interfacePath, issues))\\n                return issues;\\n\\n',segments['interfacePrefix']),('            EvaluateAcceptedInterfaceTail(doc.RootElement, interfacePath, issues);\\n',segments['interfaceTail'])]\nfor adapter,original in pairs:assert source.count(adapter)==1;source=source.replace(adapter,original)\nassert h(source.encode())==inventory['sourceSha256']=='6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936'\npartial=R/'BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs';text=partial.read_text();assert len(re.findall(r'    private (?:bool|void) EvaluateAccepted(?:Narrative|Interface)(?:Prefix|Tail)\\(',text))==4\nassert not re.search(r'\\b(?:_fs|await|DateTime|DateTimeOffset|File|Directory|SessionOperationContext|WriteFileAtomicAsync)\\b',text)\nfor owner in ['Narrative','Interface']:\n actual=p.read_text();start=actual.index('private async Task<List<ValidationIssue>> ValidateAcceptedTurn'+owner+'PayloadInternalAsync');end=actual.index('\\n    private ',start+1);body=actual[start:end];assert body.index('EvaluateAccepted'+owner+'Prefix(')<body.index('ValidateRequiredIsoTimestampField(')<body.index('EvaluateAccepted'+owner+'Tail(')\nobj=dict(kind='ROOT_MINIMAL_PRODUCTION_CANDIDATE_SOURCE_INVERSE_NO_RUNTIME',implementationBase='e9823e84722e903176818ffcea8d39af1f7da394',candidatePins=[dict(path=str(q.relative_to(R)),bytes=q.stat().st_size,sha256=h(q.read_bytes()))for q in [p,partial]],exactFourAdapterSites=True,wholeAInverseSha256=inventory['sourceSha256'],actualPrefixAmbientTimestampTailOrder=True,partialHasExactlyFourNamedStages=True,partialDirectIoAwaitClockOrSessionTokensAbsent=True,scope='Static source check only. Original test snapshots/bodies unchanged. Semantic helper closure and compiled SOURCE/PREP, protectedLate2 and ordinary52 GREEN require independent review/actuals. No HOT/history qualification.',helperSource=Path(__file__).read_text(),utc=datetime.datetime.now(datetime.timezone.utc).isoformat());out=Path('/tmp/t179pd3d-root-minimal-product-inverse-e9823e84-20261017.json');assert not out.exists();out.write_text(json.dumps(obj,indent=2)+'\\n');print(out,h(out.read_bytes()))\n",
+  "utc": "2026-10-17T16:48:02.567456+00:00"
+}

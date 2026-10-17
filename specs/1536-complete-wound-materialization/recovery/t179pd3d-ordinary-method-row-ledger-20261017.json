@@ -1,7 +1,7 @@
 {
-  "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_METHOD_ROW_LEDGER",
+  "kind": "T179_PD3D_ORDINARY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "ACCEPTED_CAUSAL_STRUCTURAL_RED2_MINIMAL_PRODUCT_ACTIVATION_HELD",
+  "status": "MINIMAL_PRODUCTION_WIP_AUTHORED_UNBUILT_ALL_POST_PRODUCT_ACTUALS_HELD",
   "methods": [
     {
       "project": "unit",
@@ -205,10 +205,24 @@
       "declaredRows": 2,
       "kind": "static source census; discovery UNRUN",
       "status": "FRESH_B501_COMPILED_DISCOVERED_PREPARED_ALL_ACTUAL_UNRUN"
+    },
+    {
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "declaredRows": 1,
+      "kind": "existing unchanged staged/Late Fact; retained accepted fixture source",
+      "status": "POST_PRODUCT_PREPARATION_AND_FIRST_PROTECTED_LATE2_UNRUN"
+    },
+    {
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "declaredRows": 1,
+      "kind": "existing unchanged staged/Late Fact; retained accepted fixture source",
+      "status": "POST_PRODUCT_PREPARATION_AND_FIRST_PROTECTED_LATE2_UNRUN"
     }
   ],
-  "methodCount": 29,
-  "declaredRowCount": 52,
+  "methodCount": 31,
+  "declaredRowCount": 54,
   "firstRed": {
     "category": "fr063-ordinary-output-policy-boundary",
     "methods": 1,
@@ -218,7 +232,8 @@
   "sourceParity": {
     "category": "fr063-ordinary-output-policy-source",
     "rows": 1,
-    "beforeProduct": "Authoring/source review only; missing-partial result is not a semantic defect or World/source-history proof."
+    "beforeProduct": "Authoring/source review only; missing-partial result is not a semantic defect or World/source-history proof.",
+    "current": "New A/newpartial authored; exact four-adapter inverse statically reconstructs baseline A. Runtime parity Fact remains unrun."
   },
   "ownership": {
     "rootPrefix": "boe-pd3d-ordinary-",
@@ -363,10 +378,13 @@
     ]
   },
   "currentDeclaredMembership": {
-    "owners": 5,
-    "methods": 29,
-    "cases": 52,
-    "changes": "Only one existing test body oracle corrected; no test method/data/selector/count/order change. Fresh affected preparation still required."
+    "owners": 6,
+    "descriptors": 6,
+    "methods": 31,
+    "cases": 54,
+    "ordinaryCases": 52,
+    "protectedLateCases": 2,
+    "changes": "Stable semantic selection reasons replace prior tests-only phase text; add only exact existing protected Late2 dependency. Catalog/test methods/data/oracles/snapshot unchanged. Fresh product plan not run."
   },
   "sourceCorrection": {
     "id": "NI-S01",
@@ -499,7 +517,8 @@
         "Cases": 1
       }
     ],
-    "sameMembershipAsInitial56": true
+    "sameMembershipAsInitial56": true,
+    "scope": "HISTORICAL b501 tests-only ordinary52 preparation; no post-product compilation/actual claim."
   },
   "sourceAcceptance": {
     "references": [
@@ -600,5 +619,39 @@
       }
     ],
     "scope": "Structural RED2 after actual public-owner/byte prerequisites; Root conditional minimal extraction awaits saveddecision check and named implementationHEAD."
+  },
+  "ordinaryScope": {
+    "owners": 5,
+    "methods": 29,
+    "cases": 52,
+    "provenance": "Fresh b501 plan confirmed ordinary membership; original boundary2 structural RED retained. Post-product fresh preparation and GREEN remain unrun."
+  },
+  "productionWip": {
+    "implementationBase": "e9823e84722e903176818ffcea8d39af1f7da394",
+    "activation": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-minimal-product-activation-e9823e84-20261017.json",
+      "bytes": 1379,
+      "sha256": "60b0ee03b975c0e041edf08e89d6c5c34b04a0b08987eef6ae0b633e0be55431"
+    },
+    "scope": "Exactly one four-stage value-only partial and four actual A adapter replacements; original timestamp leaves/IO/catches/awaits/remainder retained byte-exact.",
+    "postProductBuild": "UNRUN",
+    "postProductActual": "ALL_HELD; FIRST protectedLate2/separateEVIDENCE precedes ordinary52 GREEN",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-minimal-product-activation-e9823e84-20261017.json",
+        "bytes": 1379,
+        "sha256": "60b0ee03b975c0e041edf08e89d6c5c34b04a0b08987eef6ae0b633e0be55431"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-causal-decision-delta-github-e9823e84-20261017.json",
+        "bytes": 13331,
+        "sha256": "2f4eb7dc99ae75e34a53899f5fd6a8fd20aaafce37196da3eb37ec89e12cba99"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-e9823e84-20261017.json",
+        "bytes": 14119,
+        "sha256": "2421dbe8f912650a5b66cea62ce6503f22ea87036e93b18798da5ec86007e5a6"
+      }
+    ]
   }
 }
