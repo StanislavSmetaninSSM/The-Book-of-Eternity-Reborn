@@ -1,6 +1,6 @@
 # #1557 Block B: current source and bounded implementation contract
 
-Status: **independent contract/tests-onlySOURCE and two FIRST causalRED accepted; production WIP/corrected context authored on69dc; fresh canonical BOTH/catalog0 and exactPlanOnly0 confirm9categories/9descriptors/28methods/78cases with0executed; full productionSOURCE and actuals pending**. FIRSTstatic6/3 is retained, corrected9exact inputs7/2 and only2actual manifest locators are source-bound. Accepted A base and accepted contract below remain historical; current [production packet](../recovery/current-B-production-authoring-source-20261017.json) binds allcurrent source/package52/sevenfreshDLLs. OnlyT021 complete; T022–T029 open. Main, original1557 and A1/A2 unchanged.
+Status: **independent productionSOURCE/FIXTURE/SELECTION/PREP accepted on69dc/245a, materialblockers0; exact9categories/9descriptors/28methods/78cases, ZEROproductionactual; runtime held pending decision publication/recovery and separate Root release**. Accepted contract below and2FIRSTcausalRED remain historical; static6/3 and metadata-helperfailure retained. [Current source decision](../recovery/current-B-production-source-independent-review-20261017.md); onlyT021complete, T022–T029open. Source/catalog/selection/package/pins unchanged; main/original1557/A1A2 unchanged.
 
 ## Exact current inventory
 

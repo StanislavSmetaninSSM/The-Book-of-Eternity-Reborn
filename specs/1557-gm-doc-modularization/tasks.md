@@ -1,5 +1,11 @@
 # Tasks: GM Documentation Modularization
 
+## Current B production SOURCE accepted; all78 actuals held (2026-10-17)
+
+Root read and accepted the exact [independent SOURCE/FIXTURE/SELECTION/PREP pair](recovery/current-B-production-source-independent-review-20261017.md), compiled `69dc7c928246c9b389cedcf391f017ae6620acd9` / carrier `245a4940b99245b304cbea2aacd1a2bd61bc5fa0`, material blockers0. The report binds55original byteparts/14XML/144+19IDs/51examples, B-AS01 exact843Bframing, all9original inputs7/2, only2manifest locators, conditionalscope/52docSpecs/fiveReadPaths-only profiles and current package/dependency closure. Fresh native9categories/9descriptors/28methods/78cases/0executed,12rawchains/sevenDLL/258packagefiles are accepted SOURCE preparation, not session52/GREEN evidence.
+
+Persist this exact decision/recovery checkpoint first. **Runtime remains held** until root verifies publication/recovery and separately releases content-boundary1; proposed remaining bounded categories retain native membership/order and stop at first unexpected result. No source/catalog/selection/package/pin changes or preparation/oldRED/A-family replay. All78current actual cases remainUNRUN; historical2FIRSTexpectedFAIL, FIRSTstatic6/3 and metadata-helperfailure retained distinctly. T021alone complete; T022–T029 pending independent actualEVIDENCE and finalpublication.
+
 ## Current B production SOURCE candidate: fresh69dc preparation native0, actuals held (2026-10-17)
 
 [Production/source packet](recovery/current-B-production-authoring-source-20261017.json) binds compiled `69dc7c928246c9b389cedcf391f017ae6620acd9`, seven fresh DLLs and [12 frozen preparation chains](recovery/current-B-production-fresh-preparation-20261017.json). FIRST canonical BOTH/catalog returned0 in92.093s (808valid categories/11788discovered methods); exact SelectionFile PlanOnly/NoBuild returned0 in5.683s: **9categories/9descriptors/28unique methods/78cases,0executed**, no duplicates/underfill. [Writer inspection](recovery/current-B-production-preparation-writer-inspection-20261017.json) verifies unchanged sevenpins, clean source/prefixes and258physical packagefiles: allcurrent52source/package documents, whole relocated manifest, daemon and two real helper sources byte-equal. Package pins prove build inputs, not sessiondelivery.

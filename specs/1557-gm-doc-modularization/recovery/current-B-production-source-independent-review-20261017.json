@@ -1,0 +1,307 @@
+{
+  "kind": "INDEPENDENT_BOUNDED_BLOCK_B_PRODUCTION_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "createdUtc": "2026-10-17T06:54:52.256586+00:00",
+  "reviewerRole": "independent Astra/XHigh; repository read-only",
+  "verdict": "ACCEPTED_SOURCE_FIXTURE_SELECTION_PREPARATION",
+  "evidenceVerdict": "GREEN_NOT_ESTABLISHED",
+  "carrier": "245a4940b99245b304cbea2aacd1a2bd61bc5fa0",
+  "compiledSource": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "acceptedTestsSource": "324594a930dcb3aaf17aaf2441f47193f214957c",
+  "materialBlockers": [],
+  "sourceAssessment": {
+    "completeOriginalParts": 55,
+    "wholeGroups": 50,
+    "originalFramingParts": 5,
+    "reconstructedOriginals": [
+      {
+        "path": "Rules/Block_5.txt",
+        "bytes": 262995,
+        "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62"
+      },
+      {
+        "path": "Examples/E_Block_5.txt",
+        "bytes": 268659,
+        "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04"
+      }
+    ],
+    "physicalModules": 14,
+    "compactNavigators": 2,
+    "ruleIds": 144,
+    "exampleRuleIds": 19,
+    "fullExamples": 51,
+    "cdataSections": 207,
+    "canonicalAll16Exact": true,
+    "noAdditionalAuthorityOrPayloadDuplication": true,
+    "newWound5_20_4WholeUnchanged": true,
+    "B_CONTEXT_01": "Existing potentially conflicting preface/5.20.3 text retained at original context owners; no invented precedence or gameplay rewrite.",
+    "B_AS01": "Closed in source: only exact843B neutral inventoried framing between BE001/BE019; saved unchanged-reader9tuples7Valid2Invalid verified. Original first6/3 static observation remains preserved, not a native test.",
+    "framing": {
+      "bytes": 843,
+      "sha256": "7d880751762280d003087da978c7b5fd61cf2befc003ed513e0f773ccdbd7816",
+      "exactCanonical": true
+    },
+    "manifest": "Whole192331-byte d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f baseline recovered exactly by inverse of only file/line at syntaxExemptions11/12; actualUnits60/78, all reasons/semantics/array order unchanged.",
+    "daemon": "Literal52path/role inventory equals independent Expected36+Block5Expected16. Reverse onlyN006/N007/N009/N010 yields entire accepted324 daemon bytes. Existing D01/bootstrap/source-reading/receipt/repair restrictions preserved.",
+    "routing": "Seven approved conditional topic rows, current-contract unions, actual file-relative208changed-scope edges resolve inside52. MandatoryWound and conditionalEffect prerequisites retained. Navigation maps144+19IDs to actual physical XML owners, including foreign descendants.",
+    "fiveProfiles": "Removing exactly11new explicit read paths and their five spreads recovers accepted profile source byte-for-byte; Enabled/tasks/proposal/write/repair/guardian/soul unchanged. Read availability does not imply worker invocation.",
+    "profileReadPaths": [
+      "Examples/E_Block_5.txt",
+      "Examples/E_Block_5_Units_Ids.txt",
+      "Examples/E_Block_5_Characteristics_Progression.txt",
+      "Examples/E_Block_5_Combat_Foundations.txt",
+      "Examples/E_Block_5_Items_Resources.txt",
+      "Examples/E_Block_5_Narrative_Social.txt",
+      "Examples/E_Block_5_Wounds.txt",
+      "Examples/E_Block_5_World_Chronology.txt",
+      "CLI_Rules_Index.md",
+      "OtherGuides/Wound_Materialization_Contract.md",
+      "OtherGuides/Effect_Materialization_Contract.md"
+    ]
+  },
+  "fixtureAndSelection": {
+    "actualNavigationFact": "Reads actual docs and resolves full inventoried IDs to physical module XML; expected map is independently anchored to frozen source.",
+    "twoNavigationNegatives": "Each starts from complete positive fixture/navigation, keeps all14module bytes, then removes existing foreign19.D.0 or redirects to an existing wrong target. No missing-fixture shortcut.",
+    "unchangedConsumers": "Accepted six migrated actual-body facts plus resource complete-inventory and seven-module guards retain assertions and inputs; classifier, parser/schema, delivery process/cleanup, physical-fault preconditions and existing actual52 callers are unchanged from accepted tests source.",
+    "currentExpected": "Actual CollectDelivered/VerifyClosure use explicit52; default36 applies to unchanged A memory seeds.",
+    "noAssertionOrCountWeakening": true,
+    "selectionFile": "tests/selection.json",
+    "exactMirror": "tests/selections/1557-gm-doc-block5.json",
+    "categories": 9,
+    "descriptors": 9,
+    "uniqueMethods": 28,
+    "cases": 78,
+    "perCategory": [
+      {
+        "category": "gm-doc-afterlife-package-delivery",
+        "methods": 1,
+        "cases": 1,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-content-boundary",
+        "methods": 1,
+        "cases": 1,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "methods": 8,
+        "cases": 14,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-delivery-source",
+        "methods": 1,
+        "cases": 1,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-package-negatives",
+        "methods": 1,
+        "cases": 2,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "methods": 3,
+        "cases": 8,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "methods": 7,
+        "cases": 19,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "methods": 2,
+        "cases": 20,
+        "budgetMinutes": 2
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "methods": 4,
+        "cases": 12,
+        "budgetMinutes": 2
+      }
+    ],
+    "methodCases": {
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext": 1,
+      "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor": 1,
+      "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous": 7,
+      "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority": 1,
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch": 1,
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries": 2,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion": 5,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape": 2,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators": 3,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles": 10,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody": 2,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope": 12,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract": 8,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure": 9
+    },
+    "newMethods": 2,
+    "newCases": 3,
+    "sharedAffectedA": "Only four methods12cases; no A255/A1/A2/F1/lifetime family replay by assembly hash alone."
+  },
+  "preparation": {
+    "records": [
+      {
+        "label": "gm1557-B-production-catalog-first-69dc7c92-20261017",
+        "nativeExit": 0,
+        "seconds": 92.09301348999725,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "discoveryOnly": true,
+        "planOnly": false,
+        "runnerCleanup": true
+      },
+      {
+        "label": "gm1557-B-production-plan-first-69dc7c92-20261017",
+        "nativeExit": 0,
+        "seconds": 5.683437610998226,
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "discoveryOnly": false,
+        "planOnly": true,
+        "runnerCleanup": true
+      }
+    ],
+    "catalog": {
+      "Valid": true,
+      "Methods": 11788,
+      "Categories": 808,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "executed": 0,
+    "planSha256": "a7d0a5ad0e76781c31f9e209c96d0d5a252a9b0979c14beb814998f9b662675c",
+    "builds": {
+      "integrationSeconds": 74.4725757,
+      "unitSeconds": 11.1479814,
+      "bothComplete": true
+    },
+    "rawChains": 12,
+    "storedRawLiveCommittedExact": true,
+    "ownedCleanupComplete": true,
+    "sevenBinaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "f6cf4ea13e8215937448915faabf2497ba5e8153658d232de84dc4feff3af468",
+        "bytes": 9556480
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "c9bad7a7ca6b7327aa3c00736a7b32a4260deb96173ee189a51c472abe3cf1f2",
+        "bytes": 29221888
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+        "bytes": 26183168
+      }
+    ],
+    "package": {
+      "files": 258,
+      "bytes": 45075028,
+      "all52SourcePackageDocsEqual": true,
+      "wholeManifestEqual": true
+    },
+    "packagePinChain": {
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-production-package-pins-69dc7c92-20261017.json.gz",
+      "bytes": 94639,
+      "sha256": "5e2643bd97fbb745876fb2c82cb76caf2b86bc5ff325c20c3bb8ef14c21bdacf",
+      "storedSha256": "a50cc68e80d0960602c6d98e772558538035c79a8a8afad484f6fc7d3446042b"
+    },
+    "planOnlyLimit": "CompletedDescriptors0/CompletedCases0 and Completefalse are intentional PlanOnly state; no actual pass/underfill conclusion follows."
+  },
+  "recovery": {
+    "currentCarrierDelta": {
+      "path": "/tmp/gm1557-B-production-prep-delta-github-245a4940-20261017.json",
+      "sha256": "cb023d5bd16a090739cf6d501e93c417571af364e69ed1162bf4d11ce1f7d23f",
+      "files": 27,
+      "changedPaths": 23
+    },
+    "sourceCorrectionDelta": {
+      "path": "/tmp/gm1557-B-corrected-authoring-delta-github-69dc7c92-20261017.json",
+      "sha256": "a24addb2c63054bf54a87983e33f24aa8cc098a309171b4c0efd2477272e0ae5",
+      "files": 19,
+      "changedPaths": 15,
+      "exact": true
+    },
+    "priorAuthoringDelta": "39/all35 independently checked at B-AS01; retained without repeating its full review.",
+    "fullBase": "Retained accepted composition, not downloaded or rehashed.",
+    "sourceToCarrier": "Feature metadata only; runtime source stays compiled69dc."
+  },
+  "history": [
+    "Two earlier expected FIRST causal RED remain2FAIL/0PASS.",
+    "Original authoring static6Valid/3Invalid remains unchanged; source correction is separately bound.",
+    "First Python proof-helper delimiter failure retained as authoring-metadata failure, not product/native test failure; independent current constant/framing comparison passes.",
+    "Prior B-S01/B-S02 closures and accepted A limits retained."
+  ],
+  "nextGate": "Persist/read back/recover this exact decision. Parent may then release specific bounded selected runtime commands under stop-on-first-failure policy. This reviewer grants no execution release; runtime session52, physical negatives and GREEN require separate EVIDENCE.",
+  "limits": [
+    "No production actual tests since authoring;78selected cases remain unexecuted on this production source.",
+    "Source/package52 byte equality proves packaging inputs only, not actual session52 delivery.",
+    "No Windows/provider/backend-worker execution/CI/HOT/M3/F1/full-stage qualification."
+  ],
+  "support": [
+    {
+      "path": "/tmp/gm1557-B-production-source-independent-check-20261017.json",
+      "sha256": "c3bec690f9694e5838393e2bbca04551ebac342a0fe20639c214aa0afc696663"
+    },
+    {
+      "path": "/tmp/gm1557-B-production-canonical-independent-check-20261017.json",
+      "sha256": "aaaf47516054b97fb3ab0568bbafaf18e52e080b51417ebccf0804740eb6fb1d"
+    }
+  ],
+  "reviewActions": {
+    "repositoryWrites": false,
+    "buildTestExtractorProducerRuns": false,
+    "oldAcceptedFamiliesOrFullBaseReplayed": false
+  }
+}
