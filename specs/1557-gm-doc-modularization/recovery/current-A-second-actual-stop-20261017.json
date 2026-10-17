@@ -1,0 +1,556 @@
+{
+  "kind": "IMMUTABLE_FIRST_LOCAL_PREPARATION_OR_ACTUAL_PACKET",
+  "createdUtc": "2026-10-17T04:35:49.794386+00:00",
+  "commands": [
+    {
+      "mode": "actual",
+      "label": "gm1557-A-bootstrap-authority-first-5d2c9e61",
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "gm-doc-afterlife-bootstrap-authority",
+        "-NoBuild"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn-1557",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "startedUtc": "2026-10-17T04:34:21.534972+00:00",
+      "finishedUtc": "2026-10-17T04:34:31.250623+00:00",
+      "wallSeconds": 9.535967198000435,
+      "nativeExit": 0,
+      "stdoutPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-authority-first-5d2c9e61/stdout.log",
+      "stdoutSha256": "9507b2a5c21e39350193f1c672d1d2e04bf89e7ace5944e84fee48fb9037d046",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories"
+      ],
+      "binaryBefore": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "binaryAfter": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "headAfter": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "statusAfter": "",
+      "ownedPrefixesBefore": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "ownedPrefixesAfter": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nmode,label,expected=sys.argv[1:4]\nassert mode in {'catalog','plan','actual'} and label.startswith('gm1557-') and '/' not in label\ncategories={x['category'] for x in json.loads((root/'tests/selection.json').read_text())['selections']}\ndef git(*args):return subprocess.check_output(['git',*args],cwd=root)\nassert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\nout=Path('/tmp/gm1557-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\npaths=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll']\ndef binaries():return [dict(path=p,sha256=hashlib.sha256((root/p).read_bytes()).hexdigest(),bytes=(root/p).stat().st_size) for p in paths if (root/p).is_file()]\nbefore=binaries();args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']\ncompiled=expected\nif mode=='catalog':\n assert len(sys.argv)==4;args+=['-ValidateCatalog']\nelse:\n prep=json.loads(Path(sys.argv[4]).read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['binaryAfter']==before and len(before)==7\n compiled=prep['sourceHead'];delta=git('diff','--name-only',compiled,expected).decode().splitlines();assert all(p.startswith('specs/1557-gm-doc-modularization/') for p in delta)\n if mode=='plan':assert len(sys.argv)==5;args+=['-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\n else:\n  assert len(sys.argv)==6 and sys.argv[5] in categories;args+=['-Category',sys.argv[5],'-NoBuild']\nresult_root=root/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\nprefixes=['boe-gm1557-*','boe-gameengine-turnlifecycle-*']\ndef roots():return sorted(str(p) for pattern in prefixes for p in Path(tempfile.gettempdir()).glob(pattern))\nprefix_before=roots();start=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()\nprint('LOCAL_GM1557_START',mode,expected,'log',out/'stdout.log',flush=True)\nwith (out/'stdout.log').open('wb') as stream:done=subprocess.run(args,cwd=root,stdout=stream,stderr=subprocess.STDOUT)\nelapsed=time.monotonic()-clock;new=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\nafter=binaries();head_after=git('rev-parse','HEAD').decode().strip();status=git('status','--porcelain').decode()\nj=dict(mode=mode,label=label,argv=args,cwd=str(root),sourceHead=expected,compiledSource=compiled,startedUtc=start,finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),wallSeconds=elapsed,nativeExit=done.returncode,stdoutPath=str(out/'stdout.log'),stdoutSha256=hashlib.sha256((out/'stdout.log').read_bytes()).hexdigest(),resultDirectories=new,binaryBefore=before,binaryAfter=after,headAfter=head_after,statusAfter=status,ownedPrefixesBefore=prefix_before,ownedPrefixesAfter=roots(),helperText=Path(__file__).read_text(),runtimeScope='FRESH current-source BOTH/catalog or exactSelectionFile PlanOnly ZERO test execution' if mode!='actual' else 'ONE separately released bounded category; provider/full-daemon/Windows/CI excluded',authority='Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism.')\n(out/'record.json').write_text(json.dumps(j,indent=2)+'\\n')\nprint('LOCAL_GM1557_EXIT',done.returncode,'wall',round(elapsed,3),'results',new,'record',out/'record.json',flush=True)\nassert head_after==expected and not status\nif mode!='catalog':assert before==after\nsys.exit(done.returncode)\n",
+      "runtimeScope": "ONE separately released bounded category; provider/full-daemon/Windows/CI excluded",
+      "authority": "Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism."
+    },
+    {
+      "mode": "actual",
+      "label": "gm1557-A-named-first-5d2c9e61",
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "gm-doc-afterlife-named-consumers",
+        "-NoBuild"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn-1557",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "startedUtc": "2026-10-17T04:34:40.820844+00:00",
+      "finishedUtc": "2026-10-17T04:34:46.516548+00:00",
+      "wallSeconds": 5.506398526000339,
+      "nativeExit": 0,
+      "stdoutPath": "/tmp/gm1557-implementation-tools/gm1557-A-named-first-5d2c9e61/stdout.log",
+      "stdoutSha256": "25ac2b24ebdeee265fcb398f474516dea414bc0044130e903bdb79630193bc4f",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories"
+      ],
+      "binaryBefore": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "binaryAfter": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "headAfter": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "statusAfter": "",
+      "ownedPrefixesBefore": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "ownedPrefixesAfter": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nmode,label,expected=sys.argv[1:4]\nassert mode in {'catalog','plan','actual'} and label.startswith('gm1557-') and '/' not in label\ncategories={x['category'] for x in json.loads((root/'tests/selection.json').read_text())['selections']}\ndef git(*args):return subprocess.check_output(['git',*args],cwd=root)\nassert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\nout=Path('/tmp/gm1557-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\npaths=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll']\ndef binaries():return [dict(path=p,sha256=hashlib.sha256((root/p).read_bytes()).hexdigest(),bytes=(root/p).stat().st_size) for p in paths if (root/p).is_file()]\nbefore=binaries();args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']\ncompiled=expected\nif mode=='catalog':\n assert len(sys.argv)==4;args+=['-ValidateCatalog']\nelse:\n prep=json.loads(Path(sys.argv[4]).read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['binaryAfter']==before and len(before)==7\n compiled=prep['sourceHead'];delta=git('diff','--name-only',compiled,expected).decode().splitlines();assert all(p.startswith('specs/1557-gm-doc-modularization/') for p in delta)\n if mode=='plan':assert len(sys.argv)==5;args+=['-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\n else:\n  assert len(sys.argv)==6 and sys.argv[5] in categories;args+=['-Category',sys.argv[5],'-NoBuild']\nresult_root=root/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\nprefixes=['boe-gm1557-*','boe-gameengine-turnlifecycle-*']\ndef roots():return sorted(str(p) for pattern in prefixes for p in Path(tempfile.gettempdir()).glob(pattern))\nprefix_before=roots();start=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()\nprint('LOCAL_GM1557_START',mode,expected,'log',out/'stdout.log',flush=True)\nwith (out/'stdout.log').open('wb') as stream:done=subprocess.run(args,cwd=root,stdout=stream,stderr=subprocess.STDOUT)\nelapsed=time.monotonic()-clock;new=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\nafter=binaries();head_after=git('rev-parse','HEAD').decode().strip();status=git('status','--porcelain').decode()\nj=dict(mode=mode,label=label,argv=args,cwd=str(root),sourceHead=expected,compiledSource=compiled,startedUtc=start,finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),wallSeconds=elapsed,nativeExit=done.returncode,stdoutPath=str(out/'stdout.log'),stdoutSha256=hashlib.sha256((out/'stdout.log').read_bytes()).hexdigest(),resultDirectories=new,binaryBefore=before,binaryAfter=after,headAfter=head_after,statusAfter=status,ownedPrefixesBefore=prefix_before,ownedPrefixesAfter=roots(),helperText=Path(__file__).read_text(),runtimeScope='FRESH current-source BOTH/catalog or exactSelectionFile PlanOnly ZERO test execution' if mode!='actual' else 'ONE separately released bounded category; provider/full-daemon/Windows/CI excluded',authority='Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism.')\n(out/'record.json').write_text(json.dumps(j,indent=2)+'\\n')\nprint('LOCAL_GM1557_EXIT',done.returncode,'wall',round(elapsed,3),'results',new,'record',out/'record.json',flush=True)\nassert head_after==expected and not status\nif mode!='catalog':assert before==after\nsys.exit(done.returncode)\n",
+      "runtimeScope": "ONE separately released bounded category; provider/full-daemon/Windows/CI excluded",
+      "authority": "Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism."
+    },
+    {
+      "mode": "actual",
+      "label": "gm1557-A-body-first-5d2c9e61",
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "gm-doc-afterlife-current-body-guards",
+        "-NoBuild"
+      ],
+      "cwd": "/workspace/The-Book-of-Eternity-Reborn-1557",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "startedUtc": "2026-10-17T04:34:55.896490+00:00",
+      "finishedUtc": "2026-10-17T04:35:01.924192+00:00",
+      "wallSeconds": 5.845592857000156,
+      "nativeExit": 1,
+      "stdoutPath": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/stdout.log",
+      "stdoutSha256": "66f92b22377107b33c6af345f695f295e8aec5fcaf115dc313e2345027ae8a3a",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories"
+      ],
+      "binaryBefore": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "binaryAfter": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "145cb54c7633531164706c5de53f397d350ab81e64e9737edf35c5f5de8ac63c",
+          "bytes": 9532416
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "0904daadf62cadb7efe0ca393e8b288405de6fab567ee9e6e0444248606caaac",
+          "bytes": 29214720
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "7e31e16872b8aa244776456fd8dd771f4d9a1bc611d27ebcfd29dbb86ca44ca2",
+          "bytes": 1935872
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "d54fcc589d14d746d39a352699efbf4b2db0baf5c918a6e82360bbbfe9c9d9ed",
+          "bytes": 26181632
+        }
+      ],
+      "headAfter": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "statusAfter": "",
+      "ownedPrefixesBefore": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "ownedPrefixesAfter": [
+        "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+        "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+        "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+        "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+        "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+        "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+        "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+        "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+        "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+        "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc"
+      ],
+      "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nmode,label,expected=sys.argv[1:4]\nassert mode in {'catalog','plan','actual'} and label.startswith('gm1557-') and '/' not in label\ncategories={x['category'] for x in json.loads((root/'tests/selection.json').read_text())['selections']}\ndef git(*args):return subprocess.check_output(['git',*args],cwd=root)\nassert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\nout=Path('/tmp/gm1557-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\npaths=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll']\ndef binaries():return [dict(path=p,sha256=hashlib.sha256((root/p).read_bytes()).hexdigest(),bytes=(root/p).stat().st_size) for p in paths if (root/p).is_file()]\nbefore=binaries();args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']\ncompiled=expected\nif mode=='catalog':\n assert len(sys.argv)==4;args+=['-ValidateCatalog']\nelse:\n prep=json.loads(Path(sys.argv[4]).read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['binaryAfter']==before and len(before)==7\n compiled=prep['sourceHead'];delta=git('diff','--name-only',compiled,expected).decode().splitlines();assert all(p.startswith('specs/1557-gm-doc-modularization/') for p in delta)\n if mode=='plan':assert len(sys.argv)==5;args+=['-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\n else:\n  assert len(sys.argv)==6 and sys.argv[5] in categories;args+=['-Category',sys.argv[5],'-NoBuild']\nresult_root=root/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\nprefixes=['boe-gm1557-*','boe-gameengine-turnlifecycle-*']\ndef roots():return sorted(str(p) for pattern in prefixes for p in Path(tempfile.gettempdir()).glob(pattern))\nprefix_before=roots();start=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()\nprint('LOCAL_GM1557_START',mode,expected,'log',out/'stdout.log',flush=True)\nwith (out/'stdout.log').open('wb') as stream:done=subprocess.run(args,cwd=root,stdout=stream,stderr=subprocess.STDOUT)\nelapsed=time.monotonic()-clock;new=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\nafter=binaries();head_after=git('rev-parse','HEAD').decode().strip();status=git('status','--porcelain').decode()\nj=dict(mode=mode,label=label,argv=args,cwd=str(root),sourceHead=expected,compiledSource=compiled,startedUtc=start,finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),wallSeconds=elapsed,nativeExit=done.returncode,stdoutPath=str(out/'stdout.log'),stdoutSha256=hashlib.sha256((out/'stdout.log').read_bytes()).hexdigest(),resultDirectories=new,binaryBefore=before,binaryAfter=after,headAfter=head_after,statusAfter=status,ownedPrefixesBefore=prefix_before,ownedPrefixesAfter=roots(),helperText=Path(__file__).read_text(),runtimeScope='FRESH current-source BOTH/catalog or exactSelectionFile PlanOnly ZERO test execution' if mode!='actual' else 'ONE separately released bounded category; provider/full-daemon/Windows/CI excluded',authority='Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism.')\n(out/'record.json').write_text(json.dumps(j,indent=2)+'\\n')\nprint('LOCAL_GM1557_EXIT',done.returncode,'wall',round(elapsed,3),'results',new,'record',out/'record.json',flush=True)\nassert head_after==expected and not status\nif mode!='catalog':assert before==after\nsys.exit(done.returncode)\n",
+      "runtimeScope": "ONE separately released bounded category; provider/full-daemon/Windows/CI excluded",
+      "authority": "Caller must separately satisfy affected SOURCE/release before actual; this wrapper is not an approval/retry mechanism."
+    }
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-authority-first-5d2c9e61/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/record.json.gz",
+      "bytes": 9830,
+      "sha256": "de7118ea8b25bbb9ed80db43bce7ceabccf70f8e483c932665351d5ca345bf6a",
+      "storedSha256": "8554b53cd80e598b19002c81123d3d7472bd2beab1d02502980e9f5dad68ebe8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-bootstrap-authority-first-5d2c9e61/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/stdout.log.gz",
+      "bytes": 3708,
+      "sha256": "9507b2a5c21e39350193f1c672d1d2e04bf89e7ace5944e84fee48fb9037d046",
+      "storedSha256": "f6c8ef5ab0a64ff9d9e8ea9178e94d8e883de631c75a971655d1c22c121005e4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/runner0/dotnet-test.log.gz",
+      "bytes": 3424892,
+      "sha256": "d1a0d3856660daccd2248b4b874f202a52fee547b6cb37cfde4a6194aa042758",
+      "storedSha256": "3c90301c67d5b65386176ec31dd509b80523c18c77ccf000e8d5916d4ccf6012",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/gm-doc-afterlife-bootstrap-authority-integration-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/runner0/gm-doc-afterlife-bootstrap-authority-integration-001.trx.gz",
+      "bytes": 739398,
+      "sha256": "d9ffa000bb361630cabf3656a05dd0f9ba951cf39bc0cba926e1adad63d44547",
+      "storedSha256": "c203d59960368e036248e3d8ae3357f61d5b45b4a10854e3f49fdfcabb950a3f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/gm-doc-afterlife-bootstrap-authority-unit-002.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/runner0/gm-doc-afterlife-bootstrap-authority-unit-002.trx.gz",
+      "bytes": 7653,
+      "sha256": "18f7f02a1fe2d15392eccd6bf1c5152a4a4682bc63a7823b136087c96d219167",
+      "storedSha256": "2bd13f228c59eefc0156c79eef089d16919f512038da640bb3e634080a1aae04",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/runner0/plan.json.gz",
+      "bytes": 2623,
+      "sha256": "891d41c503e7cced40676af5ec0e24aa490cbf73f6aad667424744e73172aa8d",
+      "storedSha256": "0c875a8c9e8708936ec2990407d73852349b4687254e18e5adfad02f6be2968b",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/0-gm1557-A-bootstrap-authority-first-5d2c9e61/runner0/summary.json.gz",
+      "bytes": 1479,
+      "sha256": "d1d80caa1dc175979e9abebb48cf7646c30c075670ab7367825814fb7367cdd6",
+      "storedSha256": "ee69ea746db7d520c122160aa658db61527091c4a5462a16707fe6b07f449213",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-named-first-5d2c9e61/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/record.json.gz",
+      "bytes": 9863,
+      "sha256": "01c2ab4a2fcf21e1e33f8524dc66bbbb94d0bbc67539eee4dacd856903517b1d",
+      "storedSha256": "caed5d2c1c8d459941902a279e49a11f259fd8798d6f118ba00c94506551fa78",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-named-first-5d2c9e61/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/stdout.log.gz",
+      "bytes": 2248,
+      "sha256": "25ac2b24ebdeee265fcb398f474516dea414bc0044130e903bdb79630193bc4f",
+      "storedSha256": "c8edb6c699f35c850270d5811e782a3413e2bfcb6408dd6710e44390154a79db",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/runner0/dotnet-test.log.gz",
+      "bytes": 1696133,
+      "sha256": "f9931374f6ae9f414aac73272fc86713aaab317f2dec639caea02c2c7e33b803",
+      "storedSha256": "6c2e0f2887f09f902cede0e141e0bafd3db3b90e34c3cc57db52f364c4926ba3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories/gm-doc-afterlife-named-consumers-integration-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/runner0/gm-doc-afterlife-named-consumers-integration-001.trx.gz",
+      "bytes": 10067,
+      "sha256": "0d2e8cdb18fe2f96374203b3a0bcd448d325726ecec5a932fdd1d11a1b958ac8",
+      "storedSha256": "fe1f0e1cfbdedb828a8c718a4477070d950ba77e8e4c5d8787f3a59b0a0a1fa8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/runner0/plan.json.gz",
+      "bytes": 1516,
+      "sha256": "97b80cae81fa473bde8d89184dc4b8f05a43dfc4755b886156639b67077186d4",
+      "storedSha256": "1770a4d0d325e36b1b01bc6fd6c08edbee4d1c627a37d275b978d254f25f7a32",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/1-gm1557-A-named-first-5d2c9e61/runner0/summary.json.gz",
+      "bytes": 1469,
+      "sha256": "8ba542c73de7fd5cba56b104630de1a85fd64fa67799e18c793e939d32304fac",
+      "storedSha256": "cd45e67b571f07b091a9935496a75e286afe4c2cc6e4c83a22a5e80f1d2f587a",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/record.json.gz",
+      "bytes": 9865,
+      "sha256": "505cf730c8233524a06f2c20ba97e90829d09d215e1ee281b250dfb6137270e8",
+      "storedSha256": "1ef8084298be2d747623de01f0d3edf39193b4a128f50f565b67bd98fc376b94",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/stdout.log.gz",
+      "bytes": 42869,
+      "sha256": "66f92b22377107b33c6af345f695f295e8aec5fcaf115dc313e2345027ae8a3a",
+      "storedSha256": "dd8d9594e3fe3f6ff2f01763fcedba423cb02eb1599b87b68611aa2f8b7b4285",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/runner0/dotnet-test.log.gz",
+      "bytes": 1736345,
+      "sha256": "f22f6c686324c39f01c1a7575c23f8ac5b360a57efd98eb49254fdfe4742b234",
+      "storedSha256": "1d086769a74d1ed0dbace655a1d25509455234232e7f4d70e5343a25ace1bc75",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/gm-doc-afterlife-current-body-guards-unit-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/runner0/gm-doc-afterlife-current-body-guards-unit-001.trx.gz",
+      "bytes": 93010,
+      "sha256": "fd94c7747d3589bffd1def364e091f40949cd7c9c9ccc914c46bc9bc3700bc2b",
+      "storedSha256": "3deb0814ca0e125d9a3beb147a8cdb5c71e35e7b45b94bc0ce32e542e9b6608c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/gm-doc-afterlife-current-body-guards-unit-002.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/runner0/gm-doc-afterlife-current-body-guards-unit-002.trx.gz",
+      "bytes": 98883,
+      "sha256": "3d8a4f5b4d2cdc7687bea88b62de0fa7625b5a67866c5315503fb93df2a679d1",
+      "storedSha256": "2fb484e9dd6a638612c843f6e9d50d47e988afdfb694b08f9a99017c218ff554",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/runner0/plan.json.gz",
+      "bytes": 41890,
+      "sha256": "6707b10546a949dfdfbe82cfc5b589fdcc5736124c1ba7fe7ae6e7acf420d599",
+      "storedSha256": "7127728a15de402b7207fbc9ceeda6ae813370a446d48fd10ee9a203cc9194da",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-stop-20261017-files/2-gm1557-A-body-first-5d2c9e61/runner0/summary.json.gz",
+      "bytes": 1450,
+      "sha256": "6c5cffc5ca6a678b86ffee7848aaa6cb305cc5da8e378d7ebfefbeae9f60b4fc",
+      "storedSha256": "f1ab9a45a47150971636e114acb185f886febcc55452149be01f46ead2538d63",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "freezeHelperText": "from pathlib import Path\nimport sys,json,hashlib,gzip,datetime\nroot=Path('/workspace/The-Book-of-Eternity-Reborn-1557');prefix=sys.argv[1]\nassert prefix.startswith('current-A-') and '/' not in prefix\nrec=root/'specs/1557-gm-doc-modularization/recovery';packet=rec/(prefix+'.json');folder=rec/(prefix+'-files')\nassert not packet.exists() and not folder.exists();folder.mkdir()\nrows=[];commands=[]\ndef save(source,relative):\n b=source.read_bytes();stored=folder/(relative+'.gz');stored.parent.mkdir(parents=True,exist_ok=True);payload=gzip.compress(b,mtime=0);stored.write_bytes(payload)\n rows.append(dict(rawPath=str(source),storedPath=str(stored.relative_to(root)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(payload).hexdigest(),compression='gzip mtime0'))\nfor n,record in enumerate(sys.argv[2:]):\n p=Path(record);j=json.loads(p.read_text());commands.append(j);tag=str(n)+'-'+j['label'];save(p,tag+'/record.json');save(Path(j['stdoutPath']),tag+'/stdout.log')\n for number,directory in enumerate(j['resultDirectories']):\n  d=Path(directory)\n  for source in sorted(x for x in d.rglob('*') if x.is_file()):save(source,tag+'/runner'+str(number)+'/'+str(source.relative_to(d)))\nresult=dict(kind='IMMUTABLE_FIRST_LOCAL_PREPARATION_OR_ACTUAL_PACKET',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),commands=commands,files=rows,freezeHelperText=Path(__file__).read_text(),scope='Exact native/stdout/runner raw bytes, source/binary pins and strict owned-prefix snapshots. Classification/release is separate; no retry or semantic acceptance is inferred from this packet.')\npacket.write_text(json.dumps(result,indent=2)+'\\n');print('FROZEN',packet.name,len(rows),'raw/stored bytechains;',len(commands),'native commands')\n",
+  "scope": "Exact native/stdout/runner raw bytes, source/binary pins and strict owned-prefix snapshots. Classification/release is separate; no retry or semantic acceptance is inferred from this packet."
+}

@@ -1,0 +1,60 @@
+{
+  "kind": "IMMUTABLE_CORRECTED_BOOTSTRAP_FIRST_ACTUAL_FIXTURE_ARTIFACTS",
+  "createdUtc": "2026-10-17T04:35:49.860508+00:00",
+  "actualSource": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+  "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+  "files": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/ast-and-publication.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-fixture-artifacts-20261017/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/ast-and-publication.json.gz",
+      "bytes": 707678,
+      "sha256": "7cca6a3a7db5ae0ae167bbb114fb7410dafef21de4454d061184b408b8b69c8f",
+      "storedSha256": "58bcb7b5607b2d8144a33d78d7e4fd1d11e7aeeb6c1375e74ee4a4e5862ee2ee",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/inspect-and-publish.ps1",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-fixture-artifacts-20261017/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-fixture-artifacts-20261017/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/outcome.json.gz",
+      "bytes": 736204,
+      "sha256": "21ad64efc03e33e0405112bb94a08312edf21700565529fe53a7b614760f057f",
+      "storedSha256": "6b3ced97bcf7f0d415113596087e7f0e366cea013958075a8beaa725fe4250d8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-fixture-artifacts-20261017/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-second-actual-fixture-artifacts-20261017/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "fixtures": [
+    {
+      "directory": "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+      "root": "/tmp/boe-gm1557-session-85f93edc3a2546159d5f92491a4d2e89",
+      "package": "/tmp/boe-gm1557-package-85f93edc3a2546159d5f92491a4d2e89",
+      "physicalAbsence": true,
+      "exitConfirmed": true,
+      "rootsRemoved": true,
+      "sourceHash": "CEAE0092297E503272FE20C8422577E63551F838BFAB5091C0F3C7D4805E7C31"
+    }
+  ],
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,xml.etree.ElementTree as ET\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-A-second-actual-stop-20261017.json').read_text());assert len(packet['files'])==20\nfolder=rec/'current-A-second-actual-fixture-artifacts-20261017';assert not folder.exists();folder.mkdir();files=[];fixtures=[]\nfor c in packet['commands']:\n for directory in sorted(set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore'])):\n  p=Path(directory);assert p.name.startswith('boe-gm1557-evidence-');data=json.loads((p/'outcome.json').read_text());assert data['artifacts']==directory and data['exitConfirmed'] and data['rootsRemoved'] and not data['remaining'] and not data['cleanupFailures'] and not data['ownershipUnresolved']\n  for key in ['root','package']:assert not Path(data[key]).exists()\n  fixtures.append(dict(directory=directory,root=data['root'],package=data['package'],physicalAbsence=True,exitConfirmed=True,rootsRemoved=True,sourceHash=data['sourceDaemonHash']))\n  for source in sorted(p.rglob('*')):\n   assert not source.is_symlink()\n   if not source.is_file():continue\n   b=source.read_bytes();z=gzip.compress(b,mtime=0);target=folder/p.name/(str(source.relative_to(p))+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(source),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nassert len(fixtures)==1 and len(files)==5\nout=rec/'current-A-second-actual-fixture-artifacts-20261017.json';assert not out.exists();out.write_text(json.dumps(dict(kind='IMMUTABLE_CORRECTED_BOOTSTRAP_FIRST_ACTUAL_FIXTURE_ARTIFACTS',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource='5d2c9e610b2d2f495de3ac23bfe0e96ae3276353',compiledSource='a4d081713d25913e3216d502c33ca5f7cb7a6cfd',files=files,fixtures=fixtures,helperText=Path(__file__).read_text()),indent=2)+'\\n')\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};groups=[];seen=set();fail=[]\nfor index,c in enumerate(packet['commands']):\n assert c['sourceHead']==c['headAfter']=='5d2c9e610b2d2f495de3ac23bfe0e96ae3276353' and c['compiledSource']=='a4d081713d25913e3216d502c33ca5f7cb7a6cfd' and not c['statusAfter'] and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7\n d=Path(c['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());assert c['nativeExit']==[0,0,1][index] and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests']\n expected=[5,5,120][index];rows=[]\n for trx in sorted(d.glob('*.trx')):\n  for row in ET.parse(trx).findall('.//t:UnitTestResult',ns):\n   key=(row.attrib['testId'],row.attrib['testName']);assert key not in seen;seen.add(key);v=dict(name=row.attrib['testName'],testId=row.attrib['testId'],outcome=row.attrib['outcome'],duration=row.attrib['duration']);assert v['outcome'] in ['Passed','Failed']\n   if v['outcome']=='Failed':v['error']=row.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);v['stack']=row.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);fail.append(v)\n   rows.append(v)\n assert len(rows)==expected\n if index<2:assert s['Selection']['Complete'] and s['Tests']['Passed']==expected\n else:assert s['Selection']==dict(PlannedDescriptors=3,CompletedDescriptors=2,PlannedCases=122,CompletedCases=120,UnderfilledDescriptors=['gm-doc-afterlife-current-body-guards-unit-003'],Complete=False)\n groups.append(dict(record=c['stdoutPath'].replace('stdout.log','record.json'),category=c['argv'][-2],seconds=c['wallSeconds'],native=c['nativeExit'],tests=s['Tests'],selection=s['Selection'],results=rows))\nassert len(seen)==130 and len(fail)==5\nfor data in [packet,json.loads(out.read_text())]:\n for f in data['files']:\n  z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\ninspection=dict(kind='SECOND_FIRST_ACTUAL_STOP_INSPECTION_NOT_CAUSAL_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),commands=groups,rawChainsVerified=20,fixtureArtifactChainsVerified=5,newFixtureOwnedRootsPhysicallyAbsent=2,results=dict(executed=130,passed=125,failed=5),failureRows=fail,bodyUnderfill='120/122 and2/3descriptors; final2casesUNRUN, notskipped/PASS/complete',qualifiedPartialOnly=dict(retainedUnaffectedOriginalPass=88,newBootstrapPass=5,newNamedPass=5,newBodyPass=115,totalPartialPass=213,failedBody=5,unrunBody=2,otherUnrun=33),remainingActual='ALL_HELD:5failed bodycases+2unrunbody+33otherunrun; no retry/diagnosis source edit before remote preservation and independent cause',priorHistory='Original93results92PASS1FAIL retained; A-E01new5PASS doesnoterase original defect/source miss. Old88provenance remainsdistinct.',helperText=Path(__file__).read_text())\np=rec/'current-A-second-actual-stop-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(inspection,indent=2)+'\\n');print('FROZEN_SECOND_STOP',20,'nativechains',5,'fixturechains',130,'executed125PASS5FAIL;body122planned120executed;2caseUNRUN')\n"
+}
