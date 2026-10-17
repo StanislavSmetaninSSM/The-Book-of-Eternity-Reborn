@@ -1,0 +1,35 @@
+{
+  "head": "b2bdd663c9b8daef97a1b91c701f5afa57b7503a",
+  "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+  "freshCatalogRecord": "/tmp/a1-implementation-tools/a1-f01-catalog-20261017T014231Z-p8232-attempt1-0528de3b/record.json",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048,
+      "liveVerified": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+      "bytes": 9500672,
+      "liveVerified": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048,
+      "liveVerified": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+      "bytes": 29163520,
+      "liveVerified": true
+    }
+  ],
+  "checkedUtc": "2026-10-17T01:52:08.050245+00:00",
+  "scopeDiff": "git diff 4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7 HEAD -- BookOfEternityClient BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests scripts tests .github = EMPTY",
+  "status": "CLEAN",
+  "runtime": "NOT_RUN; corrected boundary remains held"
+}
