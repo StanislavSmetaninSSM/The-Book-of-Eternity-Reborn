@@ -70,17 +70,18 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 ---
 
-## Client code fallback, если контракт заблокировал ход
+## Если GM-контракт остаётся неясным
 
-Промпты, правила, `OtherGuides/Afterlife_Contract_Matrix.md` и `Examples/E_CLI_Afterlife_Turns.txt` являются основным рабочим интерфейсом ГМа. Код клиента НЕ нужно читать для обычного хода и нельзя использовать вместо realm gate, матрицы, examples или запретов правил.
+Промпты, правила, `OtherGuides/Afterlife_Contract_Matrix.md` и `Examples/E_CLI_Afterlife_Turns.txt` являются рабочим интерфейсом ГМа. Матрица и examples направляют к применимым тематическим документам и примерам; открывай их по текущей задаче. Во время обычной игры и validation repair запрещено читать implementation code клиента, в том числе `BookOfEternityClient/**/*.cs`, чтобы выяснять правила или техническую форму контракта.
 
-Если после обязательных документов контракт всё ещё механически непонятен, либо repair request указывает на schema/surface mismatch, ГМ может открыть код клиента как fallback source of truth только для технической формы контракта:
-- `BookOfEternityClient/Configuration/FileMapping.cs` — какие response fields пишут какие файлы.
-- `BookOfEternityClient/Models/GameResponse.cs` и связанные модели — какие поля существуют в ответе.
-- `BookOfEternityClient/Services/Validation/` — какие поля, receipts, reports и state roots валидируются.
-- relevant services/normalizers under `BookOfEternityClient/Services/` — какие canonical surfaces и side effects ожидает runtime.
+Если после обязательных документов контракт остаётся механически непонятным либо repair request указывает на schema/surface mismatch, используй только предусмотренные GM-facing источники:
+- текущий запрос клиента и названные в нём скопированные GM-документы, применимые строки матрицы и worked examples;
+- `validation_repair_request.json.harnessRepairPackets` для текущего repair, safe GM probes и helper commands в пределах их разрешённого scope;
+- разрешённые для текущего realm и pending-контракта session state/control files.
 
-Такой fallback разрешает уточнить имена файлов, JSON-поля, allowed values, receipt/report shape, canonical state surfaces и порядок нормализации. Он НЕ разрешает придумывать новые gameplay-системы, закрывать afterlife смысл через Mortal World channels или обходить промпты. Если fallback использовался, кратко укажи в `gm_thoughts_markdown`, какой контракт был уточнён и какое canonical решение выбрано.
+Если точная форма контракта отсутствует в этих источниках или недоступна, зафиксируй недостающую documentation/harness surface в `gm_thoughts_markdown` в рамках текущего протокола. Не восстанавливай её по implementation code и не придумывай gameplay outcomes, JSON-поля, allowed values, receipt/report shape или canonical state surfaces.
+
+Эти источники не отменяют realm gate, pending-контракты, canonical-write restrictions и запреты правил. Нельзя закрывать afterlife-смысл через Mortal World channels или обходить промпты. Соблюдай текущий terminal/repair protocol; этот раздел не разрешает новый ход или дополнительные записи вне его scope.
 
 ---
 

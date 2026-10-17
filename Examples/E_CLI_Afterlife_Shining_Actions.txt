@@ -1,0 +1,2461 @@
+# E_CLI_Afterlife_Shining_Actions.txt
+
+Read when: Active Shining core action; prepared package absent. Follow only the current dispatch/contract; Valid prepared package handoff blocks ordinary Shining work does not independently activate this topic.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: [E_CLI_Afterlife_Shining_Actions.txt](Examples/E_CLI_Afterlife_Shining_Actions.txt); paired rules: [Afterlife_Shining_Actions.md](OtherGuides/Afterlife_Shining_Actions.md). Whole original examples/negative labels remain below.
+
+<!-- GM1557:A104:START -->
+2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY
+==================================================
+
+Scenario:
+- The soul is in the active Shining Abode.
+- The player says: "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину."
+- `shining_abode_state.json.availability = active` and there is no `preparedIncarnationPackage`, so this is ordinary active Shining Abode, not bootstrap handoff or sealed Shining state.
+- Shining Abode, Shining faction, Shining trade, Guardian project, and resident agency cycles are due.
+- A Shining core action request and a Shining trade inventory request are pending.
+
+Input fragments:
+
+```json
+{
+  "soul_state.json": {
+    "currentRealm": "Shining Abode",
+    "enlightenment": 100,
+    "currentIncarnation": 9
+  },
+  "shining_abode_state.json": {
+    "availability": "active",
+    "preparedIncarnationPackage": null,
+    "radiance": {
+      "tier": 3,
+      "pressure": "bright"
+    },
+    "gates": {
+      "draftVersion": 4,
+      "hasOpenDraft": false,
+      "isStale": false,
+      "allCandidateBlessingCards": [],
+      "availableBlessingCards": [],
+      "shownBlessingCardIds": [],
+      "selectedBlessingCardIds": [],
+      "nextCandidateCursor": 0,
+      "rerollsRemaining": 0
+    },
+    "factions": [
+      {
+        "factionId": "shine_faction_glass_light_001",
+        "originType": "native_radiant",
+        "hallId": "hall_glass_light_001",
+        "charter": {
+          "factionName": "Орден Стеклянного Света",
+          "favoredArchetype": "passage",
+          "patronEffectFamily": "route",
+          "summary": "Сияющая фракция, которая удерживает безопасные маршруты через рассветные врата и делает торговлю частью публичного порядка."
+        },
+        "leadership": {
+          "leadershipState": "secure",
+          "headActorType": "player_soul",
+          "headActorId": "player_soul"
+        },
+        "baseStrength": 82,
+        "factionStrength": 82,
+        "investCountThisAscension": 0,
+        "projectArchetypesCountedThisAscension": [],
+        "projects": [],
+        "tradeInventoryReceipts": [],
+        "leadershipReceipts": [],
+        "leadershipHistory": []
+      }
+    ],
+    "coreActionReceipts": []
+  },
+  "turn_request.json": {
+    "sessionId": "afterlife_session_shining_305",
+    "requestId": "afterlife_turn_shining_305",
+    "turnNumber": 305,
+    "playerAction": "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину.",
+    "progressionControl": {
+      "mustEvaluateShiningAbodeProgression": true,
+      "shiningAbodeCyclesExpectedThisTurn": 1,
+      "nextShiningAbodeCycleOrdinal": 22,
+      "mustEvaluateShiningFactionProgression": true,
+      "shiningFactionCyclesExpectedThisTurn": 2,
+      "nextShiningFactionCycleOrdinal": 40,
+      "mustEvaluateShiningTradeProgression": true,
+      "shiningTradeCyclesExpectedThisTurn": 1,
+      "nextShiningTradeCycleOrdinal": 9,
+      "mustEvaluateGuardianProjectProgression": true,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "nextGuardianProjectCycleOrdinal": 20,
+      "mustEvaluateResidentAgencyProgression": true,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "nextResidentAgencyCycleOrdinal": 13,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_shining_abode_actions.json": {
+    "requests": [
+      {
+        "requestId": "shine_core_open_gate_305",
+        "actionType": "open_gates",
+        "factionId": "shine_faction_glass_light_001",
+        "factionName": "Орден Стеклянного Света",
+        "radianceTierAtRequest": 3,
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
+        "sourceDraftVersion": 4,
+        "selectedCardIds": [],
+        "createdAtTurn": 305,
+        "createdAtUtc": "2026-04-24T08:55:00Z"
+      }
+    ]
+  },
+  "pending_shining_trade_inventory_requests.json": {
+    "requests": [
+      {
+        "requestId": "shine_trade_glass_305",
+        "factionId": "shine_faction_glass_light_001",
+        "factionName": "Орден Стеклянного Света",
+        "tradeCycleId": "shining_return_9",
+        "derivedTradeTier": 3,
+        "derivedTradeSlotCount": 8,
+        "derivedRarityCeiling": "radiant",
+        "derivedServiceMultiplier": 1.5,
+        "merchantProfile": "shining_faction",
+        "createdAtTurn": 305,
+        "createdAtUtc": "2026-04-24T08:55:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Shining Abode.
+- `availability`: active, and `preparedIncarnationPackage`: null. This is ordinary active Shining Abode, not pending-bootstrap handoff or sealed Shining state.
+- progressionControl read before narrative resolution.
+- Due contours: Shining Abode x1, Shining faction x2, Shining trade x1, Guardian project x1, resident agency x1.
+- Catch-up: not required.
+
+## Охват NPC-анализа
+- Режим: Mixed
+- Релевантные акторы: Орден Стеклянного Света, Мира, Элиан
+- Почему они релевантны: Орден закрывает Shining trade request и выбирает faction strategy; Мира меняет resident alignment; Элиан имеет due guardian project cycle.
+- Акторы вне охвата: Врата Рассвета как неразумный системный locus, другие сияющие фракции, закрытые залы, прочие Хранители
+- Почему они вне охвата: Врата закрываются через core-action state и не являются самостоятельным actor с памятью; у остальных нет pending contracts или state mutations.
+
+## Actor Brain 2.0
+### Орден Стеклянного Света
+- Текущая локация: Зал Стеклянного Света у Врат Рассвета; фракция остаётся в своём зале.
+- Ситуация: Душа просит открыть Врата и подготовить витрину через Орден.
+- Данные профиля: Сияющая фракция порядка и безопасных маршрутов, контролирует торговый ритуал и публичную дисциплину.
+- Мотивация: Показать практическую пользу Ордена и расширить влияние без открытого принуждения.
+- Ограничения: Орден связан лимитом витрины, текущей силой фракции и не может выдать закрытый draft благословений за выбор игрока.
+- Мысли: Совет Ордена считает ограниченную витрину лучшим доказательством пользы, чем громкая демонстрация власти.
+- Варианты стратегий:
+  1. Открыть ограниченную витрину и поддержать Врата. Выгода: Орден укрепит доверие и маршрут. Риск: соперники увидят рост влияния.
+  2. Отказать до усиления фракции. Выгода: ресурсы останутся в резерве. Риск: Орден потеряет публичную инициативу.
+- Выбранная стратегия: Открыть ограниченную витрину и поддержать controlled gate ritual.
+- Почему альтернативы отвергнуты: Запрос уже обеспечен допустимым контрактом, а отказ принесёт больше политического ущерба, чем экономии.
+- Действия: Орден принимает поручение, усиливает дисциплину и открывает ограниченную торговую витрину.
+- Изменения состояния: `shiningFactionStrategicMemoryUpdates`, `shiningFactionChronicleUpdates`, faction trade inventory/receipt и `coreActionReceipts`.
+
+### Мира
+- Текущая локация: Площадь у Врат Рассвета; остаётся среди жителей.
+- Ситуация: Резидентка видит рост Ордена и выбирает поддержать их публичный ритуал.
+- Данные профиля: Осторожная свидетельница порогов, знакома с Элианом и боится порядка, который отнимает личную волю.
+- Мотивация: Помочь жителям пройти безопасно и найти понятное место в сияющей иерархии.
+- Ограничения: Мира не управляет Орденом и не может обещать безопасность за пределами открытого маршрута.
+- Мысли: Я поддержу ритуал, пока он объясняет правила и не требует от жителей отказаться от собственной воли.
+- Варианты стратегий:
+  1. Публично поддержать ритуал. Выгода: жители получат проводника и ясные правила. Риск: Миру начнут считать сторонницей Ордена.
+  2. Остаться нейтральной. Выгода: политическая свобода сохранится. Риск: слабые души войдут во Врата без помощи.
+- Выбранная стратегия: Поддержать ритуал с явной оговоркой о свободе жителей.
+- Почему альтернативы отвергнуты: Нейтралитет оставит уязвимых жителей без проводника именно сейчас.
+- Действия: Её Shining alignment moves toward the Glass Light faction and is logged as resident agency.
+- Изменения состояния: `UpdateGuardianAbodeResidents`, `residentThoughtJournalUpdates`.
+
+### Элиан
+- Текущая локация: Сияющий переход у проекта Врат; остаётся у опорной арки.
+- Ситуация: Проект Хранителя связан с устойчивостью сияющих переходов.
+- Данные профиля: Хранитель знания переходов, отвечает за устойчивость проекта и безопасность слабых душ.
+- Мотивация: Использовать контролируемое открытие как редкую возможность укрепить переход.
+- Ограничения: Элиан не управляет выбором фракции и не может считать публичный ритуал доказательством вечной стабильности.
+- Мысли: Я использую этот устойчивый миг для проекта, но не приму сияющую церемонию за гарантию будущего.
+- Варианты стратегий:
+  1. Продвинуть проект во время ритуала. Выгода: доменная связь усиливает работу. Риск: проект станет зависим от чужой политики.
+  2. Наблюдать без вмешательства. Выгода: независимость проекта сохранится. Риск: редкая устойчивая возможность будет потеряна.
+- Выбранная стратегия: Выполнить один ограниченный рабочий цикл и сохранить независимый audit.
+- Почему альтернативы отвергнуты: Полный отказ от подходящего доменного момента не оправдан, если объём работы ограничен.
+- Действия: Проект получает один cycle progress because the gate action reinforces his domain.
+- Изменения состояния: `guardianProjectUpdates`, `guardianThoughtJournalUpdates`.
+
+## Afterlife Living World / Живой мир Посмертия
+- Shining Abode cycle: public order brightens, the canonical gates draft opens with controlled pressure.
+- Shining faction cycles: the Glass Light faction gains strength and lower restlessness through visible service.
+- Shining trade cycle: the faction materializes explicit tradeInventory and closes the pending trade request.
+- Guardian project cycle: one project advances.
+- Resident agency cycle: Mira changes alignment/memory.
+
+## Отчёт scheduler
+- Shining Abode ordinal 22 processed.
+- Shining faction final marker 40 processed.
+- Shining trade ordinal 9 processed.
+- Guardian project ordinal 20 processed.
+- Resident agency ordinal 13 processed.
+```
+
+Correct Shining state fragment to write into `game_state/meta/shining_abode_state.json`:
+
+This is a fragment. Preserve all existing Shining root fields, halls, factions, projects, receipts, and history entries that are not shown here.
+
+```json
+{
+  "availability": "active",
+  "preparedIncarnationPackage": null,
+  "radiance": {
+    "tier": 3,
+    "pressure": "bright",
+    "publicMood": "disciplined_hope"
+  },
+  "gates": {
+    "draftVersion": 5,
+    "hasOpenDraft": true,
+    "isStale": false,
+    "allCandidateBlessingCards": [
+      {
+        "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+        "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+        "sourceType": "head",
+        "sourceFactionId": "shine_faction_glass_light_001",
+        "sourceFactionName": "Орден Стеклянного Света",
+        "sourceActorId": "player_soul",
+        "sourceActorName": "player_soul",
+        "effectFamily": "route",
+        "rarity": "rare",
+        "displayName": "Дар фракции «Орден Стеклянного Света»",
+        "displaySummary": "Откроет 1 ранних route option к 6 ходу.",
+        "effectPayload": {
+          "type": "seed_early_routes",
+          "routeOptions": 1,
+          "latestTurn": 6
+        },
+        "_effectiveStrength": 82
+      }
+    ],
+    "availableBlessingCards": [
+      {
+        "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+        "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+        "sourceType": "head",
+        "sourceFactionId": "shine_faction_glass_light_001",
+        "sourceFactionName": "Орден Стеклянного Света",
+        "sourceActorId": "player_soul",
+        "sourceActorName": "player_soul",
+        "effectFamily": "route",
+        "rarity": "rare",
+        "displayName": "Дар фракции «Орден Стеклянного Света»",
+        "displaySummary": "Откроет 1 ранних route option к 6 ходу.",
+        "effectPayload": {
+          "type": "seed_early_routes",
+          "routeOptions": 1,
+          "latestTurn": 6
+        },
+        "_effectiveStrength": 82
+      }
+    ],
+    "shownBlessingCardIds": [
+      "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+    ],
+    "selectedBlessingCardIds": [],
+    "nextCandidateCursor": 1,
+    "rerollsRemaining": 0
+  },
+  "factions": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "originType": "native_radiant",
+      "hallId": "hall_glass_light_001",
+      "charter": {
+        "factionName": "Орден Стеклянного Света",
+        "favoredArchetype": "passage",
+        "patronEffectFamily": "route",
+        "summary": "Сияющая фракция, которая удерживает безопасные маршруты через рассветные врата и делает торговлю частью публичного порядка."
+      },
+      "leadership": {
+        "leadershipState": "secure",
+        "headActorType": "player_soul",
+        "headActorId": "player_soul"
+      },
+      "baseStrength": 88,
+      "factionStrength": 88,
+      "investCountThisAscension": 0,
+      "projectArchetypesCountedThisAscension": [],
+      "projects": [],
+      "strategicMemory": {
+        "summary": "Орден укрепляет влияние через безопасные маршруты и ограниченную публичную торговлю, не превращая порядок в принуждение.",
+        "lastUpdatedTurn": 305,
+        "recentCampaigns": ["Открытие Врат Рассвета"],
+        "losses": [],
+        "alliances": ["Жители рассветного перехода"],
+        "enemies": []
+      },
+      "chronicle": [
+        {
+          "entryId": "glass_light_evt_305_open_gates",
+          "turnNumber": 305,
+          "eventType": "public_service",
+          "summary": "Орден Стеклянного Света поддержал открытие Врат Рассвета и подготовил ограниченную витрину.",
+          "visibility": "public",
+          "consequences": ["Безопасный маршрут получил публичную поддержку Ордена."]
+        }
+      ],
+      "tradeInventory": {
+        "tradeCycleId": "shining_return_9",
+        "generatedAtUtc": "2026-04-24T08:55:00Z",
+        "generationTradeTier": 3,
+        "generationRarityCeiling": "radiant",
+        "serviceMultiplierSnapshot": 1.5,
+        "merchantProfile": "shining_faction",
+        "items": [
+          {
+            "slotId": "shine_trade_glass_305_1",
+            "priceInFeathers": 18,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_glass_dawn_lantern_001",
+              "name": "Фонарь Стеклянного Рассвета",
+              "rarity": "Epic",
+              "relicType": "radiant_memory",
+              "description": "Сияющий фонарь, который удерживает ясность маршрута у открытых Врат Рассвета."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_2",
+            "priceInFeathers": 22,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_glass_route_compass_001",
+              "name": "Компас Стеклянного Пути",
+              "rarity": "Rare",
+              "relicType": "radiant_route",
+              "description": "Компас отмечает устойчивые переходы, которые открылись после работы Врат Рассвета."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_3",
+            "priceInFeathers": 27,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_dawn_oath_prism_001",
+              "name": "Призма Рассветной Клятвы",
+              "rarity": "Epic",
+              "relicType": "radiant_oath",
+              "description": "Призма закрепляет обещание фракции поддерживать ранний путь будущей жизни."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_4",
+            "priceInFeathers": 15,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_ordered_light_thread_001",
+              "name": "Нить Упорядоченного Света",
+              "rarity": "Uncommon",
+              "relicType": "radiant_focus",
+              "description": "Тонкая световая нить помогает удерживать выбранный порядок действий в сияющем зале."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_5",
+            "priceInFeathers": 31,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_clear_gate_seal_001",
+              "name": "Печать Ясных Врат",
+              "rarity": "Legendary",
+              "relicType": "radiant_gate",
+              "description": "Печать хранит редкий фрагмент сияющего права прохода через стабильные врата."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_6",
+            "priceInFeathers": 12,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_liturgical_glass_chip_001",
+              "name": "Осколок Литургического Стекла",
+              "rarity": "Common",
+              "relicType": "radiant_material",
+              "description": "Малый сияющий материал, пригодный для будущей настройки реликвий."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_7",
+            "priceInFeathers": 24,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_discipline_chime_001",
+              "name": "Колокол Дисциплины Света",
+              "rarity": "Rare",
+              "relicType": "radiant_signal",
+              "description": "Колокол собирает внимание союзников вокруг ясного публичного ритуала."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_8",
+            "priceInFeathers": 29,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_morning_archive_lens_001",
+              "name": "Линза Утреннего Архива",
+              "rarity": "Epic",
+              "relicType": "radiant_lore",
+              "description": "Линза помогает увидеть, какие сведения лучше перенести в следующую жизнь."
+            }
+          }
+        ]
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "shine_trade_glass_305",
+          "factionId": "shine_faction_glass_light_001",
+          "factionName": "Орден Стеклянного Света",
+          "tradeCycleId": "shining_return_9",
+          "status": "ready",
+          "itemCount": 8,
+          "soldOutCount": 0,
+          "resolvedAtTurn": 305,
+          "resolvedAtUtc": "2026-04-24T08:55:00Z"
+        }
+      ],
+      "leadershipReceipts": [],
+      "leadershipHistory": []
+    }
+  ],
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_core_open_gate_305",
+      "actionType": "open_gates",
+      "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
+      "factionId": "shine_faction_glass_light_001",
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 5,
+      "resolvedAtTurn": 305,
+      "resolvedAtUtc": "2026-04-24T08:55:00Z",
+      "reason": "The requested faction stabilized the dawn gate through a public ritual."
+    }
+  ]
+}
+```
+
+Correct response/report fragment:
+
+```json
+{
+  "response": "Сияющая Обитель отвечает не громом, а стройным переливом стеклянного света. Врата Рассвета раскрываются медленно, слой за слоем, пока Орден Стеклянного Света выстраивает вокруг них круг дисциплины. На новой витрине появляется первый сияющий реликтовый предмет, и жители Обители видят: это не просто торговля, а публичное обещание порядка.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "shiningFactionStrategicMemoryUpdates": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "summary": "Орден укрепляет влияние через безопасные маршруты и ограниченную публичную торговлю, не превращая порядок в принуждение.",
+      "lastUpdatedTurn": 305,
+      "recentCampaigns": ["Открытие Врат Рассвета"],
+      "losses": [],
+      "alliances": ["Жители рассветного перехода"],
+      "enemies": []
+    }
+  ],
+  "shiningFactionChronicleUpdates": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "entryId": "glass_light_evt_305_open_gates",
+      "turnNumber": 305,
+      "eventType": "public_service",
+      "summary": "Орден Стеклянного Света поддержал открытие Врат Рассвета и подготовил ограниченную витрину.",
+      "visibility": "public",
+      "consequences": ["Безопасный маршрут получил публичную поддержку Ордена."]
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_elian_305_gate_cycle",
+      "guardianId": "guard_knowledge_elian_001",
+      "turn": 305,
+      "timestamp": "2026-04-24T08:55:00Z",
+      "title": "Устойчивый миг",
+      "summary": "Я использую этот устойчивый миг для проекта, но не приму сияющую церемонию за гарантию будущего."
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_elian_gate_stability_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "activeState": "active",
+      "workDone": 51,
+      "currentStage": 2,
+      "pressure": 1,
+      "stability": 68,
+      "assistAudit": {
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 0,
+        "DirectProjectImpact": 2,
+        "assistScore": 5,
+        "classification": "meaningful assist",
+        "reason": "Shining gate opening reinforces the guardian project domain",
+        "cyclesProcessed": 1
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "thought_mira_305_glass_order",
+      "residentId": "res_mira_001",
+      "turn": 305,
+      "timestamp": "2026-04-24T08:55:00Z",
+      "title": "Стеклянный порядок",
+      "summary": "Я поддержу Орден Стеклянного Света, пока открытие Врат остаётся безопасным и сохраняет волю жителей."
+    }
+  ],
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_mira_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "abodeId": "abode_elian_gatehouse_001",
+      "displayName": "Мира",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "свидетельница рассветных врат",
+      "summary": "Мира поддерживает осторожное открытие Врат Рассвета и помогает резидентам не терять личную волю в сияющем порядке.",
+      "bondLevel": 42,
+      "bondTier": "familiar",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Память о смертном городе, где стеклянные маяки вели караваны через рассветный туман.",
+        "futureCompanionPrompt": "Если Мира когда-нибудь станет companion echo, она проявится как осторожная проводница у сияющих порогов: помогает герою проверять цену безопасного пути и не отдавать волю чужому порядку.",
+        "bondReason": "Мира доверяет Элиану, потому что его проект удерживает переходы безопасными для слабых душ.",
+        "coreTraits": ["осторожная", "наблюдательная", "верная обещаниям"],
+        "archetypeHints": ["keeper_of_thresholds"],
+        "appearanceMotifs": ["стеклянная пыль", "бледное золото", "узор рассветных ворот"]
+      },
+      "linkedSoulQuestId": "",
+      "historyRevealed": false,
+      "grantedRelicId": "",
+      "ascensionState": "ascended",
+      "shiningFactionId": "shine_faction_glass_light_001",
+      "residentRole": "descent_support",
+      "lastUpdatedTurn": 305
+    }
+  ],
+  "progressionProcessingReport": {
+    "sessionId": "afterlife_session_shining_305",
+    "requestId": "afterlife_turn_shining_305",
+    "turnNumber": 305,
+    "shiningAbodeCyclesProcessed": 1,
+    "shiningFactionCyclesProcessed": 2,
+    "shiningTradeCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastShiningAbodeCycleOrdinal": 22,
+    "newLastShiningFactionCycleOrdinal": 40,
+    "newLastShiningTradeCycleOrdinal": 9,
+    "newLastGuardianProjectCycleOrdinal": 20,
+    "newLastResidentAgencyCycleOrdinal": 13,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+Required CLI distribution:
+
+```text
+output/narrative_response.json
+output/debug_logs.json
+game_state/meta/shining_abode_state.json
+game_state/meta/guardian_projects.json
+game_state/meta/guardian_abode_residents.json
+game_state/control/progression_report.json
+ready/turn_complete.json
+```
+
+Forbidden in this example:
+
+```text
+factionDataChanges
+factionProjectUpdates
+completeFactionProjects
+worldEventsLog
+currentLocationData
+timeChange
+weatherChange
+UpdateNPCs
+NPCsInScene
+UpdateInventory
+afterlife_notifications.json manual writes
+```
+
+Why this is valid:
+- The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
+- The pending core action is closed through `coreActionReceipts[]`.
+- The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- If the player preview shows `expectedTradeInventory`, treat it as an audit scaffold for the canonical faction `tradeInventory`: keep `generationTradeTier`, `generationRarityCeiling`, `serviceMultiplierSnapshot`, slot count, `priceInFeathers`, and nested `relicData` aligned with the pending request.
+- Every Shining trade `tradeInventory.items[].relicData.relicId` is unique in the inventory and absent from the player's existing `soulRelics.equipped[]` / `soulRelics.stored[]`; these ids become new Soul Relic identities on local purchase.
+- Shining faction progress is not written through Mortal World faction fields.
+- The resident is handled through resident afterlife state, not NPC state.
+- The scheduler report advances each contour by its own expected count.
+
+==================================================
+<!-- GM1557:A104:END -->
+<!-- GM1557:A111:START -->
+9. VALID — SHINING FACTION FOUNDING, REALIGNMENT, LEADERSHIP
+==================================================
+
+This section contains three independent Shining political pending-contract examples. Each example is a patch fragment; preserve all other required roots of `shining_abode_state.json` and `guardian_abode_residents.json`.
+
+Political request identity and locks:
+- Every active `requests[]` entry in `pending_shining_faction_foundings.json`, `pending_shining_faction_realignments.json`, `pending_shining_faction_leadership_transitions.json`, and `pending_shining_trade_inventory_requests.json` must have a unique non-empty `requestId` inside that file. Resolved notification identity is keyed by request family plus `requestId`; duplicate ids can hide a different contract and are invalid.
+- `pending_shining_faction_foundings.json` may contain only one unresolved player-soul founding request. Every accepted founding makes `player_soul` the head of the new faction, so two simultaneous founding requests conflict with the single-head invariant even when their proposed faction/hall ids differ.
+- Leadership `candidateHeadActorType/headActorId` and `incumbentHeadActorType/headActorId` are locked actor identities, not decorative labels. A resident candidate or incumbent must not simultaneously be in pending Shining realignment, ordinary inter-Abode resident transfer, founding supporter set, or another leadership transition. If a conflict exists, preserve the pending files for repair; do not close the leadership request by inventing a winner.
+- Non-resident leadership actors (`player_soul`, `guardian`, `radiant_actor`) still must not be referenced by another pending leadership transition unless it is the same faction/request being resolved.
+
+9A. Founding a new Shining faction:
+
+Resource reservation rule:
+- Creating `pending_shining_faction_foundings.json` is a client-local reservation: the client has already deducted `quotedCostFeathers = 25` from `soul_state.inkFeathers.current` and `quotedCostLightSparks = 15` from `shining_abode_state.json.lightSparks` before the GM receives the turn.
+- The live request must include `reservedInkFeathersBefore` and `reservedLightSparksBefore`. The current state must equal `reservedInkFeathersBefore - quotedCostFeathers` and `reservedLightSparksBefore - quotedCostLightSparks`; if those numbers do not line up, preserve the pending file for repair instead of founding a faction.
+- On `status = accepted`, do not restore pre-reservation resource balances. The accepted response may spend additional resources only if another valid same-turn Shining contract explicitly authorizes that spend, but it must never make current Feathers/Sparks higher than the validated pre-turn reserved balances.
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_foundings.json": {
+    "requests": [
+      {
+        "requestId": "shining_found_dawn_chorus_301",
+        "proposedFactionId": "faction_dawn_chorus",
+        "proposedHallId": "hall_dawn_chorus",
+        "proposedHallName": "Зал Рассветного Хора",
+        "proposedHallDescription": "Сияющий зал, где резиденты договариваются о мягком сопровождении будущих жизней.",
+        "proposedHallServiceTags": [
+          "social",
+          "memory"
+        ],
+        "charter": {
+          "factionName": "Рассветный Хор",
+          "favoredArchetype": "accord",
+          "patronEffectFamily": "social",
+          "summary": "Фракция поддерживает согласие между резидентами, Хранителями и будущими воплощениями."
+        },
+        "supportingResidentIds": [
+          "res_mira_001",
+          "res_liora_001",
+          "res_tavian_001"
+        ],
+        "quotedCostFeathers": 25,
+        "quotedCostLightSparks": 15,
+        "reservedInkFeathersBefore": 120,
+        "reservedLightSparksBefore": 40,
+        "createdAtTurn": 301,
+        "createdAtUtc": "2026-04-24T10:10:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct Shining state patch:
+
+```json
+{
+  "halls": [
+    {
+      "hallId": "hall_dawn_chorus",
+      "hallName": "Зал Рассветного Хора",
+      "description": "Сияющий зал, где резиденты договариваются о мягком сопровождении будущих жизней.",
+      "serviceTags": [
+        "social",
+        "memory"
+      ]
+    }
+  ],
+  "factions": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "originType": "player_founded",
+      "hallId": "hall_dawn_chorus",
+      "charter": {
+        "factionName": "Рассветный Хор",
+        "favoredArchetype": "accord",
+        "patronEffectFamily": "social",
+        "summary": "Фракция поддерживает согласие между резидентами, Хранителями и будущими воплощениями."
+      },
+      "leadership": {
+        "headActorType": "player_soul",
+        "headActorId": "player_soul",
+        "leadershipState": "secure"
+      },
+      "baseStrength": 35,
+      "factionStrength": 35,
+      "investCountThisAscension": 0,
+      "projectArchetypesCountedThisAscension": [],
+      "projects": [],
+      "leadershipReceipts": [],
+      "leadershipHistory": []
+    }
+  ],
+  "factionFoundingReceipts": [
+    {
+      "requestId": "shining_found_dawn_chorus_301",
+      "proposedFactionId": "faction_dawn_chorus",
+      "proposedHallId": "hall_dawn_chorus",
+      "hallName": "Зал Рассветного Хора",
+      "factionId": "faction_dawn_chorus",
+      "hallId": "hall_dawn_chorus",
+      "status": "accepted",
+      "supportingResidentIds": [
+        "res_mira_001",
+        "res_liora_001",
+        "res_tavian_001"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "resolvedAtTurn": 301,
+      "resolvedAtUtc": "2026-04-24T10:12:00Z",
+      "reason": "player founded a social-memory Shining faction"
+    }
+  ]
+}
+```
+
+Correct resident patch for every supporter:
+
+```json
+[
+  {
+    "residentId": "res_mira_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  },
+  {
+    "residentId": "res_liora_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  },
+  {
+    "residentId": "res_tavian_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  }
+]
+```
+
+9B. Accepted resident realignment:
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_realignments.json": {
+    "requests": [
+      {
+        "requestId": "shining_realign_mira_302",
+        "residentId": "res_mira_001",
+        "residentName": "Мира",
+        "sourceFactionId": "faction_old_mirror",
+        "sourceFactionName": "Старое Зеркало",
+        "targetFactionId": "faction_dawn_chorus",
+        "targetFactionName": "Рассветный Хор",
+        "realignmentMode": "accepted_transfer",
+        "factionLoyaltyLevel": 12,
+        "factionLoyaltyTier": "alienated",
+        "factionRestlessness": 74,
+        "factionRealignmentState": "ready_to_realign",
+        "createdAtTurn": 302,
+        "createdAtUtc": "2026-04-24T10:20:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct Shining state patch:
+
+```json
+{
+  "factionRealignmentReceipts": [
+    {
+      "requestId": "shining_realign_mira_302",
+      "residentId": "res_mira_001",
+      "residentName": "Мира",
+      "sourceFactionId": "faction_old_mirror",
+      "sourceFactionName": "Старое Зеркало",
+      "targetFactionId": "faction_dawn_chorus",
+      "targetFactionName": "Рассветный Хор",
+      "status": "accepted",
+      "realignmentMode": "accepted_transfer",
+      "residentHistoryEntryId": "hist_mira_realign_302",
+      "resolvedAtTurn": 302,
+      "resolvedAtUtc": "2026-04-24T10:24:00Z",
+      "reason": "resident accepted transfer to the player-founded faction"
+    }
+  ]
+}
+```
+
+Correct `guardian_abode_residents.json` patch:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "res_mira_001",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_chorus",
+      "factionLoyaltyLevel": 70,
+      "factionLoyaltyTier": "devoted",
+      "factionRestlessness": 20,
+      "factionRealignmentState": "settled"
+    }
+  ],
+  "historyLog": [
+    {
+      "entryId": "hist_mira_realign_302",
+      "residentId": "res_mira_001",
+      "title": "Переход в Рассветный Хор",
+      "summary": "Мира приняла переход из Старого Зеркала в Рассветный Хор и закрепила новую сияющую принадлежность.",
+      "revealedAtTurn": 302,
+      "revealedAtUtc": "2026-04-24T10:24:00Z"
+    }
+  ]
+}
+```
+
+For `departure_to_neutral`, use `status = departed_to_neutral`, clear `resident.shiningFactionId`, and still write matching `residentHistoryEntryId` plus history log. For `refused_transfer`, keep the resident in `sourceFactionId`.
+
+9C. Accepted leadership transition:
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_leadership_transitions.json": {
+    "requests": [
+      {
+        "requestId": "shining_leadership_dawn_303",
+        "factionId": "faction_dawn_chorus",
+        "factionName": "Рассветный Хор",
+        "transitionMode": "peaceful_succession",
+        "incumbentHeadActorType": "guardian",
+        "incumbentHeadActorId": "guard_social_azalia_001",
+        "candidateHeadActorType": "player_soul",
+        "candidateHeadActorId": "player_soul",
+        "supportingResidentIds": [
+          "res_mira_001",
+          "res_liora_001"
+        ],
+        "createdAtTurn": 303,
+        "createdAtUtc": "2026-04-24T10:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct faction patch:
+
+```json
+{
+  "factionId": "faction_dawn_chorus",
+  "leadership": {
+    "headActorType": "player_soul",
+    "headActorId": "player_soul",
+    "leadershipState": "secure"
+  },
+  "leadershipReceipts": [
+    {
+      "requestId": "shining_leadership_dawn_303",
+      "factionName": "Рассветный Хор",
+      "transitionMode": "peaceful_succession",
+      "previousHeadActorType": "guardian",
+      "previousHeadActorId": "guard_social_azalia_001",
+      "previousHeadLabel": "Азалия",
+      "newHeadActorType": "player_soul",
+      "newHeadActorId": "player_soul",
+      "newHeadLabel": "Душа игрока",
+      "status": "accepted",
+      "resolvedAtTurn": 303,
+      "resolvedAtUtc": "2026-04-24T10:34:00Z",
+      "reason": "peaceful succession recognized by the faction"
+    }
+  ],
+  "leadershipHistory": [
+    {
+      "eventId": "leadership_evt_dawn_303",
+      "requestId": "shining_leadership_dawn_303",
+      "eventType": "succeeded",
+      "summary": "Рассветный Хор мирно признал душу игрока главой фракции.",
+      "turnNumber": 303,
+      "occurredAtUtc": "2026-04-24T10:34:00Z"
+    }
+  ]
+}
+```
+
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state. Supported `politicalStatus` values are `head`, `former_head`, `claimant`, `elder`, and `retired`; do not invent local political status strings.
+
+active-guardian auto faction rule: if the faction is the active Guardian's auto faction (`factionId = faction_{slug(activeGuardianId)}` and/or `hallId = hall_{slug(activeGuardianId)}`), `candidateHeadActorType=guardian` is valid only when `candidateHeadActorId` equals the same `activeGuardianId`. Do not transfer this auto faction to a different Guardian through `pending_shining_faction_leadership_transitions.json`; the canonical normalizer keeps the active Guardian as that faction's head.
+
+Vacant leadership rule: every `pending_shining_faction_leadership_transitions.json` request requires an actual current non-vacant incumbent. If the faction already has `leadershipState = "vacant"` with empty `headActorType/headActorId`, do not create or close `abdication`, `peaceful_succession`, or `revolt` for it; preserve the state for a future explicit vacancy-fill feature instead.
+
+Revolt supporter rule: if `transitionMode = "revolt"` and the incumbent is a resident, `supportingResidentIds[]` must not include that incumbent resident. Supporters represent actors backing the challenge, not the current head authorizing their own removal.
+
+Canonical leadership transition matrix:
+
+| Pending `transitionMode` | Receipt `status` | Canonical leadership state | Required `leadershipHistory.eventType` |
+|---|---|---|---|
+| `peaceful_succession` | `accepted` | Candidate becomes head with `leadershipState = secure` | `succeeded` |
+| `revolt` | `accepted` | Candidate becomes head with `leadershipState = secure`; the receipt/history must preserve the revolt context | `revolted` |
+| `abdication` with candidate | `accepted` | Candidate becomes head with `leadershipState = secure` | `abdicated` |
+| `abdication` without candidate | `accepted` | Faction becomes vacant: empty `headActorType`, empty `headActorId`, `leadershipState = vacant` | `vacated` |
+| any transition mode | `refused` | Incumbent leadership remains unchanged | `refused` |
+| any transition mode | `withdrawn` | No leadership mutation; no `leadershipHistory[]` entry is required for the withdrawn request | none |
+
+Allowed leadership receipt statuses are only `accepted`, `refused`, and `withdrawn`. Do not use `departed_to_neutral` for leadership; that status belongs to resident faction realignment only.
+
+Compact non-peaceful mapping example:
+
+```json
+{
+  "transitionMode": "revolt",
+  "status": "accepted",
+  "leadershipHistory": [
+    {
+      "eventId": "leadership_evt_dawn_revolt_304",
+      "requestId": "shining_leadership_dawn_revolt_304",
+      "eventType": "revolted",
+      "summary": "A supported revolt replaced the incumbent with the named candidate.",
+      "turnNumber": 304,
+      "occurredAtUtc": "2026-04-24T10:44:00Z"
+    }
+  ]
+}
+```
+
+Radiant actor registry patch when a radiant actor becomes head:
+
+```json
+{
+  "shiningPoliticalActors": [
+    {
+      "actorId": "radiant_speaker_aurora_303",
+      "actorType": "radiant_actor",
+      "displayName": "Аврора, Голос Рассвета",
+      "summary": "Самостоятельная сияющая фигура, которую Рассветный Хор признал политическим голосом зала.",
+      "originFactionId": "faction_dawn_chorus",
+      "currentFactionId": "faction_dawn_chorus",
+      "politicalStatus": "head"
+    }
+  ]
+}
+```
+
+9D. Shining faction political memory and map influence (`shining_faction_political_memory_v1`):
+
+Use these surfaces during ordinary active Shining Abode faction turns when the GM needs persistent faction memory, territorial influence for the map, strategic planning notes, or resource accounting. They target `game_state/meta/shining_abode_state.json` and normalize into existing or same-turn-created `factions[]`. Do not use Mortal `factionChronicleUpdates`, `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, or `worldMapUpdates`.
+
+Accepted response fragment:
+
+```json
+{
+  "shiningFactionChronicleUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "entryId": "dawn_chorus_evt_304_border_oath",
+      "turnNumber": 304,
+      "eventType": "territory_shift",
+      "summary": "Рассветный Хор закрепил право голоса в Архивной дуге после публичной клятвы.",
+      "visibility": "public",
+      "consequences": [
+        "Архивная дуга признаёт влияние Рассветного Хора.",
+        "Соседние фракции получили повод ответить политически."
+      ]
+    }
+  ],
+  "shiningFactionInfluenceUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "zoneId": "zone_archive_arc_dawn_chorus_304",
+      "scopeType": "hall",
+      "scopeId": "hall_archive",
+      "displayName": "Архивная дуга",
+      "controlLevel": 72,
+      "influenceValue": 84,
+      "publicStatus": "contested_control",
+      "updatedAtTurn": 304,
+      "sourceEntryId": "dawn_chorus_evt_304_border_oath"
+    }
+  ],
+  "shiningFactionStrategicMemoryUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "summary": "Фракция делает ставку на архивную легитимность и союз с резидентами-писцами.",
+      "lastUpdatedTurn": 304,
+      "recentCampaigns": [
+        "Закрепить Архивную дугу без прямой войны."
+      ],
+      "losses": [],
+      "alliances": [
+        "Писцы Архивной дуги"
+      ],
+      "enemies": [
+        "Серебряный Хор"
+      ]
+    }
+  ],
+  "shiningFactionResourceLedgerUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "entryId": "dawn_chorus_ledger_304_sparks",
+      "turnNumber": 304,
+      "resourceType": "light_sparks",
+      "delta": -3,
+      "balanceAfter": 17,
+      "reason": "Световые Искры потрачены на закрепление права голоса в Архивной дуге."
+    }
+  ]
+}
+```
+
+Canonical normalized faction fragment:
+
+```json
+{
+  "factionId": "faction_dawn_chorus",
+  "chronicle": [
+    {
+      "entryId": "dawn_chorus_evt_304_border_oath",
+      "turnNumber": 304,
+      "eventType": "territory_shift",
+      "summary": "Рассветный Хор закрепил право голоса в Архивной дуге после публичной клятвы.",
+      "visibility": "public",
+      "consequences": [
+        "Архивная дуга признаёт влияние Рассветного Хора.",
+        "Соседние фракции получили повод ответить политически."
+      ]
+    }
+  ],
+  "territorialInfluence": [
+    {
+      "zoneId": "zone_archive_arc_dawn_chorus_304",
+      "scopeType": "hall",
+      "scopeId": "hall_archive",
+      "displayName": "Архивная дуга",
+      "controlLevel": 72,
+      "influenceValue": 84,
+      "publicStatus": "contested_control",
+      "updatedAtTurn": 304,
+      "sourceEntryId": "dawn_chorus_evt_304_border_oath"
+    }
+  ],
+  "strategicMemory": {
+    "summary": "Фракция делает ставку на архивную легитимность и союз с резидентами-писцами.",
+    "lastUpdatedTurn": 304,
+    "recentCampaigns": [
+      "Закрепить Архивную дугу без прямой войны."
+    ],
+    "losses": [],
+    "alliances": [
+      "Писцы Архивной дуги"
+    ],
+    "enemies": [
+      "Серебряный Хор"
+    ]
+  },
+  "resourceLedger": [
+    {
+      "entryId": "dawn_chorus_ledger_304_sparks",
+      "turnNumber": 304,
+      "resourceType": "light_sparks",
+      "delta": -3,
+      "balanceAfter": 17,
+      "reason": "Световые Искры потрачены на закрепление права голоса в Архивной дуге."
+    }
+  ]
+}
+```
+
+Forbidden Shining political shortcuts:
+- `factionDataChanges`.
+- ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
+- `leadership.headActorType = radiant_actor` without a matching `shiningPoliticalActors[].actorId`.
+- founding receipt without exact proposed ids/hall payload/supporter list.
+- accepted founding that writes old pre-reservation `lightSparks` or `soul_state.inkFeathers.current` and effectively refunds the client-reserved founding cost.
+- realignment accepted without resident membership update and resident history log.
+- leadership accepted/refused without matching `leadershipHistory[]` when required.
+
+==================================================
+<!-- GM1557:A111:END -->
+<!-- GM1557:A116:START -->
+14. VALID — SHINING CORE ACTION CONTRACTS
+==================================================
+
+`pending_shining_abode_actions.json` is the canonical client-authored contract for active Shining Abode actions. It is not optional flavor. If the file exists, the GM must close exactly the pending request through `game_state/meta/shining_abode_state.json.coreActionReceipts[]` and the exact state mutation required by that `actionType`.
+
+Queue and mode rules:
+- The file root is always `requests[]`; it contains exactly one active Shining core request, not a GM-managed queue. Do not write a singular root request property and do not invent a second simultaneous Shining core request.
+- Ordinary active Shining requires `currentRealm = Shining Abode`, `shining_abode_state.json.availability = active`, and `preparedIncarnationPackage = null`/absent. `sealed_until_next_ascension` is accepted persisted state, but it is not ordinary active Shining gameplay and must not process core/trade/political actions.
+- Pending-bootstrap is derived from non-null valid `preparedIncarnationPackage`; in that mode the GM preserves the package and does not process ordinary Shining core actions.
+- Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
+- Blessing-card rarity order is `common -> uncommon -> rare -> epic -> legendary -> radiant`; project-card bonuses upgrade only one step on that ladder, so a `rare` project card becomes `epic`, not immediately `radiant`.
+- Blessing-card token fields are strict in both `gates.*BlessingCards[]` and `preparedIncarnationPackage.selectedCards[]`: `sourceType = head | project | resident_descent`; `effectFamily = lore | social | resource | memory | descent | survival | relic | route`; `rarity = common | uncommon | rare | epic | legendary | radiant`.
+- Forge blessing rerolls are client-side `pendingShiningBlessingEffects.relicRefinementEntitlements`: the player preview shows before/after reroll counts, cancel preserves the entitlement, and the client consumes rerolls only after final forge-request confirmation.
+
+Client-owned local Gates operations:
+- Selecting a blessing card, deselecting it, or rerolling the open Gates draft is not a GM turn.
+- These operations create no `pending_shining_abode_actions.json`, no `coreActionReceipts[]`, no `TriggerIncarnation`, and no accepted-turn receipt.
+- They only mutate local `gates` draft fields: `selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, and `nextCandidateCursor`.
+- The GM reads those fields as current context on a later real turn. Do not invent a receipt because a card was selected locally.
+- Local selection/reroll is blocked if the draft is stale, a package is already prepared, or an unresolved Shining core pending request exists.
+
+Shining resident normalizer side effects:
+- A resident is Shining-aligned only when `ascensionState = "ascended"` and `shiningFactionId` points to an existing Shining faction.
+- If not ascended, runtime normalizes the resident to `ascensionState = "remained_in_chaos_sea"`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
+- If ascended but `shiningFactionId` is missing or points to a non-existing faction, runtime preserves `ascensionState = "ascended"` and treats the resident as ascended but unaffiliated: it clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
+- If ascended and faction exists, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`. Do not use non-canonical `shiningAlignment`.
+
+Canonical Shining owner-state invariants:
+- `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
+- Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
+- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. Once synchronized, the exact `resourceOwnerBindings.gachaReturn` entry selects the client-owned `gacha_attempts` allocation; current/maximum counters never belong in `gachaSystem`.
+- Every current-schema Shining faction requires explicit `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing, blank, or unsupported lifecycle fails raw owner-state validation before normalization and never defaults to `active`.
+- Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
+- `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
+
+Canonical Shining vocabulary tables:
+
+| Field | Allowed values | Use |
+|---|---|---|
+| `factionLifecycle.state` | `active`, `weakened`, `leaderless`, `broken`, `dissolved` | Shining faction lifecycle. `broken`/`dissolved` are defeated historical/remnant states, not deletions. |
+| `factionConflictCampaigns[].goal` | `weaken`, `expose`, `depose_leader`, `break`, `dissolve` | Player-declared long campaign objective against a Shining faction. |
+| `factionConflictCampaigns[].status` | `active`, `breakthrough_ready`, `completed`, `failed`, `abandoned` | Campaign lifecycle. `completed` requires breakthrough proof and matching faction outcome. |
+| `factionConflictCampaigns[].breakthroughLog[].type` | `exposure`, `duel_victory`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial`, `saref_directive` | Valid breakthrough routes. Spiritual combat can supply `duel_victory`, but non-combat proof is also valid. |
+| `leadershipState` | `secure`, `contested`, `vacant` | Faction leadership status; `vacant` only when no head remains. |
+| faction `originType` | `ascended_guardian`, `native_radiant`, `player_founded` | Where a Shining faction came from. |
+| `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support` | Ascended resident's faction role and blessing/trade contribution. |
+| `factionLoyaltyTier` | `alienated`, `uncertain`, `attached`, `devoted`, `steadfast` | Derived from resident loyalty/restlessness; do not invent prose tiers. |
+| `factionRealignmentState` | `settled`, `wavering`, `restless`, `considering_realignment`, `ready_to_realign` | Whether the resident is stable or ready to change faction. |
+| `projectArchetype` | `revelation`, `accord`, `provision`, `remembrance`, `refinement`, `passage`, `warding`, `subversion` | Project cost/effect classification. |
+
+Canonical Abode resident disposition/devotion/migration tables:
+
+| Field | Allowed values / mapping |
+|---|---|
+| `abodeDisposition.powerSensitivity` | `low`, `medium`, `high` |
+| `abodeDisposition.migrationDisposition` | `rooted`, `selective`, `opportunistic`, `wandering` |
+| `abodeDisposition.communalOrientation` | `low`, `medium`, `high` |
+| `abodeDisposition.stabilityNeed` | `low`, `medium`, `high` |
+| `abodeDevotionTier` | `alienated` for devotion `0..19`, `uncertain` for `20..39`, `attached` for `40..59`, `devoted` for `60..79`, `steadfast` for `80..100`; `guest` is invalid. |
+| `migrationState` | `ready_to_transfer` when devotion `<=15` and restlessness `>=70`; `considering_departure` when devotion `<=30` and restlessness `>=55`; `restless` when devotion `<=45` or restlessness `>=45`; `wavering` when devotion `<=60` or restlessness `>=30`; otherwise `settled`. |
+
+Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
+
+Player-driven campaigns against Shining factions are stored in `shining_abode_state.json.factionConflictCampaigns[]`. The player starts them through `/фракции`; the GM progresses them by adding `breakthroughLog[]` entries during valid Shining turns and, when a goal is completed, by matching the target faction lifecycle/leadership state. Do not route these conflicts through Mortal `factionDataChanges`.
+
+Minimal campaign fragment:
+
+```json
+{
+  "factionConflictCampaigns": [
+    {
+      "campaignId": "shining_faction_campaign_wings_break_001",
+      "targetFactionId": "shine_faction_wings_of_angels_001",
+      "targetFactionName": "Крылья Ангелов",
+      "goal": "break",
+      "status": "active",
+      "startedAtTurn": 820,
+      "startedAtUtc": "2026-05-20T11:00:00Z",
+      "summary": "Игрок начал долгую кампанию, чтобы разгромить Крылья Ангелов.",
+      "playerIntent": "Найти союзников, вскрыть тайные ячейки и не дать Сарефу удержать фракцию страхом.",
+      "breakthroughLog": [
+        {
+          "breakthroughId": "breakthrough_wings_duel_001",
+          "type": "duel_victory",
+          "resolvedAtTurn": 824,
+          "resolvedAtUtc": "2026-05-20T11:15:00Z",
+          "summary": "Победа в духовном бою заставила одну ячейку Крыльев отступить."
+        },
+        {
+          "breakthroughId": "breakthrough_wings_exposure_001",
+          "type": "exposure",
+          "resolvedAtTurn": 826,
+          "resolvedAtUtc": "2026-05-20T11:25:00Z",
+          "summary": "Игрок вывел на свет доказательства тайных клятв Сарефа."
+        }
+      ]
+    }
+  ]
+}
+```
+
+The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Forge previews can also show sanitized `beforeFullSoulRoot`/`afterFullSoulRoot`; Shining gacha previews can show `gachaAccounting`, `expectedGachaHistoryEntryShape`, and `oneNewRelicEvidence`. Treat these as audit aids only: they are not GM output files and not new response fields. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root, `game_state/meta/soul_state.json` when listed in `changedSurfaces`, plus `coreActionReceipts[]`; hidden blessing `effectPayload` keys must not be copied from previews.
+
+If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
+
+The strict Shining closure validator uses pre-turn `game_state/control/pending_turn_snapshot` roots for `game_state/meta/shining_abode_state.json`, `game_state/meta/guardian_abode_residents.json`, and `game_state/meta/soul_state.json`. It accepts only the canonical projected diff for the Shining core request plus other explicitly closed afterlife contracts in the same accepted response. Unrelated edits fail as `shining_closure_unexpected_shining_state_diff`, `shining_closure_unexpected_resident_state_diff`, or `shining_closure_unexpected_soul_state_diff`; missing baseline files fail as `shining_closure_missing_pre_turn_shining_state`, `shining_closure_missing_pre_turn_resident_state`, or `shining_closure_missing_pre_turn_soul_state`. A legal concurrent Soul delta must be proved by its own contract, for example an `ABODE_OFFERING` receipt/state change, not by silently changing `soul_state.json` during Shining closure.
+
+If `progressionControl` also requires Shining scheduler work, the verified `progressionProcessingReport` allows only scheduler-owned Shining/resident/trade progression fields. It must not be used as permission to change `availability`, add unrelated `coreActionReceipts[]`, mutate `gates`, append `gachaSystem.gachaHistory`, edit `pendingNativeFactionDiscovery`, create/clear `preparedIncarnationPackage`, change `lightSparks`, mutate `treasury`, or write `sourceOfLightCapstone` unless a separate client-authored pending contract for that exact surface is also closed in the same accepted turn.
+
+Defeated faction patch example:
+
+```json
+{
+  "factionId": "shine_faction_wings_of_angels_001",
+  "factionName": "Крылья Ангелов",
+  "factionStrength": 0,
+  "factionLifecycle": {
+    "state": "broken",
+    "defeatedAtTurn": 812,
+    "defeatedAtUtc": "2026-05-20T10:12:00Z",
+    "defeatReason": "Сареф пал; тайная сеть потеряла командование.",
+    "remnantsSummary": "Разрозненные ячейки скрываются в дальних залах, но фракция больше не действует как единая сила."
+  },
+  "leadership": {
+    "leadershipState": "vacant",
+    "headActorType": null,
+    "headActorId": null
+  },
+  "projects": [
+    {
+      "projectId": "wings_hidden_oath_001",
+      "status": "completed",
+      "isSupported": false
+    }
+  ],
+  "tradeInventory": null
+}
+```
+
+Supported `actionType` values:
+
+```text
+discover_native_faction
+invest_in_faction
+complete_project
+support_project
+unsupport_project
+retire_project
+open_gates
+prepare_incarnation_package
+pull_relic_gacha
+forge_relic.reshape
+forge_relic.retune_property
+forge_relic.strengthen_band
+forge_relic.stabilize_echo
+forge_relic.uplift_rarity
+```
+
+Common accepted receipt fields for every Shining core action:
+
+```json
+{
+  "requestId": "exact requestId from pending_shining_abode_actions.json",
+  "actionType": "exact actionType from request",
+  "status": "accepted",
+  "factionId": "same factionId as request, or empty string when request has none",
+  "projectId": "same projectId as request; for complete_project this may be the newly created projectId",
+  "relicId": "same relicId as request, or for pull_relic_gacha the newly materialized result relicId",
+  "returnCycleId": "same returnCycleId as request, or empty string",
+  "targetFormTag": "same targetFormTag as request, or empty string",
+  "propertyIndex": -1,
+  "quotedCostFeathers": 0,
+  "quotedCostLightSparks": 0,
+  "selectedCardIds": [],
+  "newResidentIds": [],
+  "seededProjectIds": [],
+  "generatedDraftVersion": 0,
+  "resolvedAtTurn": 321,
+  "resolvedAtUtc": "2026-04-24T13:00:00Z",
+  "reason": "short machine-readable reason"
+}
+```
+
+Important receipt rules:
+- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request. Exception: `pull_relic_gacha` introduces a new non-empty result `relicId` in the receipt because the pending request cannot know that id in advance.
+- Always include `quotedCostFeathers` and `quotedCostLightSparks`, exactly copied from the pending request even when the value is `0`.
+- Always include `selectedCardIds`, `newResidentIds`, and `seededProjectIds`; use empty arrays when the action does not use them.
+- Always include positive `resolvedAtTurn` and non-empty ISO `resolvedAtUtc`.
+- `status = refused` or `withdrawn` closes the request but must not apply the accepted state mutation.
+
+14A. Discovery and faction/project actions:
+
+```json
+{
+  "pending_shining_abode_actions.json": {
+    "requests": [
+      {
+        "requestId": "shine_discover_native_321",
+        "actionType": "discover_native_faction",
+        "radianceTierAtRequest": 2,
+        "quotedCostFeathers": 25,
+        "quotedCostLightSparks": 20,
+        "sourceDraftVersion": 0,
+        "selectedCardIds": [],
+        "createdAtTurn": 321,
+        "createdAtUtc": "2026-04-24T13:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+Accepted `discover_native_faction` must:
+- spend exactly `quotedCostFeathers` from `soul_state.json.inkFeathers`;
+- spend exactly `quotedCostLightSparks` from `shining_abode_state.json.lightSparks`;
+- add exactly `+20` Radiance XP and recalculate Radiance tier canonically;
+- materialize one new hall in `halls[]`; its `hallId` must not exist in pre-turn `shining_abode_state.halls[]`;
+- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt; its `factionId` must not exist in pre-turn `shining_abode_state.factions[]`;
+- materialize `2..4` new ascended residents in `guardian_abode_residents.json`;
+- create exactly `2` seeded completed projects inside the new faction; every `projectId` must be new across all pre-turn Shining faction projects;
+- write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects;
+- keep the accepted diff constrained to discovery surfaces: do not change pre-existing halls, factions/projects, residents, political actors, or unrelated Soul state.
+
+Legacy `pendingNativeFactionDiscovery` closure:
+- If pre-turn `shining_abode_state.json.pendingNativeFactionDiscovery` is non-null and there is no matching `pending_shining_abode_actions.json` request, treat it as the legacy state-local version of `discover_native_faction`.
+- Use `pendingNativeFactionDiscovery.requestId` as the receipt `requestId`; use `actionType = "discover_native_faction"`.
+- Materialize the same hall/native faction/residents/projects/Radiance outcome as above.
+- Spend `pendingNativeFactionDiscovery.costFeathers` from `soul_state.json.inkFeathers`.
+- Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
+- Legacy receipt cost audit is intentionally asymmetric: write `quotedCostFeathers = pendingNativeFactionDiscovery.costFeathers`, but write `quotedCostLightSparks = 0` because Light Sparks were reserved before GM closure.
+- Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
+- Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
+- Do not use the legacy closure to edit unrelated existing Shining state; only the newly discovered hall/faction/residents/projects, Radiance, Soul Feather debit, pending slot, and receipt may change.
+
+Correct legacy `pendingNativeFactionDiscovery` receipt cost audit:
+
+```json
+{
+  "requestId": "legacy_native_discovery_118",
+  "actionType": "discover_native_faction",
+  "status": "accepted",
+  "quotedCostFeathers": 25,
+  "quotedCostLightSparks": 0,
+  "hallId": "hall_legacy_radiant_118",
+  "resolvedFactionId": "shine_faction_legacy_radiant_118",
+  "selectedCardIds": [],
+  "newResidentIds": [
+    "res_legacy_radiant_118_a",
+    "res_legacy_radiant_118_b"
+  ],
+  "seededProjectIds": [
+    "shine_project_legacy_radiant_118_memory",
+    "shine_project_legacy_radiant_118_passage"
+  ],
+  "generatedDraftVersion": 0,
+  "resolvedAtTurn": 118,
+  "resolvedAtUtc": "2026-04-24T13:04:00Z",
+  "reason": "legacy pendingNativeFactionDiscovery closed; Light Sparks were pre-reserved"
+}
+```
+
+Correct `discover_native_faction` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_discover_native_321",
+      "actionType": "discover_native_faction",
+      "status": "accepted",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "factionId": "",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "hallId": "hall_silver_choir_321",
+      "resolvedFactionId": "shine_faction_silver_choir_321",
+      "selectedCardIds": [],
+      "newResidentIds": [
+        "res_silver_choir_321_a",
+        "res_silver_choir_321_b"
+      ],
+      "seededProjectIds": [
+        "shine_project_silver_choir_memory_321",
+        "shine_project_silver_choir_passage_321"
+      ],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 321,
+      "resolvedAtUtc": "2026-04-24T13:04:00Z",
+      "reason": "native radiant faction discovered and materialized"
+    }
+  ]
+}
+```
+
+For these action types, accepted state must equal the canonical helper projection from pre-turn state:
+
+```text
+invest_in_faction
+  Request requires: factionId, quotedCostFeathers = 10, quotedCostLightSparks = 5.
+  State result: spend exact costs, increment faction.investCountThisAscension, recompute factionStrength, mark open gates stale if needed.
+  Receipt target: factionId only; projectId/relicId/returnCycleId empty.
+
+complete_project
+  Request requires: factionId, projectDraft, quoted costs from the canonical quote.
+  State result: spend exact costs, append one completed project generated from projectDraft, possibly add Radiance XP for a newly counted archetype, recompute factionStrength, mark gates stale.
+  Favored archetype is cost-only: if projectDraft.projectArchetype matches faction.charter.favoredArchetype, the quote is 5 Feathers and 5 Light Sparks cheaper; strengthReward is still tier-only (tier 1 = 8, tier 2 = 12, tier 3 = 16).
+  Receipt target: factionId and non-empty projectId of the completed project.
+
+support_project
+  Request requires: factionId and projectId of an existing completed project.
+  State result: set project.isSupported = true and mark gates stale; do not invent a new project.
+  Receipt target: same factionId and projectId.
+
+unsupport_project
+  Request requires: factionId and projectId.
+  State result: set project.isSupported = false and mark gates stale.
+  Receipt target: same factionId and projectId.
+
+retire_project
+  Request requires: factionId and projectId of an existing completed project.
+  State result: set project.status = retired, set project.isSupported = false, recompute factionStrength, mark gates stale.
+  Receipt target: same factionId and projectId.
+
+open_gates
+  Request does not require a faction.
+  State result: rebuild gates draft from current Shining factions, supported projects, residents, and radiance; write gates.hasOpenDraft = true and gates.isStale = false.
+  Receipt target: empty ids, generatedDraftVersion = the resulting gates.draftVersion.
+  Deterministic projection: copy `projectedStateFragment.afterFullShiningRoot.gates` from the client preview when present. If rebuilding manually, use radiance thresholds 0..99/100..219/220..379/380..579/580+, draft size 4/6/7/8/10, pick cap 1/2/2/3/4, supported remembrance projects for rerollsRemaining, source cards from faction heads + supported completed projects + resident descent sources, de-duplicate by dedupeKey, write all candidates to allCandidateBlessingCards, first draft-size cards to availableBlessingCards, their ids to shownBlessingCardIds, selectedBlessingCardIds=[], nextCandidateCursor=available count, and generatedDraftVersion=current gates.draftVersion+1.
+```
+
+Deterministic `open_gates` Projection summary:
+- Prefer the client preview `projectedStateFragment.afterFullShiningRoot.gates` exactly.
+- Manual rebuild uses radiance thresholds 0..99/100..219/220..379/380..579/580+, draft size 4/6/7/8/10, pick cap 1/2/2/3/4, deterministic candidate order, and `dedupeKey` de-duplication.
+- The canonical output includes `allCandidateBlessingCards`, `availableBlessingCards`, `shownBlessingCardIds`, `selectedBlessingCardIds=[]`, `nextCandidateCursor`, `rerollsRemaining`, and `generatedDraftVersion`.
+
+Every `coreActionReceipts[]` entry that closes `pending_shining_abode_actions.json` must echo the exact `quotedCostFeathers` and `quotedCostLightSparks` from the pending request, including zero-cost actions. Forge receipts have one extra audit rule: `forge_relic.retune_property` must echo the request `replacementProperty`, `forge_relic.uplift_rarity` must echo request `addedProperties`, and other forge actions must not invent those payload fields.
+
+Correct `support_project` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_support_project_322",
+      "actionType": "support_project",
+      "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 322,
+      "resolvedAtUtc": "2026-04-24T13:12:00Z",
+      "reason": "completed passage project is now supported"
+    }
+  ]
+}
+```
+
+Detailed accepted fragments for the other faction/project actions:
+
+The receipt alone is not enough. Each fragment below assumes the matching canonical `shining_abode_state.json` mutation was also made from the pre-turn state: costs were spent exactly as quoted, faction strength was recomputed, and open gates were preserved with `isStale=true` when the action changed gate inputs.
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_invest_glass_323",
+      "actionType": "invest_in_faction",
+      "status": "accepted",
+      "quotedCostFeathers": 10,
+      "quotedCostLightSparks": 5,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 323,
+      "resolvedAtUtc": "2026-04-24T13:16:00Z",
+      "reason": "investment applied to faction strength and gates marked stale"
+    },
+    {
+      "requestId": "shine_complete_project_324",
+      "actionType": "complete_project",
+      "status": "accepted",
+      "quotedCostFeathers": 20,
+      "quotedCostLightSparks": 10,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_refinement_324",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 324,
+      "resolvedAtUtc": "2026-04-24T13:18:00Z",
+      "reason": "projectDraft materialized as one completed Shining project"
+    },
+    {
+      "requestId": "shine_unsupport_project_325",
+      "actionType": "unsupport_project",
+      "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 325,
+      "resolvedAtUtc": "2026-04-24T13:22:00Z",
+      "reason": "support flag removed without spending Light Sparks"
+    },
+    {
+      "requestId": "shine_retire_project_326",
+      "actionType": "retire_project",
+      "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 326,
+      "resolvedAtUtc": "2026-04-24T13:24:00Z",
+      "reason": "eligible completed project retired and removed from support"
+    }
+  ]
+}
+```
+
+For these four actions, common invalid outputs are: receipt without the matching state mutation, mutation without the receipt, spending Light Sparks for support toggles, creating a new project for `support_project` or `unsupport_project`, deleting retired project history, or leaving an open gates draft fresh after faction/project inputs changed.
+
+14B. Preparing the frozen next-life package:
+
+`prepare_incarnation_package` is not the same turn as Shining pending-bootstrap handoff. This action freezes selected blessing cards into `preparedIncarnationPackage`. The later `TriggerIncarnation` handoff preserves that package for runtime consumption.
+
+Accepted `prepare_incarnation_package` must:
+- require a fresh open gates draft;
+- use `sourceDraftVersion` matching current `gates.draftVersion`;
+- use non-empty unique `selectedCardIds`;
+- pending request must include `selectedCards[]` copied from canonical current `gates.availableBlessingCards[]` in the same order as `selectedCardIds[]`; matching only by id is not enough because `rarity`, `sourceType`, `effectFamily`, and `effectPayload` are part of the contract;
+- write `preparedIncarnationPackage` with `selectedCardIds[]` and full `selectedCards[]`;
+- reset/clean gates exactly as the canonical Shining helper does;
+- not spend Ink Feathers by itself;
+- include `selectedCards[]` in the receipt as the exact frozen package snapshot.
+
+Correct receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_prepare_package_323",
+      "actionType": "prepare_incarnation_package",
+      "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
+      "factionId": "",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [
+        "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+          "sourceType": "head",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceActorId": "player_soul",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorName": "player_soul",
+          "effectFamily": "route",
+          "rarity": "rare",
+          "displayName": "Дар фракции «Орден Стеклянного Света»",
+          "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 6
+          }
+        }
+      ],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 7,
+      "resolvedAtTurn": 323,
+      "resolvedAtUtc": "2026-04-24T13:20:00Z",
+      "reason": "selected blessing cards frozen for next incarnation"
+    }
+  ]
+}
+```
+
+14C. Shining banner gacha:
+
+`pull_relic_gacha` is a Shining faction-banner pull, not direct Chaos Sea `/gacha` and not Guardian-mediated `UpdateGuardians.processGacha`.
+
+Accepted `pull_relic_gacha` must:
+- use `turn_request.json.gachaBaseResult.baseRarity` as the minimum `baseRarity`;
+- keep `finalRarity >= baseRarity`;
+- never exceed `request.projectedGachaBonusSteps`;
+- add exactly one new Soul Relic to `soul_state.json`;
+- spend exact `quotedCostFeathers` and no Light Sparks unless the request says otherwise;
+- consume one exact `gacha_attempts` unit through the client-owned common ledger, keep `currentReturnCycleId`, and append `shining_abode_state.json.gachaSystem.gachaHistory[]`;
+- write a receipt with `returnCycleId`, `relicId`, `relicName`, `baseRarity`, and `finalRarity`.
+
+Correct receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_pull_glass_324",
+      "actionType": "pull_relic_gacha",
+      "status": "accepted",
+      "quotedCostFeathers": 30,
+      "quotedCostLightSparks": 0,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_shining_glass_oath_324",
+      "relicName": "Стеклянная Клятва Рассвета",
+      "returnCycleId": "shining_return_9",
+      "baseRarity": "Rare",
+      "finalRarity": "Epic",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 324,
+      "resolvedAtUtc": "2026-04-24T13:30:00Z",
+      "reason": "Shining faction banner pull resolved within projected bonus ceiling"
+    }
+  ]
+}
+```
+
+14D. Shining forge actions:
+
+All forge actions require ordinary active Shining Abode, a valid `factionId`, a real Soul Relic `relicId`, enough Ink Feathers and Light Sparks, and at least one supported completed `refinement` project in that faction. Accepted forge output must update both `shining_abode_state.json.lightSparks` and the exact Soul Relic in `soul_state.json`.
+
+Exact Shining Forge Mutation Table / Forge action matrix:
+
+```text
+Global forge constants:
+  Required Radiance tiers: reshape 0, retune_property 1, strengthen_band 2, stabilize_echo 3, uplift_rarity 4.
+  Base costs: reshape 10 Feathers/10 Light Sparks; retune_property 20/15; strengthen_band 30/20; stabilize_echo 25/15; uplift_rarity 45/30.
+  Service multiplier by factionStrength: 0..24 => 0.75, 25..49 => 1.0, 50..74 => 1.25, 75..100 => 1.5.
+  Rarity/band ladder: common -> uncommon -> rare -> epic -> legendary; numeric bands increment by +1.
+  Minimum property counts after rarity uplift: common 1, uncommon 2, rare 3, epic 4, legendary 5.
+  Relic refinement entitlements consumed by forge must end as consumed(consumedAtTurn/consumedAtUtc), never remain pending after use. Do not write expired for relicRefinementEntitlements; expired(expiredAtTurn/expiredAtUtc) belongs only to supported route/lore/descent deferred effect arrays.
+
+forge_relic.reshape
+  Requires: relic.formTag exists, targetFormTag is non-empty and different.
+  State result: relic.formTag becomes targetFormTag.
+  Receipt identity: factionId, relicId, targetFormTag.
+
+forge_relic.retune_property
+  Requires: propertyIndex and replacementProperty with the same canonical band as the old property.
+  State result: relic.properties[propertyIndex] becomes replacementProperty.
+  Receipt identity: factionId, relicId, propertyIndex, exact replacementProperty copied from the request.
+
+forge_relic.strengthen_band
+  Requires: propertyIndex pointing to a property with upgradeable band.
+  State result: relic.properties[propertyIndex].band upgrades by one canonical step.
+  Receipt identity: factionId, relicId, propertyIndex.
+
+forge_relic.stabilize_echo
+  Requires: companion_echo relic or relic with companionSeed / companionManifestationQualityBonus.
+  State result: relic.companionManifestationQualityBonus increases by floor(15 * service multiplier).
+  Receipt identity: factionId, relicId.
+
+forge_relic.uplift_rarity
+  Requires: canonical rarity below legendary and enough addedProperties if the next rarity requires more properties.
+  State result: relic rarity upgrades one step; missing minimum properties are appended from addedProperties.
+  Receipt identity: factionId, relicId, exact addedProperties copied from the request.
+```
+
+Correct `forge_relic.retune_property` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_forge_retune_325",
+      "actionType": "forge_relic.retune_property",
+      "status": "accepted",
+      "quotedCostFeathers": 20,
+      "quotedCostLightSparks": 15,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": 1,
+      "replacementProperty": {
+        "propertyId": "prop_mirror_lens_dawn_focus",
+        "name": "Dawn Focus",
+        "stat": "route_clarity",
+        "band": "rare"
+      },
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 325,
+      "resolvedAtUtc": "2026-04-24T13:40:00Z",
+      "reason": "property at index 1 retuned within the same band"
+    }
+  ]
+}
+```
+
+Canonical before/after fragment for that `retune_property` closure:
+
+```json
+{
+  "changedSurfaces": [
+    "game_state/meta/soul_state.json",
+    "game_state/meta/shining_abode_state.json.coreActionReceipts[]",
+    "game_state/meta/shining_abode_state.json.lightSparks"
+  ],
+  "beforeRelic": {
+    "relicId": "relic_mirror_lens_001",
+    "quality": "rare",
+    "formTag": "mirror_lens",
+    "properties": [
+      {
+        "propertyId": "prop_mirror_lens_old",
+        "name": "Old Reflection",
+        "stat": "reflection",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_clouded",
+        "name": "Clouded Route",
+        "stat": "route_noise",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_memory",
+        "name": "Memory Lens",
+        "stat": "memory",
+        "band": "uncommon"
+      }
+    ]
+  },
+  "afterRelic": {
+    "relicId": "relic_mirror_lens_001",
+    "quality": "rare",
+    "formTag": "mirror_lens",
+    "properties": [
+      {
+        "propertyId": "prop_mirror_lens_old",
+        "name": "Old Reflection",
+        "stat": "reflection",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_dawn_focus",
+        "name": "Dawn Focus",
+        "stat": "route_clarity",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_memory",
+        "name": "Memory Lens",
+        "stat": "memory",
+        "band": "uncommon"
+      }
+    ]
+  },
+  "resourceDelta": {
+    "inkFeathers": "-20",
+    "lightSparks": "-15"
+  },
+  "entitlementTerminalRule": "if a pending relicRefinementEntitlement paid for this retune, mark it consumed with consumedAtTurn=325 and consumedAtUtc matching the receipt; otherwise leave unrelated entitlements unchanged"
+}
+```
+
+Other valid forge receipt fragments:
+
+These are receipt fragments only. The same accepted response must also update `soul_state.json` with the full canonical Soul Relic result and update `shining_abode_state.json.lightSparks` by the exact quoted cost. Do not write a detached relic fragment that is not persisted in the Soul state.
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_forge_reshape_326",
+      "actionType": "forge_relic.reshape",
+      "status": "accepted",
+      "quotedCostFeathers": 10,
+      "quotedCostLightSparks": 10,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "lens_of_dawn",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 326,
+      "resolvedAtUtc": "2026-04-24T13:42:00Z",
+      "reason": "relic form tag reshaped by supported refinement project"
+    },
+    {
+      "requestId": "shine_forge_strengthen_327",
+      "actionType": "forge_relic.strengthen_band",
+      "status": "accepted",
+      "quotedCostFeathers": 30,
+      "quotedCostLightSparks": 20,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": 0,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 327,
+      "resolvedAtUtc": "2026-04-24T13:44:00Z",
+      "reason": "property band upgraded by one authorized step"
+    },
+    {
+      "requestId": "shine_forge_echo_328",
+      "actionType": "forge_relic.stabilize_echo",
+      "status": "accepted",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_companion_echo_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 328,
+      "resolvedAtUtc": "2026-04-24T13:46:00Z",
+      "reason": "companion echo stabilized on the target relic"
+    },
+    {
+      "requestId": "shine_forge_uplift_329",
+      "actionType": "forge_relic.uplift_rarity",
+      "status": "accepted",
+      "quotedCostFeathers": 45,
+      "quotedCostLightSparks": 30,
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "addedProperties": [
+        {
+          "propertyId": "prop_mirror_lens_legendary_refraction",
+          "name": "Legendary Refraction",
+          "stat": "radiant_memory",
+          "band": "legendary"
+        }
+      ],
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 329,
+      "resolvedAtUtc": "2026-04-24T13:48:00Z",
+      "reason": "rarity uplift applied with required added properties"
+    }
+  ]
+}
+```
+
+Invalid Shining core-action shortcuts:
+- Closing `pending_shining_abode_actions.json` only in prose.
+- Writing `factionDataChanges` or `factionProjectUpdates` for Shining faction/project actions.
+- Omitting empty receipt arrays such as `selectedCardIds`, `newResidentIds`, or `seededProjectIds`.
+- Omitting exact receipt cost audit fields `quotedCostFeathers` and `quotedCostLightSparks`.
+- Omitting the exact forge request payload from receipts (`replacementProperty` for retune, `addedProperties` for uplift).
+- Accepted receipt with target ids that do not exactly match the pending request.
+- `prepare_incarnation_package` receipt without `selectedCards[]` snapshot.
+- `pull_relic_gacha` using `UpdateGuardians.processGacha` or direct `/gacha` rules.
+- Forge action that changes a copied relic fragment instead of the canonical Soul Relic in `soul_state.json`.
+
+==================================================
+<!-- GM1557:A116:END -->
+<!-- GM1557:A132:START -->
+## Shining Faction Materialization worked examples
+
+Every canonical Shining faction already has one complete materialization envelope. Receipt-less state is invalid and is not promoted or repaired into the current schema at runtime. Ordinary readers reveal only exact `visibility = "revealed"`; missing or blank visibility fails closed.
+
+Resident membership and materialization evidence use an exact, case-sensitive `guardian_abode_residents.json.entries[].shiningFactionId == factionId` match. A case variant contributes neither resident evidence nor derived faction strength, tier, service multiplier, or trade authority.
+
+### shining_faction_materialization_native_discovery_v1
+
+The validated `native_discovery -> shining_core_action_request -> native_radiant` route authors the faction; discovery is not inferred from a Guardian title or prose.
+
+```json
+{
+  "factionId": "faction_dawn_reed",
+  "originType": "native_radiant",
+  "hallId": "hall_dawn_reed",
+  "creationProvenance": {
+    "route": "native_discovery",
+    "authorityType": "shining_core_action_request",
+    "authorityId": "request_discover_dawn_reed"
+  },
+  "charter": {
+    "factionName": "Тростник Рассвета",
+    "favoredArchetype": "remembrance",
+    "patronEffectFamily": "memory",
+    "summary": "Проводит заблудшие души к тихому свету."
+  },
+  "currentAgenda": "Открыть безопасный путь через поющие сады.",
+  "visibility": "revealed",
+  "storyAuthority": null,
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "radiant_actor",
+    "headActorId": "radiant_ilan"
+  },
+  "strategicMemory": {
+    "summary": "Фракция открылась после завершённого поиска.",
+    "lastUpdatedTurn": 31,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_dawn_reed_discovery",
+      "turnNumber": 31,
+      "eventType": "faction_materialized",
+      "summary": "Тростник Рассвета открыл свой зал.",
+      "visibility": "known",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 55,
+  "factionStrength": 55,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [
+    {"projectId": "project_singing_path", "displayName": "Поющая тропа", "status": "completed", "isSupported": false},
+    {"projectId": "project_dawn_memory", "displayName": "Память рассвета", "status": "completed", "isSupported": false}
+  ],
+  "territorialInfluence": [
+    {"zoneId": "zone_dawn_reed_hall", "scopeType": "hall", "scopeId": "hall_dawn_reed", "displayName": "Зал Тростника", "controlLevel": "anchored", "influenceValue": 55, "publicStatus": "known", "updatedAtTurn": 31}
+  ],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_dawn_reed_turn_31",
+    "factionType": "shining_faction",
+    "factionId": "faction_dawn_reed",
+    "materializedAtTurn": 31,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": true,
+      "holdsTerritorialInfluence": true,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": true,
+      "hasLeadershipHistory": false,
+      "usesStoryState": false
+    },
+    "sections": {
+      "projects": {"state": "populated"},
+      "territorialInfluence": {"state": "populated"},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Открытый зал ещё не провёл ни одной ресурсной операции."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговая витрина зала ещё не учреждена."},
+      "leadershipHistory": {"state": "empty_by_design", "reason": "Смена главы ещё не происходила."},
+      "storyState": {"state": "empty_by_design", "reason": "Фракция создана нативным открытием, а не сюжетной властью."}
+    }
+  }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_dawn_reed_guide",
+      "displayName": "Проводник Тростника",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_dawn_reed_singer",
+      "displayName": "Певчая Рассвета",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
+}
+```
+
+Exact pre-turn authority in `game_state/control/pending_shining_abode_actions.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "radianceTierAtRequest": 2,
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "sourceDraftVersion": 0,
+      "selectedCardIds": [],
+      "createdAtTurn": 31,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.coreActionReceipts[]`:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "status": "accepted",
+      "selectedCardIds": [],
+      "newResidentIds": ["resident_dawn_reed_guide", "resident_dawn_reed_singer"],
+      "seededProjectIds": ["project_singing_path", "project_dawn_memory"],
+      "resolvedFactionId": "faction_dawn_reed",
+      "hallId": "hall_dawn_reed",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 31,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "native_discovery_accepted"
+    }
+  ]
+}
+```
+
+### shining_faction_materialization_player_founding_v1
+
+The `player_founding -> shining_founding_request -> player_founded` route consumes exact founding authority and supporter evidence.
+
+```json
+{
+  "factionId": "faction_lantern_covenant",
+  "originType": "player_founded",
+  "hallId": "hall_lantern_covenant",
+  "creationProvenance": {
+    "route": "player_founding",
+    "authorityType": "shining_founding_request",
+    "authorityId": "shining_founding_request_44"
+  },
+  "charter": {
+    "factionName": "Союз Фонарей",
+    "favoredArchetype": "accord",
+    "patronEffectFamily": "social",
+    "summary": "Открытый приют для недавно вознесённых душ."
+  },
+  "currentAgenda": "Закрепить хартию и подготовить первый зал.",
+  "visibility": "revealed",
+  "storyAuthority": null,
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "player_soul",
+    "headActorId": "player_soul"
+  },
+  "strategicMemory": {
+    "summary": "Хартия принята тремя согласными жителями.",
+    "lastUpdatedTurn": 44,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_lantern_covenant_founding",
+      "turnNumber": 44,
+      "eventType": "faction_materialized",
+      "summary": "Союз Фонарей учредил новый зал.",
+      "visibility": "known",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 35,
+  "factionStrength": 35,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [
+    {
+      "requestId": "shining_founding_request_44",
+      "eventType": "founded",
+      "turnNumber": 44,
+      "summary": "Игрок основал Союз Фонарей."
+    }
+  ],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_lantern_covenant_turn_44",
+    "factionType": "shining_faction",
+    "factionId": "faction_lantern_covenant",
+    "materializedAtTurn": 44,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": true,
+      "hasLeadershipHistory": true,
+      "usesStoryState": false
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Первый проект будет выбран после учреждения зала."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Новая хартия ещё не закрепила влияние."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсных операций ещё не было."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговля ещё не учреждена."},
+      "leadershipHistory": {"state": "populated"},
+      "storyState": {"state": "empty_by_design", "reason": "Фракция создана игроком, а не сюжетной властью."}
+    }
+  }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_lantern_supporter_1",
+      "displayName": "Первый хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_2",
+      "displayName": "Вторая хранительница Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_3",
+      "displayName": "Третий хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
+}
+```
+
+Exact pre-turn authority in `game_state/control/pending_shining_faction_foundings.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "proposedHallName": "Зал Союза Фонарей",
+      "proposedHallDescription": "Открытый зал для недавно вознесённых душ.",
+      "proposedHallServiceTags": ["social", "memory"],
+      "charter": {
+        "factionName": "Союз Фонарей",
+        "favoredArchetype": "accord",
+        "patronEffectFamily": "social",
+        "summary": "Открытый приют для недавно вознесённых душ."
+      },
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "createdAtTurn": 44,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.factionFoundingReceipts[]`:
+
+```json
+{
+  "factionFoundingReceipts": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "hallName": "Зал Союза Фонарей",
+      "factionId": "faction_lantern_covenant",
+      "hallId": "hall_lantern_covenant",
+      "status": "accepted",
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "resolvedAtTurn": 44,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "founding_accepted"
+    }
+  ]
+}
+```
+
+### shining_faction_materialization_story_hidden_v1
+
+Exact story authority may create a hidden faction. Ordinary reader projections omit this entire faction object and strip every materialization envelope from visible factions.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "originType": "native_radiant",
+  "hallId": "hall_veiled_prism",
+  "creationProvenance": {
+    "route": "story",
+    "authorityType": "saref_main_story",
+    "authorityId": "faction_veiled_prism"
+  },
+  "charter": {
+    "factionName": "Скрытая Призма",
+    "favoredArchetype": "subversion",
+    "patronEffectFamily": "route",
+    "summary": "Наблюдает за разломами света, не раскрывая присутствия."
+  },
+  "currentAgenda": "Проверить источник искажённого сияния.",
+  "visibility": "hidden",
+  "storyAuthority": {
+    "authorityType": "saref_main_story",
+    "authorityId": "faction_veiled_prism",
+    "factionRole": "wings_of_angels"
+  },
+  "sarefFactionRole": "wings_of_angels",
+  "sarefVisibility": "hidden",
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "radiant_actor",
+    "headActorId": "radiant_prism_warden"
+  },
+  "strategicMemory": {
+    "summary": "Существование подтверждено точной сюжетной властью.",
+    "lastUpdatedTurn": 52,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_veiled_prism_confirmation",
+      "turnNumber": 52,
+      "eventType": "faction_materialized",
+      "summary": "Скрытая Призма закрепила тайное присутствие в своём зале.",
+      "visibility": "hidden",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 30,
+  "factionStrength": 30,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_veiled_prism_turn_52",
+    "factionType": "shining_faction",
+    "factionId": "faction_veiled_prism",
+    "materializedAtTurn": 52,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": false,
+      "canTrade": true,
+      "hasLeadershipHistory": false,
+      "usesStoryState": true
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Сюжетная власть пока не объявила проект."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Скрытая фракция не заявляет видимого влияния."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсная история ещё не раскрыта автору."},
+      "residentAffiliations": {"state": "empty_by_design", "reason": "Участники пока не установлены точной властью."},
+      "trade": {"state": "empty_by_design", "reason": "Торговая власть отсутствует."},
+      "leadershipHistory": {"state": "empty_by_design", "reason": "До текущего подтверждения история главы не определена."},
+      "storyState": {"state": "populated"}
+    }
+  }
+}
+```
+
+### shining_faction_materialization_repair_v1
+
+A bounded Shining repair targets only the rejected disposition/canonical surface and preserves hidden visibility, identity, route authority, and unrelated fields. `targetFiles` is the exact writable allowlist. If the defect is a missing or ambiguous required actor profile, the packet also names `game_state/meta/afterlife_entity_profiles.json`; do not add that root to an unrelated trade-only repair.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "repairScope": "materialization.sections.trade",
+  "targetFiles": [
+    "game_state/meta/shining_abode_state.json"
+  ],
+  "preserveMaterializationId": "mat_shining_faction_veiled_prism_turn_52",
+  "visibility": "hidden",
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "replacement": {
+    "state": "empty_by_design",
+    "reason": "Торговая власть отсутствует."
+  }
+}
+```
+
+Shining treasury interest:
+
+```json
+{
+  "response": "Казначейство начисляет 15 Чернильных Перьев процентов.",
+  "gm_thoughts_markdown": "Математик использован для процентов казначейства: min(depositedInkFeathers * basisPoints / 10000, cycleCap).",
+  "mathRequests": [
+    {
+      "requestId": "calc_shining_treasury_interest_example",
+      "purpose": "shining treasury interest",
+      "expression": "min(depositedInkFeathers * basisPoints / 10000, cycleCap)",
+      "variables": { "depositedInkFeathers": 1000, "basisPoints": 150, "cycleCap": 25 },
+      "rounding": { "mode": "floor", "decimalPlaces": 0 },
+      "expectedResult": 15,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_shining_treasury_interest_example",
+      "requestId": "calc_shining_treasury_interest_example",
+      "purpose": "shining treasury interest",
+      "expression": "min(depositedInkFeathers * basisPoints / 10000, cycleCap)",
+      "normalizedExpression": "min(depositedInkFeathers*basisPoints/10000,cycleCap)",
+      "variables": { "depositedInkFeathers": 1000, "basisPoints": 150, "cycleCap": 25 },
+      "rawResult": 15,
+      "result": 15,
+      "rounding": { "mode": "floor", "decimalPlaces": 0 },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "shiningTreasury:settlementCycle:shining_return_12" ],
+      "warnings": []
+    }
+  ]
+}
+```
+<!-- GM1557:A132:END -->

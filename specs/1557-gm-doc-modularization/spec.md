@@ -1,5 +1,7 @@
 # Feature Specification: GM Documentation Modularization
 
+> **Current A implementation draft, 2026-10-17.** [Saved WIP](plan.md) authors the ten actual pairs/core/router and fixed36-document delivery graph on current A1/A2/GM source, with exact three-source reassembly and retained newer readonly/wound content. Consumer migration and physical/lifetime negatives remain incomplete; preparation/SOURCE/EVIDENCE/fullA acceptance are pending. No tests were rerun or old evidence relabelled; Block_5 and all broader holds remain.
+
 > **Current IMPLEMENTATION continuation, 2026-10-17.** User explicitly selected this approved #1557 scope as fallback. [Current plan](plan.md) uses the published continuation branch on accepted a5/A1/A2 code and current GM source, selectively imports existing2601 work/history and continues coherent A. Historical frozen/release wording below does not force another design-only stop. No Block_5 before independent A acceptance, gameplay/provider/Windows/CI/security/merge/main/issue-close expansion or unchanged proof replay.
 
 **Revision**: 1, 2026-10-13

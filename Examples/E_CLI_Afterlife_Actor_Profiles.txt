@@ -1,0 +1,1006 @@
+# E_CLI_Afterlife_Actor_Profiles.txt
+
+Read when: Current new durable afterlife actor/profile change. Follow only the current dispatch/contract; Untouched client Fresh Guardian seed does not independently activate this topic.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: [E_CLI_Afterlife_Actor_Profiles.txt](Examples/E_CLI_Afterlife_Actor_Profiles.txt); paired rules: [Afterlife_Actor_Profiles.md](OtherGuides/Afterlife_Actor_Profiles.md). Whole original examples/negative labels remain below.
+
+<!-- GM1557:A101:START -->
+==================================================
+GUARDIAN SCOPE REPAIR PACKET EXAMPLE
+==================================================
+
+When the client rejects a Chaos Sea or Shining Abode turn and writes `game_state/control/validation_repair_request.json`, this is not a new turn. If the request contains `harnessRepairPackets[]`, read those packets before individual `errors[]`.
+If the daemon prompt provides `game_state/control/gm_context_pack/context_pack_manifest.json`, start from that session-local context pack and its copied GM docs/examples. Do not open `BookOfEternityClient/**/*.cs` during live repair; the packet, manifest, session state/control files, and helper bootstrap are the intended harness.
+If `harnessRepairPackets[].kind = "npc_scope_declaration_repair"`, repair `output/debug_logs.json.gm_thoughts_markdown` with the packet's `debugLogTemplate`. In Chaos Sea / Shining Abode spiritual conflicts, `Mixed` normally needs the player soul, the active Guardian/teacher/anchor, and the current opponent or trial actor when those actors participate in the same exchange. Use `Scene-local + Relevant actors: нет` only for a truly actorless turn with no actor-specific state changes.
+If a relevant non-player Guardian or resident receives the player action and chooses a response, the same accepted turn needs both records: a full Actor Brain decision audit and the actor's own concise first-person journal delta. The audit includes `Данные профиля:`, `Мотивация:`, `Ограничения:`, at least two `Варианты стратегий:` with explicit `Выгода:` and `Риск:`, `Выбранная стратегия:`, rejected alternatives, `Действия:`, and `Изменения состояния:`. For a Guardian, prefer `guardianThoughtJournalUpdates` / `guardian_thought_journal.json`; `guardians[].musings` through `UpdateGuardians.addMusings` remains a valid alternative, but never duplicate the same reaction across both. Residents use `residentThoughtJournalUpdates`.
+
+Example fragment:
+
+```json
+{
+  "harnessRepairPackets": [
+    {
+      "kind": "guardian_scope_repair",
+      "targetFiles": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия" ],
+      "debugLogTemplate": "## Охват NPC-анализа\nРежим: Guardian-centric\nРелевантные акторы: Азалия\n...\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: ...\n- Ситуация: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- Мысли: ...\n- Варианты стратегий:\n  1. ... Выгода: ... Риск: ...\n  2. ... Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- Действия: ...\n- Изменения состояния: guardianThoughtJournalUpdates"
+    },
+    {
+      "kind": "actor_reasoning_subpoint_repair",
+      "targetFiles": [
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия", "Пепельная Искра" ],
+      "debugLogTemplate": "## Размышления акторов\n### Азалия\n- Текущая локация: ...\n- Ситуация: ...\n- Данные профиля: ...\n- Мотивация: ...\n- Ограничения: ...\n- Мысли: ...\n- Варианты стратегий:\n  1. ... Выгода: ... Риск: ...\n  2. ... Выгода: ... Риск: ...\n- Выбранная стратегия: ...\n- Почему альтернативы отвергнуты: ...\n- Действия: ...\n- Изменения состояния: ..."
+    },
+    {
+      "kind": "actor_memory_persistence_repair",
+      "targetFiles": [
+        "game_state/meta/guardian_thought_journal.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "output/debug_logs.json"
+      ],
+      "canonicalActorNames": [ "Азалия", "Лиора" ],
+      "expectedShape": [
+        "Direct guardian_thought_journal.json repair uses canonical top-level entries[].",
+        "Each Guardian entry contains entryId, guardianId, title, first-person summary, turn, and timestamp."
+      ],
+      "safeCorrectionRules": [
+        "Append one concise first-person current-turn thought to the exact actor journal.",
+        "Update only each listed actor's Изменения состояния line to name the exact journal surface.",
+        "guardianThoughtJournalUpdates is a first-pass response command; do not persist schemaVersion or a guardianThoughtJournalUpdates-only root in guardian_thought_journal.json.",
+        "Preserve narrative/interface output, old entries, and unrelated state; do not replay the scene."
+      ]
+    }
+  ]
+}
+```
+
+Common afterlife repair packets from live tests:
+
+```json
+{
+  "harnessRepairPackets": [
+    {
+      "kind": "afterlife_spiritual_conflict_reward_repair",
+      "targetFiles": [
+        "game_state/meta/afterlife_spiritual_conflict_state.json"
+      ],
+      "steps": [
+        "If the listed outcome is negotiated/training/withdrawn/non-victory, remove rewardAudit and matching currency reward deltas.",
+        "Do not convert the outcome into a victory to keep a reward; preserve valid learning, chronicle, relationship, and narrative consequences."
+      ]
+    },
+    {
+      "kind": "afterlife_entity_profile_scaffold_repair",
+      "targetFiles": [
+        "game_state/meta/afterlife_entity_profiles.json"
+      ],
+      "steps": [
+        "Keep goals as object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, updatedAtTurn.",
+        "Add/repair progressionStrategy and ledger, and complete profileCommands.specialArtLearningReceipts[] with required teacher/player/art fields and initialTier absent or 0."
+      ]
+    }
+  ]
+}
+```
+
+For `afterlife_spiritual_conflict_reward_repair`, a currency reward is legal only for contested `player_success` or `decisive_player_success`. For `afterlife_entity_profile_scaffold_repair`, repair the profile in place; do not move afterlife profile data into Mortal files and do not delete special-art learning proof to avoid scaffold fields.
+
+Correct repair behavior:
+- Every `game_state/meta/` validation-repair target is afterlife-scoped, including non-actor metadata. The worker runs in a detached execution snapshot with only pinned context. `game_state/meta/soul_state.json` is hash-pinned read-only realm authority: its exact canonical-byte hash must be in task `contextFiles`, its realm must match `afterlifeContract`, and it must not appear in `changedFiles` or `allowedProposalPaths`. Validation-repair `allowedAfterlifeSurfaces` lists exact wildcard-free paths under `game_state/meta/`, never glob patterns. `lore/current_world/**` and `game_state/core/player_status.json` are Mortal, including nested validation coordinates, and merely being outside a recognized Mortal prefix grants no afterlife repair authority. Typed afterlife content tasks may still use exact task-provided control/report surfaces. Path identity is case-insensitive, so case aliases do not create a second authority. Reject mixed Mortal/afterlife batches and missing, malformed, duplicate-key, unsupported, or mismatched authority at task construction. During apply, hold one canonical write lease across authority verification, every write, validation, read-only context recheck, rollback, and decision; built-in backup, restore, clear, save, and load operations use the same lease. If authority changed after dispatch, reject without accepting any file.
+- Repair only files listed in `targetFiles` unless another current error explicitly names a different file.
+- If one current repair request lists both afterlife canonical and player-facing targets, finish every canonical write first, then re-read the repaired state and rewrite dependent narrative/interface output. Keep the original canonical target set through every later output-only retry. Output must be strictly newer than the latest actual write of every retained target; equal timestamps are stale. Request creation, worker dispatch, and repair-loop start are not freshness boundaries, and an unobservable target write fails closed.
+- In `output/debug_logs.json.gm_thoughts_markdown`, use `canonicalActorNames[]` exactly for `Relevant actors` and for `### <Guardian Name>` headings. Do not use raw `guardianId` or stale mirror-only aliases as actor names.
+- In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
+- If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
+- If the packet kind is `actor_reasoning_subpoint_repair`, do not rewrite the turn. Repair only `output/debug_logs.json.gm_thoughts_markdown`, preserve existing accepted content, create any missing `### <actor>` block from `canonicalActorNames[]`, and follow the full `debugLogTemplate`: location, situation, profile inputs, motivation, constraints, two strategies with explicit `Выгода:`/`Риск:`, chosen strategy, rejected alternatives, actions, and exact state changes.
+- If the packet kind is `actor_memory_persistence_repair`, the decision is already authored. Append one new first-person thought only to the listed Guardian/resident journal surface. For an afterlife entity without a dedicated journal, update only its actor-owned `gmThoughtsSummary`; `ledger` / `progressionLedger` may record separate progression history but never substitutes for thought memory. For an existing Shining faction append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. Preserve all old entries and do not rewrite narrative or unrelated state.
+- Every independent name in relevant actors needs a canonical memory owner. Materialize a genuine actor with a stable id and complete supported profile; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
+- Do not read implementation code such as `BookOfEternityClient/**/*.cs` during repair. Use the repair packet, this example, GM guides, and session control/snapshot files.
+- After repairing the files, call `Complete-BoeValidationRepair` or create `game_state/control/validation_repair_ready.json` with exact `sessionId`, `requestId`, and `turnNumber` from the same current repair request.
+
+Worked afterlife canonical/output ordering:
+
+```text
+Current repair request lists:
+- game_state/meta/guardians.json.activeGuardian.relationshipData
+- output/narrative_response.json
+
+Correct:
+1. Repair guardians.json from the validated Guardian authority.
+2. Re-read the repaired active Guardian and rewrite narrative_response.json afterward.
+3. Call Complete-BoeValidationRepair last.
+
+Wrong:
+- rewrite the narrative first and then repair guardians.json. The visible response predates the canonical Guardian state it describes and must enter output-only repair.
+- after that output-only request appears, forget the original guardians.json target and accept an output timestamp equal to its write time. The original canonical target set remains authoritative and equality is still stale.
+```
+
+==================================================
+<!-- GM1557:A101:END -->
+<!-- GM1557:A129:START -->
+EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_relationship_gates_v1`, `afterlife_actor_masks_v1`, `afterlife_special_art_learning_v1`)
+==================================================
+
+Scenario:
+- The soul meets a significant afterlife actor in the Chaos Sea.
+- The GM must expose a full profile immediately, not hide known mechanical information.
+- The canonical file is `game_state/meta/afterlife_entity_profiles.json`.
+- The accepted response uses `afterlifeEntityProfileUpdates[]`; the client normalizes it into `profiles[]`.
+- Accepted profile actor types are `guardian`, `resident`, `shining_resident`, `shining_faction_head`, `radiant_actor`, `saref_agent`, `system_actor`, and `custom_afterlife_actor`. This vocabulary does not replace exact source authority.
+- Worked lifecycle case: physical removal of a resident is valid only when the validated pre-turn snapshot carries its exact no-target `departure_only` pending transfer, current state carries the exact `departed_only` receipt, the referenced departure history entry exists, and no target resident exists. Any missing, untracked, duplicate, case-variant, or targeted chain fails closed.
+- `canTeach=true` requires a positive teachable tier or cap from a standard/special art or another supported positive lesson such as a mentor showcase offer with `sourceCap > 0`; tier/cap `0` and a bare mentor flag do not prove teaching.
+- Ordinary console and browser projections hide `gmOnly`, secret, non-player-visible, and `system_actor` system profiles. Only explicit diagnostics may reveal these canonical records.
+- Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states. The target profile must already exist in `profiles[]` or same-turn `afterlifeEntityProfileUpdates[]`; unknown targets are repair-blocking. At least one of the two arrays must be non-empty.
+- Fate Cards use profile `fateCards[]` plus `afterlifeFateCardUnlocks[]`. Locked/hidden/available cards are story potential only and must not grant active effects. Unlocks require current evidence, `appliedAtTurn`, and at least one active mechanical effect array: `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`.
+- Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
+- Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
+- Actor masks use profile `masks[]` and `activeMaskId` plus `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]`. `activeMaskId` is either an existing `masks[].maskId` or `_true_self_`; use `_true_self_`, not `null`, to remove the active mask. Each mask includes `maskId`, `displayName`, `publicArchetype`, `visiblePersonality`, hidden `concealedTruth`, `directives[]`, `revealConditions[]`, `deceptionRisk=low|medium|high|critical`, and optional `linkedThreatId` / `linkedSarefAgentId`. Ordinary player-facing UI may show only the visible mask until `isRevealed=true`; do not leak hidden truth fields before reveal, and do not use Mortal `NPCMaskAdds`.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects use `spiritual_action_points` plus `actionCostAudit`; never author `actionEconomy`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
+- Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
+- Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
+- If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses only the current-turn `progression_report.json` whose `sessionId/requestId/turnNumber` match the current request to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`; stale or missing-context reports are ignored for profile auto-progression. This is per profile realm: Chaos Sea profiles consume Chaos/Guardian/Resident contours and receive Ink Feather income only; Shining Abode profiles consume Shining contours and receive Ink Feather + Light Spark income. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`. Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`. If both lists are present, the allow-list is applied first and the deny-list can still block the spend. Forced `specialArtTierDeltas` must target an existing `specialArts[].artId` on the same profile; unknown ids are repair-blocking, not no-op.
+- Chaos Sea profiles must keep `currencies.lightSparks = 0`. Do not add Light Sparks to Chaos Sea profiles through `afterlifeEntityProfileUpdates[]`, full canonical `profiles[]`, or `afterlifeEntityProgressionOverrides[].currencyDeltas`; only ordinary active Shining Abode profiles may hold/use Light Sparks.
+- Forced `currencyDeltas` may name only `inkFeathers` / `lightSparks`, and forced `progressionExperienceDeltas` may name only `enlightenment` / `radiance`; delta objects must be non-empty, and unsupported keys or non-integer deltas are repair-blocking.
+
+==================================================
+AFTERLIFE ACTOR MATERIALIZATION V1
+==================================================
+
+Before writing the first durable profile, bind the source actor and profile by exact actorType:actorId. Do not infer the identity, `capabilities`, arts, inventory-like resources, teaching authority, or trade authority from a display name or prose. Names, archetype prose, item types, and genre keywords never grant mechanics. The first profile carries one immutable `materializationId`, `materializedAtTurn`, and complete `sections` disposition. Every intentional absence uses `empty_by_design` with an in-world reason and keeps the real canonical empty field physically present in its exact empty array/object/null shape.
+
+Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
+
+A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
+
+STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; registering Духовное исцеление does not authorize a healing operation before the separate handler exists. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
+
+If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
+
+CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST (not GM response): the reserved first exact `player_soul` may be seeded without a generic Actor Materialization envelope. It may still carry one closed `resourceMaterialization.resources[]`; for example `{ "resourceKey": "soul_integrity", "maximum": 9 }`. The client derives the deterministic ownerRef for that same turn from exact `player_soul` + canonical realm, consumes `resourceMaterialization`, and writes the `resourceOwnerBindings` after-image with the quartet. The canonical after-image has no generic `materialization` envelope and no residual `resourceMaterialization`. This exception never applies to a resident, Guardian, radiant actor, or other non-player profile: a first non-player without Actor Materialization is invalid.
+
+DETERMINISTIC AFTERLIFE OWNER EXAMPLE: the same accepted `actorId` + realm always yields the same new-realm ref; the same realm + `conflictId` always yields the same conflict-side owner ID/ref; and the same `shining_abode` + `returnCycleId` always yields the same Shining scope ID/ref. A changed stable seed changes the derived identity. Turn number, capacity, array order, process randomness, and GM-authored IDs are never inputs.
+
+Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`. A legacy actor that first gains trade authority is promoted into significant structured play and needs the complete envelope in the same accepted turn. A full response may carry that profile before canonical state is written, but accepted-turn validation still proves the claim from exact current or validated pre-turn authority.
+
+Actor-owned memory and agency are separate obligations. The first envelope on an existing profile must prove current actor-owned memory; only an unchanged legacy profile without a new envelope keeps grandfathered loadability. Use the Guardian thought journal for a Guardian, the resident thought journal for a resident, and the exact common profile `gmThoughtsSummary` for `radiant_actor`, `saref_agent`, and other actors without a dedicated journal. A common-profile repair may change only the exact actor's gmThoughtsSummary and must leave another actor, root state, currencies, progression, materialization, and unrelated scalar fields unchanged. Mark agency `populated` only when the profile has meaningful `goals`, non-empty `personalQuests`, meaningful `currentActivity`, or non-empty `completedActivities`; `progressionStrategy or a mask alone` is not agency.
+
+Repairs are bounded. A repair packet may change only its exact actor and named section. The worker apply gate compares the proposal with canonical JSON and mechanically rejects protected actor data changes, including personality, unrelated sections, another actor, or root-level state.
+
+This compact envelope fragment shows a legitimate partly empty resident. The complete profile beside it still contains all required core fields and actor-owned memory; the fragment does not replace those fields:
+
+```json
+{
+  "actorType": "resident",
+  "actorId": "resident_quiet_witness",
+  "displayName": "Тихий Свидетель",
+  "appearanceDescription": "Полупрозрачный силуэт в простом дорожном плаще держится у края фонарного круга.",
+  "profileSummary": "Осторожный новый житель обители, который запоминает обещания пришедших душ.",
+  "personalityProfile": {
+    "archetype": "watchful_refugee",
+    "worldview": "Безопасность начинается с правдивого рассказа о пережитом."
+  },
+  "motivation": "Понять, можно ли доверить душе путь к внутреннему двору.",
+  "realm": "Chaos Sea",
+  "locationId": "abode_quiet_lantern",
+  "locationName": "Обитель Тихого Фонаря",
+  "standardArts": {
+    "spiritual_resilience": 0,
+    "spiritual_healing": 0
+  },
+  "specialArts": [],
+  "customStates": [],
+  "fateCards": [],
+  "relationships": [],
+  "goals": {
+    "shortTermGoal": "Выслушать рассказ души без преждевременного вывода.",
+    "longTermGoal": "Найти безопасное место среди жителей обители.",
+    "plan": "Сопоставить слова души с тем, что он увидит в следующей встрече."
+  },
+  "personalQuests": [],
+  "currentActivity": null,
+  "completedActivities": [],
+  "gmThoughtsSummary": "Я ещё не доверяю душе, но хочу дать ей шанс говорить правду.",
+  "ledger": [],
+  "progressionLedger": [],
+  "resourceMaterialization": {
+    "resources": [
+      {
+        "resourceKey": "soul_integrity",
+        "maximum": 10
+      }
+    ]
+  },
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_resident_quiet_witness_turn_23",
+    "actorType": "resident",
+    "actorId": "resident_quiet_witness",
+    "materializedAtTurn": 23,
+    "state": "complete",
+    "capabilities": {
+      "canFight": false,
+      "canTeach": false,
+      "canTrade": false
+    },
+    "sections": {
+      "standardArts": { "state": "populated" },
+      "specialArts": { "state": "empty_by_design", "reason": "Личное духовное искусство ещё не возникло." },
+      "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
+      "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
+      "relationships": { "state": "empty_by_design", "reason": "У резидента ещё нет устойчивой личной связи с душой." },
+      "agency": { "state": "populated" },
+      "progressionHistory": { "state": "empty_by_design", "reason": "История развития начинается с этой встречи." }
+    }
+  }
+}
+```
+
+Shared Block 5 Combat Action effect reminder: when an afterlife item, relic, or inherited skill uses this ordinary effect contract, keep its complete shape. Minimal damage example: effectType=Damage, value=10%, targetType=Enemy, effectDescription=Духовный импульс поражает цель, poiseDamage=5%. This reminder does not replace the separate specialArts[].combatEffect spiritual-conflict schema.
+
+The full Guardian response below demonstrates the `populated` path. After acceptance, preserve this envelope and use dedicated deltas for later profile changes instead of resending it.
+
+Valid response fragment:
+
+```json
+{
+  "response": "Хранитель Зеркал показывает душе своё истинное досье: его запас Перьев, уровень Просветления и известные духовные искусства становятся видимы.",
+  "afterlifeEntityProfileUpdates": [
+    {
+      "schemaVersion": 1,
+      "profileVersion": "afterlife_entity_profiles_v1",
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "displayName": "Хранитель Зеркал",
+      "appearanceDescription": "Высокий Хранитель в мантии из зеркальных пластин держит маску с треснувшей серебряной кромкой.",
+      "profileSummary": "Страж Зеркальной Обители, который испытывает честность душ и обучает защите от духовного давления.",
+      "personalityProfile": {
+        "archetype": "severe_mirror_judge",
+        "worldview": "Правда проявляется только тогда, когда душа отказывается от удобного отражения."
+      },
+      "motivation": "Подготовить душу к суду клятвы, не позволив ей купить доверие пустыми обещаниями.",
+      "realm": "Chaos Sea",
+      "locationId": "abode_mirror",
+      "locationName": "Зеркальная Обитель",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_guardian_mirror_turn_23",
+        "actorType": "guardian",
+        "actorId": "guardian_mirror",
+        "materializedAtTurn": 23,
+        "state": "complete",
+        "capabilities": {
+          "canFight": true,
+          "canTeach": true,
+          "canTrade": false
+        },
+        "sections": {
+          "standardArts": { "state": "populated" },
+          "specialArts": { "state": "populated" },
+          "customStates": { "state": "populated" },
+          "fateCards": { "state": "populated" },
+          "relationships": { "state": "populated" },
+          "agency": { "state": "populated" },
+          "progressionHistory": { "state": "populated" }
+        }
+      },
+      "currencies": {
+        "inkFeathers": 120,
+        "lightSparks": 0
+      },
+      "progression": {
+        "enlightenment": {
+          "experience": 48,
+          "tier": 4
+        },
+        "radiance": {
+          "experience": 0,
+          "tier": 0
+        }
+      },
+      "standardArts": {
+        "pressure": 2,
+        "guard": 1,
+        "counter": 0,
+        "maneuver": 1,
+        "binding": 1,
+        "force_binding": 0,
+        "break_binding": 0,
+        "incarnation_resistance": 0,
+        "champion_coordination": 0,
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
+      },
+      "specialArts": [
+        {
+          "artId": "mirror_guard",
+          "displayName": "Зеркальная Защита",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_mirror",
+          "baseOperation": "guard",
+          "tier": 1,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 30,
+            "lightSparks": 0
+          },
+          "effectSummary": "При успехе отражает часть давления в сторону противника.",
+          "combatEffect": {
+            "summary": "Зеркальная защита ловит прямое давление и создаёт одно темповое окно защиты вместо урона по противнику.",
+            "trigger": "Использовать mirror_guard как guard против pressure, force_incarnation или condition-backed угрозы напряжения стороны.",
+            "mechanicalAxis": "tempoAdvantage",
+            "allowedPayoff": "Записать after.tempoAdvantage для защищённой стороны или удержать playerSideStrain от ухудшения больше чем на один ранг.",
+            "limit": "Один обмен защиты; baseOperation остаётся guard и не превращается в pressure, binding или force_binding.",
+            "auditRequirement": "specialArtAudit.effectNote должен назвать mirror_guard, входящую операцию и созданное tempoAdvantage или sideStrain изменение."
+          },
+          "canTeachPlayer": true,
+          "trainingConditions": [
+            "Провести сцену обучения у Хранителя Зеркал.",
+            "Показать, что душа поняла отражение давления без физического предмета."
+          ]
+        }
+      ],
+      "customStates": [
+        {
+          "stateId": "echo_hunger",
+          "stateName": "Голод эха",
+          "currentValue": 3,
+          "minValue": 0,
+          "maxValue": 10,
+          "description": "Сущность тянется к повторяющимся клятвам.",
+          "progressionRule": {
+            "changePerTurn": 1,
+            "description": "Растёт после сцен с повторением клятв."
+          },
+          "thresholds": [
+            {
+              "levelName": "Навязчивое эхо",
+              "triggerCondition": "currentValue >= 6",
+              "triggerValue": 6,
+              "associatedEffects": []
+            }
+          ]
+        }
+      ],
+      "fateCards": [
+        {
+          "cardId": "mirror_oath_returned",
+          "nameRu": "Возвращённая клятва",
+          "status": "locked",
+          "isSecret": false,
+          "unlockConditions": {
+            "summary": "Душа должна пройти суд зеркальной клятвы и не выбрать удобную ложь."
+          },
+          "storyMeaning": "Хранитель возвращает часть памяти и получает право открыть новый способ обучения."
+        }
+      ],
+      "relationships": [
+        {
+          "relationshipId": "guardian_mirror_player_trust",
+          "axis": "trust",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "value": 49,
+          "relationshipTier": "trust_breakthrough_required",
+          "relationshipLock": {
+            "lockState": "positive_locked",
+            "direction": "positive",
+            "threshold": 50,
+            "breakthroughQuestId": "quest_mirror_oath_trial",
+            "reason": "Хранитель не доверится глубже без личного испытания.",
+            "evidence": "Душа приблизилась к порогу доверия.",
+            "updatedAtTurn": 23
+          },
+          "relationshipGateQuests": [
+            {
+              "questId": "quest_mirror_oath_trial",
+              "questType": "breakthrough",
+              "status": "active",
+              "title": "Суд зеркальной клятвы",
+              "sceneSummary": "Личное испытание доверия, где удобная ложь выглядит спасением.",
+              "successCondition": "Душа отвергает ложь без немедленной награды.",
+              "gmThoughtsSummary": "Это пороговый личный суд, а не бытовой fetch quest.",
+              "updatedAtTurn": 23
+            }
+          ]
+        }
+      ],
+      "goals": {
+        "goalId": "goal_guardian_mirror_preserve_truth",
+        "shortTermGoal": "Провести душу через суд зеркальной клятвы.",
+        "longTermGoal": "Сохранить в Обители правдивую память о нарушенных клятвах.",
+        "plan": "Сначала проверить готовность души отказаться от удобной лжи, затем открыть безопасное обучение.",
+        "gmThoughtsSummary": "Хранитель хочет помочь, но не позволит душе купить доверие одними обещаниями.",
+        "updatedAtTurn": 23
+      },
+      "personalQuests": [
+        {
+          "questId": "quest_mirror_oath_trial",
+          "goalId": "goal_guardian_mirror_preserve_truth",
+          "title": "Суд зеркальной клятвы",
+          "status": "active",
+          "planSummary": "Провести душу через зеркальный суд и оставить ей реальный выбор между правдой и выгодной ложью.",
+          "successCondition": "Душа осознанно отвергает выгодную ложь без немедленной награды.",
+          "createdAtTurn": 23
+        }
+      ],
+      "currentActivity": {
+        "activityId": "activity_prepare_mirror_trial",
+        "goalId": "goal_guardian_mirror_preserve_truth",
+        "linkedQuestId": "quest_mirror_oath_trial",
+        "activityType": "offscreen_preparation",
+        "summary": "Хранитель готовит зал зеркал к испытанию души.",
+        "status": "active",
+        "gmThoughtsSummary": "Я подготовлю испытание так, чтобы выбор души нельзя было свести к удобной формальности.",
+        "startedAtTurn": 23
+      },
+      "completedActivities": [],
+      "gmThoughtsSummary": "Я вижу, что душа ищет лёгкий ответ; сначала заставлю её назвать цену собственной правды.",
+      "activeMaskId": "mask_wings_emissary",
+      "masks": [
+        {
+          "maskId": "mask_wings_emissary",
+          "displayName": "Посланник Белых Перьев",
+          "publicArchetype": "учтивый посредник",
+          "visiblePersonality": "говорит мягко, обещает покровительство и уводит разговор от имени Сарефа",
+          "concealedTruth": "Маска скрывает агента Крыльев Ангелов, который ищет следы старой ложи.",
+          "directives": [
+            "Не произносить имя Сарефа первым.",
+            "Собирать сведения о восстановленной памяти игрока."
+          ],
+          "revealConditions": [
+            "Игрок связывает белые перья с тайной фракцией.",
+            "Сцена разоблачения прямо называет Крылья Ангелов."
+          ],
+          "deceptionRisk": "high",
+          "linkedThreatId": "threat_white_feather_lodge",
+          "linkedSarefAgentId": "saref_agent_white_feather",
+          "isRevealed": false,
+          "updatedAtTurn": 23
+        }
+      ],
+      "soulDissipationTier": 1,
+      "progressionStrategy": {
+        "strategyId": "strategy_guardian_mirror",
+        "summary": "Сначала развивает духовную стойкость, затем особую защиту и развеивание души.",
+        "priorityOrder": [
+          "spiritual_resilience",
+          "mirror_guard",
+          "soul_dissipation",
+          "guard"
+        ],
+        "resourceReserve": {
+          "inkFeathers": 20,
+          "lightSparks": 0
+        },
+        "allowedSpends": [
+          "standardArts",
+          "enlightenment"
+        ],
+        "forbiddenSpends": [
+          "soulDissipationTier"
+        ],
+        "lastAutoProgressionCycleKey": "chaos:5",
+        "lastUpdatedAtTurn": 22
+      },
+      "progressionLedger": [
+        {
+          "entryId": "entity_progression_auto_guardian_mirror_chaos_5",
+          "cycleKey": "chaos:5",
+          "source": "client_auto_strategy",
+          "summary": "Автопрокачка по стратегии применила доход и повысила guard.",
+          "income": {
+            "inkFeathers": 12,
+            "lightSparks": 0
+          },
+          "spending": {
+            "inkFeathers": 10,
+            "lightSparks": 0
+          },
+          "upgrades": [
+            "guard:0->1"
+          ]
+        }
+      ],
+      "warnings": [
+        "ОПАСНО: может развеять душу после победы, если решит это сделать."
+      ],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_001",
+          "turnNumber": 22,
+          "reason": "initial_profile",
+          "summary": "Профиль создан при встрече с хранителем."
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "profileVersion": "afterlife_entity_profiles_v1",
+      "actorType": "player_soul",
+      "actorId": "player_soul",
+      "displayName": "Душа игрока",
+      "realm": "Chaos Sea",
+      "locationName": "Зеркальная Обитель",
+      "currencies": {
+        "inkFeathers": 90,
+        "lightSparks": 0
+      },
+      "progression": {
+        "enlightenment": {
+          "experience": 32,
+          "tier": 2
+        },
+        "radiance": {
+          "experience": 0,
+          "tier": 0
+        }
+      },
+      "standardArts": {
+        "pressure": 1,
+        "guard": 1,
+        "counter": 1,
+        "maneuver": 0,
+        "binding": 0,
+        "force_binding": 0,
+        "break_binding": 0,
+        "incarnation_resistance": 1,
+        "champion_coordination": 0,
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
+      },
+      "specialArts": [
+        {
+          "artId": "mirror_guard",
+          "displayName": "Зеркальная Защита",
+          "ownerActorType": "player_soul",
+          "ownerActorId": "player_soul",
+          "baseOperation": "guard",
+          "tier": 0,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 30,
+            "lightSparks": 0
+          },
+          "effectSummary": "Player-owned learned special art: при защите душа разворачивает давление в безопасное темповое окно.",
+          "combatEffect": {
+            "summary": "Player-owned learned special art turns a successful guard against direct pressure into a one-use rollMode advantage source for the next counter or maneuver.",
+            "trigger": "Use mirror_guard as guard against pressure after the learning receipt is in pre-turn authority.",
+            "mechanicalAxis": "rollMode",
+            "allowedPayoff": "Add one special_art source to diceAudit.rollMode.player.advantageSources[] or preserve current conflictPosition without harming opposition strain.",
+            "limit": "One current exchange payoff only; baseOperation stays guard and cannot become pressure or binding.",
+            "auditRequirement": "specialArtAudit.effectNote must name mirror_guard, the guard trigger, and the exact rollMode source or conflictPosition preservation."
+          },
+          "canTeachPlayer": false,
+          "trainingConditions": []
+        }
+      ],
+      "customStates": [],
+      "fateCards": [],
+      "relationships": [],
+      "soulDissipationTier": 0,
+      "progressionStrategy": {
+        "strategyId": "strategy_player_soul_mirror_guard",
+        "summary": "Игрок сначала улучшает изученную Зеркальную Защиту, затем обычную защиту.",
+        "priorityOrder": [
+          "mirror_guard",
+          "guard"
+        ],
+        "resourceReserve": {
+          "inkFeathers": 20,
+          "lightSparks": 0
+        },
+        "allowedSpends": [
+          "specialArts",
+          "standardArts"
+        ],
+        "forbiddenSpends": [],
+        "lastUpdatedAtTurn": 23
+      },
+      "progressionLedger": [],
+      "warnings": [],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_player_mirror_guard_001",
+          "turnNumber": 23,
+          "reason": "learned_special_art_profile_update",
+          "summary": "Профиль игрока показывает изученное особое искусство с боевым эффектом для решения о прокачке."
+        }
+      ]
+    }
+  ],
+  "afterlifeEntityCustomStateChanges": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "statesToAddOrUpdate": [
+        {
+          "stateId": "mirror_focus",
+          "stateName": "Зеркальная сосредоточенность",
+          "currentValue": 1,
+          "minValue": 0,
+          "maxValue": 5,
+          "description": "Хранитель удерживает внимание на душе после важного разговора.",
+          "progressionRule": {
+            "changePerTurn": -1,
+            "description": "Слабеет, если сцена не продолжает тему зеркал."
+          },
+          "thresholds": []
+        }
+      ],
+      "statesToRemove": [
+        "obsolete_echo_mark"
+      ]
+    }
+  ],
+  "afterlifeFateCardUnlocks": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "cardId": "mirror_oath_returned",
+      "appliedAtTurn": 23,
+      "evidence": {
+        "summary": "Душа прошла зеркальный суд и признала правду о старой клятве без физического доказательства."
+      },
+      "guardianEffects": [
+        {
+          "effectId": "mirror_memory_restored",
+          "summary": "Хранитель вспоминает часть своего прошлого и получает новое основание доверять Душе."
+        }
+      ],
+      "playerUnlocks": [
+        {
+          "unlockId": "mirror_oath_training",
+          "summary": "Игрок может просить обучение Зеркальной Защите после сцены доверия."
+        }
+      ],
+      "politicalEffects": [
+        {
+          "effectId": "mirror_oath_witness",
+          "summary": "Зеркальная Обитель получает аргумент в будущих спорах с хранителями клятв."
+        }
+      ]
+    }
+  ],
+  "afterlifeRelationshipChanges": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "axis": "trust",
+      "targetActorType": "player_soul",
+      "targetActorId": "player_soul",
+      "valueDelta": 9,
+      "relationshipTier": "trust_breakthrough_required",
+      "reason": "Душа выдержала разговор без попытки скрыть страх.",
+      "evidence": "Сцена у зеркала завершилась правдивым признанием.",
+      "gmThoughtsSummary": "Доверие упёрлось в личный порог: дальше нужен суд клятвы.",
+      "updatedAtTurn": 23
+    }
+  ],
+  "afterlifeRelationshipLockUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "axis": "trust",
+      "targetActorType": "player_soul",
+      "targetActorId": "player_soul",
+      "relationshipTier": "trust_breakthrough_required",
+      "gmThoughtsSummary": "Хранитель не пустит отношения выше доверительного порога без сцены суда.",
+      "relationshipLock": {
+        "lockState": "positive_locked",
+        "direction": "positive",
+        "threshold": 50,
+        "breakthroughQuestId": "quest_mirror_oath_trial",
+        "reason": "Старая клятва делает слепое доверие невозможным.",
+        "evidence": "Душа почти достигла важного порога доверия.",
+        "updatedAtTurn": 23
+      }
+    }
+  ],
+  "afterlifeBreakthroughQuestUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "questId": "quest_mirror_oath_trial",
+      "questType": "breakthrough",
+      "status": "active",
+      "title": "Суд зеркальной клятвы",
+      "sceneSummary": "Пороговая сцена, где Душа должна выбрать правду вместо удобной лжи.",
+      "successCondition": "Душа отвергает ложь без немедленной награды.",
+      "gmThoughtsSummary": "Это личное испытание доверия, а не рутинная доставка предмета.",
+      "updatedAtTurn": 23
+    }
+  ],
+  "afterlifeActorMaskAdds": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "mask": {
+        "maskId": "mask_memory_beggar",
+        "displayName": "Нищий без памяти",
+        "publicArchetype": "сломанный странник",
+        "visiblePersonality": "просит помощи и делает вид, что не понимает политических намёков",
+        "concealedTruth": "Это бывший чиновник Сияющей Обители, которому Сареф стёр память.",
+        "directives": [
+          "Скрывать знание о старой должности.",
+          "Проверять, узнаёт ли игрок символы Крыльев Ангелов."
+        ],
+        "revealConditions": [
+          "Игрок возвращает фрагмент памяти из смертной жизни."
+        ],
+        "deceptionRisk": "medium",
+        "linkedSarefAgentId": "saref_agent_amnesiac_official",
+        "isRevealed": false,
+        "updatedAtTurn": 23
+      }
+    }
+  ],
+  "afterlifeActorMaskUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "maskUpdate": {
+        "maskId": "mask_wings_emissary",
+        "visiblePersonality": "после подозрений игрока становится осторожнее и избегает обещаний",
+        "deceptionRisk": "critical",
+        "updatedAtTurn": 24
+      }
+    }
+  ],
+  "afterlifeActorActiveMaskChanges": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "activeMaskId": "_true_self_",
+      "reason": "Игрок разоблачил публичную роль посланника.",
+      "evidence": "В сцене названа ложа белых перьев.",
+      "gmThoughtsSummary": "Сущность больше не должна отыгрываться через публичную маску.",
+      "updatedAtTurn": 24
+    }
+  ],
+  "afterlifeActorMaskRemovals": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "maskId": "mask_wings_emissary",
+      "activeMaskId": "_true_self_"
+    }
+  ],
+  "afterlifeActorGoalUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "goalId": "goal_mirror_oath",
+      "shortTermGoal": "Понять, способна ли Душа выдержать зеркальный суд.",
+      "longTermGoal": "Не позволить Сарефу снова использовать забытые клятвы.",
+      "plan": "Подготовить сцену испытания через личный квест и наблюдать за выбором Души.",
+      "gmThoughtsSummary": "Хранитель боится повторить старое предательство и поэтому проверяет игрока осторожно.",
+      "updatedAtTurn": 23
+    }
+  ],
+  "afterlifeActorQuestUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "questId": "quest_mirror_oath_trial",
+      "goalId": "goal_mirror_oath",
+      "title": "Суд зеркальной клятвы",
+      "status": "active",
+      "planSummary": "Вывести Душу к испытанию, где удобная ложь будет выглядеть спасением.",
+      "successCondition": "Душа осознанно отвергнет ложь даже без немедленной награды.",
+      "createdAtTurn": 23
+    }
+  ],
+  "afterlifeActorActivityUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "activityId": "activity_prepare_oath_trial",
+      "goalId": "goal_mirror_oath",
+      "linkedQuestId": "quest_mirror_oath_trial",
+      "activityType": "offscreen_preparation",
+      "summary": "Хранитель собирает осколки старой клятвы для будущей сцены суда.",
+      "status": "active",
+      "gmThoughtsSummary": "Он не принуждает игрока, но готовит сцену так, чтобы выбор стал личным.",
+      "startedAtTurn": 23
+    }
+  ],
+  "afterlifeEntityProgressionOverrides": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "cycleKey": "chaos:6",
+      "reason": "GM override: Хранитель резко меняет приоритет после сюжетной сцены.",
+      "summary": "GM forced progression upgraded special art and soul dissipation.",
+      "currencyDeltas": {
+        "inkFeathers": -80,
+        "lightSparks": 0
+      },
+      "standardArtTierDeltas": {
+        "spiritual_healing": 1
+      },
+      "specialArtTierDeltas": {
+        "mirror_guard": 1
+      },
+      "soulDissipationTierDelta": 1,
+      "progressionExperienceDeltas": {
+        "enlightenment": 0,
+        "radiance": 0
+      }
+    }
+  ],
+  "afterlifeSpecialArtLearningReceipts": [
+    {
+      "receiptId": "special_art_learning_mirror_guard_001",
+      "teacherActorType": "guardian",
+      "teacherActorId": "guardian_mirror",
+      "playerActorId": "player_soul",
+      "artId": "mirror_guard",
+      "learnedAtTurn": 23,
+      "trainingConditionSatisfied": true,
+      "roleplayEvidence": "Душа прошла сцену обучения и отразила давление собственным воспоминанием.",
+      "summary": "Зеркальная Защита добавлена в профиль игрока как особое духовное искусство."
+    }
+  ]
+}
+```
+
+The Shining Abode uses the same complete profile contract. The following actor is already the exact non-player head of an operational faction with secure leadership and trade tier 1 or higher in `shining_abode_state.json`; therefore `canTrade=true` is permitted. Accepted-turn continuity verifies that external authority by exact `radiant_actor:radiant_archive_head`, never by title or prose.
+
+Valid Shining faction-head response fragment:
+
+```json
+{
+  "response": "Глава Архива Первого Света открывает душе своё досье и подтверждает право говорить от имени фракции.",
+  "afterlifeEntityProfileUpdates": [
+    {
+      "schemaVersion": 1,
+      "profileVersion": "afterlife_entity_profiles_v1",
+      "actorType": "radiant_actor",
+      "actorId": "radiant_archive_head",
+      "displayName": "Архивариус Первого Света",
+      "appearanceDescription": "Архивариус в бело-золотой мантии носит на груди печать из трёх световых колец.",
+      "profileSummary": "Неподкупный глава Архива Первого Света, отвечающий за достоверность свидетельств фракции.",
+      "personalityProfile": {
+        "archetype": "disciplined_radiant_archivist",
+        "worldview": "Свет без проверенной памяти превращается в удобную пропаганду."
+      },
+      "motivation": "Сохранить независимость Архива и проверить свидетельство души до открытия закрытого зала.",
+      "realm": "Shining Abode",
+      "locationId": "shining_first_archive_hall",
+      "locationName": "Зал Первого Архива",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_radiant_archive_head_turn_24",
+        "actorType": "radiant_actor",
+        "actorId": "radiant_archive_head",
+        "materializedAtTurn": 24,
+        "state": "complete",
+        "capabilities": {
+          "canFight": true,
+          "canTeach": false,
+          "canTrade": true
+        },
+        "sections": {
+          "standardArts": { "state": "populated" },
+          "specialArts": { "state": "empty_by_design", "reason": "Архивариус пока не оформил личное духовное искусство." },
+          "customStates": { "state": "empty_by_design", "reason": "Особые духовные состояния сейчас не проявлены." },
+          "fateCards": { "state": "empty_by_design", "reason": "Связанная карта судьбы ещё не открылась." },
+          "relationships": { "state": "empty_by_design", "reason": "Личные устойчивые связи с душой ещё не сложились." },
+          "agency": { "state": "populated" },
+          "progressionHistory": { "state": "populated" }
+        }
+      },
+      "currencies": {
+        "inkFeathers": 0,
+        "lightSparks": 80
+      },
+      "progression": {
+        "enlightenment": { "experience": 20, "tier": 2 },
+        "radiance": { "experience": 55, "tier": 3 }
+      },
+      "standardArts": {
+        "guard": 2,
+        "maneuver": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
+      },
+      "specialArts": [],
+      "customStates": [],
+      "fateCards": [],
+      "relationships": [],
+      "goals": {
+        "goalId": "goal_archive_head_preserve_testimony",
+        "shortTermGoal": "Проверить достоверность принесённого душой свидетельства.",
+        "longTermGoal": "Сохранить Архив Первого Света независимым от фракционных подлогов.",
+        "plan": "Сопоставить свидетельство с тремя архивными печатями и только затем открыть доступ к закрытому залу.",
+        "gmThoughtsSummary": "Я не отвергаю помощь души, но сначала должен исключить подлог соперничающей фракции.",
+        "updatedAtTurn": 24
+      },
+      "personalQuests": [],
+      "currentActivity": null,
+      "completedActivities": [],
+      "gmThoughtsSummary": "Эта душа может стать союзником Архива, если её свидетельство выдержит проверку.",
+      "soulDissipationTier": 0,
+      "progressionStrategy": {
+        "strategyId": "strategy_radiant_archive_head",
+        "summary": "Сначала укрепляет защиту Архива, затем развивает сияние.",
+        "priorityOrder": [
+          "guard",
+          "radiance"
+        ],
+        "lastUpdatedAtTurn": 24
+      },
+      "progressionLedger": [],
+      "warnings": [],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_radiant_archive_head_001",
+          "turnNumber": 24,
+          "summary": "Архивариус принял руководство фракцией и сохранил первый план проверки свидетельств."
+        }
+      ]
+    }
+  ]
+}
+```
+
+Later, when the current activity has actually resolved, close it with the completion surface instead of deleting it:
+
+```json
+{
+  "completeAfterlifeActorActivities": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "activityId": "activity_prepare_oath_trial",
+      "outcome": "completed",
+      "completedAtTurn": 24,
+      "summary": "Сцена суда подготовлена; Хранитель готов вывести Душу к выбору.",
+      "gmThoughtsSummary": "Он считает риск оправданным, потому что игрок уже показал интерес к теме клятв.",
+      "resultingQuestStatus": "active"
+    }
+  ]
+}
+```
+
+Correct reasoning checklist:
+- `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
+- `player_soul` is a reserved identity: the player profile uses `actorType=player_soul` and `actorId=player_soul`, and no non-player profile may use that actor id.
+- `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
+- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. Resource effects must be expressed through `spiritual_action_points` plus `actionCostAudit`; `actionEconomy` is forbidden. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
+- If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt, do not grant learned-art tiers through `initialTier`, and do not reference a missing or non-teachable source art.
+- If a conflict exchange uses a special art, first read `specialArts[].combatEffect`, then include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner, and `effectNote` must cite the combatEffect trigger/payoff actually used. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
+- `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
+- `fateCards[]` stores story potential and mechanical unlocks. Locked/hidden/available cards cannot grant `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`; unlock them only through `afterlifeFateCardUnlocks[]` with `appliedAtTurn`, evidence, and at least one effect object with `summary`.
+- `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]` are the afterlife actor agency layer. A current activity without `gmThoughtsSummary`, current goal link, and active personal quest link is invalid.
+- Use `completeAfterlifeActorActivities[]` to close an activity and append `completedActivities[]`; do not simply set `currentActivity` to null in a full profile rewrite.
+- `relationships[]` is the afterlife relationship gate layer. Do not move `value` past `50` or `-50` without `relationshipLock` or completed gate proof; completed breakthrough/redemption quests must carry evidence and clear only with `_clear_`.
+- When authoring `relationshipLock`, include `lockState`, `direction=positive|negative`, `threshold`, `reason`, `evidence`, and `updatedAtTurn`. The client can normalize missing scaffold fields to keep startup/repair loops moving, but that repair layer does not prove a breakthrough, redemption, or point of no return.
+- Use `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]` instead of Mortal `NPCRelationshipChanges`.
+- Use `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]` for afterlife masks. Active mask removal must use `activeMaskId="_true_self_"`; never write `activeMaskId=null`, never silently delete an active mask, and never leak `concealedTruth`, `directives`, `linkedThreatId`, or `linkedSarefAgentId` to normal player-facing UI before `isRevealed=true`.
+- `progressionStrategy.priorityOrder` may target a standard art id, a `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.
+- Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`.
+- `afterlifeEntityProgressionOverrides[].specialArtTierDeltas` may only reference an existing `specialArts[].artId` on the target profile.
+- `afterlifeEntityProgressionOverrides[]` may include `specialArtTierDeltas` and `soulDissipationTierDelta` in addition to currency, standard art, and progression experience deltas.
+- `progressionLedger[]` is mandatory audit evidence for auto-progression or `afterlifeEntityProgressionOverrides[]`; each cycle must have a clear `cycleKey`, `source`, income/spending, and summary. Do not hand-edit resources without this audit.
+- `lastAutoProgressionCycleKey` prevents the same existing afterlife/Shining progression cycle from being applied repeatedly.
+- `soulDissipationTier > 0` is a danger warning, not an automatic kill decision. Motives still decide whether the entity attempts final soul dissipation after a victory.
+- Final soul death uses resolved conflict proof, not a free narrative string: write `recentConflicts[].soulDissipationProof` with `targetStabilityCoefficient`, `dissipationTier > targetStabilityCoefficient`, victory proof, and `gmMotivation`. If the target is the player, also write `soul_state.terminalGameOver.message`: `Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова`.
+- Do not write Mortal NPC skills, Mortal combat logs, Mortal inventory, or Mortal profile files for afterlife actor progression.
+- In Mortal World turns, preserve `game_state/meta/afterlife_entity_profiles.json`; progress updates belong to afterlife turns unless a future matrix row explicitly says otherwise.
+
+==================================================
+<!-- GM1557:A129:END -->

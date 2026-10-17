@@ -13,7 +13,7 @@ public sealed partial class ExampleDocumentationValidationTests
     {
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage,
             value => value.ContractId == "spiritual_wound_private_roots_v1");
-        Assert.Equal("E_CLI_Afterlife_Turns.txt", entry.File);
+        Assert.Equal("E_CLI_Afterlife_Wound_Continuation.txt", entry.File);
         AssertTruthfulValidationMetadata(entry);
         var roots = ParseNamedJsonFences(entry.File, entry.ContractId);
         Assert.Equal(3, roots.Count);

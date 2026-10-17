@@ -1176,7 +1176,7 @@ public sealed class GmWorkerBridgeDocumentationTests
     private static string ReadRepoFile(string relativePath)
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, Path.Combine(relativePath.Split('/')));
-        return File.ReadAllText(path);
+        return GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath);
     }
 
     private static IReadOnlyList<JsonElement> ExtractTaskPackets(string source)

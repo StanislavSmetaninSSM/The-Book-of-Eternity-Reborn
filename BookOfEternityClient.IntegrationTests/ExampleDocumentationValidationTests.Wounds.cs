@@ -310,7 +310,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void AfterlifeEffectRollScopeWorkedExample_RemainsBroad()
     {
-        var source = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "afterlife_effect_profile_v1")[0];
+        var source = ParseNamedJsonFences("E_CLI_Afterlife_Effects_Resources.txt", "afterlife_effect_profile_v1")[0];
         var definitions = Assert.IsType<JsonArray>(source["activeEffectDefinitions"]);
         using var document = JsonDocument.Parse(definitions.ToJsonString());
         foreach (var realm in new[] { "chaos_sea", "shining_abode" })

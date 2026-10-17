@@ -61,6 +61,6 @@ public sealed class MathAssistantPromptGuidanceTests
     private static string ReadRepoFile(params string[] segments)
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, Path.Combine(segments));
-        return File.ReadAllText(path);
+        return GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, Path.Combine(segments));
     }
 }

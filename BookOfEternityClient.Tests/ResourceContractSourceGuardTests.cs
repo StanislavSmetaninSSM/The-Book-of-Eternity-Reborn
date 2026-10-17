@@ -606,7 +606,7 @@ public sealed class ResourceContractSourceGuardTests
         var absolutePath = Path.Combine(
             TestRepoPaths.RepoRoot,
             relativePath.Replace('/', Path.DirectorySeparatorChar));
-        return File.ReadAllText(absolutePath)
+        return GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath)
             .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
             .Select((line, index) => (Line: line, Number: index + 1))
             .Where(entry =>

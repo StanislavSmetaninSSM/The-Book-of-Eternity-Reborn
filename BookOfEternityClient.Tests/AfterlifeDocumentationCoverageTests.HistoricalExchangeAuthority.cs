@@ -50,7 +50,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             Assert.Contains(token, examples, StringComparison.Ordinal);
         using var manifest = JsonDocument.Parse(ReadRepoFile("Examples", "example_validation_manifest.json"));
         var entry = Assert.Single(manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(), item => item.GetProperty("contractId").GetString() == "afterlife_spiritual_exchange_history_authority_v1");
-        Assert.Equal("E_CLI_Afterlife_Turns.txt", entry.GetProperty("file").GetString());
+        Assert.Equal("E_CLI_Afterlife_Spiritual_Conflict.txt", entry.GetProperty("file").GetString());
         Assert.Equal("production-validator", entry.GetProperty("validationKind").GetString());
         Assert.Contains("T085_HistoricalExchange_", entry.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);
         Assert.Contains("HistoricalExchangeAuthorityDocumentation_", entry.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);

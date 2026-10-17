@@ -14,7 +14,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses()
     {
         const string contractId = "spiritual_wound_binding_result_closure_v1";
-        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", contractId);
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", contractId);
         Assert.Equal(9, fragments.Count);
         var original = fragments[0];
         var corrected = fragments[1];

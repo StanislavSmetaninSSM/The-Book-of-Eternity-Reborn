@@ -3624,7 +3624,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 
         foreach (var relativePath in entrypointPaths)
         {
-            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, relativePath));
+            var text = GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath);
             Assert.Contains("OtherGuides/Afterlife_Contract_Matrix.md", NormalizeSeparators(text), StringComparison.Ordinal);
             Assert.Contains("Examples/E_CLI_Afterlife_Turns.txt", NormalizeSeparators(text), StringComparison.Ordinal);
         }
@@ -3848,9 +3848,10 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var manifest = ExampleValidationManifest.Load();
         var scenarioIds = manifest.RuntimeScenarios
-            .Where(scenario => string.Equals(scenario.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase))
+            .Where(scenario => GmDocumentationBodyFiles.IsThematicExample(scenario.File))
             .Select(scenario => scenario.Id)
             .ToHashSet(StringComparer.Ordinal);
+        Assert.NotEmpty(scenarioIds);
 
         var exampleNumbers = Regex.Matches(examples, @"(?m)^(?:EXAMPLE\s+(\d+)\b|(\d+)\. VALID )")
             .Select(match => int.Parse(match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value))
@@ -4737,7 +4738,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
     public void AfterlifeActorMaterializationWorkedExample_PassesExecutableContract()
     {
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
-            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.File, "E_CLI_Afterlife_Actor_Profiles.txt", StringComparison.OrdinalIgnoreCase) &&
             candidate.RawText.Contains("mat_guardian_mirror_turn_23", StringComparison.Ordinal));
         using var document = JsonDocument.Parse(snippet.RawText);
         var profile = document.RootElement.GetProperty("afterlifeEntityProfileUpdates")[0];
@@ -4746,7 +4747,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 
         var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
             profile,
-            "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
+            "Examples/E_CLI_Afterlife_Actor_Profiles.txt.afterlifeEntityProfileUpdates[0]",
             requireEnvelope: true,
             canTradeEvidence: false);
 
@@ -4758,7 +4759,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
     public async Task ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract()
     {
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
-            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.File, "E_CLI_Afterlife_Actor_Profiles.txt", StringComparison.OrdinalIgnoreCase) &&
             candidate.RawText.Contains("mat_radiant_archive_head_turn_24", StringComparison.Ordinal));
         using var document = JsonDocument.Parse(snippet.RawText);
         var profile = Assert.Single(document.RootElement.GetProperty("afterlifeEntityProfileUpdates").EnumerateArray());
@@ -5080,13 +5081,13 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 
     private static void AssertFileContains(string relativePath, params string[] requiredTokens)
     {
-        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, relativePath));
+        var text = GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath);
         Assert.All(requiredTokens, token =>
             Assert.Contains(token, text, StringComparison.Ordinal));
     }
 
     private static string ReadRepoFile(params string[] parts) =>
-        File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
+        GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, Path.Combine(parts));
 
     private static string NormalizeSeparators(string text) =>
         text.Replace('\\', '/');

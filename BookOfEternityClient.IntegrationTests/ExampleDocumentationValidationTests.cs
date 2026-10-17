@@ -126,7 +126,7 @@ public sealed partial class ExampleDocumentationValidationTests
         var examples = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
             "Examples",
-            "E_CLI_Afterlife_Turns.txt"));
+            "E_CLI_Afterlife_Actor_Profiles.txt"));
         Assert.Contains("\"spiritual_resilience\": 0", examples, StringComparison.Ordinal);
         Assert.Contains("\"spiritual_healing\": 0", examples, StringComparison.Ordinal);
         Assert.Contains("\"spiritual_healing\": 1", examples, StringComparison.Ordinal);
@@ -301,7 +301,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualWoundSpecialCostWorkedExamples_KeepClosedAuditsAndActionOnlyArithmetic()
     {
         var fragments = ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_special_action_costs_v1");
+            "E_CLI_Afterlife_Spiritual_Conflict.txt", "spiritual_wound_special_action_costs_v1");
         var cases = new[]
         {
             (Side: "player", Operation: "recover_spiritual_power", Before: 4, After: 6, Recovery: 3),
@@ -343,7 +343,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void SpiritualWoundPositionDependencyWorkedExample_PreservesIndependentRowsAndSavedChoice()
     {
-        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_position_dependency_v1");
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_position_dependency_v1");
         Assert.Equal(3, fragments.Count);
         var before = fragments[0];
         var after = fragments[1];
@@ -381,7 +381,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void SpiritualDependentFrontiersWorkedExample_PreservesDiceAndSeparateResponses()
     {
-        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_dependent_frontiers_v1");
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_dependent_frontiers_v1");
         Assert.Equal(6, fragments.Count);
         foreach (var index in new[] { 0, 1, 3, 4 })
         {
@@ -433,7 +433,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void SpiritualWoundPositionWorkedExamples_PreserveCanonicalPositionAndDice()
     {
-        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_position_v1");
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_position_v1");
         Assert.Equal(2, fragments.Count);
         var expectedPositions = new[] { "player_advantaged", "contested" };
         for (var index = 0; index < fragments.Count; index++)
@@ -477,7 +477,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualSourceOnlyWorkedExample_PreservesTrainingAndOrdinaryExchange()
     {
         var fragment = Assert.Single(ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_source_only_publication_v1"));
+            "E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_source_only_publication_v1"));
         Assert.Equal("afterlifeSpiritualConflictUpdate", Assert.Single(fragment).Key);
         var response = JsonSerializer.Deserialize<GameResponse>(fragment.ToJsonString(), SerializerOptions);
         Assert.NotNull(response);
@@ -529,7 +529,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualTerminalClosureWorkedExample_PreservesExchangeWitness()
     {
         var fragment = Assert.Single(ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_terminal_closure_v1"));
+            "E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_terminal_closure_v1"));
         Assert.Equal("afterlifeSpiritualConflictUpdate", Assert.Single(fragment).Key);
         var update = fragment["afterlifeSpiritualConflictUpdate"]!;
         Assert.Equal("resolve", update["mode"]!.GetValue<string>());
@@ -561,7 +561,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualCommonPublicationWorkedExample_UsesOnlyExistingDecisionFields()
     {
         var fragment = Assert.Single(ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_common_publication_v1"));
+            "E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_common_publication_v1"));
         Assert.Equal(new[] { "decision", "opportunityRef" }, fragment.Select(pair => pair.Key).OrderBy(key => key));
         Assert.Equal("none", fragment["decision"]!.GetValue<string>());
         Assert.StartsWith("spiritual_wound_", fragment["opportunityRef"]!.GetValue<string>());
@@ -573,8 +573,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void SpiritualContinuationEnvelopeWorkedExample_UsesStrictProductionProtocol()
     {
-        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt",
-            "spiritual_wound_continuation_envelope_v1").ToArray();
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_continuation_envelope_v1").ToArray();
         Assert.Equal(2, fragments.Length);
         var request = SpiritualWoundContinuationProtocol.ReadRequest(
             JsonSerializer.SerializeToElement(fragments[0]));
@@ -593,8 +592,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [Fact]
     public void SpiritualPendingSubmissionWorkedExample_DoesNotReplaceSavedDecision()
     {
-        var fragment = Assert.Single(ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt",
-            "spiritual_wound_pending_submission_v1"));
+        var fragment = Assert.Single(ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_pending_submission_v1"));
         var response = SpiritualWoundContinuationProtocol.ReadResponse(JsonSerializer.SerializeToElement(fragment));
         var request = new SpiritualWoundContinuationRequest
         {
@@ -621,13 +619,13 @@ public sealed partial class ExampleDocumentationValidationTests
         {
             ["wound_player_status_readonly_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_joint_severity_repair_v1"] = "E_CLI_Wound_Materialization.txt",
-            ["spiritual_wound_binding_result_closure_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_dependent_frontiers_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_position_dependency_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_position_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_source_only_publication_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_pending_submission_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_continuation_envelope_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_binding_result_closure_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_dependent_frontiers_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_position_dependency_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_position_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_source_only_publication_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_pending_submission_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_continuation_envelope_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
             ["wound_treatment_scene_authority_v1"] =
                 "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_roll_scope_all_v1"] = "E_CLI_Wound_Materialization.txt",
@@ -637,7 +635,7 @@ public sealed partial class ExampleDocumentationValidationTests
             ["wound_mortal_alternative_response_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_alternative_repair_v1"] = "E_CLI_Wound_Materialization.txt",
             ["effect_mortal_roll_scope_skill_v1"] = "E_CLI_Effect_Materialization.txt",
-            ["afterlife_roll_scope_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_roll_scope_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
             ["effect_mortal_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_apply_stack_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_event_report_v1"] = "E_CLI_Ink_Feather_Actions.txt",
@@ -649,19 +647,19 @@ public sealed partial class ExampleDocumentationValidationTests
             ["effect_wound_independence_v1"] = "E_CLI_Effect_Materialization.txt",
             ["wound_spiritual_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
             ["wound_spiritual_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
-            ["spiritual_wound_private_roots_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_special_action_costs_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_terminal_closure_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["spiritual_wound_common_publication_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_private_roots_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_special_action_costs_v1"] = "E_CLI_Afterlife_Spiritual_Conflict.txt",
+            ["spiritual_wound_terminal_closure_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
+            ["spiritual_wound_common_publication_v1"] = "E_CLI_Afterlife_Wound_Continuation.txt",
             ["effect_bounded_repair_v1"] = "E_CLI_Effect_Materialization.txt",
-            ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["afterlife_ap_effect_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
+            ["afterlife_ap_effect_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
             ["afterlife_resource_bounded_receipt_waves_v1"] =
-                "E_CLI_Afterlife_Turns.txt",
+                "E_CLI_Afterlife_Effects_Resources.txt",
             ["mortal_qte_deferred_effect_receipt_waves_v1"] =
                 "E_CLI_QTE_Offer.txt",
-            ["effect_afterlife_conditions_five_kinds_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["afterlife_effect_conditions_executable_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["effect_afterlife_conditions_five_kinds_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
+            ["afterlife_effect_conditions_executable_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
             ["effect_legacy_rejection_v1"] = "E_CLI_Effect_Materialization.txt"
         };
 
@@ -865,8 +863,8 @@ public sealed partial class ExampleDocumentationValidationTests
             ["mortal_resource_bounded_receipt_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_bounded_repair_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_illegal_direct_write_v1"] = "E_CLI_Mortal_Resources.txt",
-            ["afterlife_unified_resource_authority_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["afterlife_actor_resource_materialization_v1"] = "E_CLI_Afterlife_Turns.txt"
+            ["afterlife_unified_resource_authority_v1"] = "E_CLI_Afterlife_Effects_Resources.txt",
+            ["afterlife_actor_resource_materialization_v1"] = "E_CLI_Afterlife_Actor_Profiles.txt"
         };
 
         Assert.Equal(requiredEntries.Count, manifest.ResourceMaterializationCoverage.Count);
@@ -1389,8 +1387,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void AfterlifeConditionWorkedExample_ExecutesAllFiveDefinitionsAndApplications()
     {
         var fences = ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt",
-            "afterlife_effect_conditions_executable_v1");
+            "E_CLI_Afterlife_Effects_Resources.txt", "afterlife_effect_conditions_executable_v1");
         Assert.Equal(2, fences.Count);
 
         var art = fences[0];
@@ -1465,11 +1462,11 @@ public sealed partial class ExampleDocumentationValidationTests
             ["mortal_faction_materialization_seven_empty_creation_v1"] = "E_Block_21.txt",
             ["mortal_faction_materialized_existing_state_v1"] = "E_CLI_Step_Main.txt",
             ["mortal_faction_core_changes_update_v1"] = "E_CLI_Step_Main.txt",
-            ["shining_faction_materialization_native_discovery_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["shining_faction_materialization_player_founding_v1"] = "E_CLI_Afterlife_Turns.txt",
-            ["shining_faction_materialization_story_hidden_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_faction_materialization_native_discovery_v1"] = "E_CLI_Afterlife_Shining_Actions.txt",
+            ["shining_faction_materialization_player_founding_v1"] = "E_CLI_Afterlife_Shining_Actions.txt",
+            ["shining_faction_materialization_story_hidden_v1"] = "E_CLI_Afterlife_Shining_Actions.txt",
             ["mortal_faction_materialization_repair_v1"] = "E_Block_21.txt",
-            ["shining_faction_materialization_repair_v1"] = "E_CLI_Afterlife_Turns.txt"
+            ["shining_faction_materialization_repair_v1"] = "E_CLI_Afterlife_Shining_Actions.txt"
         };
 
         foreach (var (contractId, expectedFile) in requiredEntries)
@@ -2141,13 +2138,13 @@ public sealed partial class ExampleDocumentationValidationTests
         var examples = new[]
         {
             ParseNamedJsonFence(
-                "E_CLI_Afterlife_Turns.txt",
+                "E_CLI_Afterlife_Shining_Actions.txt",
                 "shining_faction_materialization_native_discovery_v1"),
             ParseNamedJsonFence(
-                "E_CLI_Afterlife_Turns.txt",
+                "E_CLI_Afterlife_Shining_Actions.txt",
                 "shining_faction_materialization_player_founding_v1"),
             ParseNamedJsonFence(
-                "E_CLI_Afterlife_Turns.txt",
+                "E_CLI_Afterlife_Shining_Actions.txt",
                 "shining_faction_materialization_story_hidden_v1")
         };
         var supportedOrigins = new HashSet<string>(StringComparer.Ordinal)
@@ -2210,8 +2207,7 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.IsType<JsonObject>(examples[2]["storyAuthority"]);
 
         var repair = ExtractNamedJsonFence(
-            "E_CLI_Afterlife_Turns.txt",
-            "shining_faction_materialization_repair_v1");
+            "E_CLI_Afterlife_Shining_Actions.txt", "shining_faction_materialization_repair_v1");
         Assert.Contains("tradeInventory", repair, StringComparison.Ordinal);
         Assert.Contains("tradeInventoryReceipts", repair, StringComparison.Ordinal);
         Assert.Contains("materialization.sections.trade", repair, StringComparison.Ordinal);
@@ -2230,7 +2226,7 @@ public sealed partial class ExampleDocumentationValidationTests
         string contractId)
     {
         var fences = ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt",
+            "E_CLI_Afterlife_Shining_Actions.txt",
             contractId);
         var faction = fences[0];
         Assert.True(
@@ -2287,7 +2283,7 @@ public sealed partial class ExampleDocumentationValidationTests
         string contractId)
     {
         var fences = ParseNamedJsonFences(
-            "E_CLI_Afterlife_Turns.txt",
+            "E_CLI_Afterlife_Shining_Actions.txt",
             contractId);
         Assert.True(
             fences.Count >= 2,

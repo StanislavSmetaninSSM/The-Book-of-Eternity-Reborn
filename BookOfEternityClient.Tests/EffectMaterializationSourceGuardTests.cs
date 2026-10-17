@@ -468,7 +468,5 @@ public sealed class EffectMaterializationSourceGuardTests
     }
 
     private static string ReadRepoFile(string relativePath) =>
-        File.ReadAllText(Path.Combine(
-            TestRepoPaths.RepoRoot,
-            relativePath.Replace('/', Path.DirectorySeparatorChar)));
+        GmDocumentationBodyFiles.Read(TestRepoPaths.RepoRoot, relativePath);
 }

@@ -1,0 +1,1274 @@
+# E_CLI_Afterlife_Lifecycle.txt
+
+Read when: Resolved ordinary afterlife realm; no handoff. Follow only the current dispatch/contract; Missing/null/empty realm remains unresolved fault; no ordinary topics does not independently activate this topic.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md).
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: [E_CLI_Afterlife_Lifecycle.txt](Examples/E_CLI_Afterlife_Lifecycle.txt); paired rules: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md). Whole original examples/negative labels remain below.
+
+<!-- GM1557:A105:START -->
+3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF
+==================================================
+
+Scenario:
+- `currentRealm = "Shining Abode"`.
+- `shining_abode_state.json.preparedIncarnationPackage` is not null.
+- The player has already chosen a prepared next-life package.
+- No unresolved afterlife pending/control contracts remain; Guardian, resident, archive, offering, Source of Light (`pending_source_of_light_capstone.json`), active spiritual conflict (`game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict`), Shining core/trade/politics, malformed wrong-realm NPC, and legacy `pendingNativeFactionDiscovery` blockers must be resolved or repaired before this handoff, not in the same response.
+- The current accepted turn must create `TriggerIncarnation` while preserving the frozen package for the client transition code to consume after successful mortal bootstrap.
+- `TriggerIncarnation` is valid only because this is the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` plus client-owned `game_state/control/pending_turn_snapshot.authority.json` authority; it is not a manual/out-of-band file the GM can create later.
+- Ordinary Shining living-world progression must NOT run in this handoff turn.
+
+Input fragment:
+
+```json
+{
+  "soul_state.json": {
+    "currentRealm": "Shining Abode"
+  },
+  "shining_abode_state.json": {
+    "availability": "active",
+    "preparedIncarnationPackage": {
+      "packageId": "prepared_incarnation_44",
+      "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
+      "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
+      "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
+      "generatedFromDraftVersion": 4,
+      "preparedAtTurn": 339,
+      "preparedAtUtc": "2026-04-24T09:10:00Z",
+      "selectedCardIds": [
+        "card_dawn_memory",
+        "card_river_names"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card_dawn_memory",
+          "dedupeKey": "project:gproj_elian_gate_stability_001:memory:dawn",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "gproj_elian_gate_stability_001",
+          "effectFamily": "memory",
+          "rarity": "rare",
+          "displayName": "Память стеклянного рассвета",
+          "displaySummary": "Следующая жизнь начнётся с дополнительным выбором устойчивой памяти.",
+          "effectPayload": {
+            "type": "expand_memory_selection",
+            "options": 2,
+            "rerollAllocation": {
+              "resourceKey": "blessing_rerolls",
+              "amount": 1
+            }
+          }
+        },
+        {
+          "cardId": "card_river_names",
+          "dedupeKey": "project:gproj_elian_gate_stability_001:lore:river_names",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "gproj_elian_gate_stability_001",
+          "effectFamily": "lore",
+          "rarity": "uncommon",
+          "displayName": "Имена речных духов",
+          "displaySummary": "К ранним ходам смертной жизни проявится lore clue о договорах городов и рек.",
+          "effectPayload": {
+            "type": "insert_lore_clues",
+            "clueCount": 1,
+            "latestTurn": 10
+          }
+        }
+      ]
+    }
+  },
+  "turn_request.json": {
+    "turnNumber": 340,
+    "playerAction": "Я принимаю подготовленное воплощение.",
+    "progressionControl": {
+      "mustEvaluateShiningAbodeProgression": false,
+      "shiningAbodeCyclesExpectedThisTurn": 0,
+      "mustEvaluateShiningFactionProgression": false,
+      "shiningFactionCyclesExpectedThisTurn": 0,
+      "mustEvaluateShiningTradeProgression": false,
+      "shiningTradeCyclesExpectedThisTurn": 0,
+      "afterlifeCatchupRequired": false
+    }
+  }
+}
+```
+
+Correct GM decision:
+
+```markdown
+## Оценка времени и мира
+- Realm: Shining Abode.
+- preparedIncarnationPackage is present.
+- Mode: Shining Abode pending-bootstrap handoff.
+- No unresolved afterlife pending/control contracts are present; if any such blocker exists, Soul Gates must stop here and the GM must not combine its closure with bootstrap.
+- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.
+- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.
+- Accepted-turn authority: `TriggerIncarnation` is authored only for this accepted turn and relies on the matching validated `game_state/control/pending_turn_snapshot` plus client-owned `game_state/control/pending_turn_snapshot.authority.json`; if that authority is missing or stale, the runtime treats the trigger as invalid (`incarnation_trigger_invalid_validated_snapshot_context`).
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: нет
+- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.
+- Акторы вне охвата: сияющие фракции, Хранители, резиденты
+- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.
+
+## Reasoning / Размышления NPC / Guardian Thoughts
+- No actor reasoning block is required because no structured actor updates are emitted.
+```
+
+Correct response/control fragment:
+
+```json
+{
+  "response": "Сияющая Обитель не требует новых решений. Она только удерживает уже выбранный узор, пока душа проходит сквозь подготовленные врата. Стеклянный рассвет сжимается в точку памяти, и впереди раскрывается смертный мир храмовых архивов и речных духов.",
+  "gm_thoughts_markdown": "## Оценка времени и мира\n- Realm: Shining Abode.\n- preparedIncarnationPackage is present.\n- Mode: Shining Abode pending-bootstrap handoff.\n- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.\n- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.\n- Accepted-turn authority: `TriggerIncarnation` relies on the matching validated `game_state/control/pending_turn_snapshot`; if that authority is missing or stale, the runtime treats the trigger as invalid.\n\n## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: нет\n- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.\n- Акторы вне охвата: сияющие фракции, Хранители, резиденты\n- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.\n\n## Reasoning / Размышления NPC / Guardian Thoughts\n- No actor reasoning block is required because no structured actor updates are emitted.",
+  "TriggerIncarnation": {
+    "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
+    "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
+    "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
+    "source": "shining_prepared_package"
+  }
+}
+```
+
+Correct Shining state handling:
+
+Do not write a `shining_abode_state.json` mutation for `preparedIncarnationPackage` in this handoff turn. Preserve the existing package object exactly as it was in input; the runtime reads it after accepting `TriggerIncarnation`, materializes the frozen blessing/world setup, and clears it after successful mortal bootstrap. Do not add unsupported handoff marker fields.
+
+There is no required Shining state output fragment for this handoff unless another already-valid state field must be preserved unchanged by the normal save pipeline.
+
+Do not create `game_state/control/incarnation_trigger.json` outside the accepted-turn lifecycle. The runtime requires the matching validated `game_state/control/pending_turn_snapshot` context; a trigger without that authority is ignored/deleted rather than consumed.
+
+Do NOT write in this handoff example:
+
+```text
+preparedIncarnationPackage: null
+progressionProcessingReport for ordinary Shining cycles
+shining_abode_state faction/radiance/trade progression unrelated to the package
+guardianProjectUpdates
+residentThoughtJournalUpdates
+factionDataChanges
+worldEventsLog
+currentLocationData
+timeChange
+weatherChange
+UpdateNPCs
+```
+
+Why this is valid:
+- `preparedIncarnationPackage != null` changes the mode.
+- The scheduler's ordinary Shining debt is not processed because the turn is a lifecycle handoff, not an ordinary active Shining Abode turn.
+- The GM does not invent new Shining events while bootstrapping the next mortal life.
+
+==================================================
+<!-- GM1557:A105:END -->
+<!-- GM1557:A108:START -->
+6. VALID — ORDINARY CHAOS SEA TRIGGERINCARNATION
+==================================================
+
+Scenario:
+- Realm is ordinary `Chaos Sea`.
+- No Shining `preparedIncarnationPackage` is present.
+- The player explicitly chooses the next mortal life.
+- This is not Life Evaluation and not Shining pending-bootstrap handoff.
+- This response is part of the accepted turn that owns the matching validated `game_state/control/pending_turn_snapshot`; a later manual `incarnation_trigger.json` repair without that authority is invalid.
+
+Correct response/control fragment:
+
+```json
+{
+  "response": "Море Хаоса раскрывает новую смертную нить. Хранители не спорят с выбором души: впереди мир заснеженных перевалов, караванных обетов и древних горных архивов.",
+  "TriggerIncarnation": {
+    "worldDescription": "Горный мир позднего средневековья, где караванные города держатся на клятвах, архивных печатях и договорах с духами перевалов.",
+    "characterDescription": "Ребёнок хранителя перевального архива, родившийся в семье, которая помнит долги караванов.",
+    "circumstances": "Первая зима жизни начинается во время спора между городскими старейшинами и духом закрытого перевала."
+  }
+}
+```
+
+Do not write in ordinary Chaos Sea `TriggerIncarnation`:
+- `TriggerLifeEnd`.
+- Life Evaluation rewards.
+- `preparedIncarnationPackage` mutations.
+- Shining faction/radiance/trade progression.
+- Mortal World `currentLocationData`, `worldEventsLog`, `UpdateNPCs`, `UpdateQuests`, or weather/time outputs.
+- Out-of-band `incarnation_trigger.json` after the turn has ended or after snapshot/terminal authority is gone.
+
+Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn with either legacy explicit provocation against the current active Guardian or current-turn resolved afterlife spiritual conflict proof. Guardian identity, current Abode, reputation threshold, and severity are evaluated from the validated pre-turn `game_state/meta/guardians.json` snapshot; same-turn Guardian edits cannot make the force legal. It must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
+
+6A. VALID — LEGACY GUARDIAN PROVOCATION TAG EVIDENCE
+---------------------------------------------
+
+The runtime accepts exact `playerAction` tags as deterministic evidence for Guardian-forced incarnation. This is the input context, not a GM response surface:
+
+Additional pre-state requirement:
+- The provoking Guardian must be the current active Guardian.
+- Pre-turn `game_state/meta/guardians.json` for that Guardian must have `relationshipData.currentReputation` / `CurrentReputation <= -21`.
+- Severity mapping is mechanical: `-21..-50 => "harsh"`, `-51..-100 => "severe"`. A reputation of `-20` or better must not force incarnation even with a provocation tag.
+
+```text
+input/turn_request.json:
+playerAction = "[GUARDIAN_PROVOCATION: guardian_azalia] Игрок deliberately insults Азалия and demands punishment."
+turnNumber = 77
+
+pre-turn activeGuardian.guardianId = "guardian_azalia"
+pre-turn guardian_azalia.relationshipData.currentReputation = -34
+```
+
+Correct GM response:
+
+```json
+{
+  "TriggerIncarnation": {
+    "source": "guardian_forced",
+    "guardianId": "guardian_azalia",
+    "severityBand": "harsh",
+    "reason": "The player explicitly provoked the current Guardian.",
+    "provocationSummary": "The player used the GUARDIAN_PROVOCATION tag and insulted Azalia directly.",
+    "worldDescription": "A cold frontier world where oaths have immediate metaphysical weight.",
+    "characterDescription": "A child born under a debt-mark, watched by oath-keepers.",
+    "circumstances": "The first winter begins with a public obligation that cannot be ignored."
+  }
+}
+```
+
+Why this is valid:
+- `[GUARDIAN_PROVOCATION]` without an id is accepted as explicit provocation evidence.
+- `[GUARDIAN_PROVOCATION: guardianId]` is accepted only when the id exactly matches `TriggerIncarnation.guardianId`.
+- `severityBand = "harsh"` matches pre-turn reputation `-34` in the `-21..-50` band. If the same Guardian had `currentReputation = -62`, the correct `severityBand` would be `"severe"`.
+- This tag is evidence, not a pending file. It does not authorize Shining handoff, protected post-life turns, or forcing one Guardian's punishment through another Guardian's id.
+- The trigger is still valid only inside the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` authority; otherwise validation reports `incarnation_trigger_invalid_validated_snapshot_context`.
+
+6B. VALID — ASCENSION HANDOFF IS CLIENT-EXECUTED
+------------------------------------------------
+
+Ascension is a Chaos Sea lifecycle trigger. The GM confirms the explicit choice and writes the trigger only; the client performs the later realm handoff after validation. Do not manually switch `soul_state.currentRealm` to `Shining Abode` in the same response.
+
+Input prerequisites:
+- `soul_state.currentRealm = "Chaos Sea"`.
+- Enlightenment is ascension-ready: `enlightenment.experience >= 60` or `soulProgression.totalExperience >= 60`; legacy max/Transcendence markers (`progressPercent=100`, high tier, `Transcendence`) remain valid.
+- `playerAction` explicitly chooses Ascension.
+- No `TriggerLifeEnd`, no Shining pending-bootstrap package handoff, no Mortal World state mutation.
+
+Correct accepted response:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension",
+  "response": "Море Хаоса раскрывается сияющим разломом. Душа делает выбор вознестись; дальнейший переход в Сияющую Обитель выполнит клиент после принятия этого хода."
+}
+```
+
+Correct `game_state/control/ascension.json` after distribution:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension"
+}
+```
+
+Forbidden in the same accepted response:
+- `TriggerLifeEnd`.
+- `game_state/control/life_transitions.json`.
+- `TriggerIncarnation`.
+- Manual `soul_state.currentRealm = "Shining Abode"`.
+- Shining faction/radiance/trade state mutations.
+- `progressionProcessingReport` unless the same request's `progressionControl` explicitly requires scheduler debt.
+- Mortal World `currentLocationData`, `UpdateNPCs`, `worldEventsLog`, or faction state.
+- Mortal bootstrap files or current-world lore. The client performs the Shining Abode handoff after accepting `ascension.json`.
+
+==================================================
+<!-- GM1557:A108:END -->
+<!-- GM1557:A120:START -->
+18. VALID — PREPARE PACKAGE NOW, BOOTSTRAP LATER
+==================================================
+
+This is the most important Shining lifecycle distinction:
+
+```text
+prepare_incarnation_package turn:
+- Realm: ordinary active Shining Abode.
+- preparedIncarnationPackage is currently null.
+- `pending_shining_abode_actions.json` root is `{ "requests": [ ... ] }`; the active request has `actionType = prepare_incarnation_package`.
+- GM closes the core action through canonical Shining state mutation and coreActionReceipts[].
+- GM writes/updates preparedIncarnationPackage with selectedCardIds[] and selectedCards[].
+- GM does NOT write TriggerIncarnation on this same accepted turn, even if the player asks to incarnate immediately.
+- A separate explicit incarnation request is handled only on a later pending-bootstrap handoff turn, after preparedIncarnationPackage already exists in the pre-turn state.
+
+later pending-bootstrap handoff turn:
+- Realm: Shining Abode.
+- preparedIncarnationPackage already exists before the turn starts.
+- This is not ordinary active Shining roleplay.
+- GM writes TriggerIncarnation only.
+- GM preserves preparedIncarnationPackage exactly as provided.
+- Runtime consumes and clears the package after successful Mortal World bootstrap.
+```
+
+Correct active Shining `prepare_incarnation_package` closure shape:
+
+```json
+{
+  "game_state/meta/shining_abode_state.json patch": {
+    "preparedIncarnationPackage": {
+      "selectedCardIds": [
+        "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+          "sourceType": "head",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "player_soul",
+          "sourceActorName": "player_soul",
+          "effectFamily": "route",
+          "rarity": "rare",
+          "displayName": "Дар фракции «Орден Стеклянного Света»",
+          "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 6
+          }
+        }
+      ],
+      "generatedFromDraftVersion": 7,
+      "preparedAtTurn": 411,
+      "preparedAtUtc": "2026-04-24T16:20:00Z"
+    },
+    "coreActionReceipts": [
+      {
+        "requestId": "shine_prepare_package_411",
+        "actionType": "prepare_incarnation_package",
+        "status": "accepted",
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
+        "factionId": "",
+        "projectId": "",
+        "relicId": "",
+        "returnCycleId": "",
+        "targetFormTag": "",
+        "propertyIndex": -1,
+        "selectedCardIds": [
+          "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+        ],
+        "selectedCards": [
+          {
+            "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+            "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+            "sourceType": "head",
+            "sourceFactionId": "shine_faction_glass_light_001",
+            "sourceFactionName": "Орден Стеклянного Света",
+            "sourceActorId": "player_soul",
+            "sourceActorName": "player_soul",
+            "effectFamily": "route",
+            "rarity": "rare",
+            "displayName": "Дар фракции «Орден Стеклянного Света»",
+            "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+            "effectPayload": {
+              "type": "seed_early_routes",
+              "routeOptions": 1,
+              "latestTurn": 6
+            }
+          }
+        ],
+        "newResidentIds": [],
+        "seededProjectIds": [],
+        "generatedDraftVersion": 7,
+        "resolvedAtTurn": 411,
+        "resolvedAtUtc": "2026-04-24T16:20:00Z",
+        "reason": "selected blessing cards frozen into the next-life package"
+      }
+    ]
+  }
+}
+```
+
+As in example 17, `game_state/meta/shining_abode_state.json patch` is a documentation view of the persisted state mutation. In real output, preserve the full existing Shining state root and mutate `preparedIncarnationPackage`, `gates`, and `coreActionReceipts[]` canonically.
+
+Correct later pending-bootstrap handoff response:
+
+```json
+{
+  "response": "Сияющая Обитель удерживает уже выбранный узор и не требует новой политики. Душа проходит через подготовленные врата, а frozen package остаётся на месте до runtime consumption.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Shining pending-bootstrap handoff.\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.\n- Accepted-turn authority: TriggerIncarnation is valid only with the matching validated game_state/control/pending_turn_snapshot context for this accepted turn.",
+  "TriggerIncarnation": {
+    "worldDescription": "Мир речных храмов, где архивы спорят с духами наводнений.",
+    "characterDescription": "Ребёнок хранителя храмовой библиотеки, родившийся рядом с затопленным порогом.",
+    "circumstances": "Семья должна выбрать, какие записи спасти до первого большого паводка.",
+    "source": "shining_prepared_package"
+  }
+}
+```
+
+Do not write during the later handoff:
+
+```text
+preparedIncarnationPackage = null
+preparedIncarnationPackageId on TriggerIncarnation
+ordinary Shining coreActionReceipts[]
+ordinary Shining trade/faction/resident progression report
+soul_state.currentRealm = "Mortal World"
+manual/out-of-band incarnation_trigger.json without validated accepted-turn authority
+```
+
+==================================================
+<!-- GM1557:A120:END -->
+<!-- GM1557:A121:START -->
+19. VALID — ORDINARY CHAOS SEA LIVING WORLD WITHOUT PENDING FILES
+==================================================
+
+This example is for an ordinary `Chaos Sea` turn where no pending request file exists, but the scheduler still says the world is alive. The GM must not answer with dialogue only. Due contours still need reasoning, concrete afterlife consequences or a stability explanation, and a progression report.
+
+Input conditions:
+
+```json
+{
+  "soul_state.json": {
+    "soulName": "Пепельная Искра",
+    "soulFormDescription": "Женщина из тихого серебряного света, в котором проступают лица прежних жизней.",
+    "previousSoulNames": ["Аурелия"],
+    "currentRealm": "Chaos Sea",
+    "currentIncarnation": 4,
+    "inkFeathers": { "current": 12, "total": 38 }
+  },
+  "turn_request.json": {
+    "sessionId": "session_afterlife_019",
+    "requestId": "turn_419",
+    "turnNumber": 419,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "Я молча сижу у края Обители Азалии и слушаю Море.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "currentChaosSeaTurnOrdinal": 37,
+      "nextChaosSeaTurnOrdinal": 38,
+      "lastChaosSeaSimulationOrdinal": 36,
+      "lastGuardianProjectCycleOrdinal": 21,
+      "nextGuardianProjectCycleOrdinal": 38,
+      "lastResidentAgencyCycleOrdinal": 14,
+      "nextResidentAgencyCycleOrdinal": 38,
+      "chaosSeaCyclesExpectedThisTurn": 1,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "mustEvaluateChaosSeaProgression": true,
+      "mustEvaluateGuardianProjectProgression": true,
+      "mustEvaluateResidentAgencyProgression": true,
+      "afterlifeCatchupRequired": false,
+      "afterlifeCatchupSummaryEventsRequired": 0,
+      "afterlifeCatchupContours": []
+    }
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.
+- Релевантные акторы: Азалия, Лиора
+- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.
+- Акторы вне охвата: other Guardians, Shining factions
+- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.
+
+## Actor Brain 2.0
+### Азалия
+- Текущая локация: Край Обители Шёлковой Памяти; остаётся рядом с текущим проектом.
+- Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.
+- Данные профиля: Хранительница памяти, привязана к Душе, отвечает за устойчивость Обители и текущий проект шёлкового зала.
+- Мотивация: Использовать редкую тишину для работы, не превращая молчание Души в требование.
+- Ограничения: Азалия не станет говорить за Душу и не может игнорировать давление Моря на проект.
+- Мысли: Я слышу в этом молчании не отказ, а место, где нить наконец можно удержать ровно.
+- Варианты стратегий:
+  1. Продвинуть проект на один малый шаг. Выгода: тишина превращается в устойчивую работу. Риск: Азалия ошибочно примет молчание за согласие.
+  2. Остановить проект и потребовать ответа. Выгода: намерение Души станет яснее. Риск: требование разрушит редкую безопасную паузу.
+- Выбранная стратегия: Продвинуть проект без требования ответа.
+- Почему альтернативы отвергнуты: Вопрос не срочен, а принуждение противоречит бережной памяти Азалии.
+- Действия: She advances the existing project by one small work step and records a thought.
+- Изменения состояния: `guardianProjectUpdates`, `guardianThoughtJournalUpdates`.
+
+### Лиора
+- Текущая локация: Внутренний край Обители; остаётся в безопасной нише у Моря.
+- Ситуация: The quieter Abode gives Лиора enough safety to act internally.
+- Данные профиля: Странствующая душа, осторожная свидетельница, боится превращать безопасность в клетку.
+- Мотивация: Сохранить собственную инициативу, не заставляя Душу немедленно отвечать.
+- Ограничения: Лиора не знает, хочет ли Душа разговора, и не станет присваивать её молчание.
+- Мысли: Я могу остаться рядом и не превращать каждую тишину в просьбу обо мне.
+- Варианты стратегий:
+  1. Не начинать разговор и записать внутренний вывод. Выгода: границы Души сохранены. Риск: возможность сближения будет отложена.
+  2. Немедленно попросить внимания. Выгода: Лиора получит прямой ответ. Риск: безопасная пауза станет давлением.
+- Выбранная стратегия: Не начинать разговор и удержать собственный выбор в памяти.
+- Почему альтернативы отвергнуты: Срочной просьбы нет, а давление ухудшит доверие.
+- Действия: She records a resident thought; no roster, transfer, or history request is invented.
+- Изменения состояния: `residentThoughtJournalUpdates` добавляет новую first-person запись.
+
+## Afterlife Living World / Живой мир Посмертия
+- Chaos Sea hub cycle: the Sea calms around this Abode rather than creating a new external event; this is described in response and closed by progression report.
+- Guardian project cycle: Азалия advances her existing project through `guardianProjectUpdates`.
+- Resident agency cycle: Лиора acts through `residentThoughtJournalUpdates`.
+- No pending files exist, so no receipt arrays are invented.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Море Хаоса не отвечает словами. Серебряный свет вашей формы ложится на край Обители, и волны чуть отступают, оставляя Азалии редкую неподвижность для работы, а Лиоре — место, где память не требует немедленного разговора.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.\n- Акторы вне охвата: other Guardians, Shining factions\n- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Край Обители Шёлковой Памяти; остаётся рядом с текущим проектом.\n- Ситуация: Молчание Души совпадает с очередным циклом проекта.\n- Данные профиля: Хранительница памяти, отвечает за устойчивость Обители и проект шёлкового зала.\n- Мотивация: Использовать тишину для работы без давления на Душу.\n- Ограничения: Не станет говорить за Душу и не может игнорировать давление Моря.\n- Мысли: Я слышу в молчании место, где нить можно удержать ровно.\n- Варианты стратегий:\n  1. Продвинуть проект. Выгода: тишина станет работой. Риск: молчание можно ошибочно принять за согласие.\n  2. Потребовать ответа. Выгода: намерение станет яснее. Риск: безопасная пауза разрушится.\n- Выбранная стратегия: Продвинуть проект без требования ответа.\n- Почему альтернативы отвергнуты: Принуждение противоречит бережной памяти Азалии.\n- Действия: Продвигает проект и записывает мысль.\n- Изменения состояния: guardianProjectUpdates, guardianThoughtJournalUpdates.\n\n### Лиора\n- Текущая локация: Внутренний край Обители; остаётся у Моря.\n- Ситуация: Тихая Обитель даёт Лиоре пространство для собственного решения.\n- Данные профиля: Осторожная свидетельница, боится превращать безопасность в клетку.\n- Мотивация: Сохранить инициативу, не вынуждая Душу отвечать.\n- Ограничения: Не знает, хочет ли Душа разговора.\n- Мысли: Я могу остаться рядом и не превращать тишину в просьбу обо мне.\n- Варианты стратегий:\n  1. Не начинать разговор. Выгода: границы Души сохранены. Риск: сближение откладывается.\n  2. Попросить внимания. Выгода: появится прямой ответ. Риск: пауза станет давлением.\n- Выбранная стратегия: Не начинать разговор и сохранить вывод в памяти.\n- Почему альтернативы отвергнуты: Срочной просьбы нет, а давление ухудшит доверие.\n- Действия: Записывает самостоятельный внутренний вывод.\n- Изменения состояния: residentThoughtJournalUpdates.\n\n## Afterlife Living World / Живой мир Посмертия\n- Chaos Sea hub cycle closes through progression report.\n- Guardian project and resident agency cycles receive their own bounded state deltas.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_419_silent_anchor",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 419,
+      "timestamp": "2026-04-24T16:19:00Z",
+      "title": "Тихая опора",
+      "summary": "Я услышала в молчании Души не отказ, а устойчивую точку для текущего проекта Обители."
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "projectId": "gproj_azalia_silk_hall_001",
+      "workDone": 18,
+      "stability": 7,
+      "workAudit": {
+        "source": "afterlife_living_world_cycle",
+        "cycleOrdinal": 38,
+        "reason": "quiet Chaos Sea hub pressure gave the project uninterrupted work time"
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "thought_liora_419_quiet_edge",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 419,
+      "timestamp": "2026-04-24T16:19:00Z",
+      "title": "Край без требования",
+      "summary": "Я не обязана немедленно превращать тишину в просьбу и сохраню это как собственный выбор."
+    }
+  ],
+  "progressionProcessingReport": {
+    "sessionId": "session_afterlife_019",
+    "requestId": "turn_419",
+    "turnNumber": 419,
+    "chaosSeaCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastChaosSeaSimulationOrdinal": 38,
+    "newLastGuardianProjectCycleOrdinal": 38,
+    "newLastResidentAgencyCycleOrdinal": 38,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+Why this is valid:
+- There are no pending files, so no closure receipts are invented.
+- The player action is quiet, but scheduler debt still produces living-world consequences.
+- The Chaos Sea hub cycle is not written to `worldEventsLog`.
+- Every processed contour advances only its own marker.
+- Resident agency is not skipped just because the resident did not speak to the player.
+
+==================================================
+<!-- GM1557:A121:END -->
+<!-- GM1557:A122:START -->
+20. VALID — SYSTEM ETERNAL GUARDIAN ATTRACTION
+==================================================
+
+Fresh New Game system Guardian seed is not this contract, and freeform New Game Guardian seed is no longer a pending materialization contract either. If the player selected a named system Guardian or described a freeform Guardian during New Game, the client has already published the Guardian/profile/Soul owner after-images and the exact definitions/state/history/owner-authority quartet through one deterministic plan and one coordinated resource write set. The resulting canonical `game_state/meta/guardians.json` root contains `guardians[]`, `activeGuardian`, and `chaosSeaNavigation`; system seeds also carry `sourcePreset`, while freeform seeds carry `originType=freeform` and `freeformSourceDescription`. There is no `pendingGuardianCreation`. In that startup scene the GM narrates the first meeting instead of materializing or repairing the Guardian: do not emit `UpdateGuardians.create`, do not add `pendingGuardianCreation`, and do not treat the scene as `system_guardian_attraction.json`.
+
+This example is for a deterministic Eternal Guardian attraction from ordinary Chaos Sea. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`; do not create or resolve it from Shining Abode.
+
+The GM must not improvise a nearby Guardian archetype. The result must point to the requested preset and persist `sourcePreset` on the materialized Guardian.
+
+If the turn materializes the Guardian requested by `guardians.json.pendingGuardianCreation`, the accepted `guardians.json` must remove `pendingGuardianCreation`. Keeping that startup request after `activeGuardian` and `guardians[]` have been materialized means the client will still show "Guardian creation pending" and validation must reject it. Also do not delete `pendingGuardianCreation` without materializing the requested Guardian into both `activeGuardian` and canonical `guardians[]`; deleting only the startup request creates narrative-only Guardian fiction and must be rejected.
+
+Repair-mode shortcut: when `validation_repair_request.json.harnessRepairPackets[].kind` is `guardian_pending_creation_materialization_repair`, follow that packet before this long example. Read `pendingGuardianCreation`. For New Game `mode=freeform`, do not choose a pending-only fallback and do not repair only materialized mirrors: write `UpdateGuardians.create` as `UpdateGuardians` with `command=create` and `data=<full canonical Guardian>`, mirror that create result into full `guardians[]`, matching `activeGuardian`, and `chaosSeaNavigation.currentAbodeId`, then remove `pendingGuardianCreation`. Use `canonicalCreateSkeleton` and `allowedEnums` from the repair packet: keep `relationshipData.lastInteraction` null or ISO 8601, keep `abodePower.tier` derived from `abodePower.currentPower`, leave `abodePower.history` empty unless every entry has timestamp/change/reason/source, keep at least 7 `loreFragments`, use listed mood/musing/lore enum values, and omit `relationshipData.guardianRoleToPlayer` unless the explicit branch is `former_patron`.
+
+Important runtime marker: the canonical `turn_request.json.playerAction` for this flow starts with `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: <presetId>]`. This is a client-authored routing tag. Keep it in the input/audit context so the runtime can clear `system_guardian_attraction.json` after acceptance, but do not present the tag to the player as diegetic speech.
+
+Input fragments:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "system_attraction_session_020",
+    "requestId": "turn_420",
+    "turnNumber": 420,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia] Я ищу Вечную Хранительницу Азалию.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "system_guardian_attraction.json": {
+    "mode": "system_guardian_attraction",
+    "targetPresetId": "azalia",
+    "targetPresetDisplayName": "Азалия",
+    "targetPresetVersion": "1.0",
+    "sourceLibrary": "built_in",
+    "targetSummary": "Дипломатичная хранительница страсти, власти и преданности.",
+    "renderedPromptPackage": "PresetId: azalia"
+  },
+  "guardians.json": {
+    "guardians": [],
+    "activeGuardian": null,
+    "pendingGuardianCreation": {
+      "mode": "system_preset",
+      "presetId": "azalia",
+      "presetDisplayName": "Азалия",
+      "presetVersion": "1.0",
+      "sourceLibrary": "built_in"
+    }
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: System Eternal Guardian attraction.
+- Релевантные акторы: Азалия
+- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.
+- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions
+- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.
+- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.
+- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.
+
+## Contract audit
+- `sourcePreset.presetId` remains `azalia`.
+- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.
+- Accepted `guardians.json` must remove `pendingGuardianCreation` because Azalia has been materialized.
+- `activeGuardian.guardianId` points to the materialized Azalia Guardian.
+- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.
+- No `UpdateNPCs` or Mortal World state is written.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Серебряные нити Моря Хаоса собираются в спокойный зал. Это не случайная покровительница и не похожий образ: зов отвечает именно Азалия. Её Обитель открывается как шёлковая память, где власть звучит мягко, но не отступает.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: System Eternal Guardian attraction.\n- Релевантные акторы: Азалия\n- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.\n- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions\n- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.\n- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.\n- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.\n\n## Contract audit\n- `sourcePreset.presetId` remains `azalia`.\n- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.\n- `activeGuardian.guardianId` points to the materialized Azalia Guardian.\n- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.\n- No `UpdateNPCs` or Mortal World state is written.",
+  "UpdateGuardians": [
+    {
+      "command": "create",
+      "data": {
+        "guardianId": "guard_system_azalia_001",
+        "canonicalName": "Азалия",
+        "domain": "Social",
+        "originType": "system_preset",
+        "sourcePreset": {
+          "presetId": "azalia",
+          "displayName": "Азалия",
+          "version": "1.0",
+          "library": "built_in"
+        },
+        "nameVariants": {
+          "default": "Азалия",
+          "feminine": "Азалия",
+          "masculine": "Азалия",
+          "neutral": "Азалия"
+        },
+        "manifestation": {
+          "formFlexibility": "selective",
+          "currentDisplayName": "Азалия",
+          "currentPresentationStyle": "feminine",
+          "currentPronouns": "она/её",
+          "appearanceDescription": "Хранительница в мягком шёлке, вокруг которой память собирается в тёплые складки."
+        },
+        "manifestationHistory": [],
+        "abode": {
+          "abodeId": "abode_azalia_memory_silk_001",
+          "name": "Обитель Шёлковой Памяти",
+          "description": "Тихая Обитель Азалии на краю Моря Хаоса, где воспоминания раскрываются без насилия.",
+          "image_prompt": "silk memory abode at the edge of a cosmic chaos sea, silver threads, warm diplomatic guardian presence",
+          "isDiscovered": true
+        },
+        "personalityProfile": {
+          "archetype": "Charming Diplomat",
+          "speechPattern": "мягкая, внимательная",
+          "coreValues": [
+            "убежище",
+            "память",
+            "бережная власть"
+          ]
+        },
+        "relationshipData": {
+          "currentReputation": 25,
+          "reputationHistory": [],
+          "lastInteraction": "2026-04-24T16:20:00Z"
+        },
+        "abodePower": {
+          "currentPower": 40,
+          "tier": "Стабильная",
+          "lastUpdatedAt": "2026-04-24T16:20:00Z",
+          "history": []
+        },
+        "guardianRelationships": [],
+        "questManagement": {
+          "availableQuests": [],
+          "activeQuests": [],
+          "completedQuests": []
+        },
+        "gachaSystem": {
+          "currentReturnCycleId": "chaos_return_420",
+          "gachaHistory": []
+        },
+        "mood": {
+          "current": "focused",
+          "intensity": 45,
+          "reason": "Ответ на точный системный зов.",
+          "since": 420
+        },
+        "loreFragments": [
+          {
+            "fragmentId": "azalia_lore_1",
+            "category": "personal_history",
+            "title": "Шёлковая память",
+            "content": "Азалия хранит воспоминания так, чтобы они не ломали душу.",
+            "requiredReputation": 0
+          },
+          {
+            "fragmentId": "azalia_lore_2",
+            "category": "domain_mastery",
+            "title": "Мягкая власть",
+            "content": "Её домен удерживает власть через согласие, долг и точные обещания.",
+            "requiredReputation": 0
+          },
+          {
+            "fragmentId": "azalia_lore_3",
+            "category": "soul_mechanics",
+            "title": "Узел доверия",
+            "content": null,
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "azalia_lore_4",
+            "category": "lost_world",
+            "title": "Сад забытых клятв",
+            "content": null,
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "azalia_lore_5",
+            "category": "other_guardians",
+            "title": "Переписка Хранителей",
+            "content": null,
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "azalia_lore_6",
+            "category": "cosmic_secret",
+            "title": "Цена бережной памяти",
+            "content": null,
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "azalia_lore_7",
+            "category": "personal_history",
+            "title": "Последний шёлковый зал",
+            "content": null,
+            "requiredReputation": 230
+          }
+        ],
+        "musings": [
+          {
+            "turn": 420,
+            "topic": "soul_assessment",
+            "mood": "contemplative",
+            "thought": "Душа пришла по точному зову, значит первый ответ должен быть ясным и без подмен."
+          }
+        ]
+      }
+    }
+  ],
+  "guardians": [
+    {
+      "guardianId": "guard_system_azalia_001",
+      "canonicalName": "Азалия",
+      "domain": "Social",
+      "originType": "system_preset",
+      "sourcePreset": {
+        "presetId": "azalia",
+        "displayName": "Азалия",
+        "version": "1.0",
+        "library": "built_in"
+      },
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": "Азалия",
+        "neutral": "Азалия"
+      },
+      "manifestation": {
+        "formFlexibility": "selective",
+        "currentDisplayName": "Азалия",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Хранительница в мягком шёлке, вокруг которой память собирается в тёплые складки."
+      },
+      "manifestationHistory": [],
+      "abode": {
+        "abodeId": "abode_azalia_memory_silk_001",
+        "name": "Обитель Шёлковой Памяти",
+        "description": "Тихая Обитель Азалии на краю Моря Хаоса, где воспоминания раскрываются без насилия.",
+        "image_prompt": "silk memory abode at the edge of a cosmic chaos sea, silver threads, warm diplomatic guardian presence",
+        "isDiscovered": true
+      },
+      "personalityProfile": {
+        "archetype": "Charming Diplomat",
+        "speechPattern": "мягкая, внимательная",
+        "coreValues": [
+          "убежище",
+          "память",
+          "бережная власть"
+        ]
+      },
+      "relationshipData": {
+        "currentReputation": 25,
+        "reputationHistory": [],
+        "lastInteraction": "2026-04-24T16:20:00Z"
+      },
+      "abodePower": {
+        "currentPower": 40,
+        "tier": "Стабильная",
+        "lastUpdatedAt": "2026-04-24T16:20:00Z",
+        "history": []
+      },
+      "guardianRelationships": [],
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "currentReturnCycleId": "chaos_return_420",
+        "gachaHistory": []
+      },
+      "mood": {
+        "current": "focused",
+        "intensity": 45,
+        "reason": "Ответ на точный системный зов.",
+        "since": 420
+      },
+      "loreFragments": [
+        {
+          "fragmentId": "azalia_lore_1",
+          "category": "personal_history",
+          "title": "Шёлковая память",
+          "content": "Азалия хранит воспоминания так, чтобы они не ломали душу.",
+          "requiredReputation": 0
+        },
+        {
+          "fragmentId": "azalia_lore_2",
+          "category": "domain_mastery",
+          "title": "Мягкая власть",
+          "content": "Её домен удерживает власть через согласие, долг и точные обещания.",
+          "requiredReputation": 0
+        },
+        {
+          "fragmentId": "azalia_lore_3",
+          "category": "soul_mechanics",
+          "title": "Узел доверия",
+          "content": null,
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "azalia_lore_4",
+          "category": "lost_world",
+          "title": "Сад забытых клятв",
+          "content": null,
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "azalia_lore_5",
+          "category": "other_guardians",
+          "title": "Переписка Хранителей",
+          "content": null,
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "azalia_lore_6",
+          "category": "cosmic_secret",
+          "title": "Цена бережной памяти",
+          "content": null,
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "azalia_lore_7",
+          "category": "personal_history",
+          "title": "Последний шёлковый зал",
+          "content": null,
+          "requiredReputation": 230
+        }
+      ],
+      "musings": [
+        {
+          "turn": 420,
+          "topic": "soul_assessment",
+          "mood": "contemplative",
+          "thought": "Душа пришла по точному зову, значит первый ответ должен быть ясным и без подмен."
+        }
+      ]
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_system_azalia_001",
+    "canonicalName": "Азалия",
+    "sourcePreset": {
+      "presetId": "azalia",
+      "displayName": "Азалия",
+      "version": "1.0",
+      "library": "built_in"
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_azalia_memory_silk_001",
+    "currentGuardianId": "guard_system_azalia_001",
+    "discoveredAbodes": [
+      "abode_azalia_memory_silk_001"
+    ]
+  }
+}
+```
+
+Why this is valid:
+- The requested preset id is `azalia`, and every canonical Guardian selector points to Azalia.
+- `sourcePreset` is persisted on the Guardian and mirrored on the active selector.
+- The Abode is discovered and navigation points to it.
+- The GM does not create an NPC, Mortal World faction, or unrelated Guardian substitute.
+
+==================================================
+<!-- GM1557:A122:END -->
+<!-- GM1557:A123:START -->
+21. VALID — PROTECTED FIRST AFTERLIFE TURN AFTER MORTAL LIFE
+==================================================
+
+This example is for the first ordinary afterlife turn after Life Evaluation returned the soul to the Chaos Sea. `afterlife_return_guard.json` is a client-owned safety guard. The GM reads it, respects it, and leaves it alone.
+
+Input fragments:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "protected_return_session_021",
+    "requestId": "turn_421",
+    "turnNumber": 421,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "Я просто возвращаюсь в Обитель и пытаюсь понять, что произошло.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "afterlife_return_guard.json": {
+    "reason": "post_life_return",
+    "remainingProtectedTurns": 1,
+    "activatedAtUtc": "2026-04-24T16:20:00Z",
+    "activatedAtTurnNumber": 420,
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия"
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: Protected first afterlife turn after mortal life.
+- Релевантные акторы: Азалия, Лиора
+- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, while Лиора is present in the same Abode and chooses how to receive the returning Soul.
+- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs
+- Почему они вне охвата: the guard blocks forced reincarnation and is not a Shining bootstrap marker.
+
+## Actor Brain 2.0
+### Азалия
+- Текущая локация: Вход в Обитель Шёлковой Памяти; остаётся рядом с Душой.
+- Ситуация: Душа только что вернулась из смертной жизни.
+- Данные профиля: Хранительница памяти, связана обещанием бережного возвращения и видит след недавней смерти.
+- Мотивация: Дать Душе безопасно прийти в себя, не лишая её следующего выбора.
+- Ограничения: Защитный guard запрещает немедленную forced incarnation; Азалия не знает, когда Душа будет готова говорить.
+- Мысли: Я вижу усталость, которую нельзя превращать в ещё одно требование.
+- Варианты стратегий:
+  1. Дать тихое убежище. Выгода: Душа восстановит опору. Риск: разговор о последствиях будет отложен.
+  2. Немедленно потребовать решения. Выгода: следующий путь определится быстрее. Риск: это нарушит защиту и усилит травму возвращения.
+- Выбранная стратегия: Дать тихое убежище без требования решения.
+- Почему альтернативы отвергнуты: Скорость не оправдывает нарушение защитного хода.
+- Действия: She provides a quiet ordinary afterlife scene and does not create an incarnation trigger.
+- Изменения состояния: `guardianThoughtJournalUpdates` добавляет first-person запись; lifecycle/control guard остаётся client-owned и неизменным.
+
+### Лиора
+- Текущая локация: Вход в Обитель Шёлковой Памяти; остаётся у дальней стены, не преграждая путь.
+- Ситуация: Лиора видит возвращение Души после смертной жизни и решает, вмешиваться ли в первые минуты.
+- Данные профиля: Осторожная свидетельница, дорожит свободой выбора и боится превращать безопасное место в клетку.
+- Мотивация: Поддержать возвращение, не присваивая себе чужую боль и не требуя рассказа.
+- Ограничения: Лиора не знает подробностей смерти и не имеет права говорить от имени Души.
+- Мысли: Я останусь рядом, но не стану просить её снова пережить смерть ради моего любопытства.
+- Варианты стратегий:
+  1. Молча оставить воду и отойти. Выгода: Душа получает поддержку без давления. Риск: помощь может остаться незамеченной.
+  2. Сразу расспросить о смертной жизни. Выгода: Лиора быстрее поймёт случившееся. Риск: вопрос заставит Душу снова прожить травму.
+- Выбранная стратегия: Оставить ненавязчивую помощь и дать Душе самой начать разговор.
+- Почему альтернативы отвергнуты: Любопытство Лиоры не важнее права Души на тишину.
+- Действия: Оставляет чашу воды и отходит, сохраняя решение в собственном журнале.
+- Изменения состояния: `residentThoughtJournalUpdates` добавляет новую first-person запись.
+
+## Lifecycle guard audit
+- `afterlife_return_guard.json` is preserved exactly; the GM does not clear, decrement, or rewrite it.
+- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.
+- No Shining bootstrap or re-entry is invented.
+- No Mortal World state is written.
+- If the guard is malformed instead of valid, treat that as fail-closed and do not weaken protection.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Море Хаоса не толкает тебя обратно в новую жизнь. Азалия встречает тебя у входа в Обитель и на этот раз не требует решения. Она просто оставляет рядом тёплую серебряную ткань, чтобы память о смерти стала тише.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Protected first afterlife turn after mortal life.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: afterlife_return_guard.json names Азалия; Лиора is present in the same Abode and chooses how to receive the returning Soul.\n- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs\n- Почему они вне охвата: the guard blocks forced reincarnation and is not a Shining bootstrap marker.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Вход в Обитель; остаётся рядом с Душой.\n- Ситуация: Душа только что вернулась из смертной жизни.\n- Данные профиля: Хранительница памяти, связана обещанием бережного возвращения.\n- Мотивация: Дать Душе безопасно прийти в себя.\n- Ограничения: Guard запрещает немедленную forced incarnation; готовность Души неизвестна.\n- Мысли: Я вижу усталость, которую нельзя превращать в ещё одно требование.\n- Варианты стратегий:\n  1. Дать убежище. Выгода: Душа восстановит опору. Риск: разговор откладывается.\n  2. Потребовать решения. Выгода: путь определится быстрее. Риск: защита и доверие будут нарушены.\n- Выбранная стратегия: Дать тихое убежище.\n- Почему альтернативы отвергнуты: Скорость не оправдывает нарушение защиты.\n- Действия: Не создаёт incarnation trigger и оставляет Душе пространство.\n- Изменения состояния: guardianThoughtJournalUpdates; afterlife_return_guard.json остаётся неизменным.\n\n### Лиора\n- Текущая локация: Вход в Обитель; остаётся у дальней стены.\n- Ситуация: Видит возвращение Души и решает, вмешиваться ли в первые минуты.\n- Данные профиля: Осторожная свидетельница, дорожит свободой выбора и боится превращать безопасность в клетку.\n- Мотивация: Поддержать возвращение, не присваивая себе чужую боль.\n- Ограничения: Не знает подробностей смерти и не имеет права говорить от имени Души.\n- Мысли: Я останусь рядом, но не попрошу её снова пережить смерть ради моего любопытства.\n- Варианты стратегий:\n  1. Молча оставить воду. Выгода: поддержка не требует ответа. Риск: помощь останется незамеченной.\n  2. Сразу расспросить. Выгода: случившееся станет понятнее. Риск: Душа снова переживёт травму.\n- Выбранная стратегия: Оставить помощь и дать Душе самой начать разговор.\n- Почему альтернативы отвергнуты: Любопытство Лиоры не важнее права Души на тишину.\n- Действия: Оставляет чашу воды и отходит.\n- Изменения состояния: residentThoughtJournalUpdates.\n\n## Lifecycle guard audit\n- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.\n- No Shining bootstrap or Mortal World state is written.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_return_421",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Возвращение без требования",
+      "summary": "Я вижу усталость вернувшейся Души и не стану превращать её в ещё одно требование.",
+      "turn": 421,
+      "timestamp": "2026-04-24T16:21:00Z"
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "resident_thought_liora_return_421",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Вода у дальней стены",
+      "summary": "Я останусь рядом, но не попрошу Душу снова пережить смерть ради моего любопытства.",
+      "turn": 421,
+      "timestamp": "2026-04-24T16:21:00Z"
+    }
+  ]
+}
+```
+
+Why this is valid:
+- The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
+- The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
+- That consumption rule applies only to a semantic-valid guard with `reason = post_life_return`. If `afterlife_return_guard.json` is malformed, unreadable, or parsed with the wrong `reason`, the GM leaves it intact; the route remains fail-closed until validation repair or explicit client/runtime clear.
+- For `return_to_chaos_sea`, Shining pending files with non-empty `requests[]` or malformed JSON block the local route. A valid explicit-empty `{ "requests": [] }` file is not an actionable GM contract and may be removed by runtime as stale local state. The same empty-wrapper hygiene applies to Soul Gates blockers for resident roster/interactions/transfers and Guardian-social pending files: empty `requests[]` may be cleared, but malformed or non-empty files still block until repair or canonical closure. `pending_source_of_light_capstone.json` also blocks return until the Source scene is closed or repaired. `game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict` blocks both return and Soul Gates until it is closed through `afterlifeSpiritualConflictUpdate.mode=resolve` or `mode=repair_cancel`. `shining_abode_state.json.pendingNativeFactionDiscovery` must be exactly `null`; any non-null object, string, array, or malformed legacy evidence blocks return until repaired or closed.
+- The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
+
+==================================================
+<!-- GM1557:A123:END -->
+<!-- GM1557:A128:START -->
+EXAMPLE 25: SOURCE OF LIGHT CAPSTONE
+==================================================
+
+Scenario:
+- `currentRealm = Shining Abode`.
+- `shining_abode_state.json.availability = active`.
+- `preparedIncarnationPackage = null`.
+- `radiance.tier = 4` and `radiance.experience >= 580`.
+- No active or malformed afterlife pending/control contract is live, and `game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict` is absent.
+- The client has created `game_state/control/pending_source_of_light_capstone.json` after the player chose `/source_of_light` / `/источник_света`.
+- This is a one-per-soul full-Radiance capstone reward. It is not `pending_shining_abode_actions.json`, not a Shining core action, and not closed through `coreActionReceipts[]`.
+
+Pre-turn pending request:
+
+```json
+{
+  "game_state/control/pending_source_of_light_capstone.json": {
+    "requestId": "source_of_light_capstone:612",
+    "createdAtTurn": 612,
+    "createdAtUtc": "2026-05-12T08:00:00Z",
+    "radianceExperienceAtRequest": 580,
+    "radianceTierAtRequest": 4,
+    "rewardPassiveId": "light_incarnate",
+    "rewardRelicId": "source_of_light_incarnated_light"
+  }
+}
+```
+
+Correct accepted closure narrative:
+
+```json
+{
+  "response": "Источник Света открывается не как зал и не как врата, а как причина, из которой когда-то родилось первое сияние. Душа проходит через сцену познания начала мироздания и возвращается уже не просто сияющей, а несущей свет внутри себя.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим / Mode: Shining Abode\n- Релевантные акторы / Relevant actors: Игрок, Источник Света как Shining capstone locus\n- Почему они релевантны / Why relevant: закрывается pending_source_of_light_capstone.json и выдаются one-per-soul награды light_incarnate / source_of_light_incarnated_light.\n- Акторы вне охвата / Actors outside scope: Shining factions, residents, Guardians\n- Почему вне охвата / Why outside scope: этот capstone не меняет фракции, резидентов или coreActionReceipts[]."
+}
+```
+
+Correct accepted state fragments:
+
+```json
+{
+  "game_state/meta/shining_abode_state.json patch": {
+    "sourceOfLightCapstone": {
+      "completed": true,
+      "requestId": "source_of_light_capstone:612",
+      "completedAtTurn": 612,
+      "completedAtUtc": "2026-05-12T08:03:00Z",
+      "radianceExperienceAtRequest": 580,
+      "radianceTierAtRequest": 4,
+      "rewardPassiveId": "light_incarnate",
+      "rewardRelicId": "source_of_light_incarnated_light",
+      "sceneNameRu": "Источник Света",
+      "sceneNameEn": "Source of Light"
+    }
+  },
+  "game_state/meta/soul_state.json patch": {
+    "afterlifeCombatProfile": {
+      "spiritFocusTier": 5,
+      "capstones": {
+        "lightIncarnate": {
+          "id": "light_incarnate",
+          "passiveId": "light_incarnate",
+          "displayNameRu": "Воплощение Света",
+          "displayNameEn": "Light Incarnate",
+          "source": "source_of_light_capstone",
+          "status": "completed",
+          "requestId": "source_of_light_capstone:612",
+          "grantedAtTurn": 612,
+          "afterlifeDiceFormulaVersion": "afterlife_spiritual_conflict_v1",
+          "leadContestantBonus": 8,
+          "supporterBonus": 4,
+          "coerciveOperationExtraBonus": 4,
+          "coerciveOperations": [
+            "force_incarnation",
+            "force_binding",
+            "break_binding"
+          ]
+        }
+      }
+    },
+    "soulRelics": {
+      "stored": [
+        {
+          "relicId": "source_of_light_incarnated_light",
+          "name": "Воплощенный Свет",
+          "displayNameRu": "Воплощенный Свет",
+          "displayNameEn": "Incarnated Light",
+          "rarity": "legendary",
+          "quality": "legendary",
+          "shiningRarity": "radiant",
+          "unique": true,
+          "source": "source_of_light_capstone",
+          "sourceRequestId": "source_of_light_capstone:612",
+          "description": "Реликвия Источника Света. В смертной жизни при экипировке даёт +25 ко всем основным характеристикам.",
+          "effects": {
+            "characteristicBonuses": {
+              "strength": 25,
+              "dexterity": 25,
+              "constitution": 25,
+              "intelligence": 25,
+              "wisdom": 25,
+              "faith": 25,
+              "attractiveness": 25,
+              "trade": 25,
+              "persuasion": 25,
+              "perception": 25,
+              "luck": 25,
+              "speed": 25
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+Worked history boundary: afterlife_light_incarnate_history_authority_v1
+
+Light Incarnate history requires accepted pre-turn payload evidence during a validated turn: consume one occurrence once, and active exchanges and recent resolutions never share a history pool. Active exchanges reuse the same-conflict exchange classifier; recent resolutions require an exact full payload match. Thus backdating alone cannot waive light_incarnate, and a validated baseline without dice is still a current-turn boundary. An accepted no-marker payload retains compatibility; an unmatched current payload needs explicit turn evidence and the applicable modifier. Historical pre-grant dice are preserved, while offline history without a validated baseline keeps its existing compatibility. This does not authorize editing the exact pre-turn prefix.
+
+The complete Source of Light closure grants the passive at grantedAtTurn=7. A validated turn-7 snapshot contains exchange_light_history_006 with exchangeAtTurn=6 and no light_incarnate modifier. Keep that accepted occurrence unchanged: its old dice do not acquire a retroactive bonus. The existing active-exchange audit compatibility may differ in only the top-level summary (missing/null/string), never mechanical data; publication still preserves the exact pre-turn prefix.
+
+By contrast, appending a new exchange with exchangeAtTurn=6, adding a new recent resolution with resolvedAtTurn=6, changing an old payload, or copying one accepted occurrence twice does not prove pre-grant history. The client reports afterlife_conflict_light_incarnate_modifier_mismatch for the current payload. Resolve that current audit with explicit current turn evidence and the applicable +8 lead / +4 support bonus, plus the existing +4 coercion bonus where applicable; do not repair it by changing accepted old dice. A recent resolution must match its own accepted recentConflicts[] occurrence exactly; it cannot borrow an active exchange or ignore a changed summary.
+
+An accepted no-marker occurrence remains compatible, but an unmatched current no-marker payload must supply turn evidence even when the validated baseline has no dice. This example demonstrates history admission, not full wound or grant authority; it does not grant an art, create a wound or authorize a resource-prefix rewrite.
+
+After this reward, any contested afterlife spiritual conflict at or after `grantedAtTurn` must include explicit turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. The modifier is valid only after the full Source of Light closure exists: completed Shining marker, soul passive, and exactly one matching Incarnated Light Soul Relic. Historical conflict logs before `grantedAtTurn` are not rewritten, and pre-unlock or incomplete-closure `light_incarnate` modifiers are invalid. Example player-led coercive action:
+
+```json
+{
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      {
+        "side": "player",
+        "sourceIndex": 0,
+        "sides": 20,
+        "value": 12
+      },
+      {
+        "side": "opposition",
+        "sourceIndex": 1,
+        "sides": 20,
+        "value": 15
+      }
+    ],
+    "playerTotal": 24,
+    "oppositionTotal": 20,
+    "margin": 4,
+    "outcomeBand": "player_success",
+    "modifierBreakdown": {
+      "player": [
+        {
+          "passiveId": "light_incarnate",
+          "source": "light_incarnate",
+          "value": 12,
+          "reason": "+8 player lead contestant, +4 coercive operation"
+        }
+      ],
+      "opposition": [
+        {
+          "source": "opposition art tier",
+          "value": 5
+        }
+      ]
+    }
+  }
+}
+```
+
+Correct reasoning checklist:
+- The pending file is a direct object, not `requests[]`.
+- Validate full Radiance from the pre-turn Shining snapshot: `radiance.tier = 4`, `radiance.experience >= 580`.
+- Do not close this from Chaos Sea, sealed Shining, or Shining pending-bootstrap handoff.
+- Do not combine it with unresolved Shining core/trade/political/legacy discovery contracts.
+- Do not write `coreActionReceipts[]`.
+- Grant exactly one `light_incarnate` passive and exactly one `source_of_light_incarnated_light` Soul Relic.
+- `source_of_light_incarnated_light` is a Soul Relic, not a Mortal inventory item. It affects Mortal characteristics only through the existing Soul Relic characteristic bonus path when equipped.
+- Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
+
+==================================================
+<!-- GM1557:A128:END -->

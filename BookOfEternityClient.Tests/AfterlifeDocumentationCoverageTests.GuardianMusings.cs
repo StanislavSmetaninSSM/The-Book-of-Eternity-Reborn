@@ -21,7 +21,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         Assert.Contains("afterlife-only command", section, StringComparison.Ordinal);
         Assert.Contains("no internal proof or handoff fields", section, StringComparison.Ordinal);
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
-            candidate.File == "E_CLI_Afterlife_Turns.txt" &&
+            candidate.File == "E_CLI_Afterlife_Guardian_Contracts.txt" &&
             candidate.RawText.Contains("Я запомню, что душа попросила память", StringComparison.Ordinal));
         using var document = JsonDocument.Parse(snippet.RawText);
         var property = Assert.Single(document.RootElement.EnumerateObject());

@@ -1,0 +1,101 @@
+{
+  "kind": "FOCUSED_CONTINUATION_SCOPE_RECONNAISSANCE",
+  "historicalBranchSource": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+  "currentBase": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "verdict": "CONTINUE_APPROVED_A_WITH_EXACT_CURRENT_SOURCE_RECONCILIATION",
+  "implementationSourceAccepted": false,
+  "newRuntimeEvidenceAccepted": false,
+  "historicalEvidenceRetainedWithoutReplay": true,
+  "checks": {
+    "oldMatrixAndExampleExactPrefixes": true,
+    "matrixAppendBytes": 1824,
+    "matrixAppendLines": 26,
+    "exampleAppendBytes": 2403,
+    "exampleAppendLines": 31,
+    "mappedManifestRowsExactlyRetained": 80,
+    "newManifestRowsRetained": 2,
+    "navigationOffsets": {
+      "N001": [
+        8273,
+        9586
+      ],
+      "N003": [
+        82671,
+        84042
+      ]
+    },
+    "changedGmDocuments": 11,
+    "changedDaemonPaths": 1
+  },
+  "scope": "A = ten afterlife pairs + core/router + actual consumers/guards + package/session delivery; Block_5 held until A acceptance",
+  "risks": [
+    "Stale map/frozen hashes omit new status display contract",
+    "Two exact navigation replacement offsets shifted",
+    "Old-path guards can silently stop covering moved bodies",
+    "Old-branch import can overwrite current GM/daemon/runtime clauses",
+    "Writer prefix/copy existence alone does not establish final dispatch or complete session link closure"
+  ],
+  "report": {
+    "path": "/tmp/gm1557-continuation-scope-review-20261017.md",
+    "sha256": "193bb0800cd0e5c3236c97f51b150f9225f176e3b8ae9cd6a116bab18677ac79"
+  },
+  "pins": [
+    {
+      "basis": "historical",
+      "commit": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "sha256": "2d5868f8cfacf5a9774839506beba7fd56b02d221795e5d4d263ff89ce9c36dd"
+    },
+    {
+      "basis": "historical",
+      "commit": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+      "path": "specs/1557-gm-doc-modularization/content-map.json",
+      "sha256": "af1b314c513bafb2730c27a80b3847b435977df433960ec6f1a8d53df24c8b22"
+    },
+    {
+      "basis": "historical",
+      "commit": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "sha256": "d2dedfdefda6fb4030fb6560546d2861b1edaa58f0e19218cec6a0709f5352d7"
+    },
+    {
+      "basis": "historical",
+      "commit": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+      "path": "specs/1557-gm-doc-modularization/recovery/A-package-writer-first-actual-independent-evidence-review-20261014.md",
+      "sha256": "cfa2ae65b1147b271904a9957d816cec03350b1149f1fa8db634873b81135d6f"
+    },
+    {
+      "basis": "current",
+      "commit": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b"
+    },
+    {
+      "basis": "current",
+      "commit": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49"
+    },
+    {
+      "basis": "current",
+      "commit": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "path": "Examples/example_validation_manifest.json",
+      "sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572"
+    },
+    {
+      "basis": "current",
+      "commit": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "path": "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs",
+      "sha256": "71cf8079a0985c92b39909e9500454367ec9a7ca40f46fb5db4b176676ee3d85"
+    },
+    {
+      "basis": "current",
+      "commit": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05"
+    }
+  ],
+  "runtimeExecutedByReviewer": false,
+  "repositoryWritesByReviewer": false,
+  "remainingBlockers": []
+}

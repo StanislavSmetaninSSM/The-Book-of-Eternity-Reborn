@@ -12,7 +12,7 @@ public sealed partial class ExampleDocumentationValidationTests
     [InlineData("shining_abode")]
     public void AfterlifeActionPointEffect_CompleteSourceUsesClosedProductionContract(string realm)
     {
-        var root = Assert.Single(ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "afterlife_ap_effect_v1"));
+        var root = Assert.Single(ParseNamedJsonFences("E_CLI_Afterlife_Effects_Resources.txt", "afterlife_ap_effect_v1"));
         var definitions = Assert.IsType<JsonArray>(root["activeEffectDefinitions"]);
         using var document = JsonDocument.Parse(definitions.ToJsonString());
         Assert.Empty(EffectSourceDefinitionContract.ValidateArray(document.RootElement, "apExample", realm));

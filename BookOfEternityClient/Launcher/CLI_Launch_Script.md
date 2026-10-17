@@ -12,7 +12,7 @@ legacy current/max authority, or raw fallback. Worked Mortal commands are in
 
 ## YOUR KNOWLEDGE BASE
 
-Read these documents BEFORE processing the first turn:
+Bootstrap reads only its delivered context_pack_manifest.json and README.md. This repository reference catalog is not a universal-read checklist: on a real ordinary turn follow the current dispatch and session-local situation router, then read only its applicable core/topic dependency union. Repair and dedicated receipt-only tasks retain their exact narrower scope. Paths absent from the current context manifest remain repository references, not promised session-local files.
 
 1. **CLI_Agent_Daemon_Specification.md** — YOUR MAIN GUIDE: processing phases, realm rules, checklists
 2. **CLI_API_Specification.md** — JSON response schema (100+ fields), file mappings, data structures
@@ -20,8 +20,8 @@ Read these documents BEFORE processing the first turn:
 4. **TaskGuides/CLI_Step_Main.txt** — step-by-step workflow
 5. **Examples/E_CLI_Step_Main.txt** — mandatory examples for validation, NPC scope, repair loop, and terminal protocol failures
 6. **Examples/E_CLI_Ink_Feather_Actions.txt** — mandatory examples for every GM-side Ink Feather action
-7. **OtherGuides/Afterlife_Contract_Matrix.md** -- mandatory contract map for Chaos Sea / Shining Abode turns
-8. **Examples/E_CLI_Afterlife_Turns.txt** -- mandatory worked examples for Chaos Sea / Shining Abode turns, including Shining core action fragments, ordinary living-world turns without pending files, system Guardian attraction, protected return guard turns, freeform Abode search, afterlife spiritual conflict with diceAudit, example 26 for afterlife entity profiles, and example 26B for afterlife external memory chronicles
+7. **OtherGuides/Afterlife_Contract_Matrix.md** -- compact conditional contract navigator for Chaos Sea / Shining Abode turns
+8. **Examples/E_CLI_Afterlife_Turns.txt** -- compact navigator to conditional worked examples for Chaos Sea / Shining Abode turns, including Shining core action fragments, ordinary living-world turns without pending files, system Guardian attraction, protected return guard turns, freeform Abode search, afterlife spiritual conflict with diceAudit, example 26 for afterlife entity profiles, and example 26B for afterlife external memory chronicles
 9. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** -- Russian labels for afterlife spiritual conflict, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation, ranks, afterlife entity profiles, special arts, and soul dissipation; keep JSON keys/enums English
 10. **OtherGuides/GM_Worker_Bridges.md** -- hidden/background subordinate worker bridge contract for validation-repair, proposal-only narrative-draft, apply gate, and audit log usage
 
@@ -246,7 +246,7 @@ $data | ConvertTo-Json -Depth 100 | Set-Content -Path "game_state/meta/guardians
 - `validation_repair_request.json` is for accepted terminal completion with invalid resulting state
 - `terminal_protocol_failure_request.json` means the terminal signal itself was invalid and is NOT a repair loop
 
-Start by reading CLI_Agent_Daemon_Specification.md, then CLI_API_Specification.md, then CLI_Rules_Index.md.
+At bootstrap read only the delivered context_pack_manifest.json and README.md. On an actual ordinary turn follow the current dispatch and CLI_Rules_Index.md, then only its applicable core/topic union; preserve exact repair/receipt-only scope.
 
 IMPORTANT:
 - The first bootstrap message from the daemon is NOT an active turn.

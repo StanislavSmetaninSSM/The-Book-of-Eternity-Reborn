@@ -1,0 +1,651 @@
+# E_CLI_Afterlife_Spiritual_Conflict.txt
+
+Read when: Current explicit active spiritual conflict action. Follow only the current dispatch/contract; Old conflict mentioned in chronicle, no current action does not independently activate this topic.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Effects_Resources.md](OtherGuides/Afterlife_Effects_Resources.md), [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md), [Afterlife_Actor_Profiles.md](OtherGuides/Afterlife_Actor_Profiles.md).
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: [E_CLI_Afterlife_Spiritual_Conflict.txt](Examples/E_CLI_Afterlife_Spiritual_Conflict.txt); paired rules: [Afterlife_Spiritual_Conflict.md](OtherGuides/Afterlife_Spiritual_Conflict.md). Whole original examples/negative labels remain below.
+
+<!-- GM1557:A126:START -->
+EXAMPLE 24: AFTERLIFE SPIRITUAL CONFLICT
+==================================================
+
+Scenario:
+- `currentRealm = Chaos Sea`.
+- A hostile Guardian tries to force the soul toward an unwanted incarnation.
+- The player resists. This is not voluntary `TriggerIncarnation`.
+- The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
+
+The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
+- Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
+- Russian labels for this system are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`: "духовный конфликт посмертия" = `afterlife spiritual conflict`, "обмен действиями" = `exchange`, "аудит кубиков" = `diceAudit`. JSON keys and enum values remain English.
+- Read `input/turn_request.json.afterlifeSpiritualConflictPreview` for exact player/opposition `spiritual_action_points`. On a new opposition, author only `oppositionSide.resourceMaterialization.resources[]`; the client allocates `resourceOwnerBindings.opposition` and writes the common state/history. `actionEconomy` is forbidden as persisted conflict state.
+
+Correct accepted response:
+
+```json
+{
+  "response": "Лиора не может просто бросить душу во врата. Между вами раскрывается духовный поединок: не смертный бой, а спор воли, связей и права на следующий путь.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим / Mode: Mixed\n- Релевантные акторы / Relevant actors: Игрок, Лиора\n- Почему они релевантны / Why they are relevant: Лиора начинает coercive afterlife conflict, игрок сопротивляется forced incarnation.\n- Акторы вне охвата / Actors outside scope: нет\n- Почему они вне охвата / Why outside scope: Все изменяемые акторы входят в конфликт.\n\n### Игрок\n- Текущая локация / Current location: Море Хаоса, перед вратами Лиоры.\n- Ситуация / Current situation: Игрок отказывается от навязанной инкарнации.\n- Мысли / Internal thoughts: Сохранить свободу выбора и не дать Хранителю закрыть спор без поединка.\n- Действия / Intended actions: Сопротивляется давлению и удерживает позицию.\n\n### Лиора\n- Текущая локация / Current location: Море Хаоса, у собственной обители.\n- Ситуация / Current situation: Хранитель пытается продавить guardian_forced incarnation.\n- Мысли / Internal thoughts: Считает, что душа тратит время и должна быть отправлена в жизнь силой.\n- Действия / Intended actions: Начинает духовный конфликт и проверяет сопротивление души.",
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "start",
+    "conflictSeed": {
+      "dangerMode": "hostile",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "status": "active",
+      "resolutionState": "active",
+      "conflictPosition": "contested",
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "clear",
+      "stakes": {
+        "primary": "Whether Liora can force guardian_forced incarnation without player consent.",
+        "voluntaryIncarnation": false,
+        "coerciveIncarnationRequiresConflictLoss": true
+      },
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player_soul",
+          "actorId": "player_soul",
+          "displayName": "Игрок"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian_liora_001",
+          "displayName": "Лиора",
+          "actorArtTierSnapshot": {
+            "pressure": 3,
+            "force_incarnation": 2,
+            "binding": 2
+          },
+          "artAuthoritySource": "guardian_state.relationshipData + abodePower + narrative authority"
+        },
+        "supporters": [],
+        "resourceMaterialization": {
+          "resources": [
+            {
+              "resourceKey": "spiritual_action_points",
+              "maximum": 6
+            }
+          ]
+        }
+      },
+      "exchangeLog": []
+    }
+  }
+}
+```
+
+Danger declaration worked result: the client persists `activeConflict.dangerMode = hostile` from this seed. An ordinary replacement which omits `dangerMode` retains hostile; a submitted training/controlled/annihilation value or null is rejected. On resolve or repair_cancel, `recentConflicts[].dangerMode` remains hostile. These checks establish declaration persistence, not a wound opportunity or permission to dissipate a soul.
+
+The player lead in this start example intentionally has no `actorArtTierSnapshot` and no `artAuthoritySource`: the player soul's authority comes from `soul_state.afterlifeCombatProfile`. Non-player leads still need their explicit snapshot/source. If a side has supporters, author their canonical role as `supportRole`, for example:
+
+```json
+{
+  "supporters": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_myriel",
+      "displayName": "Мириэль",
+      "supportRole": "safety_anchor"
+    }
+  ]
+}
+```
+
+If the player later sends either the explicit command-shaped action:
+
+```text
+[AFTERLIFE_SPIRITUAL_ACTION: afterlife_conflict_liora_forced_incarnation_001] Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
+```
+
+or ordinary roleplay prose while this conflict is still active:
+
+```text
+Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
+```
+
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. `spiritual_action_points` is the client-owned afterlife ОД reserve and `actionEconomy` is forbidden as persisted state. Read player/opposition current/maximum from `afterlifeSpiritualConflictPreview`; on `mode=start`, `spiritFocusTier` supplies the registered player maximum (`0/1/2/3/4/5` => `6/7/8/10/12/15`, source `Средоточие Души tier N`), while a new opposition declares only `resourceMaterialization`. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor. The client validates both audits against the exact pre-turn resource projection, publishes common resource state/history atomically, and creates or preserves exact `resourceOwnerBindings`; the GM never writes those values or identities. Wound-specific recovery payment and conditional zero-base `force_incarnation` audits follow `spiritual_wound_special_action_costs_v1` below. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include canonical `before.conflictPosition`. Under `spiritual_wound_position_v1`, calculate effective rank as `clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)` from the current exact acting participants and matching operations, combining both sums before clamping. The existing `conflict_position` row names the effective position: exactly one +2/+4 advantage/dominance row on the corresponding side, or no row for effective contested. Preserve other modifiers, original dice and roll modes. Use effective position for binding/force-binding positional prerequisites, but keep canonical before/after unchanged by the burden itself; a successful maneuver must still actually change position. Newly inserted wounds affect later matching exchanges only. Do not recalculate closed exchanges or invent new fields. Read `OtherGuides/Wound_Materialization_Contract.md` and the worked `spiritual_wound_position_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+
+Resource audit rule: if a side has no current `actionCostAudit.<side>`, emit no `spiritual_action_points` transition for that side and preserve the validated pre-turn active conflict resource projection. Do not change the common ledger, history, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
+
+Validation repair note: if `game_state/control/validation_repair_request.json.harnessRepairPackets[]` contains `kind = "afterlife_spiritual_conflict_action_cost_repair"`, treat it as the executable checklist only for the already written `exchangeLog[n].actionCostAudit.<side>.<field>` operands, then finish with `Complete-BoeValidationRepair`. Never author `actionEconomy`, `resourceOwnerBindings`, `game_state/resources/resource_state.json`, `game_state/resources/resource_history.json`, or `game_state/resources/resource_owner_authority.json`; do not create a new turn, add an exchange, reroll dice, or edit `game_state/control/pending_turn_snapshot*`.
+
+Correct contested exchange response:
+
+```json
+{
+  "response": "Вы удерживаете своё право выбора. Лиора давит сильнее, но её связь с вратами на миг срывается, и позиция души становится устойчивее.",
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "exchange",
+    "exchange": {
+      "exchangeId": "afterlife_conflict_exchange_liora_001",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "operationType": "incarnation_resistance",
+      "outcome": "success",
+      "summary": "Игрок укрепил право выбора против попытки принудительного воплощения.",
+      "incomingAction": {
+        "operationType": "force_incarnation",
+        "source": "guardian_forced",
+        "guardianId": "guard_liora_silver_current_001",
+        "summary": "Лиора пытается навязать душе вход в подготовленную жизнь."
+      },
+      "matchupAudit": {
+        "playerOperation": "incarnation_resistance",
+        "oppositionOperation": "force_incarnation",
+        "primaryResolutionLane": "incarnation_resistance",
+        "riskProfile": "anti_control",
+        "matchupRationale": "Игрок не атакует напрямую; он отвечает на конкретную попытку принудительного воплощения, поэтому исход решает сопротивление воплощению как анти-принуждение."
+      },
+      "before": {
+        "conflictPosition": "contested",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "clear"
+      },
+      "after": {
+        "conflictPosition": "player_advantaged",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "strained"
+      },
+      "actionCostAudit": {
+        "player": {
+          "operationType": "incarnation_resistance",
+          "baseCost": 3,
+          "minCost": 1,
+          "artTier": 1,
+          "effectiveCost": 2,
+          "before": 6,
+          "after": 4
+        }
+      },
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          {
+            "side": "player",
+            "sourceIndex": 0,
+            "sides": 20,
+            "value": 14,
+            "selection": "selected"
+          },
+          {
+            "side": "opposition",
+            "sourceIndex": 1,
+            "sides": 20,
+            "value": 9,
+            "selection": "selected"
+          }
+        ],
+        "rollMode": {
+          "player": { "effectiveMode": "normal", "advantageSources": [], "disadvantageSources": [] },
+          "opposition": { "effectiveMode": "normal", "advantageSources": [], "disadvantageSources": [] }
+        },
+        "playerTotal": 18,
+        "oppositionTotal": 14,
+        "margin": 4,
+        "outcomeBand": "player_success",
+        "modifierBreakdown": {
+          "player": [
+            {
+              "source": "incarnation_resistance art tier",
+              "value": 2
+            },
+            {
+              "source": "current Enlightenment rank",
+              "value": 2
+            }
+          ],
+          "opposition": [
+            {
+              "source": "guardian force_incarnation art tier",
+              "value": 2
+            },
+            {
+              "source": "active Guardian Abode pressure",
+              "value": 3
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Accepted historical dice stay unchanged only with the same validated pre-turn active conflictId and each snapshot occurrence once; exchangeAtTurn alone is not authority. An old turn marker permits a match differing in only the top-level summary, restricted to missing/null/string, with every other member exact. New, mechanically changed, foreign-conflict or duplicate exchanges receive current dice, matchup and action-cost checks. This is validation compatibility only: resource publication still preserves the exact pre-turn prefix, including summary.
+
+`diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20` for the current/new exchange or resolution. This example starts from `before.conflictPosition = "contested"`, so no `conflict_position` modifier is present. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
+
+HISTORICAL EXCHANGE AUTHORITY — afterlife_spiritual_exchange_history_authority_v1
+
+The accepted pre-turn snapshot for conflict afterlife_conflict_test_001 contains one exchange_accepted_history_006 with exchangeAtTurn=6. Its old player/opposition dice at sourceIndex=0/1 were 9/7. The current accepted request is turn 7, whose same indices contain 5/18. The GM preserves the old entry and authors any new exchange against the current request's dice and art authority; old dice are not rewritten to 5/18.
+
+If only the old readable summary differs, its exchange audit keeps historical compatibility after matching every other member against that one snapshot occurrence. This does not authorize publishing the edit: afterlife_conflict_resource_log_prefix_mutated still requires restoring the exact accepted prefix. New artistic narration belongs in the current response, not a rewritten accepted history row.
+
+A newly appended entry claiming exchangeAtTurn=6 has no matching accepted occurrence. Neither copying the accepted entry twice, changing its artTier or nested dice data, nor placing it under a different conflictId creates historical authority. The unmatched entry receives afterlife_conflict_dice_value_not_authorized for old values 9/7 instead of current 5/18, afterlife_conflict_matchup_audit_missing if its current tactical audit is absent, and afterlife_conflict_action_cost_art_tier_authority_mismatch if artTier=5 disagrees with the current accepted pressure tier 0. Repair the current exchange from current authority; do not backdate it to suppress these diagnostics.
+
+This contrast covers exchange dice/matchup/action-cost classification, not a new wound, healing operation, accepted resource publication or Source of Light capstone decision. A historical description is never a new harmful strain event by itself.
+
+Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. `advantage` / Преимущество consumes exactly 2d20 and selects the highest; `great_advantage` / Великое Преимущество consumes exactly 3d20 and selects the highest; `disadvantage` / Помеха consumes exactly 2d20 and selects the lowest; `dire_disadvantage` / Тяжкая Помеха consumes exactly 3d20 and selects the lowest. Sources may be legacy strings or objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Step cancellation uses the strongest positive and strongest negative source only: `great_advantage+disadvantage=>advantage`, `great_advantage+dire_disadvantage=>normal`, `advantage+dire_disadvantage=>disadvantage`, `advantage+disadvantage=>normal`; same-direction sources do not stack. Critical success/failure uses the selected die only.
+
+`afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the client-materialized short-lived condition layer for afterlife spiritual combat. Kinds are `mark`, `ward`, `burden`, `opening`, and `vow`; source definitions own target side/actor, affected operations, finite duration/uses, `counterplay`, payoff, visibility, and legal axes. The GM never writes this carrier or any condition/effect ID. Request apply/dispel/remove through top-level `effectChanges[]`; the accepted exchange event advances uses/exchanges/scene lifetime. Read current contributions from `afterlifeSpiritualConflictPreview.conditionMechanics` with `source = accepted_effect_mechanics_snapshot_v1`, apply each only to exact `affectedOperations` / `mechanicalAxes`, and cite its `conditionId` in `rollMode`, `conflictPosition`, legal anti-control `controlState`, side strain, `tempoAdvantage`, `counterPayoff`, `actionCostAudit`, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. Ordinary player output shows only visible conditions; hidden/gm_only conditions remain private and the visible `response` stays non-spoiler.
+
+`afterlife_special_art_combat_effect_v1`: teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `spiritual_action_points`, `actionCostAudit`, or `combatConditions`. `spiritual_action_points` is the unified resource axis and must be proven through `actionCostAudit`; `actionEconomy` is forbidden. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; current authored profiles require the structured field and no effect compatibility inference is allowed.
+
+#896 Predvechnye special-art combat-effect coverage start
+
+Combat-useful Predvechnye special-art examples must prove that Guardian arts are not generic color over a standard operation. The examples below show a player-owned learned Predvechnye Guardian special art and a non-player Guardian/opposition Predvechnye special art whose unique combat effect beyond the base operation changes the audited result. They are fragments for authoring inside an active afterlife spiritual conflict; the GM still preserves the primary `baseOperation` lane and records the applied trigger/payoff through `specialArtAudit.effectNote`.
+
+```json
+{
+  "playerOwnedLearnedPredvechnyeArtExample": {
+    "contract": "afterlife_special_art_combat_effect_v1",
+    "profileAuthority": {
+      "actorType": "player_soul",
+      "actorId": "player_soul",
+      "specialArts": [
+        {
+          "artId": "azalia_chosen_oath_flame",
+          "displayName": "Пламя Избранной Клятвы",
+          "ownerActorType": "player_soul",
+          "ownerActorId": "player_soul",
+          "sourceGuardianId": "azalia",
+          "baseOperation": "binding",
+          "tier": 0,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 80,
+            "lightSparks": 0
+          },
+          "effectSummary": "Player-owned learned Predvechnye Guardian special art: душа научилась у Азалии связывать цель через выбранную ею клятву, а не через грубую силу.",
+          "combatEffect": {
+            "summary": "Искусство ловит цель на добровольной клятве или ложной преданности и превращает обычное binding в видимое боевое условие, которое влияет на следующий спор о выборе.",
+            "trigger": "Use the learned art as binding only when the GM can name the target's real promise, chosen service, false devotion, or desire to be chosen.",
+            "mechanicalAxis": "combatConditions",
+            "allowedPayoff": "Create a visible mark or burden that can supply a condition-backed rollMode source or make one listed operation harder through the next exchange.",
+            "limit": "One named promise per conflict; honest refusal, self-sufficiency, or admitting 'I choose myself' blocks or clears the effect.",
+            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the exact effectChanges definition request, and the legal payoff beyond baseOperation=binding."
+          },
+          "canTeachPlayer": false,
+          "trainingConditions": []
+        }
+      ]
+    },
+    "exchangeUse": {
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "exchange",
+        "exchange": {
+          "exchangeId": "exchange_azalia_oath_flame_player_001",
+          "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "summary": "Игрок применяет Пламя Избранной Клятвы: связь цепляется не за силу Лиоры, а за её собственную фразу 'я обязана выбрать путь за тебя'.",
+          "matchupAudit": {
+            "playerOperation": "binding",
+            "oppositionOperation": "guard",
+            "primaryResolutionLane": "binding",
+            "riskProfile": "control_leverage",
+            "matchupRationale": "Операция остаётся binding; уникальный эффект только добавляет видимое условие по добровольной клятве, а не заменяет оковы давлением."
+          },
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained"
+          },
+          "specialArtAudit": {
+            "artId": "azalia_chosen_oath_flame",
+            "displayName": "Пламя Избранной Клятвы",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "binding",
+            "costMultiplierPercent": 150,
+            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') and requested definition chosen-oath-flame-mark through effectChanges. The tactical result changes beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter may use only the accepted preview contribution instead of adding freeform control flavor."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "binding",
+              "baseCost": 4,
+              "minCost": 2,
+              "artTier": 0,
+              "standardEffectiveCost": 4,
+              "specialArtId": "azalia_chosen_oath_flame",
+              "specialCostMultiplierPercent": 150,
+              "effectiveCost": 6,
+              "before": 8,
+              "after": 2
+            }
+          }
+        }
+      },
+      "effectChanges": [
+        {
+          "operation": "apply",
+          "target": {
+            "kind": "spiritual_conflict_side",
+            "targetId": "afterlife_conflict_liora_forced_incarnation_001:opposition"
+          },
+          "source": {
+            "kind": "spiritual_art",
+            "sourceId": "azalia_chosen_oath_flame",
+            "definitionKey": "chosen-oath-flame-mark"
+          },
+          "parameters": {},
+          "eventRef": {
+            "kind": "accepted_turn",
+            "authorityId": "turn_43"
+          },
+          "reason": "Добровольная клятва активирует зарегистрированную метку Пламени Избранной Клятвы."
+        }
+      ]
+    }
+  },
+  "nonPlayerGuardianOppositionPredvechnyeArtExample": {
+    "contract": "afterlife_special_art_combat_effect_v1",
+    "profileAuthority": {
+      "actorType": "guardian",
+      "actorId": "guardian_seret_001",
+      "displayName": "Серет",
+      "specialArts": [
+        {
+          "artId": "seret_open_contract",
+          "displayName": "Разомкнутый Договор",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_seret_001",
+          "baseOperation": "break_binding",
+          "tier": 1,
+          "costMultiplierPercent": 175,
+          "upgradeCost": {
+            "inkFeathers": 0,
+            "lightSparks": 18
+          },
+          "effectSummary": "Non-player Guardian/opposition Predvechnye special art: Серет находит скрытое условие договора и делает путь разрыва спорным, но не бесплатным.",
+          "combatEffect": {
+            "summary": "Разомкнутый Договор раскрывает скрытое условие в связи и превращает его в contestable counterPayoff вместо полного исчезновения цены.",
+            "trigger": "Use this break_binding art when an oath, seal, or bargain has an unnamed clause that currently holds the target.",
+            "mechanicalAxis": "counterPayoff",
+            "allowedPayoff": "Expose the hidden clause, weaken or narrow the active controlState, and record a counterPayoff or actionCostAudit price for the lawful exit.",
+            "limit": "One hidden clause per use; the price remains visible and must still be paid, contested, or carried as a condition.",
+            "auditRequirement": "specialArtAudit.effectNote must name the hidden clause, the remaining price, and the exact counterPayoff or actionCostAudit delta."
+          },
+          "canTeachPlayer": true,
+          "trainingConditions": [
+            "Серет должна признать, что игрок понимает цену договора.",
+            "Сцена обучения должна назвать условие, а не только желание разрыва."
+          ]
+        }
+      ]
+    },
+    "exchangeUse": {
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "exchange",
+        "exchange": {
+          "exchangeId": "exchange_seret_open_contract_001",
+          "conflictId": "afterlife_conflict_oath_clause_001",
+          "operationType": "guard",
+          "outcome": "partial_success",
+          "summary": "Игрок удерживает клятвенную защиту, но Серет раскрывает скрытое условие договора и превращает полный замок в спорную цену выхода.",
+          "incomingAction": {
+            "operationType": "break_binding",
+            "finalOperationType": "break_binding",
+            "source": "guardian_special_art",
+            "guardianId": "guardian_seret_001",
+            "specialArtId": "seret_open_contract",
+            "summary": "Серет применяет Разомкнутый Договор против скрытого условия клятвенной связи."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "break_binding",
+            "primaryResolutionLane": "guard",
+            "riskProfile": "safe_defense",
+            "matchupRationale": "Игрок защищает действующую связь, а оппозиция отвечает break_binding; уникальный эффект Серет меняет цену и payoff, но не превращает break_binding в pressure."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "player",
+              "controlId": "control_oath_clause_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "force_binding" ],
+              "summary": "Договор держит проход закрытым, но условие выхода ещё не раскрыто."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_oath_clause_001",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "force_binding" ],
+              "summary": "Скрытое условие стало видимым: связь ещё мешает силовому принуждению, но манёвр выхода теперь спорен."
+            }
+          },
+          "counterPayoff": {
+            "axis": "controlState",
+            "from": "bound",
+            "to": "hindered",
+            "sourceArtId": "seret_open_contract",
+            "summary": "Скрытое условие договора раскрыто; оковы не исчезли, но стали уже и спорнее."
+          },
+          "specialArtAudit": {
+            "artId": "seret_open_contract",
+            "displayName": "Разомкнутый Договор",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_seret_001",
+            "baseOperation": "break_binding",
+            "costMultiplierPercent": 175,
+            "effectNote": "Read specialArts[].combatEffect: the non-player Guardian/opposition Predvechnye special art found the hidden clause 'выход открыт только через названную цену'. The unique combat effect beyond baseOperation=break_binding changed the result from simple weakening into a counterPayoff that narrows controlState bound->hindered and records the remaining price instead of erasing it."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 4,
+              "after": 3
+            },
+            "opposition": {
+              "operationType": "break_binding",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 1,
+              "standardEffectiveCost": 2,
+              "specialArtId": "seret_open_contract",
+              "specialCostMultiplierPercent": 175,
+              "effectiveCost": 4,
+              "before": 7,
+              "after": 3
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#896 Predvechnye special-art combat-effect coverage end
+
+Worked accepted-condition fragment: the GM first reads the exact current contributions from the client preview. The existing `opening` may affect only `counter` through `counterPayoff` / `conflictPosition`; the GM cites its `conditionId` but does not rewrite the carrier. The same response requests a visible `mark`, a visible `ward`, and a hidden/gm_only `burden` through `effectChanges[]`. Their registered source definitions own kind, visibility, payload, stacking, counterplay, and lifetime. The accepted exchange event advances or expires existing conditions automatically.
+
+```json
+{
+  "afterlifeSpiritualConflictPreview": {
+    "conditionMechanics": {
+      "schemaVersion": 1,
+      "source": "accepted_effect_mechanics_snapshot_v1",
+      "isAccepted": true,
+      "contributions": [
+        {
+          "conditionId": "opening_gate_rhythm_001",
+          "componentId": "component_opening_gate_rhythm",
+          "priority": 100,
+          "targetSide": "opposition",
+          "targetActorId": "guardian_liora_001",
+          "conditionKind": "opening",
+          "affectedOperations": [ "counter" ],
+          "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
+          "counterplay": [ "Лиора может ответить guard или break_binding." ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "position_shift"
+          },
+          "currentStacks": 1,
+          "isPlayerVisible": true
+        }
+      ]
+    }
+  }
+}
+```
+
+---
+
+<!-- GM1557:A126:END -->
+<!-- GM1557:A131:START -->
+MATH ASSISTANT EXAMPLES
+==================================================
+
+Afterlife spiritual conflict margin:
+
+```json
+{
+  "response": "Духовное давление игрока проламывает защиту противника.",
+  "gm_thoughts_markdown": "Математик использован для contested margin: playerTotal - oppositionTotal.",
+  "mathRequests": [
+    {
+      "requestId": "calc_afterlife_conflict_margin_example",
+      "purpose": "afterlife spiritual conflict margin",
+      "expression": "playerTotal - oppositionTotal",
+      "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+      "rounding": { "mode": "none" },
+      "expectedResult": 6,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_afterlife_conflict_margin_example",
+      "requestId": "calc_afterlife_conflict_margin_example",
+      "purpose": "afterlife spiritual conflict margin",
+      "expression": "playerTotal - oppositionTotal",
+      "normalizedExpression": "playerTotal-oppositionTotal",
+      "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+      "rawResult": 6,
+      "result": 6,
+      "rounding": { "mode": "none" },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "afterlifeSpiritualConflictUpdate.exchange.exchangeId:exchange_pressure_1" ],
+      "warnings": []
+    }
+  ]
+}
+```
+
+<!-- GM1557:A131:END -->
+<!-- GM1557:A133:START -->
+## spiritual_wound_special_action_costs_v1
+
+These are GM-authored `actionCostAudit` fragments for an already admitted exchange
+in Chaos Sea or Shining Abode, not complete turn responses. The ordinary action,
+actor, outcome, matchup and dice evidence remains required. Assume the validated
+current wound generation contributes `spiritual_action_cost_burden` of 1 to the
+exact acting owner and named operation; read that contribution and the current
+resource projection instead of inventing a burden field, resource owner or wound
+identity. See `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` for the full rule.
+This example does not enable live C4 publication or other unresolved profiles.
+
+Player recovery succeeds against passive timing, with maximum 6, before 4 and
+ordinary recovery art tier 0. Pay 1 first, then cap recovery of 3 at 6:
+
+```json
+{"actionCostAudit":{"player":{"operationType":"recover_spiritual_power","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":4,"after":6}}}
+```
+
+`after=6` is action-only. The client records Spend before Gain, never a net
+mutation; Spend-triggered causal reactions run between them. The original capped
+Gain request is `after - (before - effectiveCost)`, here 3. A triggered loss of 1
+produces 4→3→2→5. A triggered gain of 1 produces 4→3→4→6: Gain still requests 3,
+but applies only 2. Never force the final ledger to audit.after or enlarge the
+original Gain request after a reaction. At before 6 with the same burden and
+success, audit.after is 6 and the fixed request is only 1, even if a reaction
+later lowers the balance.
+
+Opposition recovery is opposed by the player's `pressure`, with before 1,
+burden 1 and art tier 0. Choose the allowed recovery of 0 from the opposed
+0..1 range. Payment still occurs; the action-only difference is negative.
+This uses the existing opposed-recovery rule, not a separate opposition outcome:
+
+```json
+{"actionCostAudit":{"opposition":{"operationType":"recover_spiritual_power","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":1,"after":0}}}
+```
+
+The same payment rule applies on both sides. For an ordinary failed player
+recovery with before 1 and burden 1, recovery is 0 and audit.after is 0: the
+failed attempt still pays. Ordinary player success/partial/failure restores
+3/2/0 after payment; opposed recovery restores only 0..1 after payment, subject
+to the same maximum. With before 0 and burden 1, insufficient funds
+reject the action; future recovery cannot fund payment. Without burden, recovery
+keeps its ordinary behavior. Zero-amount mutations follow the client's no-op policy.
+
+A player `force_incarnation` has an applicable wound burden 1 and before 6:
+
+```json
+{"actionCostAudit":{"player":{"operationType":"force_incarnation","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":6,"after":5}}}
+```
+
+The same forced operation by the opposition uses the other side. When present,
+`incomingAction.finalOperationType` selects the original effective operation:
+
+```json
+{"actionCostAudit":{"opposition":{"operationType":"force_incarnation","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":6,"after":5}}}
+```
+
+These force audits contain exactly seven fields, with `baseCost=0, minCost=0,
+artTier=0`: zero tier is an audit convention, not the actor's art level. The only
+cost is the sum of applicable owned wound burdens. No burden means no force audit
+and no payment; the earlier example's unburdened forced incoming action therefore
+has no opposition audit. Insufficient funds reject; incarnation admission/control
+rules do not change. Never copy a force_binding base cost onto force_incarnation.
+
+A newly installed wound may require adding this previously absent side audit only
+to an unchanged, unexecuted force action. An absent `actionCostAudit` root may be
+created with only qualifying sides. Preserve completed prefix, action, actor,
+dice and existing sibling audits. No null/scalar replacement, extra authority or
+special-art fields are allowed. The client must prove the exact owner's positive
+burden, amount and affordability again, including cold replay; replay does not pay
+twice. GM must not write resource state/history, bindings or private receipts.
+
+Worked finite-use expiry: an accepted wound burden applies to two unchanged
+future `force_incarnation` actions, and its registered remaining use is consumed
+by the first action's real Spend. After the owner drains that action and its
+causal work, the next owner reconstruction proves zero burden for the second,
+still unexecuted action. Its earlier prescribed positive audit is now stale.
+The client requests dependent repair: remove only that force side audit, and
+remove the empty audit root if no sibling remains. Keep the root and all sibling
+audits when another side still has an audit. Never replace it with a fake zero
+audit or pay the expired burden. A removal while positive burden remains is
+rejected as a missing required audit. This correction preserves the completed
+first action, the second action's operation, actor and dice, all non-force audits
+and existing sibling evidence; it adds no author fields. The same checks apply
+on cold replay, without charging the first action twice.
+
+<!-- GM1557:A133:END -->

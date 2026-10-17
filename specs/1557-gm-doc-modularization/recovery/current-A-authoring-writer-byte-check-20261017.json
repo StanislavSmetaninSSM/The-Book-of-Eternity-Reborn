@@ -1,0 +1,36 @@
+{
+  "kind": "A_AUTHORING_WIP_WRITER_BYTE_CHECK_NOT_TEST_ACCEPTANCE",
+  "checkedUtc": "2026-10-17T03:34:17.077520+00:00",
+  "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "reassembledCurrentSources": [
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "bytes": 255057,
+      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "bytes": 699288,
+      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "bytes": 25781,
+      "sha256": "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29"
+    }
+  ],
+  "completeBlocks": 137,
+  "destinationDocuments": 24,
+  "oldAnchors": 125,
+  "snippetInventory": 188,
+  "retainedMappedManifestSemantics": 80,
+  "explicitDaemonInventory": 36,
+  "exactReversibleNavigationEdits": 18,
+  "runtime": "NONE; no build/discovery/test/application/PowerShell execution",
+  "remaining": [
+    "finish direct current worker/repair topic refs and named/discovery guards",
+    "physical missing-package-source and missing-session-copy real-producer negatives",
+    "separate bounded owned-timeout/orphan lifetime negative",
+    "fresh preparation and independent affected SOURCE/SELECTION before actual; final EVIDENCE/A acceptance pending"
+  ]
+}

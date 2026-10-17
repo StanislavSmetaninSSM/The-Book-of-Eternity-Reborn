@@ -1,0 +1,1035 @@
+# E_CLI_Afterlife_Guardian_Contracts.txt
+
+Read when: Current nonempty pending_guardian_trade_request. Follow only the current dispatch/contract; Stale/empty Guardian trade bundle without contract does not independently activate this topic.
+Prerequisites: Current request, authoritative realm and exact active pending/issued packet; [applicable common-core paragraphs](OtherGuides/GM_Common_Core.md). Topic prerequisites: [Afterlife_Lifecycle.md](OtherGuides/Afterlife_Lifecycle.md).
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: [E_CLI_Afterlife_Guardian_Contracts.txt](Examples/E_CLI_Afterlife_Guardian_Contracts.txt); paired rules: [Afterlife_Guardian_Contracts.md](OtherGuides/Afterlife_Guardian_Contracts.md). Whole original examples/negative labels remain below.
+
+<!-- GM1557:A106:START -->
+4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea`.
+- The player tries to open the current Guardian's trade panel, but the client found missing/stale authored stock.
+- `game_state/control/pending_guardian_trade_request.json` is present.
+- There is no scheduler debt in this small example. If scheduler debt is also due, process it first and add `progressionProcessingReport` as in example 1.
+
+Input fragment:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_trade_240",
+    "requestId": "afterlife_turn_trade_240",
+    "turnNumber": 240,
+    "playerAction": "Я прошу Азалию открыть витрину Обители.",
+    "progressionControl": {
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_guardian_trade_request.json": {
+    "requestId": "guardian_trade_azalia_return_5",
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "abodeId": "abode_azalia_memory_silk_001",
+    "returnCycleId": "return_5",
+    "currentReputation": 65,
+    "derivedTradeSlotCount": 2,
+    "effectiveRarityCeilingBonusSteps": 0,
+    "projectBonusSignature": "0|0|0",
+    "createdAtUtc": "2026-04-24T09:00:00Z",
+    "createdAtTurn": 240
+  }
+}
+```
+
+Correct GM procedure:
+- Preferred harness path: dot-source `game_state/control/gm_turn_helper.bootstrap.ps1` and call `Complete-BoeGuardianTradeInventoryRequest -RequestId 'guardian_trade_azalia_return_5' -Items <two authored relic slots>`. The helper computes canonical tiers/prices, writes `guardian.tradeInventory`, syncs `activeGuardian`, and appends `UpdateGuardianTradeInventoryReceipts`.
+- Use the manual rules below only when the helper is unavailable or validation repair explicitly requires inspecting the persisted patch.
+- Read the pending request exactly; do not change `requestId`, `guardianId`, `abodeId`, `returnCycleId`, slot count, or project bonus signature.
+- Materialize `guardian.tradeInventory` for the same Guardian in `game_state/meta/guardians.json`; do not put trade stock into a commandless `UpdateGuardians` entry.
+- `tradeInventory.tradeCycleId` must equal `returnCycleId`.
+- `generationReputationTier` and `pricingReputationTier` must be derived from `currentReputation`; here `65` means `Friendly`.
+- `items.length` must equal `derivedTradeSlotCount`.
+- Every `tradeInventory.items[].slotId` must be unique inside this inventory. The client buys by `slotId`; duplicates make the purchase target ambiguous and are invalid.
+- Every `tradeInventory.items[].priceInFeathers` must match canonical pricing for its `quality`/`rarity` and `pricingReputationTier`; do not preserve invented prices during repair.
+- If `activeGuardian` is present, its `tradeInventory` mirror must match the same Guardian in `guardians[]` exactly: same cycle, timestamps, tiers, slots, prices, sold-out flags, and relic data.
+- Close through `UpdateGuardianTradeInventoryReceipts`; matching stock without a ready receipt is invalid.
+- Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
+- The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
+
+Repair-mode note:
+- If validation rejects this route with `guardian_trade_request_missing_guardian_resolution`, `guardian_trade_request_missing_inventory_resolution`, or `guardian_trade_request_missing_receipt_resolution`, open `validation_repair_request.json.harnessRepairPackets[]` and use packet kind `guardian_trade_inventory_resolution_repair`.
+- Prefer rerunning `Complete-BoeGuardianTradeInventoryRequest` with corrected relic slots instead of manually recalculating `priceInFeathers` or receipt fields.
+- In repair mode, do not make a new turn and do not edit `game_state/control/pending_guardian_trade_request.json`; it is read-only client authority for request identity, cycle, slot count, reputation tier inputs, and project bonus signature.
+- Patch only the matching Guardian in `game_state/meta/guardians.json` plus required `output/debug_logs.json` actor reasoning. The repair is complete only when the Guardian has a matching `tradeInventory` and a matching ready receipt through `UpdateGuardianTradeInventoryReceipts` or `guardians[].tradeInventoryReceipts[]`.
+
+Correct response/state fragment:
+
+```json
+{
+  "response": "Азалия проводит ладонью по шёлковым полкам, и две реликвии проявляются в мягком серебряном свете. Витрина Обители готова; теперь душа может осмотреть товары через интерфейс торговли Хранителя.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему они релевантны: pending Guardian trade request требует её authored tradeInventory, ready receipt и личного решения об ассортименте.\n- Акторы вне охвата: остальные Хранители, резиденты Обители\n- Почему они вне охвата: этот request затрагивает только витрину Азалии и не меняет их structured state.\n\n## Actor Brain 2.0\n### Азалия\n- Текущая локация: Шёлковые полки Обители; остаётся у торговой ниши.\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Данные профиля: Хранительница памяти с Friendly reputation tier, двумя доступными слотами и обязанностью не превращать торговлю в принуждение.\n- Мотивация: Предложить полезные реликвии памяти по допустимой цене и укрепить доверие Души.\n- Ограничения: Ассортимент ограничен derived slot count, rarity ceiling, canonical pricing и текущим return cycle.\n- Мысли: Я предложу две реликвии, которые помогут Душе удержать память, но не станут готовым ответом за неё.\n- Варианты стратегий:\n  1. Подготовить сбалансированный Friendly-tier ассортимент. Выгода: витрина будет полезной и честной. Риск: редкие товары останутся недоступны.\n  2. Заполнить витрину самыми дорогими реликвиями. Выгода: Обитель получит больше перьев. Риск: цены и rarity ceiling нарушат доверие и контракт.\n- Выбранная стратегия: Подготовить два сбалансированных Friendly-tier слота.\n- Почему альтернативы отвергнуты: Максимизация цены нарушит ограничения запроса и характер Азалии.\n- Действия: Азалия подготавливает ровно два слота и закрывает pending request canonical receipt.\n- Изменения состояния: guardian tradeInventory, UpdateGuardianTradeInventoryReceipts, guardianThoughtJournalUpdates.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_240_friendly_vitrine",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 240,
+      "timestamp": "2026-04-24T09:05:00Z",
+      "title": "Честная витрина",
+      "summary": "Я предложу Душе две полезные реликвии памяти по честной цене и не стану продавать ей готовый выбор."
+    }
+  ],
+  "game_state/meta/guardians.json patch": {
+    "guardians[] match guardianId=guard_social_azalia_001": {
+      "guardianId": "guard_social_azalia_001",
+      "tradeInventory": {
+        "tradeCycleId": "return_5",
+        "generatedAtUtc": "2026-04-24T09:05:00Z",
+        "generationReputationTier": "Friendly",
+        "pricingReputationTier": "Friendly",
+        "upgradedTradeSlots": 0,
+        "elevatedTradeSlots": 0,
+        "effectiveRarityCeilingBonusSteps": 0,
+        "projectBonusSignature": "0|0|0",
+        "items": [
+          {
+            "slotId": "azalia_return_5_slot_1",
+            "domainTag": "memory",
+            "priceInFeathers": 30,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "soul_relic_azalia_silk_knot_001",
+              "name": "Шёлковый Узел Памяти",
+              "rarity": "Common",
+              "description": "Малая реликвия памяти, удерживающая один спокойный фрагмент прошлой жизни."
+            }
+          },
+          {
+            "slotId": "azalia_return_5_slot_2",
+            "domainTag": "social",
+            "priceInFeathers": 70,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "soul_relic_azalia_threaded_vow_001",
+              "name": "Нить Сохранённой Клятвы",
+              "rarity": "Uncommon",
+              "description": "Реликвия, укрепляющая память о важном обещании между жизнями."
+            }
+          }
+        ]
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "guardian_trade_azalia_return_5",
+          "guardianId": "guard_social_azalia_001",
+          "guardianName": "Азалия",
+          "abodeId": "abode_azalia_memory_silk_001",
+          "tradeCycleId": "return_5",
+          "status": "ready",
+          "itemCount": 2,
+          "resolvedAtTurn": 240,
+          "resolvedAtUtc": "2026-04-24T09:05:00Z"
+        }
+      ]
+    }
+  }
+}
+```
+
+Forbidden in this example:
+- `UpdateInventory` for Soul Relics.
+- `afterlife_notifications.json` manual writes.
+- `pending_guardian_trade_request.json` mutation in GM output.
+- `tradeInventory.items.length` different from `derivedTradeSlotCount`.
+- duplicated `tradeInventory.items[].slotId`.
+- ready receipt with a different `requestId`, `abodeId`, or `tradeCycleId`.
+
+==================================================
+<!-- GM1557:A106:END -->
+<!-- GM1557:A107:START -->
+5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea`.
+- The player uses reserved afterlife archive entries.
+- Archive action pending files are request contracts; they close through `archiveActionResolutions` in `soul_state.json`.
+- This section shows two compatible accepted resolutions. The consultation is resolved by Azalia through a same-turn completed `lore_research` project; the project-fuel request targets a different Guardian's already-active project to avoid the one-active-project-per-Guardian limit.
+
+Input fragments:
+
+```json
+{
+  "pending_archive_consultation_request.json": {
+    "requestId": "archive_consult_azalia_241",
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "archiveId": "archive_life_7_broken_oath",
+    "archiveTitle": "Клятва, нарушенная у северных ворот",
+    "archiveEntryType": "lore_fragment",
+    "archiveRarity": "Rare",
+    "archiveSourceKind": "codex",
+    "targetIncarnation": 8,
+    "createdAtTurn": 241,
+    "createdAtUtc": "2026-04-24T09:20:00Z",
+    "requestedMode": "consultation"
+  },
+  "pending_archive_project_fuel_request.json": {
+    "requestId": "archive_fuel_velian_242",
+    "guardianId": "guard_craft_velian_001",
+    "guardianName": "Велиан",
+    "archiveId": "archive_life_5_mirror_forge",
+    "archiveTitle": "Зеркальная кузница шестой жизни",
+    "archiveEntryType": "secret_record",
+    "archiveRarity": "Epic",
+    "archiveSourceKind": "codex",
+    "targetProjectId": "gproj_velian_mirror_forge_001",
+    "targetProjectName": "Зеркальная кузница откликов",
+    "createdAtTurn": 242,
+    "createdAtUtc": "2026-04-24T09:22:00Z",
+    "requestedMode": "project_fuel"
+  }
+}
+```
+
+Correct GM procedure:
+- For consultation, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = consultation`, `status`, `guardianId`, and at least one machine-readable outcome field.
+- Accepted consultation must also create a completed `lore_research` Guardian project with `projectOrigin = archive_consultation`, `consultationRequestId`, `consultationArchiveId`, and `projectOutcomeAudit` matching the resolution fields.
+- If that consultation creates a Guardian quest hook, the quest record in `questManagement.availableQuests`/`activeQuests`/`completedQuests` must carry `questOrigin = archive_consultation_hook` and `sourceProjectId = archive_consult_project_azalia_241`. Ordinary lore-research hooks use `questOrigin = lore_research_hook`; special lore-research lines use `questOrigin = lore_research_special_line`.
+- For ordinary Wary/Neutral-or-better Guardian scenes that are not backed by lore/archive tokens, the GM may offer a voluntary / добровольное future mortal-life assignment with `questOrigin = guardian_baseline_mortal_life_hook`. Keep it in `availableQuests` until the player explicitly accepts it; do not create an `activeQuest` just because the offer exists, and do not treat an empty `availableQuests` array as a validation error.
+- For project fuel, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = project_fuel`, `targetProjectId`, `status`, `resultMode`, and `resultAmount > 0`.
+- For project fuel, `archiveEntryType = lore_fragment` may resolve only as `resultMode = project_work`; `archiveEntryType = secret_record` may resolve only as `resultMode = pressure_relief`.
+- Accepted archive entries are consumed/resolved by canonical archive state; rejected/cancelled entries return to availability.
+- If project fuel is accepted, also reflect the exact effect in Guardian project state/journal. `pressure_relief` reduces pressure or improves stability; it does not advance `workDone`/`currentStage`.
+- Do not invent mortal quests, mortal inventory, or manual inbox notifications.
+
+Correct response surface:
+
+```json
+{
+  "response": "Азалия раскрывает архивную нить северных ворот и завершает короткую консультацию как отдельное исследование Обители. Велиан принимает секретную запись о зеркальной кузнице как способ снять давление с уже идущего проекта, не ускоряя саму работу.",
+  "archiveActionResolutions": [
+    {
+      "requestId": "archive_consult_azalia_241",
+      "archiveId": "archive_life_7_broken_oath",
+      "requestedMode": "consultation",
+      "status": "accepted",
+      "guardianId": "guard_social_azalia_001",
+      "guardianName": "Азалия",
+      "guaranteedArchiveQuestCount": 1,
+      "questHookCount": 1,
+      "specialQuestLineUnlocks": 0,
+      "visibleRivalClueBonus": 0,
+      "archiveWarningTierBonus": 0,
+      "reason": "The reserved archive entry can become a bounded next-life clue without creating a mortal quest during afterlife.",
+      "resolvedAtUtc": "2026-04-24T09:25:00Z"
+    },
+    {
+      "requestId": "archive_fuel_velian_242",
+      "archiveId": "archive_life_5_mirror_forge",
+      "requestedMode": "project_fuel",
+      "status": "accepted",
+      "guardianId": "guard_craft_velian_001",
+      "guardianName": "Велиан",
+      "targetProjectId": "gproj_velian_mirror_forge_001",
+      "resultMode": "pressure_relief",
+      "resultAmount": 4,
+      "reason": "The secret record can only reduce project pressure or stabilize risk; it does not directly advance work.",
+      "resolvedAtUtc": "2026-04-24T09:25:00Z"
+    }
+  ],
+  "startGuardianProjects": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "project": {
+        "projectId": "archive_consult_project_azalia_241",
+        "projectType": "lore_research",
+        "projectOrigin": "archive_consultation",
+        "projectTier": "minor",
+        "projectMode": "supportive",
+        "projectName": "Архивная консультация: Клятва у северных ворот",
+        "activeState": "Азалия разворачивает архивную нить в применимый знак для будущей жизни.",
+        "totalWork": 1,
+        "workDone": 1,
+        "totalStages": 1,
+        "currentStage": 1,
+        "pressure": 0,
+        "stability": 100,
+        "startedTurn": 241,
+        "consultationRequestId": "archive_consult_azalia_241",
+        "consultationArchiveId": "archive_life_7_broken_oath"
+      }
+    }
+  ],
+  "completeGuardianProjects": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "projectId": "archive_consult_project_azalia_241",
+      "finalState": "Completed",
+      "outcome": "Азалия превратила архивную консультацию в гарантированную будущую зацепку.",
+      "abodePowerDelta": 0,
+      "projectOutcomeAudit": {
+        "bonusLoreUnlocks": 0,
+        "questHookCount": 1,
+        "guaranteedArchiveQuestCount": 1,
+        "specialQuestLineUnlocks": 0,
+        "visibleRivalClueBonus": 0,
+        "archiveWarningTierBonus": 0,
+        "unlockedLoreFragments": []
+      }
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_velian_mirror_forge_001",
+      "guardianId": "guard_craft_velian_001",
+      "activeState": "active",
+      "pressure": 2,
+      "stability": 82,
+      "assistAudit": {
+        "auditKind": "defense",
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 2,
+        "DirectProjectImpact": 2,
+        "assistScore": 7,
+        "classification": "major defensive breakthrough",
+        "reason": "accepted secret_record archive project fuel archive_fuel_velian_242 as pressure_relief",
+        "archiveFuelRequestId": "archive_fuel_velian_242"
+      }
+    }
+  ]
+}
+```
+
+Guardian project sabotage is also a structured project update. If the GM records a hostile sabotage result, carry `sabotageAudit` on the exact `guardianProjectUpdates[]` entry and reflect the Abode Power side effect as a `guardianPowerEvents.reasonType = rival_strike` event. The negative `delta` is derived from `sabotageSeverityScore`: `3..4 = -1`, `5..7 = -2`, `8+ = -4`.
+
+```json
+{
+  "response": "Внешний соперник рвёт часть шёлкового контура Азалии. Проект не исчезает, но получает давление и теряет устойчивость; в журнале силы Обители фиксируется вражеский удар.",
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_azalia_silk_hall_001",
+      "guardianId": "guard_social_azalia_001",
+      "activeState": "active",
+      "pressure": 4,
+      "stability": 62,
+      "relatedGuardianId": "guard_rival_morren_002",
+      "sabotageAudit": {
+        "HostileReach": 1,
+        "ProjectExposure": 1,
+        "DamageIntent": 2,
+        "DamageAchieved": 1,
+        "PlayerComplicity": 1,
+        "sabotageSeverityScore": 6,
+        "classification": "major sabotage",
+        "reason": "guardian_project_update_sabotage_example_001"
+      }
+    }
+  ],
+  "guardianPowerEvents": [
+    {
+      "eventId": "guardian_project_update_sabotage_example_001",
+      "guardianId": "guard_social_azalia_001",
+      "delta": -2,
+      "reasonType": "rival_strike",
+      "sourceSurface": "guardianProjectUpdates",
+      "sourceId": "gproj_azalia_silk_hall_001",
+      "title": "Соперник ударил по шёлковому залу",
+      "summary": "Саботаж повредил активный проект Азалии и снизил силу её Обители.",
+      "visibility": "player_known",
+      "relatedGuardianId": "guard_rival_morren_002",
+      "appliedAt": "2026-04-24T09:30:00Z",
+      "audit": {
+        "projectGuardianId": "guard_social_azalia_001",
+        "projectId": "gproj_azalia_silk_hall_001",
+        "projectName": "Тихий шёлковый зал",
+        "projectType": "abode_fortification",
+        "projectTier": "minor",
+        "HostileReach": 1,
+        "ProjectExposure": 1,
+        "DamageIntent": 2,
+        "DamageAchieved": 1,
+        "PlayerComplicity": 1,
+        "sabotageSeverityScore": 6,
+        "classification": "major sabotage"
+      }
+    }
+  ]
+}
+```
+
+Canonical state after normalization must retain matching archive action receipts. Patch fragment, not a replacement for the whole file:
+
+```json
+{
+  "afterlifeArchive": {
+    "actionReceipts": [
+      {
+        "requestId": "archive_consult_azalia_241",
+        "archiveId": "archive_life_7_broken_oath",
+        "requestedMode": "consultation",
+        "status": "accepted",
+        "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "guaranteedArchiveQuestCount": 1,
+        "questHookCount": 1,
+        "specialQuestLineUnlocks": 0,
+        "visibleRivalClueBonus": 0,
+        "archiveWarningTierBonus": 0,
+        "resolvedAtTurn": 242,
+        "resolvedAtUtc": "2026-04-24T09:25:00Z"
+      },
+      {
+        "requestId": "archive_fuel_velian_242",
+        "archiveId": "archive_life_5_mirror_forge",
+        "requestedMode": "project_fuel",
+        "status": "accepted",
+        "guardianId": "guard_craft_velian_001",
+        "guardianName": "Велиан",
+        "targetProjectId": "gproj_velian_mirror_forge_001",
+        "resultMode": "pressure_relief",
+        "resultAmount": 4,
+        "resolvedAtTurn": 242,
+        "resolvedAtUtc": "2026-04-24T09:25:00Z"
+      }
+    ]
+  }
+}
+```
+
+Exceptional/system archive update shape:
+
+Use `afterlifeArchiveUpdates` only when a system or exceptional afterlife reward creates/removes archive entries directly. Do not use it to close `pending_archive_consultation_request.json` or `pending_archive_project_fuel_request.json`; those close through `archiveActionResolutions`.
+
+```json
+{
+  "afterlifeArchiveUpdates": [
+    {
+      "command": "add",
+      "entry": {
+        "archiveId": "archive_system_azalia_silk_warning_001",
+        "entryType": "lore_fragment",
+        "title": "Предупреждение шёлковой памяти",
+        "summary": "Азалия оставила системный архивный фрагмент о том, как безопасно читать опасные воспоминания.",
+        "rarity": "rare",
+        "sourceLife": 8,
+        "sourceKind": "system",
+        "sourceGuardianId": "guard_social_azalia_001",
+        "sourceGuardianName": "Азалия",
+        "sourceEntryId": "guardian_social_entry_azalia_lore_316",
+        "tags": [
+          "afterlife",
+          "guardian_lore"
+        ],
+        "acquiredAtUtc": "2026-04-24T09:26:00Z"
+      }
+    },
+    {
+      "command": "remove",
+      "archiveId": "archive_obsolete_duplicate_001"
+    }
+  ]
+}
+```
+
+Notification rule:
+- Do not write `afterlife_notifications.json`.
+- The client derives notifications from canonical archive action receipts, Guardian trade ready receipts, resident roster/interaction/transfer receipts, Guardian social entries, Shining core/trade receipts, and later consumed `pendingShiningBlessingEffects`.
+
+==================================================
+<!-- GM1557:A107:END -->
+<!-- GM1557:A109:START -->
+7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
+==================================================
+
+Direct Chaos Sea `/gacha`:
+- Player action contains `[CHAOS_SEA_DIRECT_GACHA]` and an exact cost phrase such as `тратит 25 Чернильных Перьев`.
+- Does not use `UpdateGuardians.processGacha`.
+- Does not consume Guardian per-return charges.
+- The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
+- `turn_request.json.playerAction` must contain the exact prepaid cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; the validator extracts direct-gacha cost from that phrase.
+- Must materialize exactly one new Soul Relic in Soul/meta state.
+- Must read the full `turn_request.json.gachaBaseResult` audit (`diceUsed`, `baseScore`, `baseRarity`, `formula`) before choosing the relic.
+- Final rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly. Direct `/gacha` has no upgrade or downgrade path.
+- No other `soul_state.json` changes are allowed: existing Soul Relics keep their exact JSON, unrelated soul fields keep their pre-turn values, and the only allowed diff is the already-paid feather balance plus one appended relic.
+
+Correct direct `/gacha` response fragment:
+
+```json
+{
+  "metaStateUpdates": {
+    "soulRelicOperations": {
+      "addRelic": {
+        "relicId": "soul_relic_direct_chaos_glass_eye_001",
+        "name": "Стеклянный Глаз Течения",
+        "rarity": "Rare",
+        "description": "Реликвия Моря Хаоса, показывающая один скрытый поворот судьбы до начала следующей жизни."
+      }
+    }
+  },
+  "response": "Море Хаоса принимает уже списанную плату. Из пены выходит стеклянный глаз, внутри которого медленно вращается будущий перевал."
+}
+```
+
+7A. REFERENCE — CHAOS SEA ABODE TRAVEL
+--------------------------------------
+
+`[CHAOS_SEA_TRAVEL]` is afterlife navigation, not Mortal World movement. The player action should already provide the target abode/guardian and previous navigation context. The target abode must already be present in the validated pre-turn `game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes[]`, and the target Guardian's pre-turn `abode.isDiscovered` must already be `true`. GM must keep the canonical navigation roots synchronized in the accepted `game_state/meta/guardians.json`. Do not redirect the soul to a different discovered abode, and do not make a stale/manual travel legal by adding the target to `discoveredAbodes` during the same turn: accepted state must use the exact `targetAbodeId` and `targetGuardianId` from `playerAction`.
+
+Canonical `game_state/meta/guardians.json patch` view. This is not an `UpdateGuardians` command: preserve the full existing Guardian objects in the actual file and change only the shown canonical roots/fields.
+
+```json
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "...": "preserve every existing canonical Guardian field",
+      "abode": {
+        "abodeId": "abode_azalia_silk_hall",
+        "...": "preserve every existing canonical Abode field",
+        "name": "Шёлковый Зал Азалии",
+        "isDiscovered": true
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001"
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_azalia_silk_hall",
+    "discoveredAbodes": [
+      "abode_old_lantern",
+      "abode_azalia_silk_hall"
+    ]
+  }
+}
+```
+
+Narrative `response` should describe the afterlife arrival and the target Guardian's reaction, for example: "Море Хаоса разворачивает путь к Шёлковому Залу Азалии. Обитель узнаёт душу по шелесту нитей, а Азалия встречает её как нового текущего Хранителя этого места."
+
+Do not write for `[CHAOS_SEA_TRAVEL]`:
+- Mortal World `currentLocationData`.
+- `UpdateNPCs`, `NPCsInScene`, or `worldEventsLog`.
+- Travel time/weather changes.
+- Navigation that changes `chaosSeaNavigation.currentAbodeId` without matching `activeGuardian`.
+- Same-turn discovery of the target abode. If the target was not in pre-turn `discoveredAbodes`, refuse/repair the travel instead of adding it and moving there.
+
+Guardian-mediated gacha:
+- Uses `UpdateGuardians.processGacha`.
+- Requires remaining Guardian gacha charges for the current return.
+- Must also write matching `metaStateUpdates.inkFeatherChanges.spend` and `metaStateUpdates.soulRelicOperations.addRelic`.
+- Rarity may only rise through Abode Power rarity ceiling bonus and completed `relic_forging` project bonus.
+- If `gachaBonusAudit.relicForgingBonusSteps > 0`, its `sourceProjectId` must name a completed `relic_forging` project available in the current Guardian project tracker authority; do not use a stale project that exists only in the pre-turn snapshot.
+- Guardian reputation affects charges/trade pricing only; it does not add rarity upgrade chance.
+- Hard/Impossible mortal-world difficulty does not add afterlife Guardian gacha rarity steps.
+- If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.
+- The accepted Guardian result must consume one exact `gacha_attempts` unit in the common resource ledger and append a `gachaHistory[]` entry. The GM never writes the remaining-attempt counter.
+
+Correct guardian-mediated response fragment:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "processGacha",
+      "guardianId": "guard_social_azalia_001",
+      "inkFeathersSpent": 120,
+      "result": {
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "name": "Фонарь Шёлковой Нити",
+        "rarity": "Uncommon",
+        "description": "Реликвия Азалии, позволяющая мягче вспомнить одну связь между жизнями."
+      },
+      "gachaBonusAudit": {
+        "baseRarity": "Uncommon",
+        "finalRarity": "Uncommon",
+        "abodePowerBonusSteps": 0,
+        "relicForgingBonusSteps": 0
+      }
+    }
+  ],
+  "metaStateUpdates": {
+    "inkFeatherChanges": {
+      "spend": 120
+    },
+    "soulRelicOperations": {
+      "addRelic": {
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "name": "Фонарь Шёлковой Нити",
+        "rarity": "Uncommon",
+        "description": "Реликвия Азалии, позволяющая мягче вспомнить одну связь между жизнями."
+      }
+    }
+  },
+  "response": "Азалия берёт Перья и вплетает их в тонкую нить. На конце нити загорается маленький фонарь, не яркий, но устойчивый."
+}
+```
+
+Canonical Guardian state impact, shown as a patch fragment:
+
+```json
+{
+  "guardianId": "guard_social_azalia_001",
+  "gachaSystem": {
+    "currentReturnCycleId": "chaos_return_24",
+    "gachaHistory": [
+      {
+        "timestamp": "2026-04-24T09:40:00Z",
+        "costInFeathers": 120,
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "finalRarity": "Uncommon"
+      }
+    ]
+  }
+}
+```
+
+==================================================
+<!-- GM1557:A109:END -->
+<!-- GM1557:A110:START -->
+8. VALID — AFTERLIFE ABODE OFFERING
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea` or `Shining Abode`.
+- Player action contains `[INK_FEATHER_ACTION: ABODE_OFFERING]`.
+- `game_state/control/pending_abode_offering.json` exists and targets a specific Guardian and return cycle.
+- This example is only for `offeringType = ink_feathers`; non-feather offerings use plain `[ABODE_OFFERING]`.
+- For `offeringType = soul_relic`, the client snapshots a canonical `relicRarity` from the stored Soul Relic fields in this order: `rarity`, then `quality`, then `relicRarity`. The GM must preserve that pending `relicRarity` in `guardianPowerEvents[].audit.relicRarity` and must not silently downgrade a `quality`-only or `relicRarity`-only relic to `common`.
+- The GM must also read `Examples/E_CLI_Ink_Feather_Actions.txt`, section `VALID — ABODE_OFFERING`.
+
+Input fragment:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_offering_250",
+    "requestId": "afterlife_turn_offering_250",
+    "turnNumber": 250,
+    "playerAction": "[INK_FEATHER_ACTION: ABODE_OFFERING] Я отдаю 100 Чернильных Перьев Обители Азалии."
+  },
+  "pending_abode_offering.json": {
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "offeringType": "ink_feathers",
+    "inkFeathersOffered": 100,
+    "returnCycleId": "return_5",
+    "createdAtUtc": "2026-04-24T09:50:00Z"
+  }
+}
+```
+
+Correct response/output fragment:
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Подношение усилило Обитель",
+      "summary": "Душа отдала 100 Чернильных Перьев Обители Азалии.",
+      "audit": {
+        "offeringType": "ink_feathers",
+        "inkFeathersOffered": 100,
+        "returnCycleId": "return_5",
+        "capRemainingBefore": 150,
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Перья растворяются в шёлковых стенах Обители. На мгновение вся память Азалии становится плотнее, и её залы получают новый слой защиты."
+}
+```
+
+Required `output/ink_feather_action_result.json` because this pending offering has `offeringType = ink_feathers`.
+The receipt keeps `actionTag = ABODE_OFFERING`; the matching `guardianPowerEvents[].sourceSurface` remains the canonical `guardianAbodeOffering`.
+
+```json
+{
+  "sessionId": "afterlife_session_offering_250",
+  "requestId": "afterlife_turn_offering_250",
+  "turnNumber": 250,
+  "actionTag": "ABODE_OFFERING",
+  "resolved": true,
+  "costInFeathers": 100,
+  "resolutionType": "abodeOffering",
+  "summary": "The Abode absorbs the offering and gains power.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/abode_power_journal.json"
+    ],
+    "guardianId": "guard_social_azalia_001",
+    "powerGain": 2,
+    "returnCycleId": "return_5",
+    "powerEventId": "abode_offering_azalia_return_5",
+    "reasonType": "offering"
+  }
+}
+```
+
+Non-feather `soul_relic` offering uses the same Abode Power event surface but no Ink Feather receipt. The pending request is created by the client after reserving the stored relic; the GM must echo the pending `relicId`, `relicName`, and canonical `relicRarity` exactly.
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_soul_relic_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Реликвия стала опорой Обители",
+      "summary": "Душа принесла Азалии редкую реликвию, и её шёлковые залы получили новый устойчивый узел памяти.",
+      "audit": {
+        "offeringType": "soul_relic",
+        "relicId": "soul_relic_lantern_memory_rare_001",
+        "relicName": "Фонарь бережной памяти",
+        "relicRarity": "Rare",
+        "returnCycleId": "return_5",
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Азалия принимает реликвию не как плату, а как якорь. Фонарь остаётся в её Обители, и каждая нить вокруг зала начинает помнить дорогу домой."
+}
+```
+
+Non-feather archive offering works the same way. The GM closes it through `guardianPowerEvents` only, and the archive-specific audit must preserve `archiveId`, `archiveTitle`, `archiveEntryType`, `archiveRarity`, and `returnCycleId` from `pending_abode_offering.json`.
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_archive_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Архивный фрагмент укрепил Обитель",
+      "summary": "Душа отдала Азалии редкий фрагмент знания; Обитель получила новый слой защищённой памяти.",
+      "audit": {
+        "offeringType": "archive_lore_fragment",
+        "archiveId": "archive_life_7_broken_oath",
+        "archiveTitle": "Клятва, нарушенная у северных ворот",
+        "archiveEntryType": "lore_fragment",
+        "archiveRarity": "Rare",
+        "returnCycleId": "return_5",
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Фрагмент знания растворяется в стенах зала как тонкая запись. Азалия не превращает его в смертный квест; он остаётся силой Обители."
+}
+```
+
+Forbidden:
+- Treating `ABODE_OFFERING` as `GUARDIAN_FAVOR`.
+- Ignoring `pending_abode_offering.json`.
+- Using another Guardian or another return cycle.
+- Writing only narrative without `guardianPowerEvents.reasonType = offering`.
+- Writing `output/ink_feather_action_result.json` for non-feather offerings such as `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`.
+- For `soul_relic`, recomputing rarity from another field, defaulting missing rarity to `common`, or writing an audit `relicRarity` different from `pending_abode_offering.json.relicRarity`.
+
+==================================================
+<!-- GM1557:A110:END -->
+<!-- GM1557:A114:START -->
+12. VALID — GUARDIAN SOCIAL INTERACTION REQUEST
+==================================================
+
+Guardian social requests are stricter than ordinary freeform Guardian scenes. If `pending_guardian_social_interactions.json` exists, every request must close through `guardianSocialJournalUpdates` with matching closure metadata.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_social_interactions.json": {
+    "requests": [
+      {
+        "requestId": "guardian_social_azalia_lore_316",
+        "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "interactionType": "lore",
+        "createdAtTurn": 316,
+        "createdAtUtc": "2026-04-24T11:40:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_social_interactions.json exists; this is a strict closure request, not optional memory flavor.
+- interactionType=lore, so accepted closure should use a lore responseMode or a canonical refusal if Azalia refuses.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия
+- Почему они релевантны: the request names Azalia and the output writes guardianSocialJournalUpdates for her.
+- Акторы вне охвата: other Guardians, residents, Shining factions
+- Почему они вне охвата: no state or journal entry for them is changed.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: The soul asks for lore from Azalia.
+- Внутренние мысли: She can reveal one safe fragment without exposing the deeper forbidden layer.
+- Действия: She accepts the request, gives a bounded lore answer, and records the social memory entry.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "guardianSocialJournalUpdates": [
+    {
+      "entryId": "guardian_social_entry_azalia_lore_316",
+      "guardianId": "guard_social_azalia_001",
+      "requestId": "guardian_social_azalia_lore_316",
+      "interactionType": "lore",
+      "status": "accepted",
+      "responseMode": "lore_revealed",
+      "title": "Азалия раскрыла шёлковую клятву",
+      "summary": "Азалия объяснила, что её Обитель связывает память не запретом, а бережным темпом раскрытия.",
+      "eventType": "lore",
+      "consequence": "soul gains a safer interpretation of Azalia's domain",
+      "attitude": "guarded_trust",
+      "intent": "reveal one safe layer and withhold dangerous details",
+      "tags": [
+        "guardian_social",
+        "lore"
+      ],
+      "turn": 316,
+      "timestamp": "2026-04-24T11:44:00Z"
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_lore_316",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Граница безопасного раскрытия",
+      "summary": "Азалия решила, что душа заслужила один слой истины, но ещё не готова к запретному ядру её памяти.",
+      "eventType": "inner_stance",
+      "consequence": "future lore requests can build on this boundary",
+      "attitude": "careful",
+      "intent": "protect the soul from violent memory recovery",
+      "tags": [
+        "thought",
+        "lore_boundary"
+      ],
+      "turn": 316,
+      "timestamp": "2026-04-24T11:44:00Z"
+    }
+  ]
+}
+```
+
+Invalid guardian social shortcuts:
+- Missing `requestId`, `guardianId`, `interactionType`, or `status` in the journal entry.
+- `interactionType` other than `talk` or `lore`.
+- `responseMode` outside `talk_scene`, `lore_revealed`, `lore_refused`, `warning`, `refusal`, `trust_shift`, `attitude_shift`.
+- Writing only `guardianThoughtJournalUpdates`; the strict closure must be in `guardianSocialJournalUpdates`.
+
+==================================================
+<!-- GM1557:A114:END -->
+<!-- GM1557:A117:START -->
+15. VALID — FREEFORM AFTERLIFE GUARDIAN COMMANDS
+==================================================
+
+The examples above focus on strict pending contracts. Ordinary afterlife roleplay with a Guardian may still use supported `UpdateGuardians` commands when the fiction justifies a concrete Guardian state change. Guardians are still not NPCs, and these commands are not Shining faction actions.
+
+Supported non-create commands:
+
+```text
+updateReputation
+completeQuest
+processGacha
+addMusings
+unlockLore
+setMood
+```
+
+Correct reasoning for a freeform Guardian scene:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия
+- Почему они релевантны: player asked Azalia for guidance and the response changes her reputation, mood, musing, and one lore fragment.
+- Акторы вне охвата: other Guardians, residents, Shining factions
+- Почему они вне охвата: the scene does not change their projects, relationships, resident state, or Shining institutions.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа признала прежнюю ошибку и попросила бережный способ помнить прошлую жизнь.
+- Внутренние мысли: Азалия видит реальное изменение отношения, но не хочет превращать доверие в мгновенную награду.
+- Действия: Она повышает доверие, фиксирует настроение, добавляет краткую мысль и открывает уже заслуженный lore fragment.
+```
+
+Correct `UpdateGuardians` fragment:
+
+Worked single-surface memory example (`guardian_musings_original_bound_v1`):
+the original turn is 326 in Chaos Sea, and its validated pre-turn snapshot already
+contains `guard_social_azalia_001` with one earlier musing from turn 325, and
+`activeGuardian.guardianId` is `guard_social_azalia_001`. Keep that entire earlier
+entry unchanged. The Guardian chooses a cautious answer to the
+soul's request for memory guidance; record the complete Actor Brain audit as
+described in section 1, with `Изменения состояния:` naming `UpdateGuardians.addMusings`.
+Author only this memory command for that reaction, without a matching
+`guardianThoughtJournalUpdates` entry or direct writes to `guardians[]`/`activeGuardian`:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "addMusings",
+      "guardianId": "guard_social_azalia_001",
+      "musings": [
+        {
+          "turn": 326,
+          "topic": "soul_assessment",
+          "mood": "hopeful",
+          "text": "Я запомню, что душа попросила память ради осторожного решения, а не ради новой власти."
+        }
+      ]
+    }
+  ]
+}
+```
+
+The accepted client result has the unchanged earlier entry followed by this one
+new musing (two entries total), the same list in `activeGuardian.musings`, and no
+remaining `addMusings` command. Revalidation and cold continuation preserve that
+result without appending again. The client binds this comparison to the original
+signed request/turn/generation; the GM authors no internal proof or handoff fields.
+If a correlated validation repair lists only a narrative or interface error, repair
+only the current listed outputs and publish the matching repair-ready signal. Do
+not reinsert the consumed `addMusings` command or duplicate its thought in the
+journal. The client rechecks the unchanged original binding and sealed Guardian
+state before one fresh validation iteration; changed Guardian state or original
+evidence cannot borrow that completion. A subsequent repair invalidates the fresh
+comparison before any mutation. An output-only repair accepts the same two musings
+without appending again.
+The existing limit is one or two new musings per Guardian per turn. A Mortal World
+treatment turn cannot use this afterlife-only command. This example changes no
+command fields, realm rules, or GM response schema.
+
+The broader fragment below illustrates separate supported non-memory mutations too:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "updateReputation",
+      "guardianId": "guard_social_azalia_001",
+      "reputationChange": 8,
+      "reason": "The soul accepted responsibility and asked for memory guidance without demanding a reward."
+    },
+    {
+      "command": "setMood",
+      "guardianId": "guard_social_azalia_001",
+      "mood": {
+        "current": "contemplative",
+        "intensity": 58,
+        "reason": "Азалия увидела осторожное взросление души.",
+        "since": 326
+      }
+    },
+    {
+      "command": "addMusings",
+      "guardianId": "guard_social_azalia_001",
+      "musings": [
+        {
+          "turn": 326,
+          "topic": "soul_assessment",
+          "mood": "hopeful",
+          "text": "Душа впервые попросила память не как оружие, а как способ не повторить ту же боль."
+        }
+      ]
+    },
+    {
+      "command": "unlockLore",
+      "guardianId": "guard_social_azalia_001",
+      "loreFragment": {
+        "fragmentId": "lore_guard_social_azalia_001_domain",
+        "category": "domain_mastery",
+        "title": "Шелк памяти",
+        "content": "Память Азалии не вытаскивает прошлое силой: она расправляет его слоями, пока душа сама не выдержит форму воспоминания.",
+        "requiredReputation": 50
+      }
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_326_memory_guidance",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Осторожная просьба",
+      "summary": "Азалия решила, что душа заслужила мягкое раскрытие одного слоя её домена.",
+      "turn": 326,
+      "timestamp": "2026-04-24T13:50:00Z"
+    }
+  ]
+}
+```
+
+Correct `completeQuest` fragment:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "completeQuest",
+      "guardianId": "guard_social_azalia_001",
+      "questId": "gquest_azalia_memory_vow_002",
+      "outcome": "success",
+      "questPowerAudit": {
+        "questDifficultyTier": "easy",
+        "outcome": "success",
+        "baseDelta": 2,
+        "supportsCurrentProject": false,
+        "defendsAgainstRivalPressure": false,
+        "bonusDelta": 0,
+        "finalDelta": 2
+      }
+    }
+  ]
+}
+```
+
+Rules for these commands:
+- `updateReputation` uses top-level `reputationChange` and `reason`, not nested `data`.
+- `completeQuest` can target only an existing active Guardian quest id in that Guardian's canonical `activeQuests[]`; it cannot close an unaccepted `availableQuests[]` offer.
+- `completeQuest` always carries deterministic `questPowerAudit` with `questDifficultyTier`, `outcome`, `baseDelta`, `bonusDelta`, and `finalDelta`; do not write raw `guardianPowerEvents.reasonType = guardian_quest`.
+- `processGacha` is only Guardian-mediated gacha; direct Chaos Sea `/gacha` must not use it.
+- `addMusings`, `unlockLore`, and `setMood` use top-level `musings[]`, `loreFragment`, and `mood`.
+- Every Guardian changed by `UpdateGuardians` must appear in `gm_thoughts_markdown` relevant actors with a matching reasoning block.
+
+Invalid Guardian command shortcuts:
+- `UpdateNPCs` for Guardian mood, speech, or reputation.
+- `UpdateGuardians.updateProject`; use `startGuardianProjects`, `guardianProjectUpdates`, and `completeGuardianProjects`.
+- `processGacha` when the Guardian has no remaining charge this return.
+- `unlockLore` with arbitrary text instead of a full `loreFragment` object.
+- `setMood` without `current`, `intensity`, `reason`, and `since`.
+
+==================================================
+<!-- GM1557:A117:END -->

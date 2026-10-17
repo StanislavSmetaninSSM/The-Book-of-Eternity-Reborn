@@ -11,7 +11,7 @@ public sealed partial class ExampleDocumentationValidationTests
     public void SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser()
     {
         const string contractId = "spiritual_wound_source_envelope_v1";
-        var json = ExtractNamedJsonFence("E_CLI_Afterlife_Turns.txt", contractId);
+        var json = ExtractNamedJsonFence("E_CLI_Afterlife_Wound_Continuation.txt", contractId);
         using var source = JsonDocument.Parse(json);
         Assert.True(SpiritualWoundSourceEnvelope.TryRead(source.RootElement, out var envelope, out var error), error);
         Assert.NotNull(envelope);
@@ -40,7 +40,7 @@ public sealed partial class ExampleDocumentationValidationTests
         var contract = Assert.Single(
             manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
             row => row.GetProperty("contractId").GetString() == contractId);
-        Assert.Equal("E_CLI_Afterlife_Turns.txt", contract.GetProperty("file").GetString());
+        Assert.Equal("E_CLI_Afterlife_Wound_Continuation.txt", contract.GetProperty("file").GetString());
         Assert.Equal("production-validator", contract.GetProperty("validationKind").GetString());
         Assert.Contains("SpiritualWoundSourceEnvelope.TryRead",
             contract.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);

@@ -1,3 +1,72 @@
+# CLI_Rules_Index.md
+
+Read when: The current actual turn/repair dispatch names this situation router. Bootstrap reads only its manifest/README; dedicated receipt-only uses its issued safe packet/helper.
+Prerequisites: Current request/realm and all actual active contract seeds; take their full dependency union. Repository-only references below are available only if the current session manifest explicitly delivers them.
+Author here: only existing contract-authorized outputs; this reading guide grants no additional authority.
+Never author: do not invent client-owned identities, seals or unissued receipts, or mutate pending/canonical state outside the current contract. Legitimate GM-authored receipts and pending closures remain permitted only through their existing explicitly authorized owner/response surface.
+Worked examples: All ten exact rule/example pairs are listed in Topic paths below; preserve the matching complete example and its applicable prerequisites.
+
+
+## Current-dispatch reading routes
+
+Restricted bootstrap/receipt/frontier/repair dispatches precede ordinary overlays.
+Current pending contracts are cumulative; union all actual active seeds before conditional dependencies.
+C requires P and E; a conflict W requires C, P and E. No topic activates from a stale private root or mention alone.
+The table is a finite reading illustration; it grants no write authority.
+
+| Fixture | Activation from current contract | Required topics | Excluded topics | Common core |
+|---|---|---|---|---|
+| bootstrap | Initial context pack only; no per-turn/repair/terminal task | - | A,C,E,G,H,L,M,P,S,W | false |
+| ordinary | currentRealm=Chaos Sea; no active special contracts or due flags | L | A,C,E,G,H,M,P,S,W | true |
+| scheduler | mustEvaluateGuardianProjectProgression=true; no other mutation | G,L,S | A,C,E,H,M,P,W | true |
+| multi_pending | Current Guardian social talk AND resident talk; no resource/profile mutation | A,G,L | C,E,H,M,P,S,W | true |
+| receipt_only | requestKind=qte_deferred_effect_resolution AND current safePacket; restricted before overlays | - | A,C,E,G,H,L,M,P,S,W | false |
+| wound_frontier | Current issued spiritualWoundContinuation phase=decision or dependent_draft; conflict source | C,E,P,W | A,G,H,L,M,S | true |
+| repair | Current guardian trade repair packet; permitted-read scope only; no spiritual continuation | G | A,C,E,H,L,M,P,S,W | true |
+| topic_L_active | Resolved ordinary afterlife realm; no handoff | L | A,C,E,G,H,M,P,S,W | true |
+| topic_L_inactive | Missing/null/empty realm remains unresolved fault; no ordinary topics | - | A,C,E,G,H,L,M,P,S,W | true |
+| topic_S_active | mustEvaluateGuardianProjectProgression=true | G,L,S | A,C,E,H,M,P,W | true |
+| topic_S_inactive | All due flags false and no catchup | L | A,C,E,G,H,M,P,S,W | true |
+| topic_G_active | Current nonempty pending_guardian_trade_request | G,L | A,C,E,H,M,P,S,W | true |
+| topic_G_inactive | Stale/empty Guardian trade bundle without contract | L | A,C,E,G,H,M,P,S,W | true |
+| topic_A_active | Current resident roster/transfer request | A,L | C,E,G,H,M,P,S,W | true |
+| topic_A_inactive | Resident mentioned without request/state change | L | A,C,E,G,H,M,P,S,W | true |
+| topic_H_active | Active Shining core action; prepared package absent | H,L | A,C,E,G,M,P,S,W | true |
+| topic_H_inactive | Valid prepared package handoff blocks ordinary Shining work | L | A,C,E,G,H,M,P,S,W | true |
+| topic_C_active | Current explicit active spiritual conflict action | C,E,L,P | A,G,H,M,S,W | true |
+| topic_C_inactive | Old conflict mentioned in chronicle, no current action | L | A,C,E,G,H,M,P,S,W | true |
+| topic_E_active | Current ordinary bounded resource/effect safe packet | E,L | A,C,G,H,M,P,S,W | true |
+| topic_E_inactive | No resource/effect work; not dedicated receipt-only | L | A,C,E,G,H,M,P,S,W | true |
+| topic_P_active | Current new durable afterlife actor/profile change | L,P | A,C,E,G,H,M,S,W | true |
+| topic_P_inactive | Untouched client Fresh Guardian seed | L | A,C,E,G,H,M,P,S,W | true |
+| topic_M_active | Current afterlife threat/story/Saref change | L,M | A,C,E,G,H,P,S,W | true |
+| topic_M_inactive | No current story/state delta | L | A,C,E,G,H,M,P,S,W | true |
+| topic_W_active | Current issued spiritual frontier with conflict source | C,E,P,W | A,G,H,L,M,S | true |
+| topic_W_inactive | Private checkpoint or stale Ready with no issued envelope | - | A,C,E,G,H,L,M,P,S,W | true |
+
+Topic paths (read only selected rule/example pairs):
+- L: `OtherGuides/Afterlife_Lifecycle.md`, `Examples/E_CLI_Afterlife_Lifecycle.txt`.
+- S: `OtherGuides/Afterlife_Scheduler.md`, `Examples/E_CLI_Afterlife_Scheduler.txt`.
+- G: `OtherGuides/Afterlife_Guardian_Contracts.md`, `Examples/E_CLI_Afterlife_Guardian_Contracts.txt`.
+- A: `OtherGuides/Afterlife_Abodes_Residents.md`, `Examples/E_CLI_Afterlife_Abodes_Residents.txt`.
+- H: `OtherGuides/Afterlife_Shining_Actions.md`, `Examples/E_CLI_Afterlife_Shining_Actions.txt`.
+- C: `OtherGuides/Afterlife_Spiritual_Conflict.md`, `Examples/E_CLI_Afterlife_Spiritual_Conflict.txt`.
+- E: `OtherGuides/Afterlife_Effects_Resources.md`, `Examples/E_CLI_Afterlife_Effects_Resources.txt`.
+- P: `OtherGuides/Afterlife_Actor_Profiles.md`, `Examples/E_CLI_Afterlife_Actor_Profiles.txt`.
+- M: `OtherGuides/Afterlife_Story_Memory.md`, `Examples/E_CLI_Afterlife_Story_Memory.txt`.
+- W: `OtherGuides/Afterlife_Wound_Continuation.md`, `Examples/E_CLI_Afterlife_Wound_Continuation.txt`.
+
+Common core: `OtherGuides/GM_Common_Core.md` only when the current dispatch permits it.
+Bootstrap reads manifest/README only. Dedicated receipt-only uses its exact safe packet/helper, without turn_request, ordinary scene/story/progression or module/core bodies. Validation repair follows the current permitted-read packet and does not become a new ordinary turn.
+
+Spiritual frontier core is correlation/terminal only; no ordinary turn_request, scene, progression or lifecycle action is introduced.
+Validation repair core is its current repair boundary only; preserve the packet's full-resubmission versus in-place scope.
+
+## Repository-only reference catalog
+
+The preserved reference catalog below is repository-only unless a file is explicitly listed in the current session context_pack_manifest.json. It creates no extra reading obligation and promises no missing file inside the session. For an ordinary afterlife turn use the current-dispatch table above and only its applicable dependency union; bootstrap, receipt-only and repair retain their narrower scope.
+
+<!-- GM1557:A135:START -->
 # 📖 **Оглавление Правил - The Book of Eternity Reborn**
 
 *Справочник для CLI-агентов по содержимому файлов Rules/*. 
@@ -249,3 +318,4 @@
 ---
 
 *Версия: 1.1 | Дата: 2026-03-08 | Для использования с CLI API Specification*
+<!-- GM1557:A135:END -->

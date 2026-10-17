@@ -1,5 +1,9 @@
 # Tasks: GM Documentation Modularization
 
+## Current A authoring draft preserved — checks pending (2026-10-17)
+
+137 complete blocks/current readonly appendices are materialized into ten pairs/core/router/old navigators; 36 explicit daemon copies and reversible scoped entrypoint directions are authored, with actual-body guard migration underway. [Current WIP](plan.md) retains source-byte proof/import recovery and explicitly incomplete consumer/lifetime/physical-negative coverage. No runtime/preparation or fullA acceptance; preserve before continuing remaining fixtures. Block_5 remains untouched.
+
 ## Current A implementation continuation — 2026-10-17
 
 User-authorized fallback resumes the approved A implementation on current a5/A1/A2 base in the separately published continuation branch; original2601/evidence remains immutable. [Current checkpoint](plan.md) imports only #1557 work, then reconciles latest GM append/manifest/navigation/consumer paths before coherent ten-pair/core/router/real-delivery authoring. Accepted old causal RED is retained; no replay or reuse of old preparation/binaries. All checkboxes below retain their historical status; no fullA or Block_5 acceptance is implied by import.

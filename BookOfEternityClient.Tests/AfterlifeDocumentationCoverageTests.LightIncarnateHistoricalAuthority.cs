@@ -46,7 +46,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         var entry = Assert.Single(
             manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
             item => item.GetProperty("contractId").GetString() == "afterlife_light_incarnate_history_authority_v1");
-        Assert.Equal("E_CLI_Afterlife_Turns.txt", entry.GetProperty("file").GetString());
+        Assert.Equal("E_CLI_Afterlife_Lifecycle.txt", entry.GetProperty("file").GetString());
         Assert.Equal("production-validator", entry.GetProperty("validationKind").GetString());
         Assert.Contains("T085_LightIncarnateHistory_", entry.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);
         Assert.Contains("LightIncarnateHistoryDocumentation_", entry.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);

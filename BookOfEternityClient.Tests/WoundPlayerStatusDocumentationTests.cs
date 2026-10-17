@@ -33,8 +33,8 @@ public sealed class WoundPlayerStatusDocumentationTests
         var files = new[]
         {
             "Rules/Block_CLI_Operations.txt", "CLI_API_Specification.md",
-            "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
-            "Examples/E_CLI_Wound_Materialization.txt", "Examples/E_CLI_Afterlife_Turns.txt"
+            "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Wound_Continuation.md",
+            "Examples/E_CLI_Wound_Materialization.txt", "Examples/E_CLI_Afterlife_Wound_Continuation.txt"
         };
         foreach (var file in files)
         {

@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExampleDocumentationValidationTests
 {
     internal static IReadOnlyList<JsonObject> SpiritualSourceActionExamples() =>
-        ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_source_action_v1");
+        ParseNamedJsonFences("E_CLI_Afterlife_Wound_Continuation.txt", "spiritual_wound_source_action_v1");
 
     [Fact]
     public void SpiritualSourceAction_DocumentedTargetsUseProductionShapeValidator()

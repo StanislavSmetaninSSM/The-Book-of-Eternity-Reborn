@@ -11,8 +11,8 @@ internal sealed class GmDocumentationPreservationFixtures
     internal static readonly string[] Topics = ["L", "S", "G", "A", "H", "C", "E", "P", "M", "W"];
     private static readonly IReadOnlyDictionary<string, string> FrozenSources = new Dictionary<string, string>(StringComparer.Ordinal)
     {
-        ["OtherGuides/Afterlife_Contract_Matrix.md"] = "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
-        ["Examples/E_CLI_Afterlife_Turns.txt"] = "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+        ["OtherGuides/Afterlife_Contract_Matrix.md"] = "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
+        ["Examples/E_CLI_Afterlife_Turns.txt"] = "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
         ["CLI_Rules_Index.md"] = "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29"
     };
     internal readonly JsonObject Map;

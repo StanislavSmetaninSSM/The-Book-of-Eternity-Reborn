@@ -1,0 +1,432 @@
+{
+  "kind": "CURRENT_BASE_A_RECONCILIATION_NOT_EXECUTED_TEST_EVIDENCE",
+  "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "historical1557": "2601fd6fc93ce8400b96b46773bd3596baae15ca",
+  "appendBlocks": [
+    {
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "start": 253233,
+      "end": 255057,
+      "startLine": 938,
+      "endLineExclusive": 964,
+      "kind": "payload",
+      "sha256": "65348a0b60ec3a0267ae9471374b9bfd8876390ce521d944ea75639534e2eaee",
+      "destination": "OtherGuides/Afterlife_Wound_Continuation.md",
+      "stableIdentities": [
+        "wound_player_status_readonly_v1"
+      ],
+      "id": "A136",
+      "ordinal": 94,
+      "destinationOrdinal": 3,
+      "startMarker": "<!-- GM1557:A136:START -->\n",
+      "endMarker": "<!-- GM1557:A136:END -->\n",
+      "contextWrapper": ""
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "start": 696885,
+      "end": 699288,
+      "startLine": 13234,
+      "endLineExclusive": 13265,
+      "kind": "payload",
+      "sha256": "66624e32a1f2b75eacf68e207893ea5898ce6ba2204d60bfbe2072cc15856132",
+      "destination": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+      "stableIdentities": [
+        "wound_player_status_readonly_v1"
+      ],
+      "id": "A137",
+      "ordinal": 40,
+      "destinationOrdinal": 3,
+      "startMarker": "<!-- GM1557:A137:START -->\n",
+      "endMarker": "<!-- GM1557:A137:END -->\n",
+      "contextWrapper": ""
+    }
+  ],
+  "navigation": [
+    {
+      "id": "N001",
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 8273,
+      "currentStart": 9586
+    },
+    {
+      "id": "N002",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "oldStart": 3286,
+      "currentStart": 3286
+    },
+    {
+      "id": "N003",
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 82671,
+      "currentStart": 84042
+    },
+    {
+      "id": "N004",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "oldStart": 3009,
+      "currentStart": 3009
+    },
+    {
+      "id": "N005",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "oldStart": 9138,
+      "currentStart": 9138
+    }
+  ],
+  "stableReferences": [
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 10517,
+      "currentStart": 11830,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 73813,
+      "currentStart": 75392,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 73861,
+      "currentStart": 75440,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 91544,
+      "currentStart": 93123,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 233685,
+      "currentStart": 235264,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 239325,
+      "currentStart": 240904,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "oldStart": 239523,
+      "currentStart": 241102,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 6507,
+      "currentStart": 7820,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 6824,
+      "currentStart": 8137,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 8390,
+      "currentStart": 9703,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 8436,
+      "currentStart": 9749,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 67625,
+      "currentStart": 68938,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 74668,
+      "currentStart": 75981,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 74870,
+      "currentStart": 76183,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 90937,
+      "currentStart": 92250,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "oldStart": 92751,
+      "currentStart": 94064,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 2047,
+      "currentStart": 3418,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 2781,
+      "currentStart": 4152,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 8287,
+      "currentStart": 9658,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 8535,
+      "currentStart": 9906,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 18579,
+      "currentStart": 19950,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 81301,
+      "currentStart": 82672,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 81354,
+      "currentStart": 82725,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 82521,
+      "currentStart": 83892,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 82704,
+      "currentStart": 84075,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 86776,
+      "currentStart": 88147,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 86866,
+      "currentStart": 88237,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 93404,
+      "currentStart": 94775,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 120708,
+      "currentStart": 122079,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 128833,
+      "currentStart": 130204,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 148427,
+      "currentStart": 149798,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 148480,
+      "currentStart": 149851,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 186900,
+      "currentStart": 188271,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "oldStart": 186945,
+      "currentStart": 188316,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "CLI_Rules_Index.md",
+      "oldStart": 19657,
+      "currentStart": 19657,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 4825,
+      "currentStart": 4825,
+      "bytesSha256": "cfd3904fc851bd298d73873df9d1d2e4caeb166b626688d54c7acc6e40e92896"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 4935,
+      "currentStart": 4935,
+      "bytesSha256": "f3b271c4ec49da479604623eacd57ae8cb9200f0cb651ce7b928612f00b499d0"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 107471,
+      "currentStart": 108783,
+      "bytesSha256": "f3b271c4ec49da479604623eacd57ae8cb9200f0cb651ce7b928612f00b499d0"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 107628,
+      "currentStart": 108940,
+      "bytesSha256": "cfd3904fc851bd298d73873df9d1d2e4caeb166b626688d54c7acc6e40e92896"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 192733,
+      "currentStart": 194045,
+      "bytesSha256": "cfd3904fc851bd298d73873df9d1d2e4caeb166b626688d54c7acc6e40e92896"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 192852,
+      "currentStart": 194164,
+      "bytesSha256": "f3b271c4ec49da479604623eacd57ae8cb9200f0cb651ce7b928612f00b499d0"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 208950,
+      "currentStart": 211574,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 208994,
+      "currentStart": 211618,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 209960,
+      "currentStart": 212584,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "oldStart": 210004,
+      "currentStart": 212628,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "oldStart": 1409,
+      "currentStart": 1409,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "oldStart": 1519,
+      "currentStart": 1519,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "oldStart": 2721,
+      "currentStart": 2721,
+      "bytesSha256": "455a7c2546c614d6291f0ec1a5fb7feb26a0b8430d37755231dad21d3e7f22d5"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "oldStart": 2831,
+      "currentStart": 2831,
+      "bytesSha256": "46309141b4f418300b33bec4037121d4c50cae901c91da6a0e650d711983a687"
+    }
+  ],
+  "retainedCurrentWoundRows": [
+    {
+      "contractId": "wound_player_status_readonly_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "current self/realm, complete canonical wound carriers plus common identity/history and accepted effects; read only",
+      "responseSurface": "none: existing /статус and /status client display only",
+      "realms": [
+        "Mortal World",
+        "Chaos Sea",
+        "Shining Abode"
+      ],
+      "description": "Visible current-self wounds and already-known methods are immediate, declared requirements do not assert availability/price, hidden/foreign facts stay private and confirmed healed History is separate. Paired afterlife display example uses the same marker.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm binds both example markers and no-response/readonly limits. WoundPlayerStatusTests exercises actual console/browser entrypoints in all3 realms, missing authority, hidden/foreign/current knowledge, separate healed snapshots and literal text.",
+      "coverageLimit": "This is a display contract fragment, not a full GM response/authoring validator, live treatment/publication/quote/provider/staging or lawful ACTIVE/FR063 proof. Spiritual method conditions remain generic without an accepted application codec.",
+      "requiredText": [
+        "wound_player_status_readonly_v1",
+        "client-owned read-only",
+        "no diagnosis reveal gate",
+        "Mortal World",
+        "Chaos Sea / Shining Abode",
+        "История ран",
+        "NOT a GM response envelope",
+        "exact Ink Feather price"
+      ]
+    },
+    {
+      "contractId": "wound_mortal_joint_severity_repair_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "actual QTE42 source -> official original43 -> public decision repair only",
+      "responseSurface": "complete QTE source, same-scene woundDecisions response and semantic view of client-issued construct_wound packet",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "One real selected QTE source admits II; a complete III draft derives one actual packet and corrects only severity to II while preserving scene, siblings and ordered arrays.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket -> GameEngineTurnLifecycleTests.VerifyJointSeverityRepairWorkedExampleAsync -> actual QTE42 lifecycle/Stage43 -> MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse -> WoundRepairPacketBuilder.Build/IsValidPersistedRepairWave -> WoundRepairPacket.MatchesCorrectedDecision -> real corrected adapter; PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+      "coverageLimit": "Actual producer/original and read-only adapter, complete issued packet shape/receipt validation and all semantic fields; the displayed packet projection excludes exactly five client-issued correlation fields and is not runnable/fullpacket authority. No joint treatment/publication/resource/progression/story/cold completion is granted or qualified by this guard.",
+      "requiredText": [
+        "wound_mortal_joint_severity_repair_source_v1",
+        "wound_mortal_joint_severity_repair_rejected_v1",
+        "wound_mortal_joint_severity_repair_packet_view_v1",
+        "wound_mortal_joint_severity_repair_corrected_v1",
+        "<current-client-opportunityRef>",
+        "COMPLETE real client-issued",
+        "not a literal runnable",
+        "change only severity III to II",
+        "source/adapter/builder",
+        "candidateKind"
+      ]
+    }
+  ],
+  "blocks": 137,
+  "snippets": 188,
+  "manifestRows": 80,
+  "oldAnchors": 125,
+  "navigationImages": 5,
+  "currentFullManifestSha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572",
+  "runtime": "NONE; authoring/reconciliation data only; later independent SOURCE and actual evidence required"
+}
