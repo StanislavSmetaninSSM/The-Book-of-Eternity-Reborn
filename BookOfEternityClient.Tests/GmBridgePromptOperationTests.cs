@@ -7,7 +7,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Real bridge assembly and pipe accept loop, controlled input/view only; no native startup.</summary>
-public sealed class GmBridgePromptOperationTests
+public sealed partial class GmBridgePromptOperationTests
 {
     [Fact]
     public async Task AutomaticDispatch_DoesNotEraseManualDraft()
