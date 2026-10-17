@@ -1,0 +1,94 @@
+{
+  "kind": "READ_ONLY_PREEXISTING_WHOLE_FILE_SOURCE_FENCE_GAP_NOT_ORDINARY_3D_RED",
+  "utc": "2026-10-17T15:54:30.131963+00:00",
+  "head": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "originalPreflightSha256": "2243de94aa5f35b221054942e077549eef7cb8da8f4c2a44f20b3a19fb951114",
+  "method": "GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview",
+  "observedTotalPins": 33,
+  "stalePins": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "expected": "14DCB900D73951BF5228D474255C197324DDB32DF74A075CE22F4DEC64600EC9",
+      "currentSha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "currentBytes": 241886,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31 WIP T179-Pd add safe observed original reader and conformance selection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "expected": "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC",
+      "currentSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "currentBytes": 454547,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "expected": "5EB03DB7C9B75486404BB4219D79B62D8C6981D63F06AF31A8E4DD07529E1E6F",
+      "currentSha256": "505af738c5acc825d450d922151379c31f6077662d2654309eb17b340a652b91",
+      "currentBytes": 325701,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c WIP #1536 align existing force-binding soul authority [skip ci]"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "expected": "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635",
+      "currentSha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "currentBytes": 431342,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "8db419061046629ca591e4799273d1e4bbad09d1 WIP #1536 bind Mortal replay to atomic common publication evidence"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "expected": "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31",
+      "currentSha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "currentBytes": 379285,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "141c69617fcb731eb219605d4acbded28cf45983 WIP #1536 validate and freeze physical QTE injury declarations"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "expected": "27CBB3A49DA317C542B573451E29E78990A70F7E78141EAAF460A483E362CE51",
+      "currentSha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805",
+      "currentBytes": 98744,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "626d318b34b301b8c80cce3fd33e38c38e052cd9 WIP 1536 live joint repair and terminal wiring; corrected publication blocked; checks UNRUN"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "expected": "5BEFA60382B54840F8BB228306E8BCBB4708BC433436133CF843578CE41221C4",
+      "currentSha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+      "currentBytes": 13558,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "expected": "E68B9CE8E06E73E28BDAAF6D7DE91B108371FF26F2821D8DFB6395747C0F4729",
+      "currentSha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+      "currentBytes": 15071,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "expected": "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062",
+      "currentSha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "currentBytes": 5130,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A"
+    }
+  ],
+  "disposition": "Original exactly-A migration proposal superseded. This Fact cannot qualify current ordinary extraction while its baseline9 are unresolved. Preserve originalguard/history, review each9 expected/current via actualsource/approvedretainedprovenance, then authorize narrowpinmigration or explicitsource-onlyhold. No automatic currenthashbless/normalization and no native baseline/HOT/F1 run.",
+  "ordinaryFrontier": "Existingdirectordinarycandidate13unitFactrows+SP2methods3rows=16sourceestimatedrows/15methods; additional1sourcefenceFact conditional on baselineprovenancedisposition. Newrowscounts afterauthoring/discovery. This doesnotblockpureordinaryTDDauthoring afterRootrelease or reopenacceptedNI-D01design.",
+  "runtime": "NONE; static source/hash comparisons only; no repo changes."
+}

@@ -1,0 +1,48 @@
+{
+  "kind": "ROOT_AUTHORIZED_ORDINARY3D_TESTS_ONLY_RELEASE_AND_PREEXISTING_FENCE_DISPOSITION",
+  "utc": "2026-10-17T15:58:30.498954+00:00",
+  "head": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "authority": "Latest explicit implementation request plus accepted 3d design and CLOSED NI-D01; no new design or human approval gate. A3 necessity NO-PROCEED remains unchanged.",
+  "preflight": [
+    {
+      "path": "/tmp/t179pd3d-root-preflight-pins-a5a41cfa-20261017.json",
+      "bytes": 26870,
+      "sha256": "a31e7dde0e64250329448325040cf53c15a07f555f2672510587d43620216513"
+    },
+    {
+      "path": "/tmp/t179pd3d-writer-ordinary-preflight-a5a41cfa-20261017.json",
+      "bytes": 26036,
+      "sha256": "2243de94aa5f35b221054942e077549eef7cb8da8f4c2a44f20b3a19fb951114"
+    },
+    {
+      "path": "/tmp/t179pd3d-writer-preflight-guard-addendum-a5a41cfa-20261017.json",
+      "bytes": 5950,
+      "sha256": "aaaf591b2e412a21ef74a5fab21a85620784a03ad1dd123997973b84c0aefa14"
+    },
+    {
+      "path": "/tmp/t179pd3d-independent-ordinary-preflight-a5a41cfa-20261017.json",
+      "bytes": 15945,
+      "sha256": "143034a94f7d2bd085fce593950760058ac563eae3f75ff1be006db97c8dbcce"
+    }
+  ],
+  "released": "Tests-only ordinary narrative/interface shared-value-kernel/delegation structural contract and finite real ordinary semantic/IO controls, category/selection/current-authority docs, then nonforce WIP publication exactremote complete changedpath GitHub recovery.",
+  "production": "HELD until accepted genuine causal RED; no build/discovery/native until concrete preparation release.",
+  "scope": "Value-only prefix/tail extraction; existing timestamp call in same slot, parser/catch/IO/repeated reads/achievements/prose/public Changed-only writer/projector/serializer/engine retained. Real ordinary consumers required.",
+  "worldFenceDisposition": {
+    "finding": "NI-PREFLIGHT-01 pre-existing 9 stale hashes of 33 at a5a, not new 3d causal RED.",
+    "action": "Preserve old WorldReadPhase_SourceClosurePinsRequireExplicitReview intact and HELD; no blanket currenthash migration, no selected qualified runtime of known baseline mismatch. New narrow A/newpartial source/delegation inverse gate plus explicit affected SOURCE review.",
+    "limits": "Nine prior intervals have tiered retained provenance; no claim all old World or HOT source closure accepted. Reviewer compact disposition pending."
+  },
+  "selection": "Existing direct ordinary narrative/interface controls and two SP methods directly calling both APIs; new authored finite controls and new focused source gate. No fixed row count before discovery; no unchanged pure projector/family replay.",
+  "held": [
+    "HOT-B and source-aware no-write HOT family",
+    "general retained ordinary pass/history and successful write authority joins",
+    "full wounds S/B/M3/F1/T197 and activation",
+    "A3 implementation",
+    "Windows ZIP/403/CI retries and disabled workflows",
+    "merge, force-push, branch deletion, issue closure, new credentials/security settings, main edits"
+  ],
+  "noRuntime": true
+}

@@ -2,6 +2,128 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-ordinary-output-policy-boundary",
+      "responsibility": "Two structural causal rows after real public narrative/interface success and exact unchanged output bytes; missing named shared stages is the final oracle. No semantic defect is invented.",
+      "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-ordinary-output-policy-source",
+      "responsibility": "Four exact frozen A segments; inverse adapters reconstruct whole baseline A and shared partial is canonical value-only extraction. SOURCE guard independent of old stale World fence; intended after production.",
+      "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-ordinary-output-policy-regression",
+      "responsibility": "Real public owners: complete ordered diagnostic fields, exact lookup/null/wrong-kind/root, read/catch order, no-write UTF8/UTF16 bytes+mtime, actual changed writes, single-pass tags, ambient timestamp and real mutation/close faults.",
+      "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-ordinary-output-existing",
+      "responsibility": "Exactly thirteen existing public ordinary narrative/interface methods, migrated from console-explorer because both changed adapters are direct consumers. Pure projector suite stays unselected.",
+      "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.*",
+            "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-ordinary-output-projection",
+      "responsibility": "Exactly two existing integration methods/three rows directly call both ordinary validators; real original context gives stale-warning and changed-only-write contrasts. No spiritual family by adjacency.",
+      "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-award-level-policy-boundary",
       "responsibility": "Two causal real constructed CheckLevelUp experience/status branches; full guarded source bytes/read/state/noUI/no-write and strict cleanup finish before each missing award helper assertion.",
       "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
@@ -13347,112 +13469,110 @@
             ]
         },
         {
-            "id": "console-explorer",
-            "responsibility": "Console and Explorer command grammar, output, drilldowns, and local action routing.",
-            "excludes": "Browser rendering and unrelated canonical-state mechanics.",
-            "changeHints": [
-                "BookOfEternityClient/Services/Explorer*",
-                "BookOfEternityClient/Services/Console*"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 10,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Achievements_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_BehaviorAssessment_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_FirstViewShowsShelfWithoutDumpingLongBodies",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_SelectedDocumentShowsOnlyThatDocumentAndReturnsToShelf",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_WithOnlySealedDocument_RendersUnreadableReason",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Chronicle_RendersStructuredEntriesWithoutRawFieldLabels",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Chronicle_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CodexSearch_RendersSearchResultsWithoutException",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CombatUsesAcceptedCombatantEffectProjection",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_ConsoleExposesSharedEnemyAllyAndLogDrilldowns",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_DefeatedEnemiesRenderAsCompletedEncounter",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Craft_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectActionRejectsForgedSelector",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectDetailAndActionUseOpaqueAcceptedSelectors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsMalformedAuthorityFailsClosedWithoutStatusFallback",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsUsesAcceptedProjectionAndHidesInternalOrGmOnlyState",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Effects_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_RichFactionShowsKnowledgeSectionMenu",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SectionDetailsHideHiddenChroniclesAndRawStrategicState",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SparseFactionSectionsRenderUsefulEmptyStates",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_StringControlledTerritoriesRenderWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Factions_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_LivesHistory_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathInvalidExpression_RendersSafeError",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathRounding_RendersLocalizedRoundingMode",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathSimpleExpression_RendersResult",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathVariables_RendersVariablesAndResult",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_PlayerInteractions_ConsoleExposesSharedPlayerAndRecordDrilldowns",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_PlayerInteractions_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_DetailHidesCanonicalTurnAnchorsInJournal",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_DetailLocalizesStableStatusValues",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_HistoryRewardQuestIdIsExactAndDuplicateAmbiguityFailsClosed",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_HistoryRewardsRenderLabelsAndUnavailableReasonsWithoutRawIds",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ReadOnlyHelp_IgnoresActiveOtherOwnerLock",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RendersWithoutException_ForKeyExplorerCommands",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_DoesNotRevealArcOnlyThroughSecretWorldEvent",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_ShowsArcRevealedOnlyThroughLinkedWorldEvent",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_ShowsVisibleArcChoicesOnly",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_SortsMoreDangerousThreadFirst",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_UsesCanonicalMasteryAndLocalizesStableValues",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatsDoesNotRevealHiddenEffectOrItsDerivedDelta",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatusDoesNotFallbackToInternalComputedValuesWithoutSafeProjection",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatusUsesAcceptedEffectsInsteadOfRawActiveConditions",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Status_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Story_RendersReaderWithoutException",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Validation_WithUnavailableService_RendersGracefully",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleExposesSharedEventFlagAndProgressionDrilldowns",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleSelectionCanReturnToNewsList",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleSelectionRendersSelectedDetail",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_DirectDetailSuppressesCommandActionTable",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_RendersWithoutHiddenErrors",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldRules_RendersPlayerFacingTextWithoutFileContractLeak",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_UsesAdapterAndRemovesPendingSetup",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_EditFlow_CancelPreviewDoesNotCreatePendingSetup",
-                        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_EditFlow_PersistsLargeDetailedDescriptionBlock",
-                        "BookOfEternityClient.Tests.MathAssistantContractValidationTests.*"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.*",
-                        "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.*",
-                        "BookOfEternityClient.Tests.AcceptedTurnOutputProjectorTests.*",
-                        "BookOfEternityClient.Tests.AfterlifeDrilldownAuditTests.*",
-                        "BookOfEternityClient.Tests.ClipboardServiceTests.*",
-                        "BookOfEternityClient.Tests.ConsoleNpcTradeCommandTests.*",
-                        "BookOfEternityClient.Tests.ConsoleTrainingCommandTests.*",
-                        "BookOfEternityClient.Tests.CraftRequestStateTests.*",
-                        "BookOfEternityClient.Tests.DialogueOptionControlTagNormalizerTests.*",
-                        "BookOfEternityClient.Tests.ExplorerCommandParserTests.*",
-                        "BookOfEternityClient.Tests.ExplorerCommandProtocolTests.*",
-                        "BookOfEternityClient.Tests.ExplorerModeSourceGuardTests.*",
-                        "BookOfEternityClient.Tests.GameInterfaceTests.*",
-                        "BookOfEternityClient.Tests.MathAssistantServiceTests.*",
-                        "BookOfEternityClient.Tests.MortalReadOnlyDrilldownAuditTests.*",
-                        "BookOfEternityClient.Tests.StructuredBonusDisplayTests.*",
-                        "BookOfEternityClient.Tests.TextComposerTests.*"
-                    ]
-                }
-            ]
+      "id": "console-explorer",
+      "responsibility": "Console and Explorer command grammar, output, drilldowns, and local action routing.",
+      "excludes": "Browser rendering and unrelated canonical-state mechanics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Explorer*",
+        "BookOfEternityClient/Services/Console*"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Achievements_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_BehaviorAssessment_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_FirstViewShowsShelfWithoutDumpingLongBodies",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_SelectedDocumentShowsOnlyThatDocumentAndReturnsToShelf",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Books_WithOnlySealedDocument_RendersUnreadableReason",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Chronicle_RendersStructuredEntriesWithoutRawFieldLabels",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Chronicle_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CodexSearch_RendersSearchResultsWithoutException",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CombatUsesAcceptedCombatantEffectProjection",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_ConsoleExposesSharedEnemyAllyAndLogDrilldowns",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_DefeatedEnemiesRenderAsCompletedEncounter",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Combat_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Craft_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectActionRejectsForgedSelector",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectDetailAndActionUseOpaqueAcceptedSelectors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsMalformedAuthorityFailsClosedWithoutStatusFallback",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsUsesAcceptedProjectionAndHidesInternalOrGmOnlyState",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Effects_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_RichFactionShowsKnowledgeSectionMenu",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SectionDetailsHideHiddenChroniclesAndRawStrategicState",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SparseFactionSectionsRenderUsefulEmptyStates",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_StringControlledTerritoriesRenderWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Factions_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_LivesHistory_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathInvalidExpression_RendersSafeError",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathRounding_RendersLocalizedRoundingMode",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathSimpleExpression_RendersResult",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_MathVariables_RendersVariablesAndResult",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_PlayerInteractions_ConsoleExposesSharedPlayerAndRecordDrilldowns",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_PlayerInteractions_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_DetailHidesCanonicalTurnAnchorsInJournal",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_DetailLocalizesStableStatusValues",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_HistoryRewardQuestIdIsExactAndDuplicateAmbiguityFailsClosed",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_HistoryRewardsRenderLabelsAndUnavailableReasonsWithoutRawIds",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ReadOnlyHelp_IgnoresActiveOtherOwnerLock",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RendersWithoutException_ForKeyExplorerCommands",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_DoesNotRevealArcOnlyThroughSecretWorldEvent",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_ShowsArcRevealedOnlyThroughLinkedWorldEvent",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_ShowsVisibleArcChoicesOnly",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_RivalThreads_SortsMoreDangerousThreadFirst",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_UsesCanonicalMasteryAndLocalizesStableValues",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatsDoesNotRevealHiddenEffectOrItsDerivedDelta",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatusDoesNotFallbackToInternalComputedValuesWithoutSafeProjection",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StatusUsesAcceptedEffectsInsteadOfRawActiveConditions",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Status_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Story_RendersReaderWithoutException",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Validation_WithUnavailableService_RendersGracefully",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleExposesSharedEventFlagAndProgressionDrilldowns",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleSelectionCanReturnToNewsList",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_ConsoleSelectionRendersSelectedDetail",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_DirectDetailSuppressesCommandActionTable",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldNews_RendersWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldRules_RendersPlayerFacingTextWithoutFileContractLeak",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_UsesAdapterAndRemovesPendingSetup",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_EditFlow_CancelPreviewDoesNotCreatePendingSetup",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_EditFlow_PersistsLargeDetailedDescriptionBlock",
+            "BookOfEternityClient.Tests.MathAssistantContractValidationTests.*"
+          ]
         },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnOutputProjectorTests.*",
+            "BookOfEternityClient.Tests.AfterlifeDrilldownAuditTests.*",
+            "BookOfEternityClient.Tests.ClipboardServiceTests.*",
+            "BookOfEternityClient.Tests.ConsoleNpcTradeCommandTests.*",
+            "BookOfEternityClient.Tests.ConsoleTrainingCommandTests.*",
+            "BookOfEternityClient.Tests.CraftRequestStateTests.*",
+            "BookOfEternityClient.Tests.DialogueOptionControlTagNormalizerTests.*",
+            "BookOfEternityClient.Tests.ExplorerCommandParserTests.*",
+            "BookOfEternityClient.Tests.ExplorerCommandProtocolTests.*",
+            "BookOfEternityClient.Tests.ExplorerModeSourceGuardTests.*",
+            "BookOfEternityClient.Tests.GameInterfaceTests.*",
+            "BookOfEternityClient.Tests.MathAssistantServiceTests.*",
+            "BookOfEternityClient.Tests.MortalReadOnlyDrilldownAuditTests.*",
+            "BookOfEternityClient.Tests.StructuredBonusDisplayTests.*",
+            "BookOfEternityClient.Tests.TextComposerTests.*"
+          ]
+        }
+      ]
+    },
         {
             "id": "console-explorer-mortal",
             "responsibility": "Explorer and console actions for mortal world state, items, wounds, resources, and training.",
@@ -19645,54 +19765,52 @@
             ]
         },
         {
-            "id": "spiritual-cutover-output",
-            "responsibility": "Published spiritual conflict output, candidate read views, and resource/effect projections.",
-            "excludes": "Mortal wound treatment and unrelated afterlife politics.",
-            "changeHints": [
-                "BookOfEternityClient/Services/Spiritual*",
-                "BookOfEternityClient/Services/Afterlife*"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 10,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_OutputDriftDuringPublicationRestoresSignedOriginal",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublishedOutputRejectsDriftAndForeignDelivery",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_GenerationProbeDoesNotRebindStaleSlot",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_MissingGenerationDoesNotCreateOne",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_NamedCaptureRejectsMidReadChange",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_NamedPreflightPreservesOccupiedReceiptField",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_ZeroAllocationPreflightRejectsInvalidOwners",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_DecodesBomWithoutChangingRawBytes",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_NoFallbackDoesNotRequestOutputTime",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsAlteredClockRows",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsChangedOrNewOutput",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsWrongAndExpiredLease",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_ReplaysExactClockCauseAndExport",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RequiresNamedLiveCaptureAndLease",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RevocationDuringReadCannotReturnMemo",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualEffectCurrentReadView_RejectsForeignAndIncompleteDraft",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualEffectCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualResourceCurrentReadView_RejectsForeignAndIncompleteDraft",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualResourceCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_DoesNotReopenFactionCompanionB",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_PreservesWorldEventPresence",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsInvalidAAfterPhysicalRepair",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsPhysicalOwnerChangeAtFinalGuard",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsUnregisteredFactionCompanion"
-                    ]
-                }
-            ]
-        },
+      "id": "spiritual-cutover-output",
+      "responsibility": "Published spiritual conflict output, candidate read views, and resource/effect projections.",
+      "excludes": "Mortal wound treatment and unrelated afterlife politics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Spiritual*",
+        "BookOfEternityClient/Services/Afterlife*"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_OutputDriftDuringPublicationRestoresSignedOriginal",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublishedOutputRejectsDriftAndForeignDelivery",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_GenerationProbeDoesNotRebindStaleSlot",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_MissingGenerationDoesNotCreateOne",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_NamedCaptureRejectsMidReadChange",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_NamedPreflightPreservesOccupiedReceiptField",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCandidateReadView_ZeroAllocationPreflightRejectsInvalidOwners",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_DecodesBomWithoutChangingRawBytes",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_NoFallbackDoesNotRequestOutputTime",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsAlteredClockRows",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsChangedOrNewOutput",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RejectsWrongAndExpiredLease",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_ReplaysExactClockCauseAndExport",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RequiresNamedLiveCaptureAndLease",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualOutputProjection_RevocationDuringReadCannotReturnMemo",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualEffectCurrentReadView_RejectsForeignAndIncompleteDraft",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualEffectCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualResourceCurrentReadView_RejectsForeignAndIncompleteDraft",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualResourceCurrentReadView_RejectsPhysicalChangeAtFinalGuard",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_DoesNotReopenFactionCompanionB",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_PreservesWorldEventPresence",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsInvalidAAfterPhysicalRepair",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsPhysicalOwnerChangeAtFinalGuard",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSameTurnOwnerReadView_RejectsUnregisteredFactionCompanion"
+          ]
+        }
+      ]
+    },
         {
             "id": "spiritual-cutover-publication",
             "responsibility": "Original exchange completion, common publication, and next-exchange state.",

@@ -1,0 +1,267 @@
+{
+  "kind": "READ_ONLY_ORDINARY_A_PREFLIGHT_NOT_SOURCE_OR_EVIDENCE_ACCEPTANCE",
+  "date": "2026-10-17",
+  "head": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "repository": "/workspace/The-Book-of-Eternity-Reborn",
+  "authority": "Explicit current implementation instruction; NI-D01 closed; no new design approval requested.",
+  "conclusion": "Ordinary prefix/tail shared semantic extraction is source-supported. One concrete existing selected-guard prerequisite needs reconciliation before that Fact is eligible; no new policy or architectural blocker found.",
+  "inputs": [
+    {
+      "path": "/tmp/t179pd3d-root-preflight-pins-a5a41cfa-20261017.json",
+      "bytes": 26870,
+      "sha256": "a31e7dde0e64250329448325040cf53c15a07f555f2672510587d43620216513"
+    },
+    {
+      "path": "/tmp/t179pd3d-writer-ordinary-preflight-a5a41cfa-20261017.json",
+      "bytes": 26036,
+      "sha256": "2243de94aa5f35b221054942e077549eef7cb8da8f4c2a44f20b3a19fb951114"
+    }
+  ],
+  "finding": {
+    "id": "NI-PREFLIGHT-01",
+    "severity": "MATERIAL_TO_PROPOSED_GUARD_ELIGIBILITY_ONLY",
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs",
+    "method": "WorldReadPhase_SourceClosurePinsRequireExplicitReview",
+    "lines": "532-575",
+    "cause": "Nine of its 33 literal whole-file hashes already differ at clean a5; the first assertion is FileSystemManager.cs, before the narrative source pin.",
+    "consequence": "Updating only the new narrative source hash cannot make the chosen Fact pass. A failure at these existing mismatches would be guard prerequisite failure, not new 3d causal RED.",
+    "requiredDisposition": "Reconcile each stale pin against retained accepted change provenance and actual affected source, then update only reviewed pins while preserving the old guard/history and remaining assertions. Do not blanket bless current hashes or rerun broad accepted families.",
+    "staticChecks": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+        "expected": "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202",
+        "baselineA5Actual": "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "expected": "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14",
+        "baselineA5Actual": "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "expected": "094D4D2F2C2CF7ABBF959165C9F2722F4057902F9EC0F78EDC4B9ED9BC87A148",
+        "baselineA5Actual": "094D4D2F2C2CF7ABBF959165C9F2722F4057902F9EC0F78EDC4B9ED9BC87A148",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+        "expected": "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753",
+        "baselineA5Actual": "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs",
+        "expected": "5DA0C9B4A45E1D19E4ECF6D37988569C1D5F218CA4B1725F25FF66BC505502FA",
+        "baselineA5Actual": "5DA0C9B4A45E1D19E4ECF6D37988569C1D5F218CA4B1725F25FF66BC505502FA",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "expected": "14DCB900D73951BF5228D474255C197324DDB32DF74A075CE22F4DEC64600EC9",
+        "baselineA5Actual": "C134530A5EF7D384146C4FAC263DC96BA7BDE4E83E79673027A2CAD9387A514F",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "expected": "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC",
+        "baselineA5Actual": "6A9FFCB5887CE16A99AB6E543A8064ACE6C4057D95EB2F02A1DD8CD1AFD7A936",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs",
+        "expected": "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5",
+        "baselineA5Actual": "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeArchiveTradeAndLifecycle.cs",
+        "expected": "B1802B0118538AF647648B0803B84BB92D155E5FFDD59E4C0BDD3A70FD44EDE7",
+        "baselineA5Actual": "B1802B0118538AF647648B0803B84BB92D155E5FFDD59E4C0BDD3A70FD44EDE7",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs",
+        "expected": "DFBD505B555F308CE7DF3B3DD6FD30FA67F662CCAE06EB59EE1A58C455953A81",
+        "baselineA5Actual": "DFBD505B555F308CE7DF3B3DD6FD30FA67F662CCAE06EB59EE1A58C455953A81",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+        "expected": "5EB03DB7C9B75486404BB4219D79B62D8C6981D63F06AF31A8E4DD07529E1E6F",
+        "baselineA5Actual": "505AF738C5ACC825D450D922151379C31F6077662D2654309EB17B340A652B91",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+        "expected": "AC3B8D4D77674067557518C6FCFDAB6D42CA33139BBC375E562D80CC08A75F15",
+        "baselineA5Actual": "AC3B8D4D77674067557518C6FCFDAB6D42CA33139BBC375E562D80CC08A75F15",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+        "expected": "C31D6A98874B052C97085DD0FEC851C7B773929DAEFB60005DCB942D57270488",
+        "baselineA5Actual": "C31D6A98874B052C97085DD0FEC851C7B773929DAEFB60005DCB942D57270488",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs",
+        "expected": "4A59E7A4B8E12843F960F17B6A62967A414124F913EC3D3D628ECA90E91F66E6",
+        "baselineA5Actual": "4A59E7A4B8E12843F960F17B6A62967A414124F913EC3D3D628ECA90E91F66E6",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs",
+        "expected": "0CC60E658442A70540C489FAE2E0E69644CA1AAE9D8DAE987232899C95C0B6AE",
+        "baselineA5Actual": "0CC60E658442A70540C489FAE2E0E69644CA1AAE9D8DAE987232899C95C0B6AE",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs",
+        "expected": "A894C83CAEABAEB74E674C66ECD1EA575ABD71A63BB7105AEF429C2E2A694FB5",
+        "baselineA5Actual": "A894C83CAEABAEB74E674C66ECD1EA575ABD71A63BB7105AEF429C2E2A694FB5",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+        "expected": "D9A268C30CB219FC1E66E3A6466880E4124155CBEFCC448A8B4824FDCB39179B",
+        "baselineA5Actual": "D9A268C30CB219FC1E66E3A6466880E4124155CBEFCC448A8B4824FDCB39179B",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs",
+        "expected": "B0E9BD001B5674935F8CB27928F8CE9C29A0E4B31271155DC6E3E3071CFAA995",
+        "baselineA5Actual": "B0E9BD001B5674935F8CB27928F8CE9C29A0E4B31271155DC6E3E3071CFAA995",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs",
+        "expected": "BC6A6F0D2B571D30108AA90CF2D3ED5A02570A8BDA35B77C2ED42E2F7C028CB5",
+        "baselineA5Actual": "BC6A6F0D2B571D30108AA90CF2D3ED5A02570A8BDA35B77C2ED42E2F7C028CB5",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+        "expected": "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635",
+        "baselineA5Actual": "B04EC022135F62FD7336156A340DCC37BF3AFEF05BD5D8A4F25D1921AE788F0E",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+        "expected": "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31",
+        "baselineA5Actual": "6EC55FE70DECF80AC11A1146548A821F0AEC445B5132D5A7C683F49A1A4B6F86",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+        "expected": "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907",
+        "baselineA5Actual": "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsAndSoulState.cs",
+        "expected": "D7AE9436B054878818C36759A60D1FFB44C9375EC6A58C88FAA73101BA67BB60",
+        "baselineA5Actual": "D7AE9436B054878818C36759A60D1FFB44C9375EC6A58C88FAA73101BA67BB60",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+        "expected": "96042BF2E790C80932810689D5DC0EE2F13ED567C2BE47487EFFA05C6730C0A0",
+        "baselineA5Actual": "96042BF2E790C80932810689D5DC0EE2F13ED567C2BE47487EFFA05C6730C0A0",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+        "expected": "27CBB3A49DA317C542B573451E29E78990A70F7E78141EAAF460A483E362CE51",
+        "baselineA5Actual": "A4A52DE937925F82F2ACE302BFC8EDB2AC3B8D9FA0FF9420DCCE0A73C0CE2805",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.RivalThreads.cs",
+        "expected": "87DD3F1326CB0EBC5D4935DE145F15266FB30E0177064B8E36960C0A6A0A7576",
+        "baselineA5Actual": "87DD3F1326CB0EBC5D4935DE145F15266FB30E0177064B8E36960C0A6A0A7576",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs",
+        "expected": "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971",
+        "baselineA5Actual": "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs",
+        "expected": "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35",
+        "baselineA5Actual": "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+        "expected": "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF",
+        "baselineA5Actual": "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF",
+        "matches": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+        "expected": "5BEFA60382B54840F8BB228306E8BCBB4708BC433436133CF843578CE41221C4",
+        "baselineA5Actual": "C549A01D57D2BE361F68C6257D1052FEE99DD8C9D59CDFBE3AA7B89D97C3A3C6",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+        "expected": "E68B9CE8E06E73E28BDAAF6D7DE91B108371FF26F2821D8DFB6395747C0F4729",
+        "baselineA5Actual": "E381BFDEB1D06E8A38DDC7683F7A69477401E97A8190CBA2D3EB25A08BD0F59D",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/ValidationService.cs",
+        "expected": "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062",
+        "baselineA5Actual": "C4D59B540983BE5D5E4D1A9329D4F1CA3E200A0E5D0B998600E7BEA92AF6040A",
+        "matches": false
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
+        "expected": "A0B1AF0D4B06A0D4C74BF31A1CFCA22FE9D902F3D7586B4D9A51888664AB7F93",
+        "baselineA5Actual": "A0B1AF0D4B06A0D4C74BF31A1CFCA22FE9D902F3D7586B4D9A51888664AB7F93",
+        "matches": true
+      }
+    ]
+  },
+  "boundedImplementationConstraints": [
+    {
+      "source": "ValidationService.AcceptedTurnAndInkFeathers.cs:78-235,581-717",
+      "requirement": "Keep JsonDocument lifetime and outer JsonException catches in actual owners. Prefix, actual ambient timestamp call, then tail execute in original order; non-object early return remains before timestamp; preserve ordered complete ValidationIssue fields."
+    },
+    {
+      "source": "ValidationService.MetaCodexAndAchievements.cs:745-802; ValidationService.QuestsRivalsFactionsAndWorld.cs:2613-2664",
+      "requirement": "Current achievements read remains before broad catch; previous read/parse/collection remain inside their original catches. Duplicate prior keys retain current swallowed behavior; no eager dependency parsing."
+    },
+    {
+      "source": "ValidationService.AcceptedTurnAndInkFeathers.cs:264-579,3233-3257",
+      "requirement": "Original-first conditional delta reads, first-difference stop, repeat reads per claim, current-null to empty, and no-original filesModified fallback retain current ordering/catch behavior. Leave shared parsers untouched unless concrete scope explicitly includes their other callers."
+    },
+    {
+      "source": "ValidationService.PlayerAndInventory.cs:7052-7091; ValidationService.AcceptedTurnAndInkFeathers.cs:710-717",
+      "requirement": "Do not change ambient DateTimeOffset.TryParse or its multiple other callers. Interface UtcNow is sampled only on actual fallback branch; no clock substitution, resampling or fixed-point loop."
+    },
+    {
+      "source": "AcceptedTurnOutputProjector.cs; NI-D01 accepted verification",
+      "requirement": "Keep projector/serializer/text/tag helpers and public changed-only writer unchanged. No-write raw presence/bytes/BOM/mtime remain exact. Changed physical afterimage comparison is valid only after actual successful public write and owning close; matching bytes do not turn fault/uncertainty into Returned."
+    },
+    {
+      "source": "GameEngine.ValidationAndRepair.cs:234-275",
+      "requirement": "Existing real narrative-before-interface-before-Full consumers remain in place. No encompassing lease, HOT invocation/history or other-family activation is introduced."
+    }
+  ],
+  "selectionNotes": [
+    "The two SP OrdinaryOutputProjection methods are direct ordinary callers; no reason for replaying the unrelated spiritual source/clock family or unchanged pure projector suite by file adjacency.",
+    "New causal structural guards must first establish genuine ordinary prerequisites and clearly report missing shared delegation as structural RED; pure policy checks do not prove HOT history.",
+    "Finite case identities, actual fixture hooks/ownership/cleanup, source guard reconciliation, fresh build/discovery/PlanOnly and release eligibility remain concrete later SOURCE/PREP gates."
+  ],
+  "limits": [
+    "No code/repository change, build/discovery/tests/native/runtime was performed.",
+    "Writer preflight is a proposal, not a compiled or runtime-qualified implementation.",
+    "No HOT-B/no-write family evaluator/retained invocation/history/cold equivalence/full3d/F1/Windows/ZIP/CI claim.",
+    "No broad old-source/raw/family replay; existing accepted source/design authority retained."
+  ]
+}

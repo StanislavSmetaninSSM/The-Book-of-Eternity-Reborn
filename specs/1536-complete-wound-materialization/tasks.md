@@ -1,3 +1,12 @@
+## T179-Pd.3d current ordinary-A implementation authority (2026-10-17)
+
+- [x] Read accepted NI-D01/current ordinary owners, preserve immutable design/preflight/disposition and latest user/Root tests-only implementation authority. Historical DESIGN ONLY/A3 blocks below do not replace this separate ordinary-A scope.
+- [ ] Publish concrete tests-only shared-policy/public-owner/source-inverse WIP with finite categories/current selection, exact remote and first a5-based changed-path GitHub recovery; [current plan](plan.md) and [ledger](recovery/t179pd3d-ordinary-method-row-ledger-20261017.json). Product/build/discovery/native UNRUN.
+- [ ] After Root publication readback release only: fresh selected BOTH/catalog + exact PlanOnly0, preserve FIRST raw/source/binary/root custody; independent SOURCE/FIXTURE/SELECTION/PREP before named structural boundary2 actual.
+- [ ] Preserve genuine causal RED, then bounded value-only kernels plus real ordinary adapters, coherent WIP/source review and affected GREEN/EVIDENCE. No unused-kernel completion, old33-pin World migration, HOT/history/full F1/Windows/ZIP/CI claims. Existing timestamps/parsers/catch/order/projectors/writers unchanged; NI-D01 contrasts mandatory.
+
+All following checkpoint sections are retained historical snapshots, not new runtime authority.
+
 ## A3 necessity reviewed — deferred, no implementation (2026-10-17)
 
 - [x] #1536 A3 necessity/contract review complete: independent A3-N01 confirms no concrete current continuation need; [NO-PROCEED checkpoint](plan.md) retains original proposal/exact report/recovery. No A3 tests/product/preparation/runtime were implemented or executed;44+2 remains proposal only. A1/A2 remain accepted unchanged. Proceed to separately scoped #1557 fallback; no broader authority follows.
