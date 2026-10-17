@@ -1,3 +1,10 @@
+## T179-Pd-RP01 existing pre-intake route continuation — documentary WIP (2026-10-17)
+
+- [ ] T179-Pd-RP01 continuation: independently review the [single existing-route candidate](recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md) and [24 current1afc pins/22 exact ranges](recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json), then save the source handoff. Genuine Admission73–98 narrative runs before FIRST/eligible correction intake, but corrected joint lacks the accepted NI-complete prepublication sequence. Preserve Error-only outward consumption, discarded Warning-only lists and Skipped versus Passed.
+- [ ] Implementation/causal TDD remains a separate frontier: actual invocation/read/write-return engineering is already within NI-D01; NEW mandatory raw-intake binding/refusal would extend admission policy and is not implicitly selected. Existing genuine prerequisite controls are source-inspected, not rerun; a missing-method stage does not close the new-observation consumer effect. No new user approval stop or all-code Windows prohibition.
+
+Current phase only saves bounded source research for independent review. No source, tests, fixtures, catalog/selection, runtime tools, build/discovery/native or prior proof changed. Earlier RP01 assessment acceptance below remains historical and intact; new candidate acceptance is pending.
+
 ## T179-Pd-RP01 source assessment and route-placement handoff accepted (2026-10-17)
 
 - [x] T179-Pd-RP01 assessment/placement/handoff ONLY: map current actual routes and source/read/history prerequisites, preserve exact author/necessity/source evidence, and obtain [independent SOURCE acceptance](recovery/t179pd-rp01-source-independent-review-20261017.md) plus [Root acceptance](recovery/t179pd-rp01-root-source-assessment-acceptance-440c81b6-20261017.json). RP01-L01 status precision is resolved; no retained-pass production vertical or runtime is claimed.

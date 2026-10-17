@@ -1,3 +1,9 @@
+## Current RP01 pre-intake narrative route continuation — documentary WIP (2026-10-17)
+
+[Candidate v2](../recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md) and [current1afc source packet](../recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json) narrow the accepted handoff: Admission98 is a genuine ordinary narrative producer before FIRST/correction intake, with an Error-list consumer but no NEW observation consumer. Warning-only outward omission and Skipped guards remain unchanged. NI-D01 observation engineering is within authorized direction; the corrected route lacks actual Interface completion. A new mandatory raw-intake binding/refusal is a policy extension, not silently selected. Existing real prerequisite tests are not rerun; no new missing-method stage or retrospective Full proof.
+
+Independent SOURCE review of this documentary WIP is pending. No implementation, test/selector/tool, build/discovery/native or immutable evidence change; no new human-approval stop. See [current plan/tasks](../plan.md) for exact consumer frontier and unchanged HOT/history/Windows/A3 boundaries. Prior accepted RP01 assessment and earlier statuses below retain their historical scopes.
+
 ## Current T179-Pd-RP01 accepted source assessment and handoff (2026-10-17)
 
 [Independent SOURCE](../recovery/t179pd-rp01-source-independent-review-20261017.md) and [Root acceptance](../recovery/t179pd-rp01-root-source-assessment-acceptance-440c81b6-20261017.json) accept the completed current-source assessment, actual route placement and bounded handoff only. Preserve the [exact author addendum/pins](../recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md) and [current map/tasks](../plan.md); frozen47d identities remain historical baseline pins, without refreshing them for changed engineering headers.

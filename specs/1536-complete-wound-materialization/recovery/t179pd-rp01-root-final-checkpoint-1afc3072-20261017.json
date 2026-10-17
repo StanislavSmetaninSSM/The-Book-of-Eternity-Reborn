@@ -1,0 +1,69 @@
+{
+  "kind": "ROOT_FINAL_VERIFIED_RP01_SOURCE_ASSESSMENT_AND_HANDOFF_CHECKPOINT",
+  "head": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "remoteExact": true,
+  "clean": true,
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "sourceBase": "47d0f4a33770f028963b5d112eb6b22859010a3b",
+  "historyPreserved": true,
+  "diffScope": "Only specs1536 documentary artifacts/3derivedheaders; production/tests/catalog/selection/tools/workflows unchanged",
+  "changedPaths": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-next-retained-pass-root-selection-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-next-route-root-source-inspection-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-root-source-assessment-acceptance-440c81b6-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-source-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-source-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-source-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-source-wip-delta-github-440c81b6-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-440c81b6-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3e-bounded-final-delta-github-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-final-checkpoint-47d0f4a3-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "exactArtifacts": {
+    "t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.md": "62a7f10b418a6be31eafe91c718095a1bfe3a1a5b45beca35e019a7dc0e142ef",
+    "t179pd-next-submitted-route-owner-addendum-47d0f4a3-20261017.json": "16d4d5bc6f2e7af9bd2b57bae54ed99148f52ca65540a547e3c290f835639348",
+    "t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.md": "0922e6bac0f61f60b375c9ce7b012e6657ecf321adb397d946b33099affa2f90",
+    "t179pd3e-remainder-necessity-independent-47d0f4a3-20261017.json": "120b73fb4c31415489a979d1ef0de56f40596c22bb11dc5e4cf088c365c4f5b5",
+    "t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json": "bbd15d8ad87d8f6ef7c13b18468eff13445a58f4f3a0f8ea99e2d644b979c39c",
+    "t179pd-rp01-source-independent-review-20261017.md": "727c121a85042d569fdf76db9d3cd2fbaf4ca1388633a01410c5626400437bd0",
+    "t179pd-rp01-source-independent-review-20261017.json": "3d3bf2b5c4eba372d296459fdf2d5c9d0ab0b72f1fd8a537008e9ef111163e32",
+    "t179pd-rp01-source-independent-check-20261017.json": "aab64f17bae4fdd31ee43770fa21e716e37c5ec02af10196bb3641e6d54a955e",
+    "t179pd-rp01-root-source-assessment-acceptance-440c81b6-20261017.json": "aafba73cc964a1baf68b89a12e80b95bce7003d7d962c58384ba14bfcb948a91"
+  },
+  "sourcePinsFrozenBaseExact": 45,
+  "sourceRangesExact": 19,
+  "currentUnchangedPins": 42,
+  "intentionalMetadataPins": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "sourceVerdict": "ACCEPT_BOUNDED_SOURCE_ASSESSMENT_ROUTE_PLACEMENT_AND_HANDOFF_ONLY",
+  "implementationReady": false,
+  "newRuntimeEvidence": "NONE; previousordinary45/separate2 andallhistoricalFAIL/RED remainunchangedinoriginalcontexts. No expensive test replay or rebuild.",
+  "RP01Completion": "Current-source assessment, route placement, exactdependency map andhandoff complete only; actualproducer/read/consumingcontinuation/full3e/HOT contracts OPEN",
+  "technicalEdge": "Correctedjoint maypublishbeforeordinarypass; NEWread/projection/write-close observationshaveonlyspecifiedheldHOTconsumer; issues-listconsumerdoesnotcloseit. Needrealordinaryobservationconsumer orlawfullyopenedpresealjoin plusmissingpassroute beforemeaningfulTDD. No blanketWindows/allcodeban/userapprovalrequest.",
+  "fullRecovery": {
+    "receipt": "/tmp/t179pd3d-root-recovery-composition-1afc3072-20261017.json",
+    "sha256": "c8b3185334a217d0999578ff6435e064181ae659638f09607a679b9f8a5cc7a5",
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "deltas": 63,
+    "trackedPaths": 55106
+  },
+  "held": [
+    "A3NO-PROCEED",
+    "WindowsrawEVIDENCEBLOCKED/noretry",
+    "full3e/HOT/history/S/B/D9/M3/cold/F1/T197/newQTE/platform/fullwounds"
+  ],
+  "utc": "2026-10-17T19:05:11.595335+00:00"
+}

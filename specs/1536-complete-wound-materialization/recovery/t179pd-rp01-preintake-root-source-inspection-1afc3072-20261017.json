@@ -1,0 +1,13 @@
+{
+  "kind": "ROOT_BOUNDED_PREINTAKE_CANDIDATE_SOURCE_INSPECTION",
+  "source": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+  "candidateJson": "/tmp/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json",
+  "candidateJsonSha256": "10e012f5bc70812bcc568b9919e607fb5629e16b8143aaae06453f62ef6baf14",
+  "candidateMarkdownSha256": "0d4c5a7cd9bb39333b78d4499f1ab8aed080a1c59f9d1e1091391db7ac8cb056",
+  "verifiedPins": 24,
+  "verifiedRanges": 22,
+  "currentChangedPinnedPaths": [],
+  "sourceFinding": "Genuine pre-intake N producer exists, separate inspection/public-validator/intake scopes; Error-only outward consumer, Warning discarded, guard skipped not passed. Corrected joint lacks prepublication N→I→Full and cold bypasses preintake. Accepted adapter direction is routine; mandatory NEW-observation raw-intake refusal extends v2admission. Existing prerequisites inspected as source only; newstructuralNotNull would not discriminate producer-consumer drift.",
+  "evidenceDisposition": "No new execution/preparation/discovery/PASS/RED, no priorraw replay. Independent SOURCE pending on saved WIP.",
+  "utc": "2026-10-17T19:16:27.206434+00:00"
+}
