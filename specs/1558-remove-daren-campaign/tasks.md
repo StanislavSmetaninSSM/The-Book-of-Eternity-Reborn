@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: original G0 accepted independently and by Root; exact reports/support/preflight/delta/composition persisted. T001–T003 record that original completed gate only. CLI API addendum targeted confirmation and separate Root G1 release are pending; no product/test changes or runtime released. T004–T020 remain unchecked.
+**Current phase**: G0 + targeted CLI API addendum accepted; Root tests-only G1 authoring release is persisted and activates after this checkpoint publication/readback. T001–T003 complete; T004–T020 unchecked. No G1 tests/build/discovery/producer/native/browser execution yet; production and prompts remain held.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

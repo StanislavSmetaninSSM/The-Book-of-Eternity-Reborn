@@ -1,0 +1,86 @@
+{
+  "kind": "INDEPENDENT_TARGETED_G0_ACTIVE_CLI_API_SCOPE_ADDENDUM",
+  "verdict": "ACCEPTED_ADDITIVE_DEPENDENCY_CONFIRMATION_G0_UNCHANGED",
+  "reviewedUtc": "2026-10-17T07:55:39.112008+00:00",
+  "reviewedCarrier": "c83396d2604b4738af958e83553683e466a0be27",
+  "parentG0": "1634a802f474b24e003061659a361c32282af152",
+  "baseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "finding": {
+    "id": "G0-A01",
+    "classification": "Confirmed active-document inventory omission; corrected in published metadata scope",
+    "path": "CLI_API_Specification.md",
+    "bytes": 251478,
+    "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c",
+    "gitBlob": "3a7b38d1c2494123c922fc472905fd4c6302f683",
+    "mode": "100644",
+    "exactLines": [
+      1280,
+      1283,
+      1284,
+      1285,
+      1313
+    ],
+    "consequence": "Uncorrected active instructions would still promise a fixed Daren campaign, stored permanent tier and New Game reward. Addition is necessary for the authorized removal."
+  },
+  "materialNewDesignRisk": false,
+  "blockingFindings": [],
+  "publicationChecks": {
+    "cleanHead": true,
+    "metadataOnlyChangedPaths": 10,
+    "exactRecoveredFiles": 14,
+    "allRecoveredBytesShaBlobModeMatchCommitAndLive": true,
+    "receipt": "/tmp/gm1558-g0-accepted-delta-github-c83396d2-20261017.json",
+    "receiptSha256": "a3f70e137325959189f5d09bfdc83a4c952ed3d28f4e3297d62793f8d3938ec8",
+    "addendumPath": "specs/1558-remove-daren-campaign/recovery/preflight-active-doc-addendum-20261017.json",
+    "addendumSha256": "ba9c07434a310736305ce75e57aded2377c8071461689c4ceaf7a2ee83affb9b",
+    "initial80FileInventoryByteUnchanged": true,
+    "totalDistinctPins": 81,
+    "originalG0ReportsExact": {
+      "gm1558-g0-plan-independent-review-20261017.md": "06816f5e37ebd01af946d82ad660cb7da19694bc839559e18aa51540464053f0",
+      "gm1558-g0-plan-independent-review-20261017.json": "658be1f9637d9913b7d2e5d718e51eb8b1c7f60745e35331e496176102ad9c55",
+      "gm1558-g0-plan-independent-check-20261017.json": "f4595a5e1938a983895eec2764b2b6e2f34065f624f37269ac2badeec67781ad"
+    },
+    "tasksComplete": [
+      "T001",
+      "T002",
+      "T003"
+    ],
+    "tasksPendingCount": 17
+  },
+  "actualDependencyClosure": [
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs",
+      "methods": [
+        "QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "ScoredQteContract_IsDocumentedForGmAndPlayers"
+      ],
+      "currentOwner": "documentation-examples",
+      "requirement": "G1 must include the actual affected method inputs. Replace only obsolete Daren/#919 positive requirements with removal proof while preserving client-owned no-reward training, no GM-authored practice scenes, no campaign-state mutation and generic scored-QTE assertions."
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+      "method": "ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+      "line": 106,
+      "currentOwner": "gm-doc-block5-shared-preservation",
+      "requirement": "This whole-file inverse includes CLI_API_Specification.md. Reconcile authorized #1558 edits and precise after-images without deleting the source from the guard, weakening exact comparison or rewriting accepted #1557 evidence."
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "entries": "CLI API N019–N024",
+      "requirement": "Preserve current thematic navigation, conditional Core reading and restricted bootstrap/receipt/exact-repair directions. No new source-reading authority or blanket A255/B78 replay."
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "line": 28,
+      "binding": "../CLI_*.md -> operational-resources/%(Filename)%(Extension)",
+      "requirement": "Fresh owned output/package must bind edited CLI API bytes to source. This wildcard does not establish inclusion in the separate 52-document session delivery manifest; no added session-document or runtime claim follows."
+    }
+  ],
+  "gateDisposition": "Published plan/T015/G1 scope correctly requires the added active document and real after-image/inverse/package dependencies. Root may release tests-only G1 authoring after decision persistence/readback. Concrete fixture/method-row/provenance/selection/fresh-preparation SOURCE and actual causal RED gates from accepted G0 remain mandatory before production; this review authorizes no runtime.",
+  "limits": [
+    "Source confirmation and exact metadata readback only; no product change or execution evidence.",
+    "No tests, builds, extractor, producer, browser, CI or Windows operations.",
+    "No re-review or replay of accepted A/B evidence families or retained full sourcebase.",
+    "Repository not modified by reviewer; only this immutable /tmp report was created."
+  ]
+}

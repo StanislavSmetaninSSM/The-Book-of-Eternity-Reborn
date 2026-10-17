@@ -1,0 +1,31 @@
+{
+  "kind": "ROOT_G1_TESTS_ONLY_AUTHORING_RELEASE",
+  "reviewedCarrier": "c83396d2604b4738af958e83553683e466a0be27",
+  "acceptedUtc": "2026-10-17T07:56:39.734568+00:00",
+  "G0Verdict": "ACCEPTED_G0_PLAN_SCOPE_VERIFICATION_SUFFICIENCY",
+  "targetedAddendumVerdict": "ACCEPTED_ADDITIVE_DEPENDENCY_CONFIRMATION_G0_UNCHANGED",
+  "targetedAddendumSha256": "31b400f3cd00cafc21f76e099ba9d4aec93112cc37c86d1d4cdded818d42e22a",
+  "remoteReadbackExact": true,
+  "completeRecoveryDeltas": 80,
+  "recoveredTreePaths": 55672,
+  "sourcePins": 81,
+  "released": {
+    "testsOnlyAuthoring": true,
+    "testSupportAndCategorySelectionMetadata": true,
+    "zeroExecutionFreshBuildDiscoveryPlanPreparationAfterPublishedTestsWIP": true,
+    "producerCaptureOrNativeTestActual": false,
+    "productionRemovalOrRuntimeChange": false,
+    "greenOrChromiumRuntime": false
+  },
+  "activationCondition": "First persist exact targeted addendum and this release, commit/push/read exact new remote SHA. The sole writer may then proceed with G1 tests-only authoring; Root independently verifies that immediate delta before preparation/review. No extra concept or user approval is required.",
+  "requirements": [
+    "Keep production unchanged through meaningful causal RED acceptance.",
+    "Exact per-method/row retained-migrated-retired ledger and finite current selection, independent source/fixture/preparation review.",
+    "Authentic/source-derived/synthetic fixtures and root/generation lineages explicitly distinguished; no user data.",
+    "Profile/new-soul/load preservation and before-any-recovery-effect retired evidence controls with positive prerequisites and ordinary neighbors.",
+    "CLI API actual docs and exact inverse/package dependencies included; package wildcard is not session52 membership proof.",
+    "Official category-only runner; no full suite or old A255/B78 replay.",
+    "Publish tests WIP before fresh zero-execution preparation; new SOURCE gate before producer capture/native causal RED; separate Root actual release."
+  ],
+  "unchangedLimits": "main/#1557 preserved; no merge/issue closure/new credentials/security/Windows/CI/artifact workaround/HOT/M3/provider work."
+}
