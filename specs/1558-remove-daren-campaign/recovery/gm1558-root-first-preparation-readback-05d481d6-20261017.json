@@ -1,0 +1,128 @@
+{
+  "catalogSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "planSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "catalogNative": 0,
+  "planNative": 0,
+  "catalogWallSeconds": 94.24749412399979,
+  "planWallSeconds": 5.818584816999646,
+  "executed": 0,
+  "categoryCount": 16,
+  "descriptorCount": 18,
+  "estimatedCasesOrFiles": 99,
+  "descriptors": [
+    {
+      "category": "daren-retirement-affected-guards",
+      "adapter": "integration",
+      "estimated": 1,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-affected-guards",
+      "adapter": "unit",
+      "estimated": 6,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-browser-host",
+      "adapter": "integration",
+      "estimated": 17,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-common-qte",
+      "adapter": "integration",
+      "estimated": 6,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-common-qte",
+      "adapter": "unit",
+      "estimated": 13,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-console-menu",
+      "adapter": "integration",
+      "estimated": 1,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-console-practice",
+      "adapter": "integration",
+      "estimated": 11,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-frontend-shell",
+      "adapter": "node",
+      "estimated": 2,
+      "budgetMinutes": 2
+    },
+    {
+      "category": "daren-retirement-ordinary-storage",
+      "adapter": "integration",
+      "estimated": 2,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-producer-capture",
+      "adapter": "integration",
+      "estimated": 2,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "adapter": "integration",
+      "estimated": 4,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-source-guidance",
+      "adapter": "unit",
+      "estimated": 9,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "adapter": "integration",
+      "estimated": 5,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "frontend-qte",
+      "adapter": "vitest",
+      "estimated": 4,
+      "budgetMinutes": 5
+    },
+    {
+      "category": "frontend-shell-types",
+      "adapter": "typecheck",
+      "estimated": 2,
+      "budgetMinutes": 5
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "adapter": "integration",
+      "estimated": 1,
+      "budgetMinutes": 2
+    },
+    {
+      "category": "portable-browser-protocol-admission-linux",
+      "adapter": "integration",
+      "estimated": 5,
+      "budgetMinutes": 3
+    },
+    {
+      "category": "portable-original-remaining-owning-close-linux",
+      "adapter": "integration",
+      "estimated": 8,
+      "budgetMinutes": 3
+    }
+  ],
+  "sevenBinaryChainAndCurrentVerified": true,
+  "catalogRecordSha256": "969d04a179d78718cc4c1d69280a0d8e98f241793be82b4945c6c47dce1add52",
+  "planRecordSha256": "e4fec9926e36f4d89a6977091150317cc21612dabe655fcc5c1932136992e7c7",
+  "sourceReview": "PENDING",
+  "actualRelease": "NONE"
+}

@@ -1,0 +1,1762 @@
+{
+  "kind": "WRITER_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_RUNTIME_VERDICT",
+  "utc": "2026-10-17T08:31:08.784463+00:00",
+  "compiledTestSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativePreparation": [
+    {
+      "mode": "catalog",
+      "startedUtc": "2026-10-17T08:27:47.792257+00:00",
+      "finishedUtc": "2026-10-17T08:29:22.253940+00:00",
+      "wallSeconds": 94.24749412399979,
+      "nativeExit": 0,
+      "stdoutPath": "/tmp/gm1558-implementation-tools/gm1558-g1-catalog-first-05d481d6-20261017T0735Z/stdout.log",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories"
+      ]
+    },
+    {
+      "mode": "plan",
+      "startedUtc": "2026-10-17T08:29:34.329719+00:00",
+      "finishedUtc": "2026-10-17T08:29:40.334096+00:00",
+      "wallSeconds": 5.818584816999646,
+      "nativeExit": 0,
+      "stdoutPath": "/tmp/gm1558-implementation-tools/gm1558-g1-plan-first-05d481d6-20261017T0829Z/stdout.log",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082935-150-77121-cbad085e29234970ae9f814c484a8086-categories"
+      ]
+    }
+  ],
+  "frozenRawPacket": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017.json",
+  "rawChainsVerified": 12,
+  "sevenLiveBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "7f464e32acbd477796756d225e1343f793475157666ddc299b5a8bc03c66db58",
+      "bytes": 9560064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "a297dcb2c2d0cbce4310fb2bfee0e42c9de6daa2ccfd4bc7c5ebc08f980a14e8",
+      "bytes": 29313024
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    }
+  ],
+  "ownedNamespaceStable": true,
+  "actualTestExecutions": 0,
+  "nativeCatalog": {
+    "categories": 821,
+    "methodsAndFiles": 11807
+  },
+  "observedPlan": {
+    "categories": 16,
+    "descriptors": 18,
+    "uniqueMethodsAndFiles": 48,
+    "csharpMethods": 40,
+    "csharpCases": 91,
+    "frontendFiles": 8,
+    "frontendTypesAndBehaviorNotExecuted": true,
+    "estimatedCasesOrFiles": 99,
+    "allExpectedMethodCounts": [
+      {
+        "Name": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteAndDarenSplitSources_PreserveReviewedExecutableInventories",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+        "Cases": 1,
+        "category": "daren-retirement-affected-guards",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1,
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "Cases": 11,
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "Cases": 5,
+        "category": "daren-retirement-browser-host",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "Cases": 11,
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+        "Cases": 1,
+        "category": "daren-retirement-common-qte",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1,
+        "category": "daren-retirement-console-menu",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "Cases": 11,
+        "category": "daren-retirement-console-practice",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/gameLauncherMenuLayout.test.ts",
+        "Cases": 1,
+        "category": "daren-retirement-frontend-shell",
+        "adapter": "node"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/uiStructure.test.ts",
+        "Cases": 1,
+        "category": "daren-retirement-frontend-shell",
+        "adapter": "node"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1,
+        "category": "daren-retirement-ordinary-storage",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+        "Cases": 1,
+        "category": "daren-retirement-ordinary-storage",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "Cases": 1,
+        "category": "daren-retirement-save-rewards",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "Cases": 3,
+        "category": "daren-retirement-save-rewards",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "Cases": 4,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.CampaignResourcesAndDispatchAreRemovedWhileCommonScenarioAndPracticeRemain",
+        "Cases": 1,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSourceTests.FreshBuildCopiesCurrentCliApiBytesWithoutClaimingSessionMembership",
+        "Cases": 1,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "Cases": 1,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "Cases": 1,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+        "Cases": 1,
+        "category": "daren-retirement-source-guidance",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+        "Cases": 2,
+        "category": "daren-retirement-storage-refusal",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation",
+        "Cases": 1,
+        "category": "daren-retirement-storage-refusal",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+        "Cases": 2,
+        "category": "daren-retirement-storage-refusal",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/darenRetirement.test.tsx",
+        "Cases": 1,
+        "category": "frontend-qte",
+        "adapter": "vitest"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/qteLayoutInput.test.ts",
+        "Cases": 1,
+        "category": "frontend-qte",
+        "adapter": "vitest"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/qteMiniGameHelpers.test.ts",
+        "Cases": 1,
+        "category": "frontend-qte",
+        "adapter": "vitest"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/qteScenePanelMiniGames.test.tsx",
+        "Cases": 1,
+        "category": "frontend-qte",
+        "adapter": "vitest"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+        "Cases": 1,
+        "category": "frontend-shell-types",
+        "adapter": "typecheck"
+      },
+      {
+        "Name": "BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts",
+        "Cases": 1,
+        "category": "frontend-shell-types",
+        "adapter": "typecheck"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "Cases": 1,
+        "category": "gm-doc-afterlife-package-delivery",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest",
+        "Cases": 1,
+        "category": "portable-browser-protocol-admission-linux",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "Cases": 4,
+        "category": "portable-browser-protocol-admission-linux",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "Cases": 8,
+        "category": "portable-original-remaining-owning-close-linux",
+        "adapter": "integration"
+      }
+    ]
+  },
+  "initialRequestedActual": {
+    "category": "daren-retirement-producer-capture",
+    "cases": 2,
+    "status": "HELD until independent SOURCE/persisted Root release; no other owner launch"
+  },
+  "sourcePinsVerified": 54,
+  "buildOutput": {
+    "root": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/bin/Debug/net8.0",
+    "files": [
+      {
+        "path": "BookOfEternityClient",
+        "bytes": 72568,
+        "sha256": "b4796cee7178ff0b05023c858135490f7cbeffb62ba9b569b832e082b9d58e61"
+      },
+      {
+        "path": "BookOfEternityClient.deps.json",
+        "bytes": 6843,
+        "sha256": "63d6df9329dbf1a4cf141cd1a790be5da49170c32c291b4e80542a3ca22e61b0"
+      },
+      {
+        "path": "BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+      },
+      {
+        "path": "BookOfEternityClient.pdb",
+        "bytes": 5883268,
+        "sha256": "cecc0d8dc11da97e5608d1958af147d2b309461f8f3e885b06531ce390c533ed"
+      },
+      {
+        "path": "BookOfEternityClient.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.xml",
+        "bytes": 1550754,
+        "sha256": "930b5ce515f7abde3a3ff53ff618bab1dc53ae9b06b70e25029645d29496ec93"
+      },
+      {
+        "path": "FluentValidation.dll",
+        "bytes": 475648,
+        "sha256": "b4b5931780c165edfd50a9496d56fdb31122b7edffe88fe6b81b8af62c480db9"
+      },
+      {
+        "path": "Launcher/CLI_Daemon_Quickstart.md",
+        "bytes": 13657,
+        "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+      },
+      {
+        "path": "Launcher/CLI_Daemon_Window_Help.md",
+        "bytes": 13059,
+        "sha256": "0a5b7f580780f23648d379b97b20ab7178e8f6e77ec2feaaaf69f1e81d0245e7"
+      },
+      {
+        "path": "Launcher/CLI_Launch_Script.md",
+        "bytes": 30901,
+        "sha256": "665c76bdc8621934e3423dc8422bd031526c821b61be2610b88dd0b88a3d3377"
+      },
+      {
+        "path": "Launcher/GM_Daemon_ConPTY_Proposal.md",
+        "bytes": 7126,
+        "sha256": "9c5bca6326febcfcac08cf854ba36325ebca67e4240c819d2f0b34abb662c13d"
+      },
+      {
+        "path": "Launcher/GM_Turn_Helper.ps1",
+        "bytes": 121313,
+        "sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d"
+      },
+      {
+        "path": "Launcher/Generate_CLI_Launch_Script.ps1",
+        "bytes": 32545,
+        "sha256": "eaf872ffda599661ad523e5233dda8b4047e19c98c36b274461e063257a3f668"
+      },
+      {
+        "path": "Launcher/Register_GM_CLI_Window.ps1",
+        "bytes": 3386,
+        "sha256": "a0cb8d186548ff7e547087d2c3762fe665a4e7a705560670a42646b63bc78c50"
+      },
+      {
+        "path": "Launcher/Start_GM_Daemon.ps1",
+        "bytes": 1546,
+        "sha256": "c581c55a109c5b57cdee3bc77dff8ffd579985e5f58b8e5d9e4304f4a2782991"
+      },
+      {
+        "path": "Launcher/bookofeternity.ps1",
+        "bytes": 42854,
+        "sha256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4"
+      },
+      {
+        "path": "Launcher/gm_main_operation.ps1",
+        "bytes": 25591,
+        "sha256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d"
+      },
+      {
+        "path": "Launcher/gm_turn_helper_transport.ps1",
+        "bytes": 14265,
+        "sha256": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9"
+      },
+      {
+        "path": "Launcher/gm_worker_cli_runner.ps1",
+        "bytes": 17670,
+        "sha256": "476390842e5d589890b73e9ad6ee65e2194148c2790afa0fcfadfc9b239cd55c"
+      },
+      {
+        "path": "NAudio.Asio.dll",
+        "bytes": 34304,
+        "sha256": "ca03780217139b37f7f5b6921d59defb8d24988315b16b167a77fa88caa7d00f"
+      },
+      {
+        "path": "NAudio.Core.dll",
+        "bytes": 187904,
+        "sha256": "fcf493fc47a2f478a65303886b975fbdbf714cbb1f2d79f7fce97e4bb16b01a8"
+      },
+      {
+        "path": "NAudio.Midi.dll",
+        "bytes": 46592,
+        "sha256": "f246e29921797b173b54229685e997a11f9cc388fa1e589c212328abd7a94ebe"
+      },
+      {
+        "path": "NAudio.Wasapi.dll",
+        "bytes": 179200,
+        "sha256": "618ef0e49d64e7a66dfe64bbf6ae81705b9d9683d8a9f321e5c3024d666bdf82"
+      },
+      {
+        "path": "NAudio.WinMM.dll",
+        "bytes": 57344,
+        "sha256": "749a01ebbb5edd8b1a03c5263b04de6acadecf52e4cc84d7412bc6e93f180958"
+      },
+      {
+        "path": "NAudio.dll",
+        "bytes": 7680,
+        "sha256": "31d89ab89171978f0ba2581a85f2fb437057702c1c46cc05ecaddd898fe60bb7"
+      },
+      {
+        "path": "NLayer.dll",
+        "bytes": 77312,
+        "sha256": "2cb48f87143445245a8161e9a823a83aa5b369dccae977a2311d0b42685caffa"
+      },
+      {
+        "path": "SixLabors.ImageSharp.dll",
+        "bytes": 2091520,
+        "sha256": "e33271ff4ccd46f04e914b1bb6eb5f3ae23edd1b20c37d2d32622b1c194b01ba"
+      },
+      {
+        "path": "Spectre.Console.ImageSharp.dll",
+        "bytes": 16384,
+        "sha256": "5d0640a5d653b45b347d481eb5011b77f91d381b4f178aa62b7cdb791962615a"
+      },
+      {
+        "path": "Spectre.Console.dll",
+        "bytes": 719872,
+        "sha256": "200fb336c0516ae15912b2ad772931d5c4e8e48327b3e0c79bb4c15305ec4b94"
+      },
+      {
+        "path": "game_master_daemon.ps1",
+        "bytes": 406653,
+        "sha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d"
+      },
+      {
+        "path": "operational-resources/CLI_API_Specification.md",
+        "bytes": 251478,
+        "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c"
+      },
+      {
+        "path": "operational-resources/CLI_Agent_Daemon_Specification.md",
+        "bytes": 162037,
+        "sha256": "f2e5aafa0cc3dcbcdde89b360dbf636a72d4dc26457990310baa1b5661eed354"
+      },
+      {
+        "path": "operational-resources/CLI_Rules_Index.md",
+        "bytes": 44579,
+        "sha256": "cb8626a5765a5369134ffe1c665a79d841f48778cf3d7cba5f4513ed5fb67ab5"
+      },
+      {
+        "path": "operational-resources/Examples/CLI_Example_Soul_System.md",
+        "bytes": 7548,
+        "sha256": "6580c002365b976173b46ccbafda53a3fd72d8c1e80c139f5468f81b72e9efc0"
+      },
+      {
+        "path": "operational-resources/Examples/CLI_Translation_Guide.md",
+        "bytes": 9953,
+        "sha256": "eed129dabd8678e0bef637009af76cbf68233dcb315ebb1ee5244955f38a0989"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_0.5.txt",
+        "bytes": 4005,
+        "sha256": "836ff98c5447157ecbab5c3f88ec25026eea1a0bd339bf01ac1b81eea50498a3"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_0.6.txt",
+        "bytes": 3774,
+        "sha256": "e808349feb7fbaa4dfec55ed3f695e1e8d278669f8d2b9c1ccfba8bab33254d0"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_1.txt",
+        "bytes": 99,
+        "sha256": "c0476c5b9f2b51551114d8bd536c1042763bcd3b942f9fc3feffa4463f8e1b25"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_10.V.txt",
+        "bytes": 9072,
+        "sha256": "52d2e52ed5b587ed5a4f5fd619e0e3ad84b7436d2f8d03bcea1179aacc2b1afa"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_10.txt",
+        "bytes": 77846,
+        "sha256": "746e6956af06105e3c236f570ac5bd44b81e478168e1e781f269285ee064bf19"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_11.A.txt",
+        "bytes": 4818,
+        "sha256": "d9b76c62f27b46817d1b7dad5f5610b41abbfd08face8a6f1d5e24a0bf33037b"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_11.B.txt",
+        "bytes": 15357,
+        "sha256": "ae10de283fd26d183bde72d5a68a27e2bd42998bb199216ed0382e76c74430e9"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_11.txt",
+        "bytes": 5686,
+        "sha256": "071cc2a18993283c2564d34db77e9d65756f10f642a15ce9f369afd74bc84891"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_12.A.txt",
+        "bytes": 1707,
+        "sha256": "e081eed37fc5fe94e21c53202affcfb4f440b41c1d317d4efd8a819b92fa0568"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_12.txt",
+        "bytes": 58292,
+        "sha256": "d3b5b2832b6f768d3ae3416817c308c2ddc21aef296a152ac5a20b0f03ac9cca"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_13.txt",
+        "bytes": 62594,
+        "sha256": "3f941580dcc4235e58b1fc3e9c3466c427317a0647f8aac50d1343b322820a3d"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_14.txt",
+        "bytes": 10044,
+        "sha256": "c9df3194e1ef69e8f7219690a84198b2c2a9f3ad74978bf9afb9962e69443940"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_15.A.txt",
+        "bytes": 13243,
+        "sha256": "257220d187dd20a38f3b46635d1a08f4ac288b3bfdbc49ba6737cad0c1a769aa"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_15.txt",
+        "bytes": 4084,
+        "sha256": "1edd9d141d073fa1b42979d090a9683a262037ac331f1ec53fa30da2ec4f7a0d"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_16.txt",
+        "bytes": 47495,
+        "sha256": "5e4fb325c464c3a900bf88c0c82c180951cb6f0044f44131235bbbfa6f0ca65b"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_17.txt",
+        "bytes": 18546,
+        "sha256": "a05c7dfa13736ebc5b7ceec25ab1a27702527c7a51956e1802d478574d30b818"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_18.A.txt",
+        "bytes": 3913,
+        "sha256": "72ee466becf2a9105c4a50e5652b2fb2aa12ba8dfeb62d8cf14a11a2cd7cc9a9"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_18.txt",
+        "bytes": 2395,
+        "sha256": "470b2f521872c23dcc95fe26aa18626e90dc6eb2b509a6a227f56a16fbbc0c91"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.A.txt",
+        "bytes": 16267,
+        "sha256": "733b87f0eae692ef22af1170de4c82c235ffd44483419ef79ac88685b38fbcdb"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.B.txt",
+        "bytes": 5292,
+        "sha256": "feb1324e467d44e6b92b274c4e207ac932f7615c18c385b3dcac53c1a3199d9e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.C.txt",
+        "bytes": 4050,
+        "sha256": "415840b12aa4cffcb55bbafc4314f973a0296f362bc77cb490fe427a1458200e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.D.txt",
+        "bytes": 25289,
+        "sha256": "23fa1afda9234dc4ee6d3fb0a4bb4657b7157a7bad1ba94a1b2faac6453bb5e2"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.E.txt",
+        "bytes": 159,
+        "sha256": "675b28ad71da3a39a85408773de501b9b2ece0dc869a86d1fa9cfd2916a14e9b"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.F.txt",
+        "bytes": 13836,
+        "sha256": "437e635a2bdbf5a636ba744f9e8abb7c24edca0f2d8947cc97ad96e2057d3fdd"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.K.txt",
+        "bytes": 2073,
+        "sha256": "15c2f02bee8a60586c826a98a92d10f1f95fa26568f3ebd3a545ca871a7d0530"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19.txt",
+        "bytes": 184476,
+        "sha256": "8839deb40b3568b366572bf1ecea57599bc6931820522b33be87eede0414c132"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_19_extension.txt",
+        "bytes": 79666,
+        "sha256": "f736615f08f4dbfb39c6a434e6bf6f6bc02c331789bfaa27350c727aee8364e3"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_2.5.txt",
+        "bytes": 3199,
+        "sha256": "d766f73c3968a3951422a8e10c0158b64bd2d72b2d4302cbbe1b7c4c8a9bd2ca"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_2.6.txt",
+        "bytes": 151,
+        "sha256": "3c99d0701170710ed60f9c9989bdb30a2aed3185237b41fde5cf9550a93a9b26"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_2.txt",
+        "bytes": 972,
+        "sha256": "4ab4d6b43fee8a54ccf960dda5135dd9eb2059fbbeb5ae1d91e232fabe76a180"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_20.txt",
+        "bytes": 25836,
+        "sha256": "7e1a821709549d85c0d6a459ca316ae80fa294a81fc445c43ec3c302f03fe5a0"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_21.5.txt",
+        "bytes": 4424,
+        "sha256": "a6bc2ff8b4b0b9f08f226cb19258361be90838e2bd1408c5eeb6a6048c2c3250"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_21.txt",
+        "bytes": 129087,
+        "sha256": "66e45ea2bfb67779f76cb223b58e8c1317133cb7717ee0aade60f255e039633e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_22.txt",
+        "bytes": 3064,
+        "sha256": "b0c36f2c2e46f6fa3fb9a7d2397b35b41d192209de1ec278b03f530366fac604"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_23.A.txt",
+        "bytes": 5240,
+        "sha256": "c74b6e20cb9f9902eb0562ab73d3fddfd779c3d303676f6de80eaf2fc5420388"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_23.txt",
+        "bytes": 11550,
+        "sha256": "4c61256d35435fec75f98a9bdb4e53ff65120a93bc5212cae5560899b089ce37"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_24.txt",
+        "bytes": 3058,
+        "sha256": "e4f7c54b0fc51d74db568fe1fb455e2529c9b112b0a68dd98a962ccf1a0a14dd"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_25.A.txt",
+        "bytes": 2107,
+        "sha256": "86b1c22676f167cdc9da62d536f146a0fbd70f476c6b444d5d9756d995ac5f1e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_25.txt",
+        "bytes": 4478,
+        "sha256": "5b15ac11413fbf88703ad5910aefaf5245c50b53b44c714a83c1f8ecf4161a27"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_26.txt",
+        "bytes": 2049,
+        "sha256": "2d3841cc6261667351518bc1b089d5be65c3c62b7f64f794706fa7439609919d"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_27.txt",
+        "bytes": 1154,
+        "sha256": "cfe07b098df436f142bb7b66250e56fab0bb15d75e23a48cd7021e6e765640df"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_28.txt",
+        "bytes": 799,
+        "sha256": "05d57f505efaa145860ea83bf7c5343e362ce10dafa04e04aad44ab61644b30d"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_29.txt",
+        "bytes": 6167,
+        "sha256": "be59b69a9d1dc0bcdb39ec738f2fdf9806b4201110eb2d06e401361e60b65d5e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_3.txt",
+        "bytes": 4767,
+        "sha256": "53c831e549684b982101a88fa5363b2ba91f8a42c2d31190bdd7dcd2a7019b65"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_31.txt",
+        "bytes": 21454,
+        "sha256": "a98c79959ac612d1320de72998411b959b6b3b9dc3454be84852b0d69b9c33c1"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_32.txt",
+        "bytes": 34096,
+        "sha256": "2b35993241ff3b39c18f76ed95496a73058526c7c2ed9dca9d864e5467d16b39"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_4.txt",
+        "bytes": 13766,
+        "sha256": "32090a3e6a40ec08296fc3ac343385eb7ae828333969fcb1a475ccf4d1fd78fd"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5.A.txt",
+        "bytes": 135,
+        "sha256": "fe2bad32ef983e6c3a8b7f791e145dc23eb8c59e0f81af4d4eb9ce566fef259e"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5.txt",
+        "bytes": 1875,
+        "sha256": "3dd3debe6cda1da72510f36ccbbe08b6359b0874fa1cca10eefb1f0fe0011fef"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Characteristics_Progression.txt",
+        "bytes": 5647,
+        "sha256": "eb694e5165c5c546c66b4ab615006a6a03df3b13431d35ab6e124a4b1b541ceb"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Combat_Foundations.txt",
+        "bytes": 4729,
+        "sha256": "129e3db72ff37d75f2072dce94bbd7a72da3f53e4f1c98d28e08d50e681de041"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Items_Resources.txt",
+        "bytes": 13694,
+        "sha256": "87db53269eaa0ac8be87c1cd43aed697661cec68f4095baba6ebad5c48ca6b77"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Narrative_Social.txt",
+        "bytes": 236797,
+        "sha256": "59893de741de13f1f5539db7302ffcb89e4de5950943cb61b348ddceeeba6f26"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Units_Ids.txt",
+        "bytes": 4243,
+        "sha256": "47bd7224ae246aaff0f8cefec43921a76616a79fb0a5eed9ea2a25077e201af1"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_World_Chronology.txt",
+        "bytes": 5360,
+        "sha256": "b599e3a9d7fbad9186e4e8dae7055d0d6524b38125a5e367c4c0fa23c8c5638a"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_5_Wounds.txt",
+        "bytes": 8683,
+        "sha256": "6cef5de3fca65095d666691f9ff370607839d0f337523045a945a4a1b2027cd7"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_6.txt",
+        "bytes": 78350,
+        "sha256": "186408021e85657785fb05ba059a1a89921e8d0bde54d1f32136d05925b37454"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_7.txt",
+        "bytes": 13742,
+        "sha256": "2c2d31cbc3f7fae5c80545f9e7d71350b3d3e6e1d5e4f033175303a220d9a380"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_8.txt",
+        "bytes": 18733,
+        "sha256": "d6a7a2cd628e8a0a7bbc0ed30c4ac91cbfc6a998ba727ee88a56153886f77032"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_9.txt",
+        "bytes": 13275,
+        "sha256": "75cb572c818216958d901902d8403fcda6a2923047c6ceea12ce9b5992b7385a"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_9_Complete_Categories.txt",
+        "bytes": 9614,
+        "sha256": "d2896d996c29df57a3840fe0ac1c7a604c2c23a400571379deeeda25e63d0ea6"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_9_Universal.txt",
+        "bytes": 19201,
+        "sha256": "67bff5e4ba125e60d5cb92f2da0bba0deb8dc28348fb8a7869f455928cca61eb"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_9_Updated.txt",
+        "bytes": 13434,
+        "sha256": "cf20e5f20fed332e7e526b3e123e7a700a6c1a6a6b3937c3676f19ec703dd288"
+      },
+      {
+        "path": "operational-resources/Examples/E_Block_FINAL.txt",
+        "bytes": 119,
+        "sha256": "7642127da5a1d33dfeb51fa6a9ad887df3d453312ad61cb1e01e2dc1713ca463"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+        "bytes": 94258,
+        "sha256": "fa274b3b85a7da63e4c4b75f128c2868d65a03ae144eb898de8f4adb2265010b"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+        "bytes": 73375,
+        "sha256": "e55e0186808b887582f36cd157bc7d69c4ed711833ea4e1b53471a85e8b6f4b0"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Effects_Resources.txt",
+        "bytes": 57326,
+        "sha256": "d0962fa975ad1c0bdd24a024fcd8a93820fa3171a41bd8e51f03d4b626c125aa"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+        "bytes": 53471,
+        "sha256": "fad371fd3422bbb5678d479613b88408f3c8767cb55a8a7243940e2c5a132131"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Lifecycle.txt",
+        "bytes": 82598,
+        "sha256": "a373d549f798f5b9179092b75ba016c0c3f860e57be7732adddaa0bd8306a456"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Scheduler.txt",
+        "bytes": 46563,
+        "sha256": "12923bfdaf2429a3060946d8b2a0ed04d045e343723fbdcff0e7711ecb18d2e7"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Shining_Actions.txt",
+        "bytes": 116666,
+        "sha256": "98d6e9f6bd63cbf05239169d48f1314c8f0dba314858f68153cc4a85bd124f0c"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+        "bytes": 49890,
+        "sha256": "842c6dd554082d018bb8f6d0cc2880f96348e78bd8b1269e238d09a84c732cdb"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Story_Memory.txt",
+        "bytes": 79325,
+        "sha256": "5bde56e9308695cd5abc5804dd3d014c72962e9b1044ff161b9865ab12272258"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Turns.txt",
+        "bytes": 15977,
+        "sha256": "5654bfd4838344d4984938a95279bc96a463bd38f59836236a8a02ad14d769b4"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+        "bytes": 67963,
+        "sha256": "0bd219f90e81109b1a596c160df28dd451246ed02a004ca756ba12e0ef8f5908"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Effect_Materialization.txt",
+        "bytes": 51418,
+        "sha256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Afterlife_Contract.txt",
+        "bytes": 6124,
+        "sha256": "2e235f1f45ba18aa65871143f2fc8bc3782a5741cee1da9445daf0db4014bad8"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Content_Authoring.txt",
+        "bytes": 6835,
+        "sha256": "a7f390394b7bb618977035f880d292ce89a5e0bf5fa7963bc424bc7d8f96ab93"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Guardian_Abode_Content.txt",
+        "bytes": 14233,
+        "sha256": "3b3701676fcd369898e06356dc47bc952afc4e49bf3e54ca50637b4ee6cf2c58"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Narrative_Draft.txt",
+        "bytes": 5649,
+        "sha256": "b135b501e51cbfd58933b84b549cdb8bc0a154b0c79d5b461c4962bceb786842"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Npc_Content.txt",
+        "bytes": 7204,
+        "sha256": "4a9bd9ee89a7bc916ab0cbf0c1837a608a1161e6393d3d6facca6da6c6915c30"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Skill_Content.txt",
+        "bytes": 7478,
+        "sha256": "3197a671c424eb7e279ea2c791e88c830d5e8faa900785648178aba97fd0ae14"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Soul_Content.txt",
+        "bytes": 12946,
+        "sha256": "8f9f218effe66ad289fe708916365b1953f520bec34186f6237de1d13d737ae7"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_GM_Worker_Validation_Repair.txt",
+        "bytes": 26915,
+        "sha256": "dc157f36ce7fd371d0743a0bfc65ec1e0cb82738cc4c7838824821c2e1905f0d"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Ink_Feather_Actions.txt",
+        "bytes": 14826,
+        "sha256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Mortal_Item_Materialization.txt",
+        "bytes": 15891,
+        "sha256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Mortal_Npc_Social_Turns.txt",
+        "bytes": 1977,
+        "sha256": "19635f19d08a8cae6de1c09e36d40c32966e6cf46f1ac791942eb50822e3361c"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Mortal_Resources.txt",
+        "bytes": 11040,
+        "sha256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_NPC_Trade.txt",
+        "bytes": 10812,
+        "sha256": "a19c66881c9174902bcb9ee2d1747ed3053a6726b69c351f554c3bcdc88e6b15"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_QTE_Offer.txt",
+        "bytes": 70553,
+        "sha256": "691252786980c31541d02e25ea97417822916dde1043428f019a38a35cb81127"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Quest_Reward_Authority.txt",
+        "bytes": 2063,
+        "sha256": "fbe3f11210691e943329481775b74126c7e9cf5a496f737204b0e3053e63d3b9"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Step_Main.txt",
+        "bytes": 108929,
+        "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Training_Showcases.txt",
+        "bytes": 28358,
+        "sha256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c"
+      },
+      {
+        "path": "operational-resources/Examples/E_CLI_Wound_Materialization.txt",
+        "bytes": 101141,
+        "sha256": "f0db4343161727ec0b62b160bbf178fe828a7e72b94a93c78266ff7580acd1dd"
+      },
+      {
+        "path": "operational-resources/Examples/E_Soul_Relic_Integration.txt",
+        "bytes": 17491,
+        "sha256": "b52e8d8bccca3e99d445d9ca3448f74a36bd82eff6b54d07cb9aaf0425dcf723"
+      },
+      {
+        "path": "operational-resources/Examples/example_validation_manifest.json",
+        "bytes": 192347,
+        "sha256": "c5ad1ce2ad7579ba2801a3a125daf5db2876de32019c018031217c5db2a18710"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Actor_Brain_2_0.md",
+        "bytes": 13510,
+        "sha256": "5935f2eba0ebd792ee5fc85716957aaf98c45dd7fd82ac0c078fcc2a1492cc86"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Abodes_Residents.md",
+        "bytes": 21841,
+        "sha256": "5d0ee8365e540e4fa284d0ecc1cc5a8848b3f16dfbbc3c14ecaf98223e55826e"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Actor_Profiles.md",
+        "bytes": 47062,
+        "sha256": "62427b2d2eb73a5c12b10194dab5e83db6c83c62e2f3cfc052623fa2b95726fa"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Combat_Terminology_Glossary.md",
+        "bytes": 52024,
+        "sha256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Contract_Matrix.md",
+        "bytes": 7391,
+        "sha256": "9bb7bdb877203fb20096631a4ccfb49ac8752095f478f5f1450480a5b473e34b"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Effects_Resources.md",
+        "bytes": 17663,
+        "sha256": "ff27ef64a244c7eae7a142fb9edcc314c84d2f7c5dbaa61f7b5e1f533a75f3b7"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Guardian_Contracts.md",
+        "bytes": 23613,
+        "sha256": "e9ad8e5945911ad88907469c7dc24ceeeddcbe6f10369d0f600849ed4bdde3f7"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Lifecycle.md",
+        "bytes": 25164,
+        "sha256": "b6f1fbfedfb4c3d67aa1bfe75fe1809d4e2fecb2a9131d7b4ef041c1a087da29"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json",
+        "bytes": 52786,
+        "sha256": "70de1d2f89bca3a3d95d4c633145064a6f30dc220910ea97ce6026bc872253f1"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Scheduler.md",
+        "bytes": 9578,
+        "sha256": "48d6895eb6185b9ff068cdce88982ff818016e4616bef801862ab6a6c6792b33"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Shining_Actions.md",
+        "bytes": 38324,
+        "sha256": "c637702fdad40245f931864ad171f0a3705ce2a3e50583abda88e0efdb6d9cdb"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Spiritual_Conflict.md",
+        "bytes": 41038,
+        "sha256": "2b49ec8a61fa165488fea9912763ff732cb2fb5e7f8e176d0268d7a9399818a0"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Story_Memory.md",
+        "bytes": 30129,
+        "sha256": "07cf1d9cade3e9640dd8dd486e61d63066db355f864b2573ddedcfd0c2869c7f"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Afterlife_Wound_Continuation.md",
+        "bytes": 30228,
+        "sha256": "da1caf4b61fac9aba7e5d84d405837e85d009f46700d3b2d79063401cfff8e55"
+      },
+      {
+        "path": "operational-resources/OtherGuides/CLI_Narrative_Style_Guide.txt",
+        "bytes": 78558,
+        "sha256": "86719d4221b2294d08d89a9a83c3832e053f96ef8bf24804a446aea0bc313947"
+      },
+      {
+        "path": "operational-resources/OtherGuides/CLI_World_Logic_Guide.txt",
+        "bytes": 67009,
+        "sha256": "4af7161c6ac1b3eedcd22b8fb6ceeb7f197028a6b1ae80f7664523689fbd2cc1"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Effect_Materialization_Contract.md",
+        "bytes": 29759,
+        "sha256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751"
+      },
+      {
+        "path": "operational-resources/OtherGuides/GM_Common_Core.md",
+        "bytes": 18371,
+        "sha256": "1d8f7347b97a9c5f10a841690d2bfba4646f50214e39662b0a1a68700d3ee21e"
+      },
+      {
+        "path": "operational-resources/OtherGuides/GM_Worker_Bridges.md",
+        "bytes": 45067,
+        "sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6"
+      },
+      {
+        "path": "operational-resources/OtherGuides/README.md",
+        "bytes": 2089,
+        "sha256": "291101c9756f622782975ce43be35fa572b0cdab8defaaa068a2a22dc111ef11"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Character_Bible.md",
+        "bytes": 23526,
+        "sha256": "d726087dff081877e8bc0728c25840395b1a2506bb60da611bf5a8d8a451e35d"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/azalia.md",
+        "bytes": 15917,
+        "sha256": "3f50ec7fbeaa9c4ae9e20808a181caeed764a54efe02d090f30df9216ec0a4db"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/brann.md",
+        "bytes": 14029,
+        "sha256": "c24364040fe33e5cb117fa6796de1298efbaa0e86bbff74734460f0b25e65ac2"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/elyara.md",
+        "bytes": 16050,
+        "sha256": "35607b28176dd5b0a126826cd7d1dad5429324ffd2a1e61878cc445bcb628ce8"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/ilarion.md",
+        "bytes": 16581,
+        "sha256": "0d21b74fce810f5f72d496ac9f392b99e5ec80820265b7874670d4538191b46a"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/lissara.md",
+        "bytes": 14508,
+        "sha256": "a7a0541c2b63d557e89394915cd5257d9c8a2410ac49c09397f72c1836d1f8e4"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/lucian.md",
+        "bytes": 15953,
+        "sha256": "37c467c2053c0c634264b8f8954f47f88fef46b5d39410ef860a9a8d6f9a3d2c"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/myriel.md",
+        "bytes": 14948,
+        "sha256": "57d7be9ecc3106d64758199bcfc2a42c4f3c00cd361f9f0fc28e293bf9a7415c"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/seret.md",
+        "bytes": 14442,
+        "sha256": "99c1a467925ee0d46324d8e5d187839250bc93d7a9b59b4f7c4e9915e0f190b8"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/varak.md",
+        "bytes": 14027,
+        "sha256": "fcce6e72bd21d8cfd6b06866fc9e4f2a31750a7e87b7e00507e3a66b5091fa42"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Guardian_Questlines/veyra.md",
+        "bytes": 16127,
+        "sha256": "cd6e95e16b552c86127956300b3767a3405765f3149253209a9bd9ece008ef45"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Saref_Memory_System_Boundaries.md",
+        "bytes": 5425,
+        "sha256": "4057b529217ba7bbcc54535dae688e7ca4056f44047c219be4f0d10afec551dc"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Shining_Abode_Contract.md",
+        "bytes": 6844,
+        "sha256": "4eb3c3a433cf54c4d9c2edb6d2dcc7a3bf691dad3e993f425a443cb5215f83b7"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Shining_Abode_README.md",
+        "bytes": 1658,
+        "sha256": "9561fbbcaf034cda46906feed3101448c407ea09584db889367c657867eb74e1"
+      },
+      {
+        "path": "operational-resources/OtherGuides/System_Guardian_Dossier_Standard.md",
+        "bytes": 11948,
+        "sha256": "fcd86cceab2b904c6638588e5c3c6d1fbbf457fe6b4a711c0ae1e92f06f24e8f"
+      },
+      {
+        "path": "operational-resources/OtherGuides/Wound_Materialization_Contract.md",
+        "bytes": 89624,
+        "sha256": "3bde751e8ffb5a1bae01ad169a0104d093a1c055f75333609a52d49a6a3fc2d3"
+      },
+      {
+        "path": "operational-resources/Rules/Block_0.5.txt",
+        "bytes": 6312,
+        "sha256": "8d2b6bd45fe609bdc0c1b323cc2dd3485e5d1a03320a337309f7db9cd8394f82"
+      },
+      {
+        "path": "operational-resources/Rules/Block_0.6.txt",
+        "bytes": 3279,
+        "sha256": "410b3d7a8da5577cd7f834e6b5d0ccaf7925c7d4a1861359c51efd0ed3c66e59"
+      },
+      {
+        "path": "operational-resources/Rules/Block_0.txt",
+        "bytes": 22604,
+        "sha256": "f425b916b4e9bac891a6b1cee4ad5edb66f75e9e51bbcade028267d17c746ab7"
+      },
+      {
+        "path": "operational-resources/Rules/Block_1.txt",
+        "bytes": 2102,
+        "sha256": "3f6c549f98909278071a8b4b3c398a93fa535ca7c2d56c33909d23e0cba44a11"
+      },
+      {
+        "path": "operational-resources/Rules/Block_10.txt",
+        "bytes": 149142,
+        "sha256": "cae17fed6c77aff3f4fd2eaf4e9a3bc6b832b554e77e0a7bf47abdaeba130364"
+      },
+      {
+        "path": "operational-resources/Rules/Block_11.A.txt",
+        "bytes": 2430,
+        "sha256": "abf05fb8484c7db83ac44e0b2d4762469dde2a21dbdca48880bdcd17b039a391"
+      },
+      {
+        "path": "operational-resources/Rules/Block_11.B.txt",
+        "bytes": 4573,
+        "sha256": "39bab22ed6f4b7a3fc43d162357b3a97ae9240b3e88c501c7f8d28a7e4a8a89f"
+      },
+      {
+        "path": "operational-resources/Rules/Block_11.txt",
+        "bytes": 13585,
+        "sha256": "0777e77aa035d1249faef695113f0378d3a7abe07eef38c0af1b573bb3163c86"
+      },
+      {
+        "path": "operational-resources/Rules/Block_12.A.txt",
+        "bytes": 2425,
+        "sha256": "bd7fff4a0e4de59d7d73d7a1d25a1cf7942806b3610e4b1e307996a67e4d6c63"
+      },
+      {
+        "path": "operational-resources/Rules/Block_12.txt",
+        "bytes": 108566,
+        "sha256": "0f13b58a03edad9607e68677a4d8ef8dd8b28c855a862d883c4ece32e155abd1"
+      },
+      {
+        "path": "operational-resources/Rules/Block_13.txt",
+        "bytes": 48765,
+        "sha256": "53dfca8b5b2a4819b1f6db1eadd73253890104d520afa1ab2b88b1b3306eaad6"
+      },
+      {
+        "path": "operational-resources/Rules/Block_14.txt",
+        "bytes": 23019,
+        "sha256": "401c0b0908f24ca60753e87e2fb46dce3e4d9ebfc272cc8a21846fc2d831919f"
+      },
+      {
+        "path": "operational-resources/Rules/Block_15.A.txt",
+        "bytes": 8874,
+        "sha256": "4102f305517216447823a7b376ffac6a623af4d7b93cd90b5630942abbcd4084"
+      },
+      {
+        "path": "operational-resources/Rules/Block_15.txt",
+        "bytes": 24331,
+        "sha256": "9eaad550cb9b0ef0e5fbbf4d936c3c120369e4e6c02ed899d933ff15fda5b5ee"
+      },
+      {
+        "path": "operational-resources/Rules/Block_16.txt",
+        "bytes": 398,
+        "sha256": "74eda624118bbfa6f5554a67787a6b116a98ee64bca019f9917638e9d1f9c180"
+      },
+      {
+        "path": "operational-resources/Rules/Block_17.txt",
+        "bytes": 39911,
+        "sha256": "ef7be97a089571872b8c18610bf11c0cfed17b248f8947a53b4b7f0f6e03d5ce"
+      },
+      {
+        "path": "operational-resources/Rules/Block_18.A.txt",
+        "bytes": 8485,
+        "sha256": "293145c051224752b4641146c4523f6d6648ed99af5c740ace1de8c5921ae841"
+      },
+      {
+        "path": "operational-resources/Rules/Block_18.txt",
+        "bytes": 10512,
+        "sha256": "22ae4aaf9547f3d80898fe9e4252562ae94dd8158dab8821cf3310b4e6fc55b0"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.A.txt",
+        "bytes": 15766,
+        "sha256": "d83c7686cda62645170255d4a757a9779bef5474675e4c9a96aed16847eaff68"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.B.txt",
+        "bytes": 9083,
+        "sha256": "67ef151d22157f6776e3259431491d9a23c8457bd633ffc93df2f62e52fbd614"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.C.txt",
+        "bytes": 5964,
+        "sha256": "289f2fd828eaa90f4d6c9d0c102c760214c3f5734123298b5e9c6654ec502b78"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.D.txt",
+        "bytes": 23296,
+        "sha256": "fefe76ff7d3b922619788cb7f6c6618d3b040f689a44fec8baf8afedb4e0d55b"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.E.txt",
+        "bytes": 2694,
+        "sha256": "f418c381a54e616b8fa6016804cf21d3af1db339a3e81ce591bef26bac2ce29b"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.F.txt",
+        "bytes": 6835,
+        "sha256": "ff6c830d9e20c00b8e24d3fc506e85f66d7e87f60409252e0a93140082997dd4"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.K.txt",
+        "bytes": 4163,
+        "sha256": "545449773e1dc503222322cea9f1dffbcbbe7b6973915aa0bd84cbd7ba7de960"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19.txt",
+        "bytes": 178596,
+        "sha256": "157017cc1b33df4432abe5e211036eb4e0b6c1b839f22ada9a3395bc13df5ba5"
+      },
+      {
+        "path": "operational-resources/Rules/Block_19_extension.txt",
+        "bytes": 59470,
+        "sha256": "c409df2d100f935a39ece77ea2801506d00a2b7fd82ad541a83eae826d9d45a7"
+      },
+      {
+        "path": "operational-resources/Rules/Block_2.5.txt",
+        "bytes": 5904,
+        "sha256": "2098a233be7521cf6fbd31b9b3549b3411bb33ca650e10acfee1403bd03c6f81"
+      },
+      {
+        "path": "operational-resources/Rules/Block_2.6.txt",
+        "bytes": 2911,
+        "sha256": "e6505de4eaa0821587698ae252cecbf4017508134107a4e68e1d8fe108251ac8"
+      },
+      {
+        "path": "operational-resources/Rules/Block_2.txt",
+        "bytes": 77444,
+        "sha256": "c08a78da541546e90b4885a77891405361d7101ef47bf44668be81d599158200"
+      },
+      {
+        "path": "operational-resources/Rules/Block_20.txt",
+        "bytes": 21391,
+        "sha256": "e9f0a9952d85e9ac81a5cc7da80af66f641dd153fd8fe197f29c9e4a3ae2b916"
+      },
+      {
+        "path": "operational-resources/Rules/Block_21.5.txt",
+        "bytes": 5379,
+        "sha256": "a6dd1954f306a371158f5898af0f5cc30a4d542a8f0721db60906a7c235e394a"
+      },
+      {
+        "path": "operational-resources/Rules/Block_21.txt",
+        "bytes": 162378,
+        "sha256": "8f51edea4bc48eea8bbebffdac0f73e99eca0088c7a69b0a62926c93d1a9f410"
+      },
+      {
+        "path": "operational-resources/Rules/Block_22.txt",
+        "bytes": 5689,
+        "sha256": "51943ccf948dd9f03f7e298fc61371b064cf4b65823aec3750503f5a7ae9cddc"
+      },
+      {
+        "path": "operational-resources/Rules/Block_23.A.txt",
+        "bytes": 6266,
+        "sha256": "8ed13efeaede715b857712b7591afa71b7b807da4202d3700c229e98f2e99c56"
+      },
+      {
+        "path": "operational-resources/Rules/Block_23.txt",
+        "bytes": 15251,
+        "sha256": "1d544f736b01821f71c6276ac640bc8a24c809af50e5372184638c9fd1101250"
+      },
+      {
+        "path": "operational-resources/Rules/Block_24.txt",
+        "bytes": 7957,
+        "sha256": "95ec75cd7511a7ba62b7eb455ad9e6343c31380c3f0caad137b5bb3cb04a8119"
+      },
+      {
+        "path": "operational-resources/Rules/Block_25.A.txt",
+        "bytes": 5406,
+        "sha256": "234b95f42922f7b5b83484301956447eaa9bc1f7fbb8bdcb7bc448c01c4d9140"
+      },
+      {
+        "path": "operational-resources/Rules/Block_25.txt",
+        "bytes": 12373,
+        "sha256": "bab18eba272a6d5a4be58fd99638ebac9d4141ddbea9f3eb178569707befc11b"
+      },
+      {
+        "path": "operational-resources/Rules/Block_26.txt",
+        "bytes": 7205,
+        "sha256": "659d5d127ddac26c150347fa9a5aaeffb2563d611a271e53a2952591018933a9"
+      },
+      {
+        "path": "operational-resources/Rules/Block_27.txt",
+        "bytes": 4055,
+        "sha256": "0dd0df47fa6ed606514f87c6a4612fb995f76c5410e0edc30274847e04397bd7"
+      },
+      {
+        "path": "operational-resources/Rules/Block_28.txt",
+        "bytes": 5087,
+        "sha256": "d4034ecd7b34ab76fbc32730f352aeba8a6717518a180cb898fcd5e51395a37e"
+      },
+      {
+        "path": "operational-resources/Rules/Block_29.txt",
+        "bytes": 20494,
+        "sha256": "6b2147355af6335fdcf8243f6f4213184c1d40a0f1fb4bfde2bb9deb683cf24c"
+      },
+      {
+        "path": "operational-resources/Rules/Block_3.txt",
+        "bytes": 6489,
+        "sha256": "841f18c22b927ecf4e74495100d941c1d51a926347d74f4e90747ec89ca6ed24"
+      },
+      {
+        "path": "operational-resources/Rules/Block_30_System_Lore_Context.txt",
+        "bytes": 22857,
+        "sha256": "e76176338c0d7f58d1692eba68fd3601cad3bf8004a28046ec7c523f240e266e"
+      },
+      {
+        "path": "operational-resources/Rules/Block_31_The_Soul_System.txt",
+        "bytes": 76865,
+        "sha256": "08690a459e16048ae81532756af31618bc8918f0c7ce6df674f4b93b3ba9cbeb"
+      },
+      {
+        "path": "operational-resources/Rules/Block_32_Guardians.txt",
+        "bytes": 48465,
+        "sha256": "f168a44574919c3b0566882289bcd7d9e841a02ebb8cd066928e430522df1f05"
+      },
+      {
+        "path": "operational-resources/Rules/Block_32_extension.txt",
+        "bytes": 24093,
+        "sha256": "631e64e97b6a40233059cbf0a8213ed2afec52c33a20fff790dff76d3952841e"
+      },
+      {
+        "path": "operational-resources/Rules/Block_32_extension_2.txt",
+        "bytes": 25068,
+        "sha256": "eb11308b9710b1f75bbb59adb12174ad7504b78ae9f634409c5928c980c4fcb2"
+      },
+      {
+        "path": "operational-resources/Rules/Block_4.txt",
+        "bytes": 20832,
+        "sha256": "b9c633ea9664500ee036bfee38366e862f7830402672d2f40bbf5c479792e03d"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5.A.txt",
+        "bytes": 11061,
+        "sha256": "525bff300791740fa91f25e8f733ac96a49d24022f08c930d7a128e51c5cb65b"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5.txt",
+        "bytes": 3579,
+        "sha256": "93cd59bcacee180907423f1089f1b5cdf33d4f587c25352941cef954eed5e239"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Characteristics_Progression.txt",
+        "bytes": 57135,
+        "sha256": "9d29668294e62898105bf67893e699958213f6b90f84b70a4dc0b62bfd30ea74"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Combat_Foundations.txt",
+        "bytes": 64048,
+        "sha256": "ad6dd1f2b36fa0159864af82aae25f0d5009e30b64fb230c44966f2cbcf75c07"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Items_Resources.txt",
+        "bytes": 46895,
+        "sha256": "c32387464f9bde9a6020b9c270d6248becabf501515d9fbdc8d6682b40ed1800"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Narrative_Social.txt",
+        "bytes": 70298,
+        "sha256": "a6db45113aaa79987de36cd3c8d5f550edcdadadabbb564c5691df20471d3ff0"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Units_Ids.txt",
+        "bytes": 13465,
+        "sha256": "8810fb7148ced01d41e61ed2d29bcc0fbd5fcc8bbce544de66038eb3b4a6d252"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_World_Chronology.txt",
+        "bytes": 12122,
+        "sha256": "dda3c17ce94b8c3056cddc14c6caac361a408d84ca3d38665536d62107518e9d"
+      },
+      {
+        "path": "operational-resources/Rules/Block_5_Wounds.txt",
+        "bytes": 9406,
+        "sha256": "08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42"
+      },
+      {
+        "path": "operational-resources/Rules/Block_6.txt",
+        "bytes": 103181,
+        "sha256": "dd756862007934c5894101efa2df3a424cabdc84b9e779402413884ee08fb066"
+      },
+      {
+        "path": "operational-resources/Rules/Block_7.txt",
+        "bytes": 31106,
+        "sha256": "97c36660155bf458d477520f26178f29cf0cc887ec54ae522954d92e5d71392c"
+      },
+      {
+        "path": "operational-resources/Rules/Block_8.txt",
+        "bytes": 22929,
+        "sha256": "88acbe14ed5ffbb87afbf7f2ba62767c3c463100559b455af6d78b907ead79ff"
+      },
+      {
+        "path": "operational-resources/Rules/Block_9.txt",
+        "bytes": 35665,
+        "sha256": "d94c93ac5b25bcb0164883833c752c81e378f50afa6e11ecfd9274ff79e3ffa2"
+      },
+      {
+        "path": "operational-resources/Rules/Block_9_Universal_Ranks.txt",
+        "bytes": 5987,
+        "sha256": "76c820b2174a6e28a6a3e7d7ab6fc264e2695a33df0831db38a1b236c132b456"
+      },
+      {
+        "path": "operational-resources/Rules/Block_9_Universal_Tool_Functions.txt",
+        "bytes": 9549,
+        "sha256": "6cfce6a7f8c274d761b71aaa24338b6e4ba402cfc2c3ecf5b50d89375c059979"
+      },
+      {
+        "path": "operational-resources/Rules/Block_CLI_Operations.txt",
+        "bytes": 123650,
+        "sha256": "a4dc12edc23a64e5380f9fdbbf9e1c93293e742c88a1bc0f03b8fefbbc9bb91e"
+      },
+      {
+        "path": "operational-resources/Rules/Block_CLI_QTE.txt",
+        "bytes": 31342,
+        "sha256": "3aeda212813df746857acdb12e7c42b7e951869582a7ee55a7d219134ab9db39"
+      },
+      {
+        "path": "operational-resources/Rules/Block_FINAL.txt",
+        "bytes": 24306,
+        "sha256": "63455b8e80ebe14cc49e0f048302394fd1ae241015de5f8f73d225bc1eacbf17"
+      },
+      {
+        "path": "operational-resources/TaskGuides/CLI_Step_Main.txt",
+        "bytes": 189633,
+        "sha256": "2e2bacc407bed25774ba6494af1a25faad5a2e3c5615d3a76d6b84dfd311b3fb"
+      },
+      {
+        "path": "operational-resources/TaskGuides/LEGACY_API_COMPATIBILITY_NOTICE.txt",
+        "bytes": 2745,
+        "sha256": "afb1559dd72e8116fa36b6ddd49e4026a904e2d6651197beb45f827acc73aab8"
+      },
+      {
+        "path": "system_guardians/built_in/azalia/dossier.md",
+        "bytes": 16647,
+        "sha256": "d5fa91cabbb85569f903fc50ea3f9a004503f7f9bade2982b48d8c79bb3237b9"
+      },
+      {
+        "path": "system_guardians/built_in/azalia/manifest.json",
+        "bytes": 2347,
+        "sha256": "d96ea2299c91fe31f5d956158a54dd87b5efd2bc36c4c67b3d069e2bbf40956f"
+      },
+      {
+        "path": "system_guardians/built_in/brann/dossier.md",
+        "bytes": 15190,
+        "sha256": "0c87547f52336ea7efc544d35c93edc6a44aa83531bc3fe7f94d3bbf6417b747"
+      },
+      {
+        "path": "system_guardians/built_in/brann/manifest.json",
+        "bytes": 2265,
+        "sha256": "5b92ff3fcb3d03796ff79f90323358df9da912c130b1c58c75def2e0da9d0691"
+      },
+      {
+        "path": "system_guardians/built_in/elyara/dossier.md",
+        "bytes": 15913,
+        "sha256": "b79c3ad0afcd0f8259db33afffcb9ca9027b00e4952ca364d77ee0833354a3bc"
+      },
+      {
+        "path": "system_guardians/built_in/elyara/manifest.json",
+        "bytes": 3071,
+        "sha256": "829def8dbd1cd7f1e2d2a08e6da99550d66bba4785f8523dbef54753c8aa3a65"
+      },
+      {
+        "path": "system_guardians/built_in/ilarion/dossier.md",
+        "bytes": 14881,
+        "sha256": "c99993e2e22476600931700e1ecab0657f4b782768d0c85d7fd28f17a0ebc3d4"
+      },
+      {
+        "path": "system_guardians/built_in/ilarion/manifest.json",
+        "bytes": 2322,
+        "sha256": "268d9c7a39958d72f3bafe5989d28c6fdd46182ff0c857d89b2a109263bf7d25"
+      },
+      {
+        "path": "system_guardians/built_in/lissara/dossier.md",
+        "bytes": 14381,
+        "sha256": "fe3c824ba53d38c5a29be4ad27c5d34be10625929128906ce33a6394c9d32a2d"
+      },
+      {
+        "path": "system_guardians/built_in/lissara/manifest.json",
+        "bytes": 2230,
+        "sha256": "f5ad21da6b2bd3acdd4b50c0638bbcb75678601733979439159d9610b2d480b9"
+      },
+      {
+        "path": "system_guardians/built_in/lucian/dossier.md",
+        "bytes": 14134,
+        "sha256": "c6cf925d401a5a19743a818abe5fd39954545173245b98c2e786f81270637681"
+      },
+      {
+        "path": "system_guardians/built_in/lucian/manifest.json",
+        "bytes": 3097,
+        "sha256": "e8d31da6b16f1311b7eeaa9a1b02bcb853842bcf8731f97cdf564b1c899645b1"
+      },
+      {
+        "path": "system_guardians/built_in/myriel/dossier.md",
+        "bytes": 14903,
+        "sha256": "2c96c4cad8041dd3dba0b6730df1dafc5f89de7d9c15a5201067027a3f9d6836"
+      },
+      {
+        "path": "system_guardians/built_in/myriel/manifest.json",
+        "bytes": 2392,
+        "sha256": "5a74687e7747f0296a130a31073d3e4f5c403257064ce57cb2182e1a3db461c7"
+      },
+      {
+        "path": "system_guardians/built_in/seret/dossier.md",
+        "bytes": 14165,
+        "sha256": "2b7499d58b97b2c3bf9ef2585dbf2a8de20b2d2e4be09e346846a2aeb0e099fa"
+      },
+      {
+        "path": "system_guardians/built_in/seret/manifest.json",
+        "bytes": 2276,
+        "sha256": "b2d89afbd8b96c8f4e34dbfe2701696dc27578adf7c87dbc982f6d779596b402"
+      },
+      {
+        "path": "system_guardians/built_in/varak/dossier.md",
+        "bytes": 13700,
+        "sha256": "4b6c7aa705957dd983db589ff01ea0676d7f8830d6fc68fe2a90bd24de4ce148"
+      },
+      {
+        "path": "system_guardians/built_in/varak/manifest.json",
+        "bytes": 2291,
+        "sha256": "0da0cfc19a26321d769251d477bb6ee542f963fadf77c9ed34419c08fe9aee48"
+      },
+      {
+        "path": "system_guardians/built_in/veyra/dossier.md",
+        "bytes": 14625,
+        "sha256": "d92c873d8c4e82aecc4856e475c90acebda376267b2da785108e9a08b1b53a75"
+      },
+      {
+        "path": "system_guardians/built_in/veyra/manifest.json",
+        "bytes": 3074,
+        "sha256": "1e549de1b3cfc27e16b59a0b203b7c89a0c29676d4d5ffb26670048cf38593b1"
+      },
+      {
+        "path": "wwwroot/browser/local-web-ui-shell.html",
+        "bytes": 67515,
+        "sha256": "d38e3a6afaada716aa578a985ffa09afc3b4ee4b5b2b1531969c5ce5851fa24c"
+      }
+    ],
+    "scope": "Fresh current pre-removal C# build output258, not new campaign-free package or frontend build. Existing narrative source was not a copied standalone output resource; current DLL still contains original campaign implementation."
+  },
+  "cliWildcardCopies": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/operational-resources/CLI_API_Specification.md",
+      "bytes": 251478,
+      "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/operational-resources/CLI_API_Specification.md",
+      "bytes": 251478,
+      "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/operational-resources/CLI_API_Specification.md",
+      "bytes": 251478,
+      "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c"
+    }
+  ],
+  "limits": [
+    "No producer capture/TestData packet, consumer RED, host/browser/minigame invocation or frontend setup/build/test ran.",
+    "99 is exact native estimated descriptor membership:91 C# cases plus8 frontend files/typechecks, not99 executed behavior cases.",
+    "Unique arbitrary0735/0829 labels are not command start timestamps; actual startedUtc fields are authoritative.",
+    "Original-product source remains46ff byte-identical; compiled managed assembly binding is05d, not old #1557 DLLs."
+  ],
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,shutil,subprocess,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn-1558');F=R/'specs/1558-remove-daren-campaign';rec=F/'recovery';frozen=rec/'g1-first-preparation-20261017.json';packet=json.loads(frozen.read_text());assert len(packet['commands'])==2 and len(packet['files'])==12\ndef h(b):return hashlib.sha256(b).hexdigest()\nfor row in packet['files']:\n z=(R/row['storedPath']).read_bytes();b=gzip.decompress(z);assert len(b)==row['bytes'] and h(z)==row['storedSha256'] and h(b)==row['sha256'] and b==Path(row['rawPath']).read_bytes()\ncat,plan=packet['commands'];assert cat['mode']=='catalog' and plan['mode']=='plan';assert cat['nativeExit']==plan['nativeExit']==0\nassert cat['sourceHead']==plan['sourceHead']==cat['compiledSource']==plan['compiledSource']=='05d481d684fe0831ea060a1e9853e91f6b9749a0'\npins=cat['binaryAfter'];assert len(pins)==7 and pins==plan['binaryBefore']==plan['binaryAfter']\nfor row in pins:assert h((R/row['path']).read_bytes())==row['sha256']\nfor cmd in [cat,plan]:\n assert cmd['statusAfter']=='' and cmd['headAfter']==cmd['sourceHead'] and cmd['ownedPrefixesBefore']==cmd['ownedPrefixesAfter']\n summary=json.loads((Path(cmd['resultDirectories'][0])/'summary.json').read_text(encoding='utf-8-sig'));assert summary['ExitCode']==0\n print(cmd['mode'],'summarykeys',list(summary))\nP=json.loads((Path(plan['resultDirectories'][0])/'plan.json').read_text(encoding='utf-8-sig'));assert len(P['Categories'])==16 and len(P['Descriptors'])==18\nmethods={}\nfor d in P['Descriptors']:\n for m in d['ExpectedMethodCounts']:\n  assert m['Name'] not in methods;meth=dict(m,category=d['Category'],adapter=d['Adapter']);methods[m['Name']]=meth\nassert len(methods)==48 and sum(x['Cases'] for x in methods.values())==99\ncaps=[x for x in P['Descriptors'] if x['Category']=='daren-retirement-producer-capture'];assert len(caps)==1 and caps[0]['EstimatedCases']==2\nsourcepins=json.loads((F/'g1-source-packet-20261017.json').read_text())['pins']\nfor row in sourcepins:assert h((R/row['path']).read_bytes())==row['sha256']\npackage=R/'BookOfEternityClient/bin/Debug/net8.0';inventory=[dict(path=str(p.relative_to(package)),bytes=p.stat().st_size,sha256=h(p.read_bytes())) for p in sorted(package.rglob('*')) if p.is_file()]\nassert len(inventory)==258\ncli=(R/'CLI_API_Specification.md').read_bytes();copied=[]\nfor parent in ['BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests']:\n p=R/parent/'bin/Debug/net8.0/operational-resources/CLI_API_Specification.md';assert p.read_bytes()==cli;copied.append(dict(path=str(p.relative_to(R)),bytes=len(cli),sha256=h(cli)))\nfor src in ['/tmp/gm1558-root-concrete-g1-readback-05d481d6-20261017.json','/tmp/gm1558-root-recovery-composition-05d481d6-20261017.json','/tmp/gm1558-g1-concrete-delta-github-05d481d6-20261017.json','/tmp/gm1558-g1-tool-versions-20261017.json']:\n p=Path(src);shutil.copyfile(p,rec/p.name);assert p.read_bytes()==(rec/p.name).read_bytes()\nresult=dict(kind='WRITER_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_RUNTIME_VERDICT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),compiledTestSource=cat['sourceHead'],productSource='46ff637a01390a27c45a7fc36dc30e31d688e499',nativePreparation=[{k:c[k] for k in ['mode','startedUtc','finishedUtc','wallSeconds','nativeExit','stdoutPath','resultDirectories']} for c in [cat,plan]],frozenRawPacket=str(frozen.relative_to(R)),rawChainsVerified=12,sevenLiveBinaries=pins,ownedNamespaceStable=True,actualTestExecutions=0,nativeCatalog=dict(categories=821,methodsAndFiles=11807),observedPlan=dict(categories=16,descriptors=18,uniqueMethodsAndFiles=48,csharpMethods=40,csharpCases=91,frontendFiles=8,frontendTypesAndBehaviorNotExecuted=True,estimatedCasesOrFiles=99,allExpectedMethodCounts=list(methods.values())),initialRequestedActual=dict(category='daren-retirement-producer-capture',cases=2,status='HELD until independent SOURCE/persisted Root release; no other owner launch'),sourcePinsVerified=54,buildOutput=dict(root=str(package),files=inventory,scope='Fresh current pre-removal C# build output258, not new campaign-free package or frontend build. Existing narrative source was not a copied standalone output resource; current DLL still contains original campaign implementation.'),cliWildcardCopies=copied,limits=['No producer capture/TestData packet, consumer RED, host/browser/minigame invocation or frontend setup/build/test ran.','99 is exact native estimated descriptor membership:91 C# cases plus8 frontend files/typechecks, not99 executed behavior cases.','Unique arbitrary0735/0829 labels are not command start timestamps; actual startedUtc fields are authoritative.','Original-product source remains46ff byte-identical; compiled managed assembly binding is05d, not old #1557 DLLs.'],helperText=Path(__file__).read_text())\n(rec/'g1-first-preparation-inspection-20261017.json').write_text(json.dumps(result,indent=2)+'\\n')\n# Native discovered tuple membership is appended without changing source/row classifications.\nledger=json.loads((F/'g1-method-row-ledger.json').read_text());ledger['status']='G1_STATIC_METHOD_ROW_LEDGER_WITH_NATIVE_ZEROEXEC_MEMBERSHIP; actual/capture UNRUN';ledger['nativeMembership']={k:v for k,v in result['observedPlan'].items()};ledger['testsBuildDiscoveryActual']='FreshBOTH/catalog0 + exactPlan0 succeeded; all actual/capture/consumer/browser/frontend executions UNRUN';(F/'g1-method-row-ledger.json').write_text(json.dumps(ledger,indent=2,ensure_ascii=False)+'\\n')\nsrc=F/'g1-source-packet-20261017.json';j=json.loads(src.read_text());j.update(status='G1_SOURCE_FIXTURE_SELECTION_PREPARATION_CANDIDATE_FRESH_ZEROEXEC_SUCCESS',compiledSource=cat['sourceHead'],nativeDescriptors=18,nativeMethodsOrFiles=48,nativeCsharpMethods=40,nativeCases=91,nativeEstimatedCasesOrFiles=99,nativeFrontendFiles=8,preparation='recovery/g1-first-preparation-20261017.json',preparationInspection='recovery/g1-first-preparation-inspection-20261017.json');src.write_text(json.dumps(j,indent=2)+'\\n')\nprint(json.dumps({'rawChains':12,'categories':16,'descriptors':18,'methodsOrFiles':48,'csharpCases':91,'frontendFiles':8,'estimatedTotal':99,'executed':0,'packageFiles':258,'sourcePins':54,'binaryPins':7}))\n",
+  "nativeSummaryPredicates": [
+    {
+      "mode": "catalog",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      }
+    },
+    {
+      "mode": "plan",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "Selection": {
+        "PlannedDescriptors": 18,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 99,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "daren-retirement-affected-guards-integration-001",
+          "daren-retirement-affected-guards-unit-002",
+          "daren-retirement-browser-host-integration-003",
+          "daren-retirement-common-qte-integration-004",
+          "daren-retirement-common-qte-unit-005",
+          "daren-retirement-console-menu-integration-006",
+          "daren-retirement-console-practice-integration-007",
+          "daren-retirement-frontend-shell-frontend-008",
+          "daren-retirement-ordinary-storage-integration-009",
+          "daren-retirement-producer-capture-integration-010",
+          "daren-retirement-save-rewards-integration-011",
+          "daren-retirement-source-guidance-unit-012",
+          "daren-retirement-storage-refusal-integration-013",
+          "frontend-qte-frontend-014",
+          "frontend-shell-types-frontend-015",
+          "gm-doc-afterlife-package-delivery-integration-016",
+          "portable-browser-protocol-admission-linux-integration-017",
+          "portable-original-remaining-owning-close-linux-integration-018"
+        ],
+        "Complete": false
+      }
+    }
+  ]
+}

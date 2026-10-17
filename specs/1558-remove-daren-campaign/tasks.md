@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: G0+A01 accepted/persisted; G1 concrete tests-only candidate, static ledger and16-owner selection authored, uncompiled/unrun. Fresh zero-execution prep follows publication; independent SOURCE and separate capture2 release pending. T001–T003 complete; T004–T020 unchecked. No production/prompts/native/browser release.
+**Current phase**: G0+A01 accepted/persisted; concrete G1 tests-only SOURCE/preparation candidate published next. Fresh BOTH/catalog0 and exact PlanOnly0:16 owners/18 descriptors/48 methods-or-files/99 estimated (91 C# cases +8 frontend files),0 executions. Independent SOURCE and capture2 release pending; no product/prompts/producer/native-test/browser actual. T001–T003 complete; T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

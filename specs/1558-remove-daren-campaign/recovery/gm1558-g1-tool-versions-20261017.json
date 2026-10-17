@@ -1,0 +1,49 @@
+{
+  "kind": "READ_ONLY_TOOL_VERSION_OBSERVATION_NOT_TEST_EXECUTION",
+  "utc": "2026-10-17T08:28:16.294784+00:00",
+  "commands": [
+    {
+      "argv": [
+        "dotnet",
+        "--version"
+      ],
+      "nativeExit": 0,
+      "stdout": "10.0.401\n"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "--list-runtimes"
+      ],
+      "nativeExit": 0,
+      "stdout": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\n"
+    },
+    {
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$PSVersionTable.PSVersion.ToString()"
+      ],
+      "nativeExit": 0,
+      "stdout": "7.5.4\n"
+    },
+    {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "nativeExit": 0,
+      "stdout": "v24.19.0\n"
+    },
+    {
+      "argv": [
+        "npm",
+        "--version"
+      ],
+      "nativeExit": 0,
+      "stdout": "11.9.0\n"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "status": "G1_CONCRETE_TESTS_ONLY_SOURCE_CANDIDATE_UNCOMPILED_UNRUN",
+  "status": "G1_SOURCE_FIXTURE_SELECTION_PREPARATION_CANDIDATE_FRESH_ZEROEXEC_SUCCESS",
   "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "previousSavedTests": "3c57484848cece8553bff67bbddbb305defa0db8",
   "selection": "tests/selection.json",
@@ -22,9 +22,9 @@
     "portable-browser-protocol-admission-linux"
   ],
   "proposedCategoryCount": 16,
-  "nativeDescriptors": null,
+  "nativeDescriptors": 18,
   "nativeMethods": null,
-  "nativeCases": null,
+  "nativeCases": 91,
   "pins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -411,7 +411,7 @@
     "standalone1.json"
   ],
   "productionAndPrompts": "UNCHANGED; no remove/grant/refusal implementation",
-  "newRuntime": "NONE",
+  "newRuntime": "No application/test/producer/host/browser/frontend execution; only canonical zero-execution preparation and harmless tool version probes",
   "scopeLimits": [
     "Source/static bindings are not compilation/discovery/native proof.",
     "No arbitrary user files or savedata inspected; only source-authoring and planned unique owned fixtures.",
@@ -419,5 +419,12 @@
     "Synthetic schema6 is not original Windows producer acceptance.",
     "Source-derived generations/paths do not make bytes authentic unchanged same-root evidence.",
     "Existing52 session membership unchanged; only StepMain planned body replacement motivates one genuine publisher after G2."
-  ]
+  ],
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "nativeMethodsOrFiles": 48,
+  "nativeCsharpMethods": 40,
+  "nativeEstimatedCasesOrFiles": 99,
+  "nativeFrontendFiles": 8,
+  "preparation": "recovery/g1-first-preparation-20261017.json",
+  "preparationInspection": "recovery/g1-first-preparation-inspection-20261017.json"
 }
