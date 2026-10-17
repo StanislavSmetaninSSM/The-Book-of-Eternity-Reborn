@@ -1,0 +1,402 @@
+{
+  "kind": "ROOT_QUALIFIED_UNION_RAW_OBSERVATION_NOT_INDEPENDENT_EVIDENCE_VERDICT",
+  "checkedUtc": "2026-10-17T05:17:05.696016+00:00",
+  "actualCommands": 15,
+  "actualExecuted": 270,
+  "historicalFailed": [
+    {
+      "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"source.bootstrap_source_exception\"]",
+      "outcome": "Failed",
+      "source": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "category": "gm-doc-afterlife-delivery-source-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-current-A-source-guards-first-1a48d0c2/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](Afterlife_Actor_Profiles.md)\\n<a id=\"gm-\"\u00b7\u00b7\u00b7\nNot found: \"resourceMaterialization\"",
+      "outcome": "Failed",
+      "source": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "category": "gm-doc-afterlife-current-body-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](E_CLI_Afterlife_Scheduler.txt)\\n<a id=\"e\"\u00b7\u00b7\u00b7\nNot found: \"- \u0414\u0430\u043d\u043d\u044b\u0435 \u043f\u0440\u043e\u0444\u0438\u043b\u044f:\"",
+      "outcome": "Failed",
+      "source": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "category": "gm-doc-afterlife-current-body-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](Afterlife_Wound_Continuation.md) <a id=\"\u00b7\u00b7\u00b7\nNot found: \"no_offer\"",
+      "outcome": "Failed",
+      "source": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "category": "gm-doc-afterlife-current-body-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](E_CLI_Afterlife_Wound_Continuation.txt)\"\u00b7\u00b7\u00b7\nNot found: \"decision = 'none'\"",
+      "outcome": "Failed",
+      "source": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "category": "gm-doc-afterlife-current-body-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \" \u2014 \u0421\u043a\u0440\u044b\u0442\u0430\u044f \u0433\u043b\u0430\u0432\u043d\u0430\u044f \u043b\u0438\u043d\u0438\u044f \u0421\u0430\u0440\u0435\u0444\u0430 (`main_st\"\u00b7\u00b7\u00b7\nNot found: \"game_state/meta/shining_abode_state.json\"",
+      "outcome": "Failed",
+      "source": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "category": "gm-doc-afterlife-current-body-guards",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-body-first-5d2c9e61/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                   \u2193 (pos 1)\nExpected: string[]                          [\"CLI_Rules_Index.md\", \"Examples/E_CLI_Afterlife_Actor_Profiles.txt\", \"Examples/E_CLI_Afterlife_Turns.txt\", \"OtherGuides/Afterlife_Actor_Profiles.md\", \"OtherGuides/Afterlife_Contract_Matrix.md\"]\nActual:   OrderedEnumerable<string, string> [\"CLI_Rules_Index.md\", \"Examples/E_CLI_Afterlife_Shining_Actions.txt\", \"Examples/E_CLI_Afterlife_Turns.txt\", \"OtherGuides/Afterlife_Contract_Matrix.md\", \"OtherGuides/Afterlife_Shining_Actions.md\"]\n                                                                   \u2191 (pos 1)",
+      "outcome": "Failed",
+      "source": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "category": "gm-doc-afterlife-repair-consumers",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-repair-first-59ac4bd7/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "message": "Assert.All() Failure: 1 out of 6 items in the collection did not pass.\n[0]: Item:  \"Templates/MORTAL_NPC_UPDATE_TEMPLATE.md\"\n     Error: Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "outcome": "Failed",
+      "source": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "category": "gm-doc-afterlife-repair-consumers",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-repair-first-59ac4bd7/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "message": "Assert.All() Failure: 1 out of 9 items in the collection did not pass.\n[1]: Item:  \"Templates/MORTAL_NPC_UPDATE_TEMPLATE.md\"\n     Error: Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "outcome": "Failed",
+      "source": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "category": "gm-doc-afterlife-repair-consumers",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-repair-first-59ac4bd7/record.json"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"delivery.cleanup_failed\"]",
+      "outcome": "Failed",
+      "source": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "category": "gm-doc-afterlife-owned-lifetime",
+      "record": "/tmp/gm1557-implementation-tools/gm1557-A-lifetime-first-b821b685/record.json"
+    }
+  ],
+  "latestUniquePassedCases": 255,
+  "latestUniqueMethods": 167,
+  "plannedUniqueCases": 255,
+  "completeUniqueSelection": true,
+  "supersededExecutions": 15,
+  "repairRowIdentityRule": "Normalize only explicit GameEngine GmDocumentationRepair split by unchanged kind+topics; source ledger/reviewer binds original method tuple; original raw method/display retained in records",
+  "unresolved": [],
+  "rows": [
+    {
+      "category": "gm-doc-afterlife-preservation",
+      "sourceHead": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "native": 0,
+      "passed": 18,
+      "failed": 0,
+      "cases": 18,
+      "descriptors": 1,
+      "wallSeconds": 5.621252422000907,
+      "recordSha256": "320674ee29328df44c712addaa4eb3af30e7b8640e07a63a1b6423326b59a7fd",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-041912-538-34396-dc2afeb52b1b4a3badf78a28fc4356bd-categories/gm-doc-afterlife-preservation-unit-001.trx",
+          "sha256": "3daf68228b30cb863244e2cde7135e5f52d37d02dbe733f2c645167500a2f38d",
+          "cases": 18
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-reading",
+      "sourceHead": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "native": 0,
+      "passed": 60,
+      "failed": 0,
+      "cases": 60,
+      "descriptors": 1,
+      "wallSeconds": 5.231052825998631,
+      "recordSha256": "42651579d45f960825b38cf0c6b39b5379950e80a15f8cdafc367ad914a949f4",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-041929-645-34619-26d90556732d444d914f32e1c4f79453-categories/gm-doc-afterlife-reading-unit-001.trx",
+          "sha256": "e7785ea6b4acf77466652dc203bf167c2fed364385c8f83a9e0b62c6eec2629c",
+          "cases": 60
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-delivery-source-guards",
+      "sourceHead": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "native": 1,
+      "passed": 14,
+      "failed": 1,
+      "cases": 15,
+      "descriptors": 1,
+      "wallSeconds": 27.6553714340007,
+      "recordSha256": "f4a0bde940152628c77006d0a709e56c11da78c4ab0ad31895b3401b8cc9d11b",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-041948-282-34863-b2134bf437764300a77588ce913c22f1-categories/gm-doc-afterlife-delivery-source-guards-integration-001.trx",
+          "sha256": "f32751626ab6a7d96b85261e07e99a80333758c6cb1252a4f94cdd7f686362ad",
+          "cases": 15
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-bootstrap-authority",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "native": 0,
+      "passed": 5,
+      "failed": 0,
+      "cases": 5,
+      "descriptors": 2,
+      "wallSeconds": 9.535967198000435,
+      "recordSha256": "de7118ea8b25bbb9ed80db43bce7ceabccf70f8e483c932665351d5ca345bf6a",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/gm-doc-afterlife-bootstrap-authority-integration-001.trx",
+          "sha256": "d9ffa000bb361630cabf3656a05dd0f9ba951cf39bc0cba926e1adad63d44547",
+          "cases": 1
+        },
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043422-124-39400-70832d2bdcb04098afa9c17a76a866e8-categories/gm-doc-afterlife-bootstrap-authority-unit-002.trx",
+          "sha256": "18f7f02a1fe2d15392eccd6bf1c5152a4a4682bc63a7823b136087c96d219167",
+          "cases": 4
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-named-consumers",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "native": 0,
+      "passed": 5,
+      "failed": 0,
+      "cases": 5,
+      "descriptors": 1,
+      "wallSeconds": 5.506398526000339,
+      "recordSha256": "01c2ab4a2fcf21e1e33f8524dc66bbbb94d0bbc67539eee4dacd856903517b1d",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043441-337-39758-c2d65956f28d4eec88c545617e5410e6-categories/gm-doc-afterlife-named-consumers-integration-001.trx",
+          "sha256": "0d2e8cdb18fe2f96374203b3a0bcd448d325726ecec5a932fdd1d11a1b958ac8",
+          "cases": 5
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-body-guards",
+      "sourceHead": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "compiledSource": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "native": 1,
+      "passed": 115,
+      "failed": 5,
+      "cases": 120,
+      "descriptors": 2,
+      "wallSeconds": 5.845592857000156,
+      "recordSha256": "505cf730c8233524a06f2c20ba97e90829d09d215e1ee281b250dfb6137270e8",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/gm-doc-afterlife-current-body-guards-unit-001.trx",
+          "sha256": "fd94c7747d3589bffd1def364e091f40949cd7c9c9ccc914c46bc9bc3700bc2b",
+          "cases": 60
+        },
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-043456-438-39967-d2be0db4c80e4e15812fdbad3b90e77f-categories/gm-doc-afterlife-current-body-guards-unit-002.trx",
+          "sha256": "3d8a4f5b4d2cdc7687bea88b62de0fa7625b5a67866c5315503fb93df2a679d1",
+          "cases": 60
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-section-consumers",
+      "sourceHead": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "native": 0,
+      "passed": 8,
+      "failed": 0,
+      "cases": 8,
+      "descriptors": 1,
+      "wallSeconds": 5.063438363000387,
+      "recordSha256": "69b99e7033dc6c4c4f60fcbacb81644f59ae07627492c1d432f79648dfcbeb79",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044840-021-44018-f857732614d643f993121a978912ab75-categories/gm-doc-afterlife-owned-section-consumers-unit-001.trx",
+          "sha256": "69a6fef42b664a80e6c244d3444ff8dd70e3b8d2a19bff77e58716d1e69c322a",
+          "cases": 8
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-wound-tail",
+      "sourceHead": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "native": 0,
+      "passed": 2,
+      "failed": 0,
+      "cases": 2,
+      "descriptors": 1,
+      "wallSeconds": 4.867327453999678,
+      "recordSha256": "fa1bb9005610005c4ec77bbac8e8f251a052b44448c40632d2a809b74a36f737",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044852-791-44225-5c9d31842c0b4c5d8a6072edb7494e4d-categories/gm-doc-afterlife-current-wound-tail-unit-001.trx",
+          "sha256": "d1e880ec00653b2ea1b076db615c1aa146cd9cd90f7371d7597c4eb8100f1912",
+          "cases": 2
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-consumers",
+      "sourceHead": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "native": 0,
+      "passed": 19,
+      "failed": 0,
+      "cases": 19,
+      "descriptors": 1,
+      "wallSeconds": 5.861285904999022,
+      "recordSha256": "da71edbaae8fca05fa342d1117794cf4def71591c3f73bce9a00378ddf400113",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044903-227-44440-19705e7ac9e348258f5d35bd070d5c60-categories/gm-doc-afterlife-current-consumers-unit-001.trx",
+          "sha256": "d97f3c69455340d32f3b252b0e51e82232dac2a5c81de6648b5cee45e34ebaf6",
+          "cases": 19
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-repair-consumers",
+      "sourceHead": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "native": 1,
+      "passed": 6,
+      "failed": 3,
+      "cases": 9,
+      "descriptors": 1,
+      "wallSeconds": 5.797482420000961,
+      "recordSha256": "68fe5d0af53a5cded3e6e6c8605596ca38060d3383ddf880a73dca83846172c3",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044912-813-44653-e81965b816f34f4ca03e54b57c4cf9aa-categories/gm-doc-afterlife-repair-consumers-integration-001.trx",
+          "sha256": "f3ac742de91bf7035edd8323695f8a28ee44c3a0b8d302fbd20939a609523862",
+          "cases": 9
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-repair-corrected-consumers",
+      "sourceHead": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "native": 0,
+      "passed": 3,
+      "failed": 0,
+      "cases": 3,
+      "descriptors": 1,
+      "wallSeconds": 5.506367150999722,
+      "recordSha256": "20fdd01a07378d8de3b877e23a4f37ad2de6d48c81e0d45b309cd1a79a412a8e",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-050237-999-47706-b79c3476cf064bc7824eb4d1b9cf8134-categories/gm-doc-afterlife-repair-corrected-consumers-integration-001.trx",
+          "sha256": "2df65e215c2db9a578a16143f40d70a4b9302fad067139c2718537e0dc2dd6b5",
+          "cases": 3
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "sourceHead": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "native": 0,
+      "passed": 1,
+      "failed": 0,
+      "cases": 1,
+      "descriptors": 1,
+      "wallSeconds": 8.503401934001886,
+      "recordSha256": "85461c7d8c4371c6dea31ffedc4a0e180d19be4f7047d675ac172d5fb8c6cbed",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-050247-727-47956-d05af2bb91494f4caf281f190145b78e-categories/gm-doc-afterlife-package-delivery-integration-001.trx",
+          "sha256": "6af61d1bc4dc8c7e1f3df01c45349465091c971e667f262144094af1fc9f3ddb",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-negatives",
+      "sourceHead": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "native": 0,
+      "passed": 2,
+      "failed": 0,
+      "cases": 2,
+      "descriptors": 1,
+      "wallSeconds": 11.153536240999529,
+      "recordSha256": "793f3bf6503737bc9efa9d712f91c7345456beb63e7429b48d36bc3ec5807789",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-050311-169-48286-d07010cceafd4d5fae37c796b34ec47e-categories/gm-doc-afterlife-package-negatives-integration-001.trx",
+          "sha256": "b24c0ce5497817e6ec0488306430c2ff1f1d02aa14ba74f1b1ef771c70cbcb6b",
+          "cases": 2
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-lifetime",
+      "sourceHead": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "native": 1,
+      "passed": 1,
+      "failed": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "wallSeconds": 24.448293333000038,
+      "recordSha256": "1d5922c517914f1d8182c0881242ccac8a59e94d6f55fa66c685efa7222a7080",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-050337-459-48650-0e246fcc8bc94db788ab693dfffa7d3e-categories/gm-doc-afterlife-owned-lifetime-integration-001.trx",
+          "sha256": "bf897f4eabc10cedb7caedfd34cba3d091484fd1d3e9cc1772ddaee53549cf92",
+          "cases": 2
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-orphan",
+      "sourceHead": "35d7375cf3bbd379df8c8b7834e3f6546efda3cd",
+      "compiledSource": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+      "native": 0,
+      "passed": 1,
+      "failed": 0,
+      "cases": 1,
+      "descriptors": 1,
+      "wallSeconds": 8.945847757000593,
+      "recordSha256": "30a1a878c535a4845024e9ce549da0abb6d429cab05bc455f0bc485ed4237679",
+      "trx": [
+        {
+          "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-051648-573-52116-984aedc434bd4b24b06d03f127f0d75e-categories/gm-doc-afterlife-owned-orphan-integration-001.trx",
+          "sha256": "2e582e2c51247428490fd0de56ad15e55aa020befb2c9e4b88716fb9b2d2970f",
+          "cases": 1
+        }
+      ]
+    }
+  ]
+}

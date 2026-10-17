@@ -1,4 +1,10 @@
-# Bounded Verification Guide — Draft
+# Bounded Verification Guide
+
+## Current accepted A verification context — 2026-10-17
+
+Bounded A is accepted by the [exact final independent EVIDENCE verdict](recovery/current-A-final-evidence-independent-review-20261017.md). Canonical accepted full selection is `tests/selection.json` (15category owners), with exact committed mirror `tests/selections/1557-gm-doc-current-A.json`:17native descriptors/167unique methods/255cases. `tests/selections/1557-gm-doc-afterlife.json` is the retained historical initial two-owner preservation/reading subset; it is not the current255-case selection. Actual qualified evidence deliberately combines accepted source-specific results; historical270executions/10FAIL/15superseded and all first outcomes remain distinct. Do not rerun accepted groups for counts.
+
+Current isolated branch is `1557-gm-doc-modularization-continuation-20261017`, worktree `/workspace/The-Book-of-Eternity-Reborn-1557`, continued from verifieda5 with accepted A1/A2 untouched. Latest sourcec385/freshcatalog and full PlanOnly0 are pinned in [the orphan preparation](recovery/current-A-orphan-fix-fresh-preparation-20261017.json). Subsequent verification is justified only by changed dependencies and the official source/preparation/evidence gates; this guide grants no automatic runtime or aggregate replay. Block B/Block_5 and full-feature completion remain open. The dated2026-10-13 context and runner templates below are historical planning, not current selection or release instructions.
 
 ## Active isolated execution context — 2026-10-13
 
@@ -38,7 +44,7 @@ Coordinator records FR063 freeze/evidence disposition and the exact remote base.
 4. Build the selected projects/assets, then run real bounded Linux context-pack delivery in its owned session: every advertised core/router/module is copied with source-equal bytes, all required local links resolve, no provider request is issued. Removing one expected copied module must fail the intended oracle. Preserve bootstrap README restriction and actual copy-list failure semantics.
 5. Review source and finite selection; execute once on the fresh build. Preserve full output, raw result files, actual source/binary pins, planned/executed counts, cleanup and limitations. Separate Astra XHigh source/evidence review and coordinator readback accept A before B begins.
 
-## Official runner templates (future isolated worktree only)
+## Historical initial runner templates (not current255-case selection)
 
 After implementing and reviewing the exact selectors in the future `tests/selections/1557-gm-doc-afterlife.json`:
 

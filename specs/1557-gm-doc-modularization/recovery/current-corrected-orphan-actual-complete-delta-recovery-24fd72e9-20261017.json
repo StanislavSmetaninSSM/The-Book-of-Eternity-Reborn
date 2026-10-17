@@ -1,0 +1,221 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "24fd72e9b03a2e061c58dec900b2f8975cc25727",
+  "base": "35d7375cf3bbd379df8c8b7834e3f6546efda3cd",
+  "directory": "/tmp/gm1557-corrected-orphan-actual-github-24fd72e9-20261017",
+  "completedUtc": "2026-10-17T05:17:36.725411+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1557-gm-doc-modularization/plan.md",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/record.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/dotnet-test.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/gm-doc-afterlife-owned-orphan-integration-001.trx.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/plan.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/summary.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-writer-inspection-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.ready.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/identity-observed.ack.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-orphan-source-accepted-complete-delta-recovery-35d7375c-20261017.json",
+    "M\tspecs/1557-gm-doc-modularization/spec.md",
+    "M\tspecs/1557-gm-doc-modularization/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 23,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/docs/testing.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "mode": "100644",
+      "git_blob": "33051acd682bd89eabf9979d6be6884003840d1b",
+      "bytes": 119230,
+      "sha256": "7c3bd7e1cd0a097dc07a7dc341dc7211a4c1c3e8c9400b9a2134bda239d4ede7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/plan.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/record.json.gz",
+      "mode": "100644",
+      "git_blob": "a6441f785cc6f95b0eddf65c0f82c2383ddef979",
+      "bytes": 2935,
+      "sha256": "9055b44785ac465db251dcaf54784a1c191616ee65ba2608a1816b19f93570a7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/record.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "beef02d85db55dc28023ad146a40ffa1d2c97799",
+      "bytes": 188675,
+      "sha256": "d88c5252026bb9dcfd22c36d1de439e53bd0aad0b398c19a6b15016e93ee271c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/gm-doc-afterlife-owned-orphan-integration-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "f65973938f4474fda6722c3a374dff360134fd26",
+      "bytes": 9848,
+      "sha256": "1bf9a7a9ecda6df135764d80e365a8614a5f06aa1be2534f538eecc4d862f393",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/gm-doc-afterlife-owned-orphan-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "a2045b5784bf49836bda7a76ee39d7f36b5d6de7",
+      "bytes": 532,
+      "sha256": "e76bf6395a76f56ecfbbc491d1a015debf6474cdb69f0d444f665747cd7a6bde",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "9c30e5853a8e98b9e4bee2773a2825940d1e3736",
+      "bytes": 605,
+      "sha256": "8b85451c31e0d9c78f24018fac11c35cce23530ed4c08aecd16722715dfba506",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "18015ab007e26f0c4f9d4c7737ded91492b0fdd1",
+      "bytes": 760,
+      "sha256": "453724c13bd34ded9528c483fd8a0c7722cfb5978059e3e53b3790a7c4579112",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017-files/0-gm1557-A-orphan-corrected-first-35d7375c/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017.json",
+      "mode": "100644",
+      "git_blob": "af57ffa0b7b211ec6df12ba56d771d1c096a044e",
+      "bytes": 16880,
+      "sha256": "a5ad870a1c7d827683b15e0b9b87e0655c366d277b48b66716cc793c9bcafb78",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-actual-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-writer-inspection-20261017.json",
+      "mode": "100644",
+      "git_blob": "f07bb8db0456585963c49fafe5ff54c8a16e271c",
+      "bytes": 15360,
+      "sha256": "26903811997da236f84603740ac6ce9aace1ef0f2a8e2a18d330c19d5317bc7b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-first-writer-inspection-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.gz",
+      "mode": "100644",
+      "git_blob": "b5dc4b4a4b5b72a241a62f4e06b9fc5f284ff29c",
+      "bytes": 25,
+      "sha256": "365d4a426067b674e263a66e45108b4c2ef1b5d9059aa600205891122973f524",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.ready.gz",
+      "mode": "100644",
+      "git_blob": "d64992aea0139e41c014fde4f4a724a37d4823cf",
+      "bytes": 32,
+      "sha256": "f4de166a33d5ec16c6284b7647fb01c8569169f3ec465c21f857d64f32ccc4c8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.ready.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/identity-observed.ack.gz",
+      "mode": "100644",
+      "git_blob": "9731cfd7e0e6e9b2e4b59da309683806c84fa07d",
+      "bytes": 72,
+      "sha256": "e1bb51b7b5a2c07605b1f5890382a6b45e6e20a568d43e2bbeb868ce053f2251",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/identity-observed.ack.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "e99c8b710c634427c7ab7319f95a6a335c0058cb",
+      "bytes": 8222,
+      "sha256": "0379367c05bb06004f69051286eda6c2093a3bfe2773a3aead981fef80f2267f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "04b84e74821e198eafa043378afc2af42bf71439",
+      "bytes": 1632,
+      "sha256": "4c5cfac5e09a1a5035a4a75c80a1d0626546908a198f218c57039b515dbafcf2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "970108efe87c6fe659b776e36a30f48728910cae",
+      "bytes": 1671,
+      "sha256": "97e6e7eee9f91e1b9395a745f221dc422e826dd9f9650a290807f85fca0c611d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017.json",
+      "mode": "100644",
+      "git_blob": "da42d48ff062b568f9d9ba52457748c2c8b51a35",
+      "bytes": 9521,
+      "sha256": "c5d65d3db296135f800a7a96df1df19b814bba381eed15689a24c861a02f5baf",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-orphan-source-accepted-complete-delta-recovery-35d7375c-20261017.json",
+      "mode": "100644",
+      "git_blob": "9679070ca3f72aaee9434ed23ce501d7be72e268",
+      "bytes": 8592,
+      "sha256": "3fb52322c186d9838574d68ec54c6435ec0c2b8bff7b4584611ec244b02f4e68",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/recovery/current-orphan-source-accepted-complete-delta-recovery-35d7375c-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "mode": "100644",
+      "git_blob": "e752f2f468eeb66e1658fc9551cb3cf6700b57d6",
+      "bytes": 60716,
+      "sha256": "7a0d11803ac02fb42f62d5e332f8300f64d7844f2de26126ab40af84d64ba01e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/spec.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "mode": "100644",
+      "git_blob": "ca3662f613658055695acbd6c537917143c4207c",
+      "bytes": 111995,
+      "sha256": "93c40bcb1cbf52a85ae1a8b988d47db3e443c329966df1065b2a4ea886aa25b8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/24fd72e9b03a2e061c58dec900b2f8975cc25727/specs/1557-gm-doc-modularization/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "24fd72e9b03a2e061c58dec900b2f8975cc25727\trefs/heads/1557-gm-doc-modularization-continuation-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nchanged=git('diff','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1557-gm-doc-modularization-continuation-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

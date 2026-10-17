@@ -1,0 +1,23 @@
+# #1557 — final independent bounded A EVIDENCE
+
+**A_EVIDENCE_ACCEPTED:255 qualified cases,167 methods; no unresolved or unrun A cases.** This decision requires durable persistence/recovery and coordinator readback before recording A completion. Runtime carrier `24fd72e9b03a2e061c58dec900b2f8975cc25727`; new actual `35d7375cf3bbd379df8c8b7834e3f6546efda3cd`; compiled source `c385a875e39a8a13c4e5738b136aa6bcdd377e37`. No material A finding remains open.
+
+The first corrected orphan singleton returned native0, exactly1PASS/0FAIL, wrapper8.945847757s, test3.5536100s, fixture3.4740629s. No underfill, skips, duplicates or timeout. Raw proves exact initial launcher52269/birth1752413 and helper52290/birth1752433/parent52269; the helper later remains live under parent1. Exact pre-signal ownership is followed by the same birth in confirmed terminalZ through `lifetime_after_signal → TerminalOwnedState`. This proves termination without requiring PID1 reaping. Remaining identities are empty, unknown/conflict state false, both pipes EOF/no errors (1,240,809/1,240,767bytes), cleanup failures empty, exit/root-removal proofs true and both unique roots physically absent. Existing45work+15cleanup≤60s limits hold. All original test assertions pass. A-E04 is now closed by actual evidence, not later housekeeping.
+
+Independently verified the **12 new committed gzip→raw→live chains (6 native +6 fixture)**, exact TRX/plan identity and counts, seven unchanged c385 DLL pins, source/carrier metadata-only scope and complete GitHub recovery **23files/all19changed paths** with exact bytes/SHA/blob/modes/path sets. The new evidence directory is retained. Reviewer performed no runtime, build, test, signaling or deletion.
+
+The qualified union is composed from exact accepted independent decisions and their immutable case indexes, plus the new case. No old raw family or base was replayed. Every current method/case counter equals the accepted native full plan; explicit repair9 semantic lineage is preserved as retained6 plus corrected3. Provenance is intentionally mixed:
+
+| Actual checkpoint | Compiled source | Qualified cases retained |
+|---|---|---:|
+|1a48d0c2|06a0d4a5|88 preservation/reading/source guards|
+|5d2c9e61|a4d08171|124 bootstrap/named/current-body controls|
+|59ac4bd7|3e57c8da|35 owned sections/wound tail/current consumers/repair|
+|b821b685|17043cf1|7 corrected repair/real publisher/physical negatives/prestart|
+|35d7375c|c385a875|1 corrected orphan|
+
+Canonical `tests/selection.json` and byte-identical `tests/selections/1557-gm-doc-current-A.json` contain **15owners /17planned descriptors /167methods /255cases**. The old `tests/selections/1557-gm-doc-afterlife.json` is a historical two-owner subset, not the255-case selection. Across15 actual commands the history is **270 executions,10FAIL,15 superseded executions**; all four first stops remain immutable, including the weakened lifecycle PASS and original orphan cleanup FAIL. The latest255 are qualified through accepted dependency/fixture corrections, not by claiming all ran together on the newest assembly.
+
+Accepted A remains bounded to ten afterlife rule/example pairs, core/router and conditional topic union/navigation, preserved source/example/manifest coverage, actual affected consumers, source-direction/dispatch guards, and real Linux package→session delivery. The earlier accepted genuine publisher proves36 document roles/paths/actual-read byte hashes/link closure and the physical generated template:12,977bytes, SHA256 `2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239`, retained raw. The36 copied document bodies have actual-read hashes and source-bound assertions, not separately retained session body files. Real publisher/physical negatives retain compiled170 provenance and observed no-signal cleanup; the corrected controlled lifetime probe never substitutes for production delivery or claims a new production timeout experiment.
+
+A completion metadata may mark only proven T001–T020 after persistence/readback. T001 must record the actual retained FR063 disposition and isolated continuation; it must not claim full FR063 completion. D01 is resolved. **Block_5 T021–T029 remain open, unimplemented and unrun**: current seven-pair source-map reconciliation, RED ownership/XML/CDATA preservation, migration/navigation/consumer remap, real package/session delivery and separate SOURCE/EVIDENCE. T030–T032 remain distinct final reconciliation/publication/handoff duties. This acceptance does not qualify full daemon/provider dispatch, gameplay/performance, HOT/M3/newQTE/fullFR063, Windows/globalCI, PR/merge/main or issue closure. Original orphan housekeeping remains a separate append-only receipt and never rewrites its first FAIL.
