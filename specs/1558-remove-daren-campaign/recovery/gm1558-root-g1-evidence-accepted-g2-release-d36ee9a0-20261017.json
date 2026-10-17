@@ -1,0 +1,73 @@
+{
+  "kind": "ROOT_ACCEPTED_G1_CAUSAL_EVIDENCE_AND_CONDITIONAL_BOUNDED_G2_IMPLEMENTATION_RELEASE",
+  "createdUtc": "2026-10-17T10:15:41.593709+00:00",
+  "carrier": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+  "independentVerdict": "ACCEPTED_BOUNDED_BASELINE_EVIDENCE__28_DISTINCT_14_PASS_14_CAUSAL_RED",
+  "rootDecision": "ACCEPT_28_DISTINCT_BASELINE__PERSIST_GATE_THEN_ACTIVATE_G2_IMPLEMENTATION_AND_POST_PUBLICATION_ZEROEXEC_PREPARATION",
+  "pins": [
+    {
+      "path": "/tmp/gm1558-first-s04-consumers-evidence-independent-20261017.md",
+      "bytes": 3253,
+      "sha256": "83c86267742972d49fca7b9f5f175ddab78130b9493a6f94419aa88da4da22ba"
+    },
+    {
+      "path": "/tmp/gm1558-first-s04-consumers-evidence-independent-20261017.json",
+      "bytes": 13976,
+      "sha256": "2be4202b75e6fb4fc9056a988a21935bf83861d53d849e733a72bb580e877f64"
+    },
+    {
+      "path": "/tmp/gm1558-first-s04-consumers-independent-check-20261017.json",
+      "bytes": 66565,
+      "sha256": "f836da84c1409848194b2a6af215df85cb33d0e49d9436d39ede1d7ec26f91cc"
+    },
+    {
+      "path": "/tmp/gm1558-root-first-s04-consumers-carrier-readback-d36ee9a0-20261017.json",
+      "bytes": 1378,
+      "sha256": "8b97f63375edcabae562f463affcbcdfd9ca72662316d884ee6ef6a789ef94ca"
+    },
+    {
+      "path": "/tmp/gm1558-g1-first-s04-consumers-delta-github-d36ee9a0-20261017.json",
+      "bytes": 25573,
+      "sha256": "6a9c9c01f4b343f8a4bcb36765f166b633636ac288e80a34c32eab2f273a8aeb"
+    },
+    {
+      "path": "/tmp/gm1558-root-recovery-composition-d36ee9a0-20261017.json",
+      "bytes": 33890,
+      "sha256": "1a258ea3f3e8764e60c562fbed2b2337ba32d519312770310d0fef89851874cf"
+    }
+  ],
+  "counts": {
+    "newExecuted": 21,
+    "newPass": 12,
+    "newCausalRed": 9,
+    "retained": 7,
+    "totalQualifiedDistinct": 28,
+    "totalUniqueMethods": 10,
+    "totalPositive": 14,
+    "totalCausalRed": 14,
+    "consumerExecutions": 32,
+    "historicalUnqualifiedFixtureFailures": 4
+  },
+  "retainedHistory": "Original capture failures, corrected capture2, old save4 fixtureFAIL, all FIRST raw/sentinels and exact old7 provenance remain unchanged; no replay or relabeling.",
+  "activation": "First persist this decision, exact new independent3reports, Rootd36rawreadback, completedelta and98composition in a metadata checkpoint; push nonforce, exactremote/readback and newGitHubdelta. Root validates this immediate delta and names actual implementation activation. No new design review is needed.",
+  "allowedImplementation": [
+    "T010: read-only exact retired Daren external browser admission before BOTH original/current recovery and before coexisting shared-journal effects; whole TrustedLocal journal member-list refusal for exact retired profile before any restore/delete/cleanup/callback. Preserve schema/path/case/identity/generation/pending/unknown-evidence checks and ordinary positive recovery. Error identifies retired Daren evidence retained. No new compatibility reader/normalizer/migration or replacement external-profile capability.",
+    "T011-T013: remove campaign-only services/store/rollback/spine/resources/shared fields/hooks and original/current external staging/restoration callers; remove CLI menu/dispatch/new-soul grant/copy; remove five host routes/Daren DTO/attempt/token branches and frontend route/view/API/fixture/exclusiveCSS. Preserve ordinary QTE, all11practice, scoring/input/accessibility/token/generation, ScenarioCore and unrelated story services. Existing earned currency/grant unknown fields/save/history/archive/profile bytes remain inert unchanged; no scan/clawback/scrub.",
+    "T014: execute reviewed exact method/row retirement/migration ledger and category/current/named selectors. Retire temporary capture2 compiled source/producer-only support but keep original2JSON/raw/provenance. Preserve8generic owning-close rows and relevant ordinary/generation/uncertainty controls; migrate Windows common fixtures source-only. Reconcile every actual new dependency in selection before SOURCE, without broad old campaign families.",
+    "T015: synchronize CLI API, Rules QTE, worked Example, StepMain, active launcher quickstart and campaign-only repair hint. Update actual #1557 CLIAPI/StepMain reversible after-images/inverse records while retaining exact full-file baseline guard/D01. One genuine current52publisher proves changedStepMain; CLIAPI wildcard output is not53rd sessiondoc.",
+    "T016: coherent implementation WIP/sourcepacket/status/catalog/selectors published with exactremote/newdirectory delta before compiler preparation or long review; partial WIP if authoring long. Record acceptedG1baseline qualification separately from futureGREEN. Main/history/otherworktrees/userdata and all prior evidence untouched."
+  ],
+  "allowedPreparationAfterOwnVerifiedImplementationPublication": [
+    "ONE FIRST fresh npm run build (documented build-only compiler preparation; includes app+node typechecks and vite emptyOutDir) BEFORE managed packaging. Freeze process/stdout/exit and exact freshdist manifest. No frontend runtime yet; no native categoryPASS claim for npm subcommands; do not duplicate typecheck solely for counts.",
+    "Clean only precisely owned1558generatedbin/Debug/net8.0 outputs after own readers settled, or use coherent fresh owned output; no full clone/full binarchive/userstate/globalcleanup. Build all selected C#projects fresh through ONE FIRST canonical BOTH/ValidateCatalog. Inventory fresh delivered output including served React bytes and absent orphan campaign assets; old incremental bin alone is insufficient.",
+    "On successful compiler/catalog only, ONE FIRST exact current affected GREEN SelectionFile PlanOnly-NoBuild0; exactmethods/cases/frontendfile-estimates separate. Freeze first raw/new7DLL/source/package/dist/ns/cleanup and publish PREP checkpoint. Concrete independent SOURCE/selection/PREP review then separate Root actual release precede all GREEN/host/console/frontend/Chromium runtime.",
+    "Unexpected compiler/build/catalog/plan/dependency/cleanup failure stops dependent work: retain FIRST raw/native/cause, publish, independent causal review before correction/retry. No broad suite, Fast/PreMerge, allcategories or acceptedunchangedfamily replay."
+  ],
+  "futureActualProof": "Affected finite GREEN only after fresh SOURCE; Root owns one real desktop Chromium BranchChoice mouse-input/retry/exit/staleSPA flow and actual servedReact/DLL/data preservation binding. HTTP11practice is not11interactiveplaythroughs. Windows unavailable source-only; Library403 blocker remains separate, no retry/CI/bypass.",
+  "held": [
+    "All runtime/actual GREEN until fresh implementation SOURCE and Root release",
+    "Merge/forcepush/branchdelete/issueclosure/main/newcredentials/security",
+    "Windows/Library transfer or CI rerun; HOT/M3/F2/newQTE; unchangedA1/A2 or #1557 broad replay"
+  ],
+  "runtimeExecutedByThisReceipt": false
+}

@@ -1,0 +1,33 @@
+{
+  "kind": "ROOT_REMAINING_S04_CONSUMERS_CARRIER_READBACK_PENDING_CAUSAL_EVIDENCE",
+  "createdUtc": "2026-10-17T10:08:56.396171+00:00",
+  "carrier": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verifiedNewRawLiveGzipCommittedChains": 16,
+  "newGitHubFiles": 34,
+  "metadataOnlyChangedPaths": 30,
+  "completeDeltas": 98,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-d36ee9a0-20261017.json",
+  "newOwnerRaw": {
+    "cases": 21,
+    "passed": 12,
+    "failed": 9,
+    "strictRootsRemoved": 21
+  },
+  "retainedQualifiedOld": {
+    "cases": 7,
+    "passed": 2,
+    "causalRed": 5,
+    "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+    "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d"
+  },
+  "proposedQualifiedUnion": {
+    "uniqueCases": 28,
+    "positivePassed": 14,
+    "causalRed": 14
+  },
+  "history": "32actualconsumerexecutions includes4oldunqualifiedsavefixtureFAIL; distinct from28qualifieduniqueproposal. Earliercapturehistoryretained.",
+  "limits": "HTTP11practice hasprofile+soulbyteoracles;6menu/route negativeshaveprofilecomparisons butnosoulbyteoracles. Noall11interactivebrowserproof. IndependentEVIDENCEpending;productionheld."
+}

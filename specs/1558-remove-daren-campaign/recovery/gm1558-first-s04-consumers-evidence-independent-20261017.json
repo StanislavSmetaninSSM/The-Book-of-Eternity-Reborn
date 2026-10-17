@@ -1,0 +1,311 @@
+{
+  "kind": "INDEPENDENT_FIRST_S04_CONSUMER_CAUSAL_EVIDENCE_REVIEW",
+  "utc": "2026-10-17T10:14:53.147305+00:00",
+  "carrier": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verdict": "ACCEPTED_BOUNDED_BASELINE_EVIDENCE__28_DISTINCT_14_PASS_14_CAUSAL_RED",
+  "blockers": [],
+  "components": {
+    "SAVE_POSITIVE": "ACCEPTED_1_SUPPORTED_SAVE_LOAD_PRESERVATION_PASS",
+    "FRESH_SOUL": "ACCEPTED_3_FINAL_CAUSAL_RETIREMENT_FAILURES",
+    "HTTP_PRACTICE": "ACCEPTED_11_REAL_HTTP_OWNER_POSITIVE_CONTROLS",
+    "HTTP_MENU_AND_ROUTES": "ACCEPTED_6_FINAL_CAUSAL_RETIREMENT_FAILURES",
+    "S04": "CORRECTED_TEST_READER_VALIDATED_ALL4_REACH_FINAL_ORACLES",
+    "RETAINED_OLD7": "REUSED_EXACT_ACCEPTED_VERDICT_NO_REPLAY",
+    "PRODUCTION": "NO_IMPLEMENTATION_OR_RUNTIME_RELEASE_BY_THIS_REVIEW"
+  },
+  "counts": {
+    "newExecuted": 21,
+    "newPass": 12,
+    "newCausalRed": 9,
+    "retained": 7,
+    "totalQualifiedDistinct": 28,
+    "totalUniqueMethods": 10,
+    "totalPositive": 14,
+    "totalCausalRed": 14,
+    "consumerExecutions": 32,
+    "historicalUnqualifiedFixtureFailures": 4
+  },
+  "owners": [
+    {
+      "category": "daren-retirement-save-rewards",
+      "record": {
+        "path": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-save-5e6f57bb-20261017T100038Z/record.json",
+        "bytes": 23664,
+        "sha256": "e4e09f30d023528dc1a429431c406934a6a31cc02dd39369fd4692803e31805b"
+      },
+      "nativeExit": 1,
+      "wallSeconds": 7.121826056005375,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 1,
+        "Failed": 3
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "actualPlan": {
+        "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100039-741-90353-3919620539764e30b9170ee95d995f74-categories/plan.json",
+        "bytes": 1475,
+        "sha256": "9be91dcedfb9b0aa04890ea51078b5be026566d5deedaee6b382b31f815efe38"
+      },
+      "trx": {
+        "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100039-741-90353-3919620539764e30b9170ee95d995f74-categories/daren-retirement-save-rewards-integration-001.trx",
+        "bytes": 17693,
+        "sha256": "b1d7d63992d9e7eded29d64b2560b8c64b0cdb7f5ae3d820dc0306e9a8ef8384"
+      }
+    },
+    {
+      "category": "daren-retirement-browser-host",
+      "record": {
+        "path": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/record.json",
+        "bytes": 23912,
+        "sha256": "cb0d3ad8aac0fb891ad24a23bad9fc7b5288704d4d727748d6c61725eb274d7a"
+      },
+      "nativeExit": 1,
+      "wallSeconds": 8.538244183000643,
+      "tests": {
+        "Total": 17,
+        "Executed": 17,
+        "Passed": 11,
+        "Failed": 6
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 17,
+        "CompletedCases": 17,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "actualPlan": {
+        "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/plan.json",
+        "bytes": 1731,
+        "sha256": "cbba2fb71ca6a1e7ba473792c27d4d76c649e4ab92dd1d328b8b7527c5387239"
+      },
+      "trx": {
+        "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/daren-retirement-browser-host-integration-001.trx",
+        "bytes": 79667,
+        "sha256": "15042b724a3035605b477c79689a14490e06ea74eb4c625ef647f8acb17da3dd"
+      }
+    }
+  ],
+  "causalAssessment": [
+    {
+      "scope": "Fresh soul valid/duplicate/malformed",
+      "evidence": "All three real InitializeChaosSea calls return; canonical soul JSON is decoded, foreign-history byte equality passes, profile before/after hashes and currency diagnostics are emitted before final Assert.Empty at test line68. All three profiles change. Valid and duplicate yield currency6/6; malformed yields0/0 but still changes profile. Exact declared initial-byte hashes independently match diagnostics.",
+      "sourceCause": "GameEngine.MainMenu1102 calls ApplyBestRewardToNewSoulState; DarenQteRewardProfileService.ReadProfileBoundAsync reads/normalizes/writes the profile, then the best tier supplies new-soul currency.",
+      "limit": "Grant is null in all three final diagnostics; no persisted-grant-marker success is inferred. Complete profile/soul after-image bodies were not retained, and no general no-read observation is claimed."
+    },
+    {
+      "scope": "Save/load positive",
+      "evidence": "Real SaveGameAsync and LoadGameAsync both return true, then currency17/29, exact historical grant including unknown field, unrelated grant, opaque profile, unrelated owned history and archive-byte equality all pass. Diagnostic emitted after assertions.",
+      "limit": "One owned supported-schema fixture; not arbitrary old-save compatibility or deletion/migration authorization."
+    },
+    {
+      "scope": "HTTP menu and five direct routes",
+      "evidence": "Real loopback host health and applicable practice catalog/token prerequisites pass. Menu retains qte-practice and profile bytes, emits daren-showcase then final DoesNotContain fails. All five exact routes return200 Daren DTOs with preserved profile bytes, then final expected404 fails. GET is Intro with token/start+exit; four POSTs return Failed/StaleInteraction through actual registered Daren handlers.",
+      "sourceCause": "LocalWebUiMainMenuService450 exposes the Daren action; LocalWebUiHost241–250 registers all five paths to QteWebInteractionService.",
+      "limit": "Registered-route/handler survival is proven, not a successful campaign action from stale POSTs. Menu/routes have no soul-byte oracle; non404 alone would not suffice."
+    },
+    {
+      "scope": "Eleven practice HTTP controls",
+      "evidence": "Every distinct advertised type passes catalog, real start Active, action success Completed, retry Active, exit Catalog, exact profile and soul-byte preservation. Diagnostics identify all four operations and expected type.",
+      "limit": "HTTP requests supply grade=success to the accepted real C# API contract; no interactive browser/minigame playthrough or actual input/timing-grade proof."
+    }
+  ],
+  "binding": {
+    "packet": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/g1-first-s04-consumers-20261017.json",
+      "bytes": 15326,
+      "sha256": "bb5daf569dae6033d2d3b894b0ad2c308aec45c392de41690ca682594a9d6ad2"
+    },
+    "newRawChains": 16,
+    "rawStoredGzipLiveCommittedEqual": true,
+    "sevenBinaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9560064,
+        "sha256": "575557c4531a9d5a920ed8b4b98ee14655e68ef46c10c532d19b7dc13924ee04"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29326336,
+        "sha256": "30b12c57583a3fbd90f22cfc2459eba4f6614fb256d8a20cb0227ccddf96b111"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+      }
+    ],
+    "source": "72a→actual5e6→carrierd36 featuremetadata-only; product46ff unchanged",
+    "namespaceContinuous": true,
+    "strictOwnedRoots": 21,
+    "allPhysicallyAbsent": true,
+    "noUnderfillDuplicatesTimeoutOrCleanupFailure": true,
+    "recovery": {
+      "path": "/tmp/gm1558-g1-first-s04-consumers-delta-github-d36ee9a0-20261017.json",
+      "bytes": 25573,
+      "sha256": "6a9c9c01f4b343f8a4bcb36765f166b633636ac288e80a34c32eab2f273a8aeb",
+      "files": 34,
+      "changedPaths": 30
+    }
+  },
+  "retained": {
+    "decision": {
+      "path": "/tmp/gm1558-first-consumer-stop-evidence-independent-20261017.json",
+      "bytes": 11086,
+      "sha256": "61ab4efa256aa25715aee677ee87961ec03e365359881d5d01d1b266ffdabfda"
+    },
+    "support": {
+      "path": "/tmp/gm1558-first-consumer-stop-independent-check-20261017.json",
+      "bytes": 60630,
+      "sha256": "b62d4d70d34df9a0571d25d1bbf22eab610c2c9a8b45c0645aed0735fd9653c9"
+    },
+    "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+    "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+    "ordinaryPositive": 2,
+    "storageCausalRed": 4,
+    "consoleMenuCausalRed": 1,
+    "rawReplay": false
+  },
+  "history": {
+    "consumerExecutions": 32,
+    "qualifiedDistinctCases": 28,
+    "originalSaveFixtureFailures": 4,
+    "originalSaveLimit": "Original0xEF failures remain fixture-only with final oracles unreached; no physical old soul bytes/hashes/postconditions invented.",
+    "capture": "Earlier original failed capture and corrected accepted capture history retained separately; not counted in the32consumer executions."
+  },
+  "sourceReferences": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs",
+      "bytes": 4870,
+      "sha256": "5b92fe46af74610db5578593956aa577d310d8a78eef4d88bfe2c2737ad5ad98",
+      "lines": [
+        37,
+        54,
+        56,
+        64,
+        65,
+        68
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs",
+      "bytes": 3535,
+      "sha256": "50429a840bc77e189b7fd7fb59693bbb4de2fc8b2b1a2727e0674d4f7cb3ffa5",
+      "lines": [
+        22,
+        31,
+        34,
+        35,
+        36,
+        42
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs",
+      "bytes": 7451,
+      "sha256": "66004a2fb7f5b1e21793aabb5986bf1b803583b58bd4280c80ebb09befee4f72",
+      "lines": [
+        23,
+        31,
+        40,
+        54,
+        59,
+        83,
+        92,
+        105,
+        109
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "bytes": 167823,
+      "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
+      "lines": [
+        1101
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "bytes": 28635,
+      "sha256": "1ad5d5e42a27a4dd6a53c3403c0084c1f945c57b7377833e5368131f98fb8503",
+      "lines": [
+        136,
+        153,
+        246,
+        264
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "bytes": 17677,
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "lines": [
+        241
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "bytes": 36707,
+      "sha256": "519127ac828a9dd63fecf814afe6505a1dc4da7ca8c20dfcfea8ebb1e9a5ed28",
+      "lines": [
+        450
+      ]
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "bytes": 82146,
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "lines": [
+        599,
+        649,
+        721,
+        767,
+        842
+      ]
+    }
+  ],
+  "support": {
+    "path": "/tmp/gm1558-first-s04-consumers-independent-check-20261017.json",
+    "bytes": 66565,
+    "sha256": "f836da84c1409848194b2a6af215df85cb33d0e49d9436d39ede1d7ec26f91cc"
+  },
+  "nextGate": "After exact review persistence and Root remote/recovery readback, Root may separately authorize bounded G2 implementation under the accepted deletion/data-safety contract. This evidence review grants no code mutation or GREEN execution.",
+  "limits": [
+    "Both new commands native1 are expected final semantic failures; complete case accounting is true although failed categories are not marked successful.",
+    "No all99/fullG1/GREEN, generic regression, console11, frontend, interactive Chromium, Windows, CI, Library or full1558 completion claim.",
+    "No prior families/base/raw replay or build/test/producer/host/browser execution by reviewer.",
+    "Expected retirement RED confirms the current baseline still exposes/uses the campaign; user data, earned rewards and old evidence remain protected by the agreed removal contract."
+  ]
+}

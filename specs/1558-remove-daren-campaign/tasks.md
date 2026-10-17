@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: FIRST corrected save4+previouslyUNRUN HTTP17 completed once atactual5e6/compiled72a:21unique cases/5methods/2complete descriptors,12PASS+9locallycausal finalFAIL;16raw chains/21strict roots physicallyabsent preserved. Retainoldaccepted7cases atdf3/0b and4oldsavefixtureFAIL separately; proposedfinite28=14positivePASS+14causalRED awaits independentEVIDENCE. No source/product change or newtask completion; T004–T020 unchecked.
+**Current phase**: Independent G1 bounded causalbaseline ACCEPTED:28distinct/10methods=14positivePASS+14causalRED (new21at5e6/72a plus retained7atdf3/0b);old4savefixtureFAIL/capturehistory unchanged. Exactreview3reports+RootconditionalG2decision/d36readback/recovery persisted. G2implementation is next only after thiscarrier remote/recovery and Rootactivation; no product/removal/fullGREEN or furtheractual yet. T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -72,4 +72,7 @@ Historical S04 preparation at890: [16FIRST raw chains](recovery/g1-s04-first-pre
 Historical S04 binding before5e6 activation is [accepted independently](recovery/gm1558-g1-s04-source-independent-20261017.md); [conditional Root protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) still requires newcarrier readback/recovery and exact activation of corrected save4, followed separately by HTTP17. Neither actual ran. Keep7oldqualified cases and4oldfixtureFAIL at originalprovenance; no task completion or product release. T004–T020 remain unchecked.
 
 
-Current [FIRST corrected save4+HTTP17 evidence](recovery/g1-first-s04-consumers-20261017.json) retains21completed cases/12PASS/9locallycausal finalFAIL,16exact raw chains and21strict physically removed roots. Oldaccepted7 retaindf3/0b provenance;4oldsave fixtureFAIL remain unqualified history. Proposed finite28unique/10methods now has14positivePASS+14causalRED and awaits independent EVIDENCE; no broader G1 completion/product release or task check is inferred. T004–T020 stay unchecked.
+Historical pre-decision [FIRST corrected save4+HTTP17 evidence](recovery/g1-first-s04-consumers-20261017.json) retains21completed cases/12PASS/9locallycausal finalFAIL,16exact raw chains and21strict physically removed roots. Oldaccepted7 retaindf3/0b provenance;4oldsave fixtureFAIL remain unqualified history. Proposed finite28unique/10methods now has14positivePASS+14causalRED and awaits independent EVIDENCE; no broader G1 completion/product release or task check is inferred. T004–T020 stay unchecked.
+
+
+Current [independent accepted G1 causalbaseline](recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md) qualifies28distinct/10methods=14positivePASS+14causalRED, retaining4oldsavefixtureFAIL and originalcapturehistory separately. [Root conditional G2decision](recovery/gm1558-root-g1-evidence-accepted-g2-release-d36ee9a0-20261017.json) makes T010–T016 next after thismetadata carrier's exact publication/recovery and named Rootactivation; no product/removal/fullGREEN/furtheractual has happened. No checklist change is made before the tasks' complete implemented/verified scope; T004–T020 remain unchecked. RuntimeGREEN still requires fresh implementationSOURCE and separate Rootrelease.
