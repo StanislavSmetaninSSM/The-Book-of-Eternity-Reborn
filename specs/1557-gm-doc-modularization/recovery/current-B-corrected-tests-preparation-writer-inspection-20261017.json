@@ -1,0 +1,180 @@
+{
+  "kind": "B_S01_S02_FRESH_CORRECTED_TESTS_ONLY_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_RED_ACCEPTANCE",
+  "createdUtc": "2026-10-17T06:08:42.296622+00:00",
+  "compiledSource": "324594a930dcb3aaf17aaf2441f47193f214957c",
+  "nativeCatalog": {
+    "exit": 0,
+    "seconds": 88.36000817400054,
+    "categories": 808,
+    "discoveredMethods": 11786,
+    "testExecutions": 0,
+    "phases": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0391861,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0334816,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0906682,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 70.3278029,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 11.2915391,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0030172,
+        "Completed": true
+      }
+    ]
+  },
+  "exactPlan": {
+    "exit": 0,
+    "seconds": 5.766240414002823,
+    "categories": 9,
+    "descriptors": 9,
+    "uniqueMethods": 26,
+    "cases": 75,
+    "testExecutions": 0,
+    "byCategory": {
+      "gm-doc-afterlife-package-delivery": 1,
+      "gm-doc-block5-content-boundary": 1,
+      "gm-doc-block5-current-body-guards": 14,
+      "gm-doc-block5-delivery-source": 1,
+      "gm-doc-block5-package-negatives": 2,
+      "gm-doc-block5-permissions-links": 8,
+      "gm-doc-block5-preservation": 16,
+      "gm-doc-block5-reading": 20,
+      "gm-doc-block5-shared-preservation": 12
+    },
+    "planSha256": "4e6540a3a09d7a7214a48d20fb0d7173a5411b01be2faab38145e8ebebb7863d",
+    "onlyFirstCausalBoundaries": [
+      {
+        "Name": "gm-doc-block5-content-boundary-unit-002",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "gm-doc-block5-content-boundary",
+        "Categories": [
+          "gm-doc-block5-content-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 2,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "gm-doc-afterlife-package-delivery-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "gm-doc-afterlife-package-delivery",
+        "Categories": [
+          "gm-doc-afterlife-package-delivery"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "Adapter": "integration",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 2,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "rawChainsVerified": 12,
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "1011d9ae97b576a48d4db95a5c7775ff1c9fe4a619b217246a45666b41ef6766",
+      "bytes": 9554432
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "4cdf4e622533f107bb3200725372331b68dd7b797cb445789ece8721a6984b32",
+      "bytes": 29221888
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "494046e31c385497097f6d416d81e8071a677bce0beff831b7299d03feafcbd7",
+      "bytes": 1985536
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "494046e31c385497097f6d416d81e8071a677bce0beff831b7299d03feafcbd7",
+      "bytes": 1985536
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "62815145b2f44b53ac35d1af7c8f8f319c4092caeeb0b060c84dd1e9fd8576ee",
+      "bytes": 26181632
+    }
+  ],
+  "packagePinChain": {
+    "rawPath": "/tmp/gm1557-B-corrected-tests-package-pins-324594a9-20261017.json",
+    "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-corrected-tests-package-pins-324594a9-20261017.json.gz",
+    "bytes": 83340,
+    "sha256": "1491fe9d20f74ac7f2451064c81512fc30fa440449f6d163bed9f8e7406fb2bd",
+    "storedSha256": "746d2d2522ee08e7bd5c066bc223de6e041888a1785d990802e2ecb141cb9cc5",
+    "compression": "gzip mtime0",
+    "files": 244,
+    "totalBytes": 45038544,
+    "all36SourcePackageDocsEqual": true,
+    "currentBSourcePackagePresent": [
+      "Rules/Block_5.txt",
+      "Examples/E_Block_5.txt"
+    ],
+    "currentBSourcePackageAbsent": [
+      "Rules/Block_5_Units_Ids.txt",
+      "Examples/E_Block_5_Units_Ids.txt",
+      "Rules/Block_5_Characteristics_Progression.txt",
+      "Examples/E_Block_5_Characteristics_Progression.txt",
+      "Rules/Block_5_Combat_Foundations.txt",
+      "Examples/E_Block_5_Combat_Foundations.txt",
+      "Rules/Block_5_Items_Resources.txt",
+      "Examples/E_Block_5_Items_Resources.txt",
+      "Rules/Block_5_Narrative_Social.txt",
+      "Examples/E_Block_5_Narrative_Social.txt",
+      "Rules/Block_5_Wounds.txt",
+      "Examples/E_Block_5_Wounds.txt",
+      "Rules/Block_5_World_Chronology.txt",
+      "Examples/E_Block_5_World_Chronology.txt"
+    ]
+  },
+  "preparationPrefixesUnchanged": true,
+  "actual": "NONE; independent concrete SOURCE/persistence/recovery/root release still required; only content-boundary1 and genuinepublisher1 proposed first causal actuals. Physical negatives held until actual module authoring.",
+  "recovery": "Retained full7a+complete consecutive exact GitHub deltas; no fullclone/base-byte rehash.",
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,subprocess,stat\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';source='324594a930dcb3aaf17aaf2441f47193f214957c'\nj=json.loads((rec/'current-B-corrected-tests-fresh-preparation-20261017.json').read_text());assert len(j['commands'])==2 and len(j['files'])==12\nfor f in j['files']:\n z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\ncatalog,plan=j['commands'];assert catalog['mode']=='catalog' and plan['mode']=='plan' and catalog['nativeExit']==plan['nativeExit']==0 and catalog['sourceHead']==plan['sourceHead']==source\nassert len(catalog['binaryAfter'])==7 and catalog['binaryAfter']==plan['binaryBefore']==plan['binaryAfter']\nfor x in plan['binaryAfter']:\n b=(r/x['path']).read_bytes();assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']\nfor c in j['commands']:\n s=json.loads((Path(c['resultDirectories'][0])/'summary.json').read_text());assert s['ExitCode']==0 and s['Tests']==dict(Total=0,Executed=0,Passed=0,Failed=0) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and c['ownedPrefixesBefore']==c['ownedPrefixesAfter'] and c['statusAfter']==''\ncs=json.loads((Path(catalog['resultDirectories'][0])/'summary.json').read_text());audit=cs['CatalogAudit'];assert audit['Valid'] and not audit['Unmapped'] and not audit['StaleSelectors']\nps=json.loads((Path(plan['resultDirectories'][0])/'summary.json').read_text());assert ps['PlanOnly']\npp=Path(plan['resultDirectories'][0])/'plan.json';ds=json.loads(pp.read_text())['Descriptors'];methods=[m for d in ds for m in d['ExpectedMethodCounts']]\nassert len(methods)==len({m['Name'] for m in methods})\nexpected=json.loads((rec/'current-B-corrected-tests-source-selection-20261017.json').read_text());assert {m['Name'] for m in methods}=={m['method'] for m in expected['methods']}\nobserved={}\nfor d in ds:observed[d['Category']]=observed.get(d['Category'],0)+sum(m['Cases'] for m in d['ExpectedMethodCounts'])\n# Any mismatch stops this first preparation inspection; do not silently fit a planned count.\nassert observed=={c['category']:c['cases'] for c in expected['proposedByCategory']},observed\nboundary=[d for d in ds if d['Category']=='gm-doc-block5-content-boundary'];publisher=[d for d in ds if d['Category']=='gm-doc-afterlife-package-delivery'];assert len(boundary)==len(publisher)==1 and boundary[0]['EstimatedCases']==publisher[0]['EstimatedCases']==1\nbase=r/'BookOfEternityClient/bin/Debug/net8.0'\ndef pin(p):\n b=p.read_bytes();return dict(path=str(p.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),mode=oct(stat.S_IMODE(p.stat().st_mode)))\nphysical=[]\nfor p in sorted(base.rglob('*')):\n assert not p.is_symlink(),p\n if p.is_file():physical.append(pin(p))\ncontent=json.loads((r/'specs/1557-gm-doc-modularization/content-map.json').read_text());docs=[]\nfor row in content['expectedDelivery']:\n path=row['path'];a=r/path;b=base/'operational-resources'/path;assert a.read_bytes()==b.read_bytes(),path\n docs.append(dict(path=path,source=pin(a),package=pin(b),equal=True))\nassert len(docs)==36\nfor path,target in [('BookOfEternityClient/game_master_daemon.ps1','game_master_daemon.ps1'),('BookOfEternityClient/Launcher/gm_main_operation.ps1','Launcher/gm_main_operation.ps1'),('BookOfEternityClient/Launcher/GM_Turn_Helper.ps1','Launcher/GM_Turn_Helper.ps1')]:assert (r/path).read_bytes()==(base/target).read_bytes(),path\nmapping=json.loads((r/'specs/1557-gm-doc-modularization/block5-content-map.json').read_text());bpaths=[s['path'] for s in mapping['sources']]+[t[k] for t in mapping['topics'] for k in ['rulePath','examplePath']];present=[];absent=[]\nfor path in bpaths:\n a=r/path;b=base/'operational-resources'/path\n if not a.exists():assert not b.exists();absent.append(path)\n else:assert a.read_bytes()==b.read_bytes();present.append(dict(path=path,source=pin(a),package=pin(b)))\npk=dict(kind='FRESH_TESTS_ONLY_B_PACKAGE_INPUT_PINS_NOT_SESSION_DELIVERY_PROOF',sourceHead=source,createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),packageRoot=str(base),fileCount=len(physical),totalBytes=sum(p['bytes'] for p in physical),files=physical,retained36SourcePackageDocs=docs,currentBSourcePackagePresent=present,currentBSourcePackageAbsent=absent,daemonAndTwoLauncherSourcesEqual=True,expectedPublication='CurrentExpected52 is the intended post-real-producer oracle, not a pre-copy fixture prerequisite. Real production still36 and missing newmodules is expected before authoring. No producer executed in preparation.')\nraw=json.dumps(pk,indent=2)+'\\n';b=raw.encode();z=gzip.compress(b,mtime=0);p=Path('/tmp/gm1557-B-corrected-tests-package-pins-324594a9-20261017.json');p.write_bytes(b);dest=rec/'current-B-corrected-tests-package-pins-324594a9-20261017.json.gz';assert not dest.exists();dest.write_bytes(z)\ninspection=dict(kind='B_S01_S02_FRESH_CORRECTED_TESTS_ONLY_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_RED_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),compiledSource=source,nativeCatalog=dict(exit=0,seconds=catalog['wallSeconds'],categories=audit['Categories'],discoveredMethods=audit['Methods'],testExecutions=0,phases=cs['PhaseResults']),exactPlan=dict(exit=0,seconds=plan['wallSeconds'],categories=len(observed),descriptors=len(ds),uniqueMethods=len(methods),cases=sum(m['Cases'] for m in methods),testExecutions=0,byCategory=observed,planSha256=hashlib.sha256(pp.read_bytes()).hexdigest(),onlyFirstCausalBoundaries=[boundary[0],publisher[0]]),rawChainsVerified=12,binaryPins=plan['binaryAfter'],packagePinChain=dict(rawPath=str(p),storedPath=str(dest.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0',files=pk['fileCount'],totalBytes=pk['totalBytes'],all36SourcePackageDocsEqual=True,currentBSourcePackagePresent=[x['path'] for x in present],currentBSourcePackageAbsent=absent),preparationPrefixesUnchanged=True,actual='NONE; independent concrete SOURCE/persistence/recovery/root release still required; only content-boundary1 and genuinepublisher1 proposed first causal actuals. Physical negatives held until actual module authoring.',recovery='Retained full7a+complete consecutive exact GitHub deltas; no fullclone/base-byte rehash.',helperText=Path(__file__).read_text())\nout=rec/'current-B-corrected-tests-preparation-writer-inspection-20261017.json';assert not out.exists();out.write_text(json.dumps(inspection,indent=2)+'\\n');print('B_PREPARATION_INSPECTED',len(j['files']),'chains/7DLL;native',len(observed),'categories',len(ds),'descriptors',len(methods),'methods',sum(m['Cases'] for m in methods),'cases;0executions;package',len(physical),'files')\n"
+}

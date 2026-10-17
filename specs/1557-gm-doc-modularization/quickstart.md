@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Current corrected B preparation — 2026-10-17
+
+Canonical global/mirror selection is9categories/9native descriptors/26unique methods/75cases, confirmed by first corrected324freshcatalog/PlanOnly with0executions. [Exact preparation and pins](recovery/current-B-corrected-tests-fresh-preparation-20261017.json) and [inspection/package binding](recovery/current-B-corrected-tests-preparation-writer-inspection-20261017.json) are preparation only. Final affected SOURCE/persistence/recovery then separate rootrelease are required. First actuals are only content-boundary1, then separately genuinepublisher1 after first-boundary inspection; other groups/physical negatives/content authoring stay held. Prior4ab native67/SOURCE_NOT_READY remains history; no B test has executed.
+
 ## Corrected B tests-only selection — 2026-10-17
 
 Current global/mirror B selection remains9categories; corrected fixture source proposes26methods/75cases, fresh discovery pending. [SOURCE_NOT_READY findings](recovery/current-B-tests-source-independent-review-20261017.md) and first4ab native67/0exec remain preserved. [Corrected packet](recovery/current-B-corrected-tests-source-selection-20261017.json) binds exactconditionalprerequisites/profileavailability and wholemanifest-only2locatorinverse controls. No new actual/build has run; publish/recover before fresh preparation/affected SOURCE. Only separately released content-boundary1 and genuinepublisher1 are initial causal REDs; all production/content/profile changes remain held.
