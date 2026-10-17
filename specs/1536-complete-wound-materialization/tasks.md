@@ -1,3 +1,7 @@
+## A1-F01 TEST fixture correction WIP — fresh preparation/SOURCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first344 packet persisted/recovered before edits. Minimal corrected physical snapshot uses files.ResolvePath plus supplied presence/exact encoded preimage guard; product and same category membership/counts/budgets unchanged. Current selection documents affected WithOwner controls and retains accepted Late2 without replay. [Current checkpoint](plan.md): immediate WIP persistence/newdelta, fresh changed-test BOTH/catalog/PlanOnly0, affected independent SOURCE before corrected52. No user/design/oldRED/Late2/base repetition; all actual HELD.
+
 ## A1 boundary first native PASS exposes A1-F01 — later actuals HELD (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first boundary2 native0/2PASS establishes real Compute/helper/strict cleanup, but all3 source Images absent reveal wrong-base-root byte probes. Root confirms A1-F01 fixture/evidence defect, not product failure. [Current checkpoint](plan.md) preserves first6rawchains and limitations before any edit. Publish/readback/newexactdelta, then authorized minimal TEST-only ResolvePath/preimage-presence guard, fresh changed-test preparation and affected independent SOURCE before corrected52. Pure33/ordinary17 UNRUN; no old RED/Late2/base repetition or user/design gate.

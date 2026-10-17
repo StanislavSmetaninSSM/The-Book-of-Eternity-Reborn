@@ -170,12 +170,18 @@ public sealed class TrainingLevelPolicyTests(ITestOutputHelper output)
             var sources = new[] { experience, status, soul };
             for (var i = 0; i < Sources.Length; i++)
                 if (sources[i] is { } json) await files.WriteFileAtomicAsync(Sources[i], json);
-            var before = Sources.Select(path => ReadPhysical(root, path)).ToArray();
+            var before = Sources.Select(path => ReadPhysical(files, path)).ToArray();
+            for (var i = 0; i < Sources.Length; i++)
+            {
+                Assert.Equal(sources[i] is not null, before[i] is not null);
+                if (sources[i] is { } expectedJson)
+                    Assert.Equal(FileSystemManager.EncodeUtf8WithPreamble(expectedJson), before[i]);
+            }
             var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
             var owner = new CharacteristicsService(files, state, NullLogger<CharacteristicsService>.Instance);
             observing = true;
             await check(owner, reads, error => fault = error);
-            for (var i = 0; i < Sources.Length; i++) Assert.Equal(before[i], ReadPhysical(root, Sources[i]));
+            for (var i = 0; i < Sources.Length; i++) Assert.Equal(before[i], ReadPhysical(files, Sources[i]));
             output.WriteLine(JsonSerializer.Serialize(new
             {
                 Boundary = "ordinary_training_level_sources", Root = root, Reads = reads,
@@ -194,9 +200,9 @@ public sealed class TrainingLevelPolicyTests(ITestOutputHelper output)
         }
     }
 
-    private static byte[]? ReadPhysical(string root, string path)
+    private static byte[]? ReadPhysical(FileSystemManager files, string path)
     {
-        var physical = Path.Combine(root, path);
+        var physical = files.ResolvePath(path);
         return File.Exists(physical) ? File.ReadAllBytes(physical) : null;
     }
 }
