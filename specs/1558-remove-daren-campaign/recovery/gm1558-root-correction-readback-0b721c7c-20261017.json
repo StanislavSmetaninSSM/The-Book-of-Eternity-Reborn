@@ -1,0 +1,19 @@
+{
+  "head": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "verifiedPins": 60,
+  "pinErrors": [],
+  "addedActualSourceDependencies": [
+    "BookOfEternityClient/AgentConsole/AgentConsoleE2EObservationMapper.cs",
+    "BookOfEternityClient/AgentConsole/AgentConsoleInputModels.cs",
+    "BookOfEternityClient/Core/ConsoleMainMenuInputHandler.cs",
+    "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+    "BookOfEternityClient/Services/QteKeyInput.cs",
+    "BookOfEternityClient/Services/QteSceneService.AgentConsole.cs"
+  ],
+  "productionDelta": [],
+  "changedPaths": 18,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-0b721c7c-20261017.json",
+  "sourceReview": "PENDING_AFTER_FRESH_PREP",
+  "actualRelease": "NONE",
+  "rootReadUtility": "First read used old packet key pins and stopped at KeyError before file changes; corrected to actual sourcePins. No native/test/runtime/preparation outcome or source edit."
+}

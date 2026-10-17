@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: FIRST capture2 fixture failure S03 independently confirmed (2FAIL/0packets; original raw preserved). Consolidated Root-authorized tests-only S01/S02/S03 correction authored, uncompiled/unrun; fresh0execprep follows publication, then targeted SOURCE and separate newcapture release. No consumer/TestData/production/prompts/other actual. T001–T003 complete; T004–T020 unchecked.
+**Current phase**: Consolidated G1-S01/S02/S03 tests-only correction compiled at0b. FIRST freshBOTH/catalog0 +exactPlanOnly0:16owners/18descriptors/48methods-or-files/99estimated (91C#cases+8frontendfiles),0exec;12raw/new7pins preserved. Targeted independent SOURCE and separate exact-source Root newcapture release pending. Original2FAIL/no-packets retained; no consumer/TestData/console/frontend/production/removal actual. T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 

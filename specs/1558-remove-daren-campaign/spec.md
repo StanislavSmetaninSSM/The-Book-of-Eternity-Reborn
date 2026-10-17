@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST capture2 fixture failure S03 independently confirmed (2FAIL/0packets; original raw preserved). Consolidated Root-authorized tests-only S01/S02/S03 correction authored, uncompiled/unrun; fresh0execprep follows publication, then targeted SOURCE and separate newcapture release. No consumer/TestData/production/prompts/other actual. T001–T003 complete; T004–T020 unchecked.
+**Status**: Consolidated G1-S01/S02/S03 tests-only correction compiled at0b. FIRST freshBOTH/catalog0 +exactPlanOnly0:16owners/18descriptors/48methods-or-files/99estimated (91C#cases+8frontendfiles),0exec;12raw/new7pins preserved. Targeted independent SOURCE and separate exact-source Root newcapture release pending. Original2FAIL/no-packets retained; no consumer/TestData/console/frontend/production/removal actual. T004–T020 unchecked.
 
 ## Source issues and scope
 

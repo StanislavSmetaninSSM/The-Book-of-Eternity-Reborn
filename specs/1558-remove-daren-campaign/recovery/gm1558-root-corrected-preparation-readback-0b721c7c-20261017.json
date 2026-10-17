@@ -1,0 +1,17 @@
+{
+  "source": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "catalogNative": 0,
+  "planNative": 0,
+  "catalogSeconds": 86.33509949700237,
+  "planSeconds": 5.850159539997549,
+  "categoryCount": 16,
+  "descriptorCount": 18,
+  "estimatedCasesOrFiles": 99,
+  "executed": 0,
+  "sevenPinsCurrentAndChainVerified": true,
+  "catalogRecordSha256": "03344018d76cd97956220ad247cc5c69e794da0452eee2ad5850ed1360971f59",
+  "planRecordSha256": "635552f7dc4230334c66f0136814210e5407c7d2a263d3ed6f4037d9e4e4b64a",
+  "actualRelease": "NONE",
+  "sourceReview": "PENDING"
+}

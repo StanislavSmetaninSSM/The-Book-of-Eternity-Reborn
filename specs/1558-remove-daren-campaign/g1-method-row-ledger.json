@@ -1,5 +1,5 @@
 {
-  "status": "CORRECTED_G1_STATIC_METHOD_ROW_LEDGER; G1-S01/S02/S03 concrete correction authored, fresh preparation/SOURCE pending; old native membership historical",
+  "status": "CORRECTED_G1_LEDGER_AND_ZEROEXEC_NATIVE_MEMBERSHIP; targeted independent SOURCE/actual pending",
   "baseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "transfer": {
     "newOwners": [
@@ -129,7 +129,7 @@
     "scope": "G1 exact split; G2 only retired branches/dependencies removed while8 generic tuple oracles remain"
   },
   "captureDataStatus": "UNRUN; browser7/standalone1 packet files intentionally absent until separately released capture and frozen-data source review; no fallback",
-  "testsBuildDiscoveryActual": "Corrected tests uncompiled/unrun. Historical05d zeroexec prep remains; FIRST fdf9 capture2 actual2FAIL/0artifacts confirmed fixture S03, not retirementRED.",
+  "testsBuildDiscoveryActual": "Fresh correctedBOTH/catalog0 +exactPlanOnly0; new actual/capture/consumer/console/frontend/browser UNRUN. Historical05d capture2FAIL/no packets preserved.",
   "metadataUtilityFirstOutcomes": [
     {
       "helper": "/tmp/gm1558-g1-categories-first.py",
@@ -9265,15 +9265,15 @@
     "Actual ordinary Linux protocol-admission five unchanged cases selected for changed early-classification/pending precedence edge."
   ],
   "nativeMembership": {
-    "categories": 16,
+    "owners": 16,
     "descriptors": 18,
-    "uniqueMethodsAndFiles": 48,
+    "uniqueMethodsOrFiles": 48,
     "csharpMethods": 40,
     "csharpCases": 91,
-    "frontendFiles": 8,
-    "frontendTypesAndBehaviorNotExecuted": true,
-    "estimatedCasesOrFiles": 99,
-    "allExpectedMethodCounts": [
+    "frontendFilesEstimated": 8,
+    "totalEstimated": 99,
+    "executed": 0,
+    "methodRows": [
       {
         "Name": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteAndDarenSplitSources_PreserveReviewedExecutableInventories",
         "Cases": 1,
@@ -9572,5 +9572,5 @@
     "G1-S01": "Genuine ChargeRelease keys + exact selected chapter/result/live-frame witness; per-ready-snapshot keys; task settling before any root cleanup, unresolved task retains input/root and fails qualification. Existing11 rows/category3m unchanged.",
     "G1-S03": "Existing strict FileSystemManager.ParseSessionGenerationText with BOM-aware captured byte decoding; Capture/Instantiate/storage4 read corrections. No new alias/fallback or product serialization change."
   },
-  "nativeMembershipSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0 (historical0exec; new corrected prep pending)"
+  "nativeMembershipSource": "0b721c7c37207f1f1622172351fd515150eaf18d"
 }
