@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Current B FIRST RED block — 2026-10-17
+
+[Two separately released FIRST outcomes](recovery/current-B-first-causal-red-20261017.json): content-boundary1 native1/finalmissingmodule oracle and genuinepublisher1 native1/real36→expected52 finalclosure. [Writer inspection](recovery/current-B-first-causal-red-writer-inspection-20261017.json) and [six raw fixture artifacts](recovery/current-B-first-causal-red-fixture-artifacts-20261017.json) bind source0709/compiled324/sevenpins/process/EOF/generatedraw/twostrictrootsgone. Full selection75 now has2executed0PASS2expectedFAIL/73UNRUN. Independent causalEVIDENCE and separate implementation release still required; no more actual/content/daemon/profile changes. All earlier prep/SOURCE dispositions remain historical source-bound records.
+
 ## Current B SOURCE accepted; actual still gated — 2026-10-17
 
 [Exact corrected independent SOURCE](recovery/current-B-corrected-tests-source-independent-review-20261017.md) binds compiled324/freshcatalog and carrier8207. Native full membership9categories/9descriptors/26methods/75cases has0executions. Persist/recover the decision, then only separately root-released canonical content-boundary1/-NoBuild; first outcome inspection precedes a separate genuinepublisher1 release. No B content/daemon/profile implementation or other actual until causal EVIDENCE/release. Original SOURCE_NOT_READY and all old accepted evidence stay unchanged.
