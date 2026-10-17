@@ -19,7 +19,7 @@ public sealed class DarenRetirementSaveTests(ITestOutputHelper output)
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
         var state = PortableSaveFixture.Seed(files);
-        var soul = JsonNode.Parse(File.ReadAllBytes(files.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
+        var soul = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 17, ["total"] = 29 };
         var grant = new JsonObject { ["source"] = "daren_qte_showcase", ["tierId"] = "perfect_shadow", ["inkFeatherBonus"] = 6,
             ["grantedAtUtc"] = "2026-06-11T05:00:00Z", ["historicalUnknownField"] = "retain-owned-data" };
@@ -32,7 +32,7 @@ public sealed class DarenRetirementSaveTests(ITestOutputHelper output)
         var archive = Assert.Single(Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip"));
         var archiveBefore = File.ReadAllBytes(archive);
         Assert.True(await service.LoadGameAsync(archive));
-        var loaded = JsonNode.Parse(File.ReadAllBytes(files.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
+        var loaded = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
         Assert.Equal(17, loaded["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.Equal(29, loaded["inkFeathers"]!["total"]!.GetValue<int>());
         Assert.True(JsonNode.DeepEquals(grant, loaded["clientRewardGrants"]!["darenQteShowcase"]));

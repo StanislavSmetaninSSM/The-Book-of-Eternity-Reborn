@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST finiteconsumer block STOP atsave4 fixtureBOMparse:4owners/11cases executed,2PASS+9FAIL (storage4/menu1 locallycausal,save4unqualifiedfixture);HTTP17UNRUN. All32raw chains/11strictphysicallyremovedroots preserved; sameactualdf3/compiled0b/product46ff/data/selectors/7DLL. IndependentcausalEVIDENCE pending; no retry/sourcefix/production. T004–T020 unchecked.
+**Status**: Partial causal EVIDENCE accepted: ordinary2PASS/storage4+menu1causalRED; save4 confirmedG1-S04fixturedecoderFAIL,HTTP17UNRUN. Exact3canonical soul testreads corrected in2files only, unchangedoracles/profile/archive/product; remaining2owners/5methods/21cases authored. FreshBOTH/catalog+remainingPlanOnly and targetedSOURCE pending; noactual/replay/G2. Historicaldf3/0b raw retained; T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -78,4 +78,7 @@ Historical [NoBuild data/selector preparation](recovery/g1-data-selector-first-p
 Historical [accepted data/selector/PREP binding](recovery/gm1558-g1-data-selector-independent-20261017.md) remains source/preparation qualification only. [Root conditional per-owner decision](recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json) requires exact metadata publication/readback/recovery and separately names ordinary2 first, then gates each other owner on preserved FIRST raw. No consumer behavior/retirement RED or requirement/success-criterion completion is declared here; product removal remains held.
 
 
-Current [FIRST finite-consumer partialSTOP](recovery/g1-first-consumer-stop-20261017.json) preserves11executed/2PASS/9FAIL with5locallycausal retirement failures and4unqualified save fixtureBOMparse failures; HTTP17 remainsUNRUN. Independent causal classification/remaining fixture correction is pending. No save-preservation proof, full28 execution or requirement/success-criterion completion is claimed; production removal and additional runtime remain held.
+Historical [FIRST finite-consumer partialSTOP](recovery/g1-first-consumer-stop-20261017.json) preserves11executed/2PASS/9FAIL with5locallycausal retirement failures and4unqualified save fixtureBOMparse failures; HTTP17 remainsUNRUN. Independent causal classification/remaining fixture correction is pending. No save-preservation proof, full28 execution or requirement/success-criterion completion is claimed; production removal and additional runtime remain held.
+
+
+Current [partial causal EVIDENCE acceptance](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) qualifies ordinary2PASS and5storage/menuRED while retaining4save fixture failures and HTTP17unrun. [Narrow S04 test correction](g1-s04-correction-source-packet-20261017.json) awaits fresh affected preparation/independentSOURCE before remaining21 actuals. Production/removal and all functional/success-criterion completion claims remain held.

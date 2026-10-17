@@ -1,0 +1,887 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_FIRST_CONSUMER_STOP_RAW_AND_TRANSPORT_CHECK",
+  "utc": "2026-10-17T09:44:38.928958+00:00",
+  "carrier": "589cdcd52ded67313e11d66909767be43d74f855",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "rawChains": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/record.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/record.json",
+      "bytes": 23072,
+      "sha256": "58a774fba99a929492ab406f9e587ea65a968a56b79e05053a1a4c361a435d48",
+      "storedSha256": "984fc84077fdb009698ec1091da402f049802b956fcb58dc5316387de5f95894"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/stdout.log.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/stdout.log",
+      "bytes": 2189,
+      "sha256": "728afc81b50c3fbc3c65cda555d09651eec25fee144855d3eb9661a56874e68f",
+      "storedSha256": "d880e34027cc7e2c9452a516fd835098a43e606e5739cf92df7521b568964a1e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/first-launch-sentinel.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/0b721c7c37207f1f1622172351fd515150eaf18d-daren-retirement-ordinary-storage.consumer-red.first-launch.json",
+      "bytes": 493,
+      "sha256": "8f0f96ae2fc45b98cb858696c76663dc83926aafab9222a16fd531201a127d41",
+      "storedSha256": "ed62ef89bdf72f364424b3abc0a818391f5776e42b761bdf52a1a1503e07fce7"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/process.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/process.json",
+      "bytes": 376,
+      "sha256": "ca838f4e65aae63bc5fafee05791ca47917e61e07b7e0f50526c46136a32f897",
+      "storedSha256": "c320c083a63047c598b74fddf3bb93176190d7bcc80c0ee73850895a283d56be"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/daren-retirement-ordinary-storage-integration-001.trx.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093401-250-86237-01a2cf00828442638a76308c4d87a005-categories/daren-retirement-ordinary-storage-integration-001.trx",
+      "bytes": 5572,
+      "sha256": "f0204623f87a6909aa69debbf1f11052f7e77615fddc1564b681f168b594bd06",
+      "storedSha256": "63c0c76e96535f11f052f39c78435d89153c47ef10d7913a9eefe699f67f207c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/dotnet-test.log.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093401-250-86237-01a2cf00828442638a76308c4d87a005-categories/dotnet-test.log",
+      "bytes": 1702494,
+      "sha256": "988e8c627be8bf8ea3e6d596dc96b7e16c33928d24b44433757fa146e2715151",
+      "storedSha256": "017fa115cc0780b6688fdc5d4f9ffbb762cafed042e5b7274ccba810b51e852c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/plan.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093401-250-86237-01a2cf00828442638a76308c4d87a005-categories/plan.json",
+      "bytes": 1455,
+      "sha256": "30988374fd0e1c39ba91320723ebe7427f2bb0ffd77ebff91a990802f2c2cf2d",
+      "storedSha256": "9348c76014fa1a18c8d01b94bc20f440d842200435baefebb2f941281335ef03"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/summary.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093401-250-86237-01a2cf00828442638a76308c4d87a005-categories/summary.json",
+      "bytes": 1473,
+      "sha256": "75e744efc96d7582ccb901bb41998a95cf6e168d971a71e6452d946ae4c9171a",
+      "storedSha256": "d81be1a15d3ee3f923be3cbf94d327c777d36940d468b558bfcd31725f927368"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/record.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-storage-df3ee99c-20261017T093609Z/record.json",
+      "bytes": 23065,
+      "sha256": "6d8fa0652547ad9996e8ea264c296c9a0aec1c11ebeac9d35c88bb27d4bcaef1",
+      "storedSha256": "3d95cdff118dc302bdc47b7a9b9de48a9c14baf6f50168da5d3799e906816bf9"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/stdout.log.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-storage-df3ee99c-20261017T093609Z/stdout.log",
+      "bytes": 28699,
+      "sha256": "1be99d64d11e2e6f3e01c8286fdfe2260c9bef4f8008c22609aa3dc3bc7a284c",
+      "storedSha256": "1320e107a60f14f6ba489dd8fa7ff915864537949a934d103596be9a75689a95"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/first-launch-sentinel.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/0b721c7c37207f1f1622172351fd515150eaf18d-daren-retirement-storage-refusal.consumer-red.first-launch.json",
+      "bytes": 495,
+      "sha256": "55a8bddd278d65748c08da8dc2ace3522cffa2e2bd0ad318285ec45bc8a92100",
+      "storedSha256": "49b15f8b11171c5700767b520296f05ae5df592f990e8449ec69656a9f3132b4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/process.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-storage-df3ee99c-20261017T093609Z/process.json",
+      "bytes": 375,
+      "sha256": "563abaf0893d8e624e12fa47d83d052bc61c9021b99d139b7b38fdeb899d97dc",
+      "storedSha256": "b857739420e7026989f831a2133a756f5ca3dbcc3ff56bf3383cd1d7deb1cd91"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/daren-retirement-storage-refusal-integration-001.trx.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093610-040-86584-4bed861e5afe4735bfbe9d6b2b00194f-categories/daren-retirement-storage-refusal-integration-001.trx",
+      "bytes": 60928,
+      "sha256": "25ea2b273d8ce27e5ac26d80dff937df89d9a0081f23c8d19641e150dda5cdad",
+      "storedSha256": "51e920250749dd8ff49342f36b98a5bc00dc70cce7206c918c533ec3335be411"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/dotnet-test.log.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093610-040-86584-4bed861e5afe4735bfbe9d6b2b00194f-categories/dotnet-test.log",
+      "bytes": 1729007,
+      "sha256": "aa39246699987ca8ff57b9f3fab93158dc740d2394b5ab98a95c433645b8ef72",
+      "storedSha256": "f0a28d760289479874068c9338d9ca75932b7e1ce2da1bad7f07c234d5d4d5e4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/plan.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093610-040-86584-4bed861e5afe4735bfbe9d6b2b00194f-categories/plan.json",
+      "bytes": 1447,
+      "sha256": "8b7aaf5ac3208242ee68ad4d47fa84c4abe4a62e074174ea40626e606b2d9395",
+      "storedSha256": "e8b016e4aaa11515df4be512979d6345aa8baf474cb4dc376c1df53f28be1b6c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/summary.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093610-040-86584-4bed861e5afe4735bfbe9d6b2b00194f-categories/summary.json",
+      "bytes": 1373,
+      "sha256": "1e375469a0a9604491e96c5965149f7bb44c61ad91001b3377b6e75ae56212d6",
+      "storedSha256": "5c5f420b15a013e2b721c17cdbe84c46e8a11dfbe88a30a3906de221576f187c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/record.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/record.json",
+      "bytes": 22770,
+      "sha256": "b99db9cd74551b011263d2194a03a612101b02ae9bed6dcb109481c1d00de17b",
+      "storedSha256": "108e2536272ac8695159474b485d57fef8fdfee8e8e328ef6ffec949fb0d2ee7"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/stdout.log.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/stdout.log",
+      "bytes": 3239,
+      "sha256": "0aa29949f09271de9c58ffd2ca5976b5466256f16a513efbb3eeec84bf0a65ad",
+      "storedSha256": "df49fde3cbcef07f6b407b515a70cebb1bab15756c79674e1d224618bc046b7d"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/first-launch-sentinel.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/0b721c7c37207f1f1622172351fd515150eaf18d-daren-retirement-console-menu.consumer-red.first-launch.json",
+      "bytes": 489,
+      "sha256": "715faa69f2e25caa0d87ebe8856fa57199de19ec47e497018e89305af317cadd",
+      "storedSha256": "88a3a0de4cd57322680fed2f545b186e49a9ae4b487ae5ba1ecfa7828a4be7b0"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/process.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/process.json",
+      "bytes": 372,
+      "sha256": "49723aeeeaaea5712011f2217bafe2f79fbebbf4d9047805c50814c98a59bc87",
+      "storedSha256": "323663a210702404862f81b5b3983649c56d7395b13c235737f38a26b03c5bfc"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/daren-retirement-console-menu-integration-001.trx.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093753-194-86920-421e7c0f278f4fa886186620405fb29d-categories/daren-retirement-console-menu-integration-001.trx",
+      "bytes": 5658,
+      "sha256": "8a2d1571b970778f3767123f4fa7dd12c6f79d3cb536032541dc873ed9930b68",
+      "storedSha256": "b14fa1962028dbc387044c9c07b7769f0781563cb6b0385d66770f9ae64bdd5f"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/dotnet-test.log.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093753-194-86920-421e7c0f278f4fa886186620405fb29d-categories/dotnet-test.log",
+      "bytes": 1703774,
+      "sha256": "1fb173ca345ce63952b8c906e1ec342ea5c981db5adeb3500f4ab9edb9e92269",
+      "storedSha256": "c23e3706daf3e72f1262a79d6451b21b9f34bf3a926e637b6fdc483d2e14418d"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/plan.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093753-194-86920-421e7c0f278f4fa886186620405fb29d-categories/plan.json",
+      "bytes": 1163,
+      "sha256": "c63a99e54e6a371e8252110e0179c7d5ea61613213f273ad7e92d602f2445725",
+      "storedSha256": "66aecd1eaea13cfe163f9bef001f568a9f179494d374c434a5e5618c9c4872a4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/summary.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093753-194-86920-421e7c0f278f4fa886186620405fb29d-categories/summary.json",
+      "bytes": 1367,
+      "sha256": "72fe6a996819906596ea0dbed32a26862aba8ce82301223dea4e82758e2a3dfe",
+      "storedSha256": "e28ec16266338d7897b23bfe5e73d01c2618c43b8bc2a409f88bbfa9e6d2c305"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/record.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/record.json",
+      "bytes": 23075,
+      "sha256": "195f71986e9fae5d7cba91f9b00544ee4fd4861b4da1bd75ee3d2ffe977072de",
+      "storedSha256": "6ba555c9aa1e6d05173bdfc20545e9b46f2123616554c3c3d624e9d9e4efc92e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/stdout.log.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/stdout.log",
+      "bytes": 9769,
+      "sha256": "a39867d0b71a11e2f2649c55aaf6b569c7b826b2e50f99fd27cce2d3d7e067fa",
+      "storedSha256": "24e2994694dafb9d24b4e2a53127c628fe3324328e60549897f003fb6cc02faa"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/first-launch-sentinel.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/0b721c7c37207f1f1622172351fd515150eaf18d-daren-retirement-save-rewards.consumer-red.first-launch.json",
+      "bytes": 489,
+      "sha256": "8457506e80af550da4980efe2ead510d4ee82975f4b57f119dc90fef1cdda6c4",
+      "storedSha256": "eb0b4e534d48b79bb13e737a1ac70de125a5c6023fdcb76decfc2096ddf9a8cf"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/process.json.gz",
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/process.json",
+      "bytes": 372,
+      "sha256": "35414d973785ad0c5270c998c047ddd4926efe181de99736223fa6da4040cb5c",
+      "storedSha256": "130aa4430dac480a838520417b17f9f495a20c33afc4e1cf00838d73e2587997"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/daren-retirement-save-rewards-integration-001.trx.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093910-007-87221-51a715b38a5c4464a4c7bad6ed806b27-categories/daren-retirement-save-rewards-integration-001.trx",
+      "bytes": 24627,
+      "sha256": "eda532b19d6ce8a9213d29c61c56c02bbe8c0937d8b0c5f9fc32f567b28193ab",
+      "storedSha256": "0fbf2a035ecc9510deea859a8a583f37c03bc0874a2cb77d12b70f6d7d113b55"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/dotnet-test.log.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093910-007-87221-51a715b38a5c4464a4c7bad6ed806b27-categories/dotnet-test.log",
+      "bytes": 1710034,
+      "sha256": "caf09fbb6b73589ef6a5264f00d55e44a42431a41e76594e2555f1b342810a45",
+      "storedSha256": "ffb54108bc58320a8edc45d7e53f42542c59165b6953218fda0502a5af5bcbe7"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/plan.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093910-007-87221-51a715b38a5c4464a4c7bad6ed806b27-categories/plan.json",
+      "bytes": 1475,
+      "sha256": "95263382054996de2e6979d461d4f33d659885c278d9a6bc09ff5b35c0398fe2",
+      "storedSha256": "465565d02a9a04baedf0c13236deebad1a24edf0f8d957ba1d1d5db85c18d8db"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/summary.json.gz",
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093910-007-87221-51a715b38a5c4464a4c7bad6ed806b27-categories/summary.json",
+      "bytes": 1368,
+      "sha256": "63fd08567151ae67eeb2484ad14833c7eded5246b7433d1b41a5c8fbc7db1cd5",
+      "storedSha256": "44fe74ea1b5d09123d9f83caaba7548338c90d453ec45605424ac44df6581077"
+    }
+  ],
+  "owners": [
+    {
+      "category": "daren-retirement-ordinary-storage",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/record.json",
+      "nativeExit": 0,
+      "wallSeconds": 5.558773018005013,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-storage-df3ee99c-20261017T093609Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 5.607613182000932,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-console-menu",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 5.452347867001663,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 6.840098337001109,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    }
+  ],
+  "cases": [
+    {
+      "category": "daren-retirement-ordinary-storage",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+      "outcome": "Passed",
+      "message": "",
+      "stack": "",
+      "root": "/tmp/boe-daren-retirement-storage-a9df5734aedc4e39bf509017d5429f3d"
+    },
+    {
+      "category": "daren-retirement-ordinary-storage",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+      "outcome": "Passed",
+      "message": "",
+      "stack": "",
+      "root": "/tmp/boe-daren-retirement-storage-406ef6fce8464efca421820f169be682"
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(ordinaryFirstMixedJournal: False)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"retired-member-refusal-missing-or-wrong: : \", \"recovery-or-mutation-callbacks-before-refusal\", \"retained-data-or-evidence-changed\"]",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementStorageTests.InspectRefusalAsync(String root) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 157\n   at BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(Boolean ordinaryFirstMixedJournal) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 57\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-daren-retirement-storage-4ecdff88c37a40d98402557b26d485d4",
+      "consumer": {
+        "RetirementConsumer": "/tmp/boe-daren-retirement-storage-4ecdff88c37a40d98402557b26d485d4",
+        "Failure": null,
+        "Before": {
+          "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/trusted-local-publication-v1/active.json": "F10BC69B09EC64494147BCB723F5BAFF6CB7ECC31677A15B40C22C91793906BD",
+          ".boe_runtime/session-generation/current.json": "5BC8D6CD4FF35C10336ECD188F22AEB5F0EC0C5A858646BA4C1E6648F3262531",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "After": {
+          "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/session-generation/current.json": "5BC8D6CD4FF35C10336ECD188F22AEB5F0EC0C5A858646BA4C1E6648F3262531",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "Callbacks": [
+          "recovery:CleanupMember:0",
+          "recovery:CleanupComplete:-1"
+        ],
+        "Differences": [
+          ".boe_runtime/trusted-local-publication-v1/active.json"
+        ],
+        "Issues": [
+          "retired-member-refusal-missing-or-wrong: : ",
+          "recovery-or-mutation-callbacks-before-refusal",
+          "retained-data-or-evidence-changed"
+        ]
+      },
+      "transformation": {
+        "Provenance": "SOURCE_DERIVED_INSTANTIATION_NOT_AUTHENTIC_SAME_ROOT",
+        "Kind": "standalone1",
+        "OriginalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+        "InstantiatedRoot": "/tmp/boe-daren-retirement-storage-4ecdff88c37a40d98402557b26d485d4",
+        "OriginalGeneration": "4578ba8a389a4d29a56e8b4123a9edf5",
+        "InstantiatedGeneration": "097df9fbc1694e3f945f53dea67313a4",
+        "GenerationTransform": "EXPLICIT original template generation -> actual fresh-root bootstrap generation only in EvidencePath and GenerationPath metadata; profile/backups stay raw byte-exact; original packet bytes/hashes remain unchanged",
+        "Transformations": [
+          {
+            "Relative": "client_profile/qte_showcase_rewards.json",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/meta/retirement-ordinary-member.bin",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": ".boe_runtime/session-generation/current.json",
+            "MetadataTransform": true,
+            "Before": "C5596D8594671EB6B21777DD55E9C6376F89B985209AC5C5198F3CB1F5F6E908",
+            "After": "5BC8D6CD4FF35C10336ECD188F22AEB5F0EC0C5A858646BA4C1E6648F3262531",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": ".boe_runtime/trusted-local-publication-v1/active.json",
+            "MetadataTransform": true,
+            "Before": "ED1EAAF34DEB3A1B98A5387010C6835A99D8F81EC964BB6B26F58FC66D67653B",
+            "After": "F10BC69B09EC64494147BCB723F5BAFF6CB7ECC31677A15B40C22C91793906BD",
+            "RootReplacements": 1,
+            "GenerationReplacements": 2
+          }
+        ]
+      }
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(coexistingOrdinaryJournal: True)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"retired-member-refusal-missing-or-wrong: : \", \"recovery-or-mutation-callbacks-before-refusal\", \"retained-data-or-evidence-changed\"]",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementStorageTests.InspectRefusalAsync(String root) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 157\n   at BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(Boolean coexistingOrdinaryJournal) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 35\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-daren-retirement-storage-bacc685035784533af7dab8e30d80bfa",
+      "consumer": {
+        "RetirementConsumer": "/tmp/boe-daren-retirement-storage-bacc685035784533af7dab8e30d80bfa",
+        "Failure": null,
+        "Before": {
+          "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/trusted-local-publication-v1/active.json": "58E1B38C493A86E394DF8B26185C5132E5CB08A3CF862E645556FF0E69FCD295",
+          ".boe_runtime/session-generation/current.json": "4B24AFFE58C9540BEAD92B2C60936DB90F37393A7A4109CBCBC738141C148395",
+          "game_session/game_state/meta/retirement-coexisting.bin": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json": "CB13874AC94C0C7B73873F41B36DC241AAEDEB40FD1332B7AA13E50F7BBD2348"
+        },
+        "After": {
+          "client_profile/qte_showcase_rewards.json": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/session-generation/current.json": "4B24AFFE58C9540BEAD92B2C60936DB90F37393A7A4109CBCBC738141C148395",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/meta/retirement-coexisting.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "Callbacks": [
+          "recovery:RollbackStaged:0",
+          "recovery:MemberRestored:0",
+          "recovery:CleanupMember:0",
+          "recovery:CleanupComplete:-1",
+          "mutation:game_state/meta/retirement-ordinary-member.bin",
+          "mutation:@daren_reward_profile",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_cleanup_restored.intent",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_committed.marker",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_cleanup_restored.intent"
+        ],
+        "Differences": [
+          ".boe_runtime/trusted-local-publication-v1/active.json",
+          "client_profile/qte_showcase_rewards.json",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+          "game_session/game_state/meta/retirement-coexisting.bin",
+          "game_session/game_state/meta/retirement-ordinary-member.bin"
+        ],
+        "Issues": [
+          "retired-member-refusal-missing-or-wrong: : ",
+          "recovery-or-mutation-callbacks-before-refusal",
+          "retained-data-or-evidence-changed"
+        ]
+      },
+      "transformation": {
+        "Provenance": "SOURCE_DERIVED_INSTANTIATION_NOT_AUTHENTIC_SAME_ROOT",
+        "Kind": "browser7",
+        "OriginalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+        "InstantiatedRoot": "/tmp/boe-daren-retirement-storage-bacc685035784533af7dab8e30d80bfa",
+        "OriginalGeneration": "5fc5544e2a9c45b8a0adf0c7b0e52772",
+        "InstantiatedGeneration": "45de40a7b4f54a448c6cdff3ad7332e4",
+        "GenerationTransform": "EXPLICIT original template generation -> actual fresh-root bootstrap generation only in EvidencePath and GenerationPath metadata; profile/backups stay raw byte-exact; original packet bytes/hashes remain unchanged",
+        "Transformations": [
+          {
+            "Relative": "client_profile/qte_showcase_rewards.json",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/meta/retirement-ordinary-member.bin",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": ".boe_runtime/session-generation/current.json",
+            "MetadataTransform": true,
+            "Before": "861292C24E7C2FE0C98C1419B5F43056E7EC7DA333D6250848EFD8D8AC22FDA0",
+            "After": "4B24AFFE58C9540BEAD92B2C60936DB90F37393A7A4109CBCBC738141C148395",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+            "MetadataTransform": true,
+            "Before": "4D34B359E3621B06F1D5FF38AF392C876C0DA11CDC83639EF8D53EFDD7DFAE26",
+            "After": "CB13874AC94C0C7B73873F41B36DC241AAEDEB40FD1332B7AA13E50F7BBD2348",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          }
+        ]
+      }
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(coexistingOrdinaryJournal: False)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"retired-member-refusal-missing-or-wrong: : \", \"recovery-or-mutation-callbacks-before-refusal\", \"retained-data-or-evidence-changed\"]",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementStorageTests.InspectRefusalAsync(String root) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 157\n   at BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(Boolean coexistingOrdinaryJournal) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 35\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-daren-retirement-storage-a90761b4d8b6453b9cc08be0e1e1479e",
+      "consumer": {
+        "RetirementConsumer": "/tmp/boe-daren-retirement-storage-a90761b4d8b6453b9cc08be0e1e1479e",
+        "Failure": null,
+        "Before": {
+          "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/session-generation/current.json": "E765C58D3E80747E327D487F8DE1A3C4E9021AB4CF88C0106D19CC9157685DFF",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json": "F2FD3E36313590A536DD726194AC35412EC7A83383FB472972B94DB712F5F23D"
+        },
+        "After": {
+          "client_profile/qte_showcase_rewards.json": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/session-generation/current.json": "E765C58D3E80747E327D487F8DE1A3C4E9021AB4CF88C0106D19CC9157685DFF",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "Callbacks": [
+          "mutation:game_state/meta/retirement-ordinary-member.bin",
+          "mutation:@daren_reward_profile",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_cleanup_restored.intent",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_committed.marker",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "mutation:game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_cleanup_restored.intent"
+        ],
+        "Differences": [
+          "client_profile/qte_showcase_rewards.json",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+          "game_session/game_state/meta/retirement-ordinary-member.bin"
+        ],
+        "Issues": [
+          "retired-member-refusal-missing-or-wrong: : ",
+          "recovery-or-mutation-callbacks-before-refusal",
+          "retained-data-or-evidence-changed"
+        ]
+      },
+      "transformation": {
+        "Provenance": "SOURCE_DERIVED_INSTANTIATION_NOT_AUTHENTIC_SAME_ROOT",
+        "Kind": "browser7",
+        "OriginalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+        "InstantiatedRoot": "/tmp/boe-daren-retirement-storage-a90761b4d8b6453b9cc08be0e1e1479e",
+        "OriginalGeneration": "5fc5544e2a9c45b8a0adf0c7b0e52772",
+        "InstantiatedGeneration": "90299c5e9feb4fb19f6e4caaba0727fa",
+        "GenerationTransform": "EXPLICIT original template generation -> actual fresh-root bootstrap generation only in EvidencePath and GenerationPath metadata; profile/backups stay raw byte-exact; original packet bytes/hashes remain unchanged",
+        "Transformations": [
+          {
+            "Relative": "client_profile/qte_showcase_rewards.json",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/meta/retirement-ordinary-member.bin",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": ".boe_runtime/session-generation/current.json",
+            "MetadataTransform": true,
+            "Before": "861292C24E7C2FE0C98C1419B5F43056E7EC7DA333D6250848EFD8D8AC22FDA0",
+            "After": "E765C58D3E80747E327D487F8DE1A3C4E9021AB4CF88C0106D19CC9157685DFF",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+            "MetadataTransform": true,
+            "Before": "4D34B359E3621B06F1D5FF38AF392C876C0DA11CDC83639EF8D53EFDD7DFAE26",
+            "After": "F2FD3E36313590A536DD726194AC35412EC7A83383FB472972B94DB712F5F23D",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          }
+        ]
+      }
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(ordinaryFirstMixedJournal: True)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"retired-member-refusal-missing-or-wrong: : \", \"recovery-or-mutation-callbacks-before-refusal\", \"retained-data-or-evidence-changed\"]",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementStorageTests.InspectRefusalAsync(String root) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 157\n   at BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(Boolean ordinaryFirstMixedJournal) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs:line 57\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-daren-retirement-storage-5114aa7163d749cca3a77d927f74267b",
+      "consumer": {
+        "RetirementConsumer": "/tmp/boe-daren-retirement-storage-5114aa7163d749cca3a77d927f74267b",
+        "Failure": null,
+        "Before": {
+          "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/trusted-local-publication-v1/active.json": "BF1079BE80F1650DE4E26934E7F39B4F5B92AD25100E5872F8D8E3EAA7B3C914",
+          ".boe_runtime/session-generation/current.json": "31FA5B01B5B9360A367F8C5AAD8DFE3F0A40D0C02B7F161C345DB89F77E8720E",
+          "game_session/game_state/meta/retirement-mixed.bin": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "After": {
+          "client_profile/qte_showcase_rewards.json": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/config.json": "4AD055D7880270898AD6E2B90B97C1AED2998BEE869D7F40561DC48A8056B643",
+          ".boe_runtime/session-generation/current.json": "31FA5B01B5B9360A367F8C5AAD8DFE3F0A40D0C02B7F161C345DB89F77E8720E",
+          "game_session/game_state/meta/retirement-mixed.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        },
+        "Callbacks": [
+          "recovery:RollbackStaged:0",
+          "recovery:MemberRestored:0",
+          "recovery:RollbackStaged:1",
+          "recovery:MemberRestored:1",
+          "recovery:CleanupMember:0",
+          "recovery:CleanupMember:1",
+          "recovery:CleanupComplete:-1"
+        ],
+        "Differences": [
+          ".boe_runtime/trusted-local-publication-v1/active.json",
+          "client_profile/qte_showcase_rewards.json",
+          "game_session/game_state/meta/retirement-mixed.bin"
+        ],
+        "Issues": [
+          "retired-member-refusal-missing-or-wrong: : ",
+          "recovery-or-mutation-callbacks-before-refusal",
+          "retained-data-or-evidence-changed"
+        ]
+      },
+      "transformation": {
+        "Provenance": "SOURCE_DERIVED_INSTANTIATION_NOT_AUTHENTIC_SAME_ROOT",
+        "Kind": "standalone1",
+        "OriginalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+        "InstantiatedRoot": "/tmp/boe-daren-retirement-storage-5114aa7163d749cca3a77d927f74267b",
+        "OriginalGeneration": "4578ba8a389a4d29a56e8b4123a9edf5",
+        "InstantiatedGeneration": "37cf330c32d54a9e884fb9fa913117bd",
+        "GenerationTransform": "EXPLICIT original template generation -> actual fresh-root bootstrap generation only in EvidencePath and GenerationPath metadata; profile/backups stay raw byte-exact; original packet bytes/hashes remain unchanged",
+        "Transformations": [
+          {
+            "Relative": "client_profile/qte_showcase_rewards.json",
+            "MetadataTransform": false,
+            "Before": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "After": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": "game_session/game_state/meta/retirement-ordinary-member.bin",
+            "MetadataTransform": false,
+            "Before": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "After": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+            "RootReplacements": 0,
+            "GenerationReplacements": 0
+          },
+          {
+            "Relative": ".boe_runtime/session-generation/current.json",
+            "MetadataTransform": true,
+            "Before": "C5596D8594671EB6B21777DD55E9C6376F89B985209AC5C5198F3CB1F5F6E908",
+            "After": "31FA5B01B5B9360A367F8C5AAD8DFE3F0A40D0C02B7F161C345DB89F77E8720E",
+            "RootReplacements": 0,
+            "GenerationReplacements": 1
+          },
+          {
+            "Relative": ".boe_runtime/trusted-local-publication-v1/active.json",
+            "MetadataTransform": true,
+            "Before": "ED1EAAF34DEB3A1B98A5387010C6835A99D8F81EC964BB6B26F58FC66D67653B",
+            "After": "9636C7166B1325D2011B6DFCC8D6A4B0DEA3641949441631BE4526367C1B6696",
+            "RootReplacements": 1,
+            "GenerationReplacements": 2
+          }
+        ]
+      }
+    },
+    {
+      "category": "daren-retirement-console-menu",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+      "outcome": "Failed",
+      "message": "Assert.DoesNotContain() Failure: Item found in collection\n                                               \u2193 (pos 3)\nCollection: [\u00b7\u00b7\u00b7, \"load_game\", \"qte_practice\", \"daren_showcase\", \"options\", \"about\", \u00b7\u00b7\u00b7]\nFound:      \"daren_showcase\"",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 31\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-gameengine-turnlifecycle-ce85d32496a0404b89d541d905cab189",
+      "menuKeys": [
+        "new_game",
+        "load_game",
+        "qte_practice",
+        "daren_showcase",
+        "options",
+        "about",
+        "exit"
+      ]
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"malformed\")",
+      "outcome": "Failed",
+      "message": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-gameengine-turnlifecycle-71698d5486de4bcaad6a8957deb4f2f9",
+      "postOwnerOracleReached": false
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"valid\")",
+      "outcome": "Failed",
+      "message": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-gameengine-turnlifecycle-e6e9ccdce130433d8dd8f8fb5e4f59e4",
+      "postOwnerOracleReached": false
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "outcome": "Failed",
+      "message": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs:line 35\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-daren-retirement-save-0244c6389708427cb5c989bbcae58994",
+      "postOwnerOracleReached": false
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"duplicate\")",
+      "outcome": "Failed",
+      "message": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "root": "/tmp/boe-gameengine-turnlifecycle-fc486450a8fe4d1ab88eeb7360032bef",
+      "postOwnerOracleReached": false
+    }
+  ],
+  "strictCleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-a9df5734aedc4e39bf509017d5429f3d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-406ef6fce8464efca421820f169be682",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-4ecdff88c37a40d98402557b26d485d4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-bacc685035784533af7dab8e30d80bfa",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-a90761b4d8b6453b9cc08be0e1e1479e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-5114aa7163d749cca3a77d927f74267b",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ce85d32496a0404b89d541d905cab189",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-71698d5486de4bcaad6a8957deb4f2f9",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e6e9ccdce130433d8dd8f8fb5e4f59e4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-save-0244c6389708427cb5c989bbcae58994",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fc486450a8fe4d1ab88eeb7360032bef",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "f8f9660806e43612aed5fd723c10280892d42a7d776f726481369361d239d71d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29326848,
+      "sha256": "6705066ce4b0ce40da308c45ec3264df3678168b8867313c285e064a7a9a53d8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    }
+  ],
+  "sourceDerivedTransformationsReconstructed": 4,
+  "distinctFreshGenerations": 4,
+  "unrun": "daren-retirement-browser-host17",
+  "recovery": {
+    "path": "/tmp/gm1558-g1-first-consumer-stop-delta-github-589cdcd5-20261017.json",
+    "sha256": "c714e87bce405677c4f64a995b5f8798907b79d7204a83ed2bf00c0abcfba107",
+    "files": 58,
+    "changedPaths": 54
+  },
+  "limits": "Source-derived metadata hashes recomputed in memory only; no producer/parser/native run. Actual soul state bytes for four save failures were not retained; no hash or final data assertion is inferred."
+}

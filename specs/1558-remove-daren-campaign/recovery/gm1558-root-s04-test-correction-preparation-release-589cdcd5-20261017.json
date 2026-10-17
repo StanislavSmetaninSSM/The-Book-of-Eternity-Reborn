@@ -1,0 +1,65 @@
+{
+  "kind": "ROOT_ACCEPTED_PARTIAL_CAUSAL_EVIDENCE_AND_G1_S04_TESTS_ONLY_CORRECTION_RELEASE",
+  "createdUtc": "2026-10-17T09:46:45.683640+00:00",
+  "carrier": "589cdcd52ded67313e11d66909767be43d74f855",
+  "oldActualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "oldCompiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "unchangedProductSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "independentVerdict": "PARTIAL_EVIDENCE_ACCEPTED__2_ORDINARY_PASS_AND_5_CAUSAL_RED__4_SAVE_FIXTURE_FAILURES__STOP_RETAINED",
+  "rootDecision": "ACCEPT_ORDINARY2_AND_CAUSAL_STORAGE4_MENU1__CONFIRM_SAVE4_FIXTUREFAIL_STOP__RELEASE_NARROW_TESTS_ONLY_S04_AND_FRESH_ZEROEXEC_PREP",
+  "pins": [
+    {
+      "path": "/tmp/gm1558-first-consumer-stop-evidence-independent-20261017.md",
+      "sha256": "caaaa3ab76a5a6adbe4c1742a871c1a15072b22825d3ee330207885de22f500e"
+    },
+    {
+      "path": "/tmp/gm1558-first-consumer-stop-evidence-independent-20261017.json",
+      "sha256": "61ab4efa256aa25715aee677ee87961ec03e365359881d5d01d1b266ffdabfda"
+    },
+    {
+      "path": "/tmp/gm1558-first-consumer-stop-independent-check-20261017.json",
+      "sha256": "b62d4d70d34df9a0571d25d1bbf22eab610c2c9a8b45c0645aed0735fd9653c9"
+    },
+    {
+      "path": "/tmp/gm1558-root-first-consumer-stop-carrier-readback-589cdcd5-20261017.json",
+      "sha256": "0aafdb05fd0760463f0edb81534cf571bd77b0b39a69ddbd4db40111f117a906"
+    },
+    {
+      "path": "/tmp/gm1558-first-consumer-stop-recovery-FIRST-HTTP503-20261017.json",
+      "sha256": "58a1445f9075d260f16b12b1d160a709ea1b6f7d31c4b9da1be3638f34c6ad9a"
+    }
+  ],
+  "allowedSource": [
+    "Persist exact3independentreports,thisRootrelease,Root589carrierreadback,FIRST503transportreceipt,589completeGitHubreceipt and94composition. Preserveall32FIRSTraw/oldreviews/oldsentinels/helpers unchanged.",
+    "Change only3canonical soul JSON reads in2testfiles: DarenRetirementSaveTests.cs22/35 and GameEngineTurnLifecycleTests.DarenRetirement.cs56, BOM-aware text decoding then unchanged JSONParse/AsObject/oracles. Keep same file paths and timing; no profile/backup/archive decoding/contentnormalization/trimming/fallback/productionencodingchange. Prefer existing minimal text read, no new generic production helper/test-only product semantics.",
+    "Add exact remainingRED SelectionFile for existing save-rewards4 and browser-host17 owners (2descriptors5methods21cases); retain original5ownerREDselection and full17selection/catalog unchanged. No newtestmethod or owner needed.",
+    "Create current correction-sourcebinding distinguishingchanged2testsourcepins vs55unchanged oldnonselectorpins/currentdataandselectors; old60/0b/baselineevidence remain historical. Updateexistingplan/spec/tasks precisely forpartialacceptedEVIDENCE andS04open/nextscope, not fullG1completed.",
+    "Publish [skip ci] tests-only WIP/nonforcepush/exactremote/fullnewGitHubdelta. Stop sourceaccumulationonunknownpublication/recovery."
+  ],
+  "allowedPreparationAfterOwnVerifiedPublication": [
+    "ONE FIRST canonical BOTH/catalog (ValidateCatalog withoutNoBuild) because C#testsourcechanged; fresh product/unit/integration/TestSupport binaryhashes bound to this newsource. No production behavior changed; oldbinaries may be replaced only inownworktree buildoutputs, historicalacceptedhashes/raw remainprovenance.",
+    "ONE FIRST canonical remainingRED SelectionFile -PlanOnly -NoBuild0, exact2integrationdescriptors5methods21cases, no ordinary/menu/storage/capture/synthetic6/frontend replay. PreserveFIRSTstdout/process/native/summary/plan/source/new7DLL/nsraw.",
+    "Stop/freezeunexpectedbuild/catalog/plan/ownership/binary/cleanup result, no autoretry. Publish frozenpreparationcheckpoint/exactremote/newdelta beforetargetedindependentS04SOURCE/selection/prep review. No unnecessary repeatedpre-removalpackage258inventory."
+  ],
+  "retainAcceptedWithoutReplay": [
+    "ordinary2PASS",
+    "storage4causalREDwithactualderivedtransport",
+    "consolemenu1causalRED"
+  ],
+  "proposedFutureActuals": {
+    "correction": "Three reads in two test files only; exact final diff must confirm no shared owner/transport changes.",
+    "preparation": "Publish corrected source, fresh BOTH builds/catalog and exact save4+unrunHTTP17 PlanOnly0 with newly bound binaries, then independent affected SOURCE before any actual.",
+    "proposedCases": 21,
+    "owners": 2,
+    "methods": 5,
+    "execution": "Separate first corrected save4 and first HTTP17 after Root release. Stop on unexpected fixture/platform/cleanup/incomplete outcomes; no silent rerun of unchanged failed source.",
+    "retain": "Ordinary2,storage4,menu1 remain accepted under exact old actualdf3/compiled0b provenance if their source/dependencies stay unchanged. No replay from assembly hash change or partial-file adjacency alone.",
+    "productRelease": false
+  },
+  "held": [
+    "ALLtest/consumer/host/console/frontend/browser/producer runtime untilnewreviewedprep+exactRootactivation",
+    "Production/API/UI/content/prompt/campaignremoval/G2",
+    "Unchangedacceptedfamilies/Windows/CI/Librarytransferretry"
+  ],
+  "runtimeExecutedByThisReceipt": false
+}

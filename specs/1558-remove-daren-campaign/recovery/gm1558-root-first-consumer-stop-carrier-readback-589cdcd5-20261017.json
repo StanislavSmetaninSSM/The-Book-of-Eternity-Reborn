@@ -1,0 +1,38 @@
+{
+  "kind": "ROOT_FIRST_CONSUMER_STOP_CARRIER_READBACK_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+  "createdUtc": "2026-10-17T09:44:02.534501+00:00",
+  "carrier": "589cdcd52ded67313e11d66909767be43d74f855",
+  "packetSha256": "185a07dc9c84fa23c15c11215c3d2b11d812d71056c1f0d0104ee85eea74a538",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verifiedRawLiveGzipCommittedChains": 32,
+  "localInspectionsChecked": 4,
+  "supportChecked": 10,
+  "strictRemovedRootsChecked": 11,
+  "http17FirstSentinelAbsent": true,
+  "observed": {
+    "owners": 4,
+    "descriptors": 4,
+    "methods": 7,
+    "cases": 11,
+    "passed": 2,
+    "failed": 9,
+    "skipped": 0
+  },
+  "localDispositionOnly": {
+    "ordinaryPositive": 2,
+    "locallyCausalStorageAndMenuFailures": 5,
+    "unqualifiedSaveFixtureFailures": 4,
+    "independentCausalEvidence": "PENDING"
+  },
+  "completeRecoveryReceipt": "/tmp/gm1558-g1-first-consumer-stop-delta-github-589cdcd5-20261017.json",
+  "recoveryReceiptSha256": "c714e87bce405677c4f64a995b5f8798907b79d7204a83ed2bf00c0abcfba107",
+  "completeDeltas": 94,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-589cdcd5-20261017.json",
+  "newGitHubFiles": 58,
+  "allChangedPaths": 54,
+  "recoveryTransport": "FirstHTTP503 preserved;53existingdownloadedGitblobverified,only5missingofficialraw fetched;whole58newdirverified, no refetch53/localobjectsubstitute/newclone/native retry.",
+  "sourceChanges": false,
+  "runtimeRelease": "NONE_AFTER_SAVE_FIXTURE_STOP"
+}

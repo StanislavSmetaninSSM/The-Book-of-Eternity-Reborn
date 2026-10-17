@@ -1,0 +1,338 @@
+{
+  "kind": "FIRST_RAW_RECOVERY_TRANSPORT_FAILURE_AND_EXACT_PARTIAL_RECONCILIATION",
+  "utc": "2026-10-17T09:43:07.043136+00:00",
+  "sha": "589cdcd52ded67313e11d66909767be43d74f855",
+  "base": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "error": "urllib.error.HTTPError: HTTP Error 503: Service Unavailable; no finalreceipt emitted",
+  "partialDirectory": "/tmp/gm1558-g1-first-consumer-stop-delta-github-589cdcd5-20261017",
+  "expectedFiles": 58,
+  "verifiedExisting": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "blobSha1": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11661,
+      "sha256": "8bedaee7fd91504b6cd20dddf08fe03c1b987381cbba9792f45485b70dce45f2",
+      "blobSha1": "b2a17d32279219977280fa1e9936c5af2ff30575"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "blobSha1": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/plan.md",
+      "bytes": 60961,
+      "sha256": "2cc626266cf316b7bdc3f5e5a0d16dabd3e1357ebea07eee27255d18e72017a3",
+      "blobSha1": "7fbd8f5165600094517ed146d3b50cca87f58cd9"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/archive.json",
+      "bytes": 7690,
+      "sha256": "663363e47a575a2072127acf01e96ffe780d1a9c94de370541cbb24b5f6cfe0b",
+      "blobSha1": "f2d18217b0ed4a3c2c40076ad52db729fd14c8f9"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/first-launch-sentinel.json.gz",
+      "bytes": 326,
+      "sha256": "88a3a0de4cd57322680fed2f545b186e49a9ae4b487ae5ba1ecfa7828a4be7b0",
+      "blobSha1": "197e577f19fa54038055d465a21dd09d45bb5562"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/process.json.gz",
+      "bytes": 268,
+      "sha256": "323663a210702404862f81b5b3983649c56d7395b13c235737f38a26b03c5bfc",
+      "blobSha1": "6c71b5e8c179e4359bb75b5fb70450d127593296"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/record.json.gz",
+      "bytes": 6409,
+      "sha256": "108e2536272ac8695159474b485d57fef8fdfee8e8e328ef6ffec949fb0d2ee7",
+      "blobSha1": "d6801143e9421a6ded38232a257583570a0a67d0"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/native/stdout.log.gz",
+      "bytes": 1184,
+      "sha256": "df49fde3cbcef07f6b407b515a70cebb1bab15756c79674e1d224618bc046b7d",
+      "blobSha1": "37b0438bb994b9218301034443772846a6adc07f"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/daren-retirement-console-menu-integration-001.trx.gz",
+      "bytes": 1776,
+      "sha256": "b14fa1962028dbc387044c9c07b7769f0781563cb6b0385d66770f9ae64bdd5f",
+      "blobSha1": "3afb9f69fa1b497606f26f303ba4ac97980ea3b2"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/plan.json.gz",
+      "bytes": 532,
+      "sha256": "66aecd1eaea13cfe163f9bef001f568a9f179494d374c434a5e5618c9c4872a4",
+      "blobSha1": "915e33f82fc8d4929bae90d4c3450a45dafafc17"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/summary.json.gz",
+      "bytes": 582,
+      "sha256": "e28ec16266338d7897b23bfe5e73d01c2618c43b8bc2a409f88bbfa9e6d2c305",
+      "blobSha1": "435b4827529f61f86b0a029c144d3485e4ff09b5"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/archive.json",
+      "bytes": 7709,
+      "sha256": "f41615528fc4d03eb299ae120ad573761acbde40026647a26544804458cb427f",
+      "blobSha1": "eed605ef2d23068900a227edeff7e01228347488"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/first-launch-sentinel.json.gz",
+      "bytes": 329,
+      "sha256": "ed62ef89bdf72f364424b3abc0a818391f5776e42b761bdf52a1a1503e07fce7",
+      "blobSha1": "c5ccab190a5456b05052cd937960206c4760aede"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/process.json.gz",
+      "bytes": 271,
+      "sha256": "c320c083a63047c598b74fddf3bb93176190d7bcc80c0ee73850895a283d56be",
+      "blobSha1": "ab1f226c8266b3da8a98e3ac864313f1a672dee6"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/record.json.gz",
+      "bytes": 6427,
+      "sha256": "984fc84077fdb009698ec1091da402f049802b956fcb58dc5316387de5f95894",
+      "blobSha1": "f0d97763725376afe541e286a593b2a32b00cd23"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/native/stdout.log.gz",
+      "bytes": 790,
+      "sha256": "d880e34027cc7e2c9452a516fd835098a43e606e5739cf92df7521b568964a1e",
+      "blobSha1": "5c5622165df316af1348a83ad5af7231a7990f55"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/daren-retirement-ordinary-storage-integration-001.trx.gz",
+      "bytes": 1853,
+      "sha256": "63c0c76e96535f11f052f39c78435d89153c47ef10d7913a9eefe699f67f207c",
+      "blobSha1": "37a3ad64509fc7a15b62fe5d0a79f0d1dfea374e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/dotnet-test.log.gz",
+      "bytes": 189430,
+      "sha256": "017fa115cc0780b6688fdc5d4f9ffbb762cafed042e5b7274ccba810b51e852c",
+      "blobSha1": "59a9f5aab4de3f211b26fe41376146fba4578c46"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/plan.json.gz",
+      "bytes": 550,
+      "sha256": "9348c76014fa1a18c8d01b94bc20f440d842200435baefebb2f941281335ef03",
+      "blobSha1": "b0bb46fe86e1d69bd75468e1831222b0f3fb48f4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/ordinary/runner/0/summary.json.gz",
+      "bytes": 607,
+      "sha256": "d81be1a15d3ee3f923be3cbf94d327c777d36940d468b558bfcd31725f927368",
+      "blobSha1": "4f1d125c5aa6302e91cb6f1fff92503c9ed4cf01"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/archive.json",
+      "bytes": 7691,
+      "sha256": "f5f30633d55c11f20f2edc77b3d38d04805e8ba07d8a4db8d59b821f7acbf394",
+      "blobSha1": "61986c5dece142c3781935856ae85b48618e0c7c"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/first-launch-sentinel.json.gz",
+      "bytes": 327,
+      "sha256": "eb0b4e534d48b79bb13e737a1ac70de125a5c6023fdcb76decfc2096ddf9a8cf",
+      "blobSha1": "f78795c01e0c0975c38567b3a6b897cc77428f05"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/process.json.gz",
+      "bytes": 269,
+      "sha256": "130aa4430dac480a838520417b17f9f495a20c33afc4e1cf00838d73e2587997",
+      "blobSha1": "9aac2481b4bbd425ac997f28fc3741229e5a78cc"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/record.json.gz",
+      "bytes": 6484,
+      "sha256": "6ba555c9aa1e6d05173bdfc20545e9b46f2123616554c3c3d624e9d9e4efc92e",
+      "blobSha1": "5b15821f6c11618479592ef49982199d55c9c0d5"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/native/stdout.log.gz",
+      "bytes": 1659,
+      "sha256": "24e2994694dafb9d24b4e2a53127c628fe3324328e60549897f003fb6cc02faa",
+      "blobSha1": "01a7b4b1a2fbc4e0943cc87b8326c03ae3c29bb2"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/daren-retirement-save-rewards-integration-001.trx.gz",
+      "bytes": 3186,
+      "sha256": "0fbf2a035ecc9510deea859a8a583f37c03bc0874a2cb77d12b70f6d7d113b55",
+      "blobSha1": "a2c1495028e064d0a177f1d3c637c5d2e7453680"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/plan.json.gz",
+      "bytes": 597,
+      "sha256": "465565d02a9a04baedf0c13236deebad1a24edf0f8d957ba1d1d5db85c18d8db",
+      "blobSha1": "f98d5a0cd828d43cb4e8f67186c48fa9515cae4b"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/summary.json.gz",
+      "bytes": 589,
+      "sha256": "44fe74ea1b5d09123d9f83caaba7548338c90d453ec45605424ac44df6581077",
+      "blobSha1": "e60c1e216981fa13555d4d660564a59c6bf661b0"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/archive.json",
+      "bytes": 7713,
+      "sha256": "3477a0cf13f42ce7682fce8de3691b382aa355472667d93015a65e44eb37a6c0",
+      "blobSha1": "98d66068519666f184eb60329265c4c15c56e2c1"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/first-launch-sentinel.json.gz",
+      "bytes": 328,
+      "sha256": "49b15f8b11171c5700767b520296f05ae5df592f990e8449ec69656a9f3132b4",
+      "blobSha1": "399a7fd07caa706b4871c31d94c0867d2de9c114"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/process.json.gz",
+      "bytes": 270,
+      "sha256": "b857739420e7026989f831a2133a756f5ca3dbcc3ff56bf3383cd1d7deb1cd91",
+      "blobSha1": "16e9bd47e3fa71d2b439adc9ef462436ea104192"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/record.json.gz",
+      "bytes": 6440,
+      "sha256": "3d95cdff118dc302bdc47b7a9b9de48a9c14baf6f50168da5d3799e906816bf9",
+      "blobSha1": "54227069ce738a8d83b79dc3324d373ebe968a8e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/native/stdout.log.gz",
+      "bytes": 3742,
+      "sha256": "1320e107a60f14f6ba489dd8fa7ff915864537949a934d103596be9a75689a95",
+      "blobSha1": "e99c54043ffb9fff4b0ccf430569e86d09728297"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/daren-retirement-storage-refusal-integration-001.trx.gz",
+      "bytes": 5653,
+      "sha256": "51e920250749dd8ff49342f36b98a5bc00dc70cce7206c918c533ec3335be411",
+      "blobSha1": "0aa381b708c65c57ef855a8ebbbef02907250122"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/dotnet-test.log.gz",
+      "bytes": 192649,
+      "sha256": "f0a28d760289479874068c9338d9ca75932b7e1ce2da1bad7f07c234d5d4d5e4",
+      "blobSha1": "2d5f5e6d79ba4f609b9499495a6b8137ca9208d1"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/plan.json.gz",
+      "bytes": 558,
+      "sha256": "e8b016e4aaa11515df4be512979d6345aa8baf474cb4dc376c1df53f28be1b6c",
+      "blobSha1": "17673167f42e7b72e1f8b8ceec67a2ae2e196a51"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/storage/runner/0/summary.json.gz",
+      "bytes": 591,
+      "sha256": "5c5f420b15a013e2b721c17cdbe84c46e8a11dfbe88a30a3906de221576f187c",
+      "blobSha1": "3269407705b922e33d4a2064e2c63d95b8725b5d"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017.json",
+      "bytes": 14557,
+      "sha256": "185a07dc9c84fa23c15c11215c3d2b11d812d71056c1f0d0104ee85eea74a538",
+      "blobSha1": "3ce7e04e65516e0436ae4619747a8264c1cf70fc"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-first-console-menu-inspection-df3ee99c-20261017.json",
+      "bytes": 2250,
+      "sha256": "cc7f8dce9cc5a9b09b8ba7a0eb866614d04507b154b0a25e666a1db7b895e464",
+      "blobSha1": "02287705378fa7b97c87a475efd5ec9463b47f75"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-first-ordinary-storage-inspection-df3ee99c-20261017.json",
+      "bytes": 1707,
+      "sha256": "17b7fbc5748dabf29b8148628bdccc5a7f7e0f81f9a0a48f42fbfb0e2941da18",
+      "blobSha1": "2bd776cb7b035024e778269eba5a0b2518fd75ec"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-first-save-rewards-inspection-df3ee99c-20261017.json",
+      "bytes": 10180,
+      "sha256": "973c5d10104a36df7f9de29bbeba11da15e94a07d940f65cadc71002468cf680",
+      "blobSha1": "37c951739cd4bb7cdbb8d5baa483757cb33ee673"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-first-storage-refusal-inspection-df3ee99c-20261017.json",
+      "bytes": 22194,
+      "sha256": "d76b06806954984d4db5c5a309eb681ffe6dc9eb034faabdb765475a223392ef",
+      "blobSha1": "82541655518a219dff33a4423dcc53fad73537aa"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-activated-daren-retirement-console-menu-df3ee99c-20261017.json",
+      "bytes": 4337,
+      "sha256": "4d051c0cd400aaf192db974837f7b105e3e8697419096143974458a18d74c83e",
+      "blobSha1": "1d412332c700252a726f6554c5a2822035d1e054"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-activated-daren-retirement-ordinary-storage-df3ee99c-20261017.json",
+      "bytes": 4548,
+      "sha256": "e59906df8746b8746fa828a50cb86e4a34d024ba3386584c315694d395e5233b",
+      "blobSha1": "bdfcee86ea044a69538ef66657afffe5c49e5672"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-activated-daren-retirement-save-rewards-df3ee99c-20261017.json",
+      "bytes": 4550,
+      "sha256": "cf3a4238f34c0adadbebb975b5bd24e160f8314d0ade26621489bda3e8864e73",
+      "blobSha1": "28174cf45b305039940c7441b145020e60a94219"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-activated-daren-retirement-storage-refusal-df3ee99c-20261017.json",
+      "bytes": 4542,
+      "sha256": "a937bcce2b50df1c1df1a6c52d362fd455975528985a6cd7814246a34e554e20",
+      "blobSha1": "b9f34dfb1120e2da3cc729cfa681fee29d8abfc9"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-first-daren-retirement-console-menu-df3ee99c-20261017.json",
+      "bytes": 3098,
+      "sha256": "17048a97c255a06d19b845361efeab26f30ffba91dbaa722bbe51711a03d05ad",
+      "blobSha1": "6fafdba3f13f9c713da90bc1c761ee68945dc001"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-first-daren-retirement-save-rewards-df3ee99c-20261017.json",
+      "bytes": 9945,
+      "sha256": "3a7357267eec7730f68953d3db57ecd1e3868503b576521e95cc26ff0d02b416",
+      "blobSha1": "9d4d00c3912e37adeb0108d4bf353c0727bb2d3e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-first-daren-retirement-storage-refusal-df3ee99c-20261017.json",
+      "bytes": 27364,
+      "sha256": "7e38917264047fdd09bfff471911361debfc52dc3d283bfb9055b4749e70f56f",
+      "blobSha1": "48f17228646a7347cdb0cd5578ef5463a98d0d24"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-df3ee99c-20261017.json",
+      "bytes": 32182,
+      "sha256": "5a7e54da38d349b897d28a36773332c56a652bc7dafabd3b515a1b43c26ee8c7",
+      "blobSha1": "d03a93cb74a0d0fd71c9b4a1e4531cf7483a5b64"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/spec.md",
+      "bytes": 13522,
+      "sha256": "8e1e70c8853af25e458a13769619e3df950fd16040891e2f462a476b8f77ab51",
+      "blobSha1": "1aa9b4f3921b6d70f0bbfc7612ebfccb48d48b00"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/tasks.md",
+      "bytes": 11873,
+      "sha256": "03e047737799b83fc90e2fee0a25bda9e1e6310a2a7164511e3c261b686f1429",
+      "blobSha1": "28ae44dff1f844f02a5598e335850b224498b915"
+    }
+  ],
+  "missing": [
+    "docs/testing.md",
+    "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/menu/runner/0/dotnet-test.log.gz",
+    "specs/1558-remove-daren-campaign/recovery/g1-first-consumer-stop-20261017-files/save/runner/0/dotnet-test.log.gz",
+    "specs/1558-remove-daren-campaign/recovery/gm1558-g1-finite-red-decision-delta-github-df3ee99c-20261017.json",
+    "specs/1558-remove-daren-campaign/recovery/gm1558-root-first-daren-retirement-ordinary-storage-df3ee99c-20261017.json"
+  ],
+  "sourceMutation": false,
+  "nativeTestFailure": false
+}

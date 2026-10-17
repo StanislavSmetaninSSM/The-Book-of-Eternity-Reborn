@@ -1,0 +1,231 @@
+{
+  "kind": "INDEPENDENT_FIRST_CONSUMER_STOP_CAUSAL_EVIDENCE_REVIEW",
+  "utc": "2026-10-17T09:45:50.748094+00:00",
+  "carrier": "589cdcd52ded67313e11d66909767be43d74f855",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verdict": "PARTIAL_EVIDENCE_ACCEPTED__2_ORDINARY_PASS_AND_5_CAUSAL_RED__4_SAVE_FIXTURE_FAILURES__STOP_RETAINED",
+  "qualification": {
+    "executed": 11,
+    "passed": 2,
+    "failed": 9,
+    "qualifiedPositive": 2,
+    "qualifiedCausalRed": 5,
+    "unqualifiedSaveFixtureFailures": 4,
+    "unrunHTTP": 17,
+    "all4InvokedOwnersComplete": true,
+    "noTimeoutDuplicatesOrCleanupFailure": true
+  },
+  "componentVerdicts": {
+    "ORDINARY": "ACCEPTED_TWO_REAL_RECOVERY_PRESERVATION_CONTROLS",
+    "STORAGE": "ACCEPTED_FOUR_CAUSAL_RETIREMENT_REFUSAL_RED_WITH_ACTUAL_DERIVED_DATA",
+    "CONSOLE_MENU": "ACCEPTED_ONE_CAUSAL_CAMPAIGN_ENTRY_RED",
+    "SAVE_REWARDS": "NOT_QUALIFIED__FIXTURE_DECODER_FAILURE_BEFORE_FINAL_ORACLES",
+    "HTTP": "UNRUN",
+    "PRODUCTION": "HELD__NO_RELEASE"
+  },
+  "owners": [
+    {
+      "category": "daren-retirement-ordinary-storage",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/record.json",
+      "nativeExit": 0,
+      "wallSeconds": 5.558773018005013,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-storage-refusal",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-storage-df3ee99c-20261017T093609Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 5.607613182000932,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-console-menu",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 5.452347867001663,
+      "tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "record": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/record.json",
+      "nativeExit": 1,
+      "wallSeconds": 6.840098337001109,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      }
+    }
+  ],
+  "rawBinding": {
+    "chains": 32,
+    "frozenGzipRawLiveCommittedEqual": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9560064,
+        "sha256": "f8f9660806e43612aed5fd723c10280892d42a7d776f726481369361d239d71d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29326848,
+        "sha256": "6705066ce4b0ce40da308c45ec3264df3678168b8867313c285e064a7a9a53d8"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+      }
+    ],
+    "namespaceContinuous": true,
+    "strictOwnedRoots": 11,
+    "allPhysicallyAbsent": true,
+    "recovery": {
+      "path": "/tmp/gm1558-g1-first-consumer-stop-delta-github-589cdcd5-20261017.json",
+      "sha256": "c714e87bce405677c4f64a995b5f8798907b79d7204a83ed2bf00c0abcfba107",
+      "files": 58,
+      "changedPaths": 54
+    }
+  },
+  "causalEvidence": [
+    {
+      "owner": "ordinary2",
+      "evidence": "Both real owner Facts passed: original current-browser journal and labelled synthetic shared Format1 restore exact Before and remove journal; strict roots removed.",
+      "limit": "Source-bound executed assertions and raw completion/cleanup, not invented retained file bodies."
+    },
+    {
+      "owner": "storage4",
+      "evidence": "Every captured-derived prerequisite passed; four distinct fresh generations. Exact original packet metadata substitutions independently reconstructed against all before/after transformation hashes. Nonmetadata profile/backups are exact opaque bytes. Each fresh lease acquisition returned without failure, executed callbacks and changed or removed retained bytes/evidence, then failed only final Assert.Empty at line157.",
+      "scenarios": [
+        "Browser alone restores ordinary/profile Before and removes manifest/backups.",
+        "Browser plus ordinary journal first restores/cleans ordinary journal, then browser evidence/profile.",
+        "Authentic standalone committed cleanup debt removes the active journal, without a retired refusal.",
+        "Explicit synthetic ordinary-first mixed journal restores member0 then retired profile member1 and cleans evidence."
+      ],
+      "limit": "Captured-derived and synthetic mixed provenance remain distinct; no original same-root authority claim."
+    },
+    {
+      "owner": "menu1",
+      "evidence": "Real constructed menu contains new_game,qte_practice,daren_showcase; final DoesNotContain line31 fails after positive prerequisites."
+    }
+  ],
+  "finding": {
+    "id": "G1-S04",
+    "severity": "HIGH_FOR_FUTURE_SAVE_EVIDENCE",
+    "classification": "TEST_FIXTURE_CANONICAL_TEXT_DECODER_MISMATCH",
+    "paths": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs",
+        "sites": [
+          22,
+          35
+        ],
+        "observedFailure": 35
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs",
+        "sites": [
+          56
+        ],
+        "observedFailures": 3
+      }
+    ],
+    "actual": "All four failures are System.Text.Json.JsonReaderException:0xEF invalid first byte at position0, in JsonNode.Parse(ReadOnlySpan<byte>) called by the test. No DarenRewardProfileFileStore reader frame appears in these stacks.",
+    "ordering": "Fresh-soul3 reach test line56 after the InitializeChaosSea await returned. Save1 passes initial seed parse22 and SaveGame31/LoadGame34 true assertions, then fails test line35. No final currency/grant/profile/archive oracle or corresponding diagnostic executes.",
+    "cause": "Test passes physical canonical bytes directly to JSON span parser. Existing WriteFileAtomicAsync encodes UTF8 with a preamble; normal ReadFileCoreAsync BOM-decodes through StreamReader. Exact writer/reader/source and raw0xEF stacks establish the decoding-contract mismatch.",
+    "proofLimit": "Actual soul files were not frozen and their roots were deleted. Do not invent full BOM byte sequences, payload hashes, grant/profile values, successful initialization semantics or earned-data preservation. This is not the earlier hypothesized forbidden Daren profile-reader failure.",
+    "minimalCorrection": "Tests only: BOM-aware text decoding at all three canonical soul-read sites, then unchanged strict JSON parsing and assertions. Preserve raw profile/backup/archive comparisons. Do not modify production encoding/parser/recovery, trim arbitrary content, normalize stored files, add legacy fallbacks or weaken expected values."
+  },
+  "nextScope": {
+    "correction": "Three reads in two test files only; exact final diff must confirm no shared owner/transport changes.",
+    "preparation": "Publish corrected source, fresh BOTH builds/catalog and exact save4+unrunHTTP17 PlanOnly0 with newly bound binaries, then independent affected SOURCE before any actual.",
+    "proposedCases": 21,
+    "owners": 2,
+    "methods": 5,
+    "execution": "Separate first corrected save4 and first HTTP17 after Root release. Stop on unexpected fixture/platform/cleanup/incomplete outcomes; no silent rerun of unchanged failed source.",
+    "retain": "Ordinary2,storage4,menu1 remain accepted under exact old actualdf3/compiled0b provenance if their source/dependencies stay unchanged. No replay from assembly hash change or partial-file adjacency alone.",
+    "productRelease": false
+  },
+  "history": "Original05d capture failure and correctedcapture2/packet acceptance remain distinct. First current11 native results and four save failures remain immutable; prior SOURCE readiness is historical and the newly observed S04 reopens affected fixture readiness.",
+  "recoveryTransport": "Root recorded first official-raw HTTP503 transport failure and completion of only five missing files. Final58/all54 bytes/blob/modes independently checked; transport failure is not a native test result.",
+  "support": {
+    "path": "/tmp/gm1558-first-consumer-stop-independent-check-20261017.json",
+    "sha256": "b62d4d70d34df9a0571d25d1bbf22eab610c2c9a8b45c0645aed0735fd9653c9"
+  },
+  "limits": [
+    "Reviewer only read existing raw/source and computed hashes/transformation models; no native, parser reproduction, build, producer, host or browser run.",
+    "No repository writes, test data changes, cleanup or signal actions.",
+    "No G0/full60/371method or historical-family replay.",
+    "No Windows/CI/Library/general compatibility/full removal acceptance."
+  ]
+}

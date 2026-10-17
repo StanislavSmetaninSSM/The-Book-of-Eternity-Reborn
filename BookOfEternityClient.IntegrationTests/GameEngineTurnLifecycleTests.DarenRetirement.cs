@@ -53,7 +53,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             .BuildFreeformPendingGuardianCreationNode("Спокойный Хранитель маяка встречает душу на берегу Моря Хаоса.", "Пробная Душа");
         await InvokePrivateAsync<string>(engine, "InitializeChaosSea", "Пробная Душа", "Мягкий силуэт синего света.", guardian, null)
             .WaitAsync(TimeSpan.FromSeconds(20));
-        var soul = JsonNode.Parse(File.ReadAllBytes(_fs.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
+        var soul = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath("game_state/meta/soul_state.json")))!.AsObject();
         var profileAfter = File.ReadAllBytes(Path.Combine(_rootPath, DarenRetirementEvidenceFixtures.Profile));
         var issues = new List<string>();
         if (!profile.AsSpan().SequenceEqual(profileAfter)) issues.Add("old-profile-read-normalized-or-mutated");

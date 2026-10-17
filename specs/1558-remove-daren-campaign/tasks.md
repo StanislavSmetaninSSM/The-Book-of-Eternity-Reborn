@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: FIRST finiteconsumer block STOP atsave4 fixtureBOMparse:4owners/11cases executed,2PASS+9FAIL (storage4/menu1 locallycausal,save4unqualifiedfixture);HTTP17UNRUN. All32raw chains/11strictphysicallyremovedroots preserved; sameactualdf3/compiled0b/product46ff/data/selectors/7DLL. IndependentcausalEVIDENCE pending; no retry/sourcefix/production. T004–T020 unchecked.
+**Current phase**: Partial causal EVIDENCE accepted: ordinary2PASS/storage4+menu1causalRED; save4 confirmedG1-S04fixturedecoderFAIL,HTTP17UNRUN. Exact3canonical soul testreads corrected in2files only, unchangedoracles/profile/archive/product; remaining2owners/5methods/21cases authored. FreshBOTH/catalog+remainingPlanOnly and targetedSOURCE pending; noactual/replay/G2. Historicaldf3/0b raw retained; T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -60,4 +60,7 @@ Historical binding preparation at7a3: [14FIRST zeroexec chains](recovery/g1-data
 Historical accepted binding atdf3 before activation: [independent data/selector/PREP verdict](recovery/gm1558-g1-data-selector-independent-20261017.md) and [conditional Root finite-owner decision](recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json) are persisted. Only after new exact carrier remote/recovery may Root activate ordinary2 first; each further owner needs separate first-raw qualification/activation without changing HEAD. No native consumer or meaningful retirement RED has run; T006/T009 and all T004–T020 stay unchecked. This metadata block changes no test/data/catalog/selector/compiled input or existing raw.
 
 
-Current FIRST finite block is [partialSTOP](recovery/g1-first-consumer-stop-20261017.json): four activated owners/11cases completed,2ordinaryPASS,5storage/menu locallycausalFAIL and4unexpected save fixtureBOMFAIL; HTTP17UNRUN. All32rawchains/11strictroot removals/current source+7DLL continuity are preserved. Independent causal EVIDENCE is pending; no qualified save RED/preservation result or full28 completeness is claimed. No retry/source correction; T006/T009 and all T004–T020 remain open, production and further actuals held.
+Historical FIRST finite block at589 is [partialSTOP](recovery/g1-first-consumer-stop-20261017.json): four activated owners/11cases completed,2ordinaryPASS,5storage/menu locallycausalFAIL and4unexpected save fixtureBOMFAIL; HTTP17UNRUN. All32rawchains/11strictroot removals/current source+7DLL continuity are preserved. Independent causal EVIDENCE is pending; no qualified save RED/preservation result or full28 completeness is claimed. No retry/source correction; T006/T009 and all T004–T020 remain open, production and further actuals held.
+
+
+Current S04 disposition: [accepted partial causal EVIDENCE](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) retains ordinary2PASS+storage4/menu1RED without replay, confirms save4fixture decoder failure and HTTP17unrun. [Root tests-only correction release](recovery/gm1558-root-s04-test-correction-preparation-release-589cdcd5-20261017.json) authorizes exactly3BOM-aware canonical soul reads in2testfiles, unchanged final oracles, plus remaining21selection. FreshBOTH/catalog/PlanOnly and independent affectedSOURCE remain pending; no actual or product change. Original4saveFAIL/32raw and T004–T020 unchecked stay intact.

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "daren-retirement-save-rewards",
+      "reason": "G1-S04 corrected three canonical-soul BOM-aware test reads; repeat only affected save4 after fresh source/prep review, preserving original4fixture failures and all final byte/grant/archive assertions. Only after targeted SOURCE and explicit Root per-owner exact activation; no accepted ordinary/menu/storage replay.",
+      "contracts": [
+        "#1558",
+        "accepted G0+A01 removal/data-safety/client/common-regression contract"
+      ]
+    },
+    {
+      "category": "daren-retirement-browser-host",
+      "reason": "Previously unrun HTTP17 from accepted finite baseline: real menu/5registered route boundaries plus11HTTP practice positive neighbors; no interactive-browser or generic non404 proof. Only after targeted SOURCE and explicit Root per-owner exact activation; no accepted ordinary/menu/storage replay.",
+      "contracts": [
+        "#1558",
+        "accepted G0+A01 removal/data-safety/client/common-regression contract"
+      ]
+    }
+  ]
+}
