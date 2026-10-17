@@ -1,3 +1,13 @@
+## A2 IMPLEMENTATION — bounded award-level leaves (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), from acceptedA1/65fc. [Current contract/checkpoint](plan.md) selects only two named award leaves plus immediate ordinary consumer, finite57A2+separate2affectedLate2. No product/test edits or runtime in this contract WIP.
+
+- [ ] Publish/readback/recover shortcontract/21dependency pins; independent contract acceptance and root release.
+- [ ] Tests-only real-owner causalboundary2 +finite pure/owner/existing controls/category selection; fresh preparation/concrete SOURCE before firstRED; preserve/qualify rawRED before product.
+- [ ] Minimal extraction, immediate WIP persistence/recovery, fresh changed-source preparation/affected SOURCE; one truly affected protectedLate2 then separateEVIDENCE, individually released A2 controls and final independent acceptance/checkpoint.
+
+No watermark/arithmetic/HOT/M3/F1/QTE/worker2/CI/ZIP/security/#1557 expansion or acceptedA1 replay; prior broader holds remain. Earlier completedA1 status below remains accepted history.
+
 ## A1 IMPLEMENTATION accepted — bounded ordinary prerequisite complete (2026-10-17)
 
 - [x] Minimal parsed training-level leaves extracted without changing owner IO/order/catches; exact producte247 and fixture4d1 source/preparation reviewed.
