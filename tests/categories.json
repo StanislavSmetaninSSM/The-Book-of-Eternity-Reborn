@@ -2,6 +2,238 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "gm-doc-block5-content-boundary",
+      "responsibility": "#1557 B One causal actual filesystem owner: complete pinned baseline/full XML/ancestor/example positive context and readonly source diagnostics precede the intended missing-module oracle. Separate canonical owner makes genuine first RED executable without unrelated discovery/manifest/memory rows.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-preservation",
+      "responsibility": "#1557 B Complete current two-source byte/XML/CDATA/context memory preservation, nine actual source-ordinal extractor occurrences and exact two exemption relocators, plus ten positive-seeded mutations. Physical content-boundary causal RED belongs only to its separate canonical category.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-reading",
+      "responsibility": "#1557 B Seven actual conditional topic rows, two union and three restricted rows, operational pair headers and three non-vacuous scope/union mutations; preserves current-request dependency restrictions.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-permissions-links",
+      "responsibility": "#1557 B Independent current52-vs-A-only36 inventory, real file-relative B header link negatives and five actual disabled proposal-only profile matcher/validator availability controls without task/write expansion.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-current-body-guards",
+      "responsibility": "#1557 B Six existing full assertion bodies migrate to actual Items/Combat/Wounds sources; global resource discovery and seven narrow actual-module resource/item authority rows keep the existing validation core non-vacuous.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract",
+            "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+            "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+            "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-shared-preservation",
+      "responsibility": "#1557 B Only four existing A preservation consumers directly read changed CLI index wrapper/inverse metadata: FrozenMap1, ActualDestination1, Mutation9 and EntrypointInverse1. No unchanged afterlife payload or accepted255 replay.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-delivery-source",
+      "responsibility": "#1557 B Existing final full daemon source/AST direction oracle binds the changed B router/docSpecs source. VerifyFullSource does not consume Expected; no unchanged source-negative/lifetime/gameplay cohort.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-doc-block5-package-negatives",
+      "responsibility": "#1557 B Two distinct guarded real physical B-module losses: package source before real producer vs session copy after it. Actual present source/package preimage, production/EOF/identity and strict two-root cleanup precede the missing-copy closure oracle.",
+      "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
+      "changeHints": [
+        "specs/1557-gm-doc-modularization/block5-content-map.json",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+        "Rules/Block_5.txt",
+        "Examples/E_Block_5.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-award-level-policy-boundary",
       "responsibility": "Two causal real constructed CheckLevelUp experience/status branches; full guarded source bytes/read/state/noUI/no-write and strict cleanup finish before each missing award helper assertion.",
       "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
@@ -27419,32 +27651,32 @@
             ]
         },
         {
-            "id": "gm-doc-afterlife-package-delivery",
-            "responsibility": "#1557 One real Linux packaged production writer startup: fresh actual app output/deps/runtimeconfig/Launcher prerequisites, strict AST/BOM sibling prefix, real --gm-main-operation unique session root and two production scopes. Independent36-document source/package/session byte-role-link closure is the intended missing-new-module RED. One owned pwsh, exact PID/birth/argv/helper census, concurrent retained pipes and absolute45work+15cleanup<=60s; individual exact identities only; unknown descendants are never signalled and retain roots even after known exit. Root removal requires established initial identity/pipe/census and verified exit/EOF. Focused corrections UNRUN. Also prove the exact generated MORTAL_NPC_UPDATE_TEMPLATE manifest role/generated flag/session path/physical containment/current body bytes and hash, retaining raw generated bytes before strict cleanup. This remains the same single genuine writer case/producer; no second publication or provider.",
-            "excludes": "No full daemon/provider dispatch, source override, fake copies as writer proof, orphan fault row or new process framework. Qualified pure44/FR/QTE cohorts, Block_5/content/production moves, Windows/globalCI/runner changes excluded. Actual cleanup must be proved; attempted kill or manifest alone never qualifies.",
-            "changeHints": [
-                "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
-                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
-                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
-                "tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false,
-                "ciRunner": "ubuntu-24.04"
-            },
-            "timeoutMinutes": 2,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure"
-                    ]
-                }
-            ]
-        },
+      "id": "gm-doc-afterlife-package-delivery",
+      "responsibility": "#1557 Same genuine production-prefix publisher now requires exact CurrentExpected52 doc roles/bytes/links plus the existing generated template physical proof. At tests-only source, unchanged36 production executes and closes before intended52 closure RED; after authoring, first changed-package actual proves real52 delivery.",
+      "excludes": "No replacement producer, pre-producer expected-module read, fabricated delivery, full daemon/provider/Windows/CI, or accepted A producer replay for counts. Source-only and physical fault controls remain separate.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+        "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+        "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
+        "tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure"
+          ]
+        }
+      ]
+    },
         {
           "id": "gm-doc-afterlife-delivery-source-guards",
           "responsibility": "#1557 Six integration methods/fourteen cases: actual packaged root AST boundary, seven unchanged clarified-source mutation seeds, four missing-copy/link memory controls, physical symlink escape and wrong-root-relative-link controls. Failed final-source positive moves to bootstrap-authority after the precise D01 instruction correction; original fourteen first PASS keep their source/seed provenance.",
@@ -27478,37 +27710,34 @@
           ]
         },
         {
-          "id": "gm-doc-afterlife-preservation",
-          "responsibility": "#1557 A frozen-byte map/inverse, actual destination, ordered flat examples and complete manifest preservation: six methods/seventeen cases. Entrypoint inverse belongs to the separate bootstrap-authority owner after N025; preserve its original first PASS history. No duplicate ownership.",
-          "excludes": "Delivery, packaged DLL/session copy, final daemon AST/dataflow, runtime/provider dispatch, Block_5 and all qualified FR063/QTE/archive/ordinary cohorts. No global selection or source/content moves. Pure fixture round-trip is not actual relocation evidence.",
-          "changeHints": [
-            "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
-            "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
-            "specs/1557-gm-doc-modularization/content-map.json",
-            "specs/1557-gm-doc-modularization/navigation-edits.json"
-          ],
-          "related": [],
-          "requirements": {
-            "frontendBuild": false,
-            "exclusive": false,
-            "ciRunner": "ubuntu-24.04"
-          },
-          "timeoutMinutes": 2,
-          "expectedSeconds": null,
-          "selectors": [
-            {
-              "project": "unit",
-              "tests": [
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualFlatDiscoveryRetainsEveryMovedExampleAndClassification"
-              ]
-            }
+      "id": "gm-doc-afterlife-preservation",
+      "responsibility": "#1557 A frozen-byte map/inverse, actual destination, ordered flat examples and complete manifest preservation: six methods/seventeen cases. Entrypoint inverse belongs to the separate bootstrap-authority owner after N025; preserve its original first PASS history. No duplicate ownership.",
+      "excludes": "Delivery, packaged DLL/session copy, final daemon AST/dataflow, runtime/provider dispatch, Block_5 and all qualified FR063/QTE/archive/ordinary cohorts. No global selection or source/content moves. Pure fixture round-trip is not actual relocation evidence.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+        "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+        "specs/1557-gm-doc-modularization/content-map.json",
+        "specs/1557-gm-doc-modularization/navigation-edits.json"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualFlatDiscoveryRetainsEveryMovedExampleAndClassification"
           ]
-        },
+        }
+      ]
+    },
         {
           "id": "gm-doc-afterlife-reading",
           "responsibility": "#1557 Current conditional topic reading and operational activation: six methods/fifty-seven cases. Includes actual paired-header transitive restrictions and owned triggers; D01 active-body/mutation methods move to the bootstrap-authority owner after N025. No runtime selector or duplicate ownership.",
@@ -27683,44 +27912,42 @@
             ]
         },
         {
-            "id": "gm-doc-afterlife-current-consumers",
-            "responsibility": "#1557 Current actual readonly bodies, worker read availability/proposal-only boundaries, current afterlife task instructions, and moved resource/effect/math body consumers.",
-            "excludes": "No unchanged worker execution/storage/progression/UI families; five-row existing math method is selected whole to preserve its established method-level positive controls. Existing broad domain owners overlap; select only this finite owner in current selection.",
-            "changeHints": [
-                "BookOfEternityClient/Services/GmWorkers",
-                "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs",
-                "BookOfEternityClient.TestSupport/GmDocumentationBodyFiles.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false,
-                "ciRunner": "ubuntu-24.04"
-            },
-            "timeoutMinutes": 2,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority",
-                        "BookOfEternityClient.Tests.GmWorkerProfileTemplateTests.DefaultTemplates_AreDisabledRunnerBasedAndValid",
-                        "BookOfEternityClient.Tests.GmWorkerProposalOnlyTests.BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket",
-                        "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm",
-                        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope",
-                        "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
-                        "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
-                        "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.AfterlifeRewardExample_UsesMathAuditFinalAmountReference",
-                        "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces",
-                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
-                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
-                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
-                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
-                        "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort"
-                    ]
-                }
-            ]
-        },
+      "id": "gm-doc-afterlife-current-consumers",
+      "responsibility": "#1557 Current actual readonly bodies, worker read availability/proposal-only boundaries, current afterlife task instructions, and moved resource/effect/math body consumers.",
+      "excludes": "No unchanged worker execution/storage/progression/UI families; five-row existing math method is selected whole to preserve its established method-level positive controls. Existing broad domain owners overlap; select only this finite owner in current selection.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers",
+        "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs",
+        "BookOfEternityClient.TestSupport/GmDocumentationBodyFiles.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority",
+            "BookOfEternityClient.Tests.GmWorkerProfileTemplateTests.DefaultTemplates_AreDisabledRunnerBasedAndValid",
+            "BookOfEternityClient.Tests.GmWorkerProposalOnlyTests.BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket",
+            "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm",
+            "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope",
+            "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.AfterlifeRewardExample_UsesMathAuditFinalAmountReference",
+            "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort"
+          ]
+        }
+      ]
+    },
         {
             "id": "gm-doc-afterlife-named-consumers",
             "responsibility": "#1557 Existing actual single/multi-fence algorithms retain23named sections/135ordered exact a5 inputs. Only2cross-owner spans retrieve pinned actual owned segments transiently; the other21sections read direct physical owners. Four missing/reordered-segment mutations protect the source view; physical GM payload authority remains single.",
@@ -27823,40 +28050,33 @@
             ]
         },
         {
-          "id": "gm-doc-afterlife-bootstrap-authority",
-          "responsibility": "#1557 Narrow correction of first-current source.bootstrap_source_exception: four existing methods/five cases. Exact actual bootstrap instruction obeys D01; all25 entrypoint edits reverse to exact current a5 sources; active D01 owners retain the ban and missing-owner/restored-grant controls. Unit and integration selectors form two native descriptors. No new tests or weakened oracle.",
-          "excludes": "Unchanged preservation17/reading57/source-guards14 retain their original FIRST PASS provenance. No replay of gameplay/A1/A2/Late2, full daemon/provider/Windows/CI or Block_5; this owner alone does not prove actual package/session delivery.",
-          "changeHints": [
-            "BookOfEternityClient/game_master_daemon.ps1",
-            "specs/1557-gm-doc-modularization/navigation-edits.json",
-            "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
-            "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs"
-          ],
-          "related": [],
-          "requirements": {
-            "frontendBuild": false,
-            "exclusive": false,
-            "ciRunner": "ubuntu-24.04"
-          },
-          "timeoutMinutes": 2,
-          "expectedSeconds": null,
-          "selectors": [
-            {
-              "project": "unit",
-              "tests": [
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
-                "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant"
-              ]
-            },
-            {
-              "project": "integration",
-              "tests": [
-                "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch"
-              ]
-            }
+      "id": "gm-doc-afterlife-bootstrap-authority",
+      "responsibility": "#1557 Narrow correction of first-current source.bootstrap_source_exception: four existing methods/five cases. Exact actual bootstrap instruction obeys D01; all25 entrypoint edits reverse to exact current a5 sources; active D01 owners retain the ban and missing-owner/restored-grant controls. Unit and integration selectors form two native descriptors. No new tests or weakened oracle.",
+      "excludes": "Unchanged preservation17/reading57/source-guards14 retain their original FIRST PASS provenance. No replay of gameplay/A1/A2/Late2, full daemon/provider/Windows/CI or Block_5; this owner alone does not prove actual package/session delivery.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "specs/1557-gm-doc-modularization/navigation-edits.json",
+        "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+        "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant"
           ]
-        },
+        }
+      ]
+    },
         {
           "id": "gm-doc-afterlife-owned-section-consumers",
           "responsibility": "#1557 Precise affected closure of real body-source acquisition defects: six existing methods (five FAIL and one weakened PASS), plus two new missing/reorder rows over all five real retrieved clipped views. Eight cases/seven methods; original Extract/Split/Assert algorithms, common Read, old b490 named engine and GM payloads remain unchanged.",

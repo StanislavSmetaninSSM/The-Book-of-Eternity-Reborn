@@ -11,7 +11,8 @@ namespace BookOfEternityClient.Tests;
 internal static partial class GmDocumentationDeliveryScenario
 {
     internal sealed record Doc(string Path, string Role);
-    // Independent approved inventory: not obtained from daemon docSpecs or its resulting manifest.
+    // Independent approved A-scoped inventory for unchanged memory fixtures.
+    // Actual current publication passes CurrentExpected explicitly after the real producer.
     internal static readonly Doc[] Expected =
     [
         new("CLI_Agent_Daemon_Specification.md", "daemon_protocol"),
@@ -101,13 +102,16 @@ internal static partial class GmDocumentationDeliveryScenario
     }
     internal static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
     internal static async Task<Result> RunAsync(string repo, bool publish, Func<byte[], byte[]>? sourceMutation = null,
-        Func<byte[], byte[]>? sourceSeedMutation = null, string? physicalFault = null, bool verifyGeneratedTemplate = false)
+        Func<byte[], byte[]>? sourceSeedMutation = null, string? physicalFault = null, bool verifyGeneratedTemplate = false,
+        string physicalFaultPath = "OtherGuides/GM_Common_Core.md")
     {
         if (!OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This exact delivery responsibility is Linux-only.");
         if (verifyGeneratedTemplate && (!publish || physicalFault is not null))
             throw new ArgumentException("Generated physical proof belongs only to the unchanged normal genuine publisher.", nameof(verifyGeneratedTemplate));
         if (physicalFault is not null && (!publish || physicalFault is not ("missing_package_source" or "missing_session_copy")))
             throw new ArgumentException("Physical delivery faults require the unchanged real publishing producer.", nameof(physicalFault));
+        if (physicalFaultPath is not ("OtherGuides/GM_Common_Core.md" or "Rules/Block_5_Wounds.txt"))
+            throw new ArgumentException("Only explicit owned documentation fault targets are permitted.", nameof(physicalFaultPath));
         var clock = new Clock();
         var id = Guid.NewGuid().ToString("N");
         var package = Path.Combine(Path.GetTempPath(), "boe-gm1557-package-" + id);
@@ -149,7 +153,7 @@ internal static partial class GmDocumentationDeliveryScenario
             }
             if (physicalFault == "missing_package_source")
             {
-                const string relative = "OtherGuides/GM_Common_Core.md";
+                var relative = physicalFaultPath;
                 var physical = Path.Combine(package, "operational-resources", relative);
                 var sourceBeforeFault = File.ReadAllBytes(physical);
                 if (!sourceBeforeFault.SequenceEqual(File.ReadAllBytes(Path.Combine(repo, relative))))
@@ -229,7 +233,7 @@ internal static partial class GmDocumentationDeliveryScenario
                     evidence["generatedTemplate"] = CaptureGeneratedTemplate(source, files.GameSessionPath, manifest, artifacts, clock);
                 if (physicalFault == "missing_session_copy")
                 {
-                    const string relative = "OtherGuides/GM_Common_Core.md";
+                    var relative = physicalFaultPath;
                     var target = Path.Combine(files.GameSessionPath, "game_state/control/gm_context_pack", relative);
                     var sourcePath = Path.Combine(package, "operational-resources", relative);
                     var bytes = File.ReadAllBytes(target);
@@ -241,9 +245,9 @@ internal static partial class GmDocumentationDeliveryScenario
                         ["physicalPath"] = target, ["beforeSha256"] = Hash(bytes), ["presentBefore"] = true,
                         ["presentAfter"] = File.Exists(target), ["phase"] = "after unchanged real producer, before closure check" };
                 }
-                var docs = CollectDelivered(files.GameSessionPath, manifest, package, repo, issues, clock);
+                var docs = CollectDelivered(files.GameSessionPath, manifest, package, repo, issues, clock, CurrentExpected);
                 evidence["copiedPins"] = new JsonObject(docs.Select(pair => KeyValuePair.Create<string, JsonNode?>(pair.Key, JsonValue.Create(Hash(pair.Value)))));
-                issues.AddRange(GmDocumentationDeliveryRules.VerifyClosure(docs, files.GameSessionPath + "/game_state/control/gm_context_pack"));
+                issues.AddRange(GmDocumentationDeliveryRules.VerifyClosure(docs, files.GameSessionPath + "/game_state/control/gm_context_pack", CurrentExpected));
                 foreach (var path in new[] { "input/turn_request.json", "input/qte_effect_resolution_request.json", "ready/turn_complete.json",
                              "game_state/control/validation_repair_request.json", "game_state/control/terminal_protocol_failure_request.json",
                              "game_state/control/pending_turn_snapshot.json" })
@@ -338,16 +342,16 @@ internal static partial class GmDocumentationDeliveryScenario
         }
     }
     private static Dictionary<string, byte[]> CollectDelivered(string session, JsonObject manifest, string package,
-        string repo, List<string> issues, Clock clock)
+        string repo, List<string> issues, Clock clock, IReadOnlyList<Doc> expected)
     {
         var pack = Path.Combine(session, "game_state/control/gm_context_pack");
         var resources = Path.Combine(package, "operational-resources");
         if (manifest["repoRootPath"]?.GetValue<string>() != resources) issues.Add("delivery.checkout_fallback");
         var rows = manifest["docs"]!.AsArray().Select(row => row!.AsObject()).ToArray();
-        if (rows.Length != Expected.Length || rows.Any(row => !Expected.Any(doc => doc.Path == row["relativePath"]?.GetValue<string>())))
+        if (rows.Length != expected.Count || rows.Any(row => !expected.Any(doc => doc.Path == row["relativePath"]?.GetValue<string>())))
             issues.Add("delivery.manifest_inventory");
         var result = new Dictionary<string, byte[]>(StringComparer.Ordinal);
-        foreach (var doc in Expected)
+        foreach (var doc in expected)
         {
             _ = clock.Work;
             var entries = rows.Where(row => row["relativePath"]?.GetValue<string>() == doc.Path).ToArray();

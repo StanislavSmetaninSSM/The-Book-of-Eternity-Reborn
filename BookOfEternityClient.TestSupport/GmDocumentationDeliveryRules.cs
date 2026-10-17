@@ -134,13 +134,17 @@ internal static class GmDocumentationDeliveryRules
         function["parameters"]!.AsArray().Select(value => value!.GetValue<string>()).SequenceEqual(parameters) &&
         function["statements"]!.AsArray().Select(row => S(row!, "kind")).SequenceEqual(statementKinds);
 
-    internal static IReadOnlyList<string> VerifyClosure(IReadOnlyDictionary<string, byte[]> docs, string? physicalRoot = null)
+    internal static IReadOnlyList<string> VerifyClosure(IReadOnlyDictionary<string, byte[]> docs, string? physicalRoot = null,
+        IReadOnlyList<GmDocumentationDeliveryScenario.Doc>? requiredDocs = null)
     {
         var issues = new List<string>();
-        foreach (var doc in GmDocumentationDeliveryScenario.Expected)
+        var expected = requiredDocs ?? GmDocumentationDeliveryScenario.Expected;
+        foreach (var doc in expected)
             if (!docs.ContainsKey(doc.Path)) issues.Add("delivery.copy_missing:" + doc.Path);
         foreach (var (source, bytes) in docs.Where(pair => pair.Key == "CLI_Rules_Index.md" ||
-                     pair.Key == "OtherGuides/GM_Common_Core.md" || pair.Key.Contains("Afterlife_", StringComparison.Ordinal)))
+                     pair.Key == "OtherGuides/GM_Common_Core.md" || pair.Key.Contains("Afterlife_", StringComparison.Ordinal) ||
+                     pair.Key.StartsWith("Rules/Block_5", StringComparison.Ordinal) ||
+                     pair.Key.StartsWith("Examples/E_Block_5", StringComparison.Ordinal)))
         {
             var text = new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF');
             foreach (var line in text.Split('\n'))
@@ -151,8 +155,9 @@ internal static class GmDocumentationDeliveryRules
                     if (!repositoryOnly) CheckLink(source, match.Groups[1].Value.Trim('<', '>'), docs, physicalRoot, issues);
             }
             if (source == "CLI_Rules_Index.md")
-                foreach (var topic in GmDocumentationDeliveryScenario.Expected.Where(doc => doc.Role.StartsWith("afterlife_rules_", StringComparison.Ordinal) ||
-                             doc.Role.StartsWith("afterlife_examples_", StringComparison.Ordinal)))
+                foreach (var topic in expected.Where(doc => doc.Role.StartsWith("afterlife_rules_", StringComparison.Ordinal) ||
+                             doc.Role.StartsWith("afterlife_examples_", StringComparison.Ordinal) ||
+                             doc.Role.StartsWith("block5_", StringComparison.Ordinal)))
                 {
                     if (!text.Split('\n').Any(line => line.Contains(topic.Path, StringComparison.Ordinal) && !line.Contains("repository-only", StringComparison.OrdinalIgnoreCase)))
                         issues.Add("delivery.router_edge_missing:" + topic.Path);

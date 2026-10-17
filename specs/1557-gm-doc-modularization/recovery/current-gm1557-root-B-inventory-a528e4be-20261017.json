@@ -1,0 +1,32 @@
+{
+  "kind": "ROOT_READONLY_B_SOURCE_PARTITION_AND_BASELINE_CHECK_NOT_RUNTIME_OR_ACCEPTANCE",
+  "source": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+  "carrier": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+  "checkedUtc": "2026-10-17T05:34:12.142787+00:00",
+  "mapSha256": "ea197d826cc4faa97f8f639fd06ebb1eb38c6b0af6ab50487447251ee2fb9339",
+  "sources": [
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 262995,
+      "pieces": 34,
+      "payloads": 31,
+      "framing": 3,
+      "wholeXmlGroupsValidated": true
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 268659,
+      "pieces": 21,
+      "payloads": 19,
+      "framing": 2,
+      "wholeXmlGroupsValidated": true
+    }
+  ],
+  "baselineGzipChainsExact": 2,
+  "existingExtractorStoredRawChainExact": true,
+  "actualExtractorCount": 9,
+  "classification": {
+    "Valid": 7,
+    "Invalid": 2
+  }
+}

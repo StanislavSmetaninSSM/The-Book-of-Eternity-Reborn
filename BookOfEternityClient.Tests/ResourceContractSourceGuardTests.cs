@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ResourceContractSourceGuardTests
+public sealed partial class ResourceContractSourceGuardTests
 {
     private static readonly string[] RemovedCommandTokens =
     {
@@ -422,7 +422,6 @@ public sealed class ResourceContractSourceGuardTests
     [InlineData("Rules/Block_0.5.txt")]
     [InlineData("Rules/Block_0.6.txt")]
     [InlineData("Rules/Block_2.txt")]
-    [InlineData("Rules/Block_5.txt")]
     [InlineData("Rules/Block_6.txt")]
     [InlineData("Rules/Block_7.txt")]
     [InlineData("Rules/Block_9.txt")]
@@ -437,7 +436,10 @@ public sealed class ResourceContractSourceGuardTests
     [InlineData("Rules/Block_CLI_QTE.txt")]
     [InlineData("Rules/Block_CLI_Operations.txt")]
     [InlineData("Rules/Block_FINAL.txt")]
-    public void ActiveGmContracts_DoNotAuthorizeRemovedResourceFields(string relativePath)
+    public void ActiveGmContracts_DoNotAuthorizeRemovedResourceFields(string relativePath) =>
+        AssertActiveGmContract(relativePath);
+
+    private static void AssertActiveGmContract(string relativePath)
     {
         var source = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
@@ -626,12 +628,14 @@ public sealed class ResourceContractSourceGuardTests
         return fileName.Equals("Block_2.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("Block_2.5.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("Block_5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.StartsWith("Block_5_", StringComparison.OrdinalIgnoreCase) ||
                fileName.StartsWith("Block_9", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("Block_10.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("Block_11.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("Block_19.A.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("E_Block_2.5.txt", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("E_Block_5.txt", StringComparison.OrdinalIgnoreCase) ||
+               fileName.StartsWith("E_Block_5_", StringComparison.OrdinalIgnoreCase) ||
                fileName.StartsWith("E_Block_9", StringComparison.OrdinalIgnoreCase) ||
                fileName.StartsWith("E_Block_10", StringComparison.OrdinalIgnoreCase) ||
                fileName.Equals("E_Block_19.A.txt", StringComparison.OrdinalIgnoreCase) ||

@@ -1,0 +1,97 @@
+{
+  "kind": "INDEPENDENT_BLOCK_B_CONTRACT_INVENTORY_REVIEW",
+  "createdUtc": "2026-10-17T05:38:38.712965+00:00",
+  "reviewer": "/root/a1_reviewer; independent Astra/XHigh; repository read-only",
+  "verdict": "CONTRACT_INVENTORY_ACCEPTED_FOR_TESTS_ONLY_CONCRETE_SOURCE_AND_CAUSAL_RED_PATH",
+  "carrier": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+  "acceptedABase": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+  "checked": {
+    "kind": "INDEPENDENT_READ_ONLY_STATIC_CONTRACT_INVENTORY_CHECK",
+    "carrier": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+    "base": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+    "sources": [
+      {
+        "path": "Rules/Block_5.txt",
+        "bytes": 262995,
+        "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+        "groups": 31,
+        "rules": 144,
+        "examples": 0,
+        "cdata": 126,
+        "pieces": 34,
+        "allChecks": true
+      },
+      {
+        "path": "Examples/E_Block_5.txt",
+        "bytes": 268659,
+        "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+        "groups": 19,
+        "rules": 19,
+        "examples": 51,
+        "cdata": 81,
+        "pieces": 21,
+        "allChecks": true
+      }
+    ],
+    "payloadGroups": 50,
+    "framingPieces": 5,
+    "examples": 51,
+    "cdataSections": 207,
+    "actualExtractorRows": 9,
+    "extractorClassifications": {
+      "Valid": 7,
+      "Invalid": 2
+    },
+    "baselineGzipChains": 2,
+    "extractorGzipChain": 1,
+    "dependencyPins": 24,
+    "manifestRows": 2,
+    "newRecoveryFiles": 13,
+    "changedPaths": 9,
+    "recoveryReceiptSha256": "04ed8db19ae29001ca4bfd6aa68c7fe5be2a75633a35501367f2ea4253890a98",
+    "mapSha256": "ea197d826cc4faa97f8f639fd06ebb1eb38c6b0af6ab50487447251ee2fb9339",
+    "contractSha256": "40aabb847ef315c13e0eb06aeb89518294643c3326a013a795325b416d2086f8",
+    "noBuildTestApplicationRuntime": true,
+    "noRepositoryMutation": true,
+    "passed": true
+  },
+  "materialBlockingFindings": [],
+  "preservedExistingFinding": {
+    "id": "B-CONTEXT-01",
+    "classification": "PREEXISTING_POTENTIAL_CONTRADICTION_PRESERVED_NOT_RESOLVED",
+    "surfaces": [
+      "Examples/E_Block_5.txt original effectmaterializationcontract",
+      "Rules/Block_5.txt rule 5.20.3"
+    ],
+    "limit": "No semantic rewrite or precedence invention is authorized by relocation."
+  },
+  "mandatoryConcreteSourceConditions": [
+    "Concrete SOURCE must prove all 50 actual payload groups plus 5 framing pieces, inherited XML ancestry, 51 ordered example nodes and 207 CDATA sections against independent frozen bytes; preserve unusual IDs, the supplemental item rule, full current wounds/deterioration and one-owner context without invented precedence.",
+    "Keep the real extractor/parser/schema unchanged. Map actual post-split snippets back to pinned original source ordinals, preserving body/classification and exactly two permitted file/line-only exemption changes. Physical filename sorting changes global enumeration order (Combat/Units/Wounds versus original Wounds/Combat/Units); do not silently claim global enumeration identity or discard order-sensitive preservation checks.",
+    "Close the actual delivery Expected/default/VerifyClosure consumer graph before accepting selection. Prove the complete source/package/session inventory (52 proposed), generated prerequisites and file-relative transitive links through the genuine existing producer, with physical missing-source/copy negatives and strict ownership cleanup. Updating shared Expected alone can affect existing guards; enumerate those actual dependencies rather than fixing the total at 67.",
+    "Concrete body/resource migration must read actual owned sections with unchanged assertions: six existing facts, actual CompleteActiveContracts inventory and seven Block5 module rows; preserve item-authority classification so removed-field guards cannot become vacuous.",
+    "Bind seven topic routes, conditional transitive unions, source/dispatch and restricted packet routes to actual operational text; inspect exact five worker profile read permissions, paired Examples availability and unchanged Enabled/TaskTypes/ProposalOnly/write authority. File availability does not mandate all-topic reading.",
+    "Publish concrete tests/catalog/selection and source/binary/recovery bindings; fresh BOTH/catalog and exact PlanOnly0 must settle native categories/descriptors/methods/cases, budgets and actual Expected consumers. Negatives need real positive prerequisites and intended-oracle failures. Independently accept SOURCE before causal RED; preserve baseline/full-context and genuine 36-to-proposed52 publisher RED with cleanup before any implementation. Reassess only genuinely changed A dependencies; initial shared-A proposal is four methods/twelve cases."
+  ],
+  "proposedCounts": {
+    "newBlockB": 36,
+    "existingBodyResource": 14,
+    "workerProfiles": 5,
+    "affectedA": 12,
+    "total": 67,
+    "nativeObserved": false,
+    "proposedSessionDocuments": 52
+  },
+  "release": "Tests-only concrete fixtures/selection and bounded SOURCE preparation after persistence/root orchestration; no content/product move before accepted causal RED. No runtime released by this report.",
+  "retained": "Accepted A255 and A1/A2/F1 provenance and existing constraints remain; no old family/raw/base replay. Main/merge/issue closure, paid/provider/full-daemon gameplay, Windows/CI remain excluded. T022–T029 completion is not claimed.",
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/gm1557-B-contract-independent-static-20261017.json",
+      "sha256": "ff0db52bebe70f2d69cddac3664e80b93d3954a23c6703e4a68c1c96ecce6632"
+    },
+    {
+      "path": "/tmp/gm1557-B-contract-independent-check-20261017.py",
+      "sha256": "93e37a995fb8b66a9e08aba68b6321e31b80c0306777acc6e1b5cd3ac72235bd"
+    }
+  ]
+}

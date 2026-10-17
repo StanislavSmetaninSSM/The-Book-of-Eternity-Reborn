@@ -1100,7 +1100,7 @@ public sealed partial class PromptDocumentationCoverageTests
     public void MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership()
     {
         var block2 = ReadRepoFile("Rules", "Block_2.txt");
-        var block5 = ReadRepoFile("Rules", "Block_5.txt");
+        var block5 = ReadRepoFile("Rules", "Block_5_Items_Resources.txt");
         var block9 = ReadRepoFile("Rules", "Block_9.txt");
         var block10 = ReadRepoFile("Rules", "Block_10.txt");
         var block11 = ReadRepoFile("Rules", "Block_11.txt");
@@ -1585,7 +1585,7 @@ public sealed partial class PromptDocumentationCoverageTests
         var workedExample = ReadRepoFile("Examples", "E_CLI_Mortal_Resources.txt");
         var rules = string.Join('\n',
             ReadRepoFile("Rules", "Block_2.txt"),
-            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_5_Items_Resources.txt"),
             ReadRepoFile("Rules", "Block_6.txt"),
             ReadRepoFile("Rules", "Block_12.txt"),
             ReadRepoFile("Rules", "Block_15.txt"),
@@ -1674,7 +1674,7 @@ public sealed partial class PromptDocumentationCoverageTests
         var gmDocuments = new[]
         {
             ReadRepoFile("Rules", "Block_2.txt"),
-            ReadRepoFile("Rules", "Block_5.txt"),
+            ReadRepoFile("Rules", "Block_5_Combat_Foundations.txt") + "\n" + ReadRepoFile("Rules", "Block_5.txt"),
             ReadRepoFile("Rules", "Block_6.txt"),
             ReadRepoFile("Rules", "Block_7.txt"),
             ReadRepoFile("Rules", "Block_8.txt"),

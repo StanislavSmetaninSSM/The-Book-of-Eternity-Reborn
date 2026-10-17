@@ -131,7 +131,9 @@ public sealed class EffectMaterializationSourceGuardTests
             Assert.DoesNotContain("activeDebuffs", source, StringComparison.OrdinalIgnoreCase);
         }
 
-        var legacyLifetimeGuidance = ReadRepoFile("Rules/Block_5.txt") + '\n' +
+        var legacyLifetimeGuidance = string.Join('\n', new GmDocumentationBlock5Fixtures(TestRepoPaths.RepoRoot).ModulePaths
+                                         .Where(path => path.StartsWith("Rules/", StringComparison.Ordinal))
+                                         .Select(path => File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path)))) + '\n' +
                                      ReadRepoFile("Rules/Block_6.txt");
         Assert.DoesNotContain("999", legacyLifetimeGuidance, StringComparison.Ordinal);
         Assert.DoesNotContain(

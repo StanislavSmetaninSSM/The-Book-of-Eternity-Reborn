@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmDocumentationDeliveryTests
+public sealed partial class GmDocumentationDeliveryTests
 {
     private readonly ITestOutputHelper _output;
     public GmDocumentationDeliveryTests(ITestOutputHelper output) => _output = output;

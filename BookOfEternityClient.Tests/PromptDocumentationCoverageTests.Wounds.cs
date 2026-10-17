@@ -261,8 +261,8 @@ public sealed partial class PromptDocumentationCoverageTests
     [Fact]
     public void WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor()
     {
-        var rules = ReadRepoFile("Rules", "Block_5.txt");
-        var examples = ReadRepoFile("Examples", "E_Block_5.txt");
+        var rules = ReadRepoFile("Rules", "Block_5_Wounds.txt");
+        var examples = ReadRepoFile("Examples", "E_Block_5_Wounds.txt");
 
         foreach (var required in new[]
                  {
@@ -302,8 +302,8 @@ public sealed partial class PromptDocumentationCoverageTests
         var contract = ReadRepoFile(
             "OtherGuides",
             "Wound_Materialization_Contract.md");
-        var rules = ReadRepoFile("Rules", "Block_5.txt");
-        var examples = ReadRepoFile("Examples", "E_Block_5.txt");
+        var rules = ReadRepoFile("Rules", "Block_5_Wounds.txt");
+        var examples = ReadRepoFile("Examples", "E_Block_5_Wounds.txt");
 
         foreach (var document in new[] { contract, rules, examples })
         {

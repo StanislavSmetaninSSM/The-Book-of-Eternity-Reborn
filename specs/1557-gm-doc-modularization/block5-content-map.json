@@ -10,7 +10,8 @@
       "approvedTopComponents": [
         "5.0",
         "5.8"
-      ]
+      ],
+      "activation": "Any percentage-point/share calculation, resource quantity, object identity, NPC creation or turn-local initialId reference."
     },
     {
       "topic": "Characteristics_Progression",
@@ -21,7 +22,8 @@
         "5.7",
         "5.10",
         "5.24"
-      ]
+      ],
+      "activation": "Any characteristic/derived-parameter check, level/passive progression, unified experience or level calibration."
     },
     {
       "topic": "Combat_Foundations",
@@ -35,7 +37,8 @@
         "5.6",
         "5.16",
         "5.19"
-      ]
+      ],
+      "activation": "Any element/effect/target, combat action/classification, advantage/disadvantage or combat failure/consequence decision."
     },
     {
       "topic": "Items_Resources",
@@ -49,7 +52,8 @@
         "5.15",
         "5.23",
         "5.mortal_item_materialization_v1"
-      ]
+      ],
+      "activation": "Any rarity/item bonus/count/resource/durability/currency operation or currently authorized loot materialization."
     },
     {
       "topic": "Narrative_Social",
@@ -59,7 +63,8 @@
         "5.12",
         "5.17",
         "5.18"
-      ]
+      ],
+      "activation": "Any action/narrative outcome, NPC reaction or non-trivial NPC cognition/social strategy under the actual current contract."
     },
     {
       "topic": "Wounds",
@@ -67,7 +72,8 @@
       "examplePath": "Examples/E_Block_5_Wounds.txt",
       "approvedTopComponents": [
         "5.20"
-      ]
+      ],
+      "activation": "Only a current client wound opportunity or issued typed treatment/recovery contract; never invent wound authority from ordinary health loss."
     },
     {
       "topic": "World_Chronology",
@@ -77,7 +83,8 @@
         "5.21",
         "5.22",
         "5.25"
-      ]
+      ],
+      "activation": "Any time/weather/world-lore/calendar interpretation, using current client-provided chronology rather than authoring a date."
     }
   ],
   "sources": [
@@ -5186,5 +5193,7 @@
     "moduleWrappers": "Only inventoried new XML/comment scaffolding to preserve original instructionblock id5 and actual content ancestry; inherited context referenced, never silently summarized or copied as second authority",
     "sourceIntervals": "UTF8 byte offsets, no whitespace/newline normalization",
     "ownership": "Actual outer XML group and longest component-aware approved numeric ancestor; explicit5.mortal_item_materialization_v1 override; foreignnestedIDs inherit containing actual5.18.B tree"
-  }
+  },
+  "sourceOrderContract": "Rebind relocated actual extractor tuples to original source ordinal/occurrence; physical filename enumeration intentionally differs. No extractor modification or global-order claim.",
+  "candidateLayout": "Deterministic test-fixture module wrappers/markers implement the preserved XML ancestry and compact context navigators; actual content remains unimplemented until accepted causal RED."
 }
