@@ -1,0 +1,63 @@
+{
+  "kind": "ROOT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ACCEPTANCE",
+  "date": "2026-10-17",
+  "carrier": "25fe58aa6c3ef766f62f29f2050d6b64fd33c33a",
+  "actualSource": "479a23a95436351960916a2dde065c577e962202",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY",
+  "independentArtifacts": {
+    "/tmp/t179pd3e-first-boundary1-evidence-independent-review-20261017.md": "1c66224a243a9183d33eb676952fbb7a70e2153f9dc708e134343c6be2a54079",
+    "/tmp/t179pd3e-first-boundary1-evidence-independent-review-20261017.json": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187",
+    "/tmp/t179pd3e-first-boundary1-evidence-independent-check-20261017.json": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a"
+  },
+  "evidence": {
+    "planned": 1,
+    "executed": 1,
+    "pass": 0,
+    "fail": 1,
+    "nativeExit": 1,
+    "seconds": 5.060049401996366,
+    "soleFailure": "Assert.NotNull(document), boundary line29",
+    "reached": [
+      "real public Full returns no issues",
+      "seeded file presence/raw bytes equal",
+      "prerequisites marker"
+    ],
+    "unreached": [
+      "unknown-field helper",
+      "scope helper",
+      "delegation assertions"
+    ],
+    "strictRootRemoved": true
+  },
+  "historicalFailuresRetained": [
+    "initial CS0121 preparation/C01",
+    "causal boundary1 RED"
+  ],
+  "S02": "OPEN source-only expected-vector finding; other44 unrun",
+  "decision": "Persist this decision with all three exact independent artifacts and current recovery receipts; commit/push/nonforce/exactremote/recover before product activation",
+  "nextConditionalScope": {
+    "productionFiles": 2,
+    "testCorrection": "Only Mixed and Guardian-centric ordered expected-code vectors in existing Assert.Equal conditional expression; retain InlineData, signature, 3 rows, fixture, full equality and first-issue field assertions; World vector unchanged.",
+    "invariants": [
+      "boundary/fixture/frozen segments byte unchanged",
+      "new3e inverse to exact8bde A",
+      "existing3d inverse to exact6a9f originalA",
+      "owner parse/lifetime/IO/catches/order unchanged"
+    ],
+    "gates": [
+      "fresh BOTH/PlanOnly6owners20methods47",
+      "full affected independent SOURCE",
+      "new-product protectedLate2 then independent EVIDENCE",
+      "ordinary45 then independent EVIDENCE"
+    ],
+    "held": [
+      "HOT",
+      "history",
+      "full S/B/M3/F1/T197",
+      "Windows ZIP",
+      "CI",
+      "A3"
+    ]
+  }
+}

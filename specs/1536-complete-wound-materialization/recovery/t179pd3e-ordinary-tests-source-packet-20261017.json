@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_DEBUG_PREFIX_TESTS_ONLY_CURRENT_SOURCE_NOT_PRODUCT_OR_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_BOUNDARY1_NATIVE1_FINAL_MISSING_SEAM_RAW_FROZEN_CAUSAL_EVIDENCE_PENDING_OTHER44_HELD",
+  "status": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY_AWAIT_SAVED_DECISION_NAMED_PRODUCT_ACTIVATION",
   "productDelta": [],
   "counts": {
     "categories": 5,
@@ -555,7 +555,7 @@
   "sourcePinDigest": "a8c9e79b97dc51ac4a16c2ccfb7be1015979ea5c78264e1fdadf182928bbbfaf",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "00874c7f22ef7529ef262090f759b6789fae302ac486db4451c96c05c30e9f6f"
+    "sha256": "97e50b91a43f716ef5a02341c98a20babadd465f4928862c4adb784701641f64"
   },
   "references": [
     {
@@ -905,7 +905,7 @@
     "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
   },
   "futureProduct": {
-    "status": "HELD_PENDING_STRUCTURAL_CAUSAL_EVIDENCE",
+    "status": "HELD_PENDING_RECOVERED_SAVED_CAUSAL_DECISION_AND_NAMED_ROOT_ACTIVATION",
     "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
     "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
     "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
@@ -2831,7 +2831,7 @@
     "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner."
   },
   "firstBoundaryOutcome": {
-    "status": "FIRST_RAW_OBSERVATION_NOT_INDEPENDENT_CAUSAL_ACCEPTANCE",
+    "status": "INDEPENDENT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ACCEPTED_ORIGINAL_RAW_FAIL_RETAINED",
     "actualSource": "479a23a95436351960916a2dde065c577e962202",
     "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
     "semanticProductBaseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
@@ -2862,7 +2862,7 @@
       "sha256": "7ef8894211579e2b08fb1709d5bf176aeb4c4b40d8f06a4b767ec335b448cfa8"
     },
     "observed": "Exactly one final Assert.NotNull failure line29 on missing document seam. REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE is emitted after actual default Full no-issue success and exact whole seed presence/bytes assertions. Root literal receipt checks sole failure and one strict physically absent root/nine DLL/source54 continuity; native1 alone is not an independent causal verdict.",
-    "limits": "Later unknown/scope/helper-order assertions were not reached. No semantic regression case, genuine preparer-original case, old ordinary52 or protectedLate2 ran. No full payload body retained beyond frozen source/actual assertion and marker; no new source authority or policy defect claimed. Other44 held, S02 open, product/vector correction prohibited pending separate causal review/Root release.",
+    "limits": "Later unknown/scope/helper-order assertions were not reached. No semantic regression case, genuine preparer-original case, old ordinary52 or protectedLate2 ran. No full payload body retained beyond frozen source/actual assertion and marker; no new source authority or policy defect claimed. Other44 held, S02 open, product/vector correction prohibited pending separately named Root product activation after this saved causal decision.",
     "namespaceBefore": {
       "ownedRoots": []
     },
@@ -2984,6 +2984,74 @@
         "bytes": 18230,
         "sha256": "c0f265f279c970b009ca3bfc7a12dd0c586ca3652aac9082c29190ee93bdb269"
       }
+    ],
+    "qualificationReferences": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.md",
+        "sha256": "1c66224a243a9183d33eb676952fbb7a70e2153f9dc708e134343c6be2a54079",
+        "bytes": 3071
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.json",
+        "sha256": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187",
+        "bytes": 5245
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-check-20261017.json",
+        "sha256": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a",
+        "bytes": 19840
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-causal-red-acceptance-25fe58aa-20261017.json",
+        "sha256": "54f59d2235b491dfa6a5bff8f2194eaa515b059e5229d8dc082cc6d29a18e6d2",
+        "bytes": 2525
+      }
     ]
+  },
+  "acceptedCausalDecision": {
+    "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY",
+    "carrier": "25fe58aa6c3ef766f62f29f2050d6b64fd33c33a",
+    "actualSource": "479a23a95436351960916a2dde065c577e962202",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.md",
+        "sha256": "1c66224a243a9183d33eb676952fbb7a70e2153f9dc708e134343c6be2a54079",
+        "bytes": 3071
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.json",
+        "sha256": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187",
+        "bytes": 5245
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-check-20261017.json",
+        "sha256": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a",
+        "bytes": 19840
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-causal-red-acceptance-25fe58aa-20261017.json",
+        "sha256": "54f59d2235b491dfa6a5bff8f2194eaa515b059e5229d8dc082cc6d29a18e6d2",
+        "bytes": 2525
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary-delta-github-25fe58aa-20261017.json",
+        "sha256": "014713bae4187534fe3d44586d30d5db981eb5bd728748629eb8cf182ac2c4e6",
+        "bytes": 17640
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-25fe58aa-20261017.json",
+        "sha256": "7c47c64ae1625bf2f4a8ddf9ca53937f3a22e9610bfc4a3461e408ec446ed58b",
+        "bytes": 18570
+      }
+    ],
+    "acceptedCases": 1,
+    "rawPass": 0,
+    "rawFail": 1,
+    "classification": "Structural missing seam after successful actual public Full and seed byte/presence prerequisites; not gameplay defect or GREEN.",
+    "limits": "Unknown/scope/delegation assertions were unreached. Deleted seed payload bodies/hashes/mtime were not separately frozen; source-bound reached assertions and marker support byte preservation. No genuine original/preparer authority claim from this row.",
+    "remainingActualsHeld": 44,
+    "S02": "OPEN source-only two expected-code vectors inside conditional Assert.Equal expression; same three single-mode InlineData rows/signature/fixture/full equality and first-field checks, World unchanged. Correction only in a separately identifiable future product capsule after Root saved-decision activation.",
+    "nextGate": "Nonforce publish/exact remote/full immediate GitHub recovery and Root readback before separately named minimal product+two-vector correction activation. Fresh selected BOTH/Plan6owners20methods47 then complete affected SOURCE; separately protectedLate2/EVIDENCE before ordinary45. No product/test edit or new native authorized by this persistence task."
   }
 }
