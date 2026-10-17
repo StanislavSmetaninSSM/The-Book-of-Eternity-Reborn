@@ -1,0 +1,398 @@
+{
+  "kind": "THIRD_FIRST_ACTUAL_STOP_WRITER_RAW_INSPECTION_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T04:50:12.184152+00:00",
+  "actualSource": "59ac4bd7567ad4988a903df73016242b7626c889",
+  "compiledSource": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+  "commands": [
+    {
+      "category": "gm-doc-afterlife-owned-section-consumers",
+      "native": 0,
+      "seconds": 5.063438363000387,
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 8,
+        "CompletedCases": 8,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "tests": {
+        "Total": 8,
+        "Executed": 8,
+        "Passed": 8,
+        "Failed": 0
+      },
+      "results": [
+        {
+          "testId": "c99ad958-1b1c-4bb9-7e8a-d469f6930608",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+          "outcome": "Passed",
+          "duration": "00:00:00.0005913"
+        },
+        {
+          "testId": "d1d7be9b-8355-ea55-a2a1-d7dfbd699722",
+          "name": "BookOfEternityClient.Tests.GmDocumentationBodySectionSourceTests.ActualOwnedSectionViewsRejectMissingOrReorderedSegments(mutation: \"reordered\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0175938"
+        },
+        {
+          "testId": "7edeb317-aaa1-1462-be5c-63de307455f2",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+          "outcome": "Passed",
+          "duration": "00:00:00.0109157"
+        },
+        {
+          "testId": "e6ba9d3a-35f8-8d53-2c19-02a37924cec0",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+          "outcome": "Passed",
+          "duration": "00:00:00.0114474"
+        },
+        {
+          "testId": "026b6dc6-c34f-faf5-96b3-81fd0a238757",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+          "outcome": "Passed",
+          "duration": "00:00:00.0013588"
+        },
+        {
+          "testId": "e917c740-9c85-2585-0296-96e6521fe1ff",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+          "outcome": "Passed",
+          "duration": "00:00:00.0038635"
+        },
+        {
+          "testId": "83ec7f1e-27a6-e806-1b94-14cb21c1050a",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeLocalLifecycleRoutesAreDocumented",
+          "outcome": "Passed",
+          "duration": "00:00:00.0239364"
+        },
+        {
+          "testId": "c420a231-9ced-5bd5-9615-2e12f92532cc",
+          "name": "BookOfEternityClient.Tests.GmDocumentationBodySectionSourceTests.ActualOwnedSectionViewsRejectMissingOrReorderedSegments(mutation: \"missing\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0123053"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-wound-tail",
+      "native": 0,
+      "seconds": 4.867327453999678,
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "results": [
+        {
+          "testId": "61c745ab-18de-5ac8-464a-fa33901434c4",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
+          "outcome": "Passed",
+          "duration": "00:00:00.0143272"
+        },
+        {
+          "testId": "02311f52-edd9-722d-7679-9bb23592b843",
+          "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives",
+          "outcome": "Passed",
+          "duration": "00:00:00.0057948"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-current-consumers",
+      "native": 0,
+      "seconds": 5.861285904999022,
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 19,
+        "CompletedCases": 19,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "tests": {
+        "Total": 19,
+        "Executed": 19,
+        "Passed": 19,
+        "Failed": 0
+      },
+      "results": [
+        {
+          "testId": "a36bd855-90d2-61da-8d07-b8628ddf62e9",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.AfterlifeRewardExample_UsesMathAuditFinalAmountReference",
+          "outcome": "Passed",
+          "duration": "00:00:00.0328286"
+        },
+        {
+          "testId": "4ca28754-e114-0429-53e8-f9124c791f05",
+          "name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+          "outcome": "Passed",
+          "duration": "00:00:00.0352338"
+        },
+        {
+          "testId": "3dd82aa2-7cd9-7820-a0b3-39423854dbe3",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(relativePath: \"Examples/E_CLI_Afterlife_Shining_Actions.txt\", expectedRequestId: \"calc_shining_treasury_interest_example\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0003904"
+        },
+        {
+          "testId": "2a18c8e4-b043-1caa-0470-c3eb2ecaea0e",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(relativePath: \"Examples/E_Block_32.txt\", expectedRequestId: \"calc_guardian_project_progress_example\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0014422"
+        },
+        {
+          "testId": "2b0ac758-37ce-c1f1-5f8d-60b2f2ffcffe",
+          "name": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+          "outcome": "Passed",
+          "duration": "00:00:00.9554206"
+        },
+        {
+          "testId": "6281ed09-11ae-6429-0573-85b05b8b60aa",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(relativePath: \"Examples/E_CLI_Afterlife_Spiritual_Conflict.txt\", expectedRequestId: \"calc_afterlife_conflict_margin_example\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0037632"
+        },
+        {
+          "testId": "3f064eea-2854-1b63-f224-0de35f03d1ea",
+          "name": "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+          "outcome": "Passed",
+          "duration": "00:00:00.0284194"
+        },
+        {
+          "testId": "637544b2-eb7f-a6fd-db2d-9f60c66f22ce",
+          "name": "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope",
+          "outcome": "Passed",
+          "duration": "00:00:00.1541797"
+        },
+        {
+          "testId": "9f25dd56-94bc-e347-9726-08b7bfe3c464",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(relativePath: \"Examples/E_Block_10.txt\", expectedRequestId: \"calc_economy_price_example\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0022742"
+        },
+        {
+          "testId": "a2de6641-72b7-c965-192e-549e88629cf1",
+          "name": "BookOfEternityClient.Tests.WoundPlayerStatusDocumentationTests.CurrentReadonlyStatusIsSynchronizedForGm",
+          "outcome": "Passed",
+          "duration": "00:00:00.3493747"
+        },
+        {
+          "testId": "c876530f-d188-bfb9-df18-110f663dd052",
+          "name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExclusiveHandoffExactHashesAndAfterlifeRepairShape",
+          "outcome": "Passed",
+          "duration": "00:00:00.0016488"
+        },
+        {
+          "testId": "9a6f9c41-3a06-be1b-46c5-a12862f46780",
+          "name": "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.GmFacingExamples_ShowValidMathAuditForMajorCalculationSurfaces(relativePath: \"Examples/E_Block_6.txt\", expectedRequestId: \"calc_mortal_combat_damage_example\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0002637"
+        },
+        {
+          "testId": "b3e2f1a4-acb5-f52d-8631-7222154dda04",
+          "name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority",
+          "outcome": "Passed",
+          "duration": "00:00:00.0086867"
+        },
+        {
+          "testId": "c3437af6-c900-867c-39d2-7a447a8efd7e",
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority(guardian: False)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0473759"
+        },
+        {
+          "testId": "ec06e590-2494-184f-73ff-16545f46bb0a",
+          "name": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ContentProfileReadAvailabilityIncludesActualBodiesWithoutWriteAuthority(guardian: True)",
+          "outcome": "Passed",
+          "duration": "00:00:00.0133791"
+        },
+        {
+          "testId": "d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a",
+          "name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "outcome": "Passed",
+          "duration": "00:00:00.0525883"
+        },
+        {
+          "testId": "137b4381-7ec5-7bd8-7c34-2044c374f15b",
+          "name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.GmWorkerBridgeExamples_DocumentHiddenWorkersProposalOnlyAndApplyGate",
+          "outcome": "Passed",
+          "duration": "00:00:00.0006527"
+        },
+        {
+          "testId": "9e80d54f-0d91-5f84-0ad6-d21c7eadce74",
+          "name": "BookOfEternityClient.Tests.GmWorkerProfileTemplateTests.DefaultTemplates_AreDisabledRunnerBasedAndValid",
+          "outcome": "Passed",
+          "duration": "00:00:00.1054697"
+        },
+        {
+          "testId": "ff329b2b-b165-b3c5-6ffc-ed1e75ad2e5f",
+          "name": "BookOfEternityClient.Tests.GmWorkerProposalOnlyTests.BuildAnalysisTask_WithAfterlifeContract_ProducesRealmAwarePacket",
+          "outcome": "Passed",
+          "duration": "00:00:00.0526960"
+        }
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-repair-consumers",
+      "native": 1,
+      "seconds": 5.797482420000961,
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 9,
+        "CompletedCases": 9,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 6,
+        "Failed": 3
+      },
+      "results": [
+        {
+          "testId": "cfe1e0b7-e35f-628e-25a5-df3a18b30f1b",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_FactionMateriali\"\u00b7\u00b7\u00b7, topics: \"Shining_Actions\", kind: \"faction_materialization_repair\")",
+          "outcome": "Failed",
+          "duration": "00:00:00.1450509",
+          "error": "Assert.Equal() Failure: Collections differ\n                                                                   \u2193 (pos 1)\nExpected: string[]                          [\"CLI_Rules_Index.md\", \"Examples/E_CLI_Afterlife_Actor_Profiles.txt\", \"Examples/E_CLI_Afterlife_Turns.txt\", \"OtherGuides/Afterlife_Actor_Profiles.md\", \"OtherGuides/Afterlife_Contract_Matrix.md\"]\nActual:   OrderedEnumerable<string, string> [\"CLI_Rules_Index.md\", \"Examples/E_CLI_Afterlife_Shining_Actions.txt\", \"Examples/E_CLI_Afterlife_Turns.txt\", \"OtherGuides/Afterlife_Contract_Matrix.md\", \"OtherGuides/Afterlife_Shining_Actions.md\"]\n                                                                   \u2191 (pos 1)",
+          "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteValidationRepairRequestAsync_FactionMaterializationRepair_ShiningExactCrossLinks_UsesOnlyNamedAuthorityRoots() in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 3523\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(String original, String topics, String kind) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GmDocumentation.cs:line 25\n--- End of stack trace from previous location ---"
+        },
+        {
+          "testId": "f03930da-f8fa-0be0-d202-87d18fc8221d",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_ActorMaterializa\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles\", kind: \"actor_materialization_repair\")",
+          "outcome": "Failed",
+          "duration": "00:00:00.0245410",
+          "error": "Assert.All() Failure: 1 out of 6 items in the collection did not pass.\n[0]: Item:  \"Templates/MORTAL_NPC_UPDATE_TEMPLATE.md\"\n     Error: Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+          "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(String original, String topics, String kind) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GmDocumentation.cs:line 50\n--- End of stack trace from previous location ---"
+        },
+        {
+          "testId": "393964c6-c683-e72a-f29f-c4fbabb9d990",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_AfterlifeChronic\"\u00b7\u00b7\u00b7, topics: \"Story_Memory\", kind: \"afterlife_chronicle_string_array_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0224434"
+        },
+        {
+          "testId": "719e4616-e2f7-f5c3-d532-8d5205ad1dfb",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_PendingGuardianC\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles,Guardian_Contracts\", kind: \"guardian_pending_creation_materialization_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0249107"
+        },
+        {
+          "testId": "0adbd306-1c46-9284-f0f1-9f5d632e6a4d",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_ActorMemoryError\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles,Story_Memory\", kind: \"actor_memory_persistence_repair\")",
+          "outcome": "Failed",
+          "duration": "00:00:00.0300837",
+          "error": "Assert.All() Failure: 1 out of 9 items in the collection did not pass.\n[1]: Item:  \"Templates/MORTAL_NPC_UPDATE_TEMPLATE.md\"\n     Error: Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+          "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(String original, String topics, String kind) in /workspace/The-Book-of-Eternity-Reborn-1557/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GmDocumentation.cs:line 50\n--- End of stack trace from previous location ---"
+        },
+        {
+          "testId": "e8d423ce-4da1-e5ac-d31c-783fc35cd565",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_AfterlifeActionC\"\u00b7\u00b7\u00b7, topics: \"Spiritual_Conflict\", kind: \"afterlife_spiritual_conflict_action_cost_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0293600"
+        },
+        {
+          "testId": "aa52b508-a767-3e5a-007b-8ea4120e0730",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_AfterlifeEntityP\"\u00b7\u00b7\u00b7, topics: \"Actor_Profiles\", kind: \"afterlife_entity_profile_scaffold_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0379880"
+        },
+        {
+          "testId": "c363502f-07cd-a44d-5b6e-876602782256",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_GuardianTradeInv\"\u00b7\u00b7\u00b7, topics: \"Guardian_Contracts\", kind: \"guardian_trade_inventory_resolution_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0284528"
+        },
+        {
+          "testId": "fd3cf394-f401-ec9d-13c8-df0e3f0954e0",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies(original: \"WriteValidationRepairRequestAsync_AfterlifeConflic\"\u00b7\u00b7\u00b7, topics: \"Spiritual_Conflict\", kind: \"afterlife_spiritual_conflict_reward_repair\")",
+          "outcome": "Passed",
+          "duration": "00:00:00.0224086"
+        }
+      ]
+    }
+  ],
+  "rawChainsVerified": 24,
+  "results": {
+    "executed": 38,
+    "passed": 35,
+    "failed": 3
+  },
+  "strictRepairRootsPhysicallyGone": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-53ee32cfa66645d892e4d5c27ffb487b",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b7b9ac257c874f2cb1d76a74b75fd110",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-daebf8a0cbe74d7b9e6fa4b76b067038",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b512d723eddc49089c642a2df4c93d2d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-964a90e3de7a441a8f57f7add1c2052c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1849c56317ae4fa594332e183ff94024",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e3420a553b7e4e78914bd07ab5069cc8",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fefb3274684145dcb90de7cb7e2d5c97",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-57b92f9a02264a6d8c4e49a93a96fc07",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "sevenPinsStable": true,
+  "ownedPrefixesUnchanged": true,
+  "qualifiedPartial": {
+    "retained": 212,
+    "newOwnedSection": 8,
+    "newWoundTail": 2,
+    "newCurrentConsumers": 19,
+    "newRepairPass": 6,
+    "total": 247
+  },
+  "unrunCases": {
+    "genuinePackage": 1,
+    "physicalNegatives": 2,
+    "lifetime": 2,
+    "total": 5
+  },
+  "remaining": "All held:3repairFAIL+5UNRUN; exact causes pending independent review. No retry/new source diagnosis before durable preservation.",
+  "history": "All first FAILs, original weakPASS and body2UNRUN history retained; first outcomes never rewritten",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,xml.etree.ElementTree as ET,datetime\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';p=rec/'current-A-third-actual-stop-20261017.json';j=json.loads(p.read_text());assert len(j['commands'])==4 and len(j['files'])==24\nfor f in j['files']:\n z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};groups=[];seen=set();fail=[];roots=[]\nfor index,c in enumerate(j['commands']):\n assert c['nativeExit']==[0,0,0,1][index] and c['sourceHead']==c['headAfter']=='59ac4bd7567ad4988a903df73016242b7626c889' and c['compiledSource']=='3e57c8da1f3c943f90e9798ac541764fb790d9ed' and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7 and not c['statusAfter'] and c['ownedPrefixesBefore']==c['ownedPrefixesAfter']\n d=Path(c['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());expected=[8,2,19,9][index];assert s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests'];rows=[]\n for trx in d.glob('*.trx'):\n  for e in ET.parse(trx).findall('.//t:UnitTestResult',ns):\n   key=(e.attrib['testId'],e.attrib['testName']);assert key not in seen;seen.add(key);row=dict(testId=e.attrib['testId'],name=e.attrib['testName'],outcome=e.attrib['outcome'],duration=e.attrib['duration']);assert row['outcome'] in ['Passed','Failed']\n   if row['outcome']=='Failed':row['error']=e.findtext('t:Output/t:ErrorInfo/t:Message',default='',namespaces=ns);row['stack']=e.findtext('t:Output/t:ErrorInfo/t:StackTrace',default='',namespaces=ns);fail.append(row)\n   for line in e.findtext('t:Output/t:StdOut',default='',namespaces=ns).splitlines():\n    if line.startswith('{'):\n     try:o=json.loads(line)\n     except ValueError:continue\n     if 'CleanupOwnedRoot' in o:assert o['OwnedFixtureRemoved'] and o['CleanupFailure'] is None and not Path(o['CleanupOwnedRoot']).exists();roots.append(o)\n   rows.append(row)\n assert len(rows)==expected;groups.append(dict(category=c['argv'][-2],native=c['nativeExit'],seconds=c['wallSeconds'],selection=s['Selection'],tests=s['Tests'],results=rows))\nassert len(seen)==38 and len(fail)==3 and len(roots)==len({x['CleanupOwnedRoot'] for x in roots})==9\nout=dict(kind='THIRD_FIRST_ACTUAL_STOP_WRITER_RAW_INSPECTION_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource='59ac4bd7567ad4988a903df73016242b7626c889',compiledSource='3e57c8da1f3c943f90e9798ac541764fb790d9ed',commands=groups,rawChainsVerified=24,results=dict(executed=38,passed=35,failed=3),strictRepairRootsPhysicallyGone=roots,sevenPinsStable=True,ownedPrefixesUnchanged=True,qualifiedPartial=dict(retained=212,newOwnedSection=8,newWoundTail=2,newCurrentConsumers=19,newRepairPass=6,total=247),unrunCases=dict(genuinePackage=1,physicalNegatives=2,lifetime=2,total=5),remaining='All held:3repairFAIL+5UNRUN; exact causes pending independent review. No retry/new source diagnosis before durable preservation.',history='All first FAILs, original weakPASS and body2UNRUN history retained; first outcomes never rewritten',helperText=Path(__file__).read_text());(rec/'current-A-third-actual-stop-writer-inspection-20261017.json').write_text(json.dumps(out,indent=2)+'\\n');print('THIRDSTOP_VERIFIED24chains38results35PASS3FAIL9strictrootsgone;5UNRUN')\n"
+}
