@@ -1,3 +1,7 @@
+## A2 first preparation nativeFAIL — no actual/causalRED (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first1c85catalognative1/CS0535 missing AwardNoInput.AssertCompleted,0tests. [Current checkpoint](plan.md) preserves4rawchains before minimal TEST-only correction; then changedsourcefreshBOTH/catalog/PlanOnly0/concreteSOURCE. No product/helper/actual or RED qualification; unchanged contract/selection/counts/holds.
+
 ## A2 tests-only57 fixtures WIP — preparation/SOURCE next (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): new award pure33 and actual constructed CheckLevelUp boundary2/owner20/existing2 fixtures +4category owners/current5descriptor59case selection implemented under root's tests-only release. [Current checkpoint](plan.md): publish/readback/newdelta before freshBOTH/catalog+PlanOnly0/frozen preparation/concreteSOURCE. Product/helper bodies unchanged/absent; no actual. Boundary fullbyte/read/state/noUI/no-write/cleanup precedes missinghelper; expected24A2strictroots/pure0N-A. ProtectedLate2 conditional only after futureproductsource; no oldproof/base replay.
