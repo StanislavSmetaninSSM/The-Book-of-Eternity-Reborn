@@ -5195,5 +5195,14 @@
     "ownership": "Actual outer XML group and longest component-aware approved numeric ancestor; explicit5.mortal_item_materialization_v1 override; foreignnestedIDs inherit containing actual5.18.B tree"
   },
   "sourceOrderContract": "Rebind relocated actual extractor tuples to original source ordinal/occurrence; physical filename enumeration intentionally differs. No extractor modification or global-order claim.",
-  "candidateLayout": "Deterministic test-fixture module wrappers/markers implement the preserved XML ancestry and compact context navigators; actual content remains unimplemented until accepted causal RED."
+  "candidateLayout": "Deterministic test-fixture module wrappers/markers implement the preserved XML ancestry and compact context navigators; actual content remains unimplemented until accepted causal RED.",
+  "manifestBaselineArtifact": {
+    "source": "Examples/example_validation_manifest.json",
+    "sourceCommit": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+    "bytes": 192331,
+    "sha256": "d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f",
+    "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-baseline-complete-manifest-b6e1cdb3-20261017.json.gz",
+    "storedSha256": "654697df3fb6c6a4ad3c3f671cfde6ea5463d538f4f1ae1dd252e67cfa8609aa",
+    "normalization": "Only the two admitted file/line fields in syntaxExemptions[11]/[12]; complete remaining semantics and array order must equal this frozen baseline."
+  }
 }

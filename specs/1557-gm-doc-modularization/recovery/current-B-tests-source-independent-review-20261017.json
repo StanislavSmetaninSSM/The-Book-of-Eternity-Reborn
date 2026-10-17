@@ -1,0 +1,357 @@
+{
+  "kind": "INDEPENDENT_BLOCK_B_TESTS_ONLY_SOURCE_FIXTURE_SELECTION_REVIEW",
+  "createdUtc": "2026-10-17T06:00:40.504187+00:00",
+  "reviewer": "/root/a1_reviewer independent Astra/XHigh; repository read-only",
+  "verdict": "SOURCE_NOT_READY_CHANGES_REQUIRED",
+  "source": "4ab69c22b41533d94f74cd7ca43d65fc9a44869a",
+  "preparationCarrier": "34b9bc7ee90fe2dd51d4cca922c4a8f87a96be11",
+  "contractBase": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+  "findings": [
+    {
+      "id": "B-S01",
+      "severity": "blocking SOURCE/FIXTURE sufficiency",
+      "paths": [
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs:79",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs:98",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Routing.cs:8",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Routing.cs:24",
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Routing.cs:38",
+        "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs:180"
+      ],
+      "scenario": "CompleteFixture headers and ordinary router rows contain activation/self pairs and a generic dependency sentence; only two illustrative unions encode cross-topic edges. No explicit accepted conditional dependency table, router filename/link, mandatory Wound contract and conditional Effect contract read closure is enforced. VerifyRouter compares href sets and VerifyHeaders only activation/field markers; missing prerequisite semantics can pass. Five profile controls cover 16 B paths only. Current five profiles have Rules/** and TaskGuides/**, but no CLI_Rules_Index.md or the two OtherGuides contracts; actual dispatch BuildContextFilesAsync filters paths through PathMatches.",
+      "consequence": "A self-consistent fixture can qualify incomplete reading instructions and profiles that cannot read named authoring prerequisites, despite complete payload preservation. Existing literal Wounds body contract instructions are retained; this finding does not claim they were removed.",
+      "minimalCorrection": "Encode the already accepted conditional dependency/read table in exact header/router text, include file-relative CLI router and applicable Wound/Effect prerequisites, enforce operational conditions and complete conditional unions with positive-seeded targeted missing-edge/scope mutations. Extend the five real matcher/validator fixtures to the narrow actual prerequisite paths; keep task/write/Enabled/ProposalOnly policy unchanged and deny unrelated reads. No new gameplay precedence or unconditional read-all."
+    },
+    {
+      "id": "B-S02",
+      "severity": "blocking manifest preservation oracle",
+      "paths": [
+        "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs:213",
+        "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs:52"
+      ],
+      "scenario": "VerifyActualManifest loops only the two syntaxExemptions entries. Changing an unrelated row/reason/family while keeping those two entries correct leaves every executed comparison unchanged.",
+      "consequence": "The method named OnlyTheTwoExactBlock5ExemptionLocators cannot establish that only those locators changed; unrelated manifest semantics could regress while this selected control passes.",
+      "minimalCorrection": "Pin the complete accepted baseline manifest independently. Rebind the two actual snippet locations, inverse-normalize only those two file/line fields, and compare complete remaining manifest semantics/array order. Add positive-seeded targeted unrelated-row/family and semantics mutations. Retain existing A80 checks unchanged; no extractor/schema/exemption weakening."
+    }
+  ],
+  "nativePreparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "categories": 808,
+      "methods": 11785,
+      "wallSeconds": 87.23545838399878,
+      "builds": [
+        {
+          "Name": "Build-integration",
+          "Seconds": 70.1556605,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 11.1010998,
+          "Completed": true
+        }
+      ]
+    },
+    "plan": {
+      "nativeExit": 0,
+      "wallSeconds": 5.536635799999203,
+      "sha256": "ba341392ed4a3f10d48dca314515fa915b1571ba63c70253e057a4c4a82b440c",
+      "categories": 9,
+      "descriptors": 9,
+      "methods": 25,
+      "cases": 67,
+      "executed": 0,
+      "byCategory": {
+        "gm-doc-afterlife-package-delivery": 1,
+        "gm-doc-block5-content-boundary": 1,
+        "gm-doc-block5-current-body-guards": 14,
+        "gm-doc-block5-delivery-source": 1,
+        "gm-doc-block5-package-negatives": 2,
+        "gm-doc-block5-permissions-links": 8,
+        "gm-doc-block5-preservation": 13,
+        "gm-doc-block5-reading": 15,
+        "gm-doc-block5-shared-preservation": 12
+      },
+      "methodCases": [
+        [
+          "integration",
+          "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+          7
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+          1
+        ],
+        [
+          "integration",
+          "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+          1
+        ],
+        [
+          "integration",
+          "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries",
+          2
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+          5
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape",
+          2
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+          10
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+          12
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+          3
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+          1
+        ],
+        [
+          "unit",
+          "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+          9
+        ]
+      ]
+    },
+    "executions": 0,
+    "qualification": "successful preparation only; no causal RED or GREEN"
+  },
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "24b20bdc550a4b8e804e08566beb9ae441f4104ba6af11f1ba77bd7a83c487d3",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "4652867a69f17ea85084fc980ab1c58f0e23fc59a1ec8719cf3ce685978203a9",
+      "bytes": 9550848
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "24b20bdc550a4b8e804e08566beb9ae441f4104ba6af11f1ba77bd7a83c487d3",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "dac8f751e6b090d4b78b22dd75770fd9f66844d5fc737e2ef97be77ab18fbaf8",
+      "bytes": 29221888
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "979f48fc7d3df01da7b8298bcd57c39485c549ceb5f1328f7425a8af9176d087",
+      "bytes": 1977344
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "979f48fc7d3df01da7b8298bcd57c39485c549ceb5f1328f7425a8af9176d087",
+      "bytes": 1977344
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "24b20bdc550a4b8e804e08566beb9ae441f4104ba6af11f1ba77bd7a83c487d3",
+      "bytes": 26181632
+    }
+  ],
+  "recovery": [
+    {
+      "path": "/tmp/gm1557-B-tests-source-delta-github-4ab69c22-20261017.json",
+      "sha256": "c2c652b6ad978ac53ccfcf6e0a54f14d016e5e51cc210e920a56d1dcb3f48142",
+      "files": 31,
+      "changedPaths": 27
+    },
+    {
+      "path": "/tmp/gm1557-B-first-prep-delta-github-34b9bc7e-20261017.json",
+      "sha256": "953f1fc379da93e1b463cccac78cbd93c8c808b44a7676b32bc775a08c69a64c",
+      "files": 24,
+      "changedPaths": 20
+    }
+  ],
+  "rawChains": [
+    {
+      "path": "/tmp/gm1557-implementation-tools/gm1557-B-catalog-first-4ab69c22-20261017/record.json",
+      "sha256": "35713eef3d4232232d5ada48f410103f6cfffb7e6e92ed4c0d1eb93be583fa72"
+    },
+    {
+      "path": "/tmp/gm1557-implementation-tools/gm1557-B-catalog-first-4ab69c22-20261017/stdout.log",
+      "sha256": "71e1871d90a8c62e18e1780b5d847c8475f63450cd2f6ce39f7d36f51fb92f2d"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055438-855-56340-f2a0aab40b49460fa8da4450305ae35f-categories/Build-integration.log",
+      "sha256": "2b8b27be0e0e7a69065845bbc5a69bad022d9c684aad0e5f9894a98352d53076"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055438-855-56340-f2a0aab40b49460fa8da4450305ae35f-categories/Build-unit.log",
+      "sha256": "bbd3c38b8797b78f3fd08fc59ea993ccade7d54c774819941146352a833e90f3"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055438-855-56340-f2a0aab40b49460fa8da4450305ae35f-categories/catalog-audit.json",
+      "sha256": "b0d81b332ed1dbb5e77557f408e6f6430080d6539dfe42c0ec2a40f89d747a85"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055438-855-56340-f2a0aab40b49460fa8da4450305ae35f-categories/dotnet-test.log",
+      "sha256": "6ec59e6789fbe8de3863406f648bb753f5739996c123618e9da5c94fe30131cf"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055438-855-56340-f2a0aab40b49460fa8da4450305ae35f-categories/summary.json",
+      "sha256": "156d2dd3fbc55f7e880f225f07d7c418d2fb591e7693228ed5b739ad73f5ffad"
+    },
+    {
+      "path": "/tmp/gm1557-implementation-tools/gm1557-B-plan-first-4ab69c22-20261017/record.json",
+      "sha256": "11b5958e0dbbe0788ffc5152ce75ed8c57d926ed1e3790bc916a7edf787e0d65"
+    },
+    {
+      "path": "/tmp/gm1557-implementation-tools/gm1557-B-plan-first-4ab69c22-20261017/stdout.log",
+      "sha256": "ba892d9c15f734e5ed6403f6e4b8b8cf3080e6353eb45f1d7d5b7be570f41e0a"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055623-627-57008-c24299412b7c44228d2cb8735872bf2d-categories/dotnet-test.log",
+      "sha256": "c994d9ed6a5422b005b1a1ff2c2f51057974f086cd67c36e171607cc09245902"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055623-627-57008-c24299412b7c44228d2cb8735872bf2d-categories/plan.json",
+      "sha256": "ba341392ed4a3f10d48dca314515fa915b1571ba63c70253e057a4c4a82b440c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-055623-627-57008-c24299412b7c44228d2cb8735872bf2d-categories/summary.json",
+      "sha256": "5d377f550cde1400169485ff20c212b7f55bb42b3fe534b471ca04a5ee7ec82a"
+    }
+  ],
+  "packageCheck": {
+    "kind": "INDEPENDENT_CURRENT_PACKAGE_PIN_CHECK_NOT_SESSION_DELIVERY",
+    "source": "4ab69c22b41533d94f74cd7ca43d65fc9a44869a",
+    "carrier": "34b9bc7ee90fe2dd51d4cca922c4a8f87a96be11",
+    "storedSha256": "e0ffac0f404c7d3b2bce651dd6198a34214f4477a19236fdfd6678eefd8ba637",
+    "rawSha256": "28d6cb5454ef7a660415fcc8775f3c13057490d5538a08e730364d1b03d4e807",
+    "files": 244,
+    "bytes": 45038544,
+    "allModesBytesHashesAndFullSetMatch": true,
+    "sourcePackageDocsMatch": 36,
+    "currentBPresent": [
+      "Rules/Block_5.txt",
+      "Examples/E_Block_5.txt"
+    ],
+    "currentBAbsent": [
+      "Rules/Block_5_Units_Ids.txt",
+      "Examples/E_Block_5_Units_Ids.txt",
+      "Rules/Block_5_Characteristics_Progression.txt",
+      "Examples/E_Block_5_Characteristics_Progression.txt",
+      "Rules/Block_5_Combat_Foundations.txt",
+      "Examples/E_Block_5_Combat_Foundations.txt",
+      "Rules/Block_5_Items_Resources.txt",
+      "Examples/E_Block_5_Items_Resources.txt",
+      "Rules/Block_5_Narrative_Social.txt",
+      "Examples/E_Block_5_Narrative_Social.txt",
+      "Rules/Block_5_Wounds.txt",
+      "Examples/E_Block_5_Wounds.txt",
+      "Rules/Block_5_World_Chronology.txt",
+      "Examples/E_Block_5_World_Chronology.txt"
+    ],
+    "daemonAndTwoHelpersEqual": true
+  },
+  "release": "NONE. Persist findings, one coherent tests-only correction, fresh affected SOURCE gate, then separate root release for content-boundary1 and genuine publisher1 only.",
+  "unchangedAcceptedScope": "Accepted A255/A1/A2/F1 retained; no full-family/base replay or Windows/CI/provider/full-daemon/main/merge/issue action.",
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/gm1557-B-tests-source-independent-static-20261017.json",
+      "sha256": "e548413fd12c402d96fa08aa1f81043dfc53a94eae073e9bcbe7bb758a9cb3f6"
+    },
+    {
+      "path": "/tmp/gm1557-B-tests-source-independent-package-20261017.json",
+      "sha256": "35df581aa017c0f69020fe219e696c49cbae0ae88632beec3ebe0abf3ca64321"
+    },
+    {
+      "path": "/tmp/gm1557-B-tests-source-independent-check-20261017.py",
+      "sha256": "b46383a39b8223f55ac01ba413394d1462d5ede6f4b47214009d2d41a5a615a0"
+    }
+  ],
+  "noReviewerBuildTestApplicationRuntimeOrRepositoryMutation": true
+}

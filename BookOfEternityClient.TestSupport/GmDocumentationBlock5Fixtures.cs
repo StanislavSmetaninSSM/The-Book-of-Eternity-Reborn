@@ -81,24 +81,26 @@ internal sealed partial class GmDocumentationBlock5Fixtures
         var pair = rules ? "../" + S(topic, "examplePath") : Path.GetFileName(S(topic, "examplePath"));
         var rule = rules ? Path.GetFileName(S(topic, "rulePath")) : "../" + S(topic, "rulePath");
         return "<!-- GM1557 Block5 " + S(topic, "topic") + "\nRead when: " + S(topic, "activation") +
+            "\nMain router: " + Link(S(topic, rules ? "rulePath" : "examplePath"), MainRouter, "CLI rules index") + "." +
             "\nPrerequisites: inherited [rule context](" + (rules ? "Block_5.txt" : "../Rules/Block_5.txt") +
             ") and [example context](" + (rules ? "../Examples/E_Block_5.txt" : "E_Block_5.txt") +
             "); only actual current-request dependencies in the conditional router.\nAuthor here: only current-request-authorized outputs under the unchanged contracts." +
             "\nNever author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract." +
+            "\n" + MandatoryText(S(topic, "topic"), S(topic, rules ? "rulePath" : "examplePath")) +
+            "\n" + DependencyText(S(topic, "topic"), S(topic, rules ? "rulePath" : "examplePath")) +
             "\nWorked examples: [paired examples](" + pair + "); [paired rules](" + rule + ").\n-->\n";
     }
     internal string Navigation(string source)
     {
         var rules = source.StartsWith("Rules/", StringComparison.Ordinal);
-        return "\n# Block 5 conditional topic navigation\nRead only current applicable topics and their current-contract dependencies. Bootstrap, receipt-only and exact repair retain their packet restrictions.\n" +
+        return "\n# Block 5 conditional topic navigation\n[Main router](../CLI_Rules_Index.md).\nRead only current applicable topics and their current-contract dependencies. Bootstrap, receipt-only and exact repair retain their packet restrictions.\n" +
             "| Topic | Rules | Worked examples |\n|---|---|---|\n" + string.Join('\n', Topics.Select(topic =>
                 "| " + S(topic, "topic") + " | [rules](" + (rules ? Path.GetFileName(S(topic, "rulePath")) : "../" + S(topic, "rulePath")) +
                 ") | [examples](" + (rules ? "../" + S(topic, "examplePath") : Path.GetFileName(S(topic, "examplePath"))) + ") |")) + "\n";
     }
     internal string RouterAddition => "\n## Block_5 conditional topic routing\n[Rule context](Rules/Block_5.txt); [example context](Examples/E_Block_5.txt).\n" +
         "Read only topics activated by the current request and its actual dependencies; preserve bootstrap/receipt/repair restrictions. Availability never mandates every topic.\n" +
-        "| Topic | Read when | Rules | Worked examples |\n|---|---|---|---|\n" + string.Join('\n', Topics.Select(topic =>
-            "| b5_" + S(topic, "topic") + " | " + S(topic, "activation") + " | [rules](" + S(topic, "rulePath") + ") | [examples](" + S(topic, "examplePath") + ") |")) + "\n" + SpecialRouteRows;
+        "| Topic | Read when | Owned pair | Exact conditional prerequisites |\n|---|---|---|---|\n" + string.Join('\n', Topics.Select(OrdinaryRouterRow)) + "\n" + SpecialRouteRows;
     internal Dictionary<string, byte[]> CompleteFixture()
     {
         var docs = new Dictionary<string, byte[]>(StringComparer.Ordinal);
@@ -213,15 +215,44 @@ internal sealed partial class GmDocumentationBlock5Fixtures
     internal IReadOnlyList<string> VerifyActualManifest(JsonObject manifest)
     {
         var issues = new List<string>(); var snippets = ExampleSnippetExtractor.ExtractAll().ToArray();
+        var locators = new Dictionary<(string Family, int Index), (string File, int Line)>();
         foreach (var row in Map["manifestRows"]!.AsArray())
         {
-            var family = S(row!, "family"); var index = I(row!, "index"); var actual = manifest[family]![index]!.AsObject();
-            var expected = row!["before"]!.DeepClone().AsObject(); var file = "E_Block_5_Units_Ids.txt";
+            var family = S(row!, "family"); var index = I(row!, "index"); var file = "E_Block_5_Units_Ids.txt";
             var source = snippets.Where(item => item.File == file && Hash(Bytes(item.RawText)) == S(row, "bodySha256")).ToArray();
             if (source.Length != 1) { issues.Add("manifest.input_missing:" + index); continue; }
-            expected["file"] = file; expected["line"] = source[0].Line;
-            if (!JsonNode.DeepEquals(expected, actual)) issues.Add("manifest.locator_or_semantics:" + index);
+            locators.Add((family, index), (file, source[0].Line));
         }
+        issues.AddRange(VerifyManifestSemantics(manifest, locators));
+        return issues;
+    }
+    internal JsonObject CompleteManifestBaseline()
+    {
+        var artifact = Map["manifestBaselineArtifact"]!;
+        var stored = File.ReadAllBytes(Path.Combine(_repo, S(artifact, "storedPath")));
+        var raw = Inflate(Path.Combine(_repo, S(artifact, "storedPath")));
+        if (Hash(stored) != S(artifact, "storedSha256") || raw.Length != I(artifact, "bytes") || Hash(raw) != S(artifact, "sha256"))
+            throw new InvalidDataException("manifest.baseline_hash");
+        return JsonNode.Parse(raw)!.AsObject();
+    }
+    internal IReadOnlyList<string> VerifyManifestSemantics(JsonObject manifest,
+        IReadOnlyDictionary<(string Family, int Index), (string File, int Line)> locators)
+    {
+        var issues = new List<string>(); var baseline = CompleteManifestBaseline(); var normalized = manifest.DeepClone().AsObject();
+        foreach (var row in Map["manifestRows"]!.AsArray())
+        {
+            var family = S(row!, "family"); var index = I(row!, "index");
+            if (!locators.TryGetValue((family, index), out var locator) || locator.File != "E_Block_5_Units_Ids.txt" || locator.Line <= 0)
+            { issues.Add("manifest.locator_binding:" + index); continue; }
+            if (normalized[family] is not JsonArray array || index >= array.Count || array[index] is not JsonObject actual ||
+                actual["file"]?.GetValue<string>() != locator.File || actual["line"]?.GetValue<int>() != locator.Line)
+            { issues.Add("manifest.locator_or_semantics:" + index); continue; }
+            // Invert ONLY the two allowed file/line fields. Reasons, row order, all other
+            // members/rows/families and unexpected extras remain in the full comparison.
+            actual["file"] = row!["before"]!["file"]!.DeepClone();
+            actual["line"] = row["before"]!["line"]!.DeepClone();
+        }
+        if (!JsonNode.DeepEquals(baseline, normalized)) issues.Add("manifest.complete_semantics_or_order");
         return issues;
     }
 }

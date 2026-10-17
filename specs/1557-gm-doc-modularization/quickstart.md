@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Corrected B tests-only selection — 2026-10-17
+
+Current global/mirror B selection remains9categories; corrected fixture source proposes26methods/75cases, fresh discovery pending. [SOURCE_NOT_READY findings](recovery/current-B-tests-source-independent-review-20261017.md) and first4ab native67/0exec remain preserved. [Corrected packet](recovery/current-B-corrected-tests-source-selection-20261017.json) binds exactconditionalprerequisites/profileavailability and wholemanifest-only2locatorinverse controls. No new actual/build has run; publish/recover before fresh preparation/affected SOURCE. Only separately released content-boundary1 and genuinepublisher1 are initial causal REDs; all production/content/profile changes remain held.
+
 ## Current tests-only B verification context — 2026-10-17
 
 Current `tests/selection.json` and `tests/selections/1557-gm-doc-block5.json` select9categories/25methods/**67cases observed in first4ab PlanOnly**:9descriptors/25unique methods/0executions. See [concrete source/selection packet](recovery/current-B-tests-only-source-selection-20261017.json). No test has run. First fresh BOTH/catalog and exact PlanOnly0 are frozen in [the preparation](recovery/current-B-tests-only-fresh-preparation-20261017.json). Concrete SOURCE corrections remain pending; independent SOURCE and separate actual release are required. Only real owned-body1 and genuine publisher1 are intended first causal REDs; physical B negatives must wait for actual module authoring. `Expected36` is the A-only memory subset; real publication requires explicit CurrentExpected52 after the actual producer. Block B still has no acceptance.

@@ -56,6 +56,37 @@ public sealed class GmDocumentationBlock5Tests
     }
 
     [Theory]
+    [InlineData("unrelated_row")]
+    [InlineData("missing_family")]
+    [InlineData("allowed_row_semantics")]
+    public void CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators(string mutation)
+    {
+        var f = Fixture(); var manifest = f.CompleteManifestBaseline();
+        var locators = new Dictionary<(string Family, int Index), (string File, int Line)>();
+        // Memory-only locator seed; the separate actual-extractor fact binds real physical lines.
+        foreach (var row in f.Map["manifestRows"]!.AsArray())
+        {
+            var family = S(row!, "family"); var index = I(row!, "index"); var line = row!["before"]!["line"]!.GetValue<int>() + 10;
+            locators.Add((family, index), ("E_Block_5_Units_Ids.txt", line));
+            manifest[family]![index]!["file"] = "E_Block_5_Units_Ids.txt"; manifest[family]![index]!["line"] = line;
+        }
+        Assert.Empty(f.VerifyManifestSemantics(manifest, locators));
+        if (mutation == "missing_family") { Assert.True(manifest.ContainsKey("resourceMaterializationCoverage")); manifest.Remove("resourceMaterializationCoverage"); }
+        else if (mutation == "unrelated_row")
+        {
+            var rows = manifest["afterlifeEntityProfileCoverage"]!.AsArray(); Assert.True(rows.Count > 1);
+            Assert.False(JsonNode.DeepEquals(rows[0], rows[1]));
+            var first = rows[0]!.DeepClone(); rows[0] = rows[1]!.DeepClone(); rows[1] = first;
+        }
+        else
+        {
+            var row = manifest["syntaxExemptions"]![11]!; Assert.NotNull(row["reason"]);
+            row["reason"] = row["reason"]!.GetValue<string>() + " changed exemption semantics";
+        }
+        Assert.Contains("manifest.complete_semantics_or_order", f.VerifyManifestSemantics(manifest, locators));
+    }
+
+    [Theory]
     [InlineData("missing")]
     [InlineData("duplicate")]
     [InlineData("cdata")]
@@ -129,7 +160,7 @@ public sealed class GmDocumentationBlock5Tests
     {
         var f = Fixture(); var router = Read("CLI_Rules_Index.md");
         Assert.Contains("| b5_" + route + " |", router, StringComparison.Ordinal);
-        Assert.Empty(GmDocumentationBlock5Fixtures.VerifyRouter(router));
+        Assert.Empty(f.VerifyRouter(router));
         Assert.Empty(f.VerifyHeaders(f.ActualDocuments()));
     }
 
@@ -137,11 +168,38 @@ public sealed class GmDocumentationBlock5Tests
     [InlineData("universal")]
     [InlineData("lost_union")]
     [InlineData("repair_expansion")]
+    [InlineData("missing_dependency")]
+    [InlineData("unconditional_dependency")]
+    [InlineData("missing_router")]
+    [InlineData("missing_wound_contract")]
+    [InlineData("unconditional_effect")]
     public void RouteMutationsCannotBroadenScopeOrDropTheSecondContract(string mutation)
     {
-        var f = Fixture(); var router = f.RouterAddition; Assert.Empty(GmDocumentationBlock5Fixtures.VerifyRouter(router));
+        var f = Fixture(); var router = f.RouterAddition; Assert.Empty(f.VerifyRouter(router));
+        var docs = f.CompleteFixture(); Assert.Empty(f.VerifyHeaders(docs));
         string expected;
         if (mutation == "universal") { router += "\nRead all seven topic bodies every turn.\n"; expected = "route.universal"; }
+        else if (mutation is "missing_dependency" or "unconditional_dependency")
+        {
+            const string condition = "Only if actual characteristic or derived-parameter calculation is required:";
+            Assert.Contains(condition, router, StringComparison.Ordinal);
+            router = router.Replace(condition, mutation == "missing_dependency" ? "" : "Always read:", StringComparison.Ordinal);
+            // Hrefs remain present; mere set equality must not accept lost conditional meaning.
+            Assert.Contains("Rules/Block_5_Characteristics_Progression.txt", router, StringComparison.Ordinal);
+            expected = "route.conditions:";
+        }
+        else if (mutation is "missing_router" or "missing_wound_contract" or "unconditional_effect")
+        {
+            const string path = "Rules/Block_5_Wounds.txt"; var text = Text(docs[path]);
+            var before = mutation == "missing_router" ? "[CLI rules index](../CLI_Rules_Index.md)" :
+                mutation == "missing_wound_contract" ? "[wound contract](../OtherGuides/Wound_Materialization_Contract.md)" :
+                "Only if actual effect definitions are required:";
+            Assert.Contains(before, text, StringComparison.Ordinal);
+            docs[path] = Bytes(text.Replace(before, mutation == "unconditional_effect" ? "Always read:" : "", StringComparison.Ordinal));
+            expected = mutation == "missing_router" ? "header.router:" : mutation == "missing_wound_contract" ? "header.prerequisite:" : "header.dependencies:";
+            Assert.Contains(f.VerifyHeaders(docs), issue => issue.StartsWith(expected, StringComparison.Ordinal));
+            return;
+        }
         else
         {
             var id = mutation == "lost_union" ? "union_combat_wound" : "repair";
@@ -149,7 +207,7 @@ public sealed class GmDocumentationBlock5Tests
             var changed = mutation == "lost_union" ? line.Replace("[rules](Rules/Block_5_Wounds.txt)", "", StringComparison.Ordinal) : line + " [extra](Rules/Block_5_Combat_Foundations.txt)";
             router = router.Replace(line, changed, StringComparison.Ordinal); expected = mutation == "lost_union" ? "route.edges:" : "route.restricted:";
         }
-        Assert.Contains(GmDocumentationBlock5Fixtures.VerifyRouter(router), issue => issue.StartsWith(expected, StringComparison.Ordinal));
+        Assert.Contains(f.VerifyRouter(router), issue => issue.StartsWith(expected, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -187,8 +245,9 @@ public sealed class GmDocumentationBlock5Tests
         var validation = GmWorkerContractValidator.ValidateProfile(profile); Assert.True(validation.IsValid, string.Join(';', validation.Errors));
         Assert.False(profile.Enabled); Assert.True(profile.Permissions.ProposalOnly); Assert.False(profile.Permissions.RequiresValidation);
         Assert.Empty(profile.Permissions.ProposalWritePaths); Assert.Equal(task, Assert.Single(profile.Permissions.TaskTypes).ToString());
-        foreach (var path in Fixture().AllPaths)
+        foreach (var path in Fixture().AllPaths.Concat(GmDocumentationBlock5Fixtures.RequiredProfilePrerequisites))
             Assert.True(profile.Permissions.ReadPaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)), worker + ":" + path);
         Assert.False(profile.Permissions.ReadPaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, "Examples/unrelated-new-authority.txt")));
+        Assert.False(profile.Permissions.ReadPaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, "OtherGuides/unrelated-new-authority.md")));
     }
 }
