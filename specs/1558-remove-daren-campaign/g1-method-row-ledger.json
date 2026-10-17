@@ -1,0 +1,143 @@
+{
+  "status": "PARTIAL_G1_STATIC_OWNERSHIP_LEDGER_NOT_NATIVE_DISCOVERY; full retirement/migration rows pending",
+  "baseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "transfer": {
+    "newOwners": [
+      "daren-retirement-producer-capture",
+      "daren-retirement-console-menu",
+      "daren-retirement-save-rewards",
+      "daren-retirement-storage-refusal",
+      "daren-retirement-ordinary-storage",
+      "daren-retirement-browser-host",
+      "daren-retirement-console-practice",
+      "daren-retirement-source-guidance",
+      "daren-retirement-common-qte",
+      "daren-retirement-affected-guards",
+      "daren-retirement-legacy-view-pending-removal",
+      "daren-retirement-legacy-close-pending-removal"
+    ],
+    "modifiedExistingOwners": [
+      "gm-doc-block5-shared-preservation",
+      "documentation-examples",
+      "browser-api-host",
+      "qte-rules",
+      "portable-canonical-contention-consumers-linux",
+      "test-selection-contracts",
+      "frontend-test-workflow",
+      "frontend-qte",
+      "portable-original-remaining-owning-close-linux"
+    ],
+    "selectorMoves": [
+      {
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "from": "gm-doc-block5-shared-preservation"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+        "from": "documentation-examples"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "from": "documentation-examples"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+        "from": "qte-rules"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "from": "qte-rules"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles",
+        "from": "qte-rules"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+        "from": "qte-rules"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "from": "qte-rules"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "from": "portable-canonical-contention-consumers-linux"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "from": "portable-canonical-contention-consumers-linux"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteAndDarenSplitSources_PreserveReviewedExecutableInventories",
+        "from": "test-selection-contracts"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "from": "test-selection-contracts"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+        "from": "browser-api-host"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "from": "frontend-test-workflow"
+      }
+    ],
+    "selectedCategories": 15,
+    "sourceOnlyNotNativeCounts": true
+  },
+  "genericClosePartition": {
+    "originalMethod": "OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+    "remaining8": "bootstrap/ui_lock/prompt_generation/prompt_lock \u00d7 false/true",
+    "retiring4": "profile/qte_terminal \u00d7 false/true",
+    "newTemporaryMethod": "OriginalOwnedLeaseCloseTests.RetiringDarenPublishersPreserveHistoricalCloseRows",
+    "sameCoreBody": true
+  },
+  "captureDataStatus": "UNRUN; browser7/standalone1 packet files intentionally absent until separately released capture and frozen-data source review; no fallback",
+  "testsBuildDiscoveryActual": "UNRUN",
+  "metadataUtilityFirstOutcomes": [
+    {
+      "helper": "/tmp/gm1558-g1-categories-first.py",
+      "outcome": "assertion before catalog write: closing delimiter whitespace assumption"
+    },
+    {
+      "helper": "/tmp/gm1558-g1-categories-second.py",
+      "outcome": "assertion before catalog write: trailing newline after closing object omitted"
+    },
+    {
+      "helper": "/tmp/gm1558-g1-categories-third.py",
+      "outcome": "unchanged-row selfcheck caught nested related.id object matched as category; generated catalog restored from exactHEAD, then only actual top-level decoded category spans replaced and all unchanged semantic rows checked before write"
+    }
+  ],
+  "utilityScope": "Metadata authoring only; no product/PREP/test/native failure or executed RED"
+}

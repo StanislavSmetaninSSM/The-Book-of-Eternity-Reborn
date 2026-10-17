@@ -176,8 +176,7 @@
           "tests": [
             "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
             "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
-            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
-            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources"
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure"
           ]
         }
       ]
@@ -5283,33 +5282,33 @@
             ]
         },
         {
-            "id": "portable-original-remaining-owning-close-linux",
-            "responsibility": "Six actual original public publishing routes (bootstrap, UI lock, Daren profile, prompt generation, prompt lock, standalone QTE terminal), each known positive and actual publication-uncertainty plus secondary close. Twelve independent roots. Inspect actual hoisted owner through awaited task states; attach closer only after same genuine CSP. Preserve original result/attempt/session publication and full lease settlement.",
-            "excludes": "No synthetic lease or forged publication result, read-only exact-rollback refresh, other owners, native Windows, B2 gameplay or whole migration qualification.",
-            "changeHints": [
-                "BookOfEternityClient/Core/StateManager.cs",
-                "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
-                "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
-                "BookOfEternityClient/Services/QteSceneService.Daren.cs",
-                "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
-                "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true,
-                "ciRunner": "ubuntu-24.04"
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose"
-                    ]
-                }
-            ]
+          "id": "portable-original-remaining-owning-close-linux",
+          "responsibility": "Eight unchanged generic bootstrap/UI/prompt actual ownership-close rows; four Daren profile/terminal rows are separately owned and excluded under1558 pending removal. Same original core/oracles, no new producer.",
+          "excludes": "No synthetic lease or forged publication result, read-only exact-rollback refresh, other owners, native Windows, B2 gameplay or whole migration qualification.",
+          "changeHints": [
+            "BookOfEternityClient/Core/StateManager.cs",
+            "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+            "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+            "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+            "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+            "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true,
+            "ciRunner": "ubuntu-24.04"
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose"
+              ]
+            }
+          ]
         },
         {
             "id": "portable-spiritual-capture-exact-names-linux",
@@ -12195,45 +12194,113 @@
             ]
         },
         {
-            "id": "test-selection-contracts",
-            "responsibility": "Catalog selection, runner safety, test inventory, and process cleanup contracts.",
-            "excludes": "Gameplay rules, GM contracts, and frontend rendering.",
-            "changeHints": [
-                "scripts/test-csharp.ps1",
-                "scripts/testing/**",
-                "scripts/tests/**",
-                "tests/categories.json",
-                "tests/selection.json"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true
+          "id": "test-selection-contracts",
+          "responsibility": "Catalog selection, runner safety, test inventory, and process cleanup contracts.",
+          "excludes": "Gameplay rules, GM contracts, and frontend rendering.",
+          "changeHints": [
+            "scripts/test-csharp.ps1",
+            "scripts/testing/**",
+            "scripts/tests/**",
+            "tests/categories.json",
+            "tests/selection.json"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true
+          },
+          "timeoutMinutes": 5,
+          "expectedSeconds": 95.89,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_AcceptsTriviaAfterDot",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_IgnoresCommentedInvocation",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_IgnoresInvocationInString",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsCommentOnlyProfileToken",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsMixedProfiles",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWhitespaceOnlyArgument",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWrongProfile",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWrongProfileAfterDotTrivia",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.AfterlifeSpiritualConflictValidationTests_UseScopedPhase",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.BroadValidationCalls_MatchReviewedEightCallManifest",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.BrowserPresentationAudit_UsesSharedLoadedTemplatesWithIsolatedCases",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_MalformedTrxFailsClosed",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_MissingStorageMappingFailsClosed",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_RepeatedTheoryRowsWithinOneTrxAreNotDuplicates",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_SameTestIdAcrossDescriptorTrxFilesIsDuplicate",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_SameTestIdInDifferentAssembliesIsNotDuplicate",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpCategoryRunner_SelectedContractSpansBothProjectsWithExactMethodFilters",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpRunner_RuntimeCleanupDeadlineStopsOwnedChildAndCannotPass",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_FalseNegative_RejectsAdditionalCloneCopy",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_FalseNegative_RejectsAdditionalCloneObjectCreation",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_FalseNegative_RejectsFailureGuardElseAssignment",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_FalseNegative_RejectsTransitiveConstructorAccess",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_FalseNegative_RejectsTransitiveInitializeAsyncAccess",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsCloneIntoTemplateRoot",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsEagerConstructorAccess",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsEagerInitializeAsyncAccess",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsNonUniqueCreatedRoot",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsSharedExecutionRoot",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RequiresSourceAndPreparedLoadAssertions",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplaySaveSources_UseLazyPreparedTemplatesAndPreserveTheoryManifests",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.DarenQteSources_AreSemanticallySplitAcrossTestAssemblies",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExactTestInventory_RejectsMissingChangedAndDuplicateRows",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExplorerWebCommandAudit_ReusesPreparedSeedProfilesWithIsolatedCases",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExplorerWebCommandSeedTemplateFixture_CachesSeedsAndIsolatesCaseRoots",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.FactionValidationProfiles_IncludeMaterializationContinuity",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GameEngineLifeTransitionReplacementTest_UsesCheckpointInsteadOfPolling",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GameEngineLifecycleTests_RemainSerializedWithinTheirOwnCollection",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianArchiveTradeProfile_SelectsOnlyAssertionOwningPhasesAndFiles",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianNpcAndCanonicalValidationSources_UseScopedProfiles",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianRegressionTests_BroadValidationCallsStayWithinSentinelBudget",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianRegressionTests_MatchCompleteReviewedPartialSourceSet",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianRegressionTests_NinthBroadCallFailsWithCountAndRemediation",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GuardianRegressionTests_UseExactReviewedDomainProfileMapping",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.IntegrationValidationProfiles_AreNonEmptyAndSelectable",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.MixedFastPlacement_LinksOnlyTheReviewedHelperFixtureBase",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.MixedFastPlacement_PreservesAllSixtySixReviewedCasesExactlyOnce",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.MortalShiningStoryAndMiscValidationSources_UseScopedProfiles",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.PartialTestClasses_AreOwnedByExactlyOneTestSourceRoot",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.PublishedTreatmentFullStateProbe_HasExactReviewedCallers",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.RuntimeValidationCallers_UseParameterlessFacadeOutsideValidationService",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.RuntimeValidationGuard_RejectsScopedDeclarationAndCallOutsideAllowedSource",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.RuntimeValidationGuard_ReviewedPartialAllowsOnlyValidationServiceCalls",
+                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ValidatorFixtureStateOnlySelection_IncludesMappedAndCanonicalSnapshotFiles"
+              ]
             },
-            "timeoutMinutes": 5,
-            "expectedSeconds": 95.89,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.*"
-                    ]
-                },
-                {
-                    "project": "powershell",
-                    "tests": [
-                        "scripts/tests/test-category-catalog.tests.ps1",
-                        "scripts/tests/test-category-reports.tests.ps1",
-                        "scripts/tests/test-category-runner.tests.ps1"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.FastTestBoundaryTests.*"
-                    ]
-                }
-            ]
+            {
+              "project": "powershell",
+              "tests": [
+                "scripts/tests/test-category-catalog.tests.ps1",
+                "scripts/tests/test-category-reports.tests.ps1",
+                "scripts/tests/test-category-runner.tests.ps1"
+              ]
+            },
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_AbsoluteNpmApplicationStartsWithOwnedProcessSettings",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_AllRetriesExhaustedDispositionRetainsLiveRun",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_ConcurrentSelfTestsCreateDistinctResultDirectories",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_ExitedRootCannotConcealOwnedDescendant",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_FailedInitialCleanupIsRetriedAndReportedWithoutOrphaning",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_NoSelectionOrRetiredLaneStartsNoWorkload",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_ParallelBatchCannotBlockOnExitedRootDescendant",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_PostStartLoggingFailureKillsAndDisposesOwnedProcess",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_PreservesBoundedOwnedProcesses",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.CSharpCategoryRunner_SelfTestCannotCombineWithCategoryOrPlanOnly",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.MortalWoundTreatmentResolverPartialFamily_HasExactIntegrationInventory",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.ProjectReferences_UpdateOnlyItem_DoesNotCreateDirectReference",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.QteDeterministicLogicSource_ExistsOnlyInFastAndIsFixtureFree",
+                "BookOfEternityClient.Tests.FastTestBoundaryTests.TestProjectTopology_SeparatesFastIntegrationAndSupportAssemblies"
+              ]
+            }
+          ]
         },
         {
             "id": "test-fixture-integrity",
@@ -14090,57 +14157,100 @@
             ]
         },
         {
-            "id": "browser-api-host",
-            "responsibility": "Local browser API, host, session generation, and write coordination.",
-            "excludes": "Console-only command behavior and unrelated gameplay rule validation.",
-            "changeHints": [
-                "BookOfEternityClient/Services/Browser*",
-                "BookOfEternityClient/Services/LocalWebUi*"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": true,
-                "exclusive": true
+          "id": "browser-api-host",
+          "responsibility": "Local browser API, host, session generation, and write coordination.",
+          "excludes": "Console-only command behavior and unrelated gameplay rule validation.",
+          "changeHints": [
+            "BookOfEternityClient/Services/Browser*",
+            "BookOfEternityClient/Services/LocalWebUi*"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": true,
+            "exclusive": true
+          },
+          "timeoutMinutes": 10,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.*",
+                "BookOfEternityClient.Tests.LocalWebUiBuiltFrontendSmokeTests.*",
+                "BookOfEternityClient.Tests.LocalWebUiHostTests.*",
+                "BookOfEternityClient.Tests.LocalWebUiSmokeTests.*",
+                "BookOfEternityClient.Tests.WebUi.BrowserMortalWorldGenerationFencingTests.*",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ActiveAction_StaleInteractionTokenCannotAdoptReplacementAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ActiveAction_UsesPersistedAcceptedTurnWithoutActiveTurnRequest",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.BuildState_ProjectionFailureRollsBackRuntimeNormalization",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_BoundedEffectReturnsAwaitingStateWithoutFalseCompletionOrRetryAuthority",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenAttempt_CannotContinueAfterSessionGenerationChanges",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_LateFailureRetainsPostImageAndRestoresExactBaselineIdentity",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_LateProfileFailureRollsBackProfileAndAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_PostImageHardLinkRestoresExactBaselineAndRetainsEvidence",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ProfileParentReplacedWithJunction_DoesNotWriteOutsideAuthority",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_StagesExternalProfileRollbackBeforeProfileWriteCompletes",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenExit_ConcurrentFailedResolveDoesNotResurrectAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileDirectWrite_MissingPublicationBackendsFailBeforeProfileStaging",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileRollback_HardLinkedProfileIsRejectedWithoutChangingExternalBytes",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileRollback_RestoresAndReadsExactBytesThenDeletes",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.FailedPracticeStart_AfterSessionReplacementDoesNotExposePreviousAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.LeaseBoundNormalizer_ReadsRelativeQteBackupFromCanonicalSession",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.OfferDecision_MissingOrNonPositiveSourceTurnFailsWithoutMutation",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.OfferDecision_StaleInteractionTokenCannotAdoptReplacementOffer",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.OfferDecision_UsesPersistedSourceTurnWithoutActiveTurnRequest",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeAttempt_CannotContinueAfterSessionGenerationChanges",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutation_OldRevisionTokenCannotMutateCompletedAttempt",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite"
+              ]
             },
-            "timeoutMinutes": 10,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.*",
-                        "BookOfEternityClient.Tests.LocalWebUiBuiltFrontendSmokeTests.*",
-                        "BookOfEternityClient.Tests.LocalWebUiHostTests.*",
-                        "BookOfEternityClient.Tests.LocalWebUiSmokeTests.*",
-                        "BookOfEternityClient.Tests.WebUi.BrowserMortalWorldGenerationFencingTests.*",
-                        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.*"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserApiContractTests.*",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserMediaGeneration_KeepsDownloadedBytesInMemoryAndCommitsThroughGenerationFence",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DirectAfterlifeGacha_UsesOneLeaseForSpendSnapshotAuthorityAndRequest",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserDirectMultiWriteActions_EnterOneBoundCanonicalTransaction",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserSettingsAndAudio_UseOneLockOrderAndGenerationBoundTransactions",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserLegacyWriteEntryPoint_DelegatesToAtomicCanonicalTransaction",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserCanonicalTransactions_PassLeaseExplicitlyWithoutAmbientAuthority",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.LocalInteractionScopeResolvers_MustImplementLeaseAwareReadsExplicitly",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPromptSessionsAndLocalUiLocks_UseGenerationBoundCanonicalAuthority",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.CanonicalMutationObservation_UsesAtomicTransitionsAndSnapshots",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.Phase43AuthorityBoundaries_KeepOwnedPostImagesManifestedSavesAndAncestorFencing",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteTurnAuthority_UsesPersistedOfferAndRuntimeInsteadOfTurnRequest",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.AfterlifeDirectMultiWriteActions_UseOneCanonicalLeaseForEveryWrite",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.AfterlifeRuntimeRollbackSnapshot_IsCapturedAfterCanonicalLeaseAcquisition",
-                        "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.ImageService_RemoteGenerationKeepsBytesInMemoryBeforeCanonicalCommit",
-                        "BookOfEternityClient.Tests.WebUi.BrowserPromptSessionGenerationFencingTests.*"
-                    ]
-                }
-            ]
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageAuditDocument_CoversEveryCommandAndSubcommand",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageAuditDocument_DocumentsFollowUpExecutionOrder",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageContract_AuditMetadataIsCompleteForEveryCommandAndSubcommand",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageContract_AuditsIssue804CommandsWithEvidence",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageContract_DoesNotExposeIssue817ParentClosureFollowUps",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserCommandCoverageContract_ListsEveryCommandAndUxDecision",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserGameScreenContract_IncludesPlayerCommandActionMenu",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.BrowserGameScreenContract_IncludesPlayerFacingMediaMapAndGalleryData",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.EveryBrowserExecutableCommand_HasPlayerFacingActionMetadata",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.FailedQteAuthority_BlocksEveryLocalWriteProjection",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendClientSettingsContracts_ExposeUiScaleAccessibilityFields",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendClientSettingsUi_ConsumesBrowserUiScaleSignals",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendShell_ConsumesTypedApiContractSummaryInsteadOfHardCodedEndpointList",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendShell_KeepsRawValidationDetailsInAdvancedDiagnosticsOnly",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.GameScreenIdleTurnState_UsesPlayerFacingRussianCopy",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.OrdinaryGameScreenFailureState_HidesValidationRepairAndRollbackVocabularyRecursively",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.PlayerCommandActionMenu_SeparatesAdvancedAndContextualRealmActions",
+                "BookOfEternityClient.Tests.BrowserApiContractTests.PlayerDefaultActionMenuCopy_AvoidsTechnicalEnglishJargon",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserMediaGeneration_KeepsDownloadedBytesInMemoryAndCommitsThroughGenerationFence",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DirectAfterlifeGacha_UsesOneLeaseForSpendSnapshotAuthorityAndRequest",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserDirectMultiWriteActions_EnterOneBoundCanonicalTransaction",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserSettingsAndAudio_UseOneLockOrderAndGenerationBoundTransactions",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserLegacyWriteEntryPoint_DelegatesToAtomicCanonicalTransaction",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserCanonicalTransactions_PassLeaseExplicitlyWithoutAmbientAuthority",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.LocalInteractionScopeResolvers_MustImplementLeaseAwareReadsExplicitly",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPromptSessionsAndLocalUiLocks_UseGenerationBoundCanonicalAuthority",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.CanonicalMutationObservation_UsesAtomicTransitionsAndSnapshots",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.Phase43AuthorityBoundaries_KeepOwnedPostImagesManifestedSavesAndAncestorFencing",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteTurnAuthority_UsesPersistedOfferAndRuntimeInsteadOfTurnRequest",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.AfterlifeDirectMultiWriteActions_UseOneCanonicalLeaseForEveryWrite",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.AfterlifeRuntimeRollbackSnapshot_IsCapturedAfterCanonicalLeaseAcquisition",
+                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.ImageService_RemoteGenerationKeepsBytesInMemoryBeforeCanonicalCommit",
+                "BookOfEternityClient.Tests.WebUi.BrowserPromptSessionGenerationFencingTests.*"
+              ]
+            }
+          ]
         },
         {
             "id": "browser-command-parity",
@@ -14597,39 +14707,79 @@
             ]
         },
         {
-            "id": "qte-rules",
-            "responsibility": "Deterministic QTE grading, practice, Daren, and deferred effect consequences.",
-            "excludes": "Browser shell styling and unrelated command grammar.",
-            "changeHints": [
-                "BookOfEternityClient/Services/*Qte*",
-                "BookOfEternityClient.WebFrontend/src/qte/**"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
+          "id": "qte-rules",
+          "responsibility": "Deterministic QTE grading, practice, Daren, and deferred effect consequences.",
+          "excludes": "Browser shell styling and unrelated command grammar.",
+          "changeHints": [
+            "BookOfEternityClient/Services/*Qte*",
+            "BookOfEternityClient.WebFrontend/src/qte/**"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false
+          },
+          "timeoutMinutes": 10,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.DarenQteShowcaseTests.*",
+                "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.*",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ActualPostRestorationMirrorPublicationRetainsQteUncertaintyAndPrimaryCause",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_CapturesBaselineForGuardianProjectNormalization",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_CapturesWorldEventsBaselineForRivalNormalization",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_CreationRefOnlyWithoutImmutableContinuation_FailsBeforeWriteLeaseOrMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_PermanentExistedIdUpdate_DoesNotRequireContinuation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_RemovesQteBackupRootAfterSuccessfulRun",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_ExistedIdNullOnlyWithoutImmutableContinuation_FailsClosedAndRollsBack",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_MalformedEffectSurface_FailsClosedBeforeTypedDeserialization",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RawEffectWithoutImmutableContinuation_FailsClosedAndRollsBack",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RawOwnerWithoutImmutableContinuation_FailsClosedAndRollsBack",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresGuardianProjectJournalAfterNormalizationFailure",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.BeginAcceptedSceneAsync_UnboundOrMismatchedTurnFailsWithoutRuntimeMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.BindAcceptedTurnAuthorityAsync_NonPositiveTurnFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.BindAcceptedTurnAuthorityAsync_PersistsTrustedPositiveSourceTurn",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.EnsureRuntimeStateHealthyAsync_BrokenActiveSceneFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.EnsureRuntimeStateHealthyAsync_InvalidJsonFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.EnsureRuntimeStateHealthyAsync_NonPositiveAcceptedTurnFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.EnsureRuntimeStateHealthyAsync_RemovesPendingOfferWithoutActiveScene",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.QteTerminalResourceOutcome_WorkCountersRemainLinearForMultiCommandSelection",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.RecordDeclineAsync_UnboundOrMismatchedTurnFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesOnlySelectedTerminalResourceDamageThroughCanonicalQuartet",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_LateFailureRestoresBomAndNonTextBytesExactly",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_LeavesUnscoredQteHistoryUnchanged",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_MissingPresentFileBackupFailsClosedAndRetainsRecoveryEvidence",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_NonPositiveRuntimeAuthorityFailsWithoutMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_RawEffectWithoutImmutableContinuation_PersistsSelectedBoundaryAndPreservesFinalPublicationState",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_RejectsMalformedResourceOwnerAuthorityBeforeAnyOutcomeMutation",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_ResurrectedRuntimeAgainstTerminalContinuationFailsWithoutDuplicateDamage",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_RollbackRefreshFailureAggregatesOriginalAndRetainsBackups",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.SaveGameAsync_ExcludesQteNormalizerBackupsFromArchive",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.StartAcceptedSceneAsync_RendersFinalScoreSummaryInConsoleAndResponse",
+                "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer"
+              ]
             },
-            "timeoutMinutes": 10,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.DarenQteShowcaseTests.*",
-                        "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.*",
-                        "BookOfEternityClient.Tests.QteSceneServiceTests.*"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.DarenQteDeterministicLogicTests.*",
-                        "BookOfEternityClient.Tests.QteDeterministicLogicTests.*",
-                        "BookOfEternityClient.Tests.QteLivePlayabilityTests.*",
-                        "BookOfEternityClient.Tests.QtePracticeModeTests.*"
-                    ]
-                }
-            ]
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.DarenQteDeterministicLogicTests.*",
+                "BookOfEternityClient.Tests.QteDeterministicLogicTests.*",
+                "BookOfEternityClient.Tests.QteLivePlayabilityTests.*",
+                "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_BranchChoiceUsesAuthoredChoiceGradeWhenBrowserGradeOmitted",
+                "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_BuildsRealQteActionForEveryImplementedType",
+                "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeStealthNoise_UsesMeaningfulDifficultyThresholds"
+              ]
+            }
+          ]
         },
         {
             "id": "effects-authority",
@@ -18514,154 +18664,199 @@
             ]
         },
         {
-            "id": "documentation-examples",
-            "responsibility": "GM-facing prompts, example manifests, source/document coverage, and publication documentation.",
-            "excludes": "Production behavior; this category verifies guidance, examples, and source coverage.",
-            "changeHints": [
-                "OtherGuides/**",
-                "Examples/**",
-                "Prompts/**",
-                "docs/**"
-            ],
-            "related": [
-                {
-                    "id": "test-fixture-integrity",
-                    "when": "An example fixture or manifest changes."
-                }
-            ],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
+          "id": "documentation-examples",
+          "responsibility": "GM-facing prompts, example manifests, source/document coverage, and publication documentation.",
+          "excludes": "Production behavior; this category verifies guidance, examples, and source coverage.",
+          "changeHints": [
+            "OtherGuides/**",
+            "Examples/**",
+            "Prompts/**",
+            "docs/**"
+          ],
+          "related": [
+            {
+              "id": "test-fixture-integrity",
+              "when": "An example fixture or manifest changes."
+            }
+          ],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false
+          },
+          "timeoutMinutes": 10,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.*"
+              ]
             },
-            "timeoutMinutes": 10,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.*"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.FileSystemExampleAfterlifeStateExamplesTests.*",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustRequireRollbackBaselineCanonicalCoverage",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustUseValidatedManifestStructureAndSnapshotHashes",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCleanup_MustClearSatisfiedMortalTrainingSkillEvolutionRequests",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepPendingSnapshotAliveUntilLifeTransitionChecksFinish",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepRollbackBackupAliveUntilLifeTransitionChecksFinish",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustNormalizeResolvedRuntimeArtifactsBeforePendingSnapshotCleanup",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustPassValidatedSnapshotContextToLifeTransitionChecks",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnRuntimeAuthorityBranches_MustUseValidatedSnapshotContextInsteadOfRawManifestFields",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustUsePreWaitPendingSnapshotContextForCanonicalBaseline",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AscensionToShiningAbode_MustPublishCommonReturnCycleResourcePlan",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_DeathScreen_MustPublishAgentConsoleKeySnapshot",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustClearAcceptedTurnReadySignalBeforeDispatchingLifeEvaluation",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustResolveCurrentRealmFromSoulStateFile_NotStaleRuntimeCache",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustUseSharedCanonicalTriggerLifeEndParser",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CliApiSpecification_MustDescribeGuardianPowerAndAfterlifeControlSurfaces",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CliStepGuide_MustNotInstructDirectGuardianAbodePowerMutation",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ClientRuntimeCode_MustRouteConsoleClearThroughHeadlessSafeWrapper",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContinueFlow_MustNotDeleteAcceptedTurnOutputFilesJustBecauseThereIsNoPendingManifest",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContinueFlow_MustNotHydrateFromRawPendingManifestPresence",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContractValidationErrorScreen_MustExposeAgentConsoleKeyContinuation",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CriticalAcceptedStateCorruption_MustNotBeRoutedAsTerminalProtocolFailure",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonInitialTurnPrompt_MustPreemptWeatherDirectRootRepairLoop",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonRepairAndTerminalPrompts_MustDescribeDiagnosticOnlySentinelMetadata",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonRepairPrompt_MustKeepCodexGmFocusedOnTerminalRepairMarker",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DeferredQteReceiptResume_MustPrecedeInteractiveResumeAndSkipPostTurnProgressionWhileAwaiting",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustFailClosedWithoutWaitingForGmReady",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustLeaveRollbackToAcceptedTurnCaller",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DomainDerivedGuardianMechanics_MustNotRemainInRuntimeContractsOrValidator",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.EndOfLifeCommand_MustRequireExplicitMortalRealm",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameEngineRuntimeConfirmations_MustUseAgentConsoleObservableHelper",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameInterfaceTransitions_MustUseHeadlessSafeConsoleClear",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameLoopFailureScreen_MustLogButNeverEchoExceptionTextToPlayer",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GuardianForcedIncarnation_RuntimeGate_MustFailClosedOnInvalidReturnGuard",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GuardianSetupChoicePrompts_MustPublishAgentConsoleSnapshots",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationFlow_MustBlockOnPendingArchiveActionsBeforeLeavingAfterlife",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationSetupTextPrompts_MustPublishAgentConsoleSnapshots",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationTriggerTransition_MustPublishAgentConsoleKeyAndStatSnapshots",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationAndAcceptedAfterlifeTurns_MustActivateAndConsumeReturnProtection",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationRewardScreen_MustNotFallbackToPermissiveSoulRelicParsingAfterStrictDeltaFailure",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationRewardScreen_MustUseHeadlessSafeConsoleClear",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeTransitions_AndNewIncarnation_MustResetLifeScopedRivalSoulArcs",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LocalCommandLoop_MustHandleInPlaceVitrineRequestsBeforeOrdinaryGmTurns",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefreshAndLoadValidation_MustNotRequireAcceptedTurnPayloadArtifacts",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefreshAndResize_MustNormalizeStaleRepairArtifactsBeforeRevalidation",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefresh_MustMergeDiskResponseWithCurrentInMemoryLastResponse",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_ItemDurabilityRuleMustUsePercentageString",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustContainCanonicalShapeRepairPreventionHints",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustMakeExplicitGmTrainingCapabilitiesActionable",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustPublishExactLocationReservations",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustPublishStructuredGmAuthorityAndWorldEventRequirements",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustWarnAgainstPuttingOffscreenExitActorsIntoNpcScene",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_NpcCoreTopLevelCollectionsMustMatchValidatorFileContract",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrap_MustNotInferStarterResourcesFromProse",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrap_MustWriteScaffoldBeforeInitialMortalDispatch",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MultilinePlayerInput_MustUseUnifiedTextComposerInsteadOfLegacyPasteSentinel",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameAndMortalBootstrap_MustPublishUnifiedResourceAuthority",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameBootstrap_MustBindRotatedGenerationThroughInitialTurnPublication",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustCarryBootstrapGenerationIntoInitialGmWait",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustCheckInitialWaitResultBeforeEnteringGameLoop",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustNotUseLegacyHardcodedGuardianTypeList",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustUseAgentConsoleCompatibleGuardianChoicePrompt",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGamePlus_MustNotReadOrRehydrateLegacyCrossIncarnationDataIntoCanonicalSoulState",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGamePlus_MustRouteThroughSafeShiningNewCycleReturn",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryPlayerTurnWait_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustBlockInsteadOfPurgingPendingShiningRequests",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustResetEnlightenmentAndPreserveInkFeathers",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustShowBeforeAfterPreviewBeforeLocalWrite",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnBackupAndSnapshot_MustEachHoldOneLeaseAcrossMultiFileCapture",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerFacingDialogueOptionSurfaces_MustUseControlTagNormalizer",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerFacingStatusMessages_MustNotExposeInternalProtocolTerms",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerInput_MustExposeClipboardPasteShortcut",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmSensitiveStartupCleanup_MustRefreshPersistedStateBeforeHygiene",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmTransitionBanner_MustPublishAgentConsoleKeySnapshot",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmTransitions_MustUseCoordinatedWritesAndAbortWithoutSoulRealmAuthority",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ReenterShiningAbode_MustPublishCommonReturnCycleResourcePlan",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RepairAndTerminalRequestWriters_MustEmitStructuredDiagnosticOnlyMetadataFlag",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RepairLoop_MustHealthCheckClientOwnedGuardianAndQteControlFilesBeforeRevalidation",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_AndSoulLifecycle_MustPreserveSoulRenameContinuity",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeAbodeOfferingAndResonanceContracts",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeCommonGachaAttemptAuthority",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeDedicatedGuardianProjectTrackerSurface",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeEternalGuardianPresetContract",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeGuardianForcedIncarnationProtectionAndContract",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeRivalSoulArcContract",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeScenarioCoreAndGuardianCorrectionsAsClientOwnedContracts",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireCurrentLocationInRelevantNpcReasoningBlocks",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireResidentReasoningForResidentStateAndJournalUpdates",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireSoldOutSnapshotInShiningTradeReceipts",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustCleanOrphanTurnRequestAndReadySignalsWithoutManifest",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustCoverAfterlifePendingContractFamilies",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustEnsureShiningFactionRequestsHealthy",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ShiningReturnCycleSync_MustPersistNormalizationChangesEvenWithoutCycleBump",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ShowLifeEvaluationRewards_MustPublishAgentConsoleKeySnapshot",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.SuccessfulAcceptedTurn_MustNotDeletePersistentLastResponseOutputs",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.SystemGuardianPresetSelection_MustUseAgentConsoleCompatibleChoicePrompt",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TerminalResolution_MustUseOneBoundSnapshotInsteadOfRereadingReadyFiles",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TransitionWaitForGmResponse_MustRunAcceptedTurnFinalizerSteps",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TransitionWaitForGmResponse_RejectedValidationMustClearActiveRequestArtifacts",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnFinalizers_MustRunUnderImmutableSessionOperationFence",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnReminder_MortalWorldMustSurfaceGuardianQuestProgressException",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnReminder_MustPassCurrentTurnNumberToRivalSoulArcReminderService",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.WaitForGmResponse_MustReturnAfterHandledLifeTransitionBeforeOldResponsePipelineContinues",
-                        "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.*",
-                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.*",
-                        "BookOfEternityClient.Tests.RepositoryEncodingScannerTests.*"
-                    ]
-                }
-            ]
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.FileSystemExampleAfterlifeStateExamplesTests.*",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustRequireRollbackBaselineCanonicalCoverage",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustUseValidatedManifestStructureAndSnapshotHashes",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCleanup_MustClearSatisfiedMortalTrainingSkillEvolutionRequests",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepPendingSnapshotAliveUntilLifeTransitionChecksFinish",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepRollbackBackupAliveUntilLifeTransitionChecksFinish",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustNormalizeResolvedRuntimeArtifactsBeforePendingSnapshotCleanup",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustPassValidatedSnapshotContextToLifeTransitionChecks",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnRuntimeAuthorityBranches_MustUseValidatedSnapshotContextInsteadOfRawManifestFields",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustUsePreWaitPendingSnapshotContextForCanonicalBaseline",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AscensionToShiningAbode_MustPublishCommonReturnCycleResourcePlan",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_DeathScreen_MustPublishAgentConsoleKeySnapshot",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustClearAcceptedTurnReadySignalBeforeDispatchingLifeEvaluation",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustResolveCurrentRealmFromSoulStateFile_NotStaleRuntimeCache",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_MustUseSharedCanonicalTriggerLifeEndParser",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CliApiSpecification_MustDescribeGuardianPowerAndAfterlifeControlSurfaces",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CliStepGuide_MustNotInstructDirectGuardianAbodePowerMutation",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ClientRuntimeCode_MustRouteConsoleClearThroughHeadlessSafeWrapper",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContinueFlow_MustNotDeleteAcceptedTurnOutputFilesJustBecauseThereIsNoPendingManifest",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContinueFlow_MustNotHydrateFromRawPendingManifestPresence",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ContractValidationErrorScreen_MustExposeAgentConsoleKeyContinuation",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CriticalAcceptedStateCorruption_MustNotBeRoutedAsTerminalProtocolFailure",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonInitialTurnPrompt_MustPreemptWeatherDirectRootRepairLoop",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonRepairAndTerminalPrompts_MustDescribeDiagnosticOnlySentinelMetadata",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DaemonRepairPrompt_MustKeepCodexGmFocusedOnTerminalRepairMarker",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DeferredQteReceiptResume_MustPrecedeInteractiveResumeAndSkipPostTurnProgressionWhileAwaiting",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustFailClosedWithoutWaitingForGmReady",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DiagnosticOnlyValidationRepair_MustLeaveRollbackToAcceptedTurnCaller",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.DomainDerivedGuardianMechanics_MustNotRemainInRuntimeContractsOrValidator",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.EndOfLifeCommand_MustRequireExplicitMortalRealm",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameEngineRuntimeConfirmations_MustUseAgentConsoleObservableHelper",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameInterfaceTransitions_MustUseHeadlessSafeConsoleClear",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GameLoopFailureScreen_MustLogButNeverEchoExceptionTextToPlayer",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GuardianForcedIncarnation_RuntimeGate_MustFailClosedOnInvalidReturnGuard",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GuardianSetupChoicePrompts_MustPublishAgentConsoleSnapshots",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationFlow_MustBlockOnPendingArchiveActionsBeforeLeavingAfterlife",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationSetupTextPrompts_MustPublishAgentConsoleSnapshots",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.IncarnationTriggerTransition_MustPublishAgentConsoleKeyAndStatSnapshots",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationAndAcceptedAfterlifeTurns_MustActivateAndConsumeReturnProtection",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationRewardScreen_MustNotFallbackToPermissiveSoulRelicParsingAfterStrictDeltaFailure",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeEvaluationRewardScreen_MustUseHeadlessSafeConsoleClear",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LifeTransitions_AndNewIncarnation_MustResetLifeScopedRivalSoulArcs",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LocalCommandLoop_MustHandleInPlaceVitrineRequestsBeforeOrdinaryGmTurns",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefreshAndLoadValidation_MustNotRequireAcceptedTurnPayloadArtifacts",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefreshAndResize_MustNormalizeStaleRepairArtifactsBeforeRevalidation",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ManualRefresh_MustMergeDiskResponseWithCurrentInMemoryLastResponse",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_ItemDurabilityRuleMustUsePercentageString",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustContainCanonicalShapeRepairPreventionHints",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustMakeExplicitGmTrainingCapabilitiesActionable",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustPublishExactLocationReservations",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustPublishStructuredGmAuthorityAndWorldEventRequirements",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_MustWarnAgainstPuttingOffscreenExitActorsIntoNpcScene",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrapScaffold_NpcCoreTopLevelCollectionsMustMatchValidatorFileContract",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrap_MustNotInferStarterResourcesFromProse",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MortalBootstrap_MustWriteScaffoldBeforeInitialMortalDispatch",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MultilinePlayerInput_MustUseUnifiedTextComposerInsteadOfLegacyPasteSentinel",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameAndMortalBootstrap_MustPublishUnifiedResourceAuthority",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameBootstrap_MustBindRotatedGenerationThroughInitialTurnPublication",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustCarryBootstrapGenerationIntoInitialGmWait",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustCheckInitialWaitResultBeforeEnteringGameLoop",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustNotUseLegacyHardcodedGuardianTypeList",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameFlow_MustUseAgentConsoleCompatibleGuardianChoicePrompt",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGamePlus_MustNotReadOrRehydrateLegacyCrossIncarnationDataIntoCanonicalSoulState",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGamePlus_MustRouteThroughSafeShiningNewCycleReturn",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryPlayerTurnWait_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustBlockInsteadOfPurgingPendingShiningRequests",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustResetEnlightenmentAndPreserveInkFeathers",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryReturnToChaosSea_MustShowBeforeAfterPreviewBeforeLocalWrite",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnBackupAndSnapshot_MustEachHoldOneLeaseAcrossMultiFileCapture",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerFacingDialogueOptionSurfaces_MustUseControlTagNormalizer",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerFacingStatusMessages_MustNotExposeInternalProtocolTerms",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerInput_MustExposeClipboardPasteShortcut",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmSensitiveStartupCleanup_MustRefreshPersistedStateBeforeHygiene",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmTransitionBanner_MustPublishAgentConsoleKeySnapshot",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RealmTransitions_MustUseCoordinatedWritesAndAbortWithoutSoulRealmAuthority",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ReenterShiningAbode_MustPublishCommonReturnCycleResourcePlan",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RepairAndTerminalRequestWriters_MustEmitStructuredDiagnosticOnlyMetadataFlag",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RepairLoop_MustHealthCheckClientOwnedGuardianAndQteControlFilesBeforeRevalidation",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_AndSoulLifecycle_MustPreserveSoulRenameContinuity",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeAbodeOfferingAndResonanceContracts",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeCommonGachaAttemptAuthority",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeDedicatedGuardianProjectTrackerSurface",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeEternalGuardianPresetContract",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeGuardianForcedIncarnationProtectionAndContract",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeRivalSoulArcContract",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustDescribeScenarioCoreAndGuardianCorrectionsAsClientOwnedContracts",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireCurrentLocationInRelevantNpcReasoningBlocks",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireResidentReasoningForResidentStateAndJournalUpdates",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimePrompt_MustRequireSoldOutSnapshotInShiningTradeReceipts",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustCleanOrphanTurnRequestAndReadySignalsWithoutManifest",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustCoverAfterlifePendingContractFamilies",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.RuntimeUiArtifactNormalizer_MustEnsureShiningFactionRequestsHealthy",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ShiningReturnCycleSync_MustPersistNormalizationChangesEvenWithoutCycleBump",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ShowLifeEvaluationRewards_MustPublishAgentConsoleKeySnapshot",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.SuccessfulAcceptedTurn_MustNotDeletePersistentLastResponseOutputs",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.SystemGuardianPresetSelection_MustUseAgentConsoleCompatibleChoicePrompt",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TerminalResolution_MustUseOneBoundSnapshotInsteadOfRereadingReadyFiles",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TransitionWaitForGmResponse_MustRunAcceptedTurnFinalizerSteps",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TransitionWaitForGmResponse_RejectedValidationMustClearActiveRequestArtifacts",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnFinalizers_MustRunUnderImmutableSessionOperationFence",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnReminder_MortalWorldMustSurfaceGuardianQuestProgressException",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnReminder_MustPassCurrentTurnNumberToRivalSoulArcReminderService",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata",
+                "BookOfEternityClient.Tests.GameEngineSourceGuardTests.WaitForGmResponse_MustReturnAfterHandledLifeTransitionBeforeOldResponsePipelineContinues",
+                "BookOfEternityClient.Tests.MathAssistantPromptGuidanceTests.*",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.AcceptedTurnProseStateDeltaContract_IsDocumentedForGmAndLiveTests",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompactMortalFactionTemplate_UsesExecutableMaterializationAndCoreChangeCarriers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompactMortalItemTemplate_CoversCompleteCreationAndProtectedLifecycle",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationSourceOwners_DeclareDefinitionsAndTopLevelApplication",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterialization_ActiveRulesAndExamplesContainNoPositiveLegacyRoutes",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.DaemonSpecDocumentsQteOfferRuntimeContract",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.DeferredQteEffectReceiptContract_IsRequiredAcrossGmEntrypoints",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.GmDaemon_ForcesWoundContractForExposedOpportunities",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.InternalWoundLegacyVocabulary_IsClientOwnedAcrossSharedDocs",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.InventoryMechanicalBonusAuthorityContract_IsDocumentedForGm",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.LockPinSetQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MashInputQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalActorMaterializationContract_IsDocumentedForGm",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalActorMaterializationWorkedExample_PassesProductionNpcContract",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalFactionMaterializationGuidance_CoversLifecycleCoreChangesAndDaemonRouting",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalInventoryRepairGuidance_DistinguishesLifecycleCasesWithoutPromotionRemoval",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalLocationCliAndDaemonGuidance_UsesCurrentSchemaAndFullTurnRepair",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalLocationMaterializationGuidance_CoversExactRoutesTopologyBootstrapAndRepair",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalNpcCoreChangesContract_IsDocumentedAcrossGmAndCliSurfaces",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmission",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.PatternMemoryQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.PrecisionChoiceQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteLayoutIndependentKeyboardContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QuestRewardAuthorityContract_IsDocumentedForGm",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.RhythmPulseQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.SpiritualWoundProfileDocumentation_MatchesExactRuntimeRegistry",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.StealthNoiseQteContract_IsDocumentedForGmAndPlayers",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundAlternativeTreatmentRepairDocumentation_PinsKindSpecificLocalOnlyRecipes",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundAlternativeTreatmentResponseDocumentation_ClosesTheGmWireAndRawIngress",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundDiagnosisIdentityDocumentation_UsesDistinctCompleteWorkedPaths",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundMaterializationContract_DocumentsStrictConstructorAndAuthority",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRepairReplayGuidance_DocumentsBoundedRetryRollbackAndReceipt",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRollScopeDocumentation_ExplainsExactChoiceAndIndependentWoundLifecycle",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentAdditionPublicationDocumentation_PinsSelectedBatchAndRetainedHistory",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute",
+                "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes",
+                "BookOfEternityClient.Tests.RepositoryEncodingScannerTests.*"
+              ]
+            }
+          ]
         },
         {
             "id": "documentation-afterlife-entrypoints-coverage",
@@ -19053,32 +19248,32 @@
             ]
         },
         {
-            "id": "frontend-qte",
-            "responsibility": "Frontend QTE layout, mini-games, and Daren scene rendering.",
-            "excludes": "C# host, canonical state writes, and gameplay validation.",
-            "changeHints": [
-                "BookOfEternityClient.WebFrontend/src/qte/**",
-                "BookOfEternityClient.WebFrontend/src/components/Qte*"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 5,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "frontend",
-                    "tests": [
-                        "BookOfEternityClient.WebFrontend/test/darenShowcase.test.tsx",
-                        "BookOfEternityClient.WebFrontend/test/qteLayoutInput.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/qteMiniGameHelpers.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/qteScenePanelMiniGames.test.tsx"
-                    ],
-                    "runner": "vitest"
-                }
-            ]
+          "id": "frontend-qte",
+          "responsibility": "Common browser QTE mini-game/input/ready/scoring surfaces and1558 retired-route absence/practice catalog; removed Daren view has a temporary unselected owner until deletion.",
+          "excludes": "C# host, canonical state writes, and gameplay validation.",
+          "changeHints": [
+            "BookOfEternityClient.WebFrontend/src/qte/**",
+            "BookOfEternityClient.WebFrontend/src/components/Qte*"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false
+          },
+          "timeoutMinutes": 5,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "frontend",
+              "tests": [
+                "BookOfEternityClient.WebFrontend/test/qteLayoutInput.test.ts",
+                "BookOfEternityClient.WebFrontend/test/qteMiniGameHelpers.test.ts",
+                "BookOfEternityClient.WebFrontend/test/qteScenePanelMiniGames.test.tsx",
+                "BookOfEternityClient.WebFrontend/test/darenRetirement.test.tsx"
+              ],
+              "runner": "vitest"
+            }
+          ]
         },
         {
             "id": "afterlife-resource-cutover",
@@ -19993,42 +20188,58 @@
             ]
         },
         {
-            "id": "frontend-test-workflow",
-            "responsibility": "Frontend workspace, local-host contributor documentation, repository publication instructions and category-aware CI contracts.",
-            "excludes": "Runtime host behavior, gameplay, frontend rendering and browser command parity.",
-            "changeHints": [
-                "BookOfEternityClient.WebFrontend/package.json",
-                "BookOfEternityClient.WebFrontend/README.md",
-                ".github/workflows/dotnet-ci.yml",
-                "docs/web-ui/local-web-host.md",
-                "README.md"
-            ],
-            "related": [
-                {
-                    "when": "Category runner or CI selection protocol changes.",
-                    "id": "test-selection-contracts"
-                },
-                {
-                    "when": "Host runtime behavior or its documented API contract changes.",
-                    "id": "browser-api-host"
-                }
-            ],
-            "requirements": {
-                "exclusive": false,
-                "frontendBuild": false
+          "id": "frontend-test-workflow",
+          "responsibility": "Frontend workspace, local-host contributor documentation, repository publication instructions and category-aware CI contracts.",
+          "excludes": "Runtime host behavior, gameplay, frontend rendering and browser command parity.",
+          "changeHints": [
+            "BookOfEternityClient.WebFrontend/package.json",
+            "BookOfEternityClient.WebFrontend/README.md",
+            ".github/workflows/dotnet-ci.yml",
+            "docs/web-ui/local-web-host.md",
+            "README.md"
+          ],
+          "related": [
+            {
+              "when": "Category runner or CI selection protocol changes.",
+              "id": "test-selection-contracts"
             },
-            "timeoutMinutes": 3,
-            "expectedSeconds": 5.9,
-            "selectors": [
-                {
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.*",
-                        "BookOfEternityClient.Tests.LocalWebUiDocumentationTests.*",
-                        "BookOfEternityClient.Tests.RepositoryPublicationDocumentationTests.*"
-                    ],
-                    "project": "unit"
-                }
-            ]
+            {
+              "when": "Host runtime behavior or its documented API contract changes.",
+              "id": "browser-api-host"
+            }
+          ],
+          "requirements": {
+            "exclusive": false,
+            "frontendBuild": false
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": 5.9,
+          "selectors": [
+            {
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserCommandCoverageDiagnostics_RenderAuditFieldsOnlyInAdvancedSurface",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserCurrentViews_RenderPlayerFacingMinimalShell",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserDefaultCommandAndAudioCopy_SourceGuardBlocksBackendTechnicalFraming",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserDefaultPlayerCopy_SourceGuardBlocksImplementationFraming",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserDesignSystem_HasMaintainableCssStructureAndVisualTokens",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserImagegenAssetCatalog_HasTrackedLocalAssetsAndFallbackWiring",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserLauncherBackgroundArt_HasTrackedLocalProvenanceAndReadabilityGuards",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserLegacyRouteAndDashboardContracts_AreNotRevivedBySourceGuards",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserSettingsAndDiagnostics_KeepTechnicalSurfacesExplicit",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.BrowserTabBar_UsesSharedShortcutContractAndBlocksTextInputs",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_DocumentsCSharpAuthorityAndHostHandoff",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_HasCategorySelectionAndCiFrontendWorkflow",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_HasCombinedLoopbackDevWorkflow",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_HasStrictViteTypeScriptStructure",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_HasViteReactTypeScriptPackageContract",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_IgnoresGeneratedNodeArtifacts",
+                "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.FrontendWorkspace_ProxiesApiAndAssetsToLoopbackBackend",
+                "BookOfEternityClient.Tests.LocalWebUiDocumentationTests.*",
+                "BookOfEternityClient.Tests.RepositoryPublicationDocumentationTests.*"
+              ],
+              "project": "unit"
+            }
+          ]
         },
         {
             "id": "portable-storage-paths",
@@ -26407,45 +26618,43 @@
             ]
         },
         {
-            "id": "portable-canonical-contention-consumers-linux",
-            "responsibility": "Eight original sibling contention consumers: worker Apply versus Load, gacha and browser submission/QTE/transaction versus replacement, and FileExists follow-up registration race. Positive current MainOwner admission, distinct canonical counter, preserved pauses/final oracles and finally settlement of original tasks.",
-            "excludes": "No live GM/provider, native create-only save/directory/proposal publication, inherited physical contention, whole F18, or production behavior change. Original category ownership retained.",
-            "changeHints": [
-                "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
-                "BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs",
-                "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
-                "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
-                "BookOfEternityClient.IntegrationTests/WebUi/BrowserPlayerActionGenerationTests.cs",
-                "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true,
-                "ciRunner": "ubuntu-24.04"
+          "id": "portable-canonical-contention-consumers-linux",
+          "responsibility": "Eight original sibling contention consumers: worker Apply versus Load, gacha and browser submission/QTE/transaction versus replacement, and FileExists follow-up registration race. Positive current MainOwner admission, distinct canonical counter, preserved pauses/final oracles and finally settlement of original tasks.",
+          "excludes": "No live GM/provider, native create-only save/directory/proposal publication, inherited physical contention, whole F18, or production behavior change. Original category ownership retained.",
+          "changeHints": [
+            "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
+            "BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs",
+            "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
+            "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+            "BookOfEternityClient.IntegrationTests/WebUi/BrowserPlayerActionGenerationTests.cs",
+            "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true,
+            "ciRunner": "ubuntu-24.04"
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+                "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts"
+              ]
             },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
-                        "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts"
-                    ]
-                },
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
-                        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
-                        "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
-                        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
-                        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
-                        "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit"
-                    ]
-                }
-            ]
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+                "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+                "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit"
+              ]
+            }
+          ]
         },
         {
             "id": "portable-canonical-contention-settlement-linux",
@@ -28188,6 +28397,326 @@
                     ]
                 }
             ]
+        },
+    {
+      "id": "daren-retirement-producer-capture",
+      "responsibility": "1558 pre-removal two original-producer capture Facts only. Freeze current schema7 declared external and standalone committed journal bytes/lineage in owned roots; strict cleanup. No consumer or production release. Temporary owner retires after frozen captures.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.*"
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "id": "daren-retirement-console-menu",
+      "responsibility": "1558 one real constructed console menu boundary: actual options retain practice/newgame and no campaign dispatch; no fake/uninitialized owner.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-save-rewards",
+      "responsibility": "1558 three real new-soul profile variants and supported save/load earned currency/grant/history preservation. Profile is inert; no normalizer/grant/clawback/foreign-data cleanup.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+            "BookOfEternityClient.Tests.DarenRetirementSaveTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-storage-refusal",
+      "responsibility": "1558 five retired-evidence rows: captured-derived current browser with coexistence, standalone/mixed ordinary-first whole journal and explicit synthetic schema6 classification shape. Requires separately frozen captures; no data fallback. No recovery/mutation before specific retired refusal.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-ordinary-storage",
+      "responsibility": "1558 two positive ordinary browser/shared journal recovery neighbors: genuine schema7 and labelled synthetic shared Format1; retain original exact beforeimages and cleanup.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-browser-host",
+      "responsibility": "1558 exact current local host: menu1, retired routes5 and real practice start/action/retry/exit for11types. Independent owned host/root each row; profile/soul bytes unchanged. HTTP proof is not interactive browser input proof.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementClientTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-console-practice",
+      "responsibility": "1558 eleven public real console RunPracticeMode paths via genuine AgentConsole input and RunCheck. Actual timed no-input completion is labelled; no fabricated grade/no reward. Each row owns task/input/root and35s deadline; category protective3m.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-source-guidance",
+      "responsibility": "1558 current resource/dispatch removal, four active QTE guidance inputs, precise two practice/scoring guard bodies and exact CLI API/StepMain whole-source inverse. Fresh CLI wildcard output equality is not session52 membership.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementSourceTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+            "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-common-qte",
+      "responsibility": "1558 exact useful current practice config/catalog/no-mutation, ordinary scoring/resource rollback and shared generation/lease neighbors. Preserve common assertions; no old campaign reward/prose family replay.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+            "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+            "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-affected-guards",
+      "responsibility": "1558 exact affected API fixture/interface, shell/QTE lease, source inventory and generic boundary guards. Obsolete Daren positive fixture row/assertions retire only with subject in G2; retain remaining row semantics. No aggregate API or source suite.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+            "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+            "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+            "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+            "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+            "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteAndDarenSplitSources_PreserveReviewedExecutableInventories"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-legacy-view-pending-removal",
+      "responsibility": "Temporary unselected original Daren-view fixture owner until G2 source/view removal. No current1558 actual executes it.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/darenShowcase.test.tsx"
+          ],
+          "runner": "vitest"
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-legacy-close-pending-removal",
+      "responsibility": "Temporary unselected exactfour original Daren owning-close rows split without corebody change; retire with removed profile/terminal publishers in G2.",
+      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RetiringDarenPublishersPreserveHistoricalCloseRows"
+          ]
+        }
+      ]
+    }
+  ]
 }

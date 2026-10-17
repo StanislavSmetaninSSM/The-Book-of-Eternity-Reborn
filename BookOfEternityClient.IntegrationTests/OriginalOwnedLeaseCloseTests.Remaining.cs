@@ -21,15 +21,24 @@ public sealed partial class OriginalOwnedLeaseCloseTests
     [InlineData("bootstrap", true)]
     [InlineData("ui_lock", false)]
     [InlineData("ui_lock", true)]
-    [InlineData("profile", false)]
-    [InlineData("profile", true)]
     [InlineData("prompt_generation", false)]
     [InlineData("prompt_generation", true)]
     [InlineData("prompt_lock", false)]
     [InlineData("prompt_lock", true)]
+    public Task RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(string mode, bool uncertain) =>
+        RemainingOriginalOwningPublisherCoreAsync(mode, uncertain);
+
+    // Exact four old publisher rows retained only until #1558 removes their subject.
+    // They are owned separately and are never part of the new current actual selection.
+    [Theory]
+    [InlineData("profile", false)]
+    [InlineData("profile", true)]
     [InlineData("qte_terminal", false)]
     [InlineData("qte_terminal", true)]
-    public async Task RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(string mode, bool uncertain)
+    public Task RetiringDarenPublishersPreserveHistoricalCloseRows(string mode, bool uncertain) =>
+        RemainingOriginalOwningPublisherCoreAsync(mode, uncertain);
+
+    private async Task RemainingOriginalOwningPublisherCoreAsync(string mode, bool uncertain)
     {
         Assert.True(OperatingSystem.IsLinux());
         var root = Path.Combine(Path.GetTempPath(), "boe-original-other-close-" + Guid.NewGuid().ToString("N"));

@@ -340,9 +340,7 @@ public sealed partial class PromptDocumentationCoverageTests
             "client-owned practice",
             "no rewards",
             "no GM-authored practice scenes",
-            "does not mutate campaign state",
-            "Daren",
-            "#919"
+            "does not mutate campaign state"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
