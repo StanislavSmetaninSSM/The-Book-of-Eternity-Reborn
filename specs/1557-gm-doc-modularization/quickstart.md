@@ -2,7 +2,7 @@
 
 ## Current tests-only B verification context — 2026-10-17
 
-Current `tests/selection.json` and `tests/selections/1557-gm-doc-block5.json` select9categories/25methods/**67proposed cases**, native discovery pending. See [concrete source/selection packet](recovery/current-B-tests-only-source-selection-20261017.json). No test has run. Publish/recover tests-only WIP before fresh BOTH/catalog then exact SelectionFile PlanOnly0; independent SOURCE and separate actual release are required. Only real owned-body1 and genuine publisher1 are intended first causal REDs; physical B negatives must wait for actual module authoring. `Expected36` is the A-only memory subset; real publication requires explicit CurrentExpected52 after the actual producer. Block B still has no acceptance.
+Current `tests/selection.json` and `tests/selections/1557-gm-doc-block5.json` select9categories/25methods/**67cases observed in first4ab PlanOnly**:9descriptors/25unique methods/0executions. See [concrete source/selection packet](recovery/current-B-tests-only-source-selection-20261017.json). No test has run. First fresh BOTH/catalog and exact PlanOnly0 are frozen in [the preparation](recovery/current-B-tests-only-fresh-preparation-20261017.json). Concrete SOURCE corrections remain pending; independent SOURCE and separate actual release are required. Only real owned-body1 and genuine publisher1 are intended first causal REDs; physical B negatives must wait for actual module authoring. `Expected36` is the A-only memory subset; real publication requires explicit CurrentExpected52 after the actual producer. Block B still has no acceptance.
 
 ## Retained accepted A verification context — 2026-10-17
 
