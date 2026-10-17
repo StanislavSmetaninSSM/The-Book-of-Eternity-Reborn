@@ -1,0 +1,175 @@
+{
+  "kind": "INDEPENDENT_CAUSAL_EVIDENCE_SECOND_FIRST_STOP",
+  "reviewer": "/root/a1_reviewer",
+  "role": "independent Astra/XHigh; repository read-only",
+  "verdict": "EVIDENCE_ACCEPTED_WITH_LIMITS__A_E02_FIXTURE_SOURCE_NOT_READY",
+  "carrier": "fdaf16665542e32c74d8d9c5acfb138da71a285d",
+  "actual": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+  "compiled": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+  "newExecution": {
+    "total": 130,
+    "passed": 125,
+    "failed": 5,
+    "duplicates": 0,
+    "skipped": 0
+  },
+  "qualification": {
+    "retainedHistoricalPass": 88,
+    "newBootstrapPass": 5,
+    "newNamedPass": 5,
+    "newBodyQualifiedPass": 114,
+    "newBodyUnqualifiedPass": 1,
+    "newBodyFail": 5,
+    "currentQualifiedPass": 212,
+    "unrunOriginal": 35,
+    "unrunBody": 2,
+    "unrunLater": 33
+  },
+  "finding": {
+    "id": "A-E02",
+    "classification": "Test-consumer retrieval migration mismatch; actual owned production payloads preserved",
+    "path": "BookOfEternityClient.TestSupport/GmDocumentationBodyFiles.cs:14",
+    "causality": "Router/core precede topic files. First heading IndexOf/Split selects router labels; topic concatenation also reorders one passing section end boundary and allows unrelated-tail tokens to satisfy row assertions.",
+    "failed": [
+      {
+        "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+        "line": "2281",
+        "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](E_CLI_Afterlife_Scheduler.txt)\\n<a id=\"e\"···\nNot found: \"- Данные профиля:\""
+      },
+      {
+        "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+        "line": "122",
+        "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](Afterlife_Wound_Continuation.md) <a id=\"···\nNot found: \"no_offer\""
+      },
+      {
+        "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+        "line": "237",
+        "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](E_CLI_Afterlife_Wound_Continuation.txt)\"···\nNot found: \"decision = 'none'\""
+      },
+      {
+        "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+        "line": "4199",
+        "message": "Assert.Contains() Failure: Sub-string not found\nString:    \" — Скрытая главная линия Сарефа (`main_st\"···\nNot found: \"game_state/meta/shining_abode_state.json\""
+      },
+      {
+        "method": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+        "line": "4606",
+        "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"](Afterlife_Actor_Profiles.md)\\n<a id=\"gm-\"···\nNot found: \"resourceMaterialization\""
+      }
+    ],
+    "weakenedPassingMethod": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeLocalLifecycleRoutesAreDocumented",
+    "weakenedCounterexample": {
+      "path": "/tmp/gm1557-second-stop-lifecycle-pass-counterexample-20261017.json",
+      "bytes": 1017,
+      "sha256": "ce2d6a8c44841972912c9090a2f09704993da1b8f2e19ed1bb7397aabac8fdd8"
+    },
+    "requiredCorrection": "Only six callers/source acquisitions and separately bounded negative guards; preserve assertions/extractors/payloads/commonBodyFiles and accepted b490 retrieval engine. Direct actual topic reads where boundaries are local; pinned clipped original-order source views where boundaries cross owners. Never fabricate missing end markers or copy GM authority.",
+    "existingAffectedMethods": 6,
+    "newNegativeCasesProposal": 2,
+    "newNegativeCasesAcceptedOnlyAfterConcreteSource": true
+  },
+  "bootstrapClosure": {
+    "A_E01": "Closed for selected source/inverse/D01 AST guard evidence",
+    "runtimeExecuted": false,
+    "publish": false,
+    "limitations": "No actual original startup writer, session delivery, provider/full-daemon or runtime dispatch proof"
+  },
+  "verification": {
+    "rawChains": 25,
+    "nativeChains": 20,
+    "fixtureChains": 5,
+    "completeGitHubFiles": 36,
+    "allChangedPaths": 32,
+    "sevenDllStable": true,
+    "strictNewRootsRemoved": 2,
+    "retainedNewEvidenceDirectories": 1,
+    "bodyComplete": false,
+    "bodyPlannedCases": 122,
+    "bodyExecutedCases": 120,
+    "bodyPlannedDescriptors": 3,
+    "bodyCompletedDescriptors": 2,
+    "underfill": "gm-doc-afterlife-current-body-guards-unit-003"
+  },
+  "supporting": [
+    {
+      "path": "/tmp/gm1557-second-stop-independent-results-20261017.json",
+      "bytes": 239529,
+      "sha256": "f95bd613472372ced3ff11dba405f9aabe51c11ba24cef7a31e2079382df0b2b"
+    },
+    {
+      "path": "/tmp/gm1557-second-stop-section-inventory-20261017.json",
+      "bytes": 11148,
+      "sha256": "0fab812e2798bca5426a7fbc5ffd1aa6295f7066c0345ded7f82ff08ec645690"
+    },
+    {
+      "path": "/tmp/gm1557-second-stop-section-graph-20261017.json",
+      "bytes": 60562,
+      "sha256": "92cdacc3bceb807612c64ef4a65f6d61e4471af12983e5b98844c94e6a3753f3"
+    },
+    {
+      "path": "/tmp/gm1557-second-stop-lifecycle-pass-counterexample-20261017.json",
+      "bytes": 1017,
+      "sha256": "ce2d6a8c44841972912c9090a2f09704993da1b8f2e19ed1bb7397aabac8fdd8"
+    }
+  ],
+  "reviewedSourcePins": [
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationBodyFiles.cs",
+      "sha256": "a3d775fad61ae18b93ed8387a23e4c11ec370ece14afa58f75eaf25980f7fb84"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "sha256": "6588db39e0172d7a905b279a4ee534897c4730a980be376a8ca18da742a75f23"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.GuardianMusings.cs",
+      "sha256": "a7d15a7549cde1b6616ce6a3ba9b21c083b391bcce39220489697024171c9502"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs",
+      "sha256": "12c6b055d628ccbf45b9a3b3e0876e9a62567435398b23e0ce2e011013cd454a"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs",
+      "sha256": "59e545d99a95dec9812b93ef223c75f43873072ba8c7fc2e612a2c34f19cfd41"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs",
+      "sha256": "a4298fc019dea78734a62370e607b5e2d3493a5bbc8cce1ac621039e203424ed"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MathAssistantPromptGuidanceTests.cs",
+      "sha256": "c9f29959e6e00a35e0bb2779845da1309a8960fda6ae178e0426ec0ce3559d34"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/WoundPlayerStatusDocumentationTests.cs",
+      "sha256": "466a418329999173687f4df887e50a2e05a7ea74a792b28cf567109066c8c71d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+      "sha256": "02ad4c073a61381d00c638bb1316c4c482f9028d95dd5359537cdeaacc2467b4"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
+      "sha256": "bb4ae8d7aeac5e177b0199a26e093b536abdce2f407a28db5a6c310e4a9ca386"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/content-map.json",
+      "sha256": "a119733a11f24e630f355bfa0a7c53fe9cca155e9fb53e66c1c00c8b5a050d12"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "44107c609c8d1a8fb20690228bfd7f798fe75ef980b98a7a3c5a95b22b58ac21"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "6aaf3eb35e8d99cb8c9299638a3df9b7553514a24e1422cbac291b95de675ced"
+    }
+  ],
+  "limits": [
+    "No test/build/application runtime/CI executed by reviewer.",
+    "Source acquisition correction not yet reviewed or accepted.",
+    "No fullA, Block5, Windows, provider/full-daemon, merge/main or issue-closure qualification.",
+    "No old accepted raw/base/source families re-reviewed."
+  ]
+}

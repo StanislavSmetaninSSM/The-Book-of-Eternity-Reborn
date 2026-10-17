@@ -104,9 +104,9 @@ public sealed partial class AfterlifeDocumentationCoverageTests
     {
         foreach (var text in new[]
         {
-            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Afterlife_Wound_Continuation.md"),
             ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
-            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Wound_Continuation.txt")
         })
         {
             var section = text.Split("## spiritual_wound_source_only_publication_v1", StringSplitOptions.None)[1]
@@ -223,7 +223,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             })
                 Assert.Contains(token, text, StringComparison.Ordinal);
         }
-        var example = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        var example = ReadRepoFile("Examples", "E_CLI_Afterlife_Wound_Continuation.txt")
             .Split("## spiritual_wound_continuation_envelope_v1", StringSplitOptions.None)[1]
             .Split("\n## ", StringSplitOptions.None)[0];
         var prose = Regex.Replace(example, @"\s+", " ");
@@ -1817,7 +1817,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         Assert.Contains("pending_source_of_light_capstone.json", apiReturnSection, StringComparison.Ordinal);
         Assert.Contains("afterlife_spiritual_conflict_state.json.activeConflict", apiReturnSection, StringComparison.Ordinal);
         var matrixReturnSection = ExtractRequiredSection(
-            matrix,
+            GmDocumentationBodySectionSource.Read(TestRepoPaths.RepoRoot, "lifecycle_matrix_return"),
             "| Client-owned `return_to_chaos_sea`",
             "| Client-owned Shining Gates");
         Assert.Contains("pending_source_of_light_capstone.json", matrixReturnSection, StringComparison.Ordinal);
@@ -2264,15 +2264,15 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             StringComparison.Ordinal);
 
         var chaosScenario = ExtractRequiredSection(
-            examples,
+            GmDocumentationBodySectionSource.Read(TestRepoPaths.RepoRoot, "primary_chaos"),
             "1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST",
             "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY");
         var shiningScenario = ExtractRequiredSection(
-            examples,
+            GmDocumentationBodySectionSource.Read(TestRepoPaths.RepoRoot, "primary_shining"),
             "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
             "3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF");
         var guardianTradeScenario = ExtractRequiredSection(
-            examples,
+            GmDocumentationBodySectionSource.Read(TestRepoPaths.RepoRoot, "primary_guardian_trade"),
             "4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST",
             "5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS");
 
@@ -4194,7 +4194,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             Assert.Contains(issueCode, audit, StringComparison.Ordinal);
         }
 
-        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Story_Memory.txt");
         var example27 = ExtractRequiredSection(examples, "EXAMPLE 27", "EXAMPLE 28");
         Assert.Contains("game_state/meta/shining_abode_state.json", example27, StringComparison.Ordinal);
         Assert.Contains("Do not use an unsupported top-level `shiningAbodeState` response field", example27, StringComparison.Ordinal);
@@ -4588,8 +4588,8 @@ public sealed partial class AfterlifeDocumentationCoverageTests
     [Fact]
     public void AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs()
     {
-        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
-        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var matrix = GmDocumentationBodySectionSource.Read(TestRepoPaths.RepoRoot, "actor_materialization_matrix");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Actor_Profiles.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
         var matrixSection = ExtractRequiredSection(

@@ -1,0 +1,32 @@
+{
+  "kind": "STATIC_STRING_COUNTEREXAMPLE_NO_TEST_RUN",
+  "method": "AfterlifeLocalLifecycleRoutesAreDocumented",
+  "line": 1819,
+  "classification": "A-E02 additional passing oracle weakened by reordered cross-owner end marker",
+  "actualChars": 88027,
+  "originalChars": 1128,
+  "actualBytes": 88169,
+  "originalBytes": 1140,
+  "actualSha256": "76f526c981de8a04a4fffd8435c28f3f25851a7907f5fbe8fcb2d0fd8d2da24e",
+  "originalSha256": "ecebd71755f7eb1de6ec9c67393312227f1acb2d8dfd7ec2967688daceacf3ef",
+  "markers": [
+    "| Client-owned `return_to_chaos_sea`",
+    "| Client-owned Shining Gates"
+  ],
+  "counts": {
+    "pending_source_of_light_capstone.json": {
+      "originalSection": 1,
+      "unrelatedAddedTail": 1,
+      "afterTargetedRemoval": 1
+    },
+    "afterlife_spiritual_conflict_state.json.activeConflict": {
+      "originalSection": 1,
+      "unrelatedAddedTail": 1,
+      "afterTargetedRemoval": 1
+    }
+  },
+  "assertionResultsAfterRemovingBothTokensOnlyFromTargetedRow": [
+    true,
+    true
+  ]
+}

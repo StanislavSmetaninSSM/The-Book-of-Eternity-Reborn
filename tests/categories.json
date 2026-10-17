@@ -27543,7 +27543,7 @@
         },
         {
             "id": "gm-doc-afterlife-current-body-guards",
-            "responsibility": "#1557 Exact current body and entrypoint guards after moving all afterlife monolith bytes. Explicit methods retain gameplay token assertions and the corrected D01 ban; runtime game contracts are unchanged.",
+            "responsibility": "#1557 Exact remaining114 unchanged actual-body guards. Their FIRST115PASS history includes one subsequently unqualified broad section PASS; that method and five failed methods move to owned-section-consumers. Final two previously unrun wound guards have their own first-actual owner. These114 keep original provenance and are not replayed for binary refresh.",
             "excludes": "No AfterlifePlayerFacingSourceGuard/terminology/UI class wildcards, no old A1/A2/HOT/Late2/runtime family replay. Existing documentation owners intentionally overlap these exact methods; do not co-select those broad owners.",
             "changeHints": [
                 "OtherGuides/Afterlife_*.md",
@@ -27575,17 +27575,13 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualDependentFrontiers_DocumentCurrentRequestBoundaries",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualWoundPositionDependency_DocumentsExactArithmeticScope",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualWoundPosition_DocumentsEffectiveRankWithoutCanonicalErosion",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualColdRecovery_DocumentsAtomicOutcomeAndCurrentRequest",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualPendingSubmission_DocumentsPreservedChoiceAndClientOwnership",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationEnvelope_DocumentsExplicitResponseAndPrivateBoundary",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualCommonPublication_DocumentsOneShotRollbackAndLiveDispatch",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualTerminalClosure_DocumentsOrderingAndPrivatePublicationBoundary",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualReceiptOrigin_DocumentsSignedPresenceAndLegacyBoundary",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.StandardWoundArt_CurrentScalarContractIsDocumentedForGmAuthors",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.TrainingShowcaseContractsAreDocumentedForGm",
@@ -27623,7 +27619,6 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ResidentTransferCompetitionLabelsAreDocumentedForGm",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeArchiveUpdatesAndDerivedNotificationTriggersAreDocumented",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeLocalLifecycleRoutesAreDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsDescribeHandoffAsTriggerOnlyAndFileLevelForbiddenRule",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningResidentAscensionDocsMatchNormalizerBehavior",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.NextLifeScenarioCoreIsDocumentedAsClientOwnedBootstrapInput",
@@ -27633,7 +27628,6 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsRequireRealmGateBeforeReadingMortalWorldState",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GmDaemonPromptsUseRepoLocalAbsoluteDocumentationPaths",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeDocsExplainGuardianScopeRepairHarnessPackets",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MortalNpcSocialTopicContractIsDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsCoverFullRuntimeForbiddenFileGroups",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifePromptDocsTreatProgressionScheduleAsClientOwned",
@@ -27673,10 +27667,8 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.TaskGuideRoutesSarefMainStoryTurnsToAfterlifeExample27",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryRuntimeContractIsDocumented",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMemorySystemBoundariesAreDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorMaterializationContract_IsDocumentedForGm",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.FactionMaterializationContracts_AreCoveredByRequiredGuidance",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.ShiningFactionMaterializationGuidance_CoversRoutesExamplesAndAuthorityBoundary",
@@ -27862,6 +27854,64 @@
               "project": "integration",
               "tests": [
                 "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gm-doc-afterlife-owned-section-consumers",
+          "responsibility": "#1557 Precise affected closure of real body-source acquisition defects: six existing methods (five FAIL and one weakened PASS), plus two new missing/reorder rows over all five real retrieved clipped views. Eight cases/seven methods; original Extract/Split/Assert algorithms, common Read, old b490 named engine and GM payloads remain unchanged.",
+          "excludes": "No repeated114 unaffected bodyguards, old named5, original88PASS, source/bootstrap5 or gameplay families. No GM authority copy, runtime selector, content rewrite, provider/full-daemon/Windows/CI or Block_5 scope.",
+          "changeHints": [
+            "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+            "BookOfEternityClient.Tests/GmDocumentationBodySectionSourceTests.cs",
+            "BookOfEternityClient.TestSupport/GmDocumentationBodySectionSource.cs",
+            "specs/1557-gm-doc-modularization/body-section-source-views.json"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false,
+            "ciRunner": "ubuntu-24.04"
+          },
+          "timeoutMinutes": 2,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeLocalLifecycleRoutesAreDocumented",
+                "BookOfEternityClient.Tests.GmDocumentationBodySectionSourceTests.ActualOwnedSectionViewsRejectMissingOrReorderedSegments"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gm-doc-afterlife-current-wound-tail",
+          "responsibility": "#1557 Two unchanged whole-body wound transport/terminal-history documentation guards. The original third body descriptor never executed them after the preceding two descriptors failed; these are FIRST actuals, not retries or claimed prior PASS.",
+          "excludes": "No replay of114 qualified bodyguards, section correction or gameplay/continuation runtime; this is documentation consumer coverage only.",
+          "changeHints": [
+            "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false,
+            "ciRunner": "ubuntu-24.04"
+          },
+          "timeoutMinutes": 2,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives",
+                "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment"
               ]
             }
           ]

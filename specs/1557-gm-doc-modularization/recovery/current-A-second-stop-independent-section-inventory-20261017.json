@@ -1,0 +1,256 @@
+{
+  "kind": "CAUSAL_STATIC_SECTION_INVENTORY_NOT_RUNTIME",
+  "source": "fdaf16665542e32c74d8d9c5acfb138da71a285d",
+  "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "mapSha256": "a119733a11f24e630f355bfa0a7c53fe9cca155e9fb53e66c1c00c8b5a050d12",
+  "spanConvention": "Historical extracted interiors; delimiters are excluded. A source-view implementation must preserve original delimiters too if feeding unchanged extractors.",
+  "rows": [
+    {
+      "id": "source-only-matrix",
+      "method": "SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "startMarker": "## spiritual_wound_source_only_publication_v1",
+      "endMarker": "\n## ",
+      "sourceStart": 231376,
+      "sourceEnd": 232648,
+      "sha256": "9482269a75942bfade457ff3febfb2b513df76368b44254dc1de9adec773d54f",
+      "segments": [
+        {
+          "block": "A094",
+          "owner": "OtherGuides/Afterlife_Wound_Continuation.md",
+          "sourceStart": 231376,
+          "sourceEnd": 232648,
+          "withinBlockStart": 1925,
+          "withinBlockEnd": 3197,
+          "sha256": "9482269a75942bfade457ff3febfb2b513df76368b44254dc1de9adec773d54f"
+        }
+      ],
+      "failureNeedle": "no_offer",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](Afterlife_Wound_Continuation.md)\n<a id=\"spiritual_wound_common_publication_v1\"></a> [## spiritual_wound_common_publication_v1](Afterlife_Wound_Conti",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "source-only-example",
+      "method": "SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "## spiritual_wound_source_only_publication_v1",
+      "endMarker": "\n## ",
+      "sourceStart": 643043,
+      "sourceEnd": 646909,
+      "sha256": "902e3c720869e91df9ba567962e33ea0bea6ad0ea39d480835897bfe5f6d3b2d",
+      "segments": [
+        {
+          "block": "A134",
+          "owner": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+          "sourceStart": 643043,
+          "sourceEnd": 646909,
+          "withinBlockStart": 45,
+          "withinBlockEnd": 3911,
+          "sha256": "902e3c720869e91df9ba567962e33ea0bea6ad0ea39d480835897bfe5f6d3b2d"
+        }
+      ],
+      "failureNeedle": "no_offer",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](E_CLI_Afterlife_Wound_Continuation.txt)\n<a id=\"spiritual_wound_terminal_closure_v1\"></a> [## spiritual_wound_terminal_closure_v1](E_CLI_Afterlife_Wo",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "continuation-example",
+      "method": "SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "## spiritual_wound_continuation_envelope_v1",
+      "endMarker": "\n## ",
+      "sourceStart": 665268,
+      "sourceEnd": 671914,
+      "sha256": "09adca66daf3579687429a18747218890e214b795b9e15abbdd9f9a458805861",
+      "segments": [
+        {
+          "block": "A134",
+          "owner": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+          "sourceStart": 665268,
+          "sourceEnd": 671914,
+          "withinBlockStart": 22270,
+          "withinBlockEnd": 28916,
+          "sha256": "09adca66daf3579687429a18747218890e214b795b9e15abbdd9f9a458805861"
+        }
+      ],
+      "failureNeedle": "decision = 'none'",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](E_CLI_Afterlife_Wound_Continuation.txt)\n<a id=\"spiritual_wound_pending_submission_v1\"></a> [## spiritual_wound_pending_submission_v1](E_CLI_Afterlif",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "brain-chaos",
+      "method": "PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST",
+      "endMarker": "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
+      "sourceStart": 31405,
+      "sourceEnd": 45927,
+      "sha256": "5b975967984954f4d8900ed7020f5aa8345670991a767f30d7e0983346b6d9f2",
+      "segments": [
+        {
+          "block": "A103",
+          "owner": "Examples/E_CLI_Afterlife_Scheduler.txt",
+          "sourceStart": 31405,
+          "sourceEnd": 45927,
+          "withinBlockStart": 72,
+          "withinBlockEnd": 14594,
+          "sha256": "5b975967984954f4d8900ed7020f5aa8345670991a767f30d7e0983346b6d9f2"
+        }
+      ],
+      "failureNeedle": "- Данные профиля:",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](E_CLI_Afterlife_Scheduler.txt)\n<a id=\"example-2-2\"></a> [",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "brain-shining",
+      "method": "PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
+      "endMarker": "3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF",
+      "sourceStart": 46010,
+      "sourceEnd": 77506,
+      "sha256": "4dfe9904bc294ce3e86493bcc413074dbb056411de42298b0ca0275def3d3719",
+      "segments": [
+        {
+          "block": "A104",
+          "owner": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+          "sourceStart": 46010,
+          "sourceEnd": 77506,
+          "withinBlockStart": 83,
+          "withinBlockEnd": 31579,
+          "sha256": "4dfe9904bc294ce3e86493bcc413074dbb056411de42298b0ca0275def3d3719"
+        }
+      ],
+      "failureNeedle": "- Данные профиля:",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](E_CLI_Afterlife_Shining_Actions.txt)\n<a id=\"example-3-2\"></a> [",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "brain-trade",
+      "method": "PrimaryAfterlifeAcceptedExamplesUseFullActorBrainAndOwnedMemorySurfaces",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST",
+      "endMarker": "5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS",
+      "sourceStart": 87671,
+      "sourceEnd": 98302,
+      "sha256": "7c6cdc8927d43a6155e1a58acfd437d5feff4af19edf34dc048a027aecaf91cb",
+      "segments": [
+        {
+          "block": "A106",
+          "owner": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+          "sourceStart": 87671,
+          "sourceEnd": 98302,
+          "withinBlockStart": 45,
+          "withinBlockEnd": 10676,
+          "sha256": "7c6cdc8927d43a6155e1a58acfd437d5feff4af19edf34dc048a027aecaf91cb"
+        }
+      ],
+      "failureNeedle": "- Данные профиля:",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](E_CLI_Afterlife_Guardian_Contracts.txt)\n<a id=\"example-5-2\"></a> [",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "saref27",
+      "method": "SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "EXAMPLE 27",
+      "endMarker": "EXAMPLE 28",
+      "sourceStart": 570786,
+      "sourceEnd": 612754,
+      "sha256": "f015da91c22a09810702f7cef245aa936a07268e94ec0f8a96f568c922d7114b",
+      "segments": [
+        {
+          "block": "A130",
+          "owner": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+          "sourceStart": 570786,
+          "sourceEnd": 612754,
+          "withinBlockStart": 30090,
+          "withinBlockEnd": 72058,
+          "sha256": "f015da91c22a09810702f7cef245aa936a07268e94ec0f8a96f568c922d7114b"
+        }
+      ],
+      "failureNeedle": "game_state/meta/shining_abode_state.json",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": " — Скрытая главная линия Сарефа (`main_story_saref_state`, `saref_reveal_stage_v1`)](E_CLI_Afterlife_Story_Memory.txt)\n<a id=\"example-28\"></a> [",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "actor-matrix",
+      "method": "AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "startMarker": "## Actor Materialization v1",
+      "endMarker": "## GM Decision Loop",
+      "sourceStart": 64358,
+      "sourceEnd": 76867,
+      "sha256": "dc93db563eaaf9bc9d325eb0acb6a3112568bebefa91afec61041f5291ac44e7",
+      "segments": [
+        {
+          "block": "A019",
+          "owner": "OtherGuides/Afterlife_Actor_Profiles.md",
+          "sourceStart": 64358,
+          "sourceEnd": 76867,
+          "withinBlockStart": 27,
+          "withinBlockEnd": 12536,
+          "sha256": "dc93db563eaaf9bc9d325eb0acb6a3112568bebefa91afec61041f5291ac44e7"
+        }
+      ],
+      "failureNeedle": "resourceMaterialization",
+      "actualFirstExtractionHasNeedle": false,
+      "wrongPrefix": "](Afterlife_Actor_Profiles.md)\n<a id=\"gm-decision-loop\"></a> [",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "actor-example",
+      "method": "AfterlifeActorResourceMaterialization_UsesTheActorEnvelopeWithoutLegacyRefs",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "startMarker": "AFTERLIFE ACTOR MATERIALIZATION V1",
+      "endMarker": "Shared Block 5 Combat Action effect reminder",
+      "sourceStart": 489601,
+      "sourceEnd": 499763,
+      "sha256": "58ef47ff6f96fbf20b040df0dadacb4801448d87e6e6f442ab2ed2bcead902e3",
+      "segments": [
+        {
+          "block": "A129",
+          "owner": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+          "sourceStart": 489601,
+          "sourceEnd": 499763,
+          "withinBlockStart": 7519,
+          "withinBlockEnd": 17681,
+          "sha256": "58ef47ff6f96fbf20b040df0dadacb4801448d87e6e6f442ab2ed2bcead902e3"
+        }
+      ],
+      "failureNeedle": "resourceMaterialization",
+      "actualFirstExtractionHasNeedle": true,
+      "wrongPrefix": "\n==================================================\n\nBefore writing the first durable profile, bind the source actor and profile by exact actorType:ac",
+      "actualOwnedSpanHasNeedle": true
+    },
+    {
+      "id": "lifecycle-return-matrix",
+      "method": "AfterlifeLocalLifecycleRoutesAreDocumented",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "startMarker": "| Client-owned `return_to_chaos_sea`",
+      "endMarker": "| Client-owned Shining Gates",
+      "sourceStart": 196331,
+      "sourceEnd": 197471,
+      "sha256": "ecebd71755f7eb1de6ec9c67393312227f1acb2d8dfd7ec2967688daceacf3ef",
+      "segments": [
+        {
+          "block": "A067",
+          "owner": "OtherGuides/Afterlife_Lifecycle.md",
+          "sourceStart": 196331,
+          "sourceEnd": 197471,
+          "withinBlockStart": 4908,
+          "withinBlockEnd": 6048,
+          "sha256": "ecebd71755f7eb1de6ec9c67393312227f1acb2d8dfd7ec2967688daceacf3ef"
+        }
+      ],
+      "staticCounterexample": "/tmp/gm1557-second-stop-lifecycle-pass-counterexample-20261017.json"
+    }
+  ]
+}

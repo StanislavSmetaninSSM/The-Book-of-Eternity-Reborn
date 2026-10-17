@@ -1,0 +1,43 @@
+{
+  "kind": "A_E02_NARROW_SIX_CONSUMER_SOURCE_ACQUISITION_FIX_WIP",
+  "createdUtc": "2026-10-17T04:43:34.074203+00:00",
+  "causalReport": "current-A-second-stop-evidence-independent-review-20261017.md",
+  "independentTenInteriorInventory": "current-A-second-stop-independent-section-inventory-20261017.json",
+  "newPlan": "specs/1557-gm-doc-modularization/body-section-source-views.json",
+  "newPlanSha256": "4869cd1c1af38dd8dd5cca3b5f4b67fd26b99f4126737d76b1800f9a50e5196c",
+  "views": 5,
+  "actualClippedSegments": 10,
+  "genuineDelimitersIncluded": true,
+  "allTenChangedConsumerInteriorsMatchIndependentOriginalSha": true,
+  "unchanged": [
+    "GM payloads/common body Read helper",
+    "old b490 named engine/plan/Assemble",
+    "all existing Extract/Split/Assert algorithms",
+    "production/gameplay/daemon/routing"
+  ],
+  "newNegativeRows": "missing/reordered: actual Retrieve of all five views, positive Assemble/hash prerequisite before mutation; no synthetic payload or root",
+  "newBindings": "System.Text.Json.Nodes explicit; System IO/LINQ/collections from enabled ImplicitUsings; old internal VerifiedSection/Assemble and TestRepoPaths accessible via existing TestSupport IVT; SDK includes new C# files automatically",
+  "reuse": {
+    "originalUnaffected": 88,
+    "bootstrap": 5,
+    "named": 5,
+    "body": 114,
+    "total": 212,
+    "withdrawnBodyPass": 1
+  },
+  "actualRemaining": {
+    "affectedExisting": 6,
+    "newNegative": 2,
+    "bodyFirstUnrun": 2,
+    "otherFirstUnrun": 33,
+    "total": 43
+  },
+  "fullSelectionProposed": {
+    "categories": 13,
+    "descriptors": 15,
+    "methods": 166,
+    "cases": 255
+  },
+  "catalogCategories": 798,
+  "actual": "HELD pending changed-testsource BOTH/catalog/PlanOnly0 and independent affected SOURCE; no repeat of retained212"
+}

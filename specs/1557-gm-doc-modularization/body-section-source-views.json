@@ -1,0 +1,182 @@
+{
+  "kind": "FIVE_EXPLICIT_TEST_ONLY_ORIGINAL_BODY_SECTION_SOURCE_VIEWS",
+  "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "scope": "Actual single-owned clipped payloads and real end-heading witnesses in original source order. No router/header text, copied normative payload, generic runtime selector or GM reading/authority surface.",
+  "views": [
+    {
+      "id": "primary_chaos",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sourceSha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+      "startMarker": "1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST",
+      "endMarker": "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
+      "sourceStart": 31333,
+      "sourceEnd": 46010,
+      "bytes": 14677,
+      "sha256": "20b948e350ada5fb111ec56939f742cd2942eb36a69a1a7fd2dd3aae5fb9c023",
+      "segments": [
+        {
+          "block": "A103",
+          "destination": "Examples/E_CLI_Afterlife_Scheduler.txt",
+          "startMarker": "<!-- GM1557:A103:START -->\n",
+          "endMarker": "<!-- GM1557:A103:END -->\n",
+          "payloadOffset": 0,
+          "length": 14594,
+          "sha256": "1bb3ffea1966f270019ce6d6cf973587dee48b95f860c02765a6a4e3ae6226b6",
+          "sourceStart": 31333,
+          "sourceEnd": 45927
+        },
+        {
+          "block": "A104",
+          "destination": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+          "startMarker": "<!-- GM1557:A104:START -->\n",
+          "endMarker": "<!-- GM1557:A104:END -->\n",
+          "payloadOffset": 0,
+          "length": 83,
+          "sha256": "24173d4d4d70b58ea77939b6c81df462aeee469fc804d13183a8c601a472d48b",
+          "sourceStart": 45927,
+          "sourceEnd": 46010
+        }
+      ]
+    },
+    {
+      "id": "primary_shining",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sourceSha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+      "startMarker": "2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY",
+      "endMarker": "3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF",
+      "sourceStart": 45927,
+      "sourceEnd": 77558,
+      "bytes": 31631,
+      "sha256": "5bbbb2afca43ecc23a1153a05eee3c947eeac2087c6be46f67e81458a3d6ab4e",
+      "segments": [
+        {
+          "block": "A104",
+          "destination": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+          "startMarker": "<!-- GM1557:A104:START -->\n",
+          "endMarker": "<!-- GM1557:A104:END -->\n",
+          "payloadOffset": 0,
+          "length": 31579,
+          "sha256": "ac376998fa6b257f1005184594cfe66c280de0fd0a982f7b58aa84e5c10201f8",
+          "sourceStart": 45927,
+          "sourceEnd": 77506
+        },
+        {
+          "block": "A105",
+          "destination": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+          "startMarker": "<!-- GM1557:A105:START -->\n",
+          "endMarker": "<!-- GM1557:A105:END -->\n",
+          "payloadOffset": 0,
+          "length": 52,
+          "sha256": "a35a4432851cb5c9a313671710c4ac5720a1ef45e7cebe864f5c721621ebc005",
+          "sourceStart": 77506,
+          "sourceEnd": 77558
+        }
+      ]
+    },
+    {
+      "id": "primary_guardian_trade",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sourceSha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+      "startMarker": "4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST",
+      "endMarker": "5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS",
+      "sourceStart": 87626,
+      "sourceEnd": 98371,
+      "bytes": 10745,
+      "sha256": "de76e1d1fe49f840f7ad15d95c9399b155bc1cc13dd51a4a6f894519d382b53f",
+      "segments": [
+        {
+          "block": "A106",
+          "destination": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+          "startMarker": "<!-- GM1557:A106:START -->\n",
+          "endMarker": "<!-- GM1557:A106:END -->\n",
+          "payloadOffset": 0,
+          "length": 10676,
+          "sha256": "fd4c7083880f517ae5296be1952f8a3a4ce3503a42b2fe07710074ae2629d9f1",
+          "sourceStart": 87626,
+          "sourceEnd": 98302
+        },
+        {
+          "block": "A107",
+          "destination": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+          "startMarker": "<!-- GM1557:A107:START -->\n",
+          "endMarker": "<!-- GM1557:A107:END -->\n",
+          "payloadOffset": 0,
+          "length": 69,
+          "sha256": "08f0b1b9ab3fc9bd783849b106375e1f1fd7c3252793f6c1f7f7f27733e18b94",
+          "sourceStart": 98302,
+          "sourceEnd": 98371
+        }
+      ]
+    },
+    {
+      "id": "actor_materialization_matrix",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sourceSha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
+      "startMarker": "## Actor Materialization v1",
+      "endMarker": "## GM Decision Loop",
+      "sourceStart": 64331,
+      "sourceEnd": 76886,
+      "bytes": 12555,
+      "sha256": "f739b77ed5e15ffcdc45518f5879484aa06d82f92bccbf74c54a11bf8d8767c7",
+      "segments": [
+        {
+          "block": "A019",
+          "destination": "OtherGuides/Afterlife_Actor_Profiles.md",
+          "startMarker": "<!-- GM1557:A019:START -->\n",
+          "endMarker": "<!-- GM1557:A019:END -->\n",
+          "payloadOffset": 0,
+          "length": 12536,
+          "sha256": "2bff6e75c9ae0a73ca41c52be1dc7c5009598dcb62ea80113221114251de6f3b",
+          "sourceStart": 64331,
+          "sourceEnd": 76867
+        },
+        {
+          "block": "A020",
+          "destination": "OtherGuides/GM_Common_Core.md",
+          "startMarker": "<!-- GM1557:A020:START -->\n",
+          "endMarker": "<!-- GM1557:A020:END -->\n",
+          "payloadOffset": 0,
+          "length": 19,
+          "sha256": "d2ba2269768d895f2546d8935c9c798431f66d23cab17a7205e68fda38844208",
+          "sourceStart": 76867,
+          "sourceEnd": 76886
+        }
+      ]
+    },
+    {
+      "id": "lifecycle_matrix_return",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sourceSha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
+      "startMarker": "| Client-owned `return_to_chaos_sea`",
+      "endMarker": "| Client-owned Shining Gates",
+      "sourceStart": 196295,
+      "sourceEnd": 197499,
+      "bytes": 1204,
+      "sha256": "9f57e581c902796076894cc3a7004e8237fa142e59111bef40a918e3574ac046",
+      "segments": [
+        {
+          "block": "A067",
+          "destination": "OtherGuides/Afterlife_Lifecycle.md",
+          "startMarker": "<!-- GM1557:A067:START -->\n",
+          "endMarker": "<!-- GM1557:A067:END -->\n",
+          "payloadOffset": 4872,
+          "length": 1176,
+          "sha256": "9b17f2a3ba3285c7f57e4a83bf27a8dba73653feb8cf322b665b431f96716dee",
+          "sourceStart": 196295,
+          "sourceEnd": 197471
+        },
+        {
+          "block": "A068",
+          "destination": "OtherGuides/Afterlife_Shining_Actions.md",
+          "startMarker": "<!-- GM1557:A068:START -->\n",
+          "endMarker": "<!-- GM1557:A068:END -->\n",
+          "payloadOffset": 0,
+          "length": 28,
+          "sha256": "5f2d82f1401c6dd70900898c5c754d7d46b60b7a4199f75e2c136de903ec4070",
+          "sourceStart": 197471,
+          "sourceEnd": 197499
+        }
+      ]
+    }
+  ]
+}
