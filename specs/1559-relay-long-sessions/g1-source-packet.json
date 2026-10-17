@@ -1,7 +1,7 @@
 {
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
-  "preparation": "NOT_RUN",
+  "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
   "actual": "NOT_AUTHORIZED_NOT_RUN",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
@@ -981,11 +981,210 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "088ee94d066d7edeecfeb8a98a9736215f35db38ab3f4d861d341de8d467bc3b"
+    "sha256": "69c85777bb34576a5d392da7d99024dcd39967124f98e3623f305efa5eadae3c"
   },
   "productDeltaFromAccepted1558": [],
-  "nativeDiscoveryCounts": null,
-  "packageInventory": null,
+  "nativeDiscoveryCounts": {
+    "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+    "categories": 8,
+    "descriptors": 9,
+    "uniqueMethods": 21,
+    "plannedCases": 49,
+    "executed": 0
+  },
+  "packageInventory": {
+    "scope": "258 fresh managed-output files only; no frontend/npm/publish/session claim",
+    "reference": "recovery/g1-first-preparation-inspection.json#managedOutput"
+  },
   "requiredRuntimeProof": "No compiler/import/setup/platform/cleanup failure is causal RED; actual original driverExitCode and complete prerequisites required.",
-  "scope": "Bounded initial causal components only; mandatory C01-C06 later gates explicitly OPEN in ledger/plan."
+  "scope": "Bounded initial causal components only; mandatory C01-C06 later gates explicitly OPEN in ledger/plan.",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "firstPreparation": "recovery/g1-first-preparation.json",
+  "preparationInspection": "recovery/g1-first-preparation-inspection.json",
+  "nativeMembership": {
+    "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+    "categories": 8,
+    "descriptors": 9,
+    "uniqueMethods": 21,
+    "plannedCases": 49,
+    "executed": 0,
+    "actualMethods": [
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayLongSessionTests.CurrentRelay_CompleteExactExchangeWithoutArtificialSessionCaps",
+        "Cases": 7,
+        "category": "gm-relay-long-session-exchange",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
+        "Cases": 2,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+        "Cases": 1,
+        "category": "gm-relay-long-session-neighbors",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.SettledPromptRetention_Crosses256WithoutRepasteOrGrowingLiveTasks",
+        "Cases": 1,
+        "category": "gm-relay-long-session-retention",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmDaemonLongSessionTests.CurrentDaemonAllocator_AdvancingSourcesContinueBeyond256SettledDispatches",
+        "Cases": 1,
+        "category": "gm-relay-long-session-retention",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmDaemonLongSessionTests.DaemonRestart_SameCurrentSourceAndBindingRetainsOriginalOperationWithoutRedispatch",
+        "Cases": 1,
+        "category": "gm-relay-long-session-retention",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+        "Cases": 2,
+        "category": "gm-relay-operational-engine-rollback",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+        "Cases": 4,
+        "category": "gm-relay-operational-live-preparation",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+        "Cases": 1,
+        "category": "gm-relay-operational-live-preparation",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+        "Cases": 1,
+        "category": "gm-relay-operational-save-load",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.ExistingPublisher_CutBeforeOrAfterCommitPreservesOneWholeDecision",
+        "Cases": 2,
+        "category": "gm-relay-publication-foundation",
+        "adapter": "unit"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose",
+        "Cases": 17,
+        "category": "gm-relay-reusable-contract",
+        "adapter": "unit"
+      }
+    ],
+    "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
+    "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
+  },
+  "freshManagedBinaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "76a2e94de2ac9b202f8590e16c4131ba61f2c37437edab932f48d8df8355adcb",
+      "bytes": 25790464
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "1b27f26686080805713d54bef0c691e262305dee0f690907e0552becf764aee4",
+      "bytes": 9352704
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "76a2e94de2ac9b202f8590e16c4131ba61f2c37437edab932f48d8df8355adcb",
+      "bytes": 25790464
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "97a8262162264407dc0fbacb4e3b35912ad2091920412d9ad1bd0d5c392683d7",
+      "bytes": 29136384
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "76439479defd887958a281e7447f8dd27b699b5edc58b0f76ac8a8daf2019633",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "76439479defd887958a281e7447f8dd27b699b5edc58b0f76ac8a8daf2019633",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "76a2e94de2ac9b202f8590e16c4131ba61f2c37437edab932f48d8df8355adcb",
+      "bytes": 25790464
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "sha256": "d6e34e502f339dd17f3e6ae908876c52b18d3c11189d8594c3fe9e5596dc1b41",
+      "bytes": 248832
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "76a2e94de2ac9b202f8590e16c4131ba61f2c37437edab932f48d8df8355adcb",
+      "bytes": 25790464
+    }
+  ],
+  "additionalLaterGreenHold": "Many-writes must prove all33 actual target images/content before corresponding GREEN; baseline cap/terminal alone insufficient."
 }

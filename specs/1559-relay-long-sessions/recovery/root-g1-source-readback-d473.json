@@ -1,0 +1,29 @@
+{
+  "kind": "ROOT_G1_COMPONENT_SOURCE_RECOVERY_READBACK_NOT_SOURCE_ACCEPTANCE",
+  "utc": "2026-10-17T13:27:50.039199+00:00",
+  "carrier": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "exactRemoteReadback": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "completeGithubDelta": "/tmp/gm1559-g1-component-candidate-delta-github-d473ed33-20261017.json",
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-d473ed33-20261017.json",
+  "completeDeltas": 125,
+  "trackedPaths": 56271,
+  "currentSourcePacket": {
+    "path": "specs/1559-relay-long-sessions/g1-source-packet.json",
+    "sha256": "7c217aa5b398a5fdaf8691a2bfe5b1efd9a529d0dd205437a70e384081d3ada0",
+    "count": 119,
+    "checks": [
+      "all119 current exact git-show bytes/length/sha256/blob",
+      "all119 current git-tree modes",
+      "all9 additive fresh GitHub directory bytes/hash/blob/mode/source/current equality",
+      "original100 audit paths retained and disjoint new9"
+    ]
+  },
+  "productDeltaFromAccepted1558": "EMPTY for BookOfEternityClient/BookOfEternityGMBridge/tools/gm-relay",
+  "staticDraftFindings": {
+    "DRAFT01": "CLOSED_IN_SOURCE_driverExitCode_asserted",
+    "DRAFT02": "CLOSED_IN_SOURCE_refusal_returns_after_no_mutation_input_and_no_terminal_checks"
+  },
+  "preparation": "WAITING_FRESH_WRITER_PACKET",
+  "actual": "NOT_AUTHORIZED_NOT_RUN",
+  "verdict": "Independent SOURCE/FIXTURE/SELECTION/PREP remains pending; no source/native/task acceptance inferred."
+}
