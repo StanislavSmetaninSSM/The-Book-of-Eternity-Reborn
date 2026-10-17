@@ -1,0 +1,915 @@
+<!-- GM1557 Block5 Combat_Foundations
+Read when: Any element/effect/target, combat action/classification, advantage/disadvantage or combat failure/consequence decision.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](Block_5.txt) and [example context](../Examples/E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if actual combat work uses units or IDs: [rules](Block_5_Units_Ids.txt) [examples](../Examples/E_Block_5_Units_Ids.txt); Only if actual characteristic or derived-parameter calculation is required: [rules](Block_5_Characteristics_Progression.txt) [examples](../Examples/E_Block_5_Characteristics_Progression.txt); Only if actual cost or equipment use is required: [rules](Block_5_Items_Resources.txt) [examples](../Examples/E_Block_5_Items_Resources.txt); Only if an independently issued wound contract is present: [rules](Block_5_Wounds.txt) [examples](../Examples/E_Block_5_Wounds.txt).
+Worked examples: [paired examples](../Examples/E_Block_5_Combat_Foundations.txt); [paired rules](Block_5_Combat_Foundations.txt).
+-->
+<instructionblock id="5">
+<content type="ruleset">
+<!-- GM1557-B BR003 BEGIN -->
+  <rule id="5.2">
+   <title>
+    Combat Element Types Overview
+   </title>
+   <description>
+    This section defines the standard damage and resistance types used within the combat system.
+                    The primary list of standard combat elements is as follows (remember it as 'combatElements' array for subsequent references): [
+                        'fire', 'cold', 'water', 'electricity', 
+                        'acid', 'poison', 'sonic', 'force', 
+                        'radiation', 'energy', 'dark', 'holy', 
+                        'psychic', 'slashing', 'piercing', 'bludgeoning'
+                    ]. 
+                    Familiarize yourself with these types to accurately describe enemy attacks, resistances, and item/skill effects.
+   </description>
+   <content type="ruleset">
+    <rule id="5.2.1">
+     <title>
+      Explanation of Standard Combat Elements
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Elemental & Energy Types:
+
+                                1) 'fire': Damage from flames, intense heat, explosions, or magical fire.
+                                Examples: Fireball spell, dragon's breath, napalm, flaming sword.
+    
+                                2) 'cold': Damage from extreme cold, ice, or frost, often causing slowing or freezing effects.
+                                Examples: Ice shard spell, frost giant's touch, blizzard, cryo-weapon.
+
+                                3) 'water': Damage primarily from the impact or properties of water itself, distinct from cold (though often related). Can include drowning effects if applicable.
+                                Examples: High-pressure water jet, crushing wave, water elemental's slam, suffocation by water.
+    
+                                4) 'electricity': Damage from electrical shocks, lightning, or energy discharges, often with a chance to stun or disrupt.
+                                Examples: Lightning bolt spell, taser, exposed power lines, shocking grasp.
+    
+                                5) 'acid': Corrosive damage that dissolves or burns materials and flesh.
+                                Examples: Acid splash spell, corrosive slime, industrial acid, venom of certain creatures.
+    
+                                6) 'poison': Damage over time or debilitating effects from toxins, venoms, or noxious substances.
+                                Examples: Poisoned dagger, snake bite, toxic gas, disease-causing spores.
+    
+                                7) 'sonic': Damage or disruption from powerful sound waves, vibrations, or concussive force.
+                                Examples: Banshee's scream, sonic weapon, concussive blast, shattering vibrations.
+    
+                                8) 'force': Damage from pure, unaligned kinetic or magical energy, often bypassing physical armor. Can be used for telekinetic impacts where bludgeoning doesn't fit.
+                                Examples: Magic missile, telekinetic blast, concussive magical punch, unseen servant's shove.
+    
+                                9) 'radiation': Damage from radioactive sources, often causing sickness, mutations, or damage over time. Primarily for sci-fi/post-apocalyptic settings.
+                                Examples: Fallout zone, leaky reactor, irradiated creature's touch, radiation gun.
+    
+                                10) 'energy': A general type for directed energy weapons or effects not fitting other elemental categories.
+                                Examples: Laser beam, plasma bolt, particle beam, generic energy shield.
+
+                            Spiritual & Mental Types:
+
+                                1) 'dark': Damage from necrotic energy, shadow magic, unholy power, or life-draining effects. Often associated with undead or malevolent entities.
+                                Examples: Necrotic touch, shadow bolt, curse of draining, soul siphon.
+    
+                                2) 'holy': Damage from sacred power, divine light, or righteous energy. Often particularly effective against undead or fiendish creatures.
+                                Examples: Smite spell, blessed weapon, divine ray, purifying flame.
+    
+                                3) 'psychic': Damage or debilitating effects targeting the mind, sanity, or mental faculties.
+                                Examples: Mind blast, psionic attack, confusion spell, fear-inducing gaze, sanity drain.
+
+                            Physical Types:
+
+                                1) 'slashing': Damage from cutting edges.
+                                Examples: Swords, axes, claws, scythes.
+
+                                2) 'piercing': Damage from pointed weapons or projectiles that puncture.
+                                Examples: Spears, arrows, daggers, bullets, fangs, horns.
+
+                                3) 'bludgeoning': Damage from blunt force impact, crushing, or smashing.
+                                Examples: Hammers, maces, clubs, fists, falling objects, telekinetic crushing of objects.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.2.2">
+     <title>
+      Using Custom Element Types
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            While the standard list above should cover most situations, there might be unique narrative scenarios or specific monster abilities that require a damage/resistance type not listed.
+                            In such cases, the GM may introduce a custom element type.
+    
+                            Formatting Custom Types: Use lowercase English words, with underscores for spaces (e.g., 'nanite_swarm', 'temporal_distortion', 'cosmic_horror_gaze').
+    
+                            Consistency: If a custom type is introduced, strive to use it consistently for similar effects or when defining resistances/vulnerabilities to it. 
+                            The game system will treat it as a distinct type.
+    
+                            Priority: Always attempt to use a standard element type from the list first if it reasonably fits the effect. 
+                            Use custom types sparingly for truly unique situations.
+
+                            Display names: for custom types, always write the display name in a special field that is provided in the corresponding objects. 
+                            For example, 'temporal_distortion', will be 'Temporal Distortion' (for English) - this is the name that is displayed in the user interface and it should be translated into the user's chosen language.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR003 END --><!-- GM1557-B BR004 BEGIN -->
+  <rule id="5.3">
+   <title>
+    Combat Effect Types and Targets Overview
+   </title>
+   <description>
+    This section defines the standardized types of temporary effects ('effectType') that can modify a combatant's state and the specific aspects ('targetType') they affect. 
+                    The information from this section should be used for all objects related with battle (skills, items, player/enemy/ally data, etc.)
+   </description>
+   <content type="ruleset">
+    <rule id="5.3.1">
+     <title>
+      'effectType' - What the effect DOES: This string specifies the fundamental action of the temporary or instant effect
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Choose one from the following list (Use these exact English terms):
+                            
+                            'Damage': Represents direct, instantaneous damage dealt to a target.
+                            Purpose: Standard attacks, spells, or effects that inflict immediate harm.
+                            Typical 'targetType' Examples: 'slashing', 'fire', 'acid'. 
+                            'duration' is NOT used.
+         
+                            'DamageOverTime': Represents damage inflicted automatically at the start or end of the combatant's turn for a set duration.
+                            Purpose: Simulates bleeding, burning, poison, curses, etc., that deal recurring damage.
+                            Typical 'targetType' Examples: 'fire', 'poison', 'dark', 'piercing'. 
+                            'duration' IS used. 
+                            'value' is per turn.
+
+                            Persistent wound consequences are not entries in this static Combat Action effectType list. A Wound owns complete activeEffectDefinitions[] with profile=wound_consequence and one exact wound source link; application is requested separately through top-level effectChanges[]. The client owns the runtime carrier, source-bound lifetime, and expiration.
+
+                            'Heal': Represents direct, instantaneous restoration of health.
+                            Purpose: Standard healing spells, potions, or abilities that provide immediate recovery.
+                            Typical 'targetType' Example: 'health'. 
+                            'duration' is NOT used.
+
+                            'HealOverTime': Represents health restored automatically at the start or end of the combatant's turn for a set duration.
+                            Purpose: Simulates regeneration, mending effects, sustained healing prayers.
+                            Typical 'targetType' Example: 'health'. 'duration' IS used. 
+                            'value' is per turn.
+
+                            'Buff': Represents a temporary enhancement to a combatant's capabilities. Usually positive.
+                            Purpose: Increases damage output, resistance, critical damage effectiveness, or other positive combat attributes.
+                            Typical 'targetType' examples: 'damage (slashing)', 'resist (fire)', 'critDamage (all)'. 
+                            'duration' IS usually used.
+         
+                            'Debuff': Represents a temporary hindrance to a combatant's capabilities. Usually negative.
+                            Purpose: Decreases damage output, resistance, or other combat attributes.
+                            Typical 'targetType' Examples: 'damage (bludgeoning)', 'resist (cold)', 'strength'. 
+                            'duration' IS usually used.
+         
+                            'Control': Represents an effect that directly impairs a combatant's ability to act freely. Always negative.
+                            Purpose: Stunning, slowing, confusing, immobilizing, or otherwise restricting actions.
+                            Typical 'targetType' Examples: 'stun', 'slow', 'confusion', 'immobility'. 
+                            'duration' IS used.
+         
+                            'DamageReduction': Represents a temporary (or passive while equipped) direct reduction of incoming damage of specific types. Always positive/defensive.
+                            Purpose: Creates temporary shields, wards, or barriers.
+                            Typical 'targetType' Examples: 'all', 'slashing', 'fire'. 
+                            'duration' MAY be used if the reduction is temporary from an ability; often not used if it's a passive effect from equipped armor.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.3.2">
+     <title>
+      'targetType' - WHAT the effect MODIFIES: This string specifies the precise attribute, characteristic, or condition affected by the 'effectType'.
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Use the following formats (always English, lowercase, use standard element names from the 'combatElements' array ['fire', 'cold', 'water', etc. ] where applicable):
+
+                            For 'Buff'/'Debuff' effects:
+                                'damage (type)': Modifies damage dealt of a specific type.
+                                'type' can be any element from 'combatElements' or 'all'.
+                                Examples: 'damage (slashing)', 'damage (fire)', 'damage (all)'.
+
+                                'resist (type)': Modifies resistance against a specific incoming damage type.
+                                'type' can be any element from 'combatElements' or 'all'.
+                                Examples: 'resist (piercing)', 'resist (cold)', 'resist (all)'.
+
+                                'critDamage (type)': Modifies the additional damage dealt on critical hits of a specific type.
+                                'type' can be any element from 'combatElements' or 'all'.
+                                Examples: 'critDamage (slashing)', 'critDamage (fire)', 'critDamage (all)'.
+
+                                '[characteristic_name]': Modifies one of the base character characteristics. This only affects targets that possess characteristics (Player, NPCs).
+                                It has no effect on standard enemies/allies without characteristics.
+                                '[characteristic_name]' must be one of specified in 'characteristicsList'.
+                                Examples: 'strength', 'dexterity', 'luck'.
+
+                            For 'Control' effects: Choose one of the specific control states below:
+                                • 'stun': Target likely skips their next action(s).
+                                • 'immobility': Target cannot move.
+                                • 'disarm': Target drops wielded weapon(s).
+                                • 'silence': Target cannot use vocal/sonic abilities/spells.
+                                • 'blindness': Target's combat effectiveness (attack/defense) is severely reduced.
+                                • 'confusion': Target acts randomly.
+                                • 'fear': Target attempts to flee or avoid the source.
+                                • 'sleep': Target is unconscious and defenseless.
+                            The exact mechanical effect of each state will be detailed in the combat resolution rules.
+
+                            For 'DamageReduction' effects:
+                                '[damage_type]': Specifies the damage type being reduced by a temporary shield/ward. 
+                            '[damage_type]' can be any element from 'combatElements' or 'all'.
+                            Examples: 'slashing', 'fire', 'all'.
+
+                            For 'DamageOverTime' effects:
+                                '[damage_type]': Specifies the damage type dealt each turn. 
+                            '[damage_type]' is usually an element from 'combatElements' (e.g., 'fire' for burning, 'poison' for poisoned, 'dark' for curse, 'piercing' for bleeding).
+                  
+                            For 'HealOverTime' effects:
+                                'health': Always targets health restoration over time.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.3.3">
+     <title>
+      System Values
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Remember 'effectType' and 'targetType' are system values used for calculations and must be in English using the exact terms and formats defined above.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR004 END --><!-- GM1557-B BR005 BEGIN -->
+  <rule id="5.4">
+   <title>
+    Target Priority Types Overview
+   </title>
+   <description>
+    This section defines standard keywords for the 'targetPriority' field within an standard Combat Action object (defined in #5.5). 
+                    This field guides the AI's decision-making process when choosing a target for an attack or ability, if not overridden by specific tactical logic or player commands (for allies). 
+        
+                    The 'targetPriority' field is used mainly for enemies/allies, the player decides on their own.
+                    But if player uses the skill/item/etc. and doesn't determine the target, the value from 'targetPriority' is used to automatically choose the target.
+                
+                    These are suggestions; the GM AI should ultimately choose the most tactically sound target based on the overall combat situation.
+   </description>
+   <content type="ruleset">
+    <rule id="5.4.1">
+     <title>
+      Explanation of Standard Target Priority Keywords
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Use these exact English terms:
+
+                                'player_character':
+                                The attack/ability is primarily directed at the player character.
+                                Use when: Default for most aggressive enemies, abilities specifically designed to neutralize the player.
+                     
+                                'current_target':
+                                    The attack/ability is directed at the combatant the owner is already engaged with or was last attacked by (its "aggro" target).
+                                    Use when: Standard follow-up attacks, maintaining focus on a single threat.
+                     
+                                'lowest_health_enemy':
+                                    Targets the hostile combatant (from the perspective of the attacker) with the lowest current health percentage.
+                                    Use when: Tactics focused on quickly eliminating weakened foes.
+                     
+                                'highest_health_enemy':
+                                    Targets the hostile combatant with the highest current health percentage.
+                                    Use when: Tactics focused on "tank busting" or trying to wear down the toughest opponent.
+                     
+                                'lowest_resistance_enemy (type)':
+                                    Targets the hostile combatant with the lowest resistance to a specific damage 'type' of the attack. The 'type' should be specified, e.g., 'lowest_resistance_enemy (fire)'.
+                                    Use when: Intelligent attackers trying to exploit weaknesses. If 'type' is not specified, GM can assume the primary damage type of the attack.
+
+                                'highest_threat_enemy':
+                                    Targets the hostile combatant perceived as the greatest threat (e.g., highest damage output, key buffer/debuffer, healer). This requires more complex assessment by the GM AI.
+                                    Use when: Intelligent attackers prioritizing dangerous targets.
+                     
+                                'closest_enemy':
+                                    Targets the nearest hostile combatant.
+                                    Use when: Simple melee attackers, area effects centered on self.
+
+                                'farthest_enemy':
+                                    Targets the most distant hostile combatant (within range).
+                                    Use when: Ranged attackers trying to pick off targets at a distance.
+
+                                'random_enemy':
+                                    Targets a random hostile combatant within range.
+                                    Use when: Confused attackers, area effects with random targeting, less intelligent creatures.
+                     
+                                'all_enemies':
+                                    The ability affects all hostile combatants within its area of effect/range.
+                                    Use when: Area of Effect (AoE) attacks/debuffs.
+
+                                'self':
+                                    The ability targets the user itself.
+                                    Use when: Self-buffs, self-healing.
+
+                                'lowest_health_ally':
+                                    Targets the friendly combatant (from the perspective of the user) with the lowest current health percentage.
+                                    Use when: Healing abilities, defensive buffs on weakened allies.
+                     
+                                'highest_threat_ally_target':
+                                    Targets the ally who is currently targeted by the most/strongest enemies (needs GM assessment).
+                                    Use when: Defensive abilities to protect allies under heavy fire.
+                     
+                                'random_ally':
+                                    Targets a random friendly combatant.
+                                    Use when: Some beneficial AoE effects that might pick a primary target, or for less predictable allied support.
+                     
+                                'all_allies':
+                                    The ability affects all friendly combatants within its area of effect/range.
+                                    Use when: Area of Effect (AoE) buffs/healing.
+                     
+                                'caster_choice' (GM AI Decision):
+                                    The GM AI uses its tactical judgment to select the most appropriate target based on the current combat situation, ability effects, and enemy/ally roles. This can be the default if no other priority strongly fits.
+                                    Use when: Complex abilities, unique situations, or when more nuanced targeting is needed. The GM should briefly justify the choice in 'gm_thoughts_markdown' if using this.
+                                                 
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.4.2">
+     <title>
+      Using 'targetPriority'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            This field is optional within an attack object but highly recommended for guiding AI behavior.
+                            If an attack can target different categories (e.g., an AoE that can be centered on an enemy or ally), the 'targetPriority' helps define the default focus.
+                            The actual targets selected will also depend on range, line of sight, and other tactical considerations evaluated by the GM AI.
+                                
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR005 END --><!-- GM1557-B BR006 BEGIN -->
+  <rule id="5.5">
+   <title>
+    Combat Action Structure Overview
+   </title>
+   <description>
+    This section defines a standardized structure for describing any action that has a direct impact in combat. This structure, referred to as a "Combat Action," will be used to define:
+                        • Attacks for enemies and allies (within their attacks array in enemiesData/alliesData).
+                        • The 'combatEffect' of player/NPC active skills.
+                        • The 'combatEffect' of combat-related items.
+                    The goal is to have a unified way to represent how an action influences combatants.
+   </description>
+   <content type="ruleset">
+    <rule id="5.5.1">
+     <title>
+      Mandatory Format for a Combat Action Object
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                             
+                            The format for Combat Action Object:
+
+                            {
+                                "actionName": "display_action_name_string_optional_for_skills_items_mandatory_for_ai_actions",
+                                "isActivatedEffect": "boolean_optional_default_varies", 
+                                "actionCost": "'Main' | 'Fast' | 'Free', optional, defaults to 'Main'",
+                                "effects": [ 
+                                    {
+                                        "effectType": "system_effect_type_string",
+                                        "value": "magnitude_percentage_string",
+                                        "targetType": "system_target_type_string",
+                                        "targetTypeDisplayName": "user_readable_target_type_string_optional",
+                                        "duration": "remaining_turns_integer_optional",
+                                        "damageThreshold": "integer_optional",
+                                        "effectDescription": "user_readable_effect_summary_string",
+                                        "targetsCount": "number_of_targets_integer_optional"
+                                    }
+                                ],
+                                "targetPriority": "system_target_priority_string_optional_for_ai_or_activatable_effects",
+                                "scalingCharacteristic": "relevant_characteristic_name_string_or_null_optional"
+                            }
+                                
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.5.2">
+     <title>
+      Field Definitions for Combat Action Object
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+
+                             "actionName": (string, optional for skills/items, mandatory for AI-controlled entity actions and for item effects where 'isActivatedEffect' is true)
+                                A descriptive, user-facing name for this combat action (e.g., "Vicious Bite", "Fireball Spell", "Drink Healing Salve", "Demoralizing Shout").
+                                For enemy/ally actions in their 'actions' array, this is mandatory.
+                                For skills, this field might be omitted if 'skillName' is sufficient.
+                                For items, if 'isActivatedEffect' is true, 'actionName' describes the activation.
+                                If 'isActivatedEffect' is false (or omitted), 'actionName' is optional (can be item name for clarity of passive effect).
+                                Translate this name to the user's chosen language if it's user-facing.
+         
+                            "isActivatedEffect": (boolean, optional)
+                                - Default: 'false' if omitted.
+                                - Set to 'true' if this Combat Action represents an effect that requires an explicit action to trigger (e.g., an enemy choosing an attack, a player using an active skill, a player activating an item like drinking a potion).
+                                - Set to 'false' (or omit) if this Combat Action describes a passive, always-on effect (primarily for equipped items granting constant bonuses, or for passive skills that have a 'combatEffect').
+                                - For actions listed in an enemy's or ally's 'actions' array, this is implicitly 'true' as they represent choices in combat.
+                                - For 'combatEffect' of Active Skills (Section #7), this is typically 'true'.
+                                - For 'combatEffect' of Passive Skills (Section #8), this is typically 'false' or omitted.
+                                - For 'combatEffect' of Items (Section #10), this flag distinguishes between activatable effects and passive bonuses.
+
+                            "actionCost": (string, optional)
+                                - Default: 'Main' if omitted.
+                                - Defines the type of action consumed. Must be one of: 'Main', 'Fast', or 'Free'.
+                                - 'Main' is for standard attacks, spells, and primary combat actions that require full focus.
+                                - 'Fast' is for quick tactical maneuvers (e.g., shove, taunt, quick item use, weapon stance changes).
+                                - 'Free' is for instantaneous reactions or simple actions like dropping items.
+                                - The GM determines this cost when creating skills or actions based on their power and casting time.
+
+                            "effects": (array of objects, mandatory, must contain at least one effect object)
+                                An array defining one or more discrete effects that this single combat action produces.
+                                Each object in this array describes one effect and must adhere to the following structure:
+
+                                    "effectType": (string, mandatory) The system type of this specific effect.
+                                    Must be one of: 'Damage', 'DamageOverTime', 'Heal', 'HealOverTime', 'Buff', 'Debuff', 'Control', 'DamageReduction'.
+                                    (Refer to #5.3.1 Combat Effect Types Overview for detailed explanations of each 'effectType'. Note the separation of instant vs. over-time effects).
+                        
+                                    "value": (string, mandatory) The magnitude or intensity of this effect, formatted as a percentage string (e.g., "15%", "50%").
+                                    For 'Damage' and 'Heal': The direct amount.
+                                    For 'DamageOverTime' and 'HealOverTime': The amount per turn.
+                                    For 'Buff', 'Debuff', 'DamageReduction': The percentage change or reduction.
+                                    For 'Control': Often represents the chance of application (e.g., "75%") or can be "100%" if guaranteed and 'duration' is key.
+                        
+                                    "targetType": (string, mandatory) The specific attribute, characteristic, or condition this effect modifies.
+                                    Must use one of the exact English terms and formats defined in #5.3.2 Combat Effect Targets Overview.
+                                    Examples: 'slashing', 'fire' (for Damage/DoT/Reduction), 'strength', 'all' (for Buff/Debuff), 'stun' (for Control), 'health' (for Heal/HoT).
+                       
+                                    "targetTypeDisplayName": (string, optional) A user-readable, translated name for the 'targetType'.
+                                    This field is primarily for display purposes in the UI.
+                                    If the 'targetType' is a standard combat element (from the list in #5.2.1), this field may be omitted, as the system can infer the display name (e.g., 'slashing' -> "Slashing", 'fire' -> "Fire").
+                                    This field becomes mandatory if a custom 'targetType' is used (as per #5.2.2).
+                                    If the 'targetType' is a characteristic or control state, provide a translated name (e.g., for 'strength' -> "Сила", for 'stun' -> "Оглушение").
+                                    Translate this name to the user's chosen language.
+                                    Examples: "Рубящий", "Огонь", "Сила", "Оглушение", "Все типы", "Здоровье".
+
+                                    "duration": (integer, optional) The number of turns the effect lasts.
+                                    Required for: 'DamageOverTime', 'HealOverTime', 'Buff', 'Debuff', 'Control', and some 'DamageReduction' effects if they are not permanent while an item is equipped/skill active.
+                                    Omit for instantaneous effects like 'Damage' and 'Heal'.
+                                    
+                                    "damageThreshold": (integer, optional)
+                                    This field is used EXCLUSIVELY for effects with an 'effectType' of 'DamageReduction'. 
+                                    It represents the maximum amount of post-resistance damage (in Percentage Points) of its specific 'targetType' that the item can completely absorb from a single hit. 
+                                    If this field is present, the damage calculation MUST follow the "Armor Threshold Protocol" (InstructionBlock 15.A). 
+                                    If omitted for a 'DamageReduction' effect, the threshold is considered 0.
+
+                                    "poiseDamage": (string, mandatory for 'Damage' effectType) The amount of poise damage this effect deals, formatted as a percentage string (e.g., "10%", "30%").
+                                    This field is MANDATORY for all effects with 'effectType' of 'Damage'. Heavy weapons (Hammers, Greatswords) and explosive spells should have high base poise damage (25-50%), while light weapons (Daggers, Rapiers) should have low base poise damage (5-15%).
+                                    For non-damage effects, this field MUST be omitted.
+
+                                    "effectDescription": (string, mandatory) A clear, user-readable summary of this specific effect's impact and duration (if applicable).
+                                    Translate this description to the user's chosen language.
+                                    Examples: "Deals 15% fire damage.", "Target is Stunned for 1 turn.", "Increases Strength by 10% for 3 turns.", "Target regenerates 5% health for 2 turns."
+                        
+                                    "targetsCount": (integer, optional) Specifies the number of distinct targets the effect is intended to impact simultaneously.
+                                    If this field is omitted or set to '1', the effect is considered single-target.
+                                    For Area of Effect (AoE) abilities, this field must be included and set to a value greater than '1', representing the maximum number of targets the AoE can affect (e.g., '3' for an effect hitting up to 3 targets, '5' for a larger AoE). 
+                                    The actual number of targets hit within an AoE will depend on positioning and combat resolution rules.
+                                    Examples: '1' (or omitted) for a single-target spell, '3' for a cleaving attack hitting 3 adjacent foes, '5' for a small fireball explosion.
+                 
+                            "targetPriority": (string, optional, primarily for AI-controlled entities like enemies/allies)
+                                A keyword suggesting the default targeting behavior for this combat action.
+                                Choose a suitable keyword from the list defined in #5.4.1 Target Priority Types Overview (e.g., 'player_character', 'lowest_health_enemy', 'self').
+                                If omitted for AI, the GM AI will use 'caster_choice' or infer a logical target. For player-controlled actions, this field is generally not needed as the player chooses the target.
+                                If 'isActivatedEffect: true', this can suggest a default target if none is specified.
+
+                            "scalingCharacteristic": (string or null, optional) 
+                                The name of the characteristic (from 'characteristicsList') that influences this specific combat action's power.
+                                If this field is present, its value overrides the default characteristic for the attack/action.
+                                If null or omitted, the default characteristic is used (e.g., 'strength' or 'dexterity' for a standard weapon attack, or the 'scalingCharacteristic' from a parent Active Skill).
+                                This is primarily used to define special attack modes, such as a "Flurry of Blows" action for a light weapon that should scale from 'speed' instead of 'dexterity'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR006 END --><!-- GM1557-B BR007 BEGIN -->
+  <rule id="5.6">
+   <title>
+    Combatant Classification Overview
+   </title>
+   <description>
+    This section defines the standard classifications used to categorize enemies and allies based on their expected challenge level and capabilities. 
+                    These classifications influence the calculation of their base parameters (health, damage potential, resistances) for generic enemies/allies as detailed in Section #6 (Combat Situation). 
+                    Named NPC's uses this classification mainly for convenience: to show the player the level of their danger.
+   </description>
+   <content type="ruleset">
+    <rule id="5.6.1">
+     <title>
+      Standard Combatant Types (Challenge Levels)
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+
+                            When generating an enemy or an ally for a combat encounter, choose one of the following types. 
+                            This choice should be based on the narrative context, the creature's lore, its intended role in the encounter, and the desired level of challenge relative to its Effective Level (EL) (for non-NPC enemies/allies).
+
+                                'Frail':
+                                    Description: Represents creatures or individuals posing minimal physical threat. Often non-combatants by nature, very young, very old, diseased, or extremely small/weak creatures.
+                                    Combat Role: Typically fodder, easily dispatched, or dangerous only in very large numbers or through specific weak-point exploitation.
+                                    Examples: Giant Rat, Starving Peasant forced to fight, Diseased Vermin, Tiny Imp.
+                                    Parameter Tendencies: Lowest health, very low damage, minimal or no resistances. 
+                                    Usually 1 simple attack.
+         
+                                'Weak':
+                                    Description: Represents standard low-level threats or inexperienced combatants. Common wild animals, lesser minions, or poorly equipped individuals.
+                                    Combat Role: Standard early-game opponents, often encountered in groups. Can pose a threat to unprepared low-level players.
+                                    Examples: Goblin Spearman, Large Wolf, Bandit Thug, Giant Spiderling, Cult Initiate.
+                                    Parameter Tendencies: Low health, low damage, low resistances. 
+                                    Typically 1-2 basic attacks.
+
+                                'Moderate':
+                                    Description: Represents competent and reasonably equipped or naturally dangerous combatants. Experienced soldiers, skilled skirmishers, tougher wild beasts, or mid-tier magical constructs/beings.
+                                    Combat Role: The backbone of many encounters. Can pose a significant challenge individually or in small groups to appropriately leveled players.
+                                    Examples: Orc Warrior, Bandit Leader, City Guard Sergeant, Dire Wolf, Lesser Elemental, Trained Mercenary.
+                                    Parameter Tendencies: Moderate health, moderate damage, moderate resistances. 
+                                    Often 2-3 varied attacks, may include a simple special ability or debuff.
+         
+                                'Strong':
+                                    Description: Represents dangerous, well-trained, or innately powerful foes. Elite soldiers, powerful monsters, skilled magic-users, or significant guardians.
+                                    Combat Role: Often mini-bosses or elite units within a larger encounter. Can be a serious threat even to well-prepared players.
+                                    Examples: Ogre Chieftain, Knight Captain, Experienced Sorcerer, Lesser Demon, Young Dragon, Troll.
+                                    Parameter Tendencies: High health, high damage, significant resistances (possibly specific ones). 
+                                    Typically 3-5 attacks/abilities, often including impactful special moves, controls, or buffs/debuffs.
+
+                                'Boss':
+                                    Description: Represents major antagonists, unique and exceptionally powerful creatures, or key figures with significant combat prowess. These are often central to a questline or a dungeon.
+                                    Combat Role: Significant, often unique encounters that test the player's abilities and tactics to their fullest.
+                                    Examples: Dragon Lord, Archlich, Demon Prince, Legendary Warrior King, Colossal War Machine.
+                                    Parameter Tendencies: Very high health (often with multiple phases or unique mechanics), very high damage output, strong and often varied resistances/immunities. 
+                                    Typically 4-6+ attacks/abilities, including powerful signature moves, area-of-effect attacks, and complex tactical options.
+         
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.6.2">
+     <title>
+      Using Types for NPC Combatants
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+
+                            While named NPCs have their own detailed characteristics (see #5.1), if an NPC enters the combat, GM must assess the level of their danger and assign to NPC any type from this classification. 
+                            This is done for the convenience of the player so that the player can understand the level of their danger to the smooth gameplay.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR007 END --><!-- GM1557-B BR020 BEGIN -->
+  <rule id="5.16">
+   <title>
+    Advantage and Disadvantage System Overview
+   </title>
+   <description>
+    This section defines the mechanics of Advantage and Disadvantage, which can influence the outcome of d20 rolls for action checks by requiring multiple dice to be rolled and selecting the best or worst result.
+   </description>
+   <content type="ruleset">
+    <rule id="5.16.1">
+     <title>
+      Core Concepts
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            1.  Advantage: Represents a beneficial circumstance or innate ability that significantly increases the likelihood of success for an action.
+                            2.  Disadvantage: Represents a detrimental circumstance, impairment, or hindrance that significantly decreases the likelihood of success.
+                            3.  GM Adjudication: In most situations not explicitly covered by a skill or effect, the GM determines if Advantage or Disadvantage (and its level) applies to an action check based on the narrative, environment, character's state, and tactical situation. 
+                            This determination must be logical and fair.
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.16.2">
+     <title>
+      Levels of Advantage and Disadvantage
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            There are two tiers for both Advantage and Disadvantage:
+
+                            1.  Normal Advantage:
+                                - Dice Rolled: Two d20s are rolled (take the next two available numbers from the 'Dices' list, which is provided at the start of action checks as per InstructionBlock '12' -> Rule '12.3.1').
+                                - Result Used: The higher of the two rolls is used as the 'Dice' value for the action check.
+
+                            2.  Great Advantage ("Magnificent Advantage"):
+                                - Dice Rolled: Three d20s are rolled (take the next three available numbers from the 'Dices' list).
+                                - Result Used: The highest of the three rolls is used as the 'Dice' value.
+
+                            3.  Normal Disadvantage:
+                                - Dice Rolled: Two d20s are rolled.
+                                - Result Used: The lower of the two rolls is used as the 'Dice' value.
+
+                            4.  Dire Disadvantage ("Overwhelming Disadvantage"):
+                                - Dice Rolled: Three d20s are rolled.
+                                - Result Used: The lowest of the three rolls is used as the 'Dice' value.
+                            
+                            Note: When multiple dice are rolled due to Advantage/Disadvantage, each roll consumes one die from the pre-generated 'Dices' list for the turn.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.16.3">
+     <title>
+      Sources of Advantage and Disadvantage
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Advantage or Disadvantage can arise from various sources:
+
+                            1.  Character Abilities and Skills:
+                                - Some passive or active skills may explicitly grant Advantage or impose Disadvantage on certain types of checks.
+                                - Example: A "Nightstalker" passive skill might grant Normal Advantage on stealth checks in darkness.
+
+                            2.  Item Properties:
+                                - Certain items (especially magical or cursed) might confer Advantage or Disadvantage.
+                                - Example: "Sure-Grip Gauntlets" might grant Normal Advantage on checks to avoid being disarmed.
+
+                            3.  Temporary Effects (Buffs/Debuffs):
+                                - Some buffs might grant Advantage (e.g., a potion of "Fox's Cunning").
+                                - Some debuffs might impose Disadvantage (e.g., being 'Blinded', or the 'Fatigued' state from exhaustion).
+
+                            4.  Situational Factors (GM Adjudication):
+                                - Environment: Good footing, clear visibility might grant Advantage. Slippery surfaces, darkness might impose Disadvantage.
+                                - Tactical Positioning: Attacking an unaware enemy might grant Advantage. Attacking while prone might impose Disadvantage.
+                                - Attacking a Helpless Target: If the target of an attack is completely helpless or unable to defend itself 
+                                (e.g., under the effects of 'stun', 'sleep', 'paralysis'), the attacker MUST be granted Great Advantage on their action check.
+                                - Assistance from an ally.
+
+                            GM Note: The GM should clearly state when Advantage or Disadvantage (and its level) is being applied due to situational factors and briefly justify it in 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.16.4">
+     <title>
+      Combining Advantage and Disadvantage
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Advantage and Disadvantage Cancel Out: 
+                                If a character has at least one source of Advantage and at least one source of Disadvantage applying to the same roll, they cancel each other out, and the roll is made normally (one d20).
+                                This is true regardless of the number of sources or their tiers.
+
+                            2.  Multiple Sources of Advantage (or Disadvantage):
+                                Multiple instances of Advantage do not "stack" beyond applying the highest tier of Advantage present (Normal or Great). 
+                                The same applies to Disadvantage (Normal or Dire). You only apply the strongest tier present.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.16.5">
+     <title>
+      Interaction with Critical Success/Failure Thresholds
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - Advantage/Disadvantage determines which die roll result is used as the final 'PlayerDiceResult' for the action check (as per #12.3.2).
+                            - This chosen 'PlayerDiceResult' value is then compared against the Critical Success Threshold (defined in InstructionBlock '5' -> Rule '5.7.3') and against the value 1 for determining Natural Critical Successes or Failures (as processed in InstructionBlock '12' -> Rule '12.4.2').
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR020 END --><!-- GM1557-B BR024 BEGIN -->
+  <rule id="5.19">
+   <title>
+    Combat Principles and Failure Consequences Overview
+   </title>
+   <description>
+    This section outlines basic principles for Game Master handling of combat situations and specific mechanical consequences for different levels of failure during combat actions. 
+                    Detailed combat resolution mechanics (damage application, effect processing) will be in a later section.
+   </description>
+   <content type="ruleset">
+    <rule id="5.19.1">
+     <title>
+      General Combat Principles (GM Adherence for all AI Combatants)
+     </title>
+     <instructiontext>
+      These MANDATORY principles guide the behavior of ALL AI-controlled combatants (Enemies, Allies, and NPCs) during their turn.
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Tactical Behavior:
+                                AI combatants MUST use their abilities and positioning to their best advantage, considering their intelligence, role, and current situation. 
+                                They should exploit opponent weaknesses if apparent.
+
+                            2.  Pressing Advantage:
+                                AI combatants that gain a tactical advantage (e.g., player is stunned, disarmed, or in a bad position) MUST attempt to capitalize on it immediately.
+
+                            3.  Retreat/Survival Logic:
+                                AI combatants should only retreat if it's tactically sound for their type (e.g., low health, outnumbered) or narratively appropriate (e.g., cowardly goblins).
+                                Allies may prioritize protecting the player over their own safety.
+
+                            4.  No Artificial Nerfing:
+                                Do not artificially reduce AI combatant capabilities, accuracy, or damage output, 
+                                nor invent convenient circumstances to save the player character from legitimate consequences of their actions, unless explicitly dictated by a very specific plot point.
+
+                            5.  Consistency:
+                                Combat outcomes and AI combatant actions should be consistent with their established capabilities, type, and current state (buffs/debuffs).
+
+                            6.  CRITICAL DIRECTIVE: The Exploit Advantage Protocol.
+                                When an AI combatant (Enemy, Ally, or NPC) acts against a target that is under a significant tactical disadvantage (e.g., affected by 'stun', 'sleep', 'immobility', 'blindness', is prone, or is 'Staggered' from poise break), their action MUST be mechanically enhanced. 
+                                This is not optional. You must apply one of the following enhancements:
+
+                                -   Automatic Critical Hit: The attack is automatically treated as a 'Critical Success'. 
+                                    This is the preferred method for attacks against completely helpless targets (e.g., 'stunned', 'asleep', 'Staggered').
+                                    NOTE: Attacks against 'Staggered' targets (poise broken) are ALWAYS Automatic Critical Hits.
+
+                                -   Massive Damage Multiplier:
+                                    Apply a significant damage multiplier (e.g., x2.0 to x3.0) to the action's base damage before calculating resistances.
+
+                                -   Enhanced Effect:
+                                    For non-damaging abilities, significantly increase their effectiveness (e.g., a 'fear' effect has a much higher chance to succeed or lasts longer).
+                                    You MUST log which enhancement you chose and why.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.19.2">
+     <title>
+      Universal Combat Failure Consequences (Applied to ANY Combatant)
+     </title>
+     <description>
+      This rule defines the universal consequences for combat actions that result in failure.
+                            These rules apply equally to the Player Character, named NPCs, generic allies, and generic enemies.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            When ANY combatant (Player, NPC, Ally, or Enemy) fails a combat action check, the following consequences MUST be applied based on the severity of the failure.
+
+                            - The "Acting Combatant" is the character whose action failed.
+                            - The "Opponent" is the combatant who benefits from the failure (typically the target of the failed action).
+                    
+                            CRITICAL NOTE: This rule applies without exception. Enemies, NPCs, and allies are subject to the same failure penalties as player characters. There are no special exemptions for AI-controlled combatants.
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="5.19.2.1">
+       <title>
+        Consequences for 'Minor Failure'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    A 'Minor Failure' creates a small tactical opening for the opponent.
+                            
+                                    -   Opening for the Opponent: 
+                                        On the opponent's NEXT turn in the initiative order, they gain Normal Advantage on their first attack roll against the Acting Combatant.
+                            
+                                    -   CRITICAL CLARIFICATION: 
+                                        This does NOT grant an immediate, free attack action outside of the initiative order.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.19.2.2">
+       <title>
+        Consequences for 'Serious Failure'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    A 'Serious Failure' leads to significant repercussions. 
+                                    The GM should choose one or more of the following outcomes:
+
+                                    -   Major Opening for the Opponent: 
+                                        On the opponent's NEXT turn in the initiative order, they gain Great Advantage on their first attack roll against the Acting Combatant.
+                                        This does NOT grant an immediate, free attack.
+
+                                    -   Immediate Self-Inflicted Penalty: 
+                                        The Acting Combatant suffers a concrete tactical disadvantage as a direct result of their own mistake, such as:
+                                        • Being knocked prone or forced into a poor position.
+                                        • Dropping their wielded weapon due to a fumbled grip.
+                                        • Taking minor direct damage from their own misstep (e.g., hitting a wall, stumbling).
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.19.2.3">
+       <title>
+        Consequences for 'Critical Failure' (The Protocol of Catastrophic Failure)
+       </title>
+       <description>
+        A 'Critical Failure' is a disastrous event with immediate, severe consequences. 
+                                    This is the ONLY exception where an opponent may be granted an immediate reaction.
+       </description>
+       <content type="ruleset">
+        <rule id="5.19.2.3.A">
+         <title>
+          Phase 1: Immediate Self-Inflicted Consequence (Choose One)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            The Acting Combatant's action backfires spectacularly. You MUST choose one of the following:
+
+                                            1.  Self-Damage: 
+                                                The character hits themselves or a nearby object, taking damage equal to 50% of their weapon's base damage value.
+
+                                            2.  Weapon Breakage/Loss: 
+                                                The character's weapon durability is significantly reduced (25-50%), or they drop it.
+
+                                            3.  Self-Debuff: 
+                                                The character stumbles badly, applying a 'Debuff' to themselves (e.g., "Off-Balance: Disadvantage on next attack").
+                                            
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="5.19.2.3.B">
+         <title>
+          Phase 2: Immediate Opponent Exploitation (Attack of Opportunity)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            The catastrophic failure creates a major opening that an opponent can immediately exploit.
+
+                                            1.  Grant a Reaction: 
+                                                The opponent directly involved in the failed action gets an IMMEDIATE reaction.
+
+                                            2.  Execute a SINGLE, STANDARD ATTACK: 
+                                                The opponent may use ONE of their standard, basic damaging actions.
+                                                They CANNOT use their most powerful special abilities.
+
+                                            3.  Initiative Unchanged: 
+                                                This reaction does NOT consume the opponent's action on their upcoming turn.
+
+                                            CRITICAL CLARIFICATION:
+                                            This strictly controlled "Attack of Opportunity" is the ONLY circumstance in which a combatant is permitted to make an attack outside of their normal turn. 
+                                            All other failures ('Minor', 'Serious') MUST NOT grant immediate attacks.
+                                           
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.19.3">
+     <title>
+      Output Consistency Requirements for Combat
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - Combat calculations (damage dealt/taken, health changes, status effects applied) are recorded in 'gm_thoughts_markdown'.
+                            - The same combat outcomes MUST be narratively described in 'response' without showing raw numbers or formulas.
+                            - Health changes calculated MUST have a clear narrative cause in 'response'.
+                            - All mechanical advantages/disadvantages gained or lost MUST have a story representation in 'response'.
+                            - If a player character suffers a Wound or Debuff, it MUST be clearly stated in 'response'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.19.4">
+     <title>
+      Implementation Restrictions for GM in Combat
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The Game Master is forbidden to:
+                            - Create convenient or 'deus ex machina' circumstances that prevent legitimate negative consequences for the player.
+                            - Arbitrarily reduce enemy capability, intelligence, or willingness to fight effectively without clear, established narrative reasons 
+                            (e.g., a specific spell effect, a morale break).
+                            - Allow "lucky" or unexplained events to save the player character from the direct results of their failures or enemy actions.
+                            - Interpret rules or outcomes in a way that consistently minimizes negative impacts on the player, thereby reducing challenge.
+                            - Invent external factors that suddenly neutralize failure effects or enemy advantages without justification.
+                            - Unreasonably delay the implementation of mandatory negative consequences.
+                            The goal is a challenging but fair combat experience.
+                            
+                            CRITICAL ENFORCEMENT CLARIFICATION: Combat Fairness Protocol
+                            Game Masters MUST ensure that failure consequences are applied consistently and fairly to ALL combatants without exception.
+                            This means:
+                            - When an ENEMY fails an attack and gets 'Minor Failure', they MUST receive Normal Disadvantage on their next attack (Rule 5.19.2.1)
+                            - When an ENEMY gets 'Serious Failure', they MUST suffer the same penalties as a player would (drop weapon, take self-damage, or grant opponent Great Advantage) (Rule 5.19.2.2)
+                            - When an ENEMY gets 'Critical Failure', they MUST suffer immediate self-inflicted consequences AND grant the player an immediate attack of opportunity (Rule 5.19.2.3)
+                            
+                            The combat system is designed to be challenging but fair. Asymmetric application of failure rules (penalizing players but not enemies) breaks this fundamental principle and creates unfair gameplay.
+                            
+                            MANDATORY LOGGING: When applying failure consequences to any combatant, you MUST log the specific penalty applied in 'gm_thoughts_markdown' to ensure transparency and consistency.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR024 END -->
+</content>
+
+</instructionblock>

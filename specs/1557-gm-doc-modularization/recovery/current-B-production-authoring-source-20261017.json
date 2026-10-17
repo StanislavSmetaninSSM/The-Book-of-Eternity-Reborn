@@ -1,0 +1,291 @@
+{
+  "kind": "B_PRODUCTION_AUTHORING_WIP_STATIC_STOP_NOT_SOURCE_READY",
+  "base": "6b2d5a905022977e9ae4cd1c7b66f700ce2f5f77",
+  "acceptedCausalRed": "current-B-first-causal-red-evidence-independent-review-20261017.md",
+  "sourceScope": "Seven14wholemodules/old2navigators/conditionalCLIrouter; fixed52docSpecs; fiveReadPaths-onlyfactory additions; exactA wrapper/fourafterimages. No game policy/schema/provider/backend changes.",
+  "B_S03": {
+    "origin": "Root preflight of accepted exactID lookup obligation, not newdesign",
+    "ruleIds": 144,
+    "exampleRuleIds": 19,
+    "ordering": "Within each topic originalsourceorder; no ID rename; foreign descendants use actual XML owner",
+    "actualLookupMethod": "ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner",
+    "negativeMethod": "NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody",
+    "negativeCases": [
+      "lost_id",
+      "wrong_alias"
+    ],
+    "physicalProof": "Reader obtains rule IDs from actual owned module XML. Wrongtarget alreadyexists; bothnegative fixtures retain all14modulebytes."
+  },
+  "selection": {
+    "file": "tests/selection.json",
+    "mirror": "tests/selections/1557-gm-doc-block5.json",
+    "categories": 9,
+    "methods": 28,
+    "proposedCases": 78,
+    "native": "NOT_RUN; prior75belongs324 source only",
+    "caseCounts": {
+      "content": 1,
+      "preservation": 19,
+      "reading": 20,
+      "permissionsLinks": 8,
+      "body": 14,
+      "sharedA": 12,
+      "source": 1,
+      "publisher": 1,
+      "physical": 2
+    },
+    "membership": [
+      {
+        "category": "gm-doc-block5-content-boundary",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "project": "unit",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources"
+      },
+      {
+        "category": "gm-doc-block5-delivery-source",
+        "project": "integration",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch"
+      },
+      {
+        "category": "gm-doc-afterlife-package-delivery",
+        "project": "integration",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure"
+      },
+      {
+        "category": "gm-doc-block5-package-negatives",
+        "project": "integration",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries"
+      }
+    ]
+  },
+  "currentBlocker": "FIRSTstatic source binding:9bodies exact but6Valid3Invalid vs7/2; oneoriginalordinal8 differs. No manifestlocator update or diagnosis yet. Raw preserved in current-B-first-authoring-static-stop-20261017.json.",
+  "uncompiledChangedSourcePins": [
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs",
+      "bytes": 2876,
+      "sha256": "854e7ba3f1657f823e624d3ea67d17917fb912b8bd0a534189b3e99f137d5235"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+      "bytes": 19273,
+      "sha256": "55b85f6a8453be93924476ad253f9f3474597d3400a47a9f75c5d511498152fe"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs",
+      "bytes": 18283,
+      "sha256": "3c5b6ad0db79d50e27d27c65d8811d250ec9fbc109e0489b1ba7c19da1e98d2d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "bytes": 12101,
+      "sha256": "7fd803397638bcbca4bdf318fcd6daf7955c28ef97e1f2a5afb9a1cea6ed859e"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 406653,
+      "sha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d"
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 1875,
+      "sha256": "3dd3debe6cda1da72510f36ccbbe08b6359b0874fa1cca10eefb1f0fe0011fef"
+    },
+    {
+      "path": "Examples/E_Block_5_Characteristics_Progression.txt",
+      "bytes": 5647,
+      "sha256": "eb694e5165c5c546c66b4ab615006a6a03df3b13431d35ab6e124a4b1b541ceb"
+    },
+    {
+      "path": "Examples/E_Block_5_Combat_Foundations.txt",
+      "bytes": 4729,
+      "sha256": "129e3db72ff37d75f2072dce94bbd7a72da3f53e4f1c98d28e08d50e681de041"
+    },
+    {
+      "path": "Examples/E_Block_5_Items_Resources.txt",
+      "bytes": 13694,
+      "sha256": "87db53269eaa0ac8be87c1cd43aed697661cec68f4095baba6ebad5c48ca6b77"
+    },
+    {
+      "path": "Examples/E_Block_5_Narrative_Social.txt",
+      "bytes": 236797,
+      "sha256": "59893de741de13f1f5539db7302ffcb89e4de5950943cb61b348ddceeeba6f26"
+    },
+    {
+      "path": "Examples/E_Block_5_Units_Ids.txt",
+      "bytes": 3400,
+      "sha256": "89afded403a8d35c1bc8f2d0c802cc39c5a2ca0e4b64a1f7519955460643d571"
+    },
+    {
+      "path": "Examples/E_Block_5_World_Chronology.txt",
+      "bytes": 5360,
+      "sha256": "b599e3a9d7fbad9186e4e8dae7055d0d6524b38125a5e367c4c0fa23c8c5638a"
+    },
+    {
+      "path": "Examples/E_Block_5_Wounds.txt",
+      "bytes": 8683,
+      "sha256": "6cef5de3fca65095d666691f9ff370607839d0f337523045a945a4a1b2027cd7"
+    },
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 3579,
+      "sha256": "93cd59bcacee180907423f1089f1b5cdf33d4f587c25352941cef954eed5e239"
+    },
+    {
+      "path": "Rules/Block_5_Characteristics_Progression.txt",
+      "bytes": 57135,
+      "sha256": "9d29668294e62898105bf67893e699958213f6b90f84b70a4dc0b62bfd30ea74"
+    },
+    {
+      "path": "Rules/Block_5_Combat_Foundations.txt",
+      "bytes": 64048,
+      "sha256": "ad6dd1f2b36fa0159864af82aae25f0d5009e30b64fb230c44966f2cbcf75c07"
+    },
+    {
+      "path": "Rules/Block_5_Items_Resources.txt",
+      "bytes": 46895,
+      "sha256": "c32387464f9bde9a6020b9c270d6248becabf501515d9fbdc8d6682b40ed1800"
+    },
+    {
+      "path": "Rules/Block_5_Narrative_Social.txt",
+      "bytes": 70298,
+      "sha256": "a6db45113aaa79987de36cd3c8d5f550edcdadadabbb564c5691df20471d3ff0"
+    },
+    {
+      "path": "Rules/Block_5_Units_Ids.txt",
+      "bytes": 13465,
+      "sha256": "8810fb7148ced01d41e61ed2d29bcc0fbd5fcc8bbce544de66038eb3b4a6d252"
+    },
+    {
+      "path": "Rules/Block_5_World_Chronology.txt",
+      "bytes": 12122,
+      "sha256": "dda3c17ce94b8c3056cddc14c6caac361a408d84ca3d38665536d62107518e9d"
+    },
+    {
+      "path": "Rules/Block_5_Wounds.txt",
+      "bytes": 9406,
+      "sha256": "08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42"
+    }
+  ],
+  "sourceAuthoringToolScope": "Approved compiled324purelayout helper exported14modulebytes/router as temporary authoringdata, no tests/producer. B-S03navigator rows generatedfrompinned allRuleIds. Pythonbyteinverse checks55pieces/2sources; actual unchangedextractor is source-only binding. Tool text retained with artifact records, not a new production framework.",
+  "authoringExportHelperText": "$ErrorActionPreference = 'Stop'\n$repo = '/workspace/The-Book-of-Eternity-Reborn-1557'\n$record = Get-Content '/tmp/gm1557-implementation-tools/gm1557-B-corrected-catalog-first-324594a9-20261017/record.json' -Raw | ConvertFrom-Json\n$relative = 'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll'\n$path = Join-Path $repo $relative\n$pin = @($record.binaryAfter | Where-Object path -CEQ $relative)\nif ($pin.Count -ne 1 -or (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin[0].sha256) { throw 'Compiled layout helper pin mismatch' }\n[Environment]::SetEnvironmentVariable('BOE_REPO_ROOT', $repo)\n$assembly = [Reflection.Assembly]::LoadFrom($path)\n$flags = [Reflection.BindingFlags]'Instance,NonPublic'\n$type = $assembly.GetType('BookOfEternityClient.Tests.GmDocumentationBlock5Fixtures', $true)\n$ctor = $type.GetConstructor($flags, $null, [Type[]]@([string]), $null)\n$fixture = $ctor.Invoke(@($repo))\n$docs = $type.GetMethod('CompleteFixture', $flags).Invoke($fixture, @())\n$router = $type.GetProperty('RouterAddition', $flags).GetValue($fixture)\n$encoded = [ordered]@{}\nforeach ($key in @($docs.Keys | Sort-Object)) { $encoded[$key] = [Convert]::ToBase64String($docs[$key]) }\n$output = '/tmp/gm1557-B-approved-layout-authoring-data-20261017.json'\nif (Test-Path $output) { throw 'Authoring export already exists' }\n$result = [ordered]@{ kind='SOURCE_AUTHORING_DATA_NOT_TEST_OR_PRODUCER_EXECUTION'; compiledSource=$record.sourceHead; assemblySha256=$pin[0].sha256; documents=$encoded; routerAddition=$router; limitation='14 module bytes and accepted conditional router only. Old navigator outputs are superseded by approved B-S03 complete-ID lookup in current source.'; helperText=[IO.File]::ReadAllText($PSCommandPath) }\n[IO.File]::WriteAllText($output, ($result | ConvertTo-Json -Depth 12))\nWrite-Output ('SOURCE_AUTHORING_EXPORT ' + $docs.Count + ' documents; no test/producer; ' + $output)\n",
+  "sourceRuntime": "No prep/build/actual after productionauthoring; old2expectedRED retain exact provenance. Publish/recover WIP beforediagnosis; SOURCE notready."
+}

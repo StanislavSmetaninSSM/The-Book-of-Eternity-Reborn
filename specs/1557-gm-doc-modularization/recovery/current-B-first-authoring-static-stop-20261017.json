@@ -1,0 +1,178 @@
+{
+  "kind": "FIRST_SOURCE_AUTHORING_STATIC_CLASSIFICATION_STOP_NOT_TEST_EXECUTION_OR_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T06:34:24.680039+00:00",
+  "baseHead": "6b2d5a905022977e9ae4cd1c7b66f700ce2f5f77",
+  "compiledPureReader": "324594a930dcb3aaf17aaf2441f47193f214957c",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1557-B-moved-existing-extractor-authoring-bindings-20261017.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-extractor-binding-20261017.json.gz",
+      "bytes": 14646,
+      "sha256": "1c628a00231610bb8e50e037529a5d290b20d59f92d04b54f88d0f632ee8362f",
+      "storedSha256": "1b05fa5a2b42700fcccd93079d51ea11b538b878f6ffbf9c0128970b5d0e28ac",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-B-production-authoring-static-20261017.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-production-authoring-byte-check-20261017.json.gz",
+      "bytes": 20038,
+      "sha256": "45f0dcbd7cb78ec114d3883294de3f29239390ee1ddf549d2bc32aa903752249",
+      "storedSha256": "8d72b301b96d0f23fc2c20d7dd5980bf2ca1b03ccca9a5332b1b907b6cccb7f7",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "bodyBindings": [
+    {
+      "sourceOrdinal": 1,
+      "physicalOrdinal": 6,
+      "file": "E_Block_5_Wounds.txt",
+      "line": 21,
+      "bodySha256": "a1fea0dc3de81b607ad412486b2064e295c3a9060337a08e9408391acb2f288c",
+      "bytes": 271,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 2,
+      "physicalOrdinal": 7,
+      "file": "E_Block_5_Wounds.txt",
+      "line": 42,
+      "bodySha256": "cecdd94cd38e862ef1ed42147786f78edbb1c48da6a0320a1b9b200fa9d13a4b",
+      "bytes": 1842,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 3,
+      "physicalOrdinal": 8,
+      "file": "E_Block_5_Wounds.txt",
+      "line": 101,
+      "bodySha256": "7f2974b2f65d31ba468a01f805652042df7ebf8d9df06b982726e54f399b6a74",
+      "bytes": 2093,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 4,
+      "physicalOrdinal": 9,
+      "file": "E_Block_5_Wounds.txt",
+      "line": 160,
+      "bodySha256": "6b4f890cebdaa71eb456dab05c8eeb1528174c8dbab6f3aa85a551a329ec7495",
+      "bytes": 1609,
+      "expectedBefore": "Invalid",
+      "observedAfter": "Invalid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 5,
+      "physicalOrdinal": 1,
+      "file": "E_Block_5_Combat_Foundations.txt",
+      "line": 18,
+      "bodySha256": "50587fcc65827af42adc913c6cdd0623ff526062e1fa43a07cc1c7c643b4cf38",
+      "bytes": 1272,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 6,
+      "physicalOrdinal": 2,
+      "file": "E_Block_5_Combat_Foundations.txt",
+      "line": 50,
+      "bodySha256": "d12c858f9b233dbb50a1697843a530a65dc123175f973c7a6f209eae69c11cb5",
+      "bytes": 476,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 7,
+      "physicalOrdinal": 3,
+      "file": "E_Block_5_Combat_Foundations.txt",
+      "line": 69,
+      "bodySha256": "7e842d8c494aec94fcb5db8ed5b824bb1e58c57edc1b86e0fdcbe997760435db",
+      "bytes": 784,
+      "expectedBefore": "Valid",
+      "observedAfter": "Valid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 8,
+      "physicalOrdinal": 4,
+      "file": "E_Block_5_Units_Ids.txt",
+      "line": 52,
+      "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+      "bytes": 315,
+      "expectedBefore": "Valid",
+      "observedAfter": "Invalid",
+      "bodyExact": true
+    },
+    {
+      "sourceOrdinal": 9,
+      "physicalOrdinal": 5,
+      "file": "E_Block_5_Units_Ids.txt",
+      "line": 70,
+      "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
+      "bytes": 373,
+      "expectedBefore": "Invalid",
+      "observedAfter": "Invalid",
+      "bodyExact": true
+    }
+  ],
+  "mismatches": [
+    {
+      "sourceOrdinal": 8,
+      "physicalOrdinal": 4,
+      "file": "E_Block_5_Units_Ids.txt",
+      "line": 52,
+      "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+      "bytes": 315,
+      "expectedBefore": "Valid",
+      "observedAfter": "Invalid",
+      "bodyExact": true
+    }
+  ],
+  "observed": {
+    "total": 9,
+    "Valid": 6,
+    "Invalid": 3
+  },
+  "required": {
+    "total": 9,
+    "Valid": 7,
+    "Invalid": 2
+  },
+  "manifest": {
+    "changed": false,
+    "bytes": 192331,
+    "sha256": "d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f",
+    "twoLocatorUpdate": "NOT_PERFORMED; precondition assertion stopped before editing manifest"
+  },
+  "authoring": {
+    "modules": 14,
+    "compactNavigators": 2,
+    "originalRuleLookupIds": 144,
+    "originalExampleRuleLookupIds": 19,
+    "conditionalRouter": true,
+    "docSpecs": 52,
+    "profileReadOnlyFactories": 5,
+    "changedExistingAAfterImages": [
+      "N006",
+      "N007",
+      "N009",
+      "N010"
+    ]
+  },
+  "scope": "All9snippetbodies/hashes exact, oneclassification differs. No claim of broken payload or diagnosed cause. Preserve firstraw before diagnosis/correction; do not alter extractor/guards/exemption semantics. New source UNCOMPILED; no test/producer occurred in source authoring.",
+  "nativeHistory": {
+    "executedB": 2,
+    "passedB": 0,
+    "expectedFailedB": 2,
+    "independentFirstCausalRedAccepted": true
+  },
+  "next": "Publish/readback/recover this uncompiled production WIP before causal source diagnosis/fix; fresh preparation and runtime HELD.",
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime,subprocess\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');f=r/'specs/1557-gm-doc-modularization';rec=f/'recovery';files=[]\nfor source,name in [('/tmp/gm1557-B-moved-existing-extractor-authoring-bindings-20261017.json','current-B-first-authoring-extractor-binding-20261017.json.gz'),('/tmp/gm1557-B-production-authoring-static-20261017.json','current-B-first-production-authoring-byte-check-20261017.json.gz')]:\n p=Path(source);b=p.read_bytes();z=gzip.compress(b,mtime=0);dest=rec/name;assert not dest.exists();dest.write_bytes(z);files.append(dict(rawPath=source,storedPath=str(dest.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nm=json.loads((f/'block5-content-map.json').read_text());actual=json.loads(Path('/tmp/gm1557-B-moved-existing-extractor-authoring-bindings-20261017.json').read_text())['snippets'];bindings=[]\nfor old in m['actualExistingExtractor']['rows']:\n matches=[x for x in actual if x['file']==Path(old['destination']).name and x['kind']==old['kind'] and x['bodySha256']==old['bodySha256'] and x['utf8Bytes']==old['utf8Bytes']];assert len(matches)==1\n x=matches[0];bindings.append(dict(sourceOrdinal=old['ordinal'],physicalOrdinal=x['physicalOrdinal'],file=x['file'],line=x['line'],bodySha256=x['bodySha256'],bytes=x['utf8Bytes'],expectedBefore=old['expected'],observedAfter=x['expected'],bodyExact=True))\nassert len(actual)==len(bindings)==9 and sum(x['expected']=='Valid' for x in actual)==6 and sum(x['expected']=='Invalid' for x in actual)==3\nmismatches=[x for x in bindings if x['expectedBefore']!=x['observedAfter']];assert len(mismatches)==1 and mismatches[0]['sourceOrdinal']==8\nmanifest=(r/'Examples/example_validation_manifest.json').read_bytes();assert hashlib.sha256(manifest).hexdigest()=='d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f'\npacket=dict(kind='FIRST_SOURCE_AUTHORING_STATIC_CLASSIFICATION_STOP_NOT_TEST_EXECUTION_OR_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),baseHead=subprocess.check_output(['git','rev-parse','HEAD'],cwd=r).decode().strip(),compiledPureReader='324594a930dcb3aaf17aaf2441f47193f214957c',files=files,bodyBindings=bindings,mismatches=mismatches,observed=dict(total=9,Valid=6,Invalid=3),required=dict(total=9,Valid=7,Invalid=2),manifest=dict(changed=False,bytes=len(manifest),sha256=hashlib.sha256(manifest).hexdigest(),twoLocatorUpdate='NOT_PERFORMED; precondition assertion stopped before editing manifest'),authoring=dict(modules=14,compactNavigators=2,originalRuleLookupIds=144,originalExampleRuleLookupIds=19,conditionalRouter=True,docSpecs=52,profileReadOnlyFactories=5,changedExistingAAfterImages=['N006','N007','N009','N010']),scope='All9snippetbodies/hashes exact, oneclassification differs. No claim of broken payload or diagnosed cause. Preserve firstraw before diagnosis/correction; do not alter extractor/guards/exemption semantics. New source UNCOMPILED; no test/producer occurred in source authoring.',nativeHistory=dict(executedB=2,passedB=0,expectedFailedB=2,independentFirstCausalRedAccepted=True),next='Publish/readback/recover this uncompiled production WIP before causal source diagnosis/fix; fresh preparation and runtime HELD.',helperText=Path(__file__).read_text())\n(rec/'current-B-first-authoring-static-stop-20261017.json').write_text(json.dumps(packet,indent=2)+'\\n')\n# Scoped new navigator guard ownership; same nine categories, three necessary cases only.\np=r/'tests/categories.json';raw=p.read_text();needle='\"id\": \"gm-doc-block5-preservation\"';a=raw.rfind('{',0,raw.index(needle));o,b=json.JSONDecoder().raw_decode(raw,a);o['selectors'][0]['tests']+=['BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner','BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody'];o['responsibility']+=' B-S03 adds actual144/19ID navigator-to-physicalXML lookup and two positive-seeded lostforeignID/wrongexistingtarget alias negatives with allmodulebytesunchanged.';raw=raw[:a]+json.dumps(o,ensure_ascii=False,indent=2).replace('\\n','\\n    ')+raw[b:];p.write_text(raw)\nfor rel in ['tests/selection.json','tests/selections/1557-gm-doc-block5.json']:\n p=r/rel;j=json.loads(p.read_text())\n for s in j['selections']:\n  if s['category']==o['id']:s['reason']=o['responsibility']\n p.write_text(json.dumps(j,ensure_ascii=False,indent=2)+'\\n')\ncs={x['id']:x for x in json.loads((r/'tests/categories.json').read_text())['categories']};sel=json.loads((r/'tests/selection.json').read_text())['selections'];methods=[dict(category=s['category'],project=owner['project'],method=method) for s in sel for owner in cs[s['category']]['selectors'] for method in owner['tests']];assert len(methods)==len({x['method'] for x in methods})==28\nchanged=sorted(set(subprocess.check_output(['git','diff','--name-only'],cwd=r).decode().splitlines()+list(json.loads(Path('/tmp/gm1557-B-approved-layout-authoring-data-20261017.json').read_text())['documents'])+['BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs']))\npins=[]\nfor path in changed:\n if path.startswith(('Rules/','Examples/','BookOfEternityClient/','BookOfEternityClient.TestSupport/','BookOfEternityClient.Tests/')):\n  p=r/path;v=p.read_bytes();pins.append(dict(path=path,bytes=len(v),sha256=hashlib.sha256(v).hexdigest()))\nsourcePacket=dict(kind='B_PRODUCTION_AUTHORING_WIP_STATIC_STOP_NOT_SOURCE_READY',base=packet['baseHead'],acceptedCausalRed='current-B-first-causal-red-evidence-independent-review-20261017.md',sourceScope='Seven14wholemodules/old2navigators/conditionalCLIrouter; fixed52docSpecs; fiveReadPaths-onlyfactory additions; exactA wrapper/fourafterimages. No game policy/schema/provider/backend changes.',B_S03=dict(origin='Root preflight of accepted exactID lookup obligation, not newdesign',ruleIds=144,exampleRuleIds=19,ordering='Within each topic originalsourceorder; no ID rename; foreign descendants use actual XML owner',actualLookupMethod='ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner',negativeMethod='NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody',negativeCases=['lost_id','wrong_alias'],physicalProof='Reader obtains rule IDs from actual owned module XML. Wrongtarget alreadyexists; bothnegative fixtures retain all14modulebytes.'),selection=dict(file='tests/selection.json',mirror='tests/selections/1557-gm-doc-block5.json',categories=9,methods=28,proposedCases=78,native='NOT_RUN; prior75belongs324 source only',caseCounts=dict(content=1,preservation=19,reading=20,permissionsLinks=8,body=14,sharedA=12,source=1,publisher=1,physical=2),membership=methods),currentBlocker='FIRSTstatic source binding:9bodies exact but6Valid3Invalid vs7/2; oneoriginalordinal8 differs. No manifestlocator update or diagnosis yet. Raw preserved in current-B-first-authoring-static-stop-20261017.json.',uncompiledChangedSourcePins=pins,sourceAuthoringToolScope='Approved compiled324purelayout helper exported14modulebytes/router as temporary authoringdata, no tests/producer. B-S03navigator rows generatedfrompinned allRuleIds. Pythonbyteinverse checks55pieces/2sources; actual unchangedextractor is source-only binding. Tool text retained with artifact records, not a new production framework.',authoringExportHelperText=Path('/tmp/gm1557-B-export-approved-layout.ps1').read_text(),sourceRuntime='No prep/build/actual after productionauthoring; old2expectedRED retain exact provenance. Publish/recover WIP beforediagnosis; SOURCE notready.')\n(rec/'current-B-production-authoring-source-20261017.json').write_text(json.dumps(sourcePacket,indent=2)+'\\n')\nsection='''## Block B coherent production authoring WIP; FIRST static classification stop (2026-10-17)\n\nRoot released minimal implementation after accepted2FIRST causal RED. The current uncompiled draft materializes14complete paired modules and compact old2XML/context navigators, with144/19exact ID lookup in original order within each owner, including foreign IDs. All55payload/framing pieces reconstruct the two frozen originals byte-for-byte; all14modules parse as XML with exact144+19ordered IDs. Conditional router/headers, daemon fixed52inventory and five narrow read-only profile additions are applied. Shared A CLIwrapper and exact N006/N007/N009/N010 after-images are truthfully updated; all existing A/D01 reading restrictions and gameplay/write fields remain intact. Packaging wildcards already cover newfiles; no csproj/gameplay change. [Implementation/source packet](recovery/current-B-production-authoring-source-20261017.json) records root B-S03 navigator extension, actualXML lookup1 +lostID/wrongexistingalias2 negatives with allmodulebytes retained; proposed current9category membership becomes28methods/78cases, native unobserved.\n\n**FIRST static source-binding STOP, not test execution:** [exact first raw/helper and artifact chains](recovery/current-B-first-authoring-static-stop-20261017.json) capture unchanged actual flat extractor reading9moved JSON bodies. All9body hashes/lengths are exact, but classification is6Valid3Invalid rather than7Valid2Invalid; originalordinal8 (Units fragment body00f13838\u2026) becameInvalid. No cause is inferred from that fact. The authoring precondition assertion stopped BEFORE changing the manifest; entire accepted manifest remains192331bytes/SHA`d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f`, old2locators stillpending. This is a real source-preservation qualification gap, not a broken-body claim or native RED.\n\nPublish/readback/fullchanged-path recovery before bounded classification/locator/owned-context diagnosis and correction. **Fresh preparation, allGREEN/physical actuals and further source fixes held at this first-stop checkpoint.** Causal2expectedFAIL/0PASS and all initialSOURCE/prep records remain unchanged; no retry or newtest/producer has run. T021 remains the only checked B task; T022\u2013T029 incomplete until actual closure/verification. No extractor/schema/exemption/assertion weakening, broad A replay or game/CI/provider/HOT/M3/main action.\n\n'''\nfor name in ['plan.md','tasks.md','spec.md']:\n p=f/name;t=p.read_text();i=t.index('\\n## ');p.write_text(t[:i+1]+section+t[i+1:])\np=f/'quickstart.md';t=p.read_text();i=t.index('\\n## ');q='''## Current uncompiled B production WIP \u2014 FIRST static binding stop\n\n[Source/selection packet](recovery/current-B-production-authoring-source-20261017.json) records14wholemodules/2compactIDnavigators,52docSpecs/fiveReadPaths-onlyprofiles, exactsharedAafterimages and B-S03 lookupcontrols; proposed9categories/28methods/78cases. [FIRST static stop](recovery/current-B-first-authoring-static-stop-20261017.json): all9movedJSONbodies exact but classes6Valid3Invalid vs7/2; manifestunchanged/2locatorspending. No tests/producer or freshbuild after authoring. Publish/recover before diagnosis/fix; all runtime held. Old causal2FAIL remain accepted separately, not currentGREEN.\n\n''';p.write_text(t[:i+1]+q+t[i+1:])\nprint('FROZEN_FIRST_AUTHORING_STATIC_STOP2artifactchains/9exactbodies/1classmismatch;current9categories28methods78PROPOSAL;no prep/test/producer')\n"
+}

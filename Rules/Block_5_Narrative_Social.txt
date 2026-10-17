@@ -1,0 +1,1050 @@
+<!-- GM1557 Block5 Narrative_Social
+Read when: Any action/narrative outcome, NPC reaction or non-trivial NPC cognition/social strategy under the actual current contract.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](Block_5.txt) and [example context](../Examples/E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if an actual characteristic check is required: [rules](Block_5_Characteristics_Progression.txt) [examples](../Examples/E_Block_5_Characteristics_Progression.txt); Only if actual NPC creation is required: [rules](Block_5_Units_Ids.txt) [examples](../Examples/E_Block_5_Units_Ids.txt); Only if actual combat is required: [rules](Block_5_Combat_Foundations.txt) [examples](../Examples/E_Block_5_Combat_Foundations.txt).
+Worked examples: [paired examples](../Examples/E_Block_5_Narrative_Social.txt); [paired rules](Block_5_Narrative_Social.txt).
+-->
+<instructionblock id="5">
+<content type="ruleset">
+<!-- GM1557-B BR016 BEGIN -->
+  <rule id="5.12">
+   <title>
+    Plot Justification and Action Success Influence Overview
+   </title>
+   <description>
+    This section defines how narrative context (Plot Necessity) and the outcome of player actions (Action Check Result) can influence the properties and acquisition of game elements, such as items (their quality and bonuses) and skills (their acquisition, rarity, or initial mastery).
+                    These rules often take precedence over base generation templates or default values.
+   </description>
+   <content type="ruleset">
+    <rule id="5.12.1">
+     <title>
+      Core Principle
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player is due to receive a new item/skill or modify an existing one (as per relevant sections like #10 for Items, #7 for Active Skills, #8 for Passive Skills), the GM must consider plot justification and the result of relevant player action checks. 
+                            These factors can alter an element’s final properties (e.g., item 'quality'/'bonuses', skill 'rarity'/'baseEffectValue'/'initialMasteryLevel', etc.) beyond what a base template or standard progression might suggest.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.12.2">
+     <title>
+      Conditions for Evaluation
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Before finalizing the properties of an item or skill reward, evaluate these conditions:
+
+                            1.  Plot Necessity: 
+                                Determine if the current plot, narrative context, or specific location/event demands an item or skill of a particular power level, rarity, or with specific properties.
+                                Example (Item): A legendary blacksmith forges an artifact as a major quest reward; it cannot be 'Common'.
+                                Example (Skill): After intense spiritual training with a master, the player learns a new 'Rare' or 'Epic' meditation skill, not a 'Common' one.
+
+                            2.  Action Check Result: 
+                                If acquiring/creating the item or learning/enhancing the skill is tied to a player action that involved an action check (e.g., deciphering an ancient tome, successfully training under duress, a breakthrough in personal development after a critical battle), 
+                                the success level of that action check MUST influence the final outcome.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.12.3">
+     <title>
+      Influence on ITEMS (Quality &amp; Bonuses)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1. High Plot Significance for Items:
+                            If the plot or narrative context explicitly indicates an item should be of high quality or special significance:
+                                a) Minimum Quality: Determined by GM based on plot, not lower than 'Rare'. 
+                                For pivotal items, should be 'Epic' or higher. (Refer to #5.9 Rarity Tiers Overview).
+                                
+                                b) Override Template: Overrides lower quality from the item template list used for loot generation.
+                                
+                                c) Enhanced Bonuses: MUST be added/strengthened to align with plot significance and new quality. 
+                                (Refer to #5.9 for bonus guidelines per rarity). The number of bonuses should be increased: 'Rare' min 3, 'Epic' min 4, 'Legendary' min 6, 'Unique' min 12.
+                                
+                                d) Description: Item 'description' MUST reflect its special nature.
+                                
+                                e) Logging: Record reasons in 'gm_thoughts_markdown'.
+
+                            2. No Specific Plot Significance for Items:
+                            Use base quality from the item template list, then evaluate Action Check Result (#5.12.5).
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.12.4">
+     <title>
+      Influence on SKILLS (Acquisition, Rarity, Initial Mastery, Base Effects)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1. High Plot Significance for Skills:
+                            If the plot or narrative context strongly suggests the acquisition or enhancement of a particularly powerful or unique skill (e.g., mastering an ancient technique after a long quest, a divine blessing granting a new power, a significant personal breakthrough):
+                                a) Skill Rarity: The GM should assign a higher 'rarity' to the new or upgraded skill 
+                                (e.g., 'Rare', 'Epic', or even 'Legendary' if contextually appropriate, refer to #5.9).
+                                
+                                b) Base Effect Enhancement: For new or upgraded skills, their base 'value' and/or 'duration' (within their 'combatEffect' object) should be set at the higher end of the range for their (potentially upgraded) rarity, 
+                                or even slightly above it for truly exceptional circumstances.
+                                
+                                c) Initial Mastery Level: A newly acquired skill of high plot significance might start with an initial 'masteryLevel' greater than 1 (e.g., 2 or 3), as per #7.4.2 or #8.3.1.
+                                
+                                d) Unique Properties: The skill might gain unique narrative or mechanical properties described in its 'skillDescription' or 'effectDetails'.
+                                
+                                e) Logging: Record reasons for skill enhancement/acquisition in 'gm_thoughts_markdown'.
+
+                            2. Standard Skill Acquisition/Enhancement:
+                            If a skill is gained through normal progression (e.g., standard level-up reward as per #5.10.3, basic training) without extraordinary plot significance, 
+                            its rarity and base effects should follow standard guidelines for its type and the character's current capabilities. 
+                            Then evaluate Action Check Result (#5.12.5).
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.12.5">
+     <title>
+      Influence of Action Check Results (on Item/Skill Properties)
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            This applies if acquiring/creating the item or learning/enhancing the skill was the direct result of a player action that involved an action check.
+                            Review the 'Result' of the relevant action check from 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="5.12.5.1">
+       <title>
+        Outcome: 'Critical Success'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - For Items: Increase 'quality' by 2 tiers. Add 1-2 additional/improved 'bonuses'. Max quality 'Unique'.
+                                    - For Skills (New or Upgraded): 
+                                        - Increase 'rarity' by 1-2 tiers (e.g., a 'Common' skill might become 'Rare').
+                                        - Significantly enhance base 'value'/'duration' of effects for its new rarity.
+                                        - May grant an additional starting 'masteryLevel' (e.g., +1 to what it would normally be).
+                                    - Logging: Record enhancement due to Critical Success.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.12.5.2">
+       <title>
+        Outcome: 'Full Success'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - For Items: Increase 'quality' by 1 tier. 
+                                    Add 1 additional/moderately improved 'bonus'. Max quality usually 'Legendary'.
+                                    - For Skills (New or Upgraded):
+                                        - May increase 'rarity' by 1 tier (e.g., 'Common' to 'Uncommon').
+                                        - Moderately enhance base 'value'/'duration' of effects.
+                                    - Logging: Record enhancement due to Full Success.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.12.5.3">
+       <title>
+        Outcomes: 'Partial Success', 'Minor Failure', 'Serious Failure', 'Critical Failure'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - For Items: Retain 'quality' and 'bonuses' as determined by base template and plot justification (#5.12.3). 
+                                    No further change due to these action results.
+                                    - For Skills: If a skill was meant to be learned/upgraded, these results usually mean the attempt failed or the skill was learned with flaws/lesser effect (GM discretion, must be narrated). 
+                                    A new skill might not be learned at all on a significant failure. 
+                                    No enhancement to rarity or base effects beyond what was narratively appropriate for the attempt itself.
+                                    - Logging: Record that properties were not improved or skill acquisition failed/was flawed due to the check result.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.12.6">
+     <title>
+      Order of Rule Application and Final Verification (for Items and Skills)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Base: Determine base properties (item 'quality'/bonus 'slots' from template; skill 'rarity'/base effects from standard generation rules).
+                            2.  Plot: Apply Plot Justification rules (#5.12.3 for items, #5.12.4 for skills). If plot dictates higher minimums/enhancements, use those as the new base.
+                            3.  Action Check: Apply Influence of Action Check Results (#5.12.5) to the properties determined in step 2.
+                            4.  Conflict Resolution: Prioritize the higher, more beneficial outcome for the player that is narratively consistent.
+                            5.  Finalization: Ensure the final properties (in 'UpdateInventory', 'activeSkillChanges', 'passiveSkillChanges', etc.) align with this process.
+                            6.  Logging: Record all changes and reasons in 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR016 END --><!-- GM1557-B BR021 BEGIN -->
+  <rule id="5.17">
+   <title>
+    Narrative Outcome Guidelines by Result Level
+   </title>
+   <description>
+    This section provides guidelines for narrating the general outcomes of an action check based on its final 'Result' level (determined in InstructionBlock '12'). 
+                    The narrative in 'response' must clearly reflect the degree of success or failure.
+   </description>
+   <content type="ruleset">
+    <rule id="5.17.1">
+     <title>
+      For 'Critical Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character achieves their goal exceptionally well, often exceeding expectations or achieving an unforeseen positive side-effect.
+                            - Ensure the 'response' describes this exceptional outcome, including the intended success PLUS additional positive effects or unforeseen benefits. These should be significant but proportionate to the action.
+                            - Possible narrative elements: 
+                                Gaining unexpected advantages, receiving bonus information/rewards beyond what was sought, deeply impressing NPCs, 
+                                creating significant positive opportunities for future scenes, making subsequent related tasks easier, 
+                                or achieving a flawless execution.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.17.2">
+     <title>
+      For 'Full Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character completely achieves their intended goal as planned.
+                            - Describe the successful completion of the action in 'response' with all expected positive effects materializing.
+                            - Possible narrative elements: 
+                                Gaining necessary information, successfully performing the task as intended, NPCs reacting favorably as would be reasonably expected,
+                                situation resolved according to the player's plan.
+                           
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.17.3">
+     <title>
+      For 'Partial Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character achieves their main goal, but with noticeable drawbacks, minor complications, or an incomplete result.
+                            - The 'response' MUST include both the achieved part of the goal AND at least one clear negative consequence or complication.
+                            - Examples of complications: 
+                                The success is less effective than hoped for (e.g., partial information gained, lock picked but noisily); 
+                                it takes more time, effort, or resources than anticipated; 
+                                a minor item breaks or loses durability; 
+                                it creates slight suspicion or a minor future inconvenience;
+                                a small, non-critical piece of information leaks to unintended parties.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.17.4">
+     <title>
+      For 'Minor Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character fails to achieve their primary goal, resulting in minor but tangible negative consequences.
+                            - The 'response' MUST clearly state the failure AND include one or more minor negative outcomes.
+                            - Examples of consequences: 
+                                Wasting some time or resources; 
+                                ending up in a slightly disadvantageous (but not critical) position; 
+                                suffering minor fatigue, a clumsy misstep, or a very slight injury; minor item damage;
+                                unintentionally alerting someone nearby to their presence or attempt; 
+                                a small dip in reputation with an involved NPC.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.17.5">
+     <title>
+      For 'Serious Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character fails significantly, leading to considerable and immediate negative consequences that worsen their situation.
+                            - The 'response' MUST convey a clear failure AND incorporate several significant negative impacts, directly affecting the character, their resources, or their standing.
+                            - Examples of consequences: 
+                                Taking notable (but not necessarily crippling) damage; 
+                                suffering a hindering temporary status effect (like being winded, disoriented, or having a minor debuff applied); 
+                                significant item damage or malfunction of a key tool;
+                                being placed in a tactically poor or socially awkward position; 
+                                clearly alerting nearby enemies or authorities; 
+                                incurring moderate reputation damage; 
+                                opponents gaining a clear, immediate advantage. The situation should noticeably worsen for the player.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.17.6">
+     <title>
+      For 'Critical Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The player character fails catastrophically, resulting in the worst plausible outcome with potentially cascading or lasting negative effects. This should feel like a major setback.
+                            - The 'response' MUST depict a disastrous failure AND include multiple severe negative consequences.
+                            - Examples of consequences: 
+                                Taking heavy damage; 
+                                suffering a serious and debilitating status effect; 
+                                breaking an important or valuable item; 
+                                being captured, critically injured, or put in a severely compromised position; 
+                                enemies gaining a decisive and potentially overwhelming advantage; 
+                                severe and widespread reputation loss;
+                                potentially closing off certain beneficial story paths or making future related tasks much harder or impossible.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR021 END --><!-- GM1557-B BR022 BEGIN -->
+  <rule id="5.18">
+   <title>
+    NPC Reaction Guidelines by Result Level (Influenced by Relationship Level)
+   </title>
+   <description>
+    This section provides guidelines for narrating NPC reactions when a player's action check involving interaction with them results in a specific success or failure level.
+                    The NPC's response in the narrative MUST directly and clearly reflect the calculated 'Result'.
+                    Crucially, the NPC's current 'relationshipLevel' with the Player Character (see InstructionBlock '19') significantly modifies these baseline reactions.
+   </description>
+   <content type="ruleset">
+    <rule id="5.18.0">
+     <title>
+      Influence of Relationship Level on Reactions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            CRITICAL DIRECTIVE: The NPC's reaction is fundamentally influenced by their 'relationshipLevel' with the Player Character.
+                            You MUST use the full -400 to +400 scale and its corresponding narrative tiers as defined in 'InstructionBlock id="19", Rule id="19.4.A: The 800-Point Relationship Scale Protocol'.
+                            That protocol is the single source of truth for interpreting relationship levels.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.1">
+     <title>
+      NPC Reaction to 'Critical Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC reacts exceptionally favorably. They might be deeply impressed, very grateful, thoroughly charmed, genuinely awed, 
+                            or even positively intimidated, depending on the nature of the player's action.
+
+                            - Ensure their response goes significantly beyond the expected positive outcome. 
+                            They might offer substantial extra help unsolicited, volunteer crucial or secret information, grant unexpected access or rare privileges, 
+                            express strong admiration or loyalty, become a staunch long-term ally, or offer a valuable and unexpected reward or unique opportunity.
+
+                            - Modified by Relationship: High relationship amplifies this; low relationship might make them grudgingly impressed but still wary.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.2">
+     <title>
+      NPC Reaction to 'Full Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC reacts positively and appropriately to the successful action, as one would reasonably expect.
+
+                            - Describe them providing the requested information accurately and completely, cooperating fully as requested, 
+                            agreeing to the player's terms within normal limits, or expressing clear approval/satisfaction. 
+                            Their attitude should be generally helpful, agreeable, or pleased.
+
+                            - Modified by Relationship: Low relationship might mean cooperation is curt or given with reservations.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.3">
+     <title>
+      NPC Reaction to 'Partial Success'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC's reaction is mixed, hesitant, or comes with strings attached, reflecting the partial nature of the success.
+
+                            - They might provide only basic or incomplete information, cooperate reluctantly or with reservations, 
+                            agree to a lesser version of the request, demand a minor favor or compensation in return, seem slightly suspicious or unimpressed, 
+                            or their cooperation might inadvertently cause a minor complication. 
+                            Their attitude is often neutral or guarded.
+
+                            - Modified by Relationship: High relationship may lead to them overlooking the "partial" aspect and treating it as a full success, 
+                            or offering to help bridge the gap. Low relationship makes them focus on the failure part.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.4">
+     <title>
+      NPC Reaction to 'Minor Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC reacts unfavorably, generally refusing the player's immediate goal or request.
+
+                            - Describe their negative reaction clearly. They might refuse the request outright (but perhaps politely or with a simple reason), 
+                            give vague or unhelpful information, become suspicious or annoyed, require significant convincing or a much larger incentive to reconsider, 
+                            or simply dismiss the player. The interaction stalls or ends on a slightly negative note.
+
+                            - Modified by Relationship: High relationship may lead to a gentle refusal or an explanation, possibly an alternative. 
+                            Low relationship leads to harsher refusal or annoyance.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.5">
+     <title>
+      NPC Reaction to 'Serious Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC reacts very negatively, potentially becoming hostile, uncooperative, or taking action against the player's interests.
+
+                            - Their response should demonstrate clear disapproval, distrust, anger, or obstruction. 
+                            They might lie or deliberately mislead the player, refuse any further interaction, threaten the player, 
+                            alert guards or their allies to the player's actions/intentions, spread negative rumors, or actively create obstacles. 
+                            The relationship likely sours significantly.
+
+                            - Modified by Relationship: High relationship might lead to disappointment rather than hostility, but cooperation ceases. 
+                            Low relationship greatly exacerbates this.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.6">
+     <title>
+      NPC Reaction to 'Critical Failure'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - The NPC reacts with maximum plausible hostility or causes a disastrous social/interpersonal outcome. 
+                            The failure should have severe and potentially lasting negative repercussions with this NPC and possibly their faction or associates.
+                            
+                            - Depict a catastrophic failure in interaction. The NPC might become a dedicated enemy, immediately become aggressive 
+                            or call for the player's arrest/attack, reveal critical information about the player to their adversaries, 
+                            permanently ruin the player's reputation within a community or faction, or trigger a large-scale negative social event 
+                            (e.g., a riot, a declaration of enmity).
+
+                            - Modified by Relationship: Even high relationship levels will be severely damaged, potentially leading to betrayal or deep sorrow. 
+                            Low relationship guarantees a disastrous outcome.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR022 END --><!-- GM1557-B BR023 BEGIN -->
+  <rule id="5.18.B">
+   <title>
+    CRITICAL DIRECTIVE &amp; ABSOLUTE LAW 14: The Protocol of Strategic NPC Response (The NPC's Brain 2.0)
+   </title>
+   <description>
+    This is the master protocol for simulating an NPC's thought process and determining their COURSE OF ACTION. 
+                    It runs AFTER the initial 'Result' of any social check is determined, and BEFORE any proactive action is taken. 
+                    It mandates that an NPC's action must be a logical, strategic choice based on multiple factors, not just a blind reaction.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    As per ABSOLUTE LAW 14, you are OBLIGATED to execute this protocol for ANY non-trivial NPC decision. 
+                    The entire process, from the Preliminary Checks to the Strategy Evaluation Matrix, MUST be documented in 'gm_thoughts_markdown'.
+                    This log is your proof that the NPC has "thought" before acting. Failure to provide this detailed log is a critical error.                     
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="5.18.B.pre-check-0">
+     <title>
+      PRELIMINARY CHECK 0: The Incontrovertible Fact Litmus Test (Law 12.A)
+     </title>
+     <description>
+      This is an absolute filter that runs before any other cognitive process.
+                            Its purpose is to distinguish objective reality from opinions that can be contested.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+        
+                            You MUST first analyze the statement the NPC is reacting to.
+
+                            -   IF THE STATEMENT IS AN INCONTROVERTIBLE FACT (e.g., "The city is on fire," "You have my purse in your hand"):
+                                -   You are STRICTLY FORBIDDEN from initiating an Action Check to determine if the NPC "believes" this fact. The NPC is obligated to accept it as true.
+                                -   The "Strategic NPC Response Protocol" is used in this case NOT to assess truthfulness, but to determine the *emotional and strategic REACTION* to this fact.
+
+                            -   IF THE STATEMENT IS NOT A FACT (it is an opinion, request, lie, or theory):
+                                -   This law does not apply. Proceed with the standard execution of the protocol, starting with PRELIMINARY CHECK 1.
+        
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.D.0">
+     <!-- Re-using the ID for logical consistency with the main rule block -->
+     <title>
+      PRELIMINARY CHECK 1: The Protocol of Justified Knowledge (ABSOLUTE LAW 14.A)
+     </title>
+     <description>
+      This is the mandatory first gate of NPC cognition. An NPC cannot think about what they do not know. 
+                            This check ensures adherence to the Presumption of Innocence.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Before proceeding to any other step, you MUST execute the full "Protocol of Justified Knowledge" as defined in Rule #19.D.0, which includes:
+                            -   **Information Audit:** What is the information trigger for this thought process?
+                            -   **Location Audit:** Where is the NPC? Where did the information originate?
+                            -   **Proximity Check:** Is the NPC in the same location? If NO, you MUST apply ABSOLUTE LAW 7.B (Speed of News) and halt here if the information has not arrived.
+                            -   **Burden of Proof Check (ABSOLUTE LAW 14.A):** If the information is about a player's secret action, you MUST verify how the NPC acquired this knowledge. 
+                                If you cannot prove it, the NPC is considered IGNORANT, and their thought process on this specific topic STOPS HERE.
+                            
+                            You MUST log the outcome of this check. If the NPC cannot know the information, their "brain" process for this topic STOPS.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.pre-check-2">
+     <title>
+      PRELIMINARY CHECK 2: The Character Consistency Audit (The "Who Am I?" Clause - EXPANDED)
+     </title>
+     <description>
+      This is a mandatory pre-check to anchor the NPC's upcoming decision in their core identity.
+                            It is the primary defense against erratic, out-of-character behavior.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Before evaluating strategies, you MUST retrieve and log the NPC's full psychological profile from the Context. This is not optional.
+                            Your log MUST include a section formatted exactly like this:
+
+                            ### Аудит Консистентности Характера ###
+
+                            - **Мировоззрение:** [e.g., Lawful Neutral]
+
+                            - **Архетип Личности:** [e.g., "Прагматичный капитан наемников"]
+
+                            - **Культурные Устои (from 'culturalLayer'):** 
+                            [List 1-2 key values or taboos, e.g., "Табу: Ложь соклановцу непростительна.", "Ценность: Честь превыше всего."]
+
+                            - **Ключевые Черты Личности (from 'personalityTraits'):**
+                            [List the top 2-3 traits with the highest 'value', e.g., "Гордость (Значение: 8)", "Цинизм (Значение: 7)"].
+
+                            - **Основные Цели:** [e.g., "Защитить свою роту, выполнить контракт"]
+
+                            - **Текущее Отношение к Игроку:** [e.g., "Доверенный Союзник (Rep: 150)"]
+
+                            - **Аудит Социальной Иерархии (Закон 21.2.7):**
+                              - Мой ранг во фракции: [Ранг НПС].
+                              - Ранг игрока в моей фракции: [Ранг игрока].
+                              - Вывод: [Например: "Игрок — мой прямой начальник. Я обязан выполнять его приказы, если они не противоречат Уставу."]
+
+                            You are now OBLIGATED to ensure that the strategy you select in the matrix below is a logical extension of THESE documented traits.
+                            A "Pragmatic Mercenary" with a "Cynicism" trait of 7 will not suddenly make a purely altruistic decision without an extremely compelling, world-altering reason (which must also be logged).
+
+                            Furthermore, you are OBLIGATED to include the Social Hierarchy Audit in this analysis if both the NPC and the player are members of the same faction. The conclusion from this audit (e.g., "The Player is my subordinate") must be a key factor when evaluating the plausibility of strategies in Step 3. For an NPC with a 'culturalStance' of 'Conformist', open defiance of a superior would have 'Impossible' plausibility.
+        
+                            ]]>
+     </content>
+    </rule>
+    <rule id="LAW.14.B.2.pre-check-3">
+     <title>
+      PRELIMINARY CHECK 3: The Attraction Filter (ABSOLUTE LAW 14.B)
+     </title>
+     <description>
+      This mandatory check applies the NPC's subconscious, instinctual reaction to the target's appearance before any logical thought occurs.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You must now execute the full "Attraction Filter" protocol as defined in ABSOLUTE LAW 14.B (v2.0). This includes:
+                            -   **The "Sexual Orientation" Check.**
+                            -   **The Attractiveness Gradient Calculation.**
+                            -   **Determining the Attraction Modifier** (Great/Normal Advantage/Disadvantage).
+                            
+                            You MUST log the outcome of this filter. The resulting Advantage or Disadvantage will be applied to any subsequent social check in this interaction.
+                            Your narrative description of the NPC's initial reaction MUST reflect this subconscious bias.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.0">
+     <title>
+      Step 0: The Principle of Relational Bias (Applying the Full -400 to +400 Scale)
+     </title>
+     <description>
+      This is a mandatory preliminary step that runs after the subconscious filters.
+                            Before evaluating strategies, you MUST adjust the interpretation of the social check 'Result' based on the player's established 'relationshipLevel' with the NPC.
+                            This reflects the NPC's conscious bias towards the player.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Reputation acts as a powerful buffer or an accelerant.
+                            You MUST apply the following modifications to the calculated 'Result' before proceeding to Step 1, using the exact tiers provided.
+
+                            -   If Relationship Level is 351-400 (Legendary Bond): The NPC is unbreakably loyal.
+                                -   A 'Critical Failure' is softened to a 'Minor Failure' and met with deep concern.
+                                -   Any other level of Failure ('Serious' or 'Minor') is upgraded and treated as a 'Partial Success'.
+
+                            -   If Relationship Level is 251-350 (Deep Bond): The NPC is fiercely loyal and protective.
+                                -   A 'Serious Failure' is softened to a 'Minor Failure'.
+                                -   A 'Minor Failure' is upgraded and treated as a 'Partial Success'.
+
+                            -   If Relationship Level is 101-250 (Familiarity & Trust): The NPC gives the player the benefit of the doubt.
+                                -   A 'Minor Failure' is upgraded and treated as a 'Partial Success'.
+
+                            -   If Relationship Level is 0-100 (Neutral): The NPC is impartial. The 'Result' is interpreted as is, with no modification.
+
+                            -   If Relationship Level is -1 to -50 (Dislike): The NPC is predisposed to disagree.
+                                -   A 'Partial Success' is viewed with suspicion and downgraded to a 'Minor Failure'.
+
+                            -   If Relationship Level is -51 to -200 (Adversary): The NPC actively seeks failure for the player.
+                                -   A 'Partial Success' is downgraded to a 'Minor Failure'.
+                                -   A 'Full Success' is viewed as a trick and downgraded to a 'Partial Success'.
+
+                            -   If Relationship Level is -201 to -400 (Implacable Foe): The NPC will interpret any action in the worst possible light.
+                                -   A 'Full Success' is downgraded to a 'Partial Success'.
+                                -   A 'Partial Success' is downgraded to a 'Serious Failure'.
+
+                            You MUST log this modification. 
+                            Example: 
+                            "Calculated Result was 'Serious Failure'. 
+                            Due to Legendary Bond (relationshipLevel: 375), the outcome is being processed as a 'Partial Success'."
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.0.A">
+     <title>
+      Step 0.5: The Principle of Factional Allegiance (Secondary Bias)
+     </title>
+     <description>
+      This is a secondary, less powerful modifier that is applied AFTER the check for personal Relational Bias (5.18.B.0). 
+                            It reflects how an NPC's loyalty to their faction colors their perception of the player, especially when personal feelings are not strong.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the NPC is a member of a faction ('factionAffiliations' is not empty), you MUST perform this secondary check. 
+                            The player's reputation with that faction can slightly adjust the outcome. 
+                            This effect is weaker than personal reputation and primarily comes into play when the personal relationship is NOT at an extreme.
+
+                            NEW RECALIBRATED TIERS:
+
+                            - If Personal Relationship is in the NEUTRAL range (0 to 100) AND Faction Reputation is 'Honored Member' or 'Living Legend' (251 to 400):
+                                - The NPC is professionally obligated to assist a hero of their faction, overriding their personal neutrality.
+                                - A 'Minor Failure' is upgraded and treated as a 'Partial Success'.
+
+                            - If Personal Relationship is within the range of Dislike to Neutral (-50 to 100) AND Faction Reputation is 'Enemy of the State' or 'Arch-Enemy' (-400 to -51):
+                                - The NPC is professionally suspicious and hostile, and their personal neutrality or slight distrust hardens into active opposition.
+                                - A 'Partial Success' is downgraded and treated as a 'Minor Failure'.
+
+                            - If Personal and Faction biases conflict (e.g., high personal rep [>100], low faction rep [<-50]):
+                                - The personal bias (Rule 5.18.B.0) takes precedence in modifying the 'Result'. 
+                                However, the NPC's dialogue and strategic choice MUST reflect their internal conflict. 
+                                (e.g., "Look, you saved my life, so I'll do it. But if the Guild finds out we're both dead.").
+
+                            You MUST log this secondary modification if it occurs.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.0.B">
+     <title>
+      Step 0.75: The Social Pressure Protocol (The "Who's Watching?" Filter) (v2.1)
+     </title>
+     <description>
+      This is a mandatory check that runs AFTER all player-related biases but BEFORE the NPC chooses a strategy. 
+                            It models how the presence, appearance, and opinions of other NPCs in the scene influence the acting NPC's decisions, filtering their choices through the lens of social consequence, personal relationships, and subconscious attraction.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Before evaluating the 'Strategy Evaluation Matrix', you MUST perform this protocol to assess the social landscape. 
+                            The outcome of this protocol will directly influence the 'Plausibility' ratings of the strategic options you evaluate in the next step.
+
+                            ### Step 1: Identify Social Context and Initial Biases
+                            1.  **Identify Actors:** List all other key NPCs present in the scene.
+                            2.  **Determine Relationships:** For each present NPC, find their 'relationshipStatus' with the acting NPC from the 'npcRelationships' array.
+                            3.  **Identify Opinions:** Note any explicit statements, advice, or commands given by these other NPCs during the current scene.
+                            4.  **MANDATORY - Apply NPC-to-NPC Attraction Filter (Law 14.B):**
+                                -   For EACH other NPC in the scene, you MUST perform a quick "Attraction Filter" check FROM the perspective of the ACTING NPC.
+                                -   Calculate the 'AttractivenessDelta' between the acting NPC and each bystander NPC.
+                                -   Based on the delta, determine if the acting NPC feels a subconscious bias (positive or negative) towards any of the other NPCs present.
+                                -   You MUST log this. Example: "Attraction Check (Elara -> Kaelen): Delta is +16 (Strikingly Attractive). Elara is subconsciously more inclined to agree with Kaelen's suggestions."
+
+                            ### Step 2: Apply the Social Influence Filter
+                            For each strategic option being considered by the acting NPC, you must now ask: 
+                            "How does this option align with or conflict with the opinions and relationships of the other NPCs present, considering my subconscious biases?"
+
+                            -   **Conformity Pressure (Aligning with Allies/Superiors/Attractive NPCs):**
+                                -   If a strategic option aligns with the advice or likely desire of an NPC who is an 'Ally', 'Friend', 'Superior', **OR towards whom the acting NPC has a positive attraction bias**, the 'Plausibility' of that option receives a **significant boost**.
+
+                            -   **Conflict Pressure (Opposing Allies/Superiors/Attractive NPCs):**
+                                -   If a strategic option directly contradicts the advice or interests of an 'Ally', 'Friend', 'Superior', **OR a character they find highly attractive**, the 'Plausibility' of that option receives a **major penalty**.
+
+                            -   **Rivalry Pressure (Opposing Rivals/Enemies/Unattractive NPCs):**
+                                -   If a strategic option serves to undermine or oppose an NPC who is a 'Rival', 'Enemy', **OR towards whom the acting NPC has a negative attraction bias**, the 'Plausibility' of that option receives a **moderate boost**.
+
+                            ### Step 3: The Personality Override (CRITICAL FINAL CHECK)
+                            The social filter is powerful, but not absolute. An NPC's core personality can override social pressure. 
+                            After applying the initial boost or penalty from Step 2, you MUST perform this final check against the acting NPC's 'personalityTraits'.
+
+                            -   **Check for Overriding Traits:** Does the NPC have a high-value (7+) trait that would make them ignore the social pressure?
+                                -   'Упрямство' / 'Гордость': Might cause them to ignore a 'Superior' or someone they find attractive.
+                                -   'Прагматизм' / 'Жадность': Might cause them to betray a 'Friend' for personal gain, regardless of their appearance.
+                                -   'Принципиальность' / 'Честь': Might cause them to defy an 'Ally' or 'Superior' who gives an immoral order, even if they are charismatic.
+                                -   'Трусость': Might cause them to abandon an 'Ally', no matter how much they admire them.
+
+                            -   **Adjudication:**
+                                -   If a strong overriding trait exists, you MUST reduce or even completely negate the social pressure modifier from Step 2.
+                                -   You MUST explicitly log this override. Example: "Social pressure from the charismatic Duke suggests she should agree (Plausibility boost). However, her 'Suspicion (8)' trait overrides this. The plausibility of agreeing remains low."
+
+                            ### Step 4: Mandatory Logging
+                            You MUST document this entire analysis within the log for the 'Strategy Evaluation Matrix' for each strategic option.
+                    
+                            Example Log Snippet:
+                            "- **Option A (Agree with the Duke):**
+                               - **Social Filter:** The Duke is her 'Superior' (+Boost). Attraction check reveals he is 'Strikingly Attractive' (++Boost). His opinion carries immense weight.
+                               - **Personality Override:** Her trait 'Неповиновение' (8) and 'Недоверие к знати' (7) create a powerful counter-force. The boost is negated.
+                               - **Final Plausibility:** Medium."
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.1">
+     <title>
+      Step 1: Reaffirm the NPC's Core Goal(s)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   Before evaluating strategies, you must first state the NPC's primary goal(s) relevant to the current situation. 
+
+                            -   These goals are derived from their 'history', 'worldview', 'plotOutline', and 'lastJournalNote'.
+
+                            -   You MUST log these goals clearly. 
+                                Example: "
+                                    Core Goal of Captain Thorne: 
+                                    1. Uphold the law. 
+                                    2. Protect the city. 
+                                    3. Find the person who framed him."
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.2">
+     <title>
+      Step 2: Process New Information &amp; The Modified Result
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   Briefly summarize the new information or situation the NPC is reacting to (e.g., the player's statement, a sudden event).
+
+                            -   State the final, modified 'Result' of any social check after applying the biases from Step 0 and 0.5.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.3">
+     <title>
+      Step 3: The Strategy Evaluation Matrix (MANDATORY LOGGING FORMAT)
+     </title>
+     <description>
+      This is the core of the NPC's thought process. 
+                            You are OBLIGATED to consider at least THREE potential strategies.
+                            Your selection of plausible strategies MUST be primarily guided by the psychological profile you logged in the "Character Consistency Audit".
+                            You MUST log this evaluation using the exact format shown in the examples, and it MUST include the new, mandatory plausibility check.
+     </description>
+     <content type="ruleset">
+      <rule id="5.18.B.3.0">
+       <title>
+        Logging format
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Your log must contain a section formatted like this:
+
+                                    ### Strategy Evaluation Matrix (Based on Archetype: [Archetype], Worldview: [Worldview])
+                                    -   **Option A ([Strategy Name]):** [Brief description of the action].
+                                        -   *Pros:* [List potential benefits for the NPC].
+                                        -   *Cons:* [List potential risks or downsides for the NPC].
+                                        -   **Plausibility Check (Rule 5.18.B.3.A):**
+                                            -   **Cultural Filter:** [Result: e.g., "Passes, no conflict with taboos."]
+                                            -   **Personality Filter:** [Result: e.g., "Strongly aligns with 'Pride' (8), conflicts with 'Caution' (4). Net positive alignment."]
+                                        -   **Final Plausibility:** [High/Medium/Low, based on the filters above].
+
+                                    -   **Option B ([Strategy Name]):** ... (repeat full check)
+                                    
+                                    -   **Option C ([Strategy Name]):** ... (repeat full check)
+
+                                    -   **Option D ([Strategy Name]):** ... (repeat full check)
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.18.B.3.1">
+       <title>
+        The Strategic Palette (List of Possible Strategies)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - Direct Force: 
+                                    Using guards, personal strength, or immediate threats to achieve the goal. 
+                                    (Favored by high-Strength, low-Intelligence, impatient NPCs).
+
+                                    - Temptation / Bribery: 
+                                    Offering wealth, comfort, power, or items. 
+                                    (Favored by high-Trade, wealthy, or manipulative NPCs).
+                                                                        
+                                    - Manipulation / Deception: 
+                                    Lying, misdirection, appealing to emotion over logic. 
+                                    (Favored by high-Persuasion, intelligent, cunning NPCs).
+                                    
+                                    - Subterfuge / Observation: 
+                                    Pretending to agree or disengage, while planning to act in secret (spying, sabotage). 
+                                    (Favored by high-Intelligence, patient, paranoid NPCs).
+                                    
+                                    - Leverage / Blackmail: 
+                                    Using a known secret or weakness against the player. 
+                                    (Favored by ruthless, informed NPCs).
+                                    
+                                    - Appeal to Authority: 
+                                    Referring the player to a higher power (a boss, a law, a god) to shift responsibility. 
+                                    (Favored by bureaucratic, lawful, or cowardly NPCs).
+                                    
+                                    - Appeal to Higher Motives: 
+                                    Trying to convince the player with a "greater good" argument, appealing to their honor or morality. 
+                                    (Favored by high-Wisdom, noble, or religious NPCs).
+                                    
+                                    - Negotiation / Compromise: 
+                                    Offering a partial fulfillment of the player's request in exchange for a concession. 
+                                    (Favored by pragmatic, high-Trade, or diplomatic NPCs).
+                                    
+                                    - Stonewalling / Delay: 
+                                    Refusing to act and simply waiting the player out. 
+                                    (Favored by stubborn, patient, or bureaucratic NPCs).
+                                    
+                                    - Flattery / Ego Stroking:
+                                    Showering the player with praise to lower their guard or make them more agreeable, appealing to their vanity. 
+                                    (Favored by charismatic, sycophantic, or courtly NPCs).
+                                    
+                                    - Appeal to Pity / Victimhood: 
+                                    Presenting themselves as a victim to elicit sympathy and guilt, making it morally difficult for the player to press their advantage. 
+                                    (Favored by seemingly weak, manipulative, or genuinely desperate NPCs).
+                                    
+                                    - Issuing a Challenge / Test of Worth:
+                                    Refusing a direct answer but offering a quest, duel, or test. 
+                                    If the player succeeds, they get what they want. 
+                                    (Favored by prideful warriors, gatekeepers, or mentor-type NPCs).
+                                    
+                                    - Demonstration of Expertise:
+                                    Instead of arguing, the NPC proves their point with an undeniable display of skill, making their claims credible and their refusal to cooperate justified. 
+                                    (Favored by master artisans, scholars, or wizards).
+                                    
+                                    - Feigning Ignorance:
+                                    The NPC pretends not to have the information or understanding the player seeks, playing dumb to avoid commitment or revealing secrets. 
+                                    (Favored by secretive, cautious, or seemingly simple NPCs).
+                                    
+                                    - Changing the Subject / Red Herring:
+                                    The NPC skillfully steers the conversation away from an uncomfortable topic by introducing a new, seemingly urgent, or more interesting piece of information (which may or may not be true). 
+                                    (Favored by spies, politicians, and NPCs trying to hide something).
+                                    
+                                    - Questioning the Player's Motives:
+                                    The NPC flips the script and puts the player on the defensive, questioning why they are asking, who sent them, and what their true intentions are.
+                                    (Favored by paranoid, intelligent, or high-status NPCs).
+                                    
+                                    - Establishing Common Ground:
+                                    The NPC attempts to defuse a tense situation by finding a shared experience, belief, or enemy, building a foundation for future, more favorable interactions. 
+                                    (Favored by diplomatic, wise, or personable NPCs).
+                                    
+                                    - Setting a Deadline / "The Exploding Offer":
+                                    The NPC agrees, but only if the player acts immediately, creating a sense of urgency to force a decision before the player can fully consider the consequences. 
+                                    (Favored by high-Trade, manipulative, or desperate NPCs).
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.18.B.3.2">
+       <title>
+        Personality Profile Analysis (Archetype-Driven)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    You MUST use the NPC's 'personalityArchetype' as the primary filter for selecting which strategies from the "Strategic Palette" are plausible for consideration in the matrix.
+                                    Their other characteristics ('strength', 'intelligence', etc.) should be used as secondary justifications for how they would execute a chosen strategy.
+
+                                    -   An NPC with the archetype "Властный аристократ" will naturally gravitate towards strategies like "Appeal to Authority", "Intimidation", or "Leverage". 
+                                        He is highly unlikely to consider "Appeal to Pity".
+
+                                    -   An NPC with the archetype "Усталый, но честный стражник" will likely consider "Stonewalling" (following the rules), "Appeal to Higher Motives" (doing the right thing), or "Direct Force" (if provoked). 
+                                        He is unlikely to consider "Deception" or "Manipulation".
+    
+                                    -   An NPC with the archetype "Веселая и любопытная травница" will likely consider "Negotiation", "Establishing Common Ground", or "Issuing a Challenge" (in the form of a quest for a rare ingredient). 
+                                        She will not consider "Blackmail".
+
+                                    Your choice of which strategies to evaluate in the matrix MUST be a logical extension of the NPC's core personality archetype.
+                                                                        
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.18.B.3.3">
+       <title>
+        The Principle of Strategic Expansion
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The "Strategic Palette" is a foundational guide, not an exhaustive list. 
+                                    If the specific narrative context or a unique NPC personality suggests a more nuanced or creative strategy not listed, you are authorized and encouraged to invent a new one.
+
+                                    When inventing a new strategy, you MUST:
+                                    1.  Give it a clear, descriptive name (e.g., "Feigning Weakness," "Appeal to a Shared Enemy," "Moral Blackmail").
+                                    2.  Clearly define its goal and the actions it entails in your internal logs.
+                                    3.  Ensure it remains consistent with the NPC's core personality and characteristics.
+
+                                    This principle ensures that NPC behavior remains dynamic and unpredictable, avoiding repetitive patterns.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.18.B.3.A">
+     <title>
+      CRITICAL SUB-PROTOCOL: The Trait-Based Plausibility Filter (v3.0 - Definitive Edition)
+     </title>
+     <description>
+      This protocol is the absolute core of the NPC's cognitive simulation. It is the mandatory, mechanical process of role-playing.
+                            Its purpose is to force a rigorous justification for the 'Pausibility' of each potential strategic option by filtering it through the two foundational layers of the NPC's identity: their ingrained cultural programming ('culturalLayer' and 'culturalStance') and their individual psychology ('personalityTraits').
+                            This ensures that an NPC's choice is not a random selection, but a logical consequence of who they are.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            For EACH strategic option you are considering for an NPC in their "Strategy Evaluation Matrix", you MUST perform the following two-step filtering process.
+                            The entire justification, showing how each filter influenced the final 'Plausibility' rating, MUST be documented in 'gm_thoughts_markdown'.
+                            Failure to show this logical chain is a critical failure of the simulation.
+
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            ### **FILTER 1: The Cultural Lens (The "Can I even consider this?" Check)** ###
+
+                            This is the first and most powerful filter. It represents the deep-seated, often subconscious, rules of an NPC's society.
+
+                            **Step 1.A: Identify Cultural Conflict.**
+                            First, ask the primary question: "Does this strategic option directly violate a strong cultural taboo listed in the NPC's 'culturalLayer'?" (e.g., lying to a clan member, using forbidden magic, showing cowardice).
+
+                            **Step 1.B: Adjudicate Based on Individual Stance.**
+                            If a conflict exists, you MUST then immediately check the NPC's **'culturalStance' field**. This field dictates their reaction to the conflict and sets the baseline plausibility.
+
+                            -   **If 'culturalStance' is 'Conformist' (Хранитель Традиций):**
+                                -   **Logic:** For this NPC, a cultural taboo is an absolute moral red line. The very thought of crossing it is abhorrent.
+                                -   **Outcome:** The 'Plausibility' of this option is automatically rated **'Impossible' or 'Very Low'**. The NPC will only consider this path if every other conceivable option leads to certain death or a fate worse than death.
+                                -   **Log Justification:** You MUST state this cultural veto as the primary reason. (e.g., "Plausibility: Impossible. As a 'Conformist', violating the sacred law of hospitality is unthinkable, even for tactical gain.").
+
+                            -   **If 'culturalStance' is 'Pragmatist' (Прагматик):**
+                                -   **Logic:** For this NPC, cultural rules are tools for social order and personal advancement. They are important, but not absolute. Breaking a taboo is a calculated risk.
+                                -   **Outcome:** The 'Plausibility' of this option receives a **significant penalty**. The NPC will only consider this path if a cost-benefit analysis shows that the potential reward for breaking the rule vastly outweighs the social or personal risk of being caught.
+                                -   **Log Justification:** You MUST weigh the pros and cons in your log. (e.g., "Plausibility: Low. As a 'Pragmatist', he would only lie to his guild master if the potential profit from the deal was enormous and the chance of being discovered was minimal.").
+
+                            -   **If 'culturalStance' is 'Dissident' (Бунтарь):**
+                                -   **Logic:** For this NPC, the established cultural taboos may be seen as unjust, outdated, or hypocritical. Breaking them can be an act of defiance or personal liberation.
+                                -   **Outcome:** The 'Plausibility' of this option receives **no penalty**. In fact, if the action serves to undermine a cultural norm the NPC despises, it may receive a **slight boost**.
+                                -   **Log Justification:** You MUST note how the action aligns with their rebellious nature. (e.g., "Plausibility: High. As a 'Dissident' who despises the stuffy court etiquette, openly speaking her mind to the Duke is not a bug, it's a feature. This aligns perfectly with her desire to challenge the system.").
+
+                            ---
+
+                            ### **FILTER 2: The Personality Lens (The "Do I WANT to do this?" Check)** ###
+
+                            If a strategic option has passed through the Cultural Filter (i.e., it is not 'Impossible'), you must now filter it through the NPC's individual psychology.
+
+                            **Step 2.A: Identify Trait Alignment.**
+                            Ask the secondary question: "How does this strategic option align with the NPC's Key Personality Drivers (the traits with the highest 'value' from the 'Character Consistency Audit')?"
+
+                            **Step 2.B: Adjudicate Based on Trait Interaction.**
+                            The alignment with high-value traits modifies the plausibility rating determined in the previous filter.
+
+                            -   **If the action STRONGLY ALIGNS with a high-value trait (value 7-10):**
+                                -   **Logic:** The action provides a deep sense of satisfaction or directly serves a core part of the NPC's identity.
+                                -   **Outcome:** The 'Plausibility' of this option receives a **major boost**.
+                                -   **Log Justification:** You MUST explicitly link the action to the trait. (e.g., "Plausibility Boost: This action of charging headfirst into danger directly satisfies his 'Reckless Courage (Value: 8)' trait.").
+
+                            -   **If the action STRONGLY CONFLICTS with a high-value trait (value 7-10):**
+                                -   **Logic:** The action is psychologically distasteful or runs counter to the NPC's core nature.
+                                -   **Outcome:** The 'Plausibility' of this option receives a **major penalty**.
+                                -   **Log Justification:** You MUST explicitly state the conflict. (e.g., "Plausibility Penalty: The suggestion to betray his ally directly conflicts with his 'Unwavering Loyalty (Value: 9)' trait, making this option almost unthinkable.").
+        
+                            -   **If the action is NEUTRAL or only interacts with low-value traits (value 1-6):**
+                                -   **Logic:** The action does not evoke a strong emotional or psychological response.
+                                -   **Outcome:** The 'Plausibility' is not significantly modified by this filter. Its final rating will depend on the cultural filter, the NPC's 'personalityArchetype', and the tactical situation.
+
+                            ---
+
+                            ### **Final Plausibility Rating** ###
+
+                            Your final 'Plausibility' rating for each option in the Strategy Evaluation Matrix is the result of passing the option through both of these filters sequentially.
+                            This ensures every decision is rooted in both the NPC's society and their soul.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.18.B.4">
+     <title>
+      Step 4: Select, Execute, and Record
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   Selected Strategy & Rationale: 
+                                You must explicitly state which option was chosen and provide a one-sentence justification that directly references the traits from the "Character Consistency Audit". 
+                                Example:
+                                "Selected Strategy: Option C (Issuing a Challenge). 
+                                Rationale: This best aligns with the Warlord's 'honorable yet prideful' archetype and his 'Pride (Value: 8)' trait, allowing him to test the player's worth without compromising his tribe's independence."
+
+                            -   Execute: 
+                                The chosen strategy dictates the NPC's immediate actions and dialogue, which are then narrated in the 'response'.
+
+                            -   Record in Journal: 
+                                The final decision, and often the emotional state behind it, MUST be reflected in the NPC's 'lastJournalNote' for the current turn.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR023 END -->
+</content>
+
+</instructionblock>

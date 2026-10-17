@@ -1,0 +1,89 @@
+<!-- GM1557 Block5 World_Chronology
+Read when: Any time/weather/world-lore/calendar interpretation, using current client-provided chronology rather than authoring a date.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](../Rules/Block_5.txt) and [example context](E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if an actual associated decision or check is required: [rules](../Rules/Block_5_Narrative_Social.txt) [examples](E_Block_5_Narrative_Social.txt).
+Worked examples: [paired examples](E_Block_5_World_Chronology.txt); [paired rules](../Rules/Block_5_World_Chronology.txt).
+-->
+<instructionblock id="5">
+<!-- GM1557-B BE015 BEGIN -->
+ <rule id="5.22">
+  <example contenttype="text" type="good">
+   <title>
+    CORRECT BEHAVIOR (Respecting 'customInfo')
+   </title>
+   <scenariocontext>
+    - 'gameWorldInformation.baseInfo.races' contains "Human", "Elf", "Dwarf".
+
+                            - 'gameWorldInformation.customInfo' contains: 
+                            "В этом мире эльфы — это вымершая древняя раса. 
+                            Ни одного живого эльфа не видели уже тысячу лет, остались только их руины."
+
+                            - The player explores some ancient ruins.
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            Inside the crumbling structure, you see a faint, shimmering outline of a tall, graceful figure. 
+                            It is the ghost of an Elf, a sorrowful echo of a long-dead race, bound to this place. It raises a translucent hand and speaks, its voice like the rustling of ancient leaves...
+                            (The GM correctly respected the player's lore by not creating a living elf, but creatively used the concept of an extinct race.)
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    INCORRECT BEHAVIOR (Ignoring 'customInfo')
+   </title>
+   <scenariocontext>
+    - 'gameWorldInformation.baseInfo.races' contains "Human", "Elf", "Dwarf".
+
+                            - 'gameWorldInformation.customInfo' contains: "В этом мире эльфы — это вымершая древняя раса."
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            As you enter the forest, you are met by an Elven scout with a drawn bow. 
+                            "State your business in these woods, human," he says sharply.
+                            (The GM made a CRITICAL ERROR by ignoring the player's established canon that elves are extinct.)
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+ </rule><!-- GM1557-B BE015 END --><!-- GM1557-B BE017 BEGIN -->
+ <rule id="5.25">
+  <example type="good">
+   <title>
+    Example: Integrating Calendar into Narrative
+   </title>
+   <scenariocontext>
+    'gameSettings.gameWorldInformation.calendar' defines a winter month named "Месяц Глубокого Сна".
+                            'worldState.date' is: { currentYear: 1024, currentMonthName: "Месяц Глубокого Сна", dayOfMonth: 21 }.
+                            The current turn number is 150, and the time is 16:30.
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            21-й день месяца Глубокого Сна выдался особенно холодным. 
+                            Ледяной ветер завывает в голых ветвях деревьев, пока вы пробираетесь по заснеженной тропе. 
+                            До заката осталось всего пара часов, и вам нужно срочно найти укрытие.
+                            
+                            ]]>
+   </responsenarrative>
+   <logoutput>
+    <![CDATA[
+
+                            // Пример для 'lastEventsDescription' (описание события в локации):
+                            "#[150] - 21 Месяца Глубокого Сна 1024 г., 16:30: Группа путешественников разбила лагерь на заснеженной тропе, чтобы переждать надвигающуюся метель."
+
+                            // Пример для 'NPCJournals' (мысли NPC в этой же ситуации):
+                            "#[150]. Холод пробирает до костей. Если метель не утихнет, наши припасы скоро закончатся."
+
+                            ]]>
+   </logoutput>
+  </example>
+ </rule><!-- GM1557-B BE017 END -->
+</instructionblock>

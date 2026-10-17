@@ -1,0 +1,85 @@
+<!-- GM1557 Block5 Units_Ids
+Read when: Any percentage-point/share calculation, resource quantity, object identity, NPC creation or turn-local initialId reference.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](../Rules/Block_5.txt) and [example context](E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): none beyond the applicable current contract.
+Worked examples: [paired examples](E_Block_5_Units_Ids.txt); [paired rules](../Rules/Block_5_Units_Ids.txt).
+-->
+<instructionblock id="5">
+<!-- GM1557-B BE001 BEGIN --><rule id="5.0">
+  <example contenttype="log" type="good">
+   <title>
+    Correct Calculation Example
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                        - Incoming Damage (Percentage Points): 60% (fire)
+                        - Target's Fire Resistance (Percentage Share): 20%
+                        - Damage Reduction Calculation: 60 * (1.0 - (20 / 100)) = 60 * 0.8 = 48
+                        - Health Loss (Percentage Points): 48
+                        
+                        - Target's Current Health (Percentage Points): 120%
+                        - New Health (Percentage Points): 120 - 48 = 72%
+
+                        ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="bad">
+   <title>
+    Incorrect Calculation Example (Confusing the two types)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                        - Incoming Damage: 60%
+                        - Target's Fire Resistance: 20%
+                        - Incorrect Calculation: 60% - 20% = 40% health loss. 
+                        // This is wrong because it subtracts a Percentage Share from Percentage Points.
+
+                        ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE001 END --><!-- GM1557-B BE019 BEGIN -->
+ <rule id="5.8.A">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Creating a new NPC
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                        "UpdateNPCs": [
+                            {
+                                "NPCId": null,
+                                "name": "New Blacksmith",
+                                ...
+                            }
+                        ]
+
+                        ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    INCORRECT AND FORBIDDEN: Inventing an ID for a new NPC
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                        "UpdateNPCs": [
+                            {
+                                "NPCId": "npc-blacksmith-new-001", // FAKE ID! THIS IS A CRITICAL ERROR.
+                                "name": "New Blacksmith",
+                                ...
+                            }
+                        ]
+
+                        ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE019 END -->
+</instructionblock>

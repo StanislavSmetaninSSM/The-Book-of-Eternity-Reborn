@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Current uncompiled B production WIP — FIRST static binding stop
+
+[Source/selection packet](recovery/current-B-production-authoring-source-20261017.json) records14wholemodules/2compactIDnavigators,52docSpecs/fiveReadPaths-onlyprofiles, exactsharedAafterimages and B-S03 lookupcontrols; proposed9categories/28methods/78cases. [FIRST static stop](recovery/current-B-first-authoring-static-stop-20261017.json): all9movedJSONbodies exact but classes6Valid3Invalid vs7/2; manifestunchanged/2locatorspending. No tests/producer or freshbuild after authoring. Publish/recover before diagnosis/fix; all runtime held. Old causal2FAIL remain accepted separately, not currentGREEN.
+
 ## Current B causal RED accepted; implementation release pending — 2026-10-17
 
 [Exact accepted FIRST causal EVIDENCE](recovery/current-B-first-causal-red-evidence-independent-review-20261017.md):2expectedFAIL/0PASS,73UNRUN. Source324/actual0709/carrier799f and all first raw remain unchanged. Boundary baseline/full-memory XML passed; inventory counts9/2 are not executions of actual-extractor/whole-manifest tests. Genuine real36→expected52 gap is proved after strict cleanup; raw/capture proves generatedtemplate while post-failure assertions did not execute. Persist/recover this decision, then separate root implementation release; no further runtime or production change yet. Full9category75case membership is planned, not GREEN.

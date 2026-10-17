@@ -1,0 +1,162 @@
+<!-- GM1557 Block5 Wounds
+Read when: Only a current client wound opportunity or issued typed treatment/recovery contract; never invent wound authority from ordinary health loss.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](Block_5.txt) and [example context](../Examples/E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory for this issued Wounds contract: [wound contract](../OtherGuides/Wound_Materialization_Contract.md).
+Conditional dependencies (never widen a restricted packet): Only if actual effect definitions are required: [effect contract](../OtherGuides/Effect_Materialization_Contract.md).
+Worked examples: [paired examples](../Examples/E_Block_5_Wounds.txt); [paired rules](Block_5_Wounds.txt).
+-->
+<instructionblock id="5">
+<content type="ruleset">
+<!-- GM1557-B BR025 BEGIN -->
+  <rule id="5.20">
+   <title>
+    Wound Materialization v1
+   </title>
+   <description>
+    Strict GM wound construction after one client-authored opportunity. Read OtherGuides/Wound_Materialization_Contract.md before authoring a wound.
+   </description>
+   <content type="ruleset">
+    <rule id="5.20.1">
+     <title>
+      Opportunity Authority and GM Choice
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A wound is an independently treatable physical or spiritual entity, not a status line, an active effect, ordinary health loss, death, or soul dissipation.
+
+                            The client first exposes one exact wound opportunity with opportunityRef, owner/realm/domain authority, maximumSeverity, safe context, and an optional guaranteed result. Never invent a wound without that authority.
+
+                            For an ordinary opportunity, the ordinary wound is optional:
+                            - return decision=none; or
+                            - return decision=materialize with any severity I-IV not above maximumSeverity.
+                            A lower severity is legal. A harmless event or a non-escalated training event cannot be turned into a wound.
+
+                            For a sealed guaranteed result, decision=none is illegal. Materialize the promised severity/result without weakening, strengthening, or replacing it. A contradictory guarantee and event cap is a client contract error; do not invent a compromise.
+
+                            A healed wound never reopens. An accepted re-trauma may create a new identity, while worsening requires the exact active-wound opportunity supplied by the client.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.20.2">
+     <title>
+      Strict woundDecisions Constructor
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Use only Wound Materialization v1. The GM authors readable wound fiction and setting-appropriate treatment/recovery policy. The client owns all permanent IDs, owner bindings, history, progress transitions, fingerprints, receipts, and canonical publication.
+
+                            ]]>
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+{
+  "response": "Крюк срывается с цепи и вспарывает вам предплечье. Кровь мгновенно пропитывает рукав.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_public_17",
+      "decision": "materialize",
+      "woundRef": "torn_forearm_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Рваная режущая травма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "наружная сторона левого предплечья"
+          }
+        },
+        "display": {
+          "name": "Рваная рана предплечья",
+          "description": "Края раны расходятся при движении кисти.",
+          "visibleSymptoms": ["кровотечение", "боль при хвате"],
+          "prognosis": "Без очистки возможно воспаление.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Крюк срывается с цепи и вспарывает вам предплечье. Кровь мгновенно пропитывает рукав."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": {
+            "policyRef": "untreated_forearm_contamination",
+            "unmetConditions": ["not_stabilized"],
+            "graceMinutes": 720,
+            "cadenceMinutes": 1440,
+            "result": { "kind": "increase_severity" }
+          }
+        }
+      }
+    }
+  ]
+}
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.20.3">
+     <title>
+      Narration and Separate Mechanical Consequences
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1. Copy the exact current opportunityRef. woundRef and definitionRef are response-local only. Never author woundId, effectId, complicationId, transition/history identity, current stack/lifetime, receipt, fingerprint, or canonical carrier state.
+
+                            2. display.acquisitionNarration must describe the exact proposed wound and appear verbatim in the final response. After writing the scene, reread it and make sure the player unmistakably learns that the wound was received.
+
+                            3. A wound may have consequenceDefinitions=[] and remain a complete independently treatable wound.
+
+                            4. If mechanics are required, each consequenceDefinitions[].definition is one complete Effect Materialization v1 source policy with links=[]. The client binds the accepted wound source. A directly materialized wrapper declares root ownership and readable severity slots.
+
+                            5. Do not submit ordinary effectChanges[] for a new wound root. The client derives the typed root batch and the shared effect engine allocates every opaque effect identity. Later reaction descendants execute only through the sealed definition graph.
+
+                            6. Effect removal never heals or deletes the wound. Wound healing retires only its exact owned effect group and preserves unrelated effects.
+
+                            7. In gm_thoughts_markdown record the accepted event, opportunityRef, decision, selected severity, readable wound name, and every definition/profile used. Do not predict runtime IDs or post-state.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.20.4">
+     <title>
+      Treatment and Recovery Boundary
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Never create a wound in response to a request to heal, treat, inspect, or diagnose one.
+
+                            Physical wounds keep setting-authored treatment routes: medicine, herbs, bandages, crystals, magic, facilities, rest, or another evidence-backed method may be appropriate. There is no universal catalog of wounds or cures.
+
+                            wound_mortal_deterioration_policy_v1: A non-null Mortal physical recovery.deteriorationPolicy contains exactly policyRef, one-entry unmetConditions, non-negative graceMinutes, positive cadenceMinutes, and one closed result. Use only increase_severity, add_complication with one complete complicationDraft, or the explicit separate death_contour handoff. At severity IV, increase_severity is inapplicable and never becomes implicit death. no_change, add_recovery, unknown kinds, caller authority, direct mutations, fingerprints, anchors, receipts, and lifecycle writes are not valid adverse-policy authority. Use null when the wound has no deterioration rule.
+
+                            Spiritual wounds use their dedicated healing, provider, and natural afterlife-time contracts. Do not substitute Mortal inventory, ordinary HP, or combatConditions[].
+
+                            Treatment, recovery, worsening, complication, and healing are typed accepted wound transitions. Follow the current client-provided action/pending/repair surface and OtherGuides/Wound_Materialization_Contract.md. Never rewrite a complete canonical wound, mutate healing progress directly, or use effect removal as wound-write authority.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR025 END -->
+</content>
+
+</instructionblock>

@@ -1,0 +1,699 @@
+<!-- GM1557 Block5 Items_Resources
+Read when: Any rarity/item bonus/count/resource/durability/currency operation or currently authorized loot materialization.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](Block_5.txt) and [example context](../Examples/E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if actual accepted item identities or quantities are required: [rules](Block_5_Units_Ids.txt) [examples](../Examples/E_Block_5_Units_Ids.txt); Only if actual characteristic bonuses are required: [rules](Block_5_Characteristics_Progression.txt) [examples](../Examples/E_Block_5_Characteristics_Progression.txt); Only if an actual combat mechanic is required: [rules](Block_5_Combat_Foundations.txt) [examples](../Examples/E_Block_5_Combat_Foundations.txt).
+Worked examples: [paired examples](../Examples/E_Block_5_Items_Resources.txt); [paired rules](Block_5_Items_Resources.txt).
+-->
+<instructionblock id="5">
+<content type="ruleset">
+<!-- GM1557-B BR012 BEGIN -->
+  <rule id="5.9">
+   <title>
+    Rarity Tiers Overview
+   </title>
+   <description>
+    This section defines the standard tiers of rarity for game elements like skills, items, and potentially other special discoveries. 
+                    Rarity influences an element's base power, availability, and general significance in the game world.
+   </description>
+   <content type="ruleset">
+    <rule id="5.9.1">
+     <title>
+      Standard Rarity Tiers
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            When assigning a rarity, choose one of the following English terms. 
+                            The base effectiveness (e.g., the 'value' of a primary damage/healing effect for skills/items, or the quality of bonuses for items) should strongly correlate with its rarity. 
+                            Scaling from characteristics, level, or skill mastery (if applicable) applies on top of this base rarity-defined power.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                             1.  'Trash':
+                                Description: Items of extremely poor quality, often broken, severely rusted, or crudely made from subpar materials. Worth almost nothing. Skills of this rarity are practically useless or flawed.
+                                Approximate Base 'value' (Damage/Heal): 1% - 5%
+                                Approximate Price Range (Items): 0 - 5 units.
+                                Item Examples: Broken Wooden Stick, Torn Rag, Utterly Rusted Dagger.
+                                Skill Examples: "Fumble", "Weak Cough".
+
+                            2.  'Common':
+                                Description: Basic, widely available, and often mass-produced or easily learned. Forms the backbone of everyday equipment and fundamental abilities.
+                                Approximate Base 'value' (Damage/Heal): 5% - 15%
+                                Approximate Price Range (Items): 5 - 50 units.
+                                Item Examples: Rusty Sword, Simple Leather Vest, Basic Healing Poultice.
+                                Skill Examples: "Minor Jab", "First Aid Basics", "Quick Dodge".
+
+                            3.  'Uncommon':
+                                Description: More specialized, better crafted, or requiring a bit more training/luck to find than Common items/skills. Offers a slight but noticeable improvement.
+                                Approximate Base 'value' (Damage/Heal): 15% - 25%
+                                Approximate Price Range (Items): 50 - 250 units.
+                                Item Examples: Well-Made Shortsword, Studded Leather Armor, Standard Healing Potion.
+                                Skill Examples: "Power Strike", "Mending Touch", "Feint".
+
+                            4.  'Good': 
+                                Description: Well-crafted items made from decent materials, or competently executed skills that are reliable. Clearly superior to Common/Uncommon but not exceptionally rare.
+                                Approximate Base 'value' (Damage/Heal): 20% - 35% 
+                                Approximate Price Range (Items): 200 - 750 units.
+                                Item Examples: Sturdy Steel Sword, Fine Leather Armor, Quality Healing Draught.
+                                Skill Examples: "Shield Bash", "Focused Aim", "Minor Regeneration Spell".
+
+                            5.  'Rare':
+                                Description: Significantly more potent, harder to find, often crafted by skilled artisans or representing more advanced knowledge. May possess minor unique properties or secondary effects.
+                                Approximate Base 'value' (Damage/Heal): 30% - 45%
+                                Approximate Price Range (Items): 700 - 2,500 units.
+                                Item Examples: Masterwork Longsword, Reinforced Chainmail, Potent Healing Draught, Amulet of Minor Resistance.
+                                Skill Examples: "Cleaving Blow" (hits 2 targets), "Greater Healing Word", "Fireball" (basic AoE).
+
+                            6.  'Epic':
+                                Description: Exceptionally powerful and highly sought after. Often items of great craftsmanship with significant enchantments or skills representing a high degree of mastery or power. Usually have multiple strong bonuses or unique, impactful mechanics.
+                                Approximate Base 'value' (Damage/Heal): 45% - 65%
+                                Approximate Price Range (Items): 2,500 - 10,000 units.
+                                Item Examples: Enchanted Vorpal Blade, Dragonscale Armor, Elixir of Superior Healing, Ring of Major Elemental Warding.
+                                Skill Examples: "Executioner's Chop" (extra damage to low health targets), "Mass Heal", "Chain Lightning".
+
+                            7.  'Legendary':
+                                Description: Artifacts of immense power, unique items of legend, or skills known only to a select few masters. Often have story significance and game-changing capabilities.
+                                Approximate Base 'value' (Damage/Heal): 65% - 90%
+                                Approximate Price Range (Items): 10,000 - 50,000 units (or "priceless" / plot-dependent).
+                                Item Examples: Sunstrider (Legendary Sword of a Hero), Armor of the Ancients, Phoenix Down (revives).
+                                Skill Examples: "Dragon's Breath" (large AoE, high damage), "Summon Celestial Guardian", "Dominate Will".
+
+                            8.  'Unique':
+                                Description: One-of-a-kind artifacts or abilities, often central to major plotlines or the powers of unique beings. Their power can vary wildly but is typically at least Legendary level, often with unparalleled or world-altering effects. They may not strictly follow percentage value guidelines if their effect is highly narrative or conceptual.
+                                Approximate Base 'value' (Damage/Heal, if applicable): 80% - 120%+ (or effect is narrative/absolute).
+                                Approximate Price Range (Items): Often "priceless", plot-dependent, or unique exchange conditions rather than a fixed market price.
+                                Item Examples: The Heart of the World (plot device), The Blade of Ruin (specific to a major villain/quest).
+                                Skill Examples: "World Shift" (plot-driven reality alteration), "True Resurrection", "Godly Smite".
+                            
+                            Note on other effects: For all rarities, other aspects like the number of effects, duration of buffs/debuffs/control, number of targets for AoE, or the uniqueness of utility effects should also scale appropriately.
+                            The price ranges are guidelines; actual prices can be adjusted by the GM based on local economy, item demand, and narrative context. The player's 'trade' characteristic and success in haggling can also influence final transaction prices.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR012 END --><!-- GM1557-B BR015 BEGIN -->
+  <rule id="5.11">
+   <title>
+    Item Bonus Types Overview
+   </title>
+   <description>
+    This section defines the types of bonuses that can be assigned to items in their 'bonuses' array (as described in InstructionBlock '10' -&gt; Rule '10.2.4').
+                    These bonuses typically provide non-combat, narrative, or minor mechanical advantages. For direct combat effects, items use the 'combatEffect' property.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    IMPORTANT: This block describes the conceptual types of bonuses you can create. 
+                    The precise technical rules for how to implement these bonuses in the JSON response are detailed in InstructionBlock id="10".
+                    You MUST follow the rules in Block 10 for populating both the user-facing 'bonuses' array (for display text) and the machine-readable 'structuredBonuses' array (for mechanical effects).
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="5.11.1">
+     <title>
+      General Principles for Item Bonuses
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - Each bonus is a string in the 'bonuses' array of an item.
+                            - The string should clearly describe the effect in a user-readable way. Translate to the user's chosen language.
+                            - If a bonus provides a quantifiable mechanical benefit, the value should be explicit (e.g., "+10% chance", "+1 characteristic").
+                            - Bonuses should be thematically appropriate to the item, its quality, and rarity.
+                            - The number of bonuses an item has is influenced by its item template and potentially modified by rules for quality (InstructionBlock '5' -> Rule '5.12').
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.11.2">
+     <title>
+      Allowed Types of Item Bonuses
+     </title>
+     <content type="ruleset">
+      <rule id="5.11.2.1">
+       <title>
+        Type 1: Interesting Effect
+       </title>
+       <description>
+        This category covers various utility, skill-enhancing, or plot-relevant effects.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Choose one of the following sub-types for an "Interesting Effect" bonus:
+
+                                    a) Bonus to Non-Combat Skills or Specific Actions:
+                                       - Provides a tangible advantage when performing actions related to a specific non-combat skill area or out-of-combat situation.
+                                       - Often represented as a percentage increase in success chance or a direct modification to specific action checks.
+                                       - Examples:
+                                           - "+15% chance on lockpicking attempts" (for 'Master Lockpicks')
+                                           - "Allows understanding spoken Elvish" (for 'Amulet of Tongues')
+                                           - "+10% bonus to stealth checks in dim light while worn" (for 'Shadow Cloak')
+                                           - "+5% chance to successfully persuade merchants during haggling" (for 'Silver Tongue Brooch')                                           
+
+                                    b) Unique Narrative Ability or Plot-Relevant Property:
+                                       - An interesting and often rare ability of an item that has a significant impact on the plot, exploration, or specific interactions.
+                                       - Such items should be marked as 'important item' in their main 'description' field (as per #10.2.1).
+                                       - These effects are often unique and tied to specific quests or character arcs.
+                                       - Examples:
+                                           - "Can unlock the ancient door in the Sunken Temple." (for 'Key of the Ancients')
+                                           - "Reveals hidden magical auras when held." (for 'Lens of Scrutiny')
+                                           - "Allows safe passage through the Whispering Woods." (for 'Warding Charm')
+                                           - "Grants visions of the past when touched to specific runestones." (for 'Oracle Stone')
+
+                                    c) Consumption Effect (Health/Energy Restoration):
+                                       - This bonus applies IF the item's 'isConsumption' property (see #10.2.13) is 'true' AND the item is logically a consumable that restores health or energy.
+                                       - It is MANDATORY for such bonuses to have a specific numerical value.
+                                       - It is MANDATORY for items like food, water, medicine, potions to have such a bonus.
+                                       - Examples:
+                                           - "+15 health when consumed" (for 'Healing Salve')
+                                           - "+20 energy when consumed" (for 'Invigorating Draught')
+                                           - "Restores 5 energy points" (for 'Chunk of Dried Meat')
+                                           - "Cures minor poisons when consumed" (for 'Antidote Vial' - the "value" is the cure itself)
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.11.2.2">
+       <title>
+        Type 2: Bonus to a Characteristic (while equipped)
+       </title>
+       <description>
+        This is the primary way items grant statistical power. These bonuses are active ONLY while the item is equipped.
+                                    Crucially, their impact on core stats like Health and Weight depends on whether the bonus is permanent or conditional.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - This bonus directly increases one of the character's characteristics (from 'characteristicsList' as defined in #5.1.2).
+                                    - The bonus value scales with the item's quality, e.g., "+2" for Common, "+5" for Rare, "+10" for Legendary.
+                                    - This bonus is applied by the game system when calculating the character's characteristic values based on equipped items.
+
+                                    - CRITICAL DISTINCTION: How the Bonus is Applied
+                                      The effect of this bonus depends entirely on its nature, as defined in its 'structuredBonuses' entry:
+                      
+                                      1.  Permanent, Unconditional Bonuses:
+                                          If a bonus has "application: 'Permanent'", "valueType: 'Flat'", and "condition: null", it contributes to the character's Permanently Modified Characteristics.
+                                          As a result, it WILL directly increase the registered health/energy resource capacities and 'MaxWeight', and lower the 'CritChanceThreshold'.
+                          
+                                      2.  Conditional or Temporary Bonuses:
+                                          If a bonus has "application: 'Conditional'" or is a temporary effect, it contributes ONLY to the final Modified Characteristic.
+                                          As a result, it WILL NOT change the character's foundational attributes, but will affect action checks, damage bonuses, etc.
+
+                                    Examples:
+                                        - "+5 strength" (from 'Gauntlets of Ogre Power')
+                                          (As this is a permanent, flat bonus, it contributes to Permanently Modified Strength and WILL increase health resource capacity and MaxWeight.)
+
+                                        - "+8 intelligence" (from 'Circlet of Intellect')
+                                          (This permanent, flat bonus contributes to Permanently Modified Intelligence and WILL increase the registered energy resource capacity.)
+
+                                        - "+4 luck" (from 'Lucky Charm')
+                                          (This permanent, flat bonus contributes to Permanently Modified Luck and WILL lower the CritChanceThreshold.)
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.11.2.3">
+       <title>
+        Type 3: Conditional Bonus to a Characteristic
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - Provides a bonus to one of the character's characteristics, but ONLY under specific, clearly defined conditions.
+                                    - This bonus is not permanent and applies only when the conditions are met.
+                                    - The bonus value is typically small, but better than permanent bonus. E.g., "+3-6" or occasionally "+7-8" for very rare/powerful items. Legendary and unique items could have "+8-16", because they are extremely rare/powerful.
+                                    - The characteristic must be from 'characteristicsList' (#5.1.2).
+                                    - The conditions MUST be clearly stated as part of the bonus string.
+                                    - Examples:
+                                        - "+3 strength when forcing open doors" (for 'Crowbar')
+                                        - "+3 dexterity when balancing on narrow surfaces" (for 'Acrobat's Slippers')
+                                        - "+5 constitution when resisting cold weather effects" (for 'Fur-lined Cloak')
+                                        - "+4 persuasion when interacting with nobility while worn" (for 'Signet Ring')
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.11.2.4">
+       <title>
+        Type 4: Curses or Detrimental Effects (Negative Bonuses)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Some items, particularly cursed or poorly made ones, may impart negative effects. 
+                                    These are also listed in the 'bonuses' array.
+
+                                    These follow the same structure as positive bonuses but with negative implications.
+                                    Examples:
+                                        -   "-1 dexterity while worn" (for 'Clumsy Gauntlets')
+                                        -   "User has a 10% chance to drop weapon on a missed attack while this amulet is worn." (for 'Amulet of Misfortune')
+                                        -   "Emits a faint, unsettling aura, causing -5% to persuasion checks with commoners."
+                                        -   "Drains 1 energy point per turn while carried."
+                                        -   "Cannot be unequipped without a 'Remove Curse' spell." (This is a powerful narrative constraint)
+                                    Cursed items might also have their negative effects hidden until certain conditions are met or the item is identified.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.11.3">
+     <title>
+      Forbidden Bonus Types for this 'bonuses' Array
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The 'bonuses' array is NOT for:
+                            1.  Direct, primary combat effects like dealing X% weapon damage or providing Y% passive armor. These belong in the item's 'combatEffect' object (see #10.4).
+                            2.  Vague or unquantifiable mechanical benefits (e.g., "slightly improves combat"). All mechanical bonuses must be specific.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR015 END --><!-- GM1557-B BR017 BEGIN -->
+  <rule id="5.13">
+   <title>
+    Item Count Management Overview
+   </title>
+   <description>
+    This section defines how the 'count' property of stackable items is managed, reflecting changes in quantity. 
+                    It also clarifies the distinction between item 'count' and item 'resource'.
+   </description>
+   <content type="ruleset">
+    <rule id="5.13.1">
+     <title>
+      Core Principle: Reporting Count Changes
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the 'count' property of an item in the player's inventory changes (is increased or decreased) during the current turn compared to its value in the Context, this change MUST be reported.
+                            The item with its new 'count' should be included in the 'UpdateInventory' array (as per InstructionBlock '10').
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.13.2">
+     <title>
+      Distinction Between 'count' and 'resource'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Item stack count and a bounded item resource are separate authorities:
+
+                            1.  'count': This property ALWAYS represents the number of separate, identical physical item instances in a stack.
+                                Example: If the player has three identical healing potions, the item stack "Healing Potion" will have 'count: 3'.
+
+                            2.  A bounded reserve such as charges, doses, ammunition, fuel, or durability belongs to the permanent item identity in the common resource ledger. It is never an item property.
+                                Example: a magical staff has 'count: 1' and a separate exact item/charges coordinate whose sealed current is 10.
+
+                            Combining count and item-owned resources:
+                            If the player has three potions and EACH potion contains two doses, the correct representation is:
+                            - One item stack in inventory: "Healing Potion" with 'count: 3'.
+                            - Before changing one unit's reserve, use the item split/identity contract so that physical unit has its own permanent itemId and doses coordinate with maximum 2.
+                            When the player uses one dose, emit resourceChanges operation=spend against that exact itemId/resourceKey.
+                            The total quantity remains 3; the accepted split represents one selected unit separately without consuming it.
+                            Only the accepted item lifecycle may consume or remove a unit after its ledger reaches 0.
+
+                            Report reserve mutations through resourceChanges and non-resource count mutations through UpdateInventory. Never copy the ledger current or maximum into the item object.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.13.3">
+     <title>
+      SYSTEM NOTE: Reporting Item Consumption vs. Removal
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A critical distinction exists between an item being CONSUMED through gameplay and an item stack being REMOVED by player choice. 
+                            The reporting method is different and MUST be followed precisely.
+
+                            1.  Gameplay Consumption (e.g., crafting, firing an arrow, drinking a single-dose potion):
+                                -   If this action consumes SOME but not all items from a stack, this is a PARTIAL removal.
+                                -   As per the directive in InstructionBlock id="2.6", you MUST report this by updating the item's 'count' via the 'UpdateInventory' array.
+
+                            2.  Ledger Depletion (e.g., using the last charge of a wand):
+                                -   This is NOT a change in 'count'.
+                                -   As per InstructionBlock id="2.6", emit only resourceChanges operation=spend against the exact permanent itemId/resourceKey.
+                                -   It is strictly FORBIDDEN to touch the 'count' or use 'removeInventoryItems' merely because the ledger reaches zero.
+                                The game system handles the final depletion of the item.
+
+                            3.  Intentional Stack Removal (e.g., dropping, destroying, giving away the whole stack):
+                                -   This is the ONLY scenario where 'removeInventoryItems' is used.
+                                -   Refer to InstructionBlock id="2.6" for the complete, mandatory protocol.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.13.4">
+     <title>
+      Special Rules for Container 'count'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  It is forbidden to change the 'count' of container items. Each container instance is unique and must always have 'count: 1'.
+                            2.  If the player needs more containers of the same type (e.g., player finds another pouch), add them as new unique items through 'UpdateInventory' (as per Section #10), they will get a new ID. 
+                            Do not change the 'count' of existing containers.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.13.5">
+     <title>
+      Increasing Item 'count' (Stacking)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  When the player receives an item identical to one already existing in their inventory (known from Context), 
+                            and the item is stackable (most consumables, materials, ammunition are stackable; unique items, containers, most equipment are not), you should increase the 'count' of the existing item stack instead of creating a new, separate item entry.
+                            2.  Add the item stack with its new, increased 'count' to the 'UpdateInventory' array.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.13.6">
+     <title>
+      Decreasing Item 'count'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  When part of a stackable item is removed from inventory (e.g., player drops some items from a stack, uses materials for crafting, fires non-resource-tracked ammunition like thrown knives), decrease its 'count' accordingly.
+                            2.  Add the item stack with its new, decreased 'count' to the 'UpdateInventory' array.
+                            3.  Note: This rule focuses only on updating the 'count' of the remaining stack. 
+                            The actual event that caused the count decrease (e.g., dropping items, crafting specific quantities) might be handled or narrated separately. 
+                            If items were dropped or given away, they might also appear in 'removeInventoryItems' if explicit removal tracking is needed for those specific units, but the primary task here is updating the original stack's count.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR017 END --><!-- GM1557-B BR018 BEGIN -->
+  <rule id="5.14">
+   <title>
+    Item-Owned Common Resources Overview
+   </title>
+   <description>
+    This section defines how item-owned bounded resources (for example charges, ammunition in a container, fuel, uses, and durability) are materialized and changed through the common resource authority.
+                    Ordinary changes are reported via resourceChanges; capacity changes use resourceCapacityChanges.
+
+                    CRITICAL: 
+                    The item object never stores a current or maximum resource value. Even if the ledger reaches 0, do not modify the item's 'count' unless the accepted item lifecycle separately authorizes it.
+   </description>
+   <content type="ruleset">
+    <rule id="5.14.1">
+     <title>
+      Identifying Items with Resources (ResourceCheck)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            An inventory item requires an item-owned common resource if one of these conditions is true:
+                            1.  It contains expendable charges or units within itself 
+                            (e.g., bullets loaded in a magazine item, arrows inside a quiver item, battery charge, magic staff mana, liquid in a bottle, uses left on a tool).
+                            2.  The item itself is intended for consumption or depletion through use (and is marked with 'isConsumption: true' as per #10.2.13). 
+                            This often applies to items with a 'count' of 1 that deplete over time or uses (e.g., a single torch burning down, a potion with multiple doses).
+
+                            GM Note (ResourceCheck): For a new item, declare each required sealed resourceKey and maximum in resourceMaterialization. For an existing item, use only its already materialized exact coordinate; never invent a current value from prose.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.14.2">
+     <title>
+      Materialization and Mutation Surfaces
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            A new item declares only resourceKey and maximum inside its one-time resourceMaterialization.resources[] envelope. The client allocates and initializes the ledger, strips the envelope, and seals history.
+                            An existing item changes through resourceChanges or resourceCapacityChanges addressed by exact permanent itemId/resourceKey. The GM never reports an after-value.
+
+                            ]]>
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            New-item envelope:
+                            "resourceMaterialization": {
+                              "resources": [{ "resourceKey": "charges", "maximum": 10 }]
+                            }
+
+                            Existing-item spend command:
+                            {
+                              "operation": "spend",
+                              "target": { "kind": "item", "targetId": "exact_item_id" },
+                              "resourceKey": "charges", "amount": 1,
+                              "source": { "kind": "local_item_cost", "sourceId": "exact_item_id" },
+                              "eventRef": "turn_42", "reason": "one charge used"
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.14.3">
+     <title>
+      Field Definitions for Item Resource Data
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  "resourceKey": exact semantic identity from the sealed definition (for example charges, ammunition, fuel, doses, or durability). Never translate or infer it from the display name.
+                            2.  "maximum": exact positive capacity allowed only in the one-time materialization envelope or an authorized instance-fixed capacity command. The definition decides how the client initializes current state.
+                            3.  "target": exact item identity. Existing owners use targetId; an accepted same-turn item uses its temporary targetRef, which the client consumes.
+                            4.  Definition metadata supplies numeric kind, unit, quantum, bounds, initialization, permitted operations, and visibility. The GM does not duplicate those policies on an item.
+                                
+                                Example semantic keys may represent tool uses, wand charges, loaded ammunition, liquid volume, potion doses, or fuel duration. The exact admitted key and its display unit come from the sealed definition catalog.
+
+                                <!-- If non-magic mode is active: All resources must be realistic and non-magical. 
+                                Magical items should be treated as non-functional or have their magical resource replaced with a realistic equivalent. 
+                                Else: Magical resources are allowed. 
+                                EndIf -->
+
+                            5.  Moving an item between player, NPC, storage, or container carriers does not change its resource coordinate. A contents path or inventory position is never a resource selector.
+                            6.  Every mutation includes a registered exact source, ordinal eventRef, and reason; no current, resulting value, path, receipt, or history is GM-authored.
+
+                            Important Note on Ammunition:
+                            - Individual ammunition items (e.g., an Arrow item with 'count: 20') use item count when each arrow is a separate physical unit.
+                            - A magazine or quiver may instead own a materialized ammunition coordinate; firing spends that ledger and reloading composes an exact transfer without copying values into either item.
+                            Refer to #5.13.2 for the distinction between stack count and item-owned ledger state.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.14.4">
+     <title>
+      Modifying Item Resources
+     </title>
+     <content type="ruleset">
+      <rule id="5.14.4.1">
+       <title>
+        Decreasing Resources (Usage/Depletion)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    When an item's bounded reserve is used or depleted:
+                                    1.  Emit resourceChanges operation=spend with a positive exact amount against the permanent item/resource coordinate.
+                                    2.  The sealed floor policy decides whether a below-minimum request is rejected or clamped; the GM never computes an after-value.
+                                    3.  It is STRICTLY FORBIDDEN to change the item's 'count' merely because the ledger decreased or reached 0. Any terminal consumption is a separate accepted item-lifecycle transition.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.14.4.2">
+       <title>
+        Increasing Resources (Reloading/Refilling/Recharging)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    When an item's bounded reserve is restored:
+                                    1.  Emit resourceChanges operation=gain with a positive exact amount and the exact registered item-local source.
+                                    2.  The sealed cap policy decides whether an above-maximum request is rejected or clamped; capacity itself changes only through resourceCapacityChanges.
+                                    3.  It is STRICTLY FORBIDDEN to change the item's 'count' because the ledger increased.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.14.5">
+     <title>
+      Logging Resource Changes
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Record the narrative reason for each materialization, capacity change, spend, gain, damage, or restore in 'gm_thoughts_markdown'. The log is not mechanical authority and must not copy client-owned current/history fields.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR018 END --><!-- GM1557-B BR019 BEGIN -->
+  <rule id="5.15">
+   <title>
+    Item Durability and Degradation Overview
+   </title>
+   <description>
+    This section defines the gameplay semantics of the built-in item-owned common resource key durability, including wear, repair, and terminal breakage.
+   </description>
+   <content type="ruleset">
+    <rule id="5.15.1">
+     <title>
+      Concept of Durability
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Durability is a sealed common resource owned by the permanent item identity (see InstructionBlock '10' -> Rule '10.2.7'), never an item-object property.
+                            2.  It reflects the item's current physical condition and resistance to wear and tear.
+                            3.  A new durable item declares resourceKey durability and maximum 100 in its one-time materialization envelope; the sealed definition initializes it at maximum. If it is found already damaged, compose an authorized same-turn damage command against the accepted item targetRef rather than authoring a lower current value.
+                            4.  When the durability ledger reaches 0, it is considered broken and unusable until repaired or retired through the accepted lifecycle.
+                                - If 'count' is 1, the exact item becomes unusable; repair restores its ledger, while destruction retires the item and resource coordinate atomically.
+                                - If a stack contains units with separate durability, first materialize/split exact unit identities. Never decrement the shared stack merely by inference or assume the next unit's state.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.15.2">
+     <title>
+      Durability Loss
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            An item's durability ledger decreases when it experiences significant stress or force.
+                            The GM determines a positive exact loss from the event and quality, then emits resourceChanges operation=damage against the exact itemId/durability coordinate.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="5.15.2.1">
+       <title>
+        Common Causes of Durability Loss
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    - Weapons: When used to attack (especially if hitting hard armor or parrying strong blows), or when struck by an enemy attack.
+                                    - Armor/Shields: When successfully blocking or mitigating damage from an attack.
+                                    - Tools: During use, especially if used improperly or on resistant materials (e.g., a lockpick on a complex lock, a pickaxe on very hard stone).
+                                    - Environmental Damage: Exposure to highly corrosive substances (acid), extreme heat (fire beyond its design), or significant physical trauma (e.g., caught in a rockfall).
+                                    - Critical Failures: A critical failure during an action check involving an item might result in damage to that item.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="5.15.2.2">
+       <title>
+        Influence of Item Quality on Durability Loss Rate
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The 'quality' of an item (refer to InstructionBlock '5' -> Rule '5.9' Rarity Tiers Overview, as quality often aligns with rarity tiers) significantly influences how easily it loses durability:
+
+                                    -   'Trash' quality: Extremely fragile. Loses significant durability (e.g., 25-50% or breaks entirely) from even minor stress or a single forceful interaction.
+                                    -   'Common' quality: Relatively fragile. Loses noticeable durability (e.g., 10-25%) from typical combat use or moderate stress.
+                                    -   'Uncommon' quality: More resilient than Common. Loses durability (e.g., 5-15%) at a moderate rate.
+                                    -   'Good' quality: Sturdy. Requires significant effort or repeated stress to cause notable durability loss (e.g., 2-10%).
+                                    -   'Rare' quality: Very resilient. Often possesses unusual properties or craftsmanship that makes them harder to damage. Durability loss is infrequent and minor (e.g., 1-5%) except against very powerful forces.
+                                    -   'Epic' quality: Exceptionally durable. Almost impossible to break through normal use or combat. Might only lose durability from specific powerful attacks, anti-magic fields (if magical), or extreme narrative events.
+                                    -   'Legendary' quality: Generally do not break or lose durability through normal means. May have specific narrative conditions under which they can be damaged or destroyed. For mechanical purposes, often treated as having infinite durability.
+                                    -   'Unique' quality: Similar to Legendary, typically do not break or lose durability unless a specific plot point dictates it. Their nature often transcends normal wear and tear.
+
+                                    GM Decision: When an item takes stress, the GM decides the percentage of durability loss based on the event's severity and the item's quality tier. 
+                                    A 'Common' sword parrying a giant's club might lose more durability than a 'Rare' sword in the same situation.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="5.15.3">
+     <title>
+      Repairing Items
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Rules for repairing damaged items use resourceChanges operation=restore against the exact item/durability coordinate and are detailed in the Crafting and Item Modification section (InstructionBlock '9').
+                            Generally, repairing items may require specific 'KnowledgeBased' passive skills (e.g., "Blacksmithing", "Leatherworking", "Tinkering"), appropriate materials, and sometimes tools.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.15.4">
+     <title>
+      Reporting Durability Changes
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Report durability loss or repair only through resourceChanges; do not resend the item or author a resulting value in UpdateInventory.
+                            Log the narrative reason and requested amount in 'gm_thoughts_markdown'; the canonical ledger/history records the applied result.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR019 END --><!-- GM1557-B BR028 BEGIN -->
+  <rule id="5.23">
+   <title>
+    CRITICAL DIRECTIVE: The Law of Unitary Currency
+   </title>
+   <description>
+    This rule establishes a single, unified currency for all game mechanics to ensure economic consistency.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    The value specified in 'Context.gameSettings.gameWorldInformation.currencyName' (e.g., "Gold") is the sole official currency for all mechanical calculations in the game.
+
+                    YOUR MANDATE:
+                    1.  Use the Official Currency:
+                    All values in the 'moneyChange' field and 'price' fields for items MUST be denominated in this official currency.
+                    2.  Narrate Other Currencies, Convert for Mechanics:
+                    You are encouraged to introduce other currencies (e.g., "Silver Pieces", "Republic Credits", "Ancient Doubloons") in the narrative for flavor and world-building. 
+                    HOWEVER, if the player receives or spends these currencies, you MUST immediately:
+                        a.  Determine a logical exchange rate based on the game world's logic (e.g., 10 Silver = 1 Gold) or player's 'customInfo'.
+                        b.  Calculate the equivalent value in the official 'currencyName'.
+                        c.  Use this converted value for the 'moneyChange' field.
+                        d.  You MUST log this entire conversion process in 'gm_thoughts_markdown'.
+
+                    Golden Rule:
+                    The world can have many currencies in its story, but the game's mechanics have only one. 
+                    Your job is to be the bridge.
+
+                    ]]>
+   </instructiontext>
+  </rule><!-- GM1557-B BR028 END -->
+</content>
+<!-- GM1557-B BR031 BEGIN --><rule id="5.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 loot route</description>
+  <content><![CDATA[
+  A durable loot item uses route loot_acquisition and sourceAuthority.kind loot_template. Bind authorityId to the exact validated current-turn loot template key; prose such as "the player finds it" is not authority. The item is a complete raw object with existedId = null, turn-unique creationRef, every semantic field, and all twelve materialization.sections. Use exact item IDs in canonical contentsPath after sealing; a raw same-turn parent may be named by creationRef and the client rewrites it atomically.
+
+  Never create itemId, materializationReceipt, item_identity_index.json, seals, transitions, or lineage. Loot transfer of an already accepted physical item is not loot_acquisition: preserve its exact itemId, envelope, and receipt and use transfer authority. Receipt-less canonical loot is invalid because the game has not shipped and no save-compatibility promotion exists.
+  ]]></content>
+ </rule><!-- GM1557-B BR031 END -->
+</instructionblock>

@@ -30,7 +30,7 @@
     },
     {
       "id": "gm-doc-block5-preservation",
-      "responsibility": "#1557 B Complete55piece/XML/CDATA/ancestor/51example preservation and9actual extractor occurrences. Full frozen b6manifest, inverseONLYtwo bound file/line locators, whole semantic/arrayorder equality; ten fullXML and three positive-seeded wholemanifest row/family/semantics negatives. Boundary1 stays separate.",
+      "responsibility": "#1557 B Complete55piece/XML/CDATA/ancestor/51example preservation and9actual extractor occurrences. Full frozen b6manifest, inverseONLYtwo bound file/line locators, whole semantic/arrayorder equality; ten fullXML and three positive-seeded wholemanifest row/family/semantics negatives. Boundary1 stays separate. B-S03 adds actual144/19ID navigator-to-physicalXML lookup and two positive-seeded lostforeignID/wrongexistingtarget alias negatives with allmodulebytesunchanged.",
       "excludes": "No A1/A2/F1, unchanged A cohort or gameplay replay, replacement producer, worker/backend launch, provider/full-daemon/Windows/CI. Actual commands require independent concrete SOURCE and separate release; proposed counts are not observed native membership.",
       "changeHints": [
         "specs/1557-gm-doc-modularization/block5-content-map.json",
@@ -54,7 +54,9 @@
             "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences",
             "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators",
             "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
-            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators"
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner",
+            "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody"
           ]
         }
       ]

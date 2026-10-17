@@ -86,6 +86,30 @@ public sealed class GmDocumentationBlock5Tests
         Assert.Contains("manifest.complete_semantics_or_order", f.VerifyManifestSemantics(manifest, locators));
     }
 
+    [Fact]
+    public void ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner()
+    {
+        var f = Fixture(); Assert.Empty(f.VerifyBaseline());
+        Assert.Equal(144, f.Topics.Sum(topic => f.NavigatorIds("Rules/Block_5.txt", S(topic, "topic")).Length));
+        Assert.Equal(19, f.Topics.Sum(topic => f.NavigatorIds("Examples/E_Block_5.txt", S(topic, "topic")).Length));
+        Assert.Empty(f.VerifyNavigation(f.ActualDocuments()));
+    }
+
+    [Theory]
+    [InlineData("lost_id")]
+    [InlineData("wrong_alias")]
+    public void NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody(string mutation)
+    {
+        var f = Fixture(); var docs = f.CompleteFixture(); Assert.Empty(f.VerifyMoved(docs)); Assert.Empty(f.VerifyNavigation(docs));
+        var originalModules = f.ModulePaths.ToDictionary(path => path, path => docs[path].ToArray(), StringComparer.Ordinal);
+        const string source = "Rules/Block_5.txt"; var text = Text(docs[source]);
+        var before = mutation == "lost_id" ? "`19.D.0`" : "[rules](Block_5_Narrative_Social.txt)";
+        Assert.Contains(before, text, StringComparison.Ordinal); Assert.True(docs.ContainsKey("Rules/Block_5_Combat_Foundations.txt"));
+        docs[source] = Bytes(text.Replace(before, mutation == "lost_id" ? "" : "[rules](Block_5_Combat_Foundations.txt)", StringComparison.Ordinal));
+        foreach (var pair in originalModules) Assert.Equal(pair.Value, docs[pair.Key]);
+        Assert.Contains(f.VerifyNavigation(docs), issue => issue.StartsWith(mutation == "lost_id" ? "navigation.ids:" : "navigation.alias:", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("missing")]
     [InlineData("duplicate")]

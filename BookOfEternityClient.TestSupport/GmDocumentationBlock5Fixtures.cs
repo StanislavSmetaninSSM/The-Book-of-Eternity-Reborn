@@ -92,11 +92,9 @@ internal sealed partial class GmDocumentationBlock5Fixtures
     }
     internal string Navigation(string source)
     {
-        var rules = source.StartsWith("Rules/", StringComparison.Ordinal);
         return "\n# Block 5 conditional topic navigation\n[Main router](../CLI_Rules_Index.md).\nRead only current applicable topics and their current-contract dependencies. Bootstrap, receipt-only and exact repair retain their packet restrictions.\n" +
-            "| Topic | Rules | Worked examples |\n|---|---|---|\n" + string.Join('\n', Topics.Select(topic =>
-                "| " + S(topic, "topic") + " | [rules](" + (rules ? Path.GetFileName(S(topic, "rulePath")) : "../" + S(topic, "rulePath")) +
-                ") | [examples](" + (rules ? "../" + S(topic, "examplePath") : Path.GetFileName(S(topic, "examplePath"))) + ") |")) + "\n";
+            "IDs below retain original source order within each owner, including foreign descendants.\n" +
+            "| Topic | Exact original rule IDs | Rules | Worked examples |\n|---|---|---|---|\n" + string.Join('\n', Topics.Select(topic => NavigatorRow(source, topic))) + "\n";
     }
     internal string RouterAddition => "\n## Block_5 conditional topic routing\n[Rule context](Rules/Block_5.txt); [example context](Examples/E_Block_5.txt).\n" +
         "Read only topics activated by the current request and its actual dependencies; preserve bootstrap/receipt/repair restrictions. Availability never mandates every topic.\n" +

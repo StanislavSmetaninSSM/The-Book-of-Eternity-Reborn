@@ -1,0 +1,91 @@
+<!-- GM1557 Block5 Characteristics_Progression
+Read when: Any characteristic/derived-parameter check, level/passive progression, unified experience or level calibration.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](../Rules/Block_5.txt) and [example context](E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if actual calculation uses units or identities: [rules](../Rules/Block_5_Units_Ids.txt) [examples](E_Block_5_Units_Ids.txt).
+Worked examples: [paired examples](E_Block_5_Characteristics_Progression.txt); [paired rules](../Rules/Block_5_Characteristics_Progression.txt).
+-->
+<instructionblock id="5">
+<!-- GM1557-B BE002 BEGIN -->
+ <rule id="5.10.3">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player levels up, GM grants a new Common passive skill
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Context: Player reaches Level 11. GM decides to grant a new Common passive skill.
+
+                                    Log in 'gm_thoughts_markdown':
+                                    "Player leveled up to 11. Awarding new passive skill: 'Endurance Training'."
+
+                                    Part of JSON Response:
+                                    "passiveSkillChanges": [
+                                        {
+                                            "skillName": "Endurance Training", 
+                                            "skillDescription": "Years of exertion have increased your overall stamina, granting a +1 bonus to your standard Constitution.", 
+                                            "rarity": "Common",
+                                            "type": "CharacteristicBonus",
+                                            "group": "Physical",
+                                            "playerStatBonus": "+1 к Выносливости",
+                                            "structuredBonuses": [
+                                                {
+                                                    "description": "+1 к Выносливости",
+                                                    "bonusType": "Characteristic",
+                                                    "target": "constitution",
+                                                    "valueType": "Flat",
+                                                    "value": 1,
+                                                    "application": "Permanent",
+                                                    "condition": null
+                                                }
+                                            ],
+                                            "masteryLevel": 1, 
+                                            "maxMasteryLevel": 3 
+                                        }
+                                    ]
+                                    
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player levels up, GM increases mastery of an existing passive skill
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+                                    Context: Player reaches Level 16. Has 'Tough Skin' (Mastery 1). GM decides to improve it.
+
+                                    Log in 'gm_thoughts_markdown':
+                                    "Player leveled up to 16. Increasing mastery of 'Tough Skin' to Level 2. Skill evolves to 'Reinforced Hide'."
+
+                                    Part of JSON Response:
+                                    "passiveSkillChanges": [
+                                        {
+                                            "skillName": "Reinforced Hide", 
+                                            "skillDescription": "Your skin is now significantly more resilient, offering better protection against all damage.", 
+                                            "rarity": "Uncommon", 
+                                            "type": "BodyModification",
+                                            "group": "Physical",
+                                            "combatEffect": {
+                                                "effects": [{ 
+                                                    "effectType": "ResistBonus", 
+                                                    "value": "8%", 
+                                                    "targetType": "all", 
+                                                    "effectDescription": "Provides 8% resistance to all damage." 
+                                                }] 
+                                            },
+                                            "masteryLevel": 2, 
+                                            "maxMasteryLevel": 5 
+                                        }
+                                    ],
+                                    "removePassiveSkills": ["Tough Skin"] 
+                                    
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE002 END -->
+</instructionblock>

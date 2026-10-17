@@ -1,0 +1,89 @@
+<!-- GM1557 Block5 Combat_Foundations
+Read when: Any element/effect/target, combat action/classification, advantage/disadvantage or combat failure/consequence decision.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](../Rules/Block_5.txt) and [example context](E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if actual combat work uses units or IDs: [rules](../Rules/Block_5_Units_Ids.txt) [examples](E_Block_5_Units_Ids.txt); Only if actual characteristic or derived-parameter calculation is required: [rules](../Rules/Block_5_Characteristics_Progression.txt) [examples](E_Block_5_Characteristics_Progression.txt); Only if actual cost or equipment use is required: [rules](../Rules/Block_5_Items_Resources.txt) [examples](E_Block_5_Items_Resources.txt); Only if an independently issued wound contract is present: [rules](../Rules/Block_5_Wounds.txt) [examples](E_Block_5_Wounds.txt).
+Worked examples: [paired examples](E_Block_5_Combat_Foundations.txt); [paired rules](../Rules/Block_5_Combat_Foundations.txt).
+-->
+<instructionblock id="5">
+<!-- GM1557-B BE018 BEGIN -->
+ <rule id="5.5">
+  <example contenttype="json" type="good">
+   <title>
+    Example of a Combat Action Object (Enemy Attack "Venomous Spit")
+   </title>
+   <content type="json">
+    <![CDATA[ 
+
+                            {
+                                "actionName": "Venomous Spit", 
+                                "actionCost": "Main",
+                                "effects": [{
+                                    "effectType": "Damage",
+                                    "value": "5%",
+                                    "targetType": "acid", 
+                                    "targetTypeDisplayName": "Кислота",
+                                    "poiseDamage": "8%",
+                                    "effectDescription": "Deals 5% acid damage on impact." 
+                                },
+                                {
+                                    "effectType": "DamageOverTime",
+                                    "value": "3%", 
+                                    "targetType": "poison", 
+                                    "targetTypeDisplayName": "Яд",
+                                    "duration": 3,
+                                    "effectDescription": "Target is poisoned, taking 3% poison damage per turn for 3 turns." 
+                                }],
+                                "targetPriority": "random_enemy"
+                            }
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Example of a Combat Action Object (Player Skill "Minor Healing Word")
+   </title>
+   <content type="json">
+    <![CDATA[ 
+                
+                            {
+                                "effects": [{
+                                    "effectType": "Heal",
+                                    "value": "25%", 
+                                    "targetType": "health",
+                                    "effectDescription": "Restores 25% health to the target." 
+                                }]
+                            }
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Example with a Custom Damage Type
+   </title>
+   <content type="json">
+    <![CDATA[ 
+
+                            {
+                                "actionName": "Gaze of the Void", 
+                                "actionCost": "Main",
+                                "effects": [{
+                                    "effectType": "Damage",
+                                    "value": "15%",
+                                    "targetType": "cosmic_horror_gaze", // System name
+                                    "targetTypeDisplayName": "Cosmic Horror", // Mandatory display name for custom type
+                                    "poiseDamage": "25%",
+                                    "effectDescription": "Deals 15% cosmic horror damage." 
+                                }]
+                            }
+
+                            ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE018 END -->
+</instructionblock>

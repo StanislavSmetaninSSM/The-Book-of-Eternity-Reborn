@@ -1,0 +1,277 @@
+<!-- GM1557 Block5 Items_Resources
+Read when: Any rarity/item bonus/count/resource/durability/currency operation or currently authorized loot materialization.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](../Rules/Block_5.txt) and [example context](E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): Only if actual accepted item identities or quantities are required: [rules](../Rules/Block_5_Units_Ids.txt) [examples](E_Block_5_Units_Ids.txt); Only if actual characteristic bonuses are required: [rules](../Rules/Block_5_Characteristics_Progression.txt) [examples](E_Block_5_Characteristics_Progression.txt); Only if an actual combat mechanic is required: [rules](../Rules/Block_5_Combat_Foundations.txt) [examples](E_Block_5_Combat_Foundations.txt).
+Worked examples: [paired examples](E_Block_5_Items_Resources.txt); [paired rules](../Rules/Block_5_Items_Resources.txt).
+-->
+<instructionblock id="5">
+<!-- GM1557-B BE003 BEGIN -->
+ <rule id="5.13.2">
+  <example contenttype="text" type="good">
+   <title>
+    Example: Bandages with Count and Resource
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    A stack of Bandages (ID: bnd-1, count: 3) cannot share one mutable per-unit reserve. If each physical bandage provides 20 uses, first use the accepted item split/identity route so the selected unit has its own permanent itemId and materialized uses coordinate with maximum 20.
+                                    Using that bandage emits resourceChanges operation=spend against the selected itemId/uses coordinate. The split preserves the total quantity; depletion does not itself authorize a count change.
+                                    Dropping a unit, consuming it terminally, or merging it back remains a separate accepted item lifecycle operation.
+                                    
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="good">
+   <title>
+    Example: Ammunition and Magazines
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    Player has a stack of Bullets ('name: 'Bullet', id: bul-2') with 'count: 50'. 
+                                    Player also has a Pistol Magazine (permanent itemId mag-3) whose projected ammunition ledger is 4/10.
+                                    - Firing 3 shots: emit resourceChanges operation=spend amount=3 against mag-3/ammunition. The loose Bullets stack remains 50.
+                                    - Reloading the 6 bullets that fit: atomically update the loose Bullets count to 44 and emit resourceChanges operation=gain amount=6 against mag-3/ammunition. Never discard excess units through cap clamping, and do not author the resulting magazine value.
+                                    
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE003 END --><!-- GM1557-B BE004 BEGIN -->
+ <rule id="5.13.3">
+  <example contenttype="text" type="good">
+   <title>
+    Correct: Player uses their last 'Iron Ingot' (ID: ing-6, count was 1) for crafting.
+   </title>
+   <content>
+    <![CDATA[
+
+                                    This is gameplay consumption of a partial stack (even if the part is the whole thing). 
+                                    You MUST report this by updating the 'count'.
+                                    In 'UpdateInventory': 
+                                    { 
+                                        "existedId": "ing-6", 
+                                        "count": 0 
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="good">
+   <title>
+    Correct: Player drinks the last dose of a multi-dose 'Healing Salve' (ledger reaches 0).
+   </title>
+   <content>
+    <![CDATA[
+
+                                    This is ledger depletion. Report only the exact spend command:
+                                    { 
+                                        "operation": "spend",
+                                        "target": { "kind": "item", "targetId": "salve-002" },
+                                        "resourceKey": "doses", "amount": 1,
+                                        "source": { "kind": "local_item_cost", "sourceId": "salve-002" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "Last salve dose used."
+                                    }
+                                    
+                                    DO NOT touch 'count'.
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    Incorrect: Player uses their last 'Iron Ingot' for crafting.
+   </title>
+   <content>
+    <![CDATA[
+
+                                    Putting the item in 'removeInventoryItems' is INCORRECT. 
+                                    This command is only for when the player's intent is to remove the whole stack, not for when it's consumed by a game mechanic.
+                                    
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE004 END --><!-- GM1557-B BE005 BEGIN -->
+ <rule id="5.13.5">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Increasing item count
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Context: Player has 'Arrows' (ID: arr-5, count: 12). Player finds 8 more identical arrows.
+                                    Result: Item 'Arrows' (ID: arr-5) now has count: 20.
+                                    Log in 'gm_thoughts_markdown': "Increased count for 'Arrows' (ID: arr-5) by 8. New count: 20."
+                                    Part of JSON Response:
+
+                                    "UpdateInventory": [
+                                        { 
+                                            "name": "Arrows", 
+                                            "count": 20, 
+                                            "existedId": "arr-5"
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE005 END --><!-- GM1557-B BE006 BEGIN -->
+ <rule id="5.13.6">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Decreasing item count
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Context: Player has 'Iron Ingots' (ID: ing-6, count: 10). Player uses 3 ingots for crafting.
+                                    Result: Item 'Iron Ingots' (ID: ing-6) now has count: 7.
+                                    Log in 'gm_thoughts_markdown': "Decreased count for 'Iron Ingots' (ID: ing-6) by 3 due to crafting. New count: 7."
+                                    Part of JSON Response:
+
+                                    "UpdateInventory": [
+                                        { 
+                                            "name": "Iron Ingots", 
+                                            "count": 7, 
+                                            "existedId": "ing-6"
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE006 END --><!-- GM1557-B BE007 BEGIN -->
+ <rule id="5.14">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Initializing a new Torch's resource
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                            Context already contains the sealed setting definition burn_minutes.
+                            The new Torch item includes only:
+                            "resourceMaterialization": {
+                                "resources": [{ "resourceKey": "burn_minutes", "maximum": 60 }]
+                            }
+
+                            Log in 'gm_thoughts_markdown': "Added a new Torch with a 60-minute sealed fuel capacity; the client initializes its current ledger."
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Using a Healing Salve charge
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                            "resourceChanges": [{
+                                "operation": "spend",
+                                "target": { "kind": "item", "targetId": "item-guid-salve-002" },
+                                "resourceKey": "charges", "amount": 1,
+                                "source": { "kind": "local_item_cost", "sourceId": "item-guid-salve-002" },
+                                "eventRef": "turn_42:resource:1",
+                                "reason": "One salve dose used."
+                            }]
+                            
+                            Log in 'gm_thoughts_markdown': "Used 1 dose of Healing Salve (ID: item-guid-salve-002); current state remains client-owned."
+                            
+                            ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE007 END --><!-- GM1557-B BE008 BEGIN -->
+ <rule id="5.15.4">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Item loses durability
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Context: the client projection reports 85/100 for item-sword-001/durability before a powerful blow.
+                                    GM Decision: Common sword takes 15% durability damage.
+
+                                    Log in 'gm_thoughts_markdown':
+                                    "Item 'Common Iron Sword' takes 15 durability damage due to parrying a heavy attack."
+
+                                    Part of JSON Response:
+                                    "resourceChanges": [{
+                                        "operation": "damage",
+                                        "target": { "kind": "item", "targetId": "item-sword-001" },
+                                        "resourceKey": "durability", "amount": 15,
+                                        "source": { "kind": "local_item_outcome", "sourceId": "item-sword-001" },
+                                        "eventRef": "turn_42:resource:1",
+                                        "reason": "Parried a heavy attack."
+                                    }]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule><!-- GM1557-B BE008 END --><!-- GM1557-B BE016 BEGIN -->
+ <rule id="5.23">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    CORRECT BEHAVIOR: Player receives a reward in a local currency.
+   </title>
+   <scenariocontext>
+    'currencyName' is "Gold". 
+                            A village elder rewards the player with "200 Silver Pieces". 
+                            The GM determines the exchange rate is 10 silver to 1 gold.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Player receives 200 Silver Pieces as a reward.
+                            - Official Currency: Gold.
+                            - Exchange Rate: 10 Silver = 1 Gold.
+                            - Conversion Calculation: 200 Silver / 10 = 20 Gold.
+                            - Final mechanical change: 'moneyChange' will be 20.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Староста деревни с благодарностью протягивает вам тяжелый мешочек. 
+                                "Это все, что мы можем предложить, чужеземец. Двести серебряных монет за спасение наших полей." 
+                                Вы прикидываете, что это примерно 20 золотых — солидная награда.
+                                
+                                ]]>
+    </response>
+    <moneychange>
+     <![CDATA[
+
+                                20
+
+                                ]]>
+    </moneychange>
+   </jsonresponse>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    INCORRECT BEHAVIOR: Mixing currencies in mechanics.
+   </title>
+   <scenariocontext>
+    'currencyName' is "Gold".
+                            Player receives 200 Silver.
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            The GM sets 'moneyChange' to 200 and adds a new item "Silver Pieces" with a count of 200 to the inventory.
+                            (This is INCORRECT. It creates mechanical chaos by introducing a second currency into the system's balance sheet. 
+                            All monetary value must be abstracted into the single 'currencyName'.)
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+ </rule><!-- GM1557-B BE016 END -->
+</instructionblock>

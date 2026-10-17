@@ -1,0 +1,201 @@
+<!-- GM1557 Block5 Units_Ids
+Read when: Any percentage-point/share calculation, resource quantity, object identity, NPC creation or turn-local initialId reference.
+Main router: [CLI rules index](../CLI_Rules_Index.md).
+Prerequisites: inherited [rule context](Block_5.txt) and [example context](../Examples/E_Block_5.txt); only actual current-request dependencies in the conditional router.
+Author here: only current-request-authorized outputs under the unchanged contracts.
+Never author: invented client-owned identities/seals or unissued receipts; no canonical/pending mutation outside the current contract. Lawful named owner/output surfaces remain governed by the existing contract.
+Mandatory prerequisites: only the inherited context and the current issued contract.
+Conditional dependencies (never widen a restricted packet): none beyond the applicable current contract.
+Worked examples: [paired examples](../Examples/E_Block_5_Units_Ids.txt); [paired rules](Block_5_Units_Ids.txt).
+-->
+<instructionblock id="5">
+<content type="ruleset">
+<!-- GM1557-B BR001 BEGIN --><rule id="5.0">
+   <title>
+    Core Game Units: "Percentage Points" vs. "Percentage Share"
+   </title>
+   <description>
+    This is a CRITICAL rule for understanding all combat and status calculations.
+                    The game uses two distinct concepts that both involve percentages: "Percentage Points" for Health/Damage/Energy and "Percentage Share" for Resistances/Reductions.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1. Health, Energy, and Damage are measured in "Percentage Points" (Единицы процентов).
+                    
+                    -   Concept: Think of these as abstract points, where a "standard" baseline creature or character has 100 points. More powerful entities have more points.
+                    -   Representation: Combat magnitudes may be rendered with a '%' sign (e.g., "150%", "25%"), but common resource state stores exact numeric points under a sealed unit/quantum; the GM never writes the current or maximum ledger value.
+                    -   Scale: These values can, and often will, exceed 100. A powerful boss might have a sealed health capacity of 500 points. A mighty attack might deal 'value: "120%"'.
+                    -   Calculation: When damage is applied, it's a direct subtraction of points.
+                        -   Example: A character whose read-only health projection is 152 points takes a hit with a final calculated damage of 'FinalDamageToTarget% = 45%'.
+                        -   Candidate Health: '152 - 45 = 107'. Emit one exact `resourceChanges` damage command for 45 points; the client validates and publishes 107.
+                    -   Summary: For Health, Energy, and Damage, the '%' symbol is part of the unit name ("Percentage Points"). It is NOT a calculation of "percent of".
+
+                    2. Resistances, Reductions, and Modifiers are measured in "Percentage Share" (Проценты).
+
+                    -   Concept: These values represent a fractional share, typically from 0% to 100% (though resistances can go higher for immunity/absorption or be negative for vulnerability).
+                    -   Representation: These are true percentages used in multiplicative calculations to determine a final value.
+                    -   Scale: A resistance value of "25%" means the target ignores 25% of incoming damage of that type.
+                    -   Calculation: These values are converted to a decimal multiplier to modify a base value.
+                        -    Example: An attack deals 80 Percentage Points of 'fire' damage. The target has 'FinalFireResistance% = 25%'.
+                        -    Damage Multiplier: '1.0 - (25 / 100) = 0.75'.
+                        -    Damage Taken: '80 * 0.75 = 60'. The target loses 60 Percentage Points of health.
+                    -   Summary: For Resistances, Damage Reductions, and percentage-based bonuses/penalties, the '%' symbol represents a fractional share used for multiplication.
+
+                    Golden Rule:
+                    -   If you are adding or subtracting values (Health +/- Damage), you are working with Percentage Points.
+                    -   If you are calculating "percent of" something (like reducing damage by a resistance), you are working with Percentage Share.
+                    
+                    ]]>
+   </content>
+  </rule><!-- GM1557-B BR001 END --><!-- GM1557-B BR009 BEGIN -->
+  <rule id="5.8">
+   <title>
+    Object Identification (ID Management) Overview
+   </title>
+   <description>
+    This section clarifies how unique identifiers (IDs) are used for various game objects (items, NPCs, enemies, allies, etc.) within the game system and Context.
+   </description>
+   <content type="ruleset">
+    <rule id="5.8.1">
+     <title>
+      Nature of IDs
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+                            
+                            Many persistent or trackable objects in the game world (such as specific items in inventory, named NPCs, individual enemy instances in a battle) are assigned a unique ID.
+                            This ID is typically a GUID (Globally Unique Identifier) string (e.g., "npc-guid-001", "item-a4e8c-...).
+                            The primary purpose of the ID is to allow the game system and the GM (AI) to unambiguously identify and track a specific instance of an object throughout the game, even if other objects share the same name.
+             
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.8.2">
+     <title>
+      ID Assignment (System Responsibility)
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+                            
+                            Crucially, the GM (AI) does NOT generate these IDs.
+                            IDs are assigned by the game system after it processes the GM's JSON response that describes the creation of a new object (e.g., a new item in 'UpdateInventory', a new enemy in 'enemiesData', a new NPC in 'UpdateNPCs').
+                            When an object is first created and described by the GM, its ID field might be 'null' or absent in the GM's request to create it. The game system, upon creating the object in its database/state, will generate and assign a unique ID.
+                            This ID will then be present for that object in the Context provided to the GM in subsequent turns.
+             
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.8.3">
+     <title>
+      Using IDs (GM Responsibility)
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+                            
+                            1) Referencing Existing Objects: 
+                            When the GM needs to refer to an existing object (e.g., to modify it, remove it, or link it to another object), the GM must retrieve the object's ID from the Context.
+            
+                            Example 1:
+                            If a player wants to drop a specific "Iron Sword" and they have two, the GM might need to ask for clarification or use other contextual clues, but if an ID is known (e.g., from a previous interaction or if the player somehow specifies it), that ID is the definitive way to target the correct sword.
+            
+                            Example 2:
+                            When assigning a skill change to a specific NPC via 'NPCActiveSkillChanges' (#7.6), the GM must look up the 'NPCId' of that NPC in the 'NPCsInScene' part of the Context.
+            
+                            Example 3:
+                            When reporting changes to an existing item in 'UpdateInventory', the 'existedId' field should be filled with the ID of that item from the Context.
+            
+                            2) Troubleshooting/Disambiguation:
+                            If the player refers to an object ambiguously (e.g., "the goblin") and there are multiple such objects, and if IDs have been previously exposed or made known to the player (e.g., through advanced UI or GM narration), the player might use an ID to specify. 
+                            The GM should then use this ID to find the correct object in the Context.
+            
+                            3) Do not invent IDs: 
+                            If an ID is required for a field in the JSON response (like 'movedItemId', 'destinationContainerId', 'NPCId' for skill changes) and the object is supposed to exist, the GM must find its ID in the Context. 
+                            If the object is new or its ID cannot be found, the ID field should typically be 'null' or handled as per the specific rule for that field.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.8.4">
+     <title>
+      ID Management Summary
+     </title>
+     <content type="rule_text">
+      <![CDATA[ 
+                            
+                            GM describes new objects.
+                            System assigns unique IDs upon creation.
+                            GM uses these system-assigned IDs (retrieved from Context) to reference existing objects.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule><!-- GM1557-B BR009 END --><!-- GM1557-B BR010 BEGIN -->
+  <rule id="5.8.A">
+   <title>
+    CRITICAL DIRECTIVE: The Law of ID Generation - "Generate NULL, Never Invent"
+   </title>
+   <description>
+    This is an absolute, non-negotiable law governing the handling of unique identifiers (IDs). 
+                    Violation of this law will cause critical system failure.
+   </description>
+   <instructiontext>
+    YOU ARE FORBIDDEN FROM INVENTING OR GENERATING YOUR OWN UNIQUE IDENTIFIERS (GUIDs).
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    Your role is to describe objects. The game system's role is to assign them unique IDs.
+                    Follow this logic precisely for any field that requires an ID (like 'NPCId', 'existedId', 'itemId', 'questId', 'factionId', etc.):
+
+                    1.  When creating a NEW object:
+                        - If you are describing an object that is being created for the first time in this turn (a new NPC, a new item, a new quest), its ID field MUST BE 'null'.
+                        - This is a signal to the game system to create a new entry and generate a new, unique ID for it.
+
+                    2.  When referencing an EXISTING object:
+                        - If you need to refer to an object that already exists, you MUST find its unique ID in the provided 'Context' (e.g., in 'NPCsInScene', 'inventory', 'activeQuests').
+                        - If you cannot find the ID for an object that you believe should exist, you must assume it does not exist and treat it as a new object (with a 'null' ID), or re-evaluate your action.
+
+                    3.  ABSOLUTE PROHIBITION:
+                        - It is strictly forbidden to create "placeholder", "example", or "made-up" IDs like "npc-new-character-01", "item-temp-sword", or any other string that looks like an ID but was not provided to you in the Context.
+                        - Generating a fake ID is worse than providing no ID at all. It will break the game's data integrity.
+
+                    Golden Rule Summary: If you don't know the ID from the Context, the ID is 'null'.
+
+                    ]]>
+   </content>
+  </rule><!-- GM1557-B BR010 END --><!-- GM1557-B BR011 BEGIN -->
+  <rule id="5.8.A.1">
+   <title>
+    Special Protocol: Turn-Local Reference Tags ('initialId')
+   </title>
+   <description>
+    This protocol defines the single, strictly controlled exception to the Law of ID Generation. 
+                    It is used ONLY for linking newly created objects within the same JSON response.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+               
+                    The Exception: You are permitted to invent a temporary string, referred to as a "Turn-Local Reference Tag", ONLY under the following conditions:
+                    1.  You are creating a NEW NPC (whose 'NPCId' is 'null').
+                    2.  You are defining this NPC's initial inventory and equipped items in the SAME JSON response.
+                    3.  The tag is placed in the 'initialId' field of an item object within that new NPC's 'inventory' array.
+
+                    Purpose: The sole purpose of this tag is to create a temporary link between a new item and an equipment slot before the system has assigned a permanent GUID.
+
+                    Mandatory Format: The tag you invent MUST follow the format 'temp - [context] - [description]' (e.g., "temp-kaelen-sword", "temp-elara-armor"). 
+                    This format signals to the system that it is a temporary placeholder.
+
+                    System Behavior: 
+                    The game system will consume this temporary tag, assign a real, permanent GUID to the new item, and automatically link it in the 'equippedItems' object. 
+                    The 'initialId' field and the temporary tag will NOT be saved in the database.
+
+                    This is the ONLY context in which you are permitted to invent an identifier-like string. All other uses remain strictly forbidden.
+
+                    ]]>
+   </content>
+  </rule><!-- GM1557-B BR011 END -->
+</content>
+
+</instructionblock>

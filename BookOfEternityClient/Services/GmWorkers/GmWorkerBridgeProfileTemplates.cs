@@ -40,6 +40,22 @@ public static class GmWorkerBridgeProfileTemplates
         "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
     ];
 
+    // Read availability only; actual requests retain their conditional topic/packet scope.
+    private static readonly string[] Block5DocumentationReadPaths =
+    [
+        "Examples/E_Block_5.txt",
+        "Examples/E_Block_5_Units_Ids.txt",
+        "Examples/E_Block_5_Characteristics_Progression.txt",
+        "Examples/E_Block_5_Combat_Foundations.txt",
+        "Examples/E_Block_5_Items_Resources.txt",
+        "Examples/E_Block_5_Narrative_Social.txt",
+        "Examples/E_Block_5_Wounds.txt",
+        "Examples/E_Block_5_World_Chronology.txt",
+        "CLI_Rules_Index.md",
+        "OtherGuides/Wound_Materialization_Contract.md",
+        "OtherGuides/Effect_Materialization_Contract.md",
+    ];
+
     public static IReadOnlyList<WorkerBridgeProfile> CreateDefaultTemplates() =>
     [
         CreateValidationRepairCodexTemplate(),
@@ -85,7 +101,7 @@ public static class GmWorkerBridgeProfileTemplates
         Permissions = new WorkerScopePolicy
         {
             TaskTypes = [WorkerTaskType.NarrativeDraft],
-            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
+            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**", .. Block5DocumentationReadPaths],
             ProposalWritePaths = [],
             ProposalOnly = true,
             RequiresValidation = false
@@ -105,7 +121,7 @@ public static class GmWorkerBridgeProfileTemplates
         Permissions = new WorkerScopePolicy
         {
             TaskTypes = [WorkerTaskType.Analysis],
-            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**"],
+            ReadPaths = ["game_state/**", "lore/**", "Rules/**", "TaskGuides/**", .. Block5DocumentationReadPaths],
             ProposalWritePaths = [],
             ProposalOnly = true,
             RequiresValidation = false
@@ -125,7 +141,8 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/skills/**",
                 "lore/**",
                 "Rules/**",
-                "TaskGuides/**"
+                "TaskGuides/**",
+                .. Block5DocumentationReadPaths
             ]);
 
     public static WorkerBridgeProfile CreateSkillContentCodexTemplate() =>
@@ -142,7 +159,8 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/world/**",
                 "lore/**",
                 "Rules/**",
-                "TaskGuides/**"
+                "TaskGuides/**",
+                .. Block5DocumentationReadPaths
             ]);
 
     public static WorkerBridgeProfile CreateNpcContentCodexTemplate() =>
@@ -159,7 +177,8 @@ public static class GmWorkerBridgeProfileTemplates
                 "game_state/world/**",
                 "lore/**",
                 "Rules/**",
-                "TaskGuides/**"
+                "TaskGuides/**",
+                .. Block5DocumentationReadPaths
             ]);
 
     public static WorkerBridgeProfile CreateGuardianAbodeContentCodexTemplate() =>
