@@ -1,0 +1,235 @@
+{
+  "kind": "INDEPENDENT_G1_CONCRETE_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-17T08:37:46.785475+00:00",
+  "carrier": "de37954f4692a1c49d9183b0e40708f5a10afdde",
+  "compiledTestSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "unchangedProductSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "verdict": "CAPTURE2_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED__REMAINDER_CHANGES_REQUIRED",
+  "captureEligibility": {
+    "eligibleAfterDecisionPersistenceAndRootRelease": true,
+    "category": "daren-retirement-producer-capture",
+    "methods": [
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      }
+    ],
+    "cases": 2,
+    "budgetMinutes": 3,
+    "arguments": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "daren-retirement-producer-capture",
+      "-NoBuild"
+    ],
+    "reason": "Both facts call the unchanged original producers, own unique temporary roots, explicitly close canonical leases and browser access before freezing, retain physical current/generation/journal/backup bytes and require strict original-root cleanup. Standalone committed observer cut is swallowed only as the original durable committed outcome; no test-synthetic recovery packet substitutes for the producer. No consumer TestData installation or runtime is included."
+  },
+  "componentVerdicts": {
+    "SOURCE": "Accepted for the two temporary original-producer capture facts on exact05d; G1-S02 blocks complete future retirement closure. Product is byte-unchanged, not removed/accepted.",
+    "FIXTURE": "Capture fixtures accepted; captured data/derived transport still require separate actual review. G1-S01 blocks console11 fixture readiness.",
+    "SELECTION": "Exact finite native membership is verified, capture subset is sufficient for requested first release. Full99 estimated selection is not accepted for execution while findings/data gates remain.",
+    "PREP": "Accepted FIRST BOTH/catalog0 and exactPlanOnly-NoBuild0; zero executed tests, frontend neither typechecked nor executed.",
+    "EVIDENCE": "NOT_REVIEWED/NOT_EXECUTED for any #1558 capture, RED or GREEN."
+  },
+  "findings": [
+    {
+      "id": "G1-S01",
+      "severity": "HIGH",
+      "scope": "Future console11 fixture; capture2 unaffected",
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs",
+      "line": 48,
+      "scenario": "ChargeRelease receives no live Key input. RunChargeReleaseAsync keeps charging=false in its unconditional loop; only real Spacebar/Escape input advances or exits. After35s the fixture shuts input down; KeyAvailable then remainsfalse and WaitAsync10s does not cancel or settle the live task.",
+      "sourceAnchors": [
+        "BookOfEternityClient/Services/QteSceneService.cs:5177",
+        "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs:72",
+        "BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs:64",
+        "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:131"
+      ],
+      "consequence": "Deterministic fixture timeout rather than a retirement RED; owned root cleanup can occur while its task remains alive. Current console11 readiness/normal no-input completion claim is invalid.",
+      "requiredCorrection": "Use bounded genuine input for ChargeRelease and a teardown that settles the owned task before root removal; do not change product minigame semantics or fabricate a grade. Preserve real selected-type/RunCheck and reward-byte oracles, record the actual frame/type, and reassess the finite3m budget without hiding hangs. Fresh affected preparation/SOURCE before console release."
+    },
+    {
+      "id": "G1-S02",
+      "severity": "MEDIUM",
+      "scope": "Future retirement ledger/G2 compile closure; capture2 unaffected",
+      "path": "specs/1558-remove-daren-campaign/g1-method-row-ledger.json",
+      "line": 4454,
+      "scenario": "RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite is marked RETAIN_UNSELECTED_COMMON_OR_HISTORICAL / not a campaign deletion target, but its Windows-only body directly calls QteSceneService.RestoreDarenProfileRollbackBytesAsync at BrowserQteGenerationFencingTests.cs1471.",
+      "consequence": "The claimed complete deletion ledger leaves an actual removed-API consumer unexplained; retaining it after API deletion would fail compilation despite Linux runtime skipping its body.",
+      "requiredCorrection": "Explicitly retire this campaign-specific method/source selector with its removed subject, or document a necessary generic-oracle migration if an actual retained consumer warrants one. Preserve unrelated common junction/authority controls; no Windows run or broad suite replay is required."
+    }
+  ],
+  "confirmedBoundaries": [
+    "Capture browser7 stages genuine schema7 ordinary plus declared external Daren member and records actual final profile/current member and physical rollback bodies. Standalone1 captures genuine committed cleanup debt from the actual profile store. Raw packet provenance is original bytes; copying later into a new root is not same-root authenticity.",
+    "Transport decodes only EvidencePath and GenerationPath, logs exact old/new root and generation substitutions plus before/after hashes, and leaves arbitrary profile/backup bytes untouched. Missing captured packets fail without synthetic fallback. Exact generation/backup/published-hash prerequisites must be checked against future frozen bytes before any consumer execution.",
+    "Five refusal rows exercise real AcquireCanonicalWriteLeaseAsync with before/after file snapshots, recovery/mutation callbacks and specific refusal checks; ordinary-first mixed/shared and browser-plus-ordinary cases target pre-effect ordering. Schema6 is explicitly synthetic/source-only relative to original Windows producer. Ordinary positive browser/shared and five existing Linux protocol-admission cases preserve neighboring recovery.",
+    "Real constructed console menu, fresh-soul3 and supported save/load preserve common/new-game and old earned17/29 currency/grant/history contracts. HTTP11 supplies explicit grades and proves real owner routes, not interactive minigame play. SSR catalogue and typecheck-file estimates likewise are not browser execution; Root actual Chromium sample remains separate.",
+    "Existing owning-close8 generic tuples retain byte-exact original core/remainder; four campaign tuples are isolated unselected. Only Daren/#919 obsolete practice-doc positive tokens were removed; generic no-reward/scoring guards remain. ScenarioCore and product/common engine are unchanged. Selected CLI API inverse/output and genuine StepMain session consumer retain their distinct scopes."
+  ],
+  "pendingBeforeConsumerOrProduction": [
+    "Freeze/publish FIRST capture wrapper/native/TRX and both original packet hashes, actual source/compiled/product pins, source-backed format/member/generation/backup lineage, exact root cleanup and artifact retention. Independently review before accepting authentic capture or installing TestData.",
+    "Review derived fresh-root/generation instantiations and their specific valid prerequisites, classify mixed journals as synthetic shared Format1 and oldschema6 as synthetic. No producer retry, implicit capture replay or historical Windows qualification.",
+    "Close G1-S01 and G1-S02 in one bounded correction; refresh affected source/preparation binding before subsequent release. No production removal until separately accepted causal RED. Full selection remains held rather than treating all99 as approved execution.",
+    "Keep G0 save-data/no-clawback/inert-profile and no authority expansion constraints. G2 fresh empty owned package/source review must prove campaign resources absent; current258 pre-removal files do not prove deletion."
+  ],
+  "preparationEvidence": {
+    "native": [
+      {
+        "mode": "catalog",
+        "nativeExit": 0,
+        "wallSeconds": 94.24749412399979,
+        "sourceHead": "05d481d684fe0831ea060a1e9853e91f6b9749a0"
+      },
+      {
+        "mode": "plan",
+        "nativeExit": 0,
+        "wallSeconds": 5.818584816999646,
+        "sourceHead": "05d481d684fe0831ea060a1e9853e91f6b9749a0"
+      }
+    ],
+    "catalog": {
+      "Valid": true,
+      "Methods": 11807,
+      "Categories": 821,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "membership": {
+      "categories": 16,
+      "descriptors": 18,
+      "methodsOrFiles": 48,
+      "csharpMethods": 40,
+      "csharpCases": 91,
+      "frontendFilesEstimated": 8,
+      "estimatedTotal": 99,
+      "duplicateIdentities": 0,
+      "capture": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+          "Cases": 1,
+          "category": "daren-retirement-producer-capture",
+          "adapter": "integration"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+          "Cases": 1,
+          "category": "daren-retirement-producer-capture",
+          "adapter": "integration"
+        }
+      ]
+    },
+    "rawChainsVerified": 12,
+    "sourcePinsVerified": 54,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "7f464e32acbd477796756d225e1343f793475157666ddc299b5a8bc03c66db58",
+        "bytes": 9560064
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+        "bytes": 26183168
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "a297dcb2c2d0cbce4310fb2bfee0e42c9de6daa2ccfd4bc7c5ebc08f980a14e8",
+        "bytes": 29313024
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+        "bytes": 1992192
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+        "bytes": 26183168
+      }
+    ],
+    "preRemovalOutputFilesVerified": 258,
+    "cliApiSourceOutputCopies": 3,
+    "testsExecuted": 0
+  },
+  "ledgerEvidence": {
+    "baseline": 371,
+    "new": 17,
+    "generic8CoreExact": true
+  },
+  "catalogTransfers": {
+    "changedExisting": [
+      "gm-doc-block5-shared-preservation",
+      "portable-original-remaining-owning-close-linux",
+      "test-selection-contracts",
+      "browser-api-host",
+      "qte-rules",
+      "documentation-examples",
+      "frontend-shell-input",
+      "frontend-qte",
+      "frontend-test-workflow",
+      "portable-canonical-contention-consumers-linux"
+    ],
+    "new": [
+      "daren-retirement-affected-guards",
+      "daren-retirement-browser-host",
+      "daren-retirement-common-qte",
+      "daren-retirement-console-menu",
+      "daren-retirement-console-practice",
+      "daren-retirement-frontend-shell",
+      "daren-retirement-legacy-close-pending-removal",
+      "daren-retirement-legacy-view-pending-removal",
+      "daren-retirement-ordinary-storage",
+      "daren-retirement-producer-capture",
+      "daren-retirement-save-rewards",
+      "daren-retirement-source-guidance",
+      "daren-retirement-storage-refusal"
+    ],
+    "remainingExistingSemanticIdentical": 798
+  },
+  "recoveryEvidence": {
+    "receipt": "/tmp/gm1558-g1-preparation-delta-github-de37954f-20261017.json",
+    "receiptSha256": "50a4b9ae5c1a15660c7dbceb903124cf20243379c5039ec28d842781a6e5d116",
+    "files": 29,
+    "changedPaths": 25,
+    "carrierDiffMetadataOnly": true,
+    "fullBaseReplayed": false
+  },
+  "captureLauncherReadOnly": {
+    "path": "/tmp/gm1558-capture-run.py",
+    "sha256": "3852e1c4b9f8b4dbfa0ddbe6a9121bde820da39074879e4ccb797e7f307858bb",
+    "executed": false,
+    "observation": "Fixed capture category/NoBuild, exact source/binary checks, atomic first-launch sentinel and raw retention; does not itself grant release or retry."
+  },
+  "support": {
+    "path": "/tmp/gm1558-g1-concrete-source-independent-check-20261017.json",
+    "sha256": "c96cbca11f26226108944dde65804697a8eab5e7dab59cab3a51a02f8cc3ff0c"
+  },
+  "limits": [
+    "No repository edits or reviewer build/test/producer/host/browser execution.",
+    "No RED/GREEN, captured packet, same-root consumer or final campaign-removal evidence exists in this gate.",
+    "No old A/B, A1/A2, F1, Windows/CI or fullbase replay; their accepted provenance is not fresh execution.",
+    "Fresh-soul byte equality detects normalization/mutation/grants; it alone is not a read-hook proof of zero reads. Final production-source removal must close that no-read claim."
+  ]
+}

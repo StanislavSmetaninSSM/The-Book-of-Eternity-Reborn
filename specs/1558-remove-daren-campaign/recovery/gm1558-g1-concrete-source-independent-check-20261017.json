@@ -1,0 +1,210 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_G1_BINDING_CHECK",
+  "carrier": "de37954f4692a1c49d9183b0e40708f5a10afdde",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "pinsVerified": 54,
+  "metadataCarrierChangedPaths": 25,
+  "productDiffEmpty": true,
+  "rawChains": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-catalog-first-05d481d6-20261017T0735Z/record.json",
+      "sha256": "969d04a179d78718cc4c1d69280a0d8e98f241793be82b4945c6c47dce1add52",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/record.json.gz",
+      "storedSha256": "d1ab94faeb3dfd0f615420afc7d392180d62f0ba054aefb95a5a77d8a726e65c"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-catalog-first-05d481d6-20261017T0735Z/stdout.log",
+      "sha256": "f9df64b1e98d0a28b2e0f71fb2f207ff68a31da26f114595a1457b24c4838177",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/stdout.log.gz",
+      "storedSha256": "bb33f4d3c68e56fbc30a10e46fa67e9f91c77889ffbd5f9bee5b6140fb398c41"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories/Build-integration.log",
+      "sha256": "8ef17b2414faa2b6aee0a5bfb65e1c51ce937ad17dd1b0cb583ecee732985745",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/runner0/Build-integration.log.gz",
+      "storedSha256": "bde95b5ddd7ed3c83d135930a35a5fa41837282fa35f401152ae97b81d01c1f2"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories/Build-unit.log",
+      "sha256": "80aacc6cd8c79301370a54ea8af5b5c0d3ddb1b7abd133d9bc6d7a776343d22c",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/runner0/Build-unit.log.gz",
+      "storedSha256": "d13ecddde6d59967ac9b952e1109e86bd59afb56e33fb8b0288d3c08621e9c6a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories/catalog-audit.json",
+      "sha256": "94e08572b225f717c55a2788bfa98631748a45df5e30bd2c6fc1bb8d7a9fb411",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/runner0/catalog-audit.json.gz",
+      "storedSha256": "e3f41a7ede3a1fa2c69039da14c26a8090dc16873f8a3925c5dadc8eaf8ab2ee"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories/dotnet-test.log",
+      "sha256": "f8e47c19e305437fc2545d8f35f17f4f8cac6290c08131a3d10d548422fe81c3",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/runner0/dotnet-test.log.gz",
+      "storedSha256": "729bd902c52bdc229d5a9ac97f77635d5b1f803bc0ac2601a9a5e7ac0f5f5b1d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082748-392-76419-3ac1ec28df0e49dc8d5df2b3dcccea31-categories/summary.json",
+      "sha256": "83f20ff4fc01614b8b5d94a414e2a6c6fc45240a42fe2e8d3645431075ea4ad8",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/0-gm1558-g1-catalog-first-05d481d6-20261017T0735Z/runner0/summary.json.gz",
+      "storedSha256": "e130b29ecc3cc8b7bd976fe9c7e74a9160b7d841a01c5db547eca200c7bc9738"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-plan-first-05d481d6-20261017T0829Z/record.json",
+      "sha256": "e4fec9926e36f4d89a6977091150317cc21612dabe655fcc5c1932136992e7c7",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/1-gm1558-g1-plan-first-05d481d6-20261017T0829Z/record.json.gz",
+      "storedSha256": "5b3a0438c374915f54cf2c0d227328e4405d84e68b1dc581c9220b8104ce274e"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-plan-first-05d481d6-20261017T0829Z/stdout.log",
+      "sha256": "7d0d1f2c5c208d6908208ef4cbec431d09dd54fa8cb9c22ac09056802cc3d7c3",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/1-gm1558-g1-plan-first-05d481d6-20261017T0829Z/stdout.log.gz",
+      "storedSha256": "d1bdf948dbeb98eeca9fabd0dbf8936c1f99aef4520b065667cfcaf52e7c9019"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082935-150-77121-cbad085e29234970ae9f814c484a8086-categories/dotnet-test.log",
+      "sha256": "5f394cb59ad9100412f4378e344bde516c775b10a479ba05b38b15b17d711cc7",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/1-gm1558-g1-plan-first-05d481d6-20261017T0829Z/runner0/dotnet-test.log.gz",
+      "storedSha256": "d0cae37fcaa773cb5858ba5d60384b269186daec3fbdf4fad4c2e1f8596cc9d9"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082935-150-77121-cbad085e29234970ae9f814c484a8086-categories/plan.json",
+      "sha256": "352c864cc9416417fbe02ef934651b31cb1bb27ac6b98fd17848899d05957ed6",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/1-gm1558-g1-plan-first-05d481d6-20261017T0829Z/runner0/plan.json.gz",
+      "storedSha256": "b8ed5ac89f7eebc8512fad63eecdea260780701744289c770ee63d2b305afd95"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-082935-150-77121-cbad085e29234970ae9f814c484a8086-categories/summary.json",
+      "sha256": "55a810dc981e0fde8df24d915a1fca52d0965d31a9ac3f6e14d080c5b4a69375",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g1-first-preparation-20261017-files/1-gm1558-g1-plan-first-05d481d6-20261017T0829Z/runner0/summary.json.gz",
+      "storedSha256": "7e61dfe1c18d3973c3440ce73e196faa174a78b9976103b4d6c2805bb864bfc2"
+    }
+  ],
+  "nativePrep": [
+    {
+      "mode": "catalog",
+      "nativeExit": 0,
+      "wallSeconds": 94.24749412399979,
+      "sourceHead": "05d481d684fe0831ea060a1e9853e91f6b9749a0"
+    },
+    {
+      "mode": "plan",
+      "nativeExit": 0,
+      "wallSeconds": 5.818584816999646,
+      "sourceHead": "05d481d684fe0831ea060a1e9853e91f6b9749a0"
+    }
+  ],
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "7f464e32acbd477796756d225e1343f793475157666ddc299b5a8bc03c66db58",
+      "bytes": 9560064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "a297dcb2c2d0cbce4310fb2bfee0e42c9de6daa2ccfd4bc7c5ebc08f980a14e8",
+      "bytes": 29313024
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b",
+      "bytes": 26183168
+    }
+  ],
+  "zeroExecuted": true,
+  "catalogAudit": {
+    "Valid": true,
+    "Methods": 11807,
+    "Categories": 821,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "planSha256": "352c864cc9416417fbe02ef934651b31cb1bb27ac6b98fd17848899d05957ed6",
+  "selection": {
+    "categories": 16,
+    "descriptors": 18,
+    "methodsOrFiles": 48,
+    "csharpMethods": 40,
+    "csharpCases": 91,
+    "frontendFilesEstimated": 8,
+    "estimatedTotal": 99,
+    "duplicateIdentities": 0,
+    "capture": [
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+        "Cases": 1,
+        "category": "daren-retirement-producer-capture",
+        "adapter": "integration"
+      }
+    ]
+  },
+  "ledgerDeclarations": {
+    "baseline": 371,
+    "new": 17,
+    "generic8CoreExact": true
+  },
+  "catalogTransfers": {
+    "changedExisting": [
+      "gm-doc-block5-shared-preservation",
+      "portable-original-remaining-owning-close-linux",
+      "test-selection-contracts",
+      "browser-api-host",
+      "qte-rules",
+      "documentation-examples",
+      "frontend-shell-input",
+      "frontend-qte",
+      "frontend-test-workflow",
+      "portable-canonical-contention-consumers-linux"
+    ],
+    "new": [
+      "daren-retirement-affected-guards",
+      "daren-retirement-browser-host",
+      "daren-retirement-common-qte",
+      "daren-retirement-console-menu",
+      "daren-retirement-console-practice",
+      "daren-retirement-frontend-shell",
+      "daren-retirement-legacy-close-pending-removal",
+      "daren-retirement-legacy-view-pending-removal",
+      "daren-retirement-ordinary-storage",
+      "daren-retirement-producer-capture",
+      "daren-retirement-save-rewards",
+      "daren-retirement-source-guidance",
+      "daren-retirement-storage-refusal"
+    ],
+    "remainingExistingSemanticIdentical": 798
+  },
+  "capturePacketsAbsent": true,
+  "packageFilesVerified": 258,
+  "packageStatus": "pre-removal output, not campaign-free package or new session delivery",
+  "recoveryReceipt": "/tmp/gm1558-g1-preparation-delta-github-de37954f-20261017.json",
+  "recoveryReceiptSha256": "50a4b9ae5c1a15660c7dbceb903124cf20243379c5039ec28d842781a6e5d116",
+  "recoveredFiles": 29,
+  "changedPaths": 25,
+  "repositoryWritten": false
+}
