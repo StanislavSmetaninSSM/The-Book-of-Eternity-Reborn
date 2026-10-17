@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "MINIMAL_PRODUCT_FRESH_BOTH_PLAN_ZERO_EXECUTION_AFFECTED_SOURCE_PENDING",
+  "status": "AFFECTED_PRODUCT_SOURCE_PREP_ACCEPTED_FIRST_PROTECTED_LATE2_CONDITIONAL_ACTUALS_UNRUN",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1576842,
-      "sha256": "8074af574876f06240b3e787d3510d076a3c3dcc8712a4c79d042593a77ed8e6",
-      "gitBlob": "30de12837d8831db29dcbcb491702f4dde1d8238",
+      "bytes": 1577292,
+      "sha256": "b732a4c205fae01f0a4d9b9efa904200010b815d27dced6b4e7edf863075321f",
+      "gitBlob": "9961bed7ce36fc792d305d9a113c9cc377956e7a",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -551,7 +551,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "95eb7a445df6e2488982fa8f1a5ec7b56e13846b3512d6a347c8e36bbd8f1036"
+    "sha256": "370083864d66b1b147d91a2e717b4539a42b4a93927ca05c64eee45d5960b848"
   },
   "preflightReferences": [
     {
@@ -636,8 +636,8 @@
     "Projector/text/tag/serializer/writer/engine/common timestamp leaf byte unchanged."
   ],
   "futureChecks": {
-    "first": "COMPLETED FIRST fresh product BOTH+PlanOnly0 in91.202518280s, exact6/31/54 and ZEROactual; no catalog replay. Freeze/publish product preparation for affected SOURCE/PREP.",
-    "actual": "All post-product actuals held until affected SOURCE/PREP and named Root release. FIRST protectedLate2/separateEVIDENCE precedes ordinary52 GREEN.",
+    "first": "Product BOTH/Plan0 and affected SOURCE/PREP accepted on0f/a06. Publish/readback/recover SOURCE decision; Root names FIRST protectedLate2 exact successor. No new preparation/rebuild.",
+    "actual": "All post-product cases UNRUN. After exact named activation, FIRST protectedLate2 only; freeze/publish/recover and separate EVIDENCE before any ordinary52 release.",
     "remaining": "Ordinary52 and separateprotected2 require genuine affected post-product execution; retained structural2RED remains historical, not GREEN."
   },
   "counts": {
@@ -666,7 +666,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "7eb06aa0d923cf6c25518772980caebfea0285a966ab730799863dffca43f00d",
+  "sourcePinDigest": "e7c19c9a425c33b9339da13064984af07b1db421ba55adb9ee735e55a8082949",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -1313,7 +1313,7 @@
       "bytes": 922,
       "sha256": "ffece214f60343b5ffb27955fab16b6bf8ec5c2d81eb8ed8e7cf10c61a792761"
     },
-    "status": "FRESH_PRODUCT_BOTH_PLAN_NATIVE0_ZERO_EXECUTION; publication/recovery and affected SOURCE/PREP required before any actual",
+    "status": "AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; ALL_ACTUALS_UNRUN",
     "scope": "Only exact four frozen A adapter replacements + canonical four value-only stages; timestamp leaves/IO/catch/awaits/remainder byte-exact. No testbody/snapshot/catalog change.",
     "postProductActualGate": "Named FIRST protectedLate2 then separateEVIDENCE before ordinary52 GREEN; all actuals held",
     "rootStaticInverse": {
@@ -1455,5 +1455,46 @@
       }
     ],
     "scope": "One fresh selected BOTH build+PlanOnly without NoBuild. No unchanged catalog replay; exact5/5/29/52 equals initial56. Zero case execution. Initial valid18chains and SOURCE_NOT_READY history unchanged."
+  },
+  "productionSourceAcceptance": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.md",
+        "bytes": 3598,
+        "sha256": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.json",
+        "bytes": 5482,
+        "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-check-20261017.json",
+        "bytes": 67675,
+        "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-product-preparation-readback-0f00ee25-20261017.json",
+        "bytes": 3089,
+        "sha256": "9c68611f17640f112dfd7163d2c18d905bfae77e66ff1eb9ca185a83ba4f5ca5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-product-source-accepted-late2-conditional-a06ac89a-20261017.json",
+        "bytes": 2528,
+        "sha256": "8672a985eea4da83276c7bd0626c081e7ded899a7ad647d5425f582026e97ec2"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-prepared-delta-github-a06ac89a-20261017.json",
+        "bytes": 20726,
+        "sha256": "4af5663407684a58b76901fae6a91926065db7c467a4ddf9d98f56938d8a0974"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-a06ac89a-20261017.json",
+        "bytes": 14805,
+        "sha256": "8967323522505a1d38b3b4882b02a045ed98790bf2348029ce72477f398c1bd6"
+      }
+    ],
+    "materialBlockers": 0,
+    "scope": "Bounded source/fixture/selection/prep accepted on0f/a06 only; not GREEN/runtime. Root names FIRST protectedLate2 only after decision publication/readback; separate EVIDENCE before ordinary52 release."
   }
 }

@@ -1,0 +1,70 @@
+{
+  "kind": "ROOT_MINIMAL_PRODUCT_FRESH_BOTH_PLAN_ZERO_EXECUTION_LITERAL_READBACK",
+  "actualSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "nativeExit": 0,
+  "wallSeconds": 91.20251828000619,
+  "freshBothBuildComplete": true,
+  "owners": 6,
+  "descriptors": 6,
+  "exactMethods": 31,
+  "plannedCases": 54,
+  "ordinaryCases": 52,
+  "separateProtectedLateCases": 2,
+  "executedCases": 0,
+  "all10NewRawLocalGzipChainsChecked": true,
+  "archiveSha256": "93e116951cb105093246c496965d64bd2a3e12020b3cbbf7f086e99b25d3300a",
+  "nineLiveManagedPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9550336,
+      "sha256": "c95b812309af506012ae8a289a0b091d6cea59111925fa6967d869f5438dfce7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29179904,
+      "sha256": "56e77b607a7654c8e41512a666713c7d49461b875789a0c940d2bf94b59ac85c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "a607ca6e419791ccdc71e4c36230fa614fac45087cf0592863f9ca857650b297"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "73757ac7f528eaccb8fcfc0a034ed287d5a26fbbd56f6d1bc2f4dd0b54bc8fcd"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000"
+    }
+  ],
+  "allFourProductCopiesSha256": "2943f7d381131f8f0388f6c60b3a46813f297c25d085e4149d0c2a80b28f4000",
+  "namespaceEmptyBeforeAfter": true,
+  "runnerCleanupComplete": true,
+  "currentPreparedCarrier": "a06ac89ad5f832dce7ba56750e327bd8d70408ec",
+  "scope": "Fresh newproduct build+discovery+PlanOnly only; affected independent product SOURCE/PREP and saveddecision precede separately named protectedLate2 actual/EVIDENCE, then ordinary52 GREEN. No gameplay/HOT/fullWorld/F1/platform qualification.",
+  "utc": "2026-10-17T16:55:19.665600+00:00"
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "ROOT_MINIMAL_PRODUCT_SOURCE_ACCEPTED_CONDITIONAL_FIRST_PROTECTED_LATE2",
+  "preparedCarrier": "a06ac89ad5f832dce7ba56750e327bd8d70408ec",
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "acceptedSource": [
+    {
+      "path": "/tmp/t179pd3d-minimal-product-source-independent-review-20261017.md",
+      "sha256": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587"
+    },
+    {
+      "path": "/tmp/t179pd3d-minimal-product-source-independent-review-20261017.json",
+      "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a"
+    },
+    {
+      "path": "/tmp/t179pd3d-minimal-product-source-independent-check-20261017.json",
+      "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d"
+    }
+  ],
+  "freshRootPreparation": {
+    "path": "/tmp/t179pd3d-root-product-preparation-readback-0f00ee25-20261017.json",
+    "sha256": "9c68611f17640f112dfd7163d2c18d905bfae77e66ff1eb9ca185a83ba4f5ca5"
+  },
+  "decision": "Source/fixture/selection/preparation accepted with no material blocker. Publish this decision with immutable review/support and complete preparedGitHub recovery; Root verifies exactremote/newdelta then names actualHEAD for FIRSTprotectedLate2 only.",
+  "controller": {
+    "path": "/tmp/t179pd3d-product-first-run.py",
+    "sha256": "0da9cbbb4845ce3efc6971a2e52a4aeb1c44eeb7b54a1f14c8fb9cac44e39846",
+    "mode": "protected-late2"
+  },
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-joint-late-completion",
+    "-NoBuild"
+  ],
+  "scope": "Exact existing2 genuinely affected staged/Late consumers, separate from ordinary52. Currentactual67sourcepins/currentledger9fresh0fDLLs, metadata-onlysuccessoractualsource and exactfresh2method/2case descriptor. Reuse unchanged accepted a4 fixture/source proof; only actualnewraw outcomesneedEVIDENCE.",
+  "outcomeProtocol": "Execute once; freeze FIRST original settled native/fullstdout/process/sentinel/sourcecontext/TRX/semanticobservations/strictownedrootcleanup includingactualgameengineprefix. Stopunexpected, no retry. Publishoutcome/exactremote/newGitHubdelta before separate independent EVIDENCE.",
+  "held": "Ordinary52 actuals until separate acceptedLate2EVIDENCEsaved/verified and namedRootactivation; any other selection/code change/rebuild/HOT/fullWorld/F1/WindowsCI/ZIP/QTEactivation/main/merge/force/delete/issues/credentials/security held.",
+  "utc": "2026-10-17T16:59:12.020241+00:00"
+}
