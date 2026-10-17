@@ -1,0 +1,57 @@
+{
+  "kind": "IMMUTABLE_CORRECTED_ORPHAN_FIRST_ACTUAL_FIXTURE_RAW",
+  "createdUtc": "2026-10-17T05:17:07.760390+00:00",
+  "files": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.gz",
+      "bytes": 5,
+      "sha256": "f059dac24d29935431fa9421cfe51c8dece45dc5f53648acd1dd2951f8361a57",
+      "storedSha256": "365d4a426067b674e263a66e45108b4c2ef1b5d9059aa600205891122973f524",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid.ready",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/helper.pid.ready.gz",
+      "bytes": 12,
+      "sha256": "a4139059c5bb96f6a832484d255a27370c4b7447dc339392dc7a492b54373a56",
+      "storedSha256": "f4de166a33d5ec16c6284b7647fb01c8569169f3ec465c21f857d64f32ccc4c8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/identity-observed.ack.gz",
+      "bytes": 52,
+      "sha256": "0043b7bf068a978baae9759d7bd592d0bf1ce0830cb04ebf89be3fb9ba27a356",
+      "storedSha256": "e1bb51b7b5a2c07605b1f5890382a6b45e6e20a568d43e2bbeb868ce053f2251",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/outcome.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/outcome.json.gz",
+      "bytes": 2950389,
+      "sha256": "e74a633af7c24219ea56783ad491d757cc6d4fb60cad0213e73d1e0db2c5479d",
+      "storedSha256": "0379367c05bb06004f69051286eda6c2093a3bfe2773a3aead981fef80f2267f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/stderr.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stderr.log.gz",
+      "bytes": 1240767,
+      "sha256": "d222ec8333507961230cb6dc44a2ddb5b1e550b445f8afff8e404a3755c84984",
+      "storedSha256": "4c5cfac5e09a1a5035a4a75c80a1d0626546908a198f218c57039b515dbafcf2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-orphan-fixture-artifacts-20261017-files/stdout.log.gz",
+      "bytes": 1240809,
+      "sha256": "2e9d8e064fc36612113ebca9860617666537f6bd06a7adb63b880c5c62b83f4b",
+      "storedSha256": "97e6e7eee9f91e1b9395a745f221dc422e826dd9f9650a290807f85fca0c611d",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "artifactDirectory": "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468",
+  "originalFailureRetained": "Alloriginalfirstfailurebytes/flags unchanged; separate reviewed housekeeping does not qualify oldFAIL",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime,sys,xml.etree.ElementTree as ET\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-A-corrected-orphan-first-actual-20261017.json').read_text());assert len(packet['commands'])==1 and len(packet['files'])==6\nc=packet['commands'][0];assert c['nativeExit']==0 and c['compiledSource']=='c385a875e39a8a13c4e5738b136aa6bcdd377e37' and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7 and not c['statusAfter'];assert c['argv'][-2:] == ['gm-doc-afterlife-owned-orphan','-NoBuild'];new=set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore']);assert len(new)==1\nd=Path(next(iter(new)));assert d.name.startswith('boe-gm1557-evidence-');e=json.loads((d/'outcome.json').read_text());assert e['artifacts']==str(d) and e['exitConfirmed'] and e['rootsRemoved'] and not e['remaining'] and not e['cleanupFailures'] and not e['ownershipUnresolved'] and not e['issues'];assert 'TimeoutException: delivery.controlled_owned_lifetime_timeout' in e['failure']\nassert e['orphanObserved'] and e['orphanPrerequisitesProved'] and e['initialHelperParentProved'] and e['pipeQualification']=='complete' and e['exitProof']=='all_exact_retained_owned_identities_closed';assert e['elapsedSeconds']<=60 and e['workLimitSeconds']==45 and e['cleanupLimitSeconds']==15 and e['totalLimitSeconds']==60\nfor k in ['root','package']:assert not Path(e[k]).exists()\nfor k in ['stdout','stderr']:assert len(e[k])>65536 and e[k+'Eof'] and e[k+'Failure'] is None and (d/(k+'.log')).read_text()==e[k]\noriginal,helper=e['identities'];assert original['Pid']!=helper['Pid'] and helper['ParentPid']==original['Pid'] and e['orphanAfterLauncherExit']['Pid']==helper['Pid'] and e['orphanAfterLauncherExit']['BirthTicks']==helper['BirthTicks'] and e['orphanAfterLauncherExit']['ParentPid']!=original['Pid']\nobs=e['ownershipObservations'];before=[x for x in obs if x['phase']=='lifetime_before_signal'];after=[x for x in obs if x['phase']=='lifetime_after_signal'];assert len(before)==1 and before[0]['expected']['Pid']==helper['Pid'] and before[0]['classification']=='LiveExact';assert after and all(x['expected']['Pid']==helper['Pid'] and x['expected']['BirthTicks']==helper['BirthTicks'] for x in after);assert after[-1]['classification'] in ['TerminalOwnedState','TerminalOwnedAbsent','TerminalOwnedManagedExit'] and all(x['classification'] in ['LiveExact','TerminalOwnedState','TerminalOwnedAbsent','TerminalOwnedManagedExit'] for x in after)\nfolder=rec/'current-A-corrected-orphan-fixture-artifacts-20261017-files';assert not folder.exists();folder.mkdir();files=[]\nfor p in sorted(d.rglob('*')):\n assert not p.is_symlink()\n if p.is_file():\n  b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/(str(p.relative_to(d))+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nfor data in [packet,dict(files=files)]:\n for f in data['files']:\n  z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nresult=Path(c['resultDirectories'][0]);s=json.loads((result/'summary.json').read_text());assert s['ExitCode']==0 and s['Tests']==dict(Total=1,Executed=1,Passed=1,Failed=0) and s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=1,CompletedCases=1,UnderfilledDescriptors=[],Complete=True) and not s['TimedOut'] and not s['DuplicateTests'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded']\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};rows=[x for trx in result.glob('*.trx') for x in ET.parse(trx).findall('.//t:UnitTestResult',ns)];assert len(rows)==1 and rows[0].attrib['outcome']=='Passed' and rows[0].attrib['testName']=='BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup'\nmanifest=dict(kind='IMMUTABLE_CORRECTED_ORPHAN_FIRST_ACTUAL_FIXTURE_RAW',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),files=files,artifactDirectory=str(d),originalFailureRetained='Alloriginalfirstfailurebytes/flags unchanged; separate reviewed housekeeping does not qualify oldFAIL',helperText=Path(__file__).read_text());p=rec/'current-A-corrected-orphan-fixture-artifacts-20261017.json';assert not p.exists();p.write_text(json.dumps(manifest,indent=2)+'\\n')\ninspect=dict(kind='CORRECTED_ORPHAN_FIRST_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),native=dict(exit=0,seconds=c['wallSeconds'],sourceHead=c['sourceHead'],compiledSource=c['compiledSource'],binaryPins=c['binaryAfter']),rawChainsVerified=6,fixtureChainsVerified=len(files),selection=s['Selection'],tests=s['Tests'],row=rows[0].attrib,identities=e['identities'],orphanAfterLauncherExit=e['orphanAfterLauncherExit'],postSignalObservations=after,preSignalLiveExact=before,workElapsedSeconds=e['workElapsedSeconds'],elapsedSeconds=e['elapsedSeconds'],strictRootProof=dict(root=e['root'],package=e['package'],exitConfirmed=e['exitConfirmed'],rootsRemoved=e['rootsRemoved'],physicallyAbsent=True,exitProof=e['exitProof']),pipeProof=dict(stdoutBytes=len(e['stdout'].encode()),stderrBytes=len(e['stderr'].encode()),stdoutEof=e['stdoutEof'],stderrEof=e['stderrEof'],noErrors=True),qualification=dict(previousRetained=254,newCorrectedOrphanPass=1,totalUnique=255,historicalExecutions=270,historicalFailures=10,supersededExecutions=15),limit='Controlledadapter lifetime only; does not replace realpublisher/negativesoriginalprovenance; finalwholeAindependentEVIDENCE stillpending',helperText=Path(__file__).read_text());p=rec/'current-A-corrected-orphan-first-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(inspect,indent=2)+'\\n');print('CORRECTED_ORPHAN_FIRSTPASS_FROZEN6native',len(files),'fixturechains; meaningfulpostsignalterminal/2strictrootsgone; finalreviewpending')\n"
+}

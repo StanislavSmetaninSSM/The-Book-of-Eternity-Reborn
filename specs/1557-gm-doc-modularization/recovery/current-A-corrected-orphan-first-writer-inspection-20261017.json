@@ -1,0 +1,280 @@
+{
+  "kind": "CORRECTED_ORPHAN_FIRST_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_VERDICT",
+  "createdUtc": "2026-10-17T05:17:07.760609+00:00",
+  "native": {
+    "exit": 0,
+    "seconds": 8.945847757000593,
+    "sourceHead": "35d7375cf3bbd379df8c8b7834e3f6546efda3cd",
+    "compiledSource": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "1c81efd6e0d5856bce0f3d61babc9ab378d3b69ec097054ac48c873b89e1e106",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "db76104fde81ea93e46989f534f1e0b393238924b296a73801daec60a370a81a",
+        "bytes": 9533952
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "1c81efd6e0d5856bce0f3d61babc9ab378d3b69ec097054ac48c873b89e1e106",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "07fd359ea15d1ffb1b81c8d6609db3823f690934e7ef374ccc92a425f3ac2d8d",
+        "bytes": 29219840
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "4d4e16292bf0843f3b1dbdc5e62ee9d5c65631af1494ea4d4102d9ade5c6d771",
+        "bytes": 1945088
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "4d4e16292bf0843f3b1dbdc5e62ee9d5c65631af1494ea4d4102d9ade5c6d771",
+        "bytes": 1945088
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "1c81efd6e0d5856bce0f3d61babc9ab378d3b69ec097054ac48c873b89e1e106",
+        "bytes": 26181632
+      }
+    ]
+  },
+  "rawChainsVerified": 6,
+  "fixtureChainsVerified": 6,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "row": {
+    "executionId": "4f8d6ad5-0172-4398-8094-9ec060b83f81",
+    "testId": "afb67be0-a1b6-8af2-8619-cfd0eea22ade",
+    "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
+    "computerName": "c151c60a176e",
+    "duration": "00:00:03.5536100",
+    "startTime": "2026-10-17T05:16:56.6123560+00:00",
+    "endTime": "2026-10-17T05:16:56.6123659+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Passed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "4f8d6ad5-0172-4398-8094-9ec060b83f81"
+  },
+  "identities": [
+    {
+      "Pid": 52269,
+      "BirthTicks": 1752413,
+      "ParentPid": 52244,
+      "Args": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468/owned-lifetime.ps1",
+        "-Mode",
+        "launcher",
+        "-Root",
+        "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+        "-Package",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+        "-PidPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+        "-AckPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack"
+      ],
+      "Role": "pwsh",
+      "State": "R"
+    },
+    {
+      "Pid": 52290,
+      "BirthTicks": 1752433,
+      "ParentPid": 52269,
+      "Args": [
+        "/workspace/.onboarding/tools/pwsh/pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468/owned-lifetime.ps1",
+        "-Mode",
+        "helper",
+        "-Root",
+        "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+        "-Package",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+        "-PidPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+        "-AckPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack"
+      ],
+      "Role": "controlled-helper",
+      "State": "S"
+    }
+  ],
+  "orphanAfterLauncherExit": {
+    "Pid": 52290,
+    "BirthTicks": 1752433,
+    "ParentPid": 1,
+    "State": "S"
+  },
+  "postSignalObservations": [
+    {
+      "phase": "lifetime_after_signal",
+      "expected": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 52269,
+        "Args": [
+          "/workspace/.onboarding/tools/pwsh/pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468/owned-lifetime.ps1",
+          "-Mode",
+          "helper",
+          "-Root",
+          "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+          "-Package",
+          "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+          "-PidPath",
+          "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+          "-AckPath",
+          "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack"
+        ],
+        "Role": "controlled-helper",
+        "State": "S"
+      },
+      "readOrder": [
+        "statBefore",
+        "cmdline",
+        "statAfter",
+        "managedExitedAfterStat"
+      ],
+      "statBefore": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 1,
+        "State": "Z"
+      },
+      "statAfter": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 1,
+        "State": "Z"
+      },
+      "observedArgs": [],
+      "managedExitedAfterStat": null,
+      "classification": "TerminalOwnedState"
+    }
+  ],
+  "preSignalLiveExact": [
+    {
+      "phase": "lifetime_before_signal",
+      "expected": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 52269,
+        "Args": [
+          "/workspace/.onboarding/tools/pwsh/pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468/owned-lifetime.ps1",
+          "-Mode",
+          "helper",
+          "-Root",
+          "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+          "-Package",
+          "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+          "-PidPath",
+          "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+          "-AckPath",
+          "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack"
+        ],
+        "Role": "controlled-helper",
+        "State": "S"
+      },
+      "readOrder": [
+        "statBefore",
+        "cmdline",
+        "statAfter",
+        "managedExitedAfterStat"
+      ],
+      "statBefore": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 1,
+        "State": "S"
+      },
+      "statAfter": {
+        "Pid": 52290,
+        "BirthTicks": 1752433,
+        "ParentPid": 1,
+        "State": "S"
+      },
+      "observedArgs": [
+        "/workspace/.onboarding/tools/pwsh/pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468/owned-lifetime.ps1",
+        "-Mode",
+        "helper",
+        "-Root",
+        "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+        "-Package",
+        "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+        "-PidPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/helper.pid",
+        "-AckPath",
+        "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468/identity-observed.ack"
+      ],
+      "managedExitedAfterStat": null,
+      "classification": "LiveExact"
+    }
+  ],
+  "workElapsedSeconds": 3.4623308,
+  "elapsedSeconds": 3.4740629,
+  "strictRootProof": {
+    "root": "/tmp/boe-gm1557-session-3a361872fb424c1497d99064c862b468",
+    "package": "/tmp/boe-gm1557-package-3a361872fb424c1497d99064c862b468",
+    "exitConfirmed": true,
+    "rootsRemoved": true,
+    "physicallyAbsent": true,
+    "exitProof": "all_exact_retained_owned_identities_closed"
+  },
+  "pipeProof": {
+    "stdoutBytes": 1240809,
+    "stderrBytes": 1240767,
+    "stdoutEof": true,
+    "stderrEof": true,
+    "noErrors": true
+  },
+  "qualification": {
+    "previousRetained": 254,
+    "newCorrectedOrphanPass": 1,
+    "totalUnique": 255,
+    "historicalExecutions": 270,
+    "historicalFailures": 10,
+    "supersededExecutions": 15
+  },
+  "limit": "Controlledadapter lifetime only; does not replace realpublisher/negativesoriginalprovenance; finalwholeAindependentEVIDENCE stillpending",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime,sys,xml.etree.ElementTree as ET\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';packet=json.loads((rec/'current-A-corrected-orphan-first-actual-20261017.json').read_text());assert len(packet['commands'])==1 and len(packet['files'])==6\nc=packet['commands'][0];assert c['nativeExit']==0 and c['compiledSource']=='c385a875e39a8a13c4e5738b136aa6bcdd377e37' and c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==7 and not c['statusAfter'];assert c['argv'][-2:] == ['gm-doc-afterlife-owned-orphan','-NoBuild'];new=set(c['ownedPrefixesAfter'])-set(c['ownedPrefixesBefore']);assert len(new)==1\nd=Path(next(iter(new)));assert d.name.startswith('boe-gm1557-evidence-');e=json.loads((d/'outcome.json').read_text());assert e['artifacts']==str(d) and e['exitConfirmed'] and e['rootsRemoved'] and not e['remaining'] and not e['cleanupFailures'] and not e['ownershipUnresolved'] and not e['issues'];assert 'TimeoutException: delivery.controlled_owned_lifetime_timeout' in e['failure']\nassert e['orphanObserved'] and e['orphanPrerequisitesProved'] and e['initialHelperParentProved'] and e['pipeQualification']=='complete' and e['exitProof']=='all_exact_retained_owned_identities_closed';assert e['elapsedSeconds']<=60 and e['workLimitSeconds']==45 and e['cleanupLimitSeconds']==15 and e['totalLimitSeconds']==60\nfor k in ['root','package']:assert not Path(e[k]).exists()\nfor k in ['stdout','stderr']:assert len(e[k])>65536 and e[k+'Eof'] and e[k+'Failure'] is None and (d/(k+'.log')).read_text()==e[k]\noriginal,helper=e['identities'];assert original['Pid']!=helper['Pid'] and helper['ParentPid']==original['Pid'] and e['orphanAfterLauncherExit']['Pid']==helper['Pid'] and e['orphanAfterLauncherExit']['BirthTicks']==helper['BirthTicks'] and e['orphanAfterLauncherExit']['ParentPid']!=original['Pid']\nobs=e['ownershipObservations'];before=[x for x in obs if x['phase']=='lifetime_before_signal'];after=[x for x in obs if x['phase']=='lifetime_after_signal'];assert len(before)==1 and before[0]['expected']['Pid']==helper['Pid'] and before[0]['classification']=='LiveExact';assert after and all(x['expected']['Pid']==helper['Pid'] and x['expected']['BirthTicks']==helper['BirthTicks'] for x in after);assert after[-1]['classification'] in ['TerminalOwnedState','TerminalOwnedAbsent','TerminalOwnedManagedExit'] and all(x['classification'] in ['LiveExact','TerminalOwnedState','TerminalOwnedAbsent','TerminalOwnedManagedExit'] for x in after)\nfolder=rec/'current-A-corrected-orphan-fixture-artifacts-20261017-files';assert not folder.exists();folder.mkdir();files=[]\nfor p in sorted(d.rglob('*')):\n assert not p.is_symlink()\n if p.is_file():\n  b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/(str(p.relative_to(d))+'.gz');target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);files.append(dict(rawPath=str(p),storedPath=str(target.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0'))\nfor data in [packet,dict(files=files)]:\n for f in data['files']:\n  z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\nresult=Path(c['resultDirectories'][0]);s=json.loads((result/'summary.json').read_text());assert s['ExitCode']==0 and s['Tests']==dict(Total=1,Executed=1,Passed=1,Failed=0) and s['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=1,CompletedCases=1,UnderfilledDescriptors=[],Complete=True) and not s['TimedOut'] and not s['DuplicateTests'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded']\nns={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'};rows=[x for trx in result.glob('*.trx') for x in ET.parse(trx).findall('.//t:UnitTestResult',ns)];assert len(rows)==1 and rows[0].attrib['outcome']=='Passed' and rows[0].attrib['testName']=='BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup'\nmanifest=dict(kind='IMMUTABLE_CORRECTED_ORPHAN_FIRST_ACTUAL_FIXTURE_RAW',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),files=files,artifactDirectory=str(d),originalFailureRetained='Alloriginalfirstfailurebytes/flags unchanged; separate reviewed housekeeping does not qualify oldFAIL',helperText=Path(__file__).read_text());p=rec/'current-A-corrected-orphan-fixture-artifacts-20261017.json';assert not p.exists();p.write_text(json.dumps(manifest,indent=2)+'\\n')\ninspect=dict(kind='CORRECTED_ORPHAN_FIRST_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),native=dict(exit=0,seconds=c['wallSeconds'],sourceHead=c['sourceHead'],compiledSource=c['compiledSource'],binaryPins=c['binaryAfter']),rawChainsVerified=6,fixtureChainsVerified=len(files),selection=s['Selection'],tests=s['Tests'],row=rows[0].attrib,identities=e['identities'],orphanAfterLauncherExit=e['orphanAfterLauncherExit'],postSignalObservations=after,preSignalLiveExact=before,workElapsedSeconds=e['workElapsedSeconds'],elapsedSeconds=e['elapsedSeconds'],strictRootProof=dict(root=e['root'],package=e['package'],exitConfirmed=e['exitConfirmed'],rootsRemoved=e['rootsRemoved'],physicallyAbsent=True,exitProof=e['exitProof']),pipeProof=dict(stdoutBytes=len(e['stdout'].encode()),stderrBytes=len(e['stderr'].encode()),stdoutEof=e['stdoutEof'],stderrEof=e['stderrEof'],noErrors=True),qualification=dict(previousRetained=254,newCorrectedOrphanPass=1,totalUnique=255,historicalExecutions=270,historicalFailures=10,supersededExecutions=15),limit='Controlledadapter lifetime only; does not replace realpublisher/negativesoriginalprovenance; finalwholeAindependentEVIDENCE stillpending',helperText=Path(__file__).read_text());p=rec/'current-A-corrected-orphan-first-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(inspect,indent=2)+'\\n');print('CORRECTED_ORPHAN_FIRSTPASS_FROZEN6native',len(files),'fixturechains; meaningfulpostsignalterminal/2strictrootsgone; finalreviewpending')\n"
+}
