@@ -23,7 +23,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         foreach (var evidence in ReadLocalBrowserEvidence(fs, lease))
         {
             var generation = evidence.Manifest?.Generation ?? evidence.Cleanup!.Generation;
-            using var access = fs.BeginBrowserLocalStorage(lease, evidence.Root, generation, evidence.Manifest?.ExternalEntries?.Count > 0);
+            using var access = fs.BeginBrowserLocalStorage(lease, evidence.Root, generation);
             if (evidence.Manifest == null)
             {
                 var path = CleanupPath(evidence.Root, evidence.Cleanup!.Outcome);
@@ -157,22 +157,11 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             else if (entry.BackupPath != null || entry.Sha256 != null)
                 throw new InvalidDataException("Absent browser baseline has unexpected evidence.");
         }
-        if ((manifest.ExternalEntries ?? []).Count > 1) throw new InvalidDataException("Duplicate browser external participant.");
-        foreach (var entry in manifest.ExternalEntries ?? [])
-        {
-            if (entry == null || entry.FileId != DarenRewardProfileExternalFileId ||
-                (entry.PublishedSha256s ?? []).Any(hash => !IsSha256(hash) || hash != hash.ToLowerInvariant()) ||
-                (entry.PublishedSha256s ?? []).Distinct(StringComparer.Ordinal).Count() != (entry.PublishedSha256s ?? []).Count)
-                throw new InvalidDataException("Invalid declared browser external intent.");
-            if (entry.Existed)
-            {
-                if (!IsSha256(entry.Sha256) || entry.BackupPath == null || NormalizeRelativePath(fs, entry.BackupPath) != entry.BackupPath ||
-                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(BrowserDestination(fs, entry.BackupPath)))
-                    throw new InvalidDataException("Invalid external browser baseline membership.");
-            }
-            else if (entry.BackupPath != null || entry.Sha256 != null)
-                throw new InvalidDataException("Absent external baseline has unexpected evidence.");
-        }
+        if ((manifest.ExternalEntries ?? []).Count != 0)
+            throw new InvalidDataException(manifest.ExternalEntries!.Any(entry =>
+                    entry?.FileId == RetiredDarenRewardProfileExternalFileId)
+                ? "Retired Daren browser publication evidence retained without mutation."
+                : "Unsupported browser external publication evidence retained.");
         if (manifest.CleanupDirectories.DistinctBy(path => BrowserDestination(fs, path), BrowserDestinationComparer).Count() != manifest.CleanupDirectories.Count ||
             manifest.CleanupDirectories.Any(path => NormalizeRelativePath(fs, path) != path || !IsAllowedRollbackCleanupDirectory(path)))
             throw new InvalidDataException("Browser cleanup exceeds the original directory allowlist.");

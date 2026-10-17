@@ -12,16 +12,15 @@ import { OrnamentBorder } from './decorative';
 import { staggerContainer, fadeUp } from '../lib/motion';
 import { executeBrowserLoad } from '../utils/loadPersistenceNotice';
 
-type LauncherMode = 'continue' | 'daren-showcase' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
+type LauncherMode = 'continue' | 'practice' | 'load' | 'new-game' | 'settings' | 'about';
 interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
 
 // Real-game options first (continue/load/new-game), then book-keeping
-// (settings/about), then the out-of-canon extras (QTE practice, Daren heist)
+// (settings/about), then the out-of-canon extras (QTE practice)
 // kept lowest so they never sit above actual gameplay choices.
-const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
+const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice'];
 const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
   continue: { label: 'Продолжить главу', description: 'Вернуться к текущей сохранённой главе.' },
-  'daren-showcase': { label: 'Вылазка Дарена', description: 'Ограбление поместья с постоянным лучшим итогом.' },
   practice: { label: 'Тренировка QTE', description: 'Свободная тренировка быстрых сцен без наград.' },
   load: { label: 'Загрузить сохранение', description: 'Выбрать одну из доступных локальных записей.' },
   'new-game': { label: 'Начать новую главу', description: 'Открыть подготовку новой главы, когда локальная книга разрешает этот шаг.' },
@@ -59,10 +58,6 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
     }
     if (mode === 'practice') {
       onActiveRouteChange('practice');
-      return;
-    }
-    if (mode === 'daren-showcase') {
-      onActiveRouteChange('daren-showcase');
       return;
     }
     setActiveMode(mode);
@@ -141,15 +136,6 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
             <p>{modeDescription}</p>
             <p className="muted">Мини-игры запускаются отдельно от главы: без наград, опыта, предметов и изменения сюжета.</p>
             <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('practice')}>Открыть тренировку</button>
-          </section>
-        );
-      case 'daren-showcase':
-        return (
-          <section className="launcher-mode-panel" aria-label="Вылазка Дарена">
-            <h3>Вылазка Дарена</h3>
-            <p>{modeDescription}</p>
-            <p className="muted">Отдельная авторская QTE-сцена: Дарен проникает в поместье, крадёт посох и возвращается в убежище. Обычная глава не меняется.</p>
-            <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('daren-showcase')}>Открыть вылазку</button>
           </section>
         );
       case 'new-game':
@@ -410,9 +396,9 @@ function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerComman
 
 function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {
   // Primary action preference: real-game options first, then the out-of-canon
-  // extras (QTE practice, Daren heist) last so they never become the default
+  // extras (QTE practice) last so they never become the default
   // highlighted entry over an actual gameplay choice.
-  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice', 'daren-showcase'];
+  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about', 'practice'];
   for (const mode of preferredModes) {
     const action = findLauncherMenuAction(menu, mode);
     if (action?.enabled) {
@@ -430,8 +416,6 @@ function findLauncherMenuAction(menu: BrowserMainMenuDto, mode: LauncherMode): B
       return menu.actions.find((action) => action.id === 'continue');
     case 'practice':
       return menu.actions.find((action) => action.id === 'qte-practice');
-    case 'daren-showcase':
-      return menu.actions.find((action) => action.id === 'daren-showcase');
     case 'load':
       return menu.actions.find((action) => action.id === 'load');
     case 'new-game':

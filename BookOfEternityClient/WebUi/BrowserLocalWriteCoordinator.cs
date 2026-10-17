@@ -332,7 +332,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                 rollbackCleanupDirectories,
                 rollbackExternalFileIds);
             writeLease.ExternalPublicationContext =
-                (object?)backups.LocalTransaction ?? backups.DarenTransaction;
+                backups.LocalTransaction;
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -349,7 +349,6 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             writeLease.ExternalPublicationContext = null;
             writeLease.MutationIntentRecorder = null;
-            backups?.DarenTransaction?.Dispose();
             backups?.LocalTransaction?.Access.Dispose();
             await TryReleasePreservingUncertaintyAsync(writeLease, lockLease);
             if (backups != null)
@@ -480,8 +479,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         writeLease.MutationIntentRecorder = null;
         try
         {
-            try { backups?.DarenTransaction?.Dispose(); }
-            finally { backups?.LocalTransaction?.Access.Dispose(); }
+            backups?.LocalTransaction?.Access.Dispose();
         }
         catch (Exception secondary) when (originalFailure != null)
         {

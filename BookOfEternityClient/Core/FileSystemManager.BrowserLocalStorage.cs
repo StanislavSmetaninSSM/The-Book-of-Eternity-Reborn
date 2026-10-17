@@ -5,11 +5,10 @@ namespace BookOfEternityClient.Core;
 // Created only by the original browser handler under its live canonical lease.
 // JSON describes recovery evidence; it never supplies a live main/worker pin.
 internal sealed class BrowserLocalStorageAccess(FileSystemManager files,
-    FileSystemManager.CanonicalWriteLease lease, string root, string generation, string? profilePath) : IDisposable
+    FileSystemManager.CanonicalWriteLease lease, string root, string generation) : IDisposable
 {
     internal string Root { get; } = root;
     internal string Generation { get; } = generation;
-    internal string? ProfilePath { get; } = profilePath;
     internal Func<string, byte[]?, Task>? RecordIntent { get; set; }
     internal void Validate()
     {
@@ -30,9 +29,7 @@ internal sealed class BrowserLocalStorageAccess(FileSystemManager files,
 
 public partial class FileSystemManager
 {
-    private string RegisteredDarenProfilePath => TrustedLocalFilePublication.NormalizeAuthorityPath(
-        Path.Combine(BasePath, DarenQteRewardProfileService.ProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),
-        OperatingSystem.IsWindows());
+    internal const string RetiredDarenProfileRelativePath = "client_profile/qte_showcase_rewards.json";
     internal IReadOnlyList<string> ReadPendingBrowserPublicationScratch(CanonicalWriteLease lease)
     {
         var windows = OperatingSystem.IsWindows();
@@ -43,40 +40,6 @@ public partial class FileSystemManager
             .Where(path => path.StartsWith(root + Path.DirectorySeparatorChar,
                 windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
             .Select(path => GetLocalRelativePath(GameSessionPath, path, windows)).ToArray();
-    }
-
-    // Reads need the active original lease but do not grant an external mutation.
-    // Used by actual browser state refresh after its transaction scope has closed.
-    internal async Task<byte[]?> ReadLocalDarenProfileAsync(CanonicalWriteLease lease, CancellationToken token = default)
-    {
-        EnsureCanonicalWriteLeaseActive(lease);
-        VerifyCurrentSessionOperation(lease);
-        // Validate the exact registered name within the existing player root.
-        // A fresh profile parent may be absent; reads must not create it.
-        var scope = new TrustedLocalFileScope([BasePath]);
-        var path = scope.ValidateFile(RegisteredDarenProfilePath);
-        if (!File.Exists(path)) return null;
-        var bytes = await File.ReadAllBytesAsync(path, token);
-        scope.ValidateFile(path, allowMissing: false);
-        VerifyCurrentSessionOperation(lease);
-        return bytes;
-    }
-    internal void RequireDeclaredDarenProfile(CanonicalWriteLease lease)
-    {
-        EnsureWorkerGeneralMutationAllowed(lease);
-        var access = lease.BrowserLocalAccess ?? throw new InvalidOperationException("Original declared browser scope is missing.");
-        access.Validate();
-        if (access.ProfilePath != RegisteredDarenProfilePath)
-            throw new InvalidOperationException("Daren profile is not a declared member of the original browser transaction.");
-        new TrustedLocalFileScope([BasePath]).ValidateFile(RegisteredDarenProfilePath);
-    }
-    internal async Task PublishLocalDarenProfileAsync(CanonicalWriteLease lease, byte[]? content, CancellationToken token = default)
-    {
-        RequireDeclaredDarenProfile(lease);
-        var before = await ReadLocalDarenProfileAsync(lease, token);
-        RequireCommittedLocalPublication(await PublishLocalCoreAsync(lease,
-            TrustedLocalGeneration.Existing(lease.BrowserLocalAccess!.Generation),
-            [new(RegisteredDarenProfilePath, before, content)], token));
     }
 
     internal IReadOnlyList<string> ListBrowserStorageEvidence(CanonicalWriteLease lease)
@@ -100,7 +63,7 @@ public partial class FileSystemManager
         return bytes;
     }
 
-    internal BrowserLocalStorageAccess BeginBrowserLocalStorage(CanonicalWriteLease lease, string root, string generation, bool includeDaren = false)
+    internal BrowserLocalStorageAccess BeginBrowserLocalStorage(CanonicalWriteLease lease, string root, string generation)
     {
         EnsureCanonicalWriteLeaseActive(lease);
         VerifyCurrentSessionOperation(lease);
@@ -108,7 +71,7 @@ public partial class FileSystemManager
             lease.IsLegacyStorageRecovery || !root.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/", StringComparison.Ordinal) ||
             !string.Equals(ReadExistingSessionGeneration(lease), generation, StringComparison.Ordinal))
             throw new InvalidOperationException("Browser storage requires its original supported lease and generation.");
-        var access = new BrowserLocalStorageAccess(this, lease, root, generation, includeDaren ? RegisteredDarenProfilePath : null);
+        var access = new BrowserLocalStorageAccess(this, lease, root, generation);
         lease.BrowserLocalAccess = access;
         access.Validate();
         return access;

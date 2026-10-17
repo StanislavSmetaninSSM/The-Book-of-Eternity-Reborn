@@ -31,8 +31,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         string scope, IEnumerable<string>? cleanupDirectories, IEnumerable<string>? externalIds)
     {
         var external = (externalIds ?? []).Distinct(StringComparer.Ordinal).ToArray();
-        if (external.Any(id => id != DarenRewardProfileExternalFileId))
-            throw new InvalidDataException("Unsupported external browser participant.");
+        if (external.Length != 0)
+            throw new InvalidDataException("External browser participants are retired; evidence retained.");
         var paths = trackedFiles.Select(path => NormalizeRelativePath(fs, path)).DistinctBy(path => BrowserDestination(fs, path), BrowserDestinationComparer).ToArray();
         if (paths.Any(path => BrowserDestinationComparer.Equals(path, Root) || path.StartsWith(Root + "/", BrowserDestinationComparison)))
             throw new InvalidDataException("Browser members cannot own transaction evidence.");
@@ -42,7 +42,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         var safeScope = SafeSegment(scope);
         var root = $"{Root}/{safeScope}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}";
         var generation = fs.ReadExistingSessionGeneration(lease) ?? throw new InvalidDataException("Browser generation is missing.");
-        var access = fs.BeginBrowserLocalStorage(lease, root, generation, external.Length != 0);
+        var access = fs.BeginBrowserLocalStorage(lease, root, generation);
         var created = new List<string>();
         try
         {
@@ -60,19 +60,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 entries.Add(new(path, bytes != null, backup, bytes == null ? null : ComputeSha256(bytes)));
             }
             var externalEntries = new List<LocalBrowserExternalEntry>();
-            if (external.Length != 0)
-            {
-                var bytes = await fs.ReadLocalDarenProfileAsync(lease);
-                string? backup = null;
-                if (bytes != null)
-                {
-                    backup = root + "/external.daren.rollback";
-                    await fs.WriteFileAtomicBytesAsync(lease, backup, bytes);
-                    created.Add(backup);
-                }
-                externalEntries.Add(new(DarenRewardProfileExternalFileId, bytes != null, backup,
-                    bytes == null ? null : ComputeSha256(bytes)));
-            }
             var document = new LocalBrowserManifest(LocalBrowserSchema, "browser_local_write", "staged", safeScope,
                 DateTime.UtcNow.ToString("O"), generation, entries, clean, externalEntries);
             var local = new LocalBrowserTransaction(document, access);
@@ -84,17 +71,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             {
                 var memberPath = TrustedLocalFilePublication.NormalizeAuthorityPath(absolutePath, OperatingSystem.IsWindows());
                 var index = entries.FindIndex(entry => BrowserDestinationComparer.Equals(BrowserDestination(fs, entry.TrackedFile), memberPath));
-                if (index < 0)
-                {
-                    if (access.ProfilePath != memberPath) return; // Artifacts/UI are not rollback members.
-                    var externalEntry = externalEntries.Single();
-                    var externalHashes = (externalEntry.PublishedSha256s ?? []).ToList();
-                    if (desired != null && !externalHashes.Contains(ComputeSha256(desired), StringComparer.Ordinal)) externalHashes.Add(ComputeSha256(desired));
-                    externalEntries[0] = externalEntry with { PublishedSha256s = externalHashes,
-                        DeletionIntended = externalEntry.DeletionIntended || desired == null };
-                    await PersistLocalBrowserAsync(fs, lease, transaction);
-                    return;
-                }
+                if (index < 0) return; // Artifacts/UI are not rollback members.
                 var entry = entries[index];
                 var hashes = (entry.PublishedSha256s ?? []).ToList();
                 if (desired != null && !hashes.Contains(ComputeSha256(desired), StringComparer.Ordinal)) hashes.Add(ComputeSha256(desired));
@@ -153,17 +130,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             if (current == null ? !entry.DeletionIntended : !(entry.PublishedSha256s ?? []).Contains(ComputeSha256(current), StringComparer.Ordinal))
                 throw new InvalidDataException("Browser rollback found unknown current bytes; evidence retained.");
             fs.RequireCommittedLocalPublication(await fs.PublishLocalFilesAsync(lease, [new(entry.TrackedFile, current, baseline)]));
-        }
-        foreach (var entry in local.Document.ExternalEntries ?? [])
-        {
-            var baseline = entry.Existed ? await fs.ReadLocalFileBytesAsync(lease, entry.BackupPath!) : null;
-            if (entry.Existed && (baseline == null || ComputeSha256(baseline) != entry.Sha256))
-                throw new InvalidDataException("External browser baseline evidence is missing or differs.");
-            var current = await fs.ReadLocalDarenProfileAsync(lease);
-            if (BytesEqual(current, baseline)) continue;
-            if (current == null ? !entry.DeletionIntended : !(entry.PublishedSha256s ?? []).Contains(ComputeSha256(current), StringComparer.Ordinal))
-                throw new InvalidDataException("External browser rollback found unknown current bytes; evidence retained.");
-            await fs.PublishLocalDarenProfileAsync(lease, baseline);
         }
         foreach (var directory in local.Document.CleanupDirectories) fs.DeleteOriginalDirectoryTree(lease, directory);
         local.Document = local.Document with { Status = "restored" };

@@ -1,0 +1,35 @@
+{
+  "kind": "ROOT_ACTIVATED_BOUNDED_G2_IMPLEMENTATION",
+  "createdUtc": "2026-10-17T10:17:37.072220+00:00",
+  "actualSource": "023931661391926398a5c5ebe0897a66985235b2",
+  "parent": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+  "remoteAndMainReadback": "Exact02393166/task and d0241e71/main; worktree clean. Four persisted review/release bytes independently compared to gitshow; immediate14file/all10metadata delta independently verified;99consecutive deltas exact.",
+  "rootDecision": "G2_IMPLEMENTATION_ACTIVE_NOW__POST_OWN_VERIFIED_WIP_BUILD_ONLY_PREPARATION_ALLOWED__RUNTIME_HELD",
+  "pins": [
+    {
+      "path": "gm1558-first-s04-consumers-evidence-independent-20261017.md",
+      "sha256": "83c86267742972d49fca7b9f5f175ddab78130b9493a6f94419aa88da4da22ba"
+    },
+    {
+      "path": "gm1558-first-s04-consumers-evidence-independent-20261017.json",
+      "sha256": "2be4202b75e6fb4fc9056a988a21935bf83861d53d849e733a72bb580e877f64"
+    },
+    {
+      "path": "gm1558-first-s04-consumers-independent-check-20261017.json",
+      "sha256": "f836da84c1409848194b2a6af215df85cb33d0e49d9436d39ede1d7ec26f91cc"
+    },
+    {
+      "path": "gm1558-root-g1-evidence-accepted-g2-release-d36ee9a0-20261017.json",
+      "sha256": "82647b74074fc81bb74f06a3c59d75958d492d2b3e717cb2e4d65d9c98e53cbb"
+    }
+  ],
+  "scopeAuthority": "gm1558-root-g1-evidence-accepted-g2-release-d36ee9a0-20261017.json",
+  "recovery": {
+    "receipt": "/tmp/gm1558-g1-evidence-accepted-delta-github-02393166-20261017.json",
+    "composition": "/tmp/gm1558-root-recovery-composition-02393166-20261017.json",
+    "completeDeltas": 99
+  },
+  "allowed": "Execute accepted T010-T016 coherent code/test/docs/catalog/selection removal and minimal retired-evidence refusal now. No further ordinary design confirmation. Publish bounded WIP/readback/newdelta before compiler prep, then ONE freshfrontendbuild→freshownedmanagedBOTH/catalog→exactGREENPlanOnly0 as conditional release details. Preserve first unexpected failures and publish before correction. Independent concrete SOURCE and separateRootactualrelease before GREEN/browser.",
+  "held": "ALLruntime/actual tests/browser until freshSOURCE; Windows/CI/Library retry; merge/forcepush/branchdelete/issueclose/main/security/userdata/HOT/M3/F2/newQTE; acceptedunchangedfamily replay.",
+  "runtimeExecutedByThisReceipt": false
+}

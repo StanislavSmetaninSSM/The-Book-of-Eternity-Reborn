@@ -130,28 +130,6 @@ public partial class GameEngine
                 continue;
             }
 
-            if (chosen.Key == "daren_showcase")
-            {
-                await _qteSceneService.RunDarenShowcaseModeAsync();
-                await _audioService.PlayMainMenuMusicAsync();
-                options = await BuildMainMenuOptionsAsync();
-                if (selectedIndex >= options.Count)
-                    selectedIndex = Math.Max(0, options.Count - 1);
-                try
-                {
-                    if (cursorVisibilityCaptured)
-                        Console.CursorVisible = false;
-                }
-                catch
-                {
-                    // Ignore cursor visibility failures.
-                }
-
-                lastWidth = -1;
-                lastHeight = -1;
-                continue;
-            }
-
             if (chosen.Key == "options")
             {
                 await OptionsMenu();
@@ -404,7 +382,6 @@ public partial class GameEngine
             new MainMenuOption("new_game", _loc.T("new_game"), _loc.T("main_menu_new_desc"), "green", nextIndex++),
             new MainMenuOption("load_game", _loc.T("load_game"), _loc.T("main_menu_load_desc"), "cyan1", nextIndex++),
             new MainMenuOption("qte_practice", "Тренировка QTE", "Свободная тренировка быстрых сцен без наград и без изменения прохождения.", "purple", nextIndex++),
-            new MainMenuOption("daren_showcase", "Вылазка Дарена", "Отдельное QTE-ограбление поместья с лучшим итогом для будущей новой игры.", "cyan1", nextIndex++),
             new MainMenuOption("options", _loc.T("options"), _loc.T("main_menu_options_desc"), "yellow", nextIndex++),
             new MainMenuOption("about", _loc.T("about"), _loc.T("main_menu_about_desc"), "blue", nextIndex++),
             new MainMenuOption("exit", _loc.T("exit"), _loc.T("main_menu_exit_desc"), "red", nextIndex)
@@ -1045,7 +1022,6 @@ public partial class GameEngine
     {
         // Generate session ID once — used for both chat_log.json and GameLoop
         var sessionId = Guid.NewGuid().ToString();
-        DarenRewardGrantResult? darenNewGameGrant = null;
         var bootstrapGuardianName =
             selectedSystemGuardianPreset?.DisplayName ??
             pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
@@ -1098,12 +1074,6 @@ public partial class GameEngine
                     ["pendingMemoryLegacy"] = null,
                     [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
                 };
-                // The Daren service writes clientRewardGrants.darenQteShowcase before the fresh soul state is saved.
-                darenNewGameGrant = new DarenQteRewardProfileService(_fs)
-                    .ApplyBestRewardToNewSoulStateAsync(soulState)
-                    .GetAwaiter()
-                    .GetResult();
-
                 // Initialize guardian. New Game guardian seeds are client-owned so the first GM turn can
                 // focus on the scene instead of repairing technical materialization contracts.
                 var guardian = selectedSystemGuardianPreset != null
@@ -1286,14 +1256,9 @@ public partial class GameEngine
             pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
             pendingGuardianCreation["description"]?.GetValue<string>() ??
             "неизвестный Хранитель";
-        var darenGrantSummary = darenNewGameGrant?.Granted == true
-            ? $" Бонус Дарена из итога «{darenNewGameGrant.TierName}»: +{darenNewGameGrant.InkFeatherBonus} Чернильных Перьев уже применён к новой душе."
-            : string.Empty;
-
         // Send initial turn to GM — soul awakens in the Chaos Sea, not in a mortal world
         var firstAction = $"Душа по имени «{soulName}» пробуждается в Море Хаоса. " +
                           $"Хранитель: {guardianRequestLabel}. " +
-                          darenGrantSummary +
                           "Опиши обитель Хранителя и первую встречу с ним. " +
                           "Это начало нового пути — душа ещё не воплотилась в смертную жизнь.";
 
@@ -1316,8 +1281,6 @@ public partial class GameEngine
             JsonSerializer.Serialize(request, JsonOpts));
 
         AnsiConsole.MarkupLine($"[green]🌊 {_loc.T("soul_awakens")}[/]");
-        if (darenNewGameGrant?.Granted == true)
-            AnsiConsole.MarkupLine($"[green]{Markup.Escape(darenNewGameGrant.PlayerMessage)}[/]");
         });
         return sessionGeneration;
     }

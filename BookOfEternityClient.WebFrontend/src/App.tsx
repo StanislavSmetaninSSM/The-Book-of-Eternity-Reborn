@@ -7,7 +7,6 @@ import { LoadingCard } from './components/LoadingCard';
 import { TabBar } from './components/TabBar';
 import { SceneView } from './components/SceneView';
 import { QtePracticeView } from './components/QtePracticeView';
-import { DarenShowcaseView } from './components/DarenShowcaseView';
 import { StatusView } from './components/StatusView';
 import { HelpView } from './components/HelpView';
 import { SettingsView } from './components/SettingsView';
@@ -31,7 +30,6 @@ function AppShell() {
   const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab, saveContinuationNotice, loadContinuationNotice, loadInProgress, loadFollowUpNotice } = useShell();
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const isPracticeRoute = activeRoute === 'practice';
-  const isDarenShowcaseRoute = activeRoute === 'daren-showcase';
   const reducedMotion = Boolean(clientSettings?.accessibility.reducedMotion);
   // Mirror the reduced-motion flag onto the document root so that full-viewport
   // decorative layers (VignetteOverlay / film-grain) — which render outside the
@@ -43,7 +41,7 @@ function AppShell() {
   }, [reducedMotion]);
   // Publish the font/ui scale on the document root. The root font-size rule in
   // layout.css turns --browser-font-scale into the rem unit, so EVERY rem-based
-  // size across the app (cards, QTE, Daren prose, …) scales with the setting —
+  // size across the app (cards, QTE, narrative prose, …) scales with the setting —
   // not only elements that inherit the .browser-shell font-size.
   const fontScalePercent = clientSettings?.accessibility.fontScalePercent ?? 100;
   const uiScalePercent = clientSettings?.accessibility.uiScalePercent ?? 100;
@@ -102,7 +100,7 @@ function AppShell() {
             </div>
           </>
         )}
-        <main className={browserShellClassName} inert={loadInProgress || undefined} data-active-tab={!isLauncherRoute && !isDarenShowcaseRoute ? activeTab : undefined} data-theme-key={realmTheme.key} style={browserShellStyle}>
+        <main className={browserShellClassName} inert={loadInProgress || undefined} data-active-tab={!isLauncherRoute ? activeTab : undefined} data-theme-key={realmTheme.key} style={browserShellStyle}>
           <ConnectionBanner />
           {loadFollowUpNotice && <LoadFollowUpNotice notice={loadFollowUpNotice} />}
           {!isLauncherRoute && <TabBar />}
@@ -117,11 +115,11 @@ function AppShell() {
               >
                 {shellState.status === 'loading' && <LoadingCard />}
                 {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
-                {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
+                {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : <TabContent activeTab={activeTab} />)}
               </motion.div>
             </AnimatePresence>
           </section>
-          {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
+          {!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}
         </main>
       </>
     </MotionConfig>

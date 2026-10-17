@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Services;
 public static partial class ExplorerLocalTurnRollbackArtifacts
 {
     public const string Root = "game_state/control/explorer_local_turn_rollback";
-    internal const string DarenRewardProfileExternalFileId = "daren_reward_profile";
+    internal const string RetiredDarenRewardProfileExternalFileId = "daren_reward_profile";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string BrowserWriteManifestFileName = "browser_write_manifest.json";
     private const string BrowserWriteCommittedMarkerFileName =
@@ -82,12 +82,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         IReadOnlyList<string> CleanupDirectories,
         IReadOnlyList<BrowserWriteExternalRollbackEntry> ExternalEntries)
     {
-        internal DarenRewardProfileRollbackTransaction? DarenTransaction
-        {
-            get;
-            init;
-        }
-
         internal LocalBrowserTransaction? LocalTransaction { get; init; }
 
         internal int SchemaVersion
@@ -279,22 +273,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             }
         }
 
-        internal async Task UpdateExternalEntryAsync(
-            int index,
-            BrowserWriteExternalRollbackEntry entry)
-        {
-            await _manifestGate.WaitAsync();
-            try
-            {
-                _externalEntries[index] = entry;
-                await PersistManifestAsync();
-            }
-            finally
-            {
-                _manifestGate.Release();
-            }
-        }
-
         private async Task PersistManifestAsync(
             IReadOnlyList<BrowserWriteRollbackEntry>? entries = null)
         {
@@ -402,15 +380,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             .Select(static value => value.Trim())
             .Distinct(StringComparer.Ordinal)
             .ToArray();
-        if (externalFileIds.Any(static value =>
-                !string.Equals(
-                    value,
-                    DarenRewardProfileExternalFileId,
-                    StringComparison.Ordinal)))
-        {
-            throw new InvalidDataException(
-                "Browser rollback external file identifier is unsupported.");
-        }
+        if (externalFileIds.Length != 0)
+            throw new InvalidDataException("External browser participants are retired; evidence retained.");
 
         var safeScope = SafeSegment(scope);
         var createdAtUtc = DateTime.UtcNow.ToString("O");
@@ -418,7 +389,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         var externalEntries =
             new List<BrowserWriteExternalRollbackEntry>(externalFileIds.Length);
         var createdPaths = new List<string>();
-        DarenRewardProfileRollbackTransaction? darenTransaction = null;
         BrowserWriteMutationRecorder? mutationIntentRecorder = null;
 
         try
@@ -446,53 +416,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                     Existed: true,
                     BackupPath: backupPath,
                     Sha256: ComputeSha256(content)));
-            }
-
-            for (var index = 0; index < externalFileIds.Length; index++)
-            {
-                var fileId = externalFileIds[index];
-                byte[]? content;
-                if (string.Equals(
-                        fileId,
-                        DarenRewardProfileExternalFileId,
-                        StringComparison.Ordinal))
-                {
-                    darenTransaction =
-                        DarenRewardProfileRollbackTransaction.Capture(
-                            fs,
-                            writeLease);
-                    content = darenTransaction.BaselineBytes?.ToArray();
-                }
-                else
-                {
-                    content = await ReadExternalRollbackBytesAsync(
-                        fs,
-                        writeLease,
-                        fileId);
-                }
-
-                if (content == null)
-                {
-                    externalEntries.Add(new BrowserWriteExternalRollbackEntry(
-                        fileId,
-                        Existed: false,
-                        BackupPath: null,
-                        Sha256: null,
-                        ParentIdentity: darenTransaction?.ParentIdentity));
-                    continue;
-                }
-
-                var backupPath =
-                    $"{transactionRoot}/external_{index:D4}_{Guid.NewGuid():N}.rollback";
-                await fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
-                createdPaths.Add(backupPath);
-                externalEntries.Add(new BrowserWriteExternalRollbackEntry(
-                    fileId,
-                    Existed: true,
-                    BackupPath: backupPath,
-                    Sha256: ComputeSha256(content),
-                    ParentIdentity: darenTransaction?.ParentIdentity,
-                    BaselineIdentity: darenTransaction?.BaselineIdentity));
             }
 
             var manifest = new BrowserWriteRollbackManifest(
@@ -525,41 +448,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 cleanupDirectories,
                 externalEntries);
             writeLease.MutationIntentRecorder = mutationIntentRecorder;
-            if (darenTransaction != null)
-            {
-                var darenEntryIndex = externalEntries.FindIndex(entry =>
-                    string.Equals(
-                        entry.FileId,
-                        DarenRewardProfileExternalFileId,
-                        StringComparison.Ordinal));
-                darenTransaction.SetPublishedAuthorityRecorder(
-                    async (publishedIdentity, publishedSha256, publicationTransactionId) =>
-                    {
-                        var updatedEntry =
-                            externalEntries[darenEntryIndex] with
-                            {
-                                PublishedIdentity = publishedIdentity,
-                                PublishedSha256 = publishedSha256,
-                                PublicationTransactionId =
-                                    publicationTransactionId
-                            };
-                        await mutationIntentRecorder.UpdateExternalEntryAsync(
-                            darenEntryIndex,
-                            updatedEntry);
-                    });
-            }
-
-            if (darenTransaction != null)
-            {
-                if (writeLease.ExternalPublicationContext != null)
-                {
-                    throw new InvalidOperationException(
-                        "Canonical write lease already owns an external publication transaction.");
-                }
-
-                writeLease.ExternalPublicationContext = darenTransaction;
-            }
-
             return new BrowserWriteRollbackTransaction(
                 transactionRoot,
                 manifestPath,
@@ -567,10 +455,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 createdAtUtc,
                 entries,
                 cleanupDirectories,
-                externalEntries)
-            {
-                DarenTransaction = darenTransaction
-            };
+                externalEntries);
         }
         catch
         {
@@ -580,7 +465,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             {
                 writeLease.MutationIntentRecorder = null;
             }
-            darenTransaction?.Dispose();
             foreach (var path in createdPaths.AsEnumerable().Reverse())
             {
                 try
@@ -607,17 +491,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         if (transaction.LocalTransaction != null)
             return MarkLocalBrowserCommittedAsync(fs, writeLease, transaction);
         fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        var darenTransaction = transaction.DarenTransaction;
-        try
-        {
-            darenTransaction?.Commit();
-        }
-        catch when (
-            darenTransaction?.PublicationCommitted == true)
-        {
-            // The durable physical marker already committed the transaction.
-        }
-
         try
         {
             CreateBrowserWriteCommittedMarker(
@@ -626,7 +499,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 transaction);
         }
         catch when (
-            darenTransaction?.PublicationCommitted == true ||
             HasBrowserWriteCommittedMarker(fs, transaction))
         {
             // A durable commit cannot be revoked by cleanup failure.
@@ -816,10 +688,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             return TryDeleteLocalBrowserTransaction(fs, writeLease, transaction, outcome, out failure);
         try
         {
-            EnsureDarenPublicationResolvedForCleanup(
-                fs,
-                writeLease,
-                transaction);
             var cleanupIntentPath = CreateBrowserWriteCleanupIntent(
                 fs,
                 writeLease,
@@ -1124,117 +992,12 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         }
 
         var sourceExternalEntries = manifest.ExternalEntries ?? [];
-        if (manifest.SchemaVersion < 4 && sourceExternalEntries.Count > 0)
-        {
-            throw new InvalidDataException(
-                $"Browser rollback manifest '{manifestPath}' declares non-authoritative external evidence under a legacy schema.");
-        }
-
-        var externalFileIds = new HashSet<string>(StringComparer.Ordinal);
-        var externalEntries =
-            new List<BrowserWriteExternalRollbackEntry>(sourceExternalEntries.Count);
-        foreach (var entry in sourceExternalEntries)
-        {
-            if (entry == null ||
-                !string.Equals(
-                    entry.FileId,
-                    DarenRewardProfileExternalFileId,
-                    StringComparison.Ordinal) ||
-                !externalFileIds.Add(entry.FileId))
-            {
-                throw new InvalidDataException(
-                    $"Browser rollback manifest '{manifestPath}' contains an unsupported or duplicate external file.");
-            }
-
-            var hasPublishedAuthority =
-                entry.PublishedIdentity != null ||
-                !string.IsNullOrWhiteSpace(entry.PublishedSha256) ||
-                !string.IsNullOrWhiteSpace(
-                    entry.PublicationTransactionId);
-            if (manifest.SchemaVersion < 4)
-            {
-                if (entry.ParentIdentity != null ||
-                    entry.BaselineIdentity != null ||
-                    hasPublishedAuthority)
-                {
-                    throw new InvalidDataException(
-                        $"Browser rollback manifest '{manifestPath}' declares physical external authority under a legacy schema.");
-                }
-            }
-            else
-            {
-                if (OperatingSystem.IsWindows() &&
-                    entry.ParentIdentity is not
-                    {
-                        IsDirectory: true
-                    } ||
-                    entry.BaselineIdentity is
-                    {
-                        IsDirectory: true
-                    } ||
-                    entry.BaselineIdentity is
-                    {
-                        NumberOfLinks: not 1
-                    } ||
-                    entry.Existed !=
-                        (entry.BaselineIdentity != null) ||
-                    hasPublishedAuthority !=
-                        (entry.PublishedIdentity != null &&
-                         IsSha256(entry.PublishedSha256) &&
-                         Guid.TryParseExact(
-                             entry.PublicationTransactionId,
-                             "N",
-                             out _)) ||
-                    entry.PublishedIdentity is
-                    {
-                        IsDirectory: true
-                    } ||
-                    entry.PublishedIdentity is
-                    {
-                        NumberOfLinks: not 1
-                    })
-                {
-                    throw new InvalidDataException(
-                        $"Browser rollback manifest '{manifestPath}' has incomplete external physical authority.");
-                }
-            }
-
-            if (!entry.Existed)
-            {
-                if (!string.IsNullOrWhiteSpace(entry.BackupPath) ||
-                    !string.IsNullOrWhiteSpace(entry.Sha256))
-                {
-                    throw new InvalidDataException(
-                        $"Browser rollback manifest '{manifestPath}' has evidence for a missing external baseline.");
-                }
-
-                externalEntries.Add(entry);
-                continue;
-            }
-
-            if (string.IsNullOrWhiteSpace(entry.BackupPath) ||
-                !IsSha256(entry.Sha256))
-            {
-                throw new InvalidDataException(
-                    $"Browser rollback manifest '{manifestPath}' has incomplete external exact-byte evidence.");
-            }
-
-            var backupPath = NormalizeRelativePath(fs, entry.BackupPath);
-            if (!backupPath.StartsWith($"{transactionRoot}/", StringComparison.OrdinalIgnoreCase) ||
-                !backupPaths.Add(backupPath))
-            {
-                throw new InvalidDataException(
-                    $"Browser rollback manifest '{manifestPath}' contains an unsafe or duplicate external backup path.");
-            }
-
-            externalEntries.Add(entry with
-            {
-                BackupPath = backupPath,
-                Sha256 = entry.Sha256!.ToLowerInvariant(),
-                PublishedSha256 =
-                    entry.PublishedSha256?.ToLowerInvariant()
-            });
-        }
+        if (sourceExternalEntries.Count != 0)
+            throw new InvalidDataException(sourceExternalEntries.Any(entry =>
+                    entry?.FileId == RetiredDarenRewardProfileExternalFileId)
+                ? "Retired Daren browser publication evidence retained without mutation."
+                : "Unsupported browser external publication evidence retained.");
+        var externalEntries = new List<BrowserWriteExternalRollbackEntry>();
 
         return (
             new BrowserWriteRollbackTransaction(
@@ -1294,55 +1057,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             {
                 failures.Add(new IOException(
                     $"Could not restore interrupted browser write '{entry.TrackedFile}'.",
-                    ex));
-            }
-        }
-
-        foreach (var entry in transaction.ExternalEntries)
-        {
-            try
-            {
-                if (transaction.DarenTransaction != null &&
-                    string.Equals(
-                        entry.FileId,
-                        DarenRewardProfileExternalFileId,
-                        StringComparison.Ordinal))
-                {
-                    transaction.DarenTransaction.RollBack();
-                }
-                else if (entry.ParentIdentity != null)
-                {
-                    var content = await ReadExternalBeforeImageAsync(
-                        fs,
-                        writeLease,
-                        entry);
-                    DarenRewardProfileRollbackTransaction
-                        .RestoreRecoveredBaseline(
-                            fs,
-                            writeLease,
-                            entry.ParentIdentity,
-                            entry.BaselineIdentity,
-                            entry.Sha256,
-                            content,
-                            entry.Existed);
-                }
-                else
-                {
-                    var content = await ReadExternalBeforeImageAsync(
-                        fs,
-                        writeLease,
-                        entry);
-                    await RestoreExternalRollbackBytesAsync(
-                        fs,
-                        writeLease,
-                        entry.FileId,
-                        content);
-                }
-            }
-            catch (Exception ex)
-            {
-                failures.Add(new IOException(
-                    $"Could not restore interrupted browser external file '{entry.FileId}'.",
                     ex));
             }
         }
@@ -1510,22 +1224,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             return "committed";
         }
 
-        var publicationTransactionId = transaction.ExternalEntries
-            .Select(static entry => entry.PublicationTransactionId)
-            .SingleOrDefault(static value =>
-                !string.IsNullOrWhiteSpace(value));
-        if (publicationTransactionId == null)
-            return manifestStatus;
-
-        var publicationState =
-            ReversibleFilePublication.GetDeferredState(
-                fs.BasePath,
-                fs.PhysicalPublicationTransactionsRootPath,
-                publicationTransactionId);
-        return publicationState ==
-               ReversibleFilePublication.DeferredPublicationState.Committed
-            ? "committed"
-            : manifestStatus;
+        return manifestStatus;
     }
 
     private static string CreateBrowserWriteCleanupIntent(
@@ -1698,95 +1397,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         }
     }
 
-    private static void EnsureDarenPublicationResolvedForCleanup(
-        FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease,
-        BrowserWriteRollbackTransaction transaction)
-    {
-        var entry = transaction.ExternalEntries.SingleOrDefault(
-            static item => string.Equals(
-                item.FileId,
-                DarenRewardProfileExternalFileId,
-                StringComparison.Ordinal));
-        if (entry == null || entry.ParentIdentity == null)
-            return;
-
-        var publicationState =
-            string.IsNullOrWhiteSpace(entry.PublicationTransactionId)
-                ? ReversibleFilePublication.DeferredPublicationState.Missing
-                : ReversibleFilePublication.GetDeferredState(
-                    fs.BasePath,
-                    fs.PhysicalPublicationTransactionsRootPath,
-                    entry.PublicationTransactionId);
-        var committed =
-            HasBrowserWriteCommittedMarker(fs, transaction) ||
-            publicationState ==
-            ReversibleFilePublication.DeferredPublicationState.Committed ||
-            transaction.DarenTransaction?.PublicationCommitted == true;
-
-        if (transaction.DarenTransaction != null)
-        {
-            if (transaction.DarenTransaction.RetainedEvidence)
-            {
-                throw new InvalidDataException(
-                    "Daren linked post-image evidence remains unresolved.");
-            }
-
-            if (committed &&
-                transaction.DarenTransaction.PublicationCommitted)
-            {
-                transaction.DarenTransaction.ValidateCommittedForCleanup();
-                if (!transaction.DarenTransaction
-                        .TryAcknowledgeCommittedJournal())
-                {
-                    throw new IOException(
-                        "Daren committed publication journal cleanup failed.");
-                }
-
-                return;
-            }
-        }
-
-        if (publicationState ==
-            ReversibleFilePublication.DeferredPublicationState.Pending)
-        {
-            throw new InvalidDataException(
-                "Daren publication evidence remains unresolved.");
-        }
-
-        if (committed &&
-            entry.PublishedIdentity != null)
-        {
-            DarenRewardProfileRollbackTransaction.VerifyRecoveredFileState(
-                fs,
-                writeLease,
-                entry.ParentIdentity,
-                entry.PublishedIdentity,
-                entry.PublishedSha256,
-                expectExistence: true,
-                authorityName: "Daren committed post-image");
-            if (publicationState ==
-                ReversibleFilePublication.DeferredPublicationState.Committed)
-            {
-                ReversibleFilePublication.AcknowledgeDeferredCommit(
-                    fs.BasePath,
-                    fs.PhysicalPublicationTransactionsRootPath,
-                    entry.PublicationTransactionId!);
-            }
-
-            return;
-        }
-
-        DarenRewardProfileRollbackTransaction.VerifyRecoveredFileState(
-            fs,
-            writeLease,
-            entry.ParentIdentity,
-            entry.Existed ? entry.BaselineIdentity : null,
-            entry.Existed ? entry.Sha256 : null,
-            expectExistence: entry.Existed,
-            authorityName: "Daren restored baseline");
-    }
-
     private static bool HasBrowserWriteCommittedMarker(
         FileSystemManager fs,
         BrowserWriteRollbackTransaction transaction)
@@ -1858,74 +1468,6 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             path,
             $"{Root}/browser_direct_gacha",
             StringComparison.OrdinalIgnoreCase);
-
-    private static Task<byte[]?> ReadExternalRollbackBytesAsync(
-        FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease,
-        string fileId) =>
-        fileId switch
-        {
-            DarenRewardProfileExternalFileId =>
-                QteSceneService.ReadDarenProfileRollbackBytesAsync(
-                    fs,
-                    writeLease),
-            _ => throw new InvalidDataException(
-                $"Unsupported browser rollback external file '{fileId}'.")
-        };
-
-    private static async Task<byte[]?> ReadExternalBeforeImageAsync(
-        FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease,
-        BrowserWriteExternalRollbackEntry entry)
-    {
-        if (!entry.Existed)
-            return null;
-        if (string.IsNullOrWhiteSpace(entry.BackupPath) ||
-            string.IsNullOrWhiteSpace(entry.Sha256))
-        {
-            throw new InvalidDataException(
-                $"Rollback evidence for external file '{entry.FileId}' is incomplete.");
-        }
-
-        var content = await fs.ReadOriginalFileBytesAsync(writeLease, entry.BackupPath);
-        if (content == null)
-        {
-            throw new FileNotFoundException(
-                $"Rollback evidence for external file '{entry.FileId}' is missing.",
-                entry.BackupPath);
-        }
-        if (!string.Equals(
-                ComputeSha256(content),
-                entry.Sha256,
-                StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidDataException(
-                $"Rollback evidence for external file '{entry.FileId}' failed its exact-byte hash check.");
-        }
-
-        return content;
-    }
-
-    private static Task RestoreExternalRollbackBytesAsync(
-        FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease,
-        string fileId,
-        byte[]? content)
-    {
-        if (!string.Equals(
-                fileId,
-                DarenRewardProfileExternalFileId,
-                StringComparison.Ordinal))
-        {
-            throw new InvalidDataException(
-                $"Unsupported browser rollback external file '{fileId}'.");
-        }
-
-        return QteSceneService.RestoreDarenProfileRollbackBytesAsync(
-            fs,
-            writeLease,
-            content);
-    }
 
     private static bool IsSha256(string? value) =>
         value is { Length: 64 } &&

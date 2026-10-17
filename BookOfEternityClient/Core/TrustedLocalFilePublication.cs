@@ -543,6 +543,13 @@ internal sealed partial class TrustedLocalFilePublication
     {
         var normalized = _scope.ValidateFile(path);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        // Retirement is an admission refusal, never a profile read/migration.
+        // ValidateJournal checks every member before RecoverCore can mutate one.
+        var retiredProfile = NormalizeAuthorityPath(Path.Combine(_files.BasePath,
+            FileSystemManager.RetiredDarenProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),
+            OperatingSystem.IsWindows());
+        if (normalized.Equals(retiredProfile, comparison))
+            throw Conflict("Retired Daren profile publication evidence retained without mutation.");
         if (normalized.Equals(_journalRoot, comparison) || normalized.StartsWith(_journalRoot + Path.DirectorySeparatorChar, comparison) ||
             _journalRoot.StartsWith(normalized + Path.DirectorySeparatorChar, comparison) ||
             normalized.Equals(_canonicalWriteLockPath, comparison) || normalized.Equals(_sessionLifecycleLockPath, comparison))

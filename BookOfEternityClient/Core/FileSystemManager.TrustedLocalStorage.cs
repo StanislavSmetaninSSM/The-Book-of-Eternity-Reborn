@@ -180,15 +180,9 @@ public partial class FileSystemManager
 
     private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
-        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
+        Func<Task>? validatePreparedNamespace = null)
     {
         lease.EnsureNoPendingLocalDecision();
-        if (standaloneDarenProfile)
-        {
-            RequireStandaloneDarenProfile(lease);
-            if (changes.Count != 1 || changes[0].Path != RegisteredDarenProfilePath)
-                throw new InvalidOperationException("Standalone Daren publication requires its exact registered member.");
-        }
         EnsureWorkerPurposePublication(lease, generation, changes);
         if (lease.BrowserLocalAccess is { } browser)
         {
@@ -213,16 +207,6 @@ public partial class FileSystemManager
                 var memberPath = scope.ValidateFile(change.Path);
                 if (string.Equals(memberPath, generationPath,
                         windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;
-                if (lease.BrowserLocalAccess?.ProfilePath == memberPath || standaloneDarenProfile)
-                {
-                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);
-                    else RequireDeclaredDarenProfile(lease);
-                    await InvokeBeforeCanonicalMutationBoundaryAsync("@daren_reward_profile");
-                    scope.ValidateFile(memberPath);
-                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync("@daren_reward_profile");
-                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);
-                    continue;
-                }
                 var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);
                 var canonicalPath = ResolvePath(relative);
                 await InvokeBeforeCanonicalMutationBoundaryAsync(relative);

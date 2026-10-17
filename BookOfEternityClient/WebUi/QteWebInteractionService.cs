@@ -26,11 +26,6 @@ public sealed record QtePracticeActionRequest(
     string? Grade,
     string? InteractionToken = null);
 
-public sealed record DarenShowcaseActionRequest(
-    string? ActionId,
-    string? Grade,
-    string? InteractionToken = null);
-
 public sealed record QteInteractionRequest(string? InteractionToken);
 
 public sealed class QteWebInteractionService
@@ -46,9 +41,6 @@ public sealed class QteWebInteractionService
     private QteSceneService.QtePracticeAttemptState? _practiceAttempt;
     private string? _practiceAttemptGeneration;
     private string? _practiceAttemptIdentity;
-    private QteSceneService.DarenShowcaseAttemptState? _darenAttempt;
-    private string? _darenAttemptGeneration;
-    private string? _darenAttemptIdentity;
 
     public QteWebInteractionService(
         FileSystemManager fs,
@@ -396,19 +388,6 @@ public sealed class QteWebInteractionService
                     error: null);
             });
 
-    public Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateAsync() =>
-        _coordinator.RunBoundTransactionAsync(
-            writeLease =>
-            {
-                var discardedStaleAttempt = DiscardStaleDarenAttempt(writeLease);
-                return BuildDarenShowcaseStateCoreAsync(
-                    writeLease,
-                    notification: discardedStaleAttempt
-                        ? "Предыдущая вылазка закрыта после смены игровой сессии."
-                        : null,
-                    error: null);
-            });
-
     public async Task<QtePracticeWebStateDto> StartPracticeAttemptAsync(QtePracticeStartRequest? request)
     {
         return await _coordinator.RunBoundTransactionAsync(
@@ -596,196 +575,6 @@ public sealed class QteWebInteractionService
             });
     }
 
-    public async Task<DarenShowcaseWebStateDto> StartDarenShowcaseAsync(
-        string? interactionToken = null)
-    {
-        return await _coordinator.RunBoundTransactionAsync(
-            async writeLease =>
-            {
-                var tokenValidation = ValidateDarenInteraction(
-                    writeLease,
-                    interactionToken);
-                if (!tokenValidation.IsValid)
-                    return FailedDaren(tokenValidation);
-
-                DiscardStaleDarenAttempt(writeLease);
-                var attemptBefore = _darenAttempt == null
-                    ? null
-                    : CloneDarenAttempt(_darenAttempt);
-                var generationBefore = _darenAttemptGeneration;
-                var identityBefore = _darenAttemptIdentity;
-                try
-                {
-                    _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
-                    _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
-                    _darenAttemptIdentity = Guid.NewGuid().ToString("N");
-                    return await BuildDarenShowcaseStateCoreAsync(
-                        writeLease,
-                        "Вылазка Дарена началась.",
-                        error: null);
-                }
-                catch
-                {
-                    _darenAttempt = attemptBefore;
-                    _darenAttemptGeneration = generationBefore;
-                    _darenAttemptIdentity = identityBefore;
-                    throw;
-                }
-            });
-    }
-
-    public async Task<DarenShowcaseWebStateDto> ResolveDarenShowcaseActionAsync(DarenShowcaseActionRequest? request)
-    {
-        return await _coordinator.RunBoundTransactionAsync(
-            writeLease => ResolveDarenShowcaseActionBoundAsync(
-                writeLease,
-                request));
-    }
-
-    private async Task<DarenShowcaseWebStateDto> ResolveDarenShowcaseActionBoundAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        DarenShowcaseActionRequest? request)
-    {
-        var tokenValidation = ValidateDarenInteraction(
-            writeLease,
-            request?.InteractionToken);
-        if (!tokenValidation.IsValid)
-            return FailedDaren(tokenValidation);
-
-        if (DiscardStaleDarenAttempt(writeLease))
-        {
-            return await BuildDarenShowcaseStateCoreAsync(
-                writeLease,
-                notification: null,
-                error: "Игровая сессия изменилась. Начните вылазку Дарена заново.",
-                stateOverride: "Failed");
-        }
-
-        var actionId = request?.ActionId?.Trim();
-        if (string.IsNullOrWhiteSpace(actionId))
-            return await BuildDarenShowcaseStateCoreAsync(
-                writeLease,
-                notification: null,
-                error: "actionId is required.",
-                stateOverride: "Failed");
-
-        if (_darenAttempt == null || !string.Equals(_darenAttempt.State, "Active", StringComparison.OrdinalIgnoreCase))
-            return await BuildDarenShowcaseStateCoreAsync(
-                writeLease,
-                notification: null,
-                error: "Вылазка Дарена не запущена.",
-                stateOverride: "Failed");
-
-        var attemptBefore = CloneDarenAttempt(_darenAttempt);
-        DarenShowcaseWebStateDto? state = null;
-        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
-            writeLease,
-            BuildWriteRequest("Daren QTE action"),
-            QteSceneService.BrowserTransactionRollbackPaths,
-            async transactionLease =>
-            {
-                var resolution = await _qteSceneService.ResolveDarenShowcaseActionAsync(
-                    transactionLease,
-                    _darenAttempt,
-                    actionId,
-                    request?.Grade);
-                state = await BuildDarenShowcaseStateCoreAsync(
-                    transactionLease,
-                    resolution.Completion == null
-                        ? "Вылазка продолжается."
-                        : "Вылазка завершена.",
-                    error: null);
-            },
-            rollbackExternalFileIds:
-            [
-                ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
-            ]);
-
-        if (!result.Success)
-        {
-            _darenAttempt = attemptBefore;
-            return await BuildDarenShowcaseStateCoreAsync(
-                writeLease,
-                notification: null,
-                error: result.Message,
-                stateOverride: "Failed");
-        }
-
-        return state ?? await BuildDarenShowcaseStateCoreAsync(
-            writeLease,
-            notification: null,
-            error: "Daren QTE transaction completed without a state.",
-            stateOverride: "Failed");
-    }
-
-    public async Task<DarenShowcaseWebStateDto> RetryDarenShowcaseAsync(
-        string? interactionToken = null)
-    {
-        return await _coordinator.RunBoundTransactionAsync(
-            async writeLease =>
-            {
-                var tokenValidation = ValidateDarenInteraction(
-                    writeLease,
-                    interactionToken);
-                if (!tokenValidation.IsValid)
-                    return FailedDaren(tokenValidation);
-
-                if (DiscardStaleDarenAttempt(writeLease))
-                {
-                    return await BuildDarenShowcaseStateCoreAsync(
-                        writeLease,
-                        notification: null,
-                        error: "Игровая сессия изменилась. Начните вылазку Дарена заново.",
-                        stateOverride: "Failed");
-                }
-
-                var attemptBefore = _darenAttempt == null
-                    ? null
-                    : CloneDarenAttempt(_darenAttempt);
-                var generationBefore = _darenAttemptGeneration;
-                var identityBefore = _darenAttemptIdentity;
-                try
-                {
-                    _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
-                    _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
-                    _darenAttemptIdentity = Guid.NewGuid().ToString("N");
-                    return await BuildDarenShowcaseStateCoreAsync(
-                        writeLease,
-                        "Вылазка Дарена началась заново.",
-                        error: null);
-                }
-                catch
-                {
-                    _darenAttempt = attemptBefore;
-                    _darenAttemptGeneration = generationBefore;
-                    _darenAttemptIdentity = identityBefore;
-                    throw;
-                }
-            });
-    }
-
-    public async Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync(
-        string? interactionToken = null)
-    {
-        return await _coordinator.RunBoundTransactionAsync(
-            async writeLease =>
-            {
-                var tokenValidation = ValidateDarenInteraction(
-                    writeLease,
-                    interactionToken);
-                if (!tokenValidation.IsValid)
-                    return FailedDaren(tokenValidation);
-
-                _darenAttempt = null;
-                _darenAttemptGeneration = null;
-                _darenAttemptIdentity = null;
-                return await BuildDarenShowcaseStateCoreAsync(
-                    writeLease,
-                    "Вылазка Дарена закрыта.",
-                    error: null);
-            });
-    }
-
     private async Task<QtePracticeWebStateDto> BuildPracticeStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         string? notification,
@@ -838,99 +627,6 @@ public sealed class QteWebInteractionService
 
         return ["startAttempt", "exit"];
     }
-
-    private async Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateCoreAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        string? notification,
-        string? error,
-        string? stateOverride = null)
-    {
-        var attempt = _darenAttempt;
-        var state = stateOverride ?? attempt?.State ?? "Intro";
-        var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
-            ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
-            : null;
-        var interactionIdentity = attempt == null
-            ? "daren-intro"
-            : _darenAttemptIdentity ??= Guid.NewGuid().ToString("N");
-        var interactionFingerprint = attempt == null
-            ? "daren-intro"
-            : Fingerprint(attempt);
-        DarenRewardRecord? bestReward = null;
-        try
-        {
-            bestReward = (await _qteSceneService.ReadDarenRewardProfileAsync(writeLease))
-                .DarenShowcase;
-        }
-        catch (Exception ex) when (
-            ex is InvalidDataException or IOException or UnauthorizedAccessException)
-        {
-            state = "Failed";
-            const string profileError =
-                "Профиль постоянной награды Дарена недоступен: физическая целостность хранилища нарушена.";
-            error = string.IsNullOrWhiteSpace(error)
-                ? profileError
-                : $"{error} {profileError}";
-        }
-
-        return new DarenShowcaseWebStateDto
-        {
-            State = state,
-            IntroTitle = "Ограбление поместья Дареном",
-            IntroText = "Хитрый вор Дарен проникает в запертое поместье, крадёт магический посох, уходит от погони и возвращается в убежище.",
-            BoundaryNotice = attempt?.BoundaryNotice ?? DarenShowcaseWebStateDto.DefaultBoundaryNotice,
-            RewardNotice = attempt?.RewardNotice ?? DarenShowcaseWebStateDto.DefaultRewardNotice,
-            BestReward = bestReward == null ? null : BuildDarenBestReward(bestReward),
-            ActiveScene = activeScene,
-            Resolution = attempt?.LastResolution == null ? null : BuildResolution(attempt.LastResolution),
-            Completion = attempt?.LastCompletion == null ? null : BuildCompletion(attempt.LastCompletion),
-            Ending = attempt?.Ending == null ? null : BuildDarenEnding(attempt.Ending),
-            AvailableOperations = BuildDarenOperations(state).ToList(),
-            InteractionToken = _interactionTokens.Publish(
-                writeLease,
-                "daren",
-                interactionIdentity,
-                interactionFingerprint),
-            Notification = notification,
-            Error = error
-        };
-    }
-
-    private static IEnumerable<string> BuildDarenOperations(string state)
-    {
-        if (string.Equals(state, "Active", StringComparison.OrdinalIgnoreCase))
-            return ["submitAction", "exit"];
-
-        if (string.Equals(state, "Completed", StringComparison.OrdinalIgnoreCase))
-            return ["retry", "exit"];
-
-        return ["start", "exit"];
-    }
-
-    private static DarenRewardProfileDto BuildDarenBestReward(DarenRewardRecord record) =>
-        new()
-        {
-            TierId = record.BestTierId,
-            TierName = record.BestTierName,
-            InkFeatherBonus = record.InkFeatherBonus,
-            BestScore = record.BestScore,
-            CompletedAtUtc = record.CompletedAtUtc,
-            Summary = DarenQteRewardProfileService.BuildProfileSummary(record)
-        };
-
-    private static DarenShowcaseEndingDto BuildDarenEnding(QteSceneService.DarenShowcaseEnding ending) =>
-        new()
-        {
-            TierId = ending.TierId,
-            DisplayName = ending.DisplayName,
-            NormalizedScore = ending.NormalizedScore,
-            InkFeatherBonus = ending.InkFeatherBonus,
-            GrantsReward = ending.GrantsReward,
-            Epilogue = ending.Epilogue,
-            RewardExplanation = ending.RewardExplanation,
-            RewardMessage = ending.RewardMessage,
-            RewardProfileSummary = ending.RewardProfileSummary
-        };
 
     private static QtePracticeCatalogEntryDto BuildPracticeCatalogEntry(QteSceneService.QtePracticeCatalogEntry entry) =>
         new()
@@ -1722,29 +1418,6 @@ public sealed class QteWebInteractionService
             fingerprint);
     }
 
-    private QteInteractionTokenAuthority.Validation ValidateDarenInteraction(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        string? interactionToken)
-    {
-        var validation = _interactionTokens.ValidatePresented(
-            writeLease,
-            "daren",
-            interactionToken);
-        if (!validation.IsValid)
-            return validation;
-
-        var identity = _darenAttempt == null
-            ? "daren-intro"
-            : _darenAttemptIdentity ?? string.Empty;
-        var fingerprint = _darenAttempt == null
-            ? "daren-intro"
-            : Fingerprint(_darenAttempt);
-        return QteInteractionTokenAuthority.ValidateCurrentState(
-            validation,
-            identity,
-            fingerprint);
-    }
-
     private bool DiscardStalePracticeAttempt(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
@@ -1764,25 +1437,6 @@ public sealed class QteWebInteractionService
         return true;
     }
 
-    private bool DiscardStaleDarenAttempt(
-        FileSystemManager.CanonicalWriteLease writeLease)
-    {
-        if (_darenAttempt == null)
-        {
-            _darenAttemptGeneration = null;
-            _darenAttemptIdentity = null;
-            return false;
-        }
-
-        if (_fs.IsCurrentSessionGeneration(writeLease, _darenAttemptGeneration))
-            return false;
-
-        _darenAttempt = null;
-        _darenAttemptGeneration = null;
-        _darenAttemptIdentity = null;
-        return true;
-    }
-
     private static QteSceneService.QtePracticeAttemptState ClonePracticeAttempt(
         QteSceneService.QtePracticeAttemptState attempt)
     {
@@ -1793,18 +1447,6 @@ public sealed class QteWebInteractionService
                    json,
                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
                ?? throw new InvalidOperationException("Не удалось создать rollback snapshot тренировки QTE.");
-    }
-
-    private static QteSceneService.DarenShowcaseAttemptState CloneDarenAttempt(
-        QteSceneService.DarenShowcaseAttemptState attempt)
-    {
-        var json = JsonSerializer.Serialize(
-            attempt,
-            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
-        return JsonSerializer.Deserialize<QteSceneService.DarenShowcaseAttemptState>(
-                   json,
-                   SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
-               ?? throw new InvalidOperationException("Не удалось создать rollback snapshot вылазки Дарена.");
     }
 
     private static string Fingerprint<T>(T value) =>
@@ -1833,16 +1475,6 @@ public sealed class QteWebInteractionService
             Catalog = QteSceneService.GetPracticeCatalog()
                 .Select(BuildPracticeCatalogEntry)
                 .ToList(),
-            ErrorCode = validation.ErrorCode,
-            Error = validation.Error,
-            AvailableOperations = []
-        };
-
-    private static DarenShowcaseWebStateDto FailedDaren(
-        QteInteractionTokenAuthority.Validation validation) =>
-        new()
-        {
-            State = "Failed",
             ErrorCode = validation.ErrorCode,
             Error = validation.Error,
             AvailableOperations = []
@@ -1890,54 +1522,6 @@ public sealed class QtePracticeWebStateDto
     public string? Notification { get; init; }
     public string? ErrorCode { get; init; }
     public string? Error { get; init; }
-}
-
-public sealed class DarenShowcaseWebStateDto
-{
-    public const string DefaultBoundaryNotice =
-        "Это отдельная авторская QTE-вылазка: обычная глава, обычные ходы и свободная тренировка QTE не меняются.";
-
-    public const string DefaultRewardNotice =
-        "Лучший итог Дарена запоминается книгой и даёт Чернильные Перья только при создании будущей новой игры.";
-
-    public string State { get; init; } = "Intro";
-    public string IntroTitle { get; init; } = "Ограбление поместья Дареном";
-    public string IntroText { get; init; } = "";
-    public string BoundaryNotice { get; init; } = DefaultBoundaryNotice;
-    public string RewardNotice { get; init; } = DefaultRewardNotice;
-    public DarenRewardProfileDto? BestReward { get; init; }
-    public QteWebActiveSceneDto? ActiveScene { get; init; }
-    public QteWebResolutionDto? Resolution { get; init; }
-    public QteWebCompletionDto? Completion { get; init; }
-    public DarenShowcaseEndingDto? Ending { get; init; }
-    public List<string> AvailableOperations { get; init; } = [];
-    public string? InteractionToken { get; init; }
-    public string? Notification { get; init; }
-    public string? ErrorCode { get; init; }
-    public string? Error { get; init; }
-}
-
-public sealed class DarenRewardProfileDto
-{
-    public string TierId { get; init; } = "";
-    public string TierName { get; init; } = "";
-    public int InkFeatherBonus { get; init; }
-    public int BestScore { get; init; }
-    public DateTime CompletedAtUtc { get; init; }
-    public string Summary { get; init; } = "";
-}
-
-public sealed class DarenShowcaseEndingDto
-{
-    public string? TierId { get; init; }
-    public string DisplayName { get; init; } = "";
-    public int NormalizedScore { get; init; }
-    public int InkFeatherBonus { get; init; }
-    public bool GrantsReward { get; init; }
-    public string Epilogue { get; init; } = "";
-    public string RewardExplanation { get; init; } = "";
-    public string RewardMessage { get; init; } = "";
-    public string RewardProfileSummary { get; init; } = "";
 }
 
 public sealed class QtePracticeCatalogEntryDto

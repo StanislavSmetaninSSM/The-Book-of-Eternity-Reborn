@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: Independent G1 bounded causalbaseline ACCEPTED:28distinct/10methods=14positivePASS+14causalRED (new21at5e6/72a plus retained7atdf3/0b);old4savefixtureFAIL/capturehistory unchanged. Exactreview3reports+RootconditionalG2decision/d36readback/recovery persisted. G2implementation is next only after thiscarrier remote/recovery and Rootactivation; no product/removal/fullGREEN or furtheractual yet. T004–T020 unchecked.
+**Current phase**: G1causalbaseline accepted28distinct14PASS14RED; RootactivatedG2at023. PARTIAL G2sourceWIP: retiredjournal admission/externalwriter removal and campaignCLI/host/React/services/resources authored. UNCOMPILED/UNRUN; testledger/docs/catalog/currentGREENselection reconciliation stillinprogress, no newbuild/runtime or productionSOURCE acceptance. Existingdata/raw/evidence unchanged;T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
