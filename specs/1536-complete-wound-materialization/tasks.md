@@ -1,3 +1,7 @@
+## A2 FIRST causalRED2 preserved — separate EVIDENCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): sole actual38ea/compiled40ed boundary2 native1/exact2missinghelperNotNull32 after complete realExperience+Status lastKnown1→2/read/5byteimages/noUI-no-write/strict2roots. [Current checkpoint](plan.md) preserves6chains/writerinspection/limits; publish/readback/newdelta then independent causalEVIDENCE before product. A2GREEN57/Late2remainUNRUN; priorcompileFAILs separate, no retry/oldproof/base replay or broader gate closure.
+
 ## A2 concrete SOURCE accepted — firstRED2 release conditional (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent SOURCE pair accepts778/compiled40ed tests/finite57+conditionalLate2/fresh12chains/fourDLLs/22all18delta, no material finding. [Current decision](plan.md): persistence/readback/newdelta/continuity then root may release FIRSTboundary2 only; raw realowner+fivephysicalimages/read/state/noUI/no-write/strictcleanup before expectedNotNull, separate causalEVIDENCE before product. No otheractual/prep/base/oldproof replay; prior2compileFAILs retained.
