@@ -1,0 +1,15 @@
+{
+  "kind": "A2_NEWLY_NAMED_INTERFACE_DEPENDENCY_EXACT_GITHUB_SOURCE",
+  "sha": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+  "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+  "directory": "/workspace/a2-interface-source-github-b7648a2b-20261017",
+  "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/b7648a2bcb96ba212c14267b88053f38a3e34a7c/BookOfEternityClient/Core/IConsoleInputSource.cs",
+  "bytes": 782,
+  "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969",
+  "git_blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+  "mode": "100644",
+  "newEmptyDirectory": true,
+  "reason": "New AwardNoInput compile contract requires AssertCompleted; already covered by retained full current tree, this exact newly named dependency is pinned separately without base replay.",
+  "runtime": "NOT_RUN",
+  "verifiedUtc": "2026-10-17T02:22:47.015737+00:00"
+}

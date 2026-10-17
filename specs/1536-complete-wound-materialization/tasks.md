@@ -1,3 +1,7 @@
+## A2 second preparation nativeFAIL — static compile closure before repeat (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): b764 secondprep native1/CS0103 Configuration.Characteristics import/0tests. [Current checkpoint](plan.md) preserves4secondchains before edit; static all-type/import closure then minimal import/persistence/freshprep. Not semanticRED/productfailure; no actual/production or scope/count/budget change.
+
 ## A2 missing interface member corrected — uncompiled WIP (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): firstPREPFAIL saved/recovered before adding only AssertCompleted0Reads to AwardNoInput. [Current checkpoint](plan.md): immediate persistence then fresh changed-test preparation/concreteSOURCE; no actual/production/causalRED claim or semantic/selection change.
