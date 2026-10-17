@@ -1,5 +1,13 @@
 # Tasks: GM Documentation Modularization
 
+## A-E04 fresh preparation frozen — orphan SOURCE pending (2026-10-17)
+
+[Complete source recovery](recovery/current-orphan-fix-complete-delta-recovery-c385a875-20261017.json) binds `c385a875e39a8a13c4e5738b136aa6bcdd377e37`,13GitHubfiles/all9changedpaths. [Fresh first preparation](recovery/current-A-orphan-fix-fresh-preparation-20261017.json) freezes12raw chains: BOTH/catalog native0 **89.09632147899902s**,800categories/11773methods/no stale/unmapped, **0tests**. ExactSelectionFilePlanOnly native0 **5.7385299039997335s**, observed **15categories/17descriptors/167unique methods/255cases**, exact prior method/case tuples preserved and singleton orphan1 separately owned. [Inspection](recovery/current-A-orphan-fix-preparation-writer-inspection-20261017.json) binds sevenstablefreshDLLs, unchanged observer/Clock/directchild waits/product/assertion/driver bytes and package244files/45038544bytes/all36source-package docs. Fullplan contains the exact affected singleton descriptor; no extra test execution.
+
+[Separately authorized postfail housekeeping](recovery/current-A-original-orphan-postfail-housekeeping-20261017.json) records fresh stat→cmdline→stat, retained-birth terminalZ/launcher doubleabsence, relevant census and frozen nonlink namespace before removing only the two registered old package/session roots. Zero signals; original diagnostic namespace, first FAIL flags and all raw remain unchanged. This later removal does not relabel original exitConfirmed/rootsRemovedfalse.
+
+Retain254qualifiedPASS with exact source provenance; one corrected orphan actual remainsHELD for affected independentSOURCE, persisted/recovered decision and root release. Historical269executions/10FAIL/14superseded remain. No prior cohort replay, fullA/Block5/provider/gameplay/Windows/CI qualification.
+
 ## A-E04 minimal post-signal correction WIP (2026-10-17)
 
 Both duplicate post-signal nonchild managed waits now use one bounded loop over the unchanged exact-owned `ObserveOwned`; existing pre-signal identity checks, sticky conflicts, live-argv requirements, terminal/absence proof, original direct-child managed waits and45+15/60 deadlines remain unchanged. This fixes the observed same-birth terminal zombie wait without signal authority expansion or process-supervisor changes. The existing orphan method moves to singleton `gm-doc-afterlife-owned-orphan`; prestart remains in its old owner. Full membership remains167methods/255cases (proposed15categories/17descriptors until fresh discovery). No new test case, gameplay/GM production edit or assertion weakening.

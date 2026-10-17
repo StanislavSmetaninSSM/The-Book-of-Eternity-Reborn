@@ -1,0 +1,120 @@
+{
+  "kind": "APPEND_ONLY_SEPARATE_REVIEWED_POSTFAIL_HOUSEKEEPING_NOT_ORIGINAL_ACTUAL_SUCCESS",
+  "createdUtc": "2026-10-17T05:12:30.843646+00:00",
+  "removalStartedUtc": "2026-10-17T05:12:30.843579+00:00",
+  "authority": "Root separately released after causal decision9d1f recovery verification; exact two registered roots only; no signal or evidence deletion",
+  "originalActual": "/tmp/gm1557-implementation-tools/gm1557-A-lifetime-first-b821b685/record.json",
+  "originalFlagsRetained": {
+    "exitConfirmed": false,
+    "rootsRemoved": false,
+    "outcome": "FAIL delivery.cleanup_failed"
+  },
+  "freshStatCmdlineStat": [
+    {
+      "pid": 48804,
+      "expectedBirth": 1673318,
+      "statBefore": null,
+      "statAbsentConfirmation": null,
+      "classification": "TerminalOwnedAbsent"
+    },
+    {
+      "pid": 48825,
+      "expectedBirth": 1673342,
+      "statBefore": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "cmdlineHex": "",
+      "statAfter": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "classification": "TerminalOwnedState"
+    }
+  ],
+  "relevantProcCensus": [
+    {
+      "statBefore": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "statAfter": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "cmdlineHex": "",
+      "cwd": null,
+      "rootReference": false,
+      "retainedOrDescendant": true
+    }
+  ],
+  "unstableUnrelatedProcReads": [],
+  "registeredNonlinkNamespaceMatchesFrozenSnapshot": [
+    {
+      "path": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "mode": "0o700",
+      "entries": [
+        {
+          "path": "owned-lifetime.ps1",
+          "bytes": 1838,
+          "sha256": "5bc923ba19bfc0dbc376d143566f01cf2958728c5ced396ae4a68a6f72f562e8"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "mode": "0o700",
+      "entries": []
+    }
+  ],
+  "immediatePreRemovalIdentities": [
+    {
+      "pid": 48804,
+      "expectedBirth": 1673318,
+      "statBefore": null,
+      "statAbsentConfirmation": null,
+      "classification": "TerminalOwnedAbsent"
+    },
+    {
+      "pid": 48825,
+      "expectedBirth": 1673342,
+      "statBefore": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "cmdlineHex": "",
+      "statAfter": {
+        "pid": 48825,
+        "state": "Z",
+        "parentPid": 1,
+        "birthTicks": 1673342
+      },
+      "classification": "TerminalOwnedState"
+    }
+  ],
+  "after": [
+    {
+      "path": "/tmp/boe-gm1557-package-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": false,
+      "symlink": false
+    },
+    {
+      "path": "/tmp/boe-gm1557-session-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "present": false,
+      "symlink": false
+    }
+  ],
+  "originalEvidencePreserved": "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+  "signalsIssued": 0,
+  "helperText": "from pathlib import Path\nimport os,json,hashlib,datetime,stat,shutil\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');old=json.loads((r/'specs/1557-gm-doc-modularization/recovery/current-A-fourth-actual-fixture-artifacts-20261017.json').read_text());roots=[Path(x['path']) for x in old['retainedOwnedSnapshots']];assert len(roots)==2\nexpected={48804:1673318,48825:1673342}\ndef st(pid):\n p=Path(f'/proc/{pid}/stat')\n try:s=p.read_text()\n except FileNotFoundError:\n  assert not p.parent.exists();return None\n f=s[s.rfind(')')+2:].split();return dict(pid=pid,state=f[0],parentPid=int(f[1]),birthTicks=int(f[19]))\ndef observe(pid,birth):\n a=st(pid)\n if a is None:\n  assert st(pid) is None;return dict(pid=pid,expectedBirth=birth,statBefore=None,statAbsentConfirmation=None,classification='TerminalOwnedAbsent')\n assert a['birthTicks']==birth\n argv=Path(f'/proc/{pid}/cmdline').read_bytes();b=st(pid);assert b is not None and b['birthTicks']==birth and a['state'] in ['Z','X','x'] and b['state'] in ['Z','X','x'];assert argv==b''\n return dict(pid=pid,expectedBirth=birth,statBefore=a,cmdlineHex=argv.hex(),statAfter=b,classification='TerminalOwnedState')\nidentities=[observe(p,b) for p,b in expected.items()]\n# Fresh relevant census over complete currently visible proc namespace, with unstable reads excluded explicitly.\ncensus=[];races=[];seen=set()\nfor d in sorted(Path('/proc').iterdir(),key=lambda p:p.name):\n if not d.name.isdigit():continue\n pid=int(d.name)\n try:\n  a=st(pid)\n  if a is None:continue\n  argv=(d/'cmdline').read_bytes();cwd=None\n  try:cwd=os.readlink(d/'cwd')\n  except (FileNotFoundError,PermissionError):pass\n  b=st(pid)\n  if b is None:continue\n  assert a['birthTicks']==b['birthTicks']\n except (FileNotFoundError,ProcessLookupError,AssertionError):races.append(pid);continue\n seen.add(pid)\n references=any(str(q).encode() in argv or cwd is not None and (cwd==str(q) or cwd.startswith(str(q)+'/')) for q in roots)\n descendant=b['parentPid'] in expected or pid in expected\n if references or descendant:\n  row=dict(statBefore=a,statAfter=b,cmdlineHex=argv.hex(),cwd=cwd,rootReference=references,retainedOrDescendant=descendant);census.append(row)\n  assert pid in expected and b['birthTicks']==expected[pid] and b['state'] in ['Z','X','x'] and not references\nassert 48825 in seen and all(pid not in races for pid in expected)\nnamespace=[]\nfor info in old['retainedOwnedSnapshots']:\n p=Path(info['path']);assert p in roots and p.parent==Path('/tmp') and not p.is_symlink() and p.is_dir()\n entries=[]\n for q in sorted(p.rglob('*')):\n  assert not q.is_symlink()\n  if q.is_file():entries.append(dict(path=str(q.relative_to(p)),bytes=q.stat().st_size,sha256=hashlib.sha256(q.read_bytes()).hexdigest()))\n assert entries==info['entries'];namespace.append(dict(path=str(p),mode=oct(stat.S_IMODE(p.stat().st_mode)),entries=entries))\n# Recheck the retained identities immediately before physical namespace cleanup. No signal is issued.\nfinal=[observe(p,b) for p,b in expected.items()]\nstarted=datetime.datetime.now(datetime.timezone.utc).isoformat()\nfor p in roots:shutil.rmtree(p);assert not p.exists() and not p.is_symlink()\nevidence=Path('/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa');assert evidence.is_dir()\nj=dict(kind='APPEND_ONLY_SEPARATE_REVIEWED_POSTFAIL_HOUSEKEEPING_NOT_ORIGINAL_ACTUAL_SUCCESS',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),removalStartedUtc=started,authority='Root separately released after causal decision9d1f recovery verification; exact two registered roots only; no signal or evidence deletion',originalActual='/tmp/gm1557-implementation-tools/gm1557-A-lifetime-first-b821b685/record.json',originalFlagsRetained=dict(exitConfirmed=False,rootsRemoved=False,outcome='FAIL delivery.cleanup_failed'),freshStatCmdlineStat=identities,relevantProcCensus=census,unstableUnrelatedProcReads=races,registeredNonlinkNamespaceMatchesFrozenSnapshot=namespace,immediatePreRemovalIdentities=final,after=[dict(path=str(p),present=p.exists(),symlink=p.is_symlink()) for p in roots],originalEvidencePreserved=str(evidence),signalsIssued=0,helperText=Path(__file__).read_text())\np=Path('/tmp/gm1557-A-original-orphan-postfail-housekeeping-20261017.json');assert not p.exists();p.write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_TWO_ROOTS_REMOVED_NO_SIGNAL_ORIGINAL_FAIL_UNCHANGED',p)\n"
+}
