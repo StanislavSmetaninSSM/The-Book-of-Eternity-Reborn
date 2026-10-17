@@ -1,3 +1,7 @@
+## A1 boundary first native PASS exposes A1-F01 — later actuals HELD (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first boundary2 native0/2PASS establishes real Compute/helper/strict cleanup, but all3 source Images absent reveal wrong-base-root byte probes. Root confirms A1-F01 fixture/evidence defect, not product failure. [Current checkpoint](plan.md) preserves first6rawchains and limitations before any edit. Publish/readback/newexactdelta, then authorized minimal TEST-only ResolvePath/preimage-presence guard, fresh changed-test preparation and affected independent SOURCE before corrected52. Pure33/ordinary17 UNRUN; no old RED/Late2/base repetition or user/design gate.
+
 ## A1 FIRST Late2 EVIDENCE accepted — exact boundary2 release pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): separate immutable independent Late2 review accepts the two existing controls with their proof limits; source/compiled/raw provenance remains exact, all52 A1 still UNRUN. [Current decision checkpoint](plan.md) requires non-force publication/readback/new exact delta and four-DLL continuity, then root's individually named boundary2→pure33→ordinary17 releases. Final whole-A1 evidence/review remains required; no repeated runtime/source/base/preparation or additional passing-category review.
