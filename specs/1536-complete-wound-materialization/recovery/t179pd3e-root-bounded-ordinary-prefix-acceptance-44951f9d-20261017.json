@@ -1,0 +1,45 @@
+{
+  "kind": "ROOT_ACCEPT_BOUNDED_ORDINARY3E_PREFIX_IMPLEMENTATION_AND_SEPARATE_EVIDENCE",
+  "carrier": "44951f9dbc71c8735c4fb011f7a9079427d08e34",
+  "ordinaryActualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+  "late2ActualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+  "compiledProductSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "reports": {
+    "/tmp/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765",
+    "/tmp/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd",
+    "/tmp/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+  },
+  "retainedSourceVerdict": "aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487",
+  "retainedLate2Verdict": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc",
+  "newCounts": {
+    "ordinaryCases": 45,
+    "ordinaryMethods": 18,
+    "ordinaryDescriptors": 5,
+    "ordinaryNative": 0,
+    "ordinaryWrapperSeconds": 18.01654913800303,
+    "ordinaryRunnerSeconds": 17.3104676,
+    "protectedCases": 2,
+    "protectedMethods": 2,
+    "protectedNative": 0,
+    "protectedWrapperSeconds": 121.93179388899443,
+    "distinctCases": 47,
+    "distinctMethods": 20,
+    "separateFirstExecutions": 2
+  },
+  "sourcePins": 55,
+  "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+  "newBinaryCopies": 9,
+  "S02": "CLOSED_SOURCE_AND_BOUND_RUNTIME3_MODES_FULL_ORDERED_EQUALITY",
+  "cleanup": "41new ordinary strict physicallyabsent roots; legacy2namespaceonly/source2N/A; separately2protectedstrictroots",
+  "genuineOriginals": "4pre-mutation preparer observations joined; later corrupted/current afterimages andmtime are reachedsource assertions, not separatelyfrozen deletedbodies",
+  "history": "InitialCS0121/C01/S02sourcefinding/qualifiedstructuralRED1 preserved; oldA1/3d52and2 are historicalaccepted, not newcounts",
+  "decision": "Single final boundedcompletion metadata reconciliation: exact3reports+thisdecision+4495recovery60composition, current47 acrossseparate2scopes/S02closed; mark oldphaseUNRUN/source0executions explicitlyhistorical withoutrewriting reports. Commit/nonforcepush/exactremote/newGitHubdelta; Rootfinalcurrent55/new9/ledger/reports/branchmain/recovery verification. No furthercode orruntime needed absentconcrete finding.",
+  "full3e": "OPEN; only boundedordinarydocument/unknown/scopeprefixcomplete",
+  "held": [
+    "OldWorld33 fence",
+    "HOT/source/history/broaderFull/S/B/M3/F1/T197",
+    "Windows EVIDENCE ZIPForbidden; no rerun/workaround",
+    "CI/A3 NO-PROCEED/fullwounds completion"
+  ],
+  "utc": "2026-10-17T18:45:34.945821+00:00"
+}

@@ -1,7 +1,7 @@
 {
-  "kind": "PD3E_MINIMAL_PRODUCT_CURRENT_SOURCE_BINDING_FRESH_PREPARATION_NOT_RUNTIME_ACCEPTANCE",
+  "kind": "PD3E_BOUNDED_ORDINARY_PREFIX_ACCEPTED_CURRENT_SOURCE_EVIDENCE_FINAL_CHECKPOINT",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_NEW_ORDINARY45_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING_SEPARATE_PROTECTED2_ACCEPTED",
+  "status": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_PENDING",
   "productDelta": [
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
@@ -14,9 +14,13 @@
     "protectedRows": 2,
     "actualExecutedOnCurrentProduct": 47,
     "separateActualScopes": {
-      "ordinaryRawPassed": 45,
-      "ordinaryIndependentEvidence": "PENDING",
+      "ordinaryQualifiedPassed": 45,
+      "ordinaryMethods": 18,
       "protectedQualifiedPassed": 2,
+      "protectedMethods": 2,
+      "distinctQualifiedCases": 47,
+      "distinctQualifiedMethods": 20,
+      "separateFirstExecutions": 2,
       "aggregate47NativeExecution": false
     }
   },
@@ -576,7 +580,7 @@
   "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "b9fc76c0336521b9e48b58bc476e2b1337276758f18014e3f0e4cdd9d62d2def"
+    "sha256": "caf7c85b39c337bd166f72673b3e84c57cec225d8f67e911cec0946c19555bc7"
   },
   "references": [
     {
@@ -625,7 +629,7 @@
       "sha256": "e0652dbb44b9bb5805ce970d4332f5e8d7ce52aa5152adc7b13e4f79f9f78a1d"
     }
   ],
-  "authority": "Root named minimal product source activation e9f55c14 (3e03c598) and fresh product zero-execution preparation activation f766d9d0 (f27c7824), after accepted separate structuralRED1. These grant no testcase execution; full affected SOURCE and separately named protectedLate2/ordinary45 actual gates remain.",
+  "authority": "Latest user autonomous ordinary3e implementation authority; Root named e9f source activation, f766 fresh preparation,828 protected2 and406 ordinary45 activations; separate accepted SOURCE/EVIDENCE and final bounded Root acceptance765389. This final metadata checkpoint grants no further source/runtime or broader3e authority.",
   "categoryDelta": {
     "added": [
       "fr063-reasoning-prefix-boundary",
@@ -935,10 +939,11 @@
     "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
   },
   "futureProduct": {
-    "status": "SOURCE_PREP_PROTECTED2_EVIDENCE_ACCEPTED_FIRST_ORDINARY45_RAWPASS_EVIDENCE_PENDING",
+    "status": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_45_PLUS2_EVIDENCE_ACCEPTED",
     "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
     "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
-    "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
+    "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts.",
+    "phase": "COMPLETED_BOUNDED_PRODUCT_SCOPE_FIELD_RETAINS_HISTORICAL_NAME"
   },
   "docsDisposition": "Internal behavior-preserving extraction; no GM schema/validator meaning/output contract change planned, so no GM prompt/example/manifest changes triggered. Stale remains Warning and unusable-original policy-null remains non-authority. Full 3e/HOT/Windows remains held.",
   "authoringUtilityOutcomes": [
@@ -957,7 +962,8 @@
     "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
     "category": "fr063-reasoning-prefix-boundary",
     "declaredRows": 1,
-    "scope": "No execution until corrected/qualified fresh PREP and independent concrete SOURCE/FIXTURE/SELECTION/PREP plus exact named Root activation."
+    "scope": "No execution until corrected/qualified fresh PREP and independent concrete SOURCE/FIXTURE/SELECTION/PREP plus exact named Root activation.",
+    "phase": "HISTORICAL_TESTS_ONLY_SNAPSHOT_PRIOR_PRODUCT_AND_ACCEPTED_CURRENT_EVIDENCE"
   },
   "firstPreparationStop": {
     "status": "FIRST_NATIVE1_FROZEN_CAUSE_NOT_YET_QUALIFIED",
@@ -2766,7 +2772,9 @@
         "sha256": "062df054ee8eee2316dd01579b9b4f32d25e87ca47fcfdc29e93fb8d0e42286c",
         "bytes": 16863
       }
-    ]
+    ],
+    "phase": "HISTORICAL_TESTS_ONLY_SNAPSHOT_PRIOR_PRODUCT_AND_ACCEPTED_CURRENT_EVIDENCE",
+    "currentDisposition": "C01 confirmed soleCS0121; exactlambda correction compiled/discovered7307 andfreshf766. Original nativeFAIL/zeroexecutions/raw untouched, never semanticRED."
   },
   "c01Correction": {
     "status": "CLOSED_BY_FRESH_ZERO_PREPARATION_AND_BOUNDARY_ONLY_SOURCE_REVIEW",
@@ -2789,7 +2797,8 @@
         "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
         "bytes": 17211
       }
-    ]
+    ],
+    "phase": "HISTORICAL_TESTS_ONLY_SNAPSHOT_PRIOR_PRODUCT_AND_ACCEPTED_CURRENT_EVIDENCE"
   },
   "priorCorrectionPreparationProposal": {
     "status": "CORRECTED_FIRST_UNRUN",
@@ -2798,12 +2807,13 @@
       "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
       "rawChains": 8
     },
-    "recipe": "Root authorized after corrected WIP push/exactremote/full GitHub delta: same fixed1c3e controller with distinct corrected labels, fresh BOTH/catalog then successful native0 only exact PlanOnly-NoBuild ZERO execution. No test actual or product change."
+    "recipe": "Root authorized after corrected WIP push/exactremote/full GitHub delta: same fixed1c3e controller with distinct corrected labels, fresh BOTH/catalog then successful native0 only exact PlanOnly-NoBuild ZERO execution. No test actual or product change.",
+    "phase": "HISTORICAL_TESTS_ONLY_SNAPSHOT_PRIOR_PRODUCT_AND_ACCEPTED_CURRENT_EVIDENCE"
   },
   "sourceReviewKnownFindings": [
     {
       "id": "NI-3E-S02",
-      "status": "CLOSED_AT_AFFECTED_SOURCE_NOT_YET_RUNTIME_QUALIFIED",
+      "status": "CLOSED_AT_AFFECTED_SOURCE_AND_BOUND_RUNTIME_THREE_MODE_ROWS",
       "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
       "affectedData": [
         "Mixed",
@@ -2822,7 +2832,8 @@
         "bytes": 3621
       },
       "historicalTestsOnlyDisposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held.",
-      "currentDisposition": "Independent full affected SOURCE accepted exact two conditional expected-vector corrections with all original rows/fixture/equality/detail checks intact; semantic runtime remains unrun."
+      "currentDisposition": "Exactisolatedtwo-vector correction acceptedSOURCE; all3World/Mixed/Guardian-centric rows passedfullorderedcodeequality+firstdiagnostic assertions in newordinary45. IndependentordinaryEVIDENCE andRoot765389 acceptboundedclosure; no rulechange or earlierreportrewrite.",
+      "phase": "HISTORICAL_SOURCE_FINDING_WITH_CURRENT_CLOSED_DISPOSITION"
     }
   ],
   "acceptedSourceDecision": {
@@ -3047,7 +3058,8 @@
         "sha256": "54f59d2235b491dfa6a5bff8f2194eaa515b059e5229d8dc082cc6d29a18e6d2",
         "bytes": 2525
       }
-    ]
+    ],
+    "phase": "HISTORICAL_STRUCTURAL_RED1_PRIOR_MINIMAL_PRODUCT_RETAINED_WITHOUT_REPLAY"
   },
   "acceptedCausalDecision": {
     "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY",
@@ -3380,7 +3392,7 @@
     }
   },
   "productionImplementation": {
-    "status": "AFFECTED_SOURCE_PREP_ACCEPTED_NOT_GREEN_ALL_CURRENT_PRODUCT_ACTUALS_HELD",
+    "status": "BOUNDED_THREE_STAGE_EXTRACTION_AND_REAL_ORDINARY_CONSUMER_SOURCE_EVIDENCE_ACCEPTED",
     "sourceCapsule": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-edit-capsule-e9f55c14-20261017.json",
       "sha256": "c815875b11baefecd46d50fd3bb571e1583e7f8847c5698061baea337685a777",
@@ -3409,8 +3421,8 @@
       }
     ],
     "scope": "Exact three frozen fragments to one new value-only partial and three owner adapters; parse/using/catch/timestamp/all IO/repeated reads/later Full tail remain with original owner; S02 two-vector test correction explicitly separate.",
-    "currentActuals": "FIRST ordinary45 rawPASS on406/f766, independent EVIDENCE pending; separate new protected2 independently accepted on828/f766. Distinct47 across2 native commands, not one aggregate47. Historical structuralRED1 separate.",
-    "futureOrder": "Saved product WIP/recovery ->Root FIRSTfreshBOTH PlanOnly0 ->full affected SOURCE ->separately named protectedLate2+EVIDENCE ->ordinary45+EVIDENCE. No automatic advance."
+    "currentActuals": "45qualifiedordinary on406/f766 plus separately2qualifiedprotected on828/f766:47distinct/20methods acrossTWO FIRSTcommands. Historical RED1/initialCS0121 remain separate; no oldA1/3d52or2 replay/count.",
+    "completedGateOrder": "Saved structuralRED1 ->minimal2fileproduct+isolatedS02capsule ->freshBOTH/Plan0 ->accepted affectedSOURCE ->separate protected2/EVIDENCE ->ordinary45/EVIDENCE. Only final exactremote/recovery Rootreadback remains for this metadata checkpoint."
   },
   "protectedLate2Continuity": {
     "status": "EXACT_RETAINED_SOURCE_CONTINUITY_ONLY_NEW_PRODUCT_RUNTIME_REQUIRED",
@@ -3563,9 +3575,9 @@
     "plannedOrdinary": 45,
     "plannedProtected": 2,
     "next": "Persist/push/exactremote/new GitHub recovery/Root readback, then only separately named FIRST protectedLate2; save/qualify separate new evidence before ordinary45 activation. No new code/build/retry or actual authorized by this persistence.",
-    "nonmaterialReviewMetadata": "Immutable SOURCE reviewJSON controllers[] generic UNRUN labels are historical at that report. Raw/MD/Root establish dc959 prep and0461 prep archive each ran once before SOURCE; later a679 and023d recorded/froze protectedLate2 once. Current prospectiveControllers and firstProtectedLate2 record actual usage; ordinary45 remains unrun. Reports remain byte-exact.",
+    "nonmaterialReviewMetadata": "Immutable SOURCE JSON generic UNRUN controller labels are historical; raw/MD/Root establish prepdc959 andread-onlypreparchive0461 once, then actuala679 ran ONCEpermode protected2+ordinary45 andread-only023d froze BOTH9+13chainoutcomes. Original reports staybyteexact. Current toolstatus and finalBoundedAcceptance describe completed usage.",
     "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay.",
-    "phase": "HISTORICAL_SAVED_SOURCE_DECISION_BEFORE_ANY_PRODUCT_RUNTIME"
+    "phase": "HISTORICAL_ACCEPTED_SOURCE_DECISION_BEFORE_PRODUCT_RUNTIME_CURRENT_EVIDENCE_SEPARATE"
   },
   "firstProtectedLate2": {
     "status": "ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
@@ -3724,7 +3736,7 @@
         "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
       }
     ],
-    "ordinary45": "FIRST_EXECUTED_RAW45PASS_ON406_INDEPENDENT_EVIDENCE_PENDING",
+    "ordinary45": "SEPARATE_FIRST45PASS_ON406_INDEPENDENT_EVIDENCE_ACCEPTED_NO_REPLAY",
     "independentEvidence": {
       "verdict": "ROOT_ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
       "references": [
@@ -3764,7 +3776,7 @@
     }
   },
   "firstOrdinary45": {
-    "status": "FIRST_NEW_RAW45PASS_ROOT_LITERAL_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "status": "ACCEPT_NEW_PRODUCT_ORDINARY45_EVIDENCE_ONLY",
     "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
     "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
     "nativeExit": 0,
@@ -3919,7 +3931,107 @@
         "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
       }
     ],
-    "proofLimits": "41new strict distinct physically absent roots; unchanged legacy2 callers namespace-only cleanup, source2 N/A. No deleted fixture raw bodies are invented. All45 including3S02mode rows observed PASS; independent semantic EVIDENCE still pending. Separate protected2 already independently accepted, no aggregate47 native run or oldPASS replay.",
-    "S02": "SOURCE_CLOSED_THREE_MODE_ROWS_OBSERVED_PASS_INDEPENDENT_EVIDENCE_PENDING"
+    "proofLimits": "41new strict distinct physicallyabsent roots; legacy2 namespace-only cleanup; source2N/A. Fourgenuinepreparer original emissions arepremutation frozenauthority. Latercorrupt/currentafterimages andmtimes are reachedcompiledsource assertions, notseparatelyfrozen deletedbodies. Ordinary45 independentlyaccepted; protected2 independentlyacceptedseparately, never aggregate47native/oldPASSreplay.",
+    "S02": "SOURCE_AND_RUNTIME_CLOSED_THREE_MODE_ROWS_FULL_ORDERED_EQUALITY",
+    "independentEvidence": {
+      "verdict": "ACCEPT_NEW_PRODUCT_ORDINARY45_EVIDENCE_ONLY",
+      "references": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md",
+          "bytes": 3046,
+          "sha256": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json",
+          "bytes": 9606,
+          "sha256": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+          "bytes": 110911,
+          "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-bounded-ordinary-prefix-acceptance-44951f9d-20261017.json",
+          "bytes": 2864,
+          "sha256": "765389241b9b36005f49f10c68908f197a209fea837af74d8696c52e63417eaf"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+          "bytes": 21947,
+          "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+          "bytes": 20963,
+          "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+        }
+      ]
+    }
+  },
+  "finalBoundedAcceptance": {
+    "status": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_PENDING",
+    "verdict": "ROOT_ACCEPT_BOUNDED_ORDINARY3E_PREFIX_IMPLEMENTATION_AND_SEPARATE_EVIDENCE",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md",
+        "bytes": 3046,
+        "sha256": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json",
+        "bytes": 9606,
+        "sha256": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+        "bytes": 110911,
+        "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-bounded-ordinary-prefix-acceptance-44951f9d-20261017.json",
+        "bytes": 2864,
+        "sha256": "765389241b9b36005f49f10c68908f197a209fea837af74d8696c52e63417eaf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+        "bytes": 21947,
+        "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+        "bytes": 20963,
+        "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+      }
+    ],
+    "compiledProductSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "ordinaryActualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+    "protectedActualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+    "counts": {
+      "ordinaryCases": 45,
+      "ordinaryMethods": 18,
+      "ordinaryDescriptors": 5,
+      "ordinaryNative": 0,
+      "ordinaryWrapperSeconds": 18.01654913800303,
+      "ordinaryRunnerSeconds": 17.3104676,
+      "protectedCases": 2,
+      "protectedMethods": 2,
+      "protectedNative": 0,
+      "protectedWrapperSeconds": 121.93179388899443,
+      "distinctCases": 47,
+      "distinctMethods": 20,
+      "separateFirstExecutions": 2
+    },
+    "S02": "CLOSED_SOURCE_AND_BOUND_RUNTIME3_MODES_FULL_ORDERED_EQUALITY",
+    "cleanup": "41new ordinary strict physicallyabsent roots; legacy2namespaceonly/source2N/A; separately2protectedstrictroots",
+    "genuineOriginals": "4pre-mutation preparer observations joined; later corrupted/current afterimages andmtime are reachedsource assertions, not separatelyfrozen deletedbodies",
+    "scope": "Only ordinarydocument/orderedunknownfields/scopeprefix sharedpure stages+realpublicFullconsumer+namedaffectedcontrols complete. FullT179-Pd.3eOPEN; no broaderFull/HOT/history/S/B/M3/F1/T197/World33/Windows/CI/A3/fullwounds completion.",
+    "held": [
+      "OldWorld33 fence",
+      "HOT/source/history/broaderFull/S/B/M3/F1/T197",
+      "Windows EVIDENCE ZIPForbidden; no rerun/workaround",
+      "CI/A3 NO-PROCEED/fullwounds completion"
+    ],
+    "finalPublication": "Exactnonforcepush/cleanremote+completeimmediateGitHubdelta andRootfinalreadback mustconfirmthischeckpoint. Rootexternalfinalreceipt may satisfythisprospectiveconditionwithoutselfreferentialcommit. No furthernative/build/sourcechangeauthorized."
   }
 }

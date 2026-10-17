@@ -1,0 +1,1840 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_NEW_ORDINARY45_EVIDENCE_CHECK",
+  "checkedUtc": "2026-10-17T18:43:50.249399+00:00",
+  "carrier": "44951f9dbc71c8735c4fb011f7a9079427d08e34",
+  "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+  "compiledProductSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "noNativeExecutedByReviewer": true,
+  "readOnlyUtilityCorrection": "Initial inspector KeyError on absent inlineData in legacy Fact metadata; corrected to optional empty list. No report was written, no native/product/raw changed.",
+  "archive": {
+    "path": "/tmp/t179pd3e-product-ordinary45-first-raw-archive-406ac844-20261017/archive.json",
+    "bytes": 8317,
+    "sha256": "b0f6a1768ba3409b4b8133175b494e34e4532fddfb567609a5f7c45fb839efbc"
+  },
+  "record": {
+    "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/record.json",
+    "bytes": 22760,
+    "sha256": "9cff04ff1b39b53f0f99129af8fad7796eb8d3c5df703b005b94acebf122ad72"
+  },
+  "nativeExit": 0,
+  "wrapperWallSeconds": 18.01654913800303,
+  "canonicalRunnerWallTime": "00:00:17.3104676",
+  "selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 45,
+    "CompletedCases": 45,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 45,
+    "Executed": 45,
+    "Passed": 45,
+    "Failed": 0
+  },
+  "literalCaseIdentities": [
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "executionId": "c10cb58c-5507-421f-b79a-0f2d4522cc0f",
+      "testId": "220581f0-706b-48fd-758c-d58b7af0d96c",
+      "outcome": "Passed",
+      "trx": "fr063-ordinary-output-policy-source-unit-001.trx",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictRoot": null,
+      "cleanupProof": "source fact root not applicable"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+      "executionId": "54c13150-9ff5-4d47-b106-ce6a86bf54d4",
+      "testId": "45efc86a-79bf-2f31-5078-eecf921ddcea",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-boundary-unit-002.trx",
+      "stdoutSha256": "f58baa83ff2af48c94a1a30290010aaa0cb73fd959290b29833b99ea3f491cd5",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-2ddfad4d368f413bbe4cbe7005fa93f0",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+      "name": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+      "executionId": "9749de8e-1f32-4935-82bf-41eadf9d23d6",
+      "testId": "c1a86256-be06-5308-1e78-f0e0df60efd0",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-existing-integration-003.trx",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictRoot": null,
+      "cleanupProof": "legacy namespace only"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+      "name": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+      "executionId": "3d08389f-6bb7-401d-b93d-6878b6611956",
+      "testId": "28dda99d-beed-ad86-2080-e730ed8ab57b",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-existing-integration-003.trx",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictRoot": null,
+      "cleanupProof": "legacy namespace only"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf16\")",
+      "executionId": "8d1297e8-cf1e-46ca-90fe-ef285329195c",
+      "testId": "24bb3d72-4a8b-275f-839d-d97783bd2bdb",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "f68acedecd201dceb7c80d2902b2e13a9751ad8baa44d4d1231f6c9dfc97a2b3",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-89c390b670254f8e9c9ccb72080f3b5c",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-valid\", codes: \"\")",
+      "executionId": "5f0ed267-4642-4838-ac6d-7df12cba05d0",
+      "testId": "06bef128-12e6-e86b-86e9-1ac1ff45f898",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "a1534703f2fb9fcb2262d32241efb8181db8916b03adcfe1fb9792f0158f2d87",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-1fb33b7a723d4f24b2a98311c51b7cc9",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "executionId": "f16146fe-e5dc-454d-92f9-d6aea7f6a8f6",
+      "testId": "ad50c222-fdda-741d-571b-0190c406a03a",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "75026a06b56a5af15e8e0621ac8a5d8f3d2573a860c18bebb97e41b393af72c7",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-a5d6d880189a47468a3eb841dd956a97",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+      "executionId": "ea561e04-5ed2-49ef-8c15-5b3c8171a35d",
+      "testId": "f509c579-e044-fe0d-1b1f-5be59fc51977",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "a43f24981e174df6886d6fd23f4c47dd2cc3e1e07eb57eed1778dde6d4878cd6",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-826acb4f87d741628ce528b484132b3d",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"unknown-mode\", code: \"invalid_scope_mode\")",
+      "executionId": "00a1aa09-2b08-46be-adc0-45f43dc79db9",
+      "testId": "18a77196-ff91-a445-4e09-c6d6e8c89fb3",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "84ffea83360020ef1c0a34d3fd191435df2c9f45b18060eb78f34f47e8065c54",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-c2ea4c010b4148cb911ddb5ee95139d7",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+      "executionId": "d4e76ade-35d1-4d09-b6e1-0522eb926aa7",
+      "testId": "60323cbe-a332-b293-26c2-c049d46889ec",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "d5b786a7b833f2f99286e93448d8ebf765aa3825ad1e028beb3fe9bfe971293c",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-f8d35a9f289e42e2b663e19f2adae823",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"empty-object\", codes: \"debug_logs_missing_timestamp,missing_gm_thoughts\")",
+      "executionId": "71f852e1-0cd0-45b6-831e-5a532f5879ee",
+      "testId": "637222f2-cd88-a536-cd7b-a8b7d1dc7dbb",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "c688b7b6fb06e339be8a6e5eefc444b7f9156689606f9a109f2dd4250c659038",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-ca0b2f0f775c467ca540a6afc050c23a",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+      "executionId": "a7bc1739-65e7-454f-a441-eed942077869",
+      "testId": "76332e48-d462-d399-ef08-a7a604664d33",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "4f57257898cc845013c080be7e3597cce2b43c096732381c055e75834364ed98",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-9444a3717f3b40dbbc4ddf0102eea82a",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: True)",
+      "executionId": "570446e5-c2ff-4fb1-b6fc-53f954e3efff",
+      "testId": "474f9648-82fe-ecb4-8c7f-5a858883857d",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "196ef45c3bb7d46901c8d00d1f1baa35bcae89415f154102d03ddd0191208a5c",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-0693318b8a2a46089b5ae3b480995ecc",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"corrupt-original\")",
+      "executionId": "e7437582-b4c8-48ad-ba1c-d704505b20ab",
+      "testId": "37dcb75f-1b49-c8de-5a3a-b95e385b55e6",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "635c37df83987b12254841d705dabbf1631a178d6af97bee4ee2bf96f6892672",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-023e6ea8d82f4195b66883ec49ae0c6f",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevant-field\", code: \"missing_relevant_actors_field\")",
+      "executionId": "208059d7-62b6-475a-8a88-b8cf55a1e5fc",
+      "testId": "9cdd8929-2845-b69f-d27e-936b90dd43e3",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "b6603fb146f9f0ac016f4cdb653cc024beb3e49dba435bb9b684ebd2f3628369",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-d43938f553a44bf389edfbe0a51a7a3a",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf16\")",
+      "executionId": "424a93fb-cdb9-42bf-99d0-35c703d31473",
+      "testId": "639131fa-fe7e-2e60-b1ed-0dab91062600",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "de1def7708b89044c09a1f6667cb39af927076fdca1d9c479eaca7c023799f41",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-10cde6524f1b42a4b70b60e24f773664",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-root\", codes: \"invalid_debug_logs_json_root\")",
+      "executionId": "b6534a29-7e44-4f27-a3be-95f1a4a0c2a3",
+      "testId": "1d37981e-e742-388a-cae7-6c92dc11dd69",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "3568306910577f05063c081b506fd7cc3e9c016c4665dd9219d71e6172aa8349",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-f59e95a3c24049dfa5031f0c29821871",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-field\", code: \"missing_out_of_scope_actors_field\")",
+      "executionId": "4e855222-6b1d-49bd-9eac-d72da9eec292",
+      "testId": "217fa47e-a485-fa7f-7c27-955e7529ca5d",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "34e2b1c5cf3d8c976dcadb8345201b51c494eccb8d223bd7c0f824b7672003dd",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-4895255a87884d7dbf9488dea51750ef",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-thoughts\", codes: \"missing_gm_thoughts\")",
+      "executionId": "a6689c5e-911e-4233-9c13-a21e130c32a5",
+      "testId": "ba3be233-051d-a9ca-0561-7e2074cb2b73",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "7723334e8d4a49a2979f2436a370b4083cb7a3e45b18cd10b310b74534bc856a",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-0d10b2de98dd4c6ab0c1b33986dc05ef",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"array\", codes: \"invalid_debug_logs_json_root\")",
+      "executionId": "58b09347-a6c4-4044-bf05-2d5ec86fda30",
+      "testId": "0c04e1cd-ebda-d349-f023-16e7839dad59",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "c9e668d1af29734f44b8c7f06ce875abacfddc4616c7ff2edcbb28528d48f7aa",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-17825f72395a45dcab78a93757c90874",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"unchanged\")",
+      "executionId": "66b0f236-1cb4-4300-8707-28e62725dcfd",
+      "testId": "9b43cdb8-a30d-7f2d-bc2c-2b7871c5dd8b",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "1574e395306f41df6cda2dd9f2bca469d5563422fe3a574caffd11e76bf73cd7",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-7bb7ae7693bc4cf9aa0fd9fdc79d77c6",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"World-progression\")",
+      "executionId": "c7b4fe28-2514-44d3-bc9d-fa20cf3afce1",
+      "testId": "096ea68d-9f32-386c-8fd9-d767881d937a",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "5898eda9df872108fd47533b3908a70112a912547c108279a34c8bcc7b9f0d51",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-91b4ac12c3034351be0b53e1612815cb",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: False)",
+      "executionId": "6caa019c-e46c-4b66-ad62-bbb3e72f81c5",
+      "testId": "91f1745e-226a-f271-1837-c078dc612d1e",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "e0551bad68ba2ba5986b97bcf7e2df8b8d0730a0aaa9c45724ca784181d86e36",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-dc043376150d4c558be2d6a7f46b2252",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"changed\")",
+      "executionId": "da62ba23-1243-4091-87db-ead685a7d427",
+      "testId": "4e3ca868-60c1-3005-df7c-db265aa3e852",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "6aa60f024bcb53f0aa5512ef9a8d852d8f19549505a3b7799194eedce0211243",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-d78f27f902cf42c98a3ff982559aecc1",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"underscore\", codes: \"\")",
+      "executionId": "69addc58-3050-452e-a98a-9c3f1ea8d00e",
+      "testId": "bbec16b8-a25e-5b77-94e1-1f15e406c7cd",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "686a47ad036dab992d9cadc2a2a72c46c56125fc4e2992d2713e9ef900850225",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-ad10b81af7654901a2eb6095aba7711b",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-heading\", code: \"missing_npc_scope\")",
+      "executionId": "a51527ad-1c97-466c-a462-413f4cd1b358",
+      "testId": "95936717-5807-c8d9-a1cb-3380b8fa596a",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "f78e5231f47ee93159531677ebd6215ef8404603209fdeee467ae228ca5b6104",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-fa3fc32f4a954f0ab34ee24bd373de3d",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Mixed\")",
+      "executionId": "a9eba83f-644f-45bd-b254-bc3fe68af113",
+      "testId": "b5d184c8-d1d5-13d0-7d44-86662c386f2f",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "dcabbd6126bf2618dd5d07433aa91001a8281261509e439f4febdac715a1940d",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-5e18f399b31240a6a898f5a60481f531",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: False)",
+      "executionId": "3cafa334-013f-40df-84d8-ad2fd0f47f90",
+      "testId": "912ebc23-6f4e-aee7-df5d-419daca910c8",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "53d36e36d355726e1b2d352f94075f20fa1671a374e497bda184f777fbaefa0c",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-86d0567685bc4be4b7bee530537f56f1",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: False)",
+      "executionId": "7d6a3f21-a345-4abc-926c-129a1da29f0e",
+      "testId": "7b3d0f87-1052-9296-eb64-077e7525590a",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "001784893ddc992e38bd53949a907bd6a86e1fef67b6e8ec20ddfb9b60ff1bdf",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-4ad2c1b8058e481cabffc590bec4677b",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf8\")",
+      "executionId": "18c251a4-9644-4ed1-9990-d50f21a194b3",
+      "testId": "c7d3ceab-9d87-5c20-ebed-680959e077c5",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "0e131ddd4fe646bf1fd11371551be03b744f98733c42e2c809da3e9323118021",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-e7d05e1380ce4205b8159e5bf91cf2af",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Guardian-centric\")",
+      "executionId": "72a978ce-99a2-44a1-b838-420462e0af2e",
+      "testId": "04e5b324-acdf-a5fa-7607-d05672f3909b",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "6549f011f44ba66a7db10bca7503980b8bd89a1bec21869ba624d5310f350472",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-26b44abe7bcd4bbba1e52bc1bc37f46e",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"wrong-case-thoughts\", codes: \"missing_gm_thoughts\")",
+      "executionId": "f3b23654-b0e7-4ef1-a42d-2c21a27e342b",
+      "testId": "59a65232-fe90-4881-7739-4bfef86ffcfc",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "06353ef1d4abc4b5e608d14c8b43cc9ff34610931e6c0a3c8b59a3a99cdeb1ff",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-1dea46fcbb554583ba58dd1f0e2b60dc",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"blank\", codes: \"missing_gm_thoughts\")",
+      "executionId": "978faee6-d5e0-4a02-ae40-62f99cf5e474",
+      "testId": "3967178c-34fd-6ff4-79ad-4b5a53fb524c",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "35414e0ac2279159a67bfd40f9682ae4c10d652331b8a12367734390f26c4344",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-5ce2949d1066473497924cab0e7fb8b6",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: True)",
+      "executionId": "f47f7652-3817-4b59-9c73-b8002b08bd94",
+      "testId": "624d2ab6-8c3d-9262-67e8-9190fc323139",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "613b4bf700e9aac67f1ed1641996a2158737bbce41b5fdf6a622e764fb6daccc",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-45d70c2fdd054421a03af6f8ffeedb53",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf8\")",
+      "executionId": "5cb4adfa-c5be-4327-bb26-f6cb0b2b7b40",
+      "testId": "a1d42cbb-fb93-a8a7-fcc9-b430b904eb33",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "dbc36880ba151fc8ff4f95660894b9747b76b7f7a146e5b66153347a7088c044",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-2d130d932e5a475bbf7d1ffe671f3473",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"malformed\", codes: \"invalid_debug_logs_json\")",
+      "executionId": "65bd4c16-f6c6-496d-acd8-a75325f8e3c1",
+      "testId": "7ac85278-0632-4b96-f2c8-e03bd20cf5a7",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "151cc4ddfea596fc70d8d8fe3176a90c784a9ffd1a74f29b575c0e6b23e7dfa5",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-5e2e6c86a7ed4811bc8f51cb979fe67b",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+      "executionId": "5161bd50-e9ef-4700-8661-b08ae5468a45",
+      "testId": "bf984e08-2c3b-6a70-ec6b-4f2281adb959",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "cc4e9f53369900fb9d168682383c12639740ea3beffbc6d3c1493435393b81c3",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-16c740eb7425485fa5eebe597967b6d7",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevance-reason\", code: \"missing_scope_relevance_reason\")",
+      "executionId": "5196f8a8-9619-4f23-b75c-5ba3fdc80f39",
+      "testId": "0e54868b-9e83-735b-fec4-c3a0ba4f9747",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "66e7899ef3fa186f128511f943e0a57dd6f2aed677440b4b30a2b5d336f26c0a",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-9db4e3a7f77d4a4c893083d8819e3f0a",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"absent\", codes: \"missing_gm_thoughts\")",
+      "executionId": "0ee8d78a-3466-4632-beec-1f74f15d6d43",
+      "testId": "93a4fc74-72af-0dd2-e23f-9919d50ed15e",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "8cec4eae083f64dfe87caa393734968076dbc98a45b623a3ed22bf6423071ff8",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-16f58df80c97433e97fed84bc1fb8521",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-empty\", codes: \"missing_gm_thoughts\")",
+      "executionId": "d9c2e319-591f-4b31-ae36-b40c03635812",
+      "testId": "15a79ad0-b972-cc0e-5ffc-edc104dec923",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "b4a2b7831e54a4a7c5230eba1005a06a355bf2743fcafe2407997c7cc6ae30ed",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-350e14cce47147b6b1606cb623a5c668",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"missing-mode\", code: \"missing_scope_mode\")",
+      "executionId": "5dea0788-25a4-492d-bc56-f181a47a33c8",
+      "testId": "abca2f3d-2fb1-0bc2-c2d1-b327b810aa68",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "cd917bfb0cb9d5d91f5d606472bbf5636e04a14f77f58e4072344c7ee9bedcf8",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-599a2a43aebc4650af18a96b9d7e9ee0",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-reason\", code: \"missing_scope_out_of_scope_reason\")",
+      "executionId": "175d77fb-3068-4536-9b9d-fa04184103f5",
+      "testId": "41c08c02-60cd-766c-aadb-f49e30631107",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "44b1db54c8f68b4cd75603430c93bf7104e995366882e69434e2fda979fb9af2",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-261dbbddb3174af7bc9f3f898b09e547",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: True)",
+      "executionId": "0461d8af-7048-4763-9377-2e72986f7be9",
+      "testId": "c7e6f25f-99f5-aae2-58c6-05596079c085",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "88fccde12d800a2c62197b3acb4e24cf64d849462b3696d4c14b26b0afa3d0f1",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-6c87fc6e5f2949da9d4aa6917c149c86",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"numeric-thoughts\", codes: \"missing_gm_thoughts\")",
+      "executionId": "62beaaf4-16f6-44ef-8c51-80afa2efa7ba",
+      "testId": "587980a6-2366-9ad7-d28b-cbc65fac8635",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-regression-unit-004.trx",
+      "stdoutSha256": "99e6ce4fa31b61bdff9e80782f68f26d0ff46e53e0fd86d292a17a31afcb0a3a",
+      "strictRoot": "/tmp/boe-pd3e-reasoning-cad442466cf040e0815fc2e3b9318052",
+      "cleanupProof": "strict emitted receipt + physical absence"
+    },
+    {
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+      "name": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+      "executionId": "24e52c88-ef75-4893-ad74-b08563e73d51",
+      "testId": "ed32dbc3-f7e3-1352-eef3-17e782ef91ad",
+      "outcome": "Passed",
+      "trx": "fr063-reasoning-prefix-source-unit-005.trx",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictRoot": null,
+      "cleanupProof": "source fact root not applicable"
+    }
+  ],
+  "methods": {
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix": 1,
+    "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope": 1,
+    "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull": 3,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics": 3,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime": 4,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns": 12,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics": 7,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse": 1
+  },
+  "literalTheoryRows": {
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"absent\", codes: \"missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"array\", codes: \"invalid_debug_logs_json_root\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"blank\", codes: \"missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-empty\", codes: \"missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-valid\", codes: \"\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"empty-object\", codes: \"debug_logs_missing_timestamp,missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"malformed\", codes: \"invalid_debug_logs_json\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-root\", codes: \"invalid_debug_logs_json_root\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-thoughts\", codes: \"missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"numeric-thoughts\", codes: \"missing_gm_thoughts\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"underscore\", codes: \"\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"wrong-case-thoughts\", codes: \"missing_gm_thoughts\")"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Guardian-centric\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Mixed\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"World-progression\")"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"missing-mode\", code: \"missing_scope_mode\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-heading\", code: \"missing_npc_scope\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-field\", code: \"missing_out_of_scope_actors_field\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-reason\", code: \"missing_scope_out_of_scope_reason\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevance-reason\", code: \"missing_scope_relevance_reason\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevant-field\", code: \"missing_relevant_actors_field\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"unknown-mode\", code: \"invalid_scope_mode\")"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: False)",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: True)"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: False)",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: True)"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf16\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf8\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf16\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf8\")"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: False)",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: True)"
+    ],
+    "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull": [
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"changed\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"corrupt-original\")",
+      "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"unchanged\")"
+    ]
+  },
+  "newRawChains": [
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/406ac844e87684aeae5f6d64a0a09ddd8b64c39d-pd3e-product-ordinary45.FIRST.json",
+      "storedPath": "000-406ac844e87684aeae5f6d64a0a09ddd8b64c39d-pd3e-product-ordinary45.FIRST.json.gz",
+      "bytes": 288,
+      "sha256": "fb2566f70f34954634cd0c3388d04da8d759f6f18b0ff0eaf30c46cc44cbabd4",
+      "storedBytes": 239,
+      "storedSha256": "bd953199ed78e94bd925d0d32d0d46183a490af785560794697e1ff5f595f4e2"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 786,
+      "sha256": "aedb417dee2f668edbf790223a8c170a690503e89e957158fdc06a2aa44a6bc1",
+      "storedBytes": 398,
+      "storedSha256": "b914512f47e54499f03e5a08574569f2ec2d1dbca70c58210243e63cec2c4175"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 22760,
+      "sha256": "9cff04ff1b39b53f0f99129af8fad7796eb8d3c5df703b005b94acebf122ad72",
+      "storedBytes": 5222,
+      "storedSha256": "62d4f711ebee65d148fc6f64102c10e4bcd1157d83a2cb5a3333e823aace0c56"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 175328,
+      "sha256": "2fea44dda0edc07f651892d204ee17efa9775ecf6004ad8abf2e4ebd03b008cd",
+      "storedBytes": 42792,
+      "storedSha256": "c3b3882ca7f8135cc1c70ae2d07bf5645f53d2c02622efea8472ce40a9751db1"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 10488,
+      "sha256": "7f92c44b32ab739d8b4b088d76b556e8d810d6db654418d6143ad8d386898903",
+      "storedBytes": 1698,
+      "storedSha256": "a8ba9fc87f272266972c8c5f66b5cea9da791e5f2fe3d5e066a0a1fc57404c0d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 3421497,
+      "sha256": "10630409948245a15a70926f269d59d2b5f8dd90f29997014f97940a1a49bb4c",
+      "storedBytes": 379046,
+      "storedSha256": "f355475c7af0284eb756a47a5cc9ceaf3c2ad7bff9f6b31649148b1cb9a8df98"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/fr063-ordinary-output-policy-source-unit-001.trx",
+      "storedPath": "006-fr063-ordinary-output-policy-source-unit-001.trx.gz",
+      "bytes": 3068,
+      "sha256": "7dc84ba71f045379fd2286f70a31764647d2cece5e13967849af2553ba37f025",
+      "storedBytes": 1232,
+      "storedSha256": "0d116c58f3bb4f69d001fabe2a6ce1700a34c27c9cb68735c6fff73687697823"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/fr063-reasoning-prefix-boundary-unit-002.trx",
+      "storedPath": "007-fr063-reasoning-prefix-boundary-unit-002.trx.gz",
+      "bytes": 3280,
+      "sha256": "76e99f5ec36d0ead7c8ccfb2cffa3dff35dbb2ffeebfb1641dd0227b3a434409",
+      "storedBytes": 1383,
+      "storedSha256": "0d5bf755823a4f1fa8c897454537af143f843dcd2cd6e0957c5427864596ed31"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/fr063-reasoning-prefix-existing-integration-003.trx",
+      "storedPath": "008-fr063-reasoning-prefix-existing-integration-003.trx.gz",
+      "bytes": 4699,
+      "sha256": "28ee2265a7efc9de3ffd92051b05c0bec1e2290b11d1cdf4a1714f0004420b83",
+      "storedBytes": 1408,
+      "storedSha256": "4c23f65a682130956a93543a8d85bb0002a76a31a960d6beb6fea77e8d9d53f7"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/fr063-reasoning-prefix-regression-unit-004.trx",
+      "storedPath": "009-fr063-reasoning-prefix-regression-unit-004.trx.gz",
+      "bytes": 154077,
+      "sha256": "8a7e7dd0214c7dd96f7f9bc549ebfa20d15ee8e3777b382dd56fadda1ea16406",
+      "storedBytes": 18367,
+      "storedSha256": "f61cd454c4d7f6bc9226764ac984b4d9dd241104fed027511f7a9b5f891b53bf"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/fr063-reasoning-prefix-source-unit-005.trx",
+      "storedPath": "010-fr063-reasoning-prefix-source-unit-005.trx.gz",
+      "bytes": 3086,
+      "sha256": "46918ccfc691c28d5dd937736710935b06e6fcca451fc58c8ccf515fd6053e7e",
+      "storedBytes": 1230,
+      "storedSha256": "7d311c383e54f7f53a1941994178940e8dee9271aae04a604d2cce8a0b893337"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/plan.json",
+      "storedPath": "011-plan.json.gz",
+      "bytes": 12605,
+      "sha256": "cbde1f85f8ac2d7920e96a4e572eb549dec4bd915941065b777d9ee4760becfc",
+      "storedBytes": 2133,
+      "storedSha256": "08e692e40b3cc457861d4c0937a7af773cdbc12da57b57474f891e85656f55af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-183806-158-170584-197297578ad4453586d9ceca96683f72-categories/summary.json",
+      "storedPath": "012-summary.json.gz",
+      "bytes": 6039,
+      "sha256": "8952724a6501887d533dfa189c0f1847609a3e8df19b90f2978b41651c4ced37",
+      "storedBytes": 1504,
+      "storedSha256": "b352beb2e0882f0c27d0fbeaa84a22c2ca4827f75cadec7b75fcef0c8b8ac33e"
+    }
+  ],
+  "sourceBinding": {
+    "actualContext": {
+      "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/source-binding.json",
+      "bytes": 175328,
+      "sha256": "2fea44dda0edc07f651892d204ee17efa9775ecf6004ad8abf2e4ebd03b008cd"
+    },
+    "equalGitShowAtActual": true,
+    "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "bytes": 438284,
+        "sha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a",
+        "gitBlob": "6de2ed172122c51a621631c9520d51189dac9e3e",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "CURRENT_PRODUCT_OR_SEPARATE_S02_OR_STABLE_SELECTION_CHANGED_FROM_RETAINED_BASE",
+        "baselineGitBlob": "7f2da09100365bf44f0605dee29d32e53874a54d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ValidationService.cs",
+        "bytes": 5130,
+        "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+        "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+        "bytes": 431342,
+        "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+        "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+        "bytes": 379285,
+        "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+        "gitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+        "bytes": 34289,
+        "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+        "gitBlob": "456415569129ff288c324515aaba6927049eb543",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "456415569129ff288c324515aaba6927049eb543"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+        "bytes": 141625,
+        "sha256": "fee7954509cf733de02ecbc18eabed531546888f19061c6bfcec9cca4cebf865",
+        "gitBlob": "29bfb470f09a9daf1025fb9b95b7b69f1cdb4196",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "29bfb470f09a9daf1025fb9b95b7b69f1cdb4196"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs",
+        "bytes": 160676,
+        "sha256": "a894c83caeabaeb74e674c66ecd1ea575abd71a63bb7105aef429c2e2a694fb5",
+        "gitBlob": "f05878ad24fb68d86aaba57a7c341035be6be148",
+        "mode": "100644",
+        "role": "actual public Full/prefix/timestamp/parser/domain/read/tail consumer; unchanged production",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "f05878ad24fb68d86aaba57a7c341035be6be148"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "bytes": 241886,
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+        "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "bytes": 13822,
+        "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+        "gitBlob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "022181b24c6e33e1be5d79cb6f705808a87c595a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "bytes": 19220,
+        "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+        "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "bytes": 33582,
+        "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+        "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "99081f43140f8f59511d26666e19a6fa57544983"
+      },
+      {
+        "path": "BookOfEternityClient/Core/LoadTransactionOperations.cs",
+        "bytes": 855,
+        "sha256": "38977a9cc50cd017846fef296752b03a05bf6d282a989c21fc57da7efb833171",
+        "gitBlob": "5a1c96bbfc1ee24c44a9f69a7888bafbfc74f5ad",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "5a1c96bbfc1ee24c44a9f69a7888bafbfc74f5ad"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "bytes": 23072,
+        "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+        "gitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "bytes": 14216,
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+        "gitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "bytes": 20289,
+        "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+        "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+        "bytes": 16920,
+        "sha256": "5818fe389cbc4d2b2799e01340b2b0d719f3494a140959e669d5501da8e7115d",
+        "gitBlob": "8bbeb50f0b66a90cf3b571acc4a1a85ec76959a1",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "8bbeb50f0b66a90cf3b571acc4a1a85ec76959a1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs",
+        "bytes": 25933,
+        "sha256": "29daa4c29e7b2a7c62c93b7df1629b654afc535e83bdf8453f33ab98dc9d2bfe",
+        "gitBlob": "ac7c1e355dc1f5eaa80eeeb8f52b06863ff584b1",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "ac7c1e355dc1f5eaa80eeeb8f52b06863ff584b1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+        "gitBlob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "6900c679f40653c79c859f0620be26d6d215ed19"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "bytes": 41982,
+        "sha256": "60f4d5a99214eba658955621c8be758ab20d60013542155ff219c093266470ca",
+        "gitBlob": "50d2c5a243ac176c183dd9f41622e5f99d4ada94",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "50d2c5a243ac176c183dd9f41622e5f99d4ada94"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianAbodeResidentState.cs",
+        "bytes": 126224,
+        "sha256": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42",
+        "gitBlob": "80ba77e0d8760b8595c47f602b454efcddd11b16",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "80ba77e0d8760b8595c47f602b454efcddd11b16"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+        "bytes": 120150,
+        "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+        "gitBlob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "86c82a62e138164a7e8158b9aa7adef0fe742916"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+        "bytes": 96769,
+        "sha256": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873",
+        "gitBlob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd",
+        "mode": "100644",
+        "role": "actual ordinary fixture/read/BOM/hooks/real preparer and original validation dependency; retained current source",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "c4c1eb9216d6970e64eed48ae1c96ee14a1fd0cd"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "bytes": 505887,
+        "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+        "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+        "mode": "100644",
+        "role": "actual future protected Full caller and unchanged accepted3d composition reference; no current runtime cohort",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+        "bytes": 10819,
+        "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+        "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+        "mode": "100644",
+        "role": "actual future protected Full caller and unchanged accepted3d composition reference; no current runtime cohort",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+        "bytes": 7617,
+        "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
+        "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
+        "mode": "100644",
+        "role": "actual future protected Full caller and unchanged accepted3d composition reference; no current runtime cohort",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
+        "bytes": 12325,
+        "sha256": "ad9c01f2162c001c4315851b7cbd06d2e7af450c1ae607fe18b2d2b503ea4c9e",
+        "gitBlob": "500a3501e328670d0a6b38cb354650403b25448c",
+        "mode": "100644",
+        "role": "authored or actual strict source composition fixture",
+        "baselineStatus": "NEW_TEST_SOURCE",
+        "baselineGitBlob": null
+      },
+      {
+        "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+        "bytes": 19648,
+        "sha256": "c432320a0dafc57700c915df6120868b60fb5f237268df1e4b2be10692455308",
+        "gitBlob": "6269fbc17ae0a9c5ba42f835d207fef0de485031",
+        "mode": "100644",
+        "role": "authored or actual strict source composition fixture",
+        "baselineStatus": "CURRENT_PRODUCT_OR_SEPARATE_S02_OR_STABLE_SELECTION_CHANGED_FROM_RETAINED_BASE",
+        "baselineGitBlob": null,
+        "correction": "C01 sole CS0121 overload disambiguation; exact one-argument lambda retains first IndexOf semantics/oracles/rows."
+      },
+      {
+        "path": "BookOfEternityClient.Tests/TestData/t179pd3e-ordinary-source-segments.json",
+        "bytes": 11315,
+        "sha256": "357886d4d352a61863ade4385edd1dcf2e8c57fe882922bf91ab78978cd8718e",
+        "gitBlob": "6a4c91a49dcd2b391fd7c644250029e13430c863",
+        "mode": "100644",
+        "role": "authored or actual strict source composition fixture",
+        "baselineStatus": "NEW_TEST_SOURCE",
+        "baselineGitBlob": null
+      },
+      {
+        "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
+        "bytes": 7006,
+        "sha256": "ae14afcd6964f4563a25d4c034cf23ebb35d153adbe09cce8359bf0cf630e7a9",
+        "gitBlob": "2208d6dcf1358beb2ff0470de4affb0f4010837c",
+        "mode": "100644",
+        "role": "authored or actual strict source composition fixture",
+        "baselineStatus": "CHANGED_TEST_OR_SELECTION_SOURCE",
+        "baselineGitBlob": "f174caac1e5a1328eef57f12f9648d4dbfc4a54b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/TestData/t179pd3d-ordinary-source-segments.json",
+        "bytes": 8342,
+        "sha256": "6a00f3e04bdb0148e7c1e302f09d47773ef1f97ef7639bb60516618978a20c18",
+        "gitBlob": "3ff25b4b7249dcd0d1a9c73ebb9fbdca713cfb23",
+        "mode": "100644",
+        "role": "authored or actual strict source composition fixture",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "3ff25b4b7249dcd0d1a9c73ebb9fbdca713cfb23"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
+        "bytes": 115669,
+        "sha256": "b5c5e8bf94bfc5bacfc1bce67ea64f76154e23f7c07536da657b12e136d82fc5",
+        "gitBlob": "045e15c77f597279333058be447dc3421d15c7f2",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "045e15c77f597279333058be447dc3421d15c7f2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
+        "bytes": 27502,
+        "sha256": "d7ba512287d9c035b8ac6025bad36a2b1f10f009c80ad3b9d0bf4f73e4e44552",
+        "gitBlob": "386cc0dcefc7e676bded742f338069a227c3b10f",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "386cc0dcefc7e676bded742f338069a227c3b10f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianValidationProfiles.cs",
+        "bytes": 7884,
+        "sha256": "c4dfd0f2a82595050f1455d2a623312ff0443ab2a6b2c2a387432d6c49317865",
+        "gitBlob": "25bf35ae12b679019c7394ba23e20a40e5875f98",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "25bf35ae12b679019c7394ba23e20a40e5875f98"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.cs",
+        "bytes": 63526,
+        "sha256": "4b63cb4bc1bab687f21169bc197b1ef708131b36b1963e347668b36d870664ac",
+        "gitBlob": "1479bf5ed4c84c606069b7afe80d0ad827e15803",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "1479bf5ed4c84c606069b7afe80d0ad827e15803"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs",
+        "bytes": 15848,
+        "sha256": "08f95e4ed639789ff60cef19dd1c3927ded5b28fa230a475cab92f03ea42e935",
+        "gitBlob": "4d4671bfe466bdb12ebdecdee2c26f7fb36eaf9d",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "4d4671bfe466bdb12ebdecdee2c26f7fb36eaf9d"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/PendingTurnSnapshotTestAuthority.cs",
+        "bytes": 6249,
+        "sha256": "42a2efc5baf7742f607908d8b541e65ea707c2c163f3183c2b1478ad02b71dd9",
+        "gitBlob": "3b0f0dffdc373c2afb8a637ccaededeef726fbdc",
+        "mode": "100644",
+        "role": "exact two unchanged scoped Core fixtures and their original fixture/glue; no genuine Stage/HOT claim",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "3b0f0dffdc373c2afb8a637ccaededeef726fbdc"
+      },
+      {
+        "path": "tests/categories.json",
+        "bytes": 1988898,
+        "sha256": "89d7660fbcb5986e02a43309970b47c465cef8337b2e7299725263dcd33bfb20",
+        "gitBlob": "d8f2b177707f5d609857ac0bc9c9046d602af66d",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "CHANGED_TEST_OR_SELECTION_SOURCE",
+        "baselineGitBlob": "73948ca858f86e63f8d06cf9a13bdba18bdcd13a"
+      },
+      {
+        "path": "tests/selection.json",
+        "bytes": 4486,
+        "sha256": "a14fb53b28ccf3a7931bcb41c8be303446c1f97b6d79516fff59e7ae6dc984ae",
+        "gitBlob": "636e4a29f122a6cfbf37a802140576a365a8c0e5",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "CURRENT_PRODUCT_OR_SEPARATE_S02_OR_STABLE_SELECTION_CHANGED_FROM_RETAINED_BASE",
+        "baselineGitBlob": "686ed8b39447842d41a30b843b824261bcf33c6d"
+      },
+      {
+        "path": "tests/selections/1536-pd3e-reasoning-prefix.json",
+        "bytes": 3870,
+        "sha256": "7c2047181b182195ffc6ce92ecc393e52f1298886079249c50d8f0b60eff6a75",
+        "gitBlob": "8d85708b596412fc5e46ec003ac9b23c0f5cf869",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "CURRENT_PRODUCT_OR_SEPARATE_S02_OR_STABLE_SELECTION_CHANGED_FROM_RETAINED_BASE",
+        "baselineGitBlob": null
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "bytes": 81688,
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+        "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a"
+      },
+      {
+        "path": "scripts/testing/TestCategoryCatalog.psm1",
+        "bytes": 13349,
+        "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+        "gitBlob": "82dead716f8604c10aa17636c313d46a49fa307b",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "82dead716f8604c10aa17636c313d46a49fa307b"
+      },
+      {
+        "path": "scripts/testing/TestCategoryExecution.ps1",
+        "bytes": 11710,
+        "sha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+        "gitBlob": "02867549fd55db86f32e765164d65c8eb921ebdd",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "02867549fd55db86f32e765164d65c8eb921ebdd"
+      },
+      {
+        "path": "scripts/testing/TestCategoryAdapters.ps1",
+        "bytes": 7006,
+        "sha256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1",
+        "gitBlob": "b8810e823e0100e417a9c9a044f34bad4d21dfd8",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "b8810e823e0100e417a9c9a044f34bad4d21dfd8"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "bytes": 1682,
+        "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+        "gitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "bytes": 1991,
+        "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+        "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4"
+      },
+      {
+        "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+        "bytes": 5795,
+        "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+        "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "e4f778864060557b6a9c783238c271fa88b63645"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+        "bytes": 470,
+        "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+        "gitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41",
+        "mode": "100644",
+        "role": "concrete finite ownership/discovery/build/runner dependency",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41"
+      },
+      {
+        "path": "AGENTS.md",
+        "bytes": 11662,
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "bytes": 66432,
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+      },
+      {
+        "path": "docs/testing.md",
+        "bytes": 18979,
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+        "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+      },
+      {
+        "path": ".specify/memory/constitution.md",
+        "bytes": 14081,
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md",
+        "bytes": 22367,
+        "sha256": "1b56c590e3393ce07bae8dde06a9ebc6b1c73683b1f3345592289d48a18044d8",
+        "gitBlob": "50dfd1689eb490054ad7a6fdf89880018a64c730",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "50dfd1689eb490054ad7a6fdf89880018a64c730"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+        "bytes": 13814,
+        "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+        "gitBlob": "0fb5be8fc29fadaacc241c7a5c858718df476666",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "0fb5be8fc29fadaacc241c7a5c858718df476666"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "bytes": 170435,
+        "sha256": "82aaabfb6e415d3326295b885fe98a2e871c0cc7ea47c855b9be04423d27d5c1",
+        "gitBlob": "681a69a272ae137417d1f1d887978fd20b6c7f6d",
+        "mode": "100644",
+        "role": "current governance/accepted contract/held SBM map; latest explicit ordinary implementation authority distinct",
+        "baselineStatus": "BYTE_EQUAL_RETAINED_FE3_TREE",
+        "baselineGitBlob": "681a69a272ae137417d1f1d887978fd20b6c7f6d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs",
+        "bytes": 10278,
+        "sha256": "c8dfd86d86a69a581c9e3fcdb960bc7b04b5d766c96b32181d465172e889bdc0",
+        "gitBlob": "a4ce35e35faa187aca8a660d920b1bbb2303587a",
+        "mode": "100644",
+        "role": "Actual new value-only ordinary reasoning document/unknown/scope shared stages; original owner retains Parse/timestamp/catch/IO/tail.",
+        "baselineStatus": "NEW_PRODUCTION_PARTIAL",
+        "baselineGitBlob": null
+      }
+    ],
+    "actualLedgerSha256": "75b23ae5f2851d697072697c40ef7b53d36dc6f7578f45f942d257c3016f9785",
+    "currentLedgerPointerExact": true
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9601024,
+      "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29179904,
+      "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    }
+  ],
+  "prepRecord": {
+    "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-prep-first-build-plan-f766d9d0-20261017/record.json",
+    "bytes": 77517,
+    "sha256": "177b49d129dc9e2a523549ed1960b0f95ffa4ca18f00e2d730dc84dca79b1ffb"
+  },
+  "semanticPlanMatchesFreshPrepSubset": true,
+  "strictRoots": [
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-2ddfad4d368f413bbe4cbe7005fa93f0",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf16\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-89c390b670254f8e9c9ccb72080f3b5c",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-valid\", codes: \"\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-1fb33b7a723d4f24b2a98311c51b7cc9",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-a5d6d880189a47468a3eb841dd956a97",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-826acb4f87d741628ce528b484132b3d",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"unknown-mode\", code: \"invalid_scope_mode\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-c2ea4c010b4148cb911ddb5ee95139d7",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-f8d35a9f289e42e2b663e19f2adae823",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"empty-object\", codes: \"debug_logs_missing_timestamp,missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-ca0b2f0f775c467ca540a6afc050c23a",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-9444a3717f3b40dbbc4ddf0102eea82a",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: True)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-0693318b8a2a46089b5ae3b480995ecc",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"corrupt-original\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-023e6ea8d82f4195b66883ec49ae0c6f",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevant-field\", code: \"missing_relevant_actors_field\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-d43938f553a44bf389edfbe0a51a7a3a",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf16\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-10cde6524f1b42a4b70b60e24f773664",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-root\", codes: \"invalid_debug_logs_json_root\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-f59e95a3c24049dfa5031f0c29821871",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-field\", code: \"missing_out_of_scope_actors_field\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-4895255a87884d7dbf9488dea51750ef",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"null-thoughts\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-0d10b2de98dd4c6ab0c1b33986dc05ef",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"array\", codes: \"invalid_debug_logs_json_root\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-17825f72395a45dcab78a93757c90874",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"unchanged\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-7bb7ae7693bc4cf9aa0fd9fdc79d77c6",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"World-progression\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-91b4ac12c3034351be0b53e1612815cb",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: False)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-dc043376150d4c558be2d6a7f46b2252",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"changed\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-d78f27f902cf42c98a3ff982559aecc1",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"underscore\", codes: \"\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-ad10b81af7654901a2eb6095aba7711b",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-heading\", code: \"missing_npc_scope\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-fa3fc32f4a954f0ab34ee24bd373de3d",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Mixed\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-5e18f399b31240a6a898f5a60481f531",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: False)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-86d0567685bc4be4b7bee530537f56f1",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors(crlf: False)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-4ad2c1b8058e481cabffc590bec4677b",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"malformed-utf8\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-e7d05e1380ce4205b8159e5bf91cf2af",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(mode: \"Guardian-centric\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-26b44abe7bcd4bbba1e52bc1bc37f46e",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"wrong-case-thoughts\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-1dea46fcbb554583ba58dd1f0e2b60dc",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"blank\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-5ce2949d1066473497924cab0e7fb8b6",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies(parsedScope: True)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-45d70c2fdd054421a03af6f8ffeedb53",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime(encoding: \"utf8\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-2d130d932e5a475bbf7d1ffe671f3473",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"malformed\", codes: \"invalid_debug_logs_json\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-5e2e6c86a7ed4811bc8f51cb979fe67b",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-16c740eb7425485fa5eebe597967b6d7",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-relevance-reason\", code: \"missing_scope_relevance_reason\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-9db4e3a7f77d4a4c893083d8819e3f0a",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"absent\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-16f58df80c97433e97fed84bc1fb8521",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"duplicate-last-empty\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-350e14cce47147b6b1606cb623a5c668",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"missing-mode\", code: \"missing_scope_mode\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-599a2a43aebc4650af18a96b9d7e9ee0",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics(scenario: \"no-outside-reason\", code: \"missing_scope_out_of_scope_reason\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-261dbbddb3174af7bc9f3f898b09e547",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch(jsonFailure: True)",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-6c87fc6e5f2949da9d4aa6917c149c86",
+      "removed": true
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns(scenario: \"numeric-thoughts\", codes: \"missing_gm_thoughts\")",
+      "kind": "PD3E_REASONING_STRICT_CLEANUP",
+      "root": "/tmp/boe-pd3e-reasoning-cad442466cf040e0815fc2e3b9318052",
+      "removed": true
+    }
+  ],
+  "genuinePreparerObservations": [
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "requestId": "pd3e-29dae90fe431473ba4843f0aa4477fd4",
+      "sessionId": "pd3e-owned-session",
+      "turn": 2,
+      "snapshotPath": "game_state/control/pending_turn_snapshot/output/debug_logs.json",
+      "files": 12,
+      "hashes": {
+        "manifestBase64": {
+          "bytes": 7231,
+          "sha256": "0e4b49e8931ff935554630735b9e80ae59283a4f9a3b63630af4b213a1c9ff86"
+        },
+        "authorityBase64": {
+          "bytes": 4947,
+          "sha256": "f4d48ea1e1f23f97f45c50325b1c584a7a7897e7b0311f603f8eb3588a8a5827"
+        },
+        "requestBase64": {
+          "bytes": 2701,
+          "sha256": "439dcdeca2aeb756f0b2e7aa789f8761d1ed250f544d0c53dc22b24b34874ca9"
+        },
+        "debugOriginalBase64": {
+          "bytes": 257,
+          "sha256": "5f6a9a8590c0a58a30aab5b7265fdf0fec2849cf046dc82f17e16f10757e5c86"
+        }
+      },
+      "authorityPayloadSha256": "5fd5f8ea132836795e59edc006e92e14e459d01327ce668d02b587f1d53134b7",
+      "manifestPayloadHash": "9A8B4F2B0EF8548C57578ADE33D2F17CCA2794428261E88DB4B73FAFFA750914",
+      "checks": "payload integrity; exact identity/request/timestamp; manifest-authority file/hash agreement; debug original byte hash; actual preparer source call before output; post-mutation results qualified through reached source assertions"
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"corrupt-original\")",
+      "requestId": "pd3e-7e04dbd1ced746ebbab3ca601ca2dd4a",
+      "sessionId": "pd3e-owned-session",
+      "turn": 2,
+      "snapshotPath": "game_state/control/pending_turn_snapshot/output/debug_logs.json",
+      "files": 12,
+      "hashes": {
+        "manifestBase64": {
+          "bytes": 7231,
+          "sha256": "661c57966b14cb61378fa835ac531cb8fb162dffe676b7e2257e8fc1414e33e0"
+        },
+        "authorityBase64": {
+          "bytes": 4947,
+          "sha256": "1fbae1bdd674d3e84fe774b61c385dd95354316a6c279ec61f8dff81a4295b9c"
+        },
+        "requestBase64": {
+          "bytes": 2701,
+          "sha256": "8e1293995794b9e516214ff81f9d9dec46750e712d728ebf473b61dfe4f30558"
+        },
+        "debugOriginalBase64": {
+          "bytes": 257,
+          "sha256": "5f6a9a8590c0a58a30aab5b7265fdf0fec2849cf046dc82f17e16f10757e5c86"
+        }
+      },
+      "authorityPayloadSha256": "98b741fff963bd2adf9c139918dda423a614fb349d8b36ebf9c41466a24670d6",
+      "manifestPayloadHash": "FB375CCDF8ADD378560100F8C7F68B1F840990803A95444B62A96836DD3C89EA",
+      "checks": "payload integrity; exact identity/request/timestamp; manifest-authority file/hash agreement; debug original byte hash; actual preparer source call before output; post-mutation results qualified through reached source assertions"
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"unchanged\")",
+      "requestId": "pd3e-76a1ffc546a24752a8f7856f9e2234fe",
+      "sessionId": "pd3e-owned-session",
+      "turn": 2,
+      "snapshotPath": "game_state/control/pending_turn_snapshot/output/debug_logs.json",
+      "files": 12,
+      "hashes": {
+        "manifestBase64": {
+          "bytes": 7231,
+          "sha256": "a6e7bb8b09559da9aab0c253d781d624da262cd2af8d8d57c27f6ea4f53050e3"
+        },
+        "authorityBase64": {
+          "bytes": 4947,
+          "sha256": "82e010d6d3e35717dd40902d49c65324796067338fb5c29e8fb1221fce076fa1"
+        },
+        "requestBase64": {
+          "bytes": 2701,
+          "sha256": "06f9a86dc647e0fc8b28365623de403509de4552bbf06686a1108fa3b8233d56"
+        },
+        "debugOriginalBase64": {
+          "bytes": 257,
+          "sha256": "5f6a9a8590c0a58a30aab5b7265fdf0fec2849cf046dc82f17e16f10757e5c86"
+        }
+      },
+      "authorityPayloadSha256": "4d4234b618879fa51b1d1a96b28d66881a3d31f5f831e46dd640e84f67a9a2ab",
+      "manifestPayloadHash": "4A78C3B2FAF97FB2748E708702DC8C6DD61D03783DCC17372E3A8623556727EC",
+      "checks": "payload integrity; exact identity/request/timestamp; manifest-authority file/hash agreement; debug original byte hash; actual preparer source call before output; post-mutation results qualified through reached source assertions"
+    },
+    {
+      "case": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull(scenario: \"changed\")",
+      "requestId": "pd3e-eede999b4c1d453d9cd9069595385d4f",
+      "sessionId": "pd3e-owned-session",
+      "turn": 2,
+      "snapshotPath": "game_state/control/pending_turn_snapshot/output/debug_logs.json",
+      "files": 12,
+      "hashes": {
+        "manifestBase64": {
+          "bytes": 7231,
+          "sha256": "a8ad60e1d82212dcde189c96bea8cdb22fc4dcf384a23de880ba68541d070dc0"
+        },
+        "authorityBase64": {
+          "bytes": 4947,
+          "sha256": "55e1eb99304e97ba5be899ada9c97b17255721f4d3ba00afa61975dc0f0dd58e"
+        },
+        "requestBase64": {
+          "bytes": 2701,
+          "sha256": "f1b17cf63e4693c8e4659b6dd1c10c4c1edd8345d5016ce46748db294d9450e9"
+        },
+        "debugOriginalBase64": {
+          "bytes": 257,
+          "sha256": "5f6a9a8590c0a58a30aab5b7265fdf0fec2849cf046dc82f17e16f10757e5c86"
+        }
+      },
+      "authorityPayloadSha256": "0de289107c7fdf3d599ee0687cf449bf97070c7a93795a0fec9b51b771836b87",
+      "manifestPayloadHash": "E4F3CA937D890F0BB25773407EA9B14D945D93E9266B164AC50695354138F198",
+      "checks": "payload integrity; exact identity/request/timestamp; manifest-authority file/hash agreement; debug original byte hash; actual preparer source call before output; post-mutation results qualified through reached source assertions"
+    }
+  ],
+  "runnerCleanup": {
+    "ownedTree": true,
+    "runtime": true,
+    "namespaceBeforeAfterAndCurrentEmpty": [
+      "boe-pd3e-reasoning-*",
+      "boe-guardian-system-regressions-*",
+      "boe-guardian-system-template-*",
+      "boe-gameengine-turnlifecycle-*"
+    ],
+    "nativeOriginalIdentityTerminal": true,
+    "legacyRowsNamespaceOnly": 2,
+    "sourceRowsNoFixture": 2
+  },
+  "recovery": {
+    "receipt": {
+      "path": "/tmp/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+      "bytes": 21947,
+      "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+    },
+    "newFiles": [
+      {
+        "path": ".specify/memory/constitution.md",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+      },
+      {
+        "path": "docs/testing.md",
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "sha256": "8e3fd71ea02dd3a88071a448dc7812ddadf23a9ef5e310fd1e8189192e194d61"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-406ac844-20261017.json",
+        "sha256": "16785d111f557ca83b98ce3c8c6ed683fd0c8c6051455441bd07aae682964d41"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-late2-evidence-decision-delta-github-406ac844-20261017.json",
+        "sha256": "e845b8a3074fa75b768d14881e335a608c10e9f183a1943778464abfe04b70dd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
+        "sha256": "b9fc76c0336521b9e48b58bc476e2b1337276758f18014e3f0e4cdd9d62d2def"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-tests-source-packet-20261017.json",
+        "sha256": "768510989578859ce70f45dfcb1e93dafc4f5172acc6e4159dcbb61a41272e7d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/000-406ac844e87684aeae5f6d64a0a09ddd8b64c39d-pd3e-product-ordinary45.FIRST.json.gz",
+        "sha256": "bd953199ed78e94bd925d0d32d0d46183a490af785560794697e1ff5f595f4e2"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/001-process.json.gz",
+        "sha256": "b914512f47e54499f03e5a08574569f2ec2d1dbca70c58210243e63cec2c4175"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/002-record.json.gz",
+        "sha256": "62d4f711ebee65d148fc6f64102c10e4bcd1157d83a2cb5a3333e823aace0c56"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/003-source-binding.json.gz",
+        "sha256": "c3b3882ca7f8135cc1c70ae2d07bf5645f53d2c02622efea8472ce40a9751db1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/004-stdout.log.gz",
+        "sha256": "a8ba9fc87f272266972c8c5f66b5cea9da791e5f2fe3d5e066a0a1fc57404c0d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/005-dotnet-test.log.gz",
+        "sha256": "f355475c7af0284eb756a47a5cc9ceaf3c2ad7bff9f6b31649148b1cb9a8df98"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/006-fr063-ordinary-output-policy-source-unit-001.trx.gz",
+        "sha256": "0d116c58f3bb4f69d001fabe2a6ce1700a34c27c9cb68735c6fff73687697823"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/007-fr063-reasoning-prefix-boundary-unit-002.trx.gz",
+        "sha256": "0d5bf755823a4f1fa8c897454537af143f843dcd2cd6e0957c5427864596ed31"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/008-fr063-reasoning-prefix-existing-integration-003.trx.gz",
+        "sha256": "4c23f65a682130956a93543a8d85bb0002a76a31a960d6beb6fea77e8d9d53f7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/009-fr063-reasoning-prefix-regression-unit-004.trx.gz",
+        "sha256": "f61cd454c4d7f6bc9226764ac984b4d9dd241104fed027511f7a9b5f891b53bf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/010-fr063-reasoning-prefix-source-unit-005.trx.gz",
+        "sha256": "7d311c383e54f7f53a1941994178940e8dee9271aae04a604d2cce8a0b893337"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/011-plan.json.gz",
+        "sha256": "08e692e40b3cc457861d4c0937a7af773cdbc12da57b57474f891e85656f55af"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/012-summary.json.gz",
+        "sha256": "b352beb2e0882f0c27d0fbeaa84a22c2ca4827f75cadec7b75fcef0c8b8ac33e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/archive.json",
+        "sha256": "b0f6a1768ba3409b4b8133175b494e34e4532fddfb567609a5f7c45fb839efbc"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-activation-406ac844-20261017.json",
+        "sha256": "7217472e933bdbbf07bb6bf576d9b5084e263262f48a46040aa4e2480c5230db"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-inspection-406ac844-20261017.json",
+        "sha256": "58ee00b94b78458d22bff43954ad12375eb7043d9825b1a2ca8082ad92e84a47"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-root-inspect-ordinary45.py",
+        "sha256": "cd3fa876b6eccc7875466e602e1d364a0b72570fcea963184f0d4578d677b085"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "sha256": "9ede95779330c2b9f58eb1719288854f79ed9fa30305a3e1417b5efc45f7a69a"
+      }
+    ],
+    "all23ChangedPathsCovered": true,
+    "metadataOnlySinceCompiled": true,
+    "fullCompositionRetainedRootReceipt": {
+      "path": "/tmp/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+      "bytes": 20963,
+      "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+    }
+  },
+  "limits": [
+    "Assertions are actual reached compiled-source oracles; most deleted fixture payloads and mtimes were not separately frozen.",
+    "Four emitted preparer originals are frozen before per-row mutation; no claim that emitted base64 contains the later corrupt-original or changed-current body.",
+    "Genuine original corrupted hash preserves existing policy-null and ordinary empty issues, not a new rejection.",
+    "Legacy two rows have namespace closure only; no invented strict per-case receipts.",
+    "Separate protectedLate2 acceptance retained, not re-executed or re-counted here.",
+    "No HOT/history/full Full/S/B/M3/F1/T197/Windows/CI/A3 or full-wounds qualification."
+  ]
+}
