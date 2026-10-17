@@ -1,0 +1,80 @@
+{
+  "classification": "QUALIFIED_STRUCTURAL_MISSING_POLICY_RED_NOT_SEMANTIC_ADMISSION",
+  "actualSource": "693b33941edecda1ffad5d9944630a091b4ece3e",
+  "compiledSource": "c032138834ff35206c07ff673e06ab3dc40ab128",
+  "nativeExit": 1,
+  "plannedCompleted": 2,
+  "passed": 0,
+  "expectedMissingBoundaryFailures": 2,
+  "proofs": [
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingExperienceLevel\")",
+      "context": {
+        "Boundary": "ordinary_context_before_training_policy",
+        "Method": "ReadTrainingExperienceLevel",
+        "ActualPlayerLevel": 2,
+        "ExpectedPlayerLevel": 2
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-cb170031191548c38f7836327d000121",
+        "Removed": true
+      },
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.ReadPolicy(String methodName, String json) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 128\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.<>c__DisplayClass3_0.<<OrdinaryContext_PrecedesMissingParsedPolicy>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 33\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.WithOwner(String experience, String status, String soul, Func`4 check) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 177\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(String method) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 24\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingSingleLevel\")",
+      "context": {
+        "Boundary": "ordinary_context_before_training_policy",
+        "Method": "ReadTrainingSingleLevel",
+        "ActualPlayerLevel": 2,
+        "ExpectedPlayerLevel": 2
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-960d2d5842d242fb80a2be9106f4cc87",
+        "Removed": true
+      },
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.ReadPolicy(String methodName, String json) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 128\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.<>c__DisplayClass3_0.<<OrdinaryContext_PrecedesMissingParsedPolicy>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 33\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.WithOwner(String experience, String status, String soul, Func`4 check) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 177\n   at BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(String method) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs:line 24\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "c494c4e4af02480a2546be4ed86e330052d6e88e8c29afbba741253b2c2e882c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "4ccd27554adc6044c9c7b408abec151745bc2a023a3cf8fc03e51dd96cfe8b9f",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "c494c4e4af02480a2546be4ed86e330052d6e88e8c29afbba741253b2c2e882c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "2f2d6cd63037daf0b98c70f07fd3c089fcb49d5c9835d6c0632ac330f08b231f",
+      "bytes": 29163520
+    }
+  ],
+  "recordPath": "/tmp/f1-r2-tools/a1-red-first/record.json",
+  "recordSha256": "5f827adc3eb4f5796621e473e511f15ca06edda1a725affacea41997aba0f877",
+  "summaryPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-000541-408-294154-4d21a6d2dbc54a6bbcf7a76aa55bfeca-categories/summary.json",
+  "summarySha256": "57d2ea3740dee3ae78a495d0b44e4e41d95ce86bfa6bb32e44730ffaa84aa24f",
+  "trxPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-000541-408-294154-4d21a6d2dbc54a6bbcf7a76aa55bfeca-categories/fr063-training-level-policy-boundary-unit-001.trx",
+  "trxSha256": "ea5b3411adedaf8e0b5e6236d1ca74af21272760a903589461a10e09a17da0ce",
+  "categorySeconds": {
+    "Category": "fr063-training-level-policy-boundary",
+    "Seconds": 2.8535778,
+    "BudgetMinutes": 5,
+    "Completed": false
+  },
+  "ownedPrefixBeforeAfterEmpty": true,
+  "productionImplementation": "ABSENT; existing ordinary success precedes each missing-method assertion",
+  "checkerText": "from pathlib import Path\nimport sys,json,hashlib,tempfile,xml.etree.ElementTree as ET\nrecord,destination=sys.argv[1:];p=Path(record);a=json.loads(p.read_text())\nassert a['mode']=='actual' and a['argv'][-2:]==['fr063-training-level-policy-boundary','-NoBuild'] and a['nativeExit']==1\nassert a['sourceHead']==a['headAfter'] and a['statusAfter']=='' and a['binaryBefore']==a['binaryAfter'] and len(a['binaryAfter'])==4\nassert a['ownedPrefixesBefore']==a['ownedPrefixesAfter']==[] and len(a['resultDirectories'])==1\ncatalog=json.loads(Path('/tmp/f1-r2-tools/a1-red-catalog/record.json').read_text());assert catalog['nativeExit']==0 and catalog['binaryAfter']==a['binaryBefore']\nd=Path(a['resultDirectories'][0]);s=json.loads((d/'summary.json').read_text());selection=s['Selection'];tests=s['Tests']\nassert s['ExitCode']==1 and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and s['DuplicateTests']==[]\nassert selection['PlannedDescriptors']==selection['CompletedDescriptors']==1 and selection['PlannedCases']==selection['CompletedCases']==2 and selection['Complete'] and selection['UnderfilledDescriptors']==[]\nassert tests==dict(Total=2,Executed=2,Passed=0,Failed=2)\ntrx=list(d.rglob('*.trx'));assert len(trx)==1\ntree=ET.parse(trx[0]);results=tree.findall('.//{*}UnitTestResult');assert len(results)==2\nproofs=[]\nfor result in results:\n assert result.attrib['outcome']=='Failed'\n output=result.find('./{*}Output/{*}StdOut');assert output is not None\n lines=[]\n for line in ''.join(output.itertext()).splitlines():\n  try:entry=json.loads(line.strip())\n  except (ValueError,TypeError):continue\n  if isinstance(entry,dict):lines.append(entry)\n context=[x for x in lines if x.get('Boundary')=='ordinary_context_before_training_policy'];cleanup=[x for x in lines if x.get('Boundary')=='training_level_a1_cleanup']\n assert len(context)==len(cleanup)==1 and context[0]['ActualPlayerLevel']==context[0]['ExpectedPlayerLevel']==2\n assert context[0]['Method'] in result.attrib['testName']\n error=result.find('./{*}Output/{*}ErrorInfo/{*}Message');stack=result.find('./{*}Output/{*}ErrorInfo/{*}StackTrace')\n assert error is not None and 'Assert.NotNull()' in error.text and 'Failure' in error.text\n assert stack is not None and 'TrainingLevelPolicyTests.ReadPolicy' in stack.text\n root=Path(cleanup[0]['Root']);assert root.parent==Path(tempfile.gettempdir()) and root.name.startswith('boe-training-level-a1-') and cleanup[0]['Removed'] is True and not root.exists()\n proofs.append(dict(testName=result.attrib['testName'],context=context[0],cleanup=cleanup[0],error=error.text,stack=stack.text))\nassert {x['context']['Method'] for x in proofs}=={'ReadTrainingExperienceLevel','ReadTrainingSingleLevel'}\nj=dict(classification='QUALIFIED_STRUCTURAL_MISSING_POLICY_RED_NOT_SEMANTIC_ADMISSION',actualSource=a['sourceHead'],compiledSource=catalog['sourceHead'],nativeExit=1,plannedCompleted=2,passed=0,expectedMissingBoundaryFailures=2,proofs=proofs,binaries=a['binaryAfter'],recordPath=str(p),recordSha256=hashlib.sha256(p.read_bytes()).hexdigest(),summaryPath=str(d/'summary.json'),summarySha256=hashlib.sha256((d/'summary.json').read_bytes()).hexdigest(),trxPath=str(trx[0]),trxSha256=hashlib.sha256(trx[0].read_bytes()).hexdigest(),categorySeconds=s['CategoryResults'][0]['DurationSeconds'] if 'DurationSeconds' in s['CategoryResults'][0] else s['CategoryResults'][0],ownedPrefixBeforeAfterEmpty=True,productionImplementation='ABSENT; existing ordinary success precedes each missing-method assertion',checkerText=Path(__file__).read_text())\nPath(destination).write_text(json.dumps(j,indent=2)+'\\n');print('CAUSAL_RED_ROOT_VERIFIED:exact2expectedNotNull after realordinary2; strict2roots absent; source/fourDLLunchanged; no semantic admission claim')\n"
+}
