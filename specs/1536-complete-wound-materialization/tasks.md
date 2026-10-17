@@ -1,3 +1,12 @@
+## A1 IMPLEMENTATION accepted — bounded ordinary prerequisite complete (2026-10-17)
+
+- [x] Minimal parsed training-level leaves extracted without changing owner IO/order/catches; exact producte247 and fixture4d1 source/preparation reviewed.
+- [x] Preserve causal RED2FAIL and old unqualified boundary2PASS with original limits; correct A1-S01 metadata and A1-F01 fixture through affected independent SOURCE and focused corrected-boundary EVIDENCE.
+- [x] Execute individually released corrected boundary2 + pure33 + ordinary17 once: **52unique nativePASS0FAIL**,3complete singleton owners/18chains/19strictroots/pure0N-A; final independent Astra/XHigh EVIDENCE accepted, no material finding. Original protectedLate2 separate2PASS retained, not replayed or counted into52.
+- [x] Preserve exact final MD/JSON and revieweddcc24file/all20path receipt in this final closeout. [Current plan](plan.md) records source/binary provenance, no-GM-update rationale and recovery/limits; finalcarrier non-forcepush/readback/newexactchangedGitHubdelta/4freshDLLcontinuity required at delivery, no unchanged test repeat.
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536) remains open. This accepts ordinaryA1 only; HOT/S/B/M3/F1/T197/new-QTE and priorD4/guided/DOM+visual/native/Windows/D8 gates remain OPEN, Windows/CI/ZIP/settings holds unchanged. Earlier pending/STOP/release sections below are chronological history; this current bounded acceptance does not release other implementation or runtime.
+
 ## A1 qualified52 first native PASS — final EVIDENCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): accepted correctedboundary2 plus separately released firstpure33/ordinary17 yield native52PASS0FAIL,3/3singleton descriptors. [Current checkpoint](plan.md) preserves remaining12rawchains/inspectors and exact52union18chains,15sourcevectors/readorders,19distinctstrictroots absent/pure0N-A/fresh4d1fourDLLs. Publish/readback/newcompleteGitHubdelta then final independent whole-A1 EVIDENCE before checked closeout. No more actual/rebuild/replay; oldRED2FAIL/oldunqualifiedboundary2PASS/oldqualifiedLate2 retain separate original provenance and are not counted into52. All broader holds remain.
