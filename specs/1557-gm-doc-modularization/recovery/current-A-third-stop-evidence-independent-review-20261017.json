@@ -1,0 +1,469 @@
+{
+  "kind": "INDEPENDENT_THIRD_FIRST_STOP_CAUSAL_EVIDENCE",
+  "verdict": "EVIDENCE_ACCEPTED_WITH_LIMITS__A_E03_FIXTURE_SOURCE_NOT_READY",
+  "reviewer": "/root/a1_reviewer independent Astra/XHigh",
+  "carrier": "eeb4a318257969db3fea71e817aec3740fb8a5d0",
+  "actual": "59ac4bd7567ad4988a903df73016242b7626c889",
+  "compiled": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+  "newExecution": {
+    "total": 38,
+    "passed": 35,
+    "failed": 3,
+    "plannedDescriptors": 4,
+    "completedDescriptors": 4,
+    "underfill": false,
+    "skip": false,
+    "duplicate": false,
+    "timeout": false
+  },
+  "qualification": {
+    "retainedPriorPass": 212,
+    "newOwnedSectionPass": 8,
+    "newWoundTailPass": 2,
+    "newCurrentConsumerPass": 19,
+    "newRepairPass": 6,
+    "currentQualifiedPass": 247,
+    "failedRepairRows": 3,
+    "unrunPackagePhysicalLifetime": 5,
+    "fullSelectedCases": 255
+  },
+  "A_E02": "Closed for the selected corrected consumer/source-view cases by first8PASS; original5FAIL and weakened1PASS history remain immutable",
+  "findings": [
+    {
+      "original": "WriteValidationRepairRequestAsync_FactionMaterializationRepair_ShiningExactCrossLinks_UsesOnlyNamedAuthorityRoots",
+      "topics": "Shining_Actions",
+      "kind": "faction_materialization_repair",
+      "failedAt": "Original method exact templateRefs equality, line3523",
+      "classification": "A-E03a stale migrated expected topic pair; owned A093/A132 support Shining_Actions",
+      "proofLimit": "Later targetFiles/authority/missingFields/exactFieldCorrections assertions after this failure were not reached"
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_ActorMaterializationErrors_AddsBoundedHarnessPacket",
+      "topics": "Actor_Profiles",
+      "kind": "actor_materialization_repair",
+      "failedAt": "Wrapper File.Exists(RepoRoot+ref), line50",
+      "classification": "A-E03b generated template mistaken for repository file",
+      "proofLimit": "Original semantic method completed, wrapper physical template existence failed; no real session template delivery"
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_ActorMemoryErrors_AddsNarrowPersistencePacket",
+      "topics": "Actor_Profiles,Story_Memory",
+      "kind": "actor_memory_persistence_repair",
+      "failedAt": "Wrapper File.Exists(RepoRoot+ref), line50",
+      "classification": "A-E03b generated template mistaken for repository file",
+      "proofLimit": "Original semantic method completed, wrapper physical template existence failed; no real session template delivery"
+    }
+  ],
+  "passingRepairLineage": {
+    "guardian_pending_creation_materialization_repair": [
+      "TaskGuides/CLI_Step_Main.txt",
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Actor_Profiles.md",
+      "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "Examples/E_CLI_Afterlife_Guardian_Contracts.txt"
+    ],
+    "afterlife_spiritual_conflict_action_cost_repair": [
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt"
+    ],
+    "afterlife_spiritual_conflict_reward_repair": [
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Spiritual_Conflict.md",
+      "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt"
+    ],
+    "afterlife_entity_profile_scaffold_repair": [
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Actor_Profiles.md",
+      "Examples/E_CLI_Afterlife_Actor_Profiles.txt"
+    ],
+    "afterlife_chronicle_string_array_repair": [
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Story_Memory.md",
+      "Examples/E_CLI_Afterlife_Story_Memory.txt"
+    ],
+    "guardian_trade_inventory_resolution_repair": [
+      "CLI_Rules_Index.md",
+      "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Examples/E_CLI_Afterlife_Turns.txt",
+      "OtherGuides/Afterlife_Guardian_Contracts.md",
+      "Examples/E_CLI_Afterlife_Guardian_Contracts.txt"
+    ]
+  },
+  "minimalCorrection": [
+    "Only two Faction expected topic strings Actor_Profiles→Shining_Actions, supported by owned rule/example bodies A093/A132; preserve exact other expected refs and all authority assertions.",
+    "Recognize only the exact known generated Templates/MORTAL_NPC_UPDATE_TEMPLATE.md contract; preserve the repository existence branch for every other ref. A source-declaration check is explicitly not physical session availability. Do not broadly exempt Templates/* or create copied fixture authority.",
+    "Require exact generated template manifest role/path/content/hash/containment in the still-unrun genuine package writer case. Preserve original startup/callchain; keep publish:false source-guard semantics unchanged if shared scenario changes.",
+    "Separate the three failed InlineData rows into a narrow owner with exact original/topics/kind semantic lineage; retain original six passing rows only while their owner bodies, serialized inputs, copied-ref branch and cleanup behavior are unchanged.",
+    "Keep strict cleanup and all9 original semantic rows represented. Fresh changed-source preparation and affected SOURCE must precede any further actual."
+  ],
+  "generatedTemplate": {
+    "ref": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+    "source": "BookOfEternityClient/game_master_daemon.ps1",
+    "declarationLine": 1784,
+    "bodySha256": "0eadaca0aa6e35998fe592ccbb10dbc8fc218ac8b91b7b49cb2da20df089e1f6",
+    "bodyBytes": 12976,
+    "repoRootFileExists": false,
+    "rootContract": "$ControlDir/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+    "physicalSessionDeliveryProvedByTheseRepairRows": false
+  },
+  "ownerPins": [
+    {
+      "block": "A093",
+      "path": "OtherGuides/Afterlife_Shining_Actions.md",
+      "sha256": "b92240bde5ff8e42cc9209fe6ede44778ba3c19de5f725052f8cc5e538739093"
+    },
+    {
+      "block": "A132",
+      "path": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+      "sha256": "ea3998023aea79ea4501b99b2046d97e10b0a16ffc801d2ad99f3f1b0c918ef1"
+    }
+  ],
+  "rawVerification": {
+    "chains": 24,
+    "newFixtureArtifactDirectories": 0,
+    "strictRepairReceipts": 9,
+    "distinctRepairRootsRemoved": 9,
+    "sevenDllStable": true,
+    "deltaFiles": 34,
+    "allChangedPaths": 30,
+    "completeRepair": true,
+    "categoryCompletedFlag": false,
+    "selectionCompleteFlag": true
+  },
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "08678866344be35ac577335e8bbf57e2a0e2cec70fe12cb992aa14b0f7c6afad",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f5cb813629608311ab6cfb034b1c68cb3c92171eb02319eb15107d9f417e201f",
+      "bytes": 9533952
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "08678866344be35ac577335e8bbf57e2a0e2cec70fe12cb992aa14b0f7c6afad",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "3e1a39639ccd9e2ac38e03be4cc515f7b9e10c465b77f5e01041f8c5e2c7870f",
+      "bytes": 29214720
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "10306e291b97ff975504b23b3f5ad5d5651df378c804d3c8e5d02e786cde80b4",
+      "bytes": 1937920
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "10306e291b97ff975504b23b3f5ad5d5651df378c804d3c8e5d02e786cde80b4",
+      "bytes": 1937920
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "08678866344be35ac577335e8bbf57e2a0e2cec70fe12cb992aa14b0f7c6afad",
+      "bytes": 26181632
+    }
+  ],
+  "rawChainPins": [
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-owned-sections-first-59ac4bd7/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/record.json.gz",
+      "bytes": 9889,
+      "sha256": "69b99e7033dc6c4c4f60fcbacb81644f59ae07627492c1d432f79648dfcbeb79",
+      "storedSha256": "f56d1c971e5fb9d76fc1ddaf8f6909190533174aefa6db376600f0d00ba524ca",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-owned-sections-first-59ac4bd7/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/stdout.log.gz",
+      "bytes": 3678,
+      "sha256": "81c41b97c385f450b7c357b610b94cf911567b1b9594849de09e78de8706ffbf",
+      "storedSha256": "77e50c723cd62335f319eeb127f19be8d2b5bf709d912a2011f85ab9b12e1dfd",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044840-021-44018-f857732614d643f993121a978912ab75-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/runner0/dotnet-test.log.gz",
+      "bytes": 1730702,
+      "sha256": "ba9f37212b077049d008f83e942a6ab4b55d1db479b7f848763c26d2d1a06205",
+      "storedSha256": "e026122b6e777d803a20a8666f4658fa35c5d2c79bda5adbc1b12321bd73ac50",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044840-021-44018-f857732614d643f993121a978912ab75-categories/gm-doc-afterlife-owned-section-consumers-unit-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/runner0/gm-doc-afterlife-owned-section-consumers-unit-001.trx.gz",
+      "bytes": 13685,
+      "sha256": "69a6fef42b664a80e6c244d3444ff8dd70e3b8d2a19bff77e58716d1e69c322a",
+      "storedSha256": "ec15eb1badfe03d3f11b0a5282a9a2b1d9f7566123629b4c98ea38690fee0703",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044840-021-44018-f857732614d643f993121a978912ab75-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/runner0/plan.json.gz",
+      "bytes": 3188,
+      "sha256": "ab6f569cd6b5e543af1dc4d45be999a93fd6efd78adc16743d90feecbf6f87ad",
+      "storedSha256": "d1196ecdc8dd20b47c5de9ea359b71480cbfa637332f5a4775346a79b7162abb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044840-021-44018-f857732614d643f993121a978912ab75-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/0-gm1557-A-owned-sections-first-59ac4bd7/runner0/summary.json.gz",
+      "bytes": 1487,
+      "sha256": "ad254e609ab8ebbe5fa4b67f2ab3c66ba23d795b23c73c9bf75c505c831b5278",
+      "storedSha256": "f841285bf604a586140d095d8cc0a99264f8dc3cf093882b2615fedc3756aa6b",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-wound-tail-first-59ac4bd7/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/record.json.gz",
+      "bytes": 9876,
+      "sha256": "fa1bb9005610005c4ec77bbac8e8f251a052b44448c40632d2a809b74a36f737",
+      "storedSha256": "06ed5617afe11190ba56cf9dffccd58eb5d7d21e84346ac497934bb44290d2a8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-wound-tail-first-59ac4bd7/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/stdout.log.gz",
+      "bytes": 2215,
+      "sha256": "868cd2d57d34c78e175c62a18994c4d739c6964e89d96c55dbbad1fd98398217",
+      "storedSha256": "a7a2c9947e4a1a0e61078c3e0f0ebb47dfe34c2b1b49087f2ee88187475fbcfb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044852-791-44225-5c9d31842c0b4c5d8a6072edb7494e4d-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/runner0/dotnet-test.log.gz",
+      "bytes": 1730672,
+      "sha256": "b58bb2c7551bcd705b1a8ba3bf82ea140faf4f3b7a62dcd9e94ea8467edb51bb",
+      "storedSha256": "52f734cfdb56ebd9e1b66715917c14a30f7a579099e22d5e7b318fcd8f083514",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044852-791-44225-5c9d31842c0b4c5d8a6072edb7494e4d-categories/gm-doc-afterlife-current-wound-tail-unit-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/runner0/gm-doc-afterlife-current-wound-tail-unit-001.trx.gz",
+      "bytes": 4605,
+      "sha256": "d1e880ec00653b2ea1b076db615c1aa146cd9cd90f7371d7597c4eb8100f1912",
+      "storedSha256": "1238698e40d476b4a4e4018aad19f4dafa64f74451b4add7feab915d6decd38c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044852-791-44225-5c9d31842c0b4c5d8a6072edb7494e4d-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/runner0/plan.json.gz",
+      "bytes": 1520,
+      "sha256": "7daae028de865a25d3b3f3dfceb7b726410357c5e03db40f391d04048ae0f61e",
+      "storedSha256": "5d0910664b1ce680a060e095bc3831830bcf41f222c41741a6a5504c406ee517",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044852-791-44225-5c9d31842c0b4c5d8a6072edb7494e4d-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/1-gm1557-A-wound-tail-first-59ac4bd7/runner0/summary.json.gz",
+      "bytes": 1476,
+      "sha256": "71b591407b4dc16f12b4014d853f4d552bff3e0fe8a39a8885322d00719b1bff",
+      "storedSha256": "a66d9583fff0fd1702f7cb0edb0b3263cb7178667574e5c2b6a296a4de96107c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-current-consumers-first-59ac4bd7/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/record.json.gz",
+      "bytes": 9889,
+      "sha256": "da71edbaae8fca05fa342d1117794cf4def71591c3f73bce9a00378ddf400113",
+      "storedSha256": "2ce9b2fdef38b6f454db8b40d40f55e745280b0dacfe5f928219334b7f403936",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-current-consumers-first-59ac4bd7/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/stdout.log.gz",
+      "bytes": 5713,
+      "sha256": "f3254f18a5d24f1284a531bfced607975b94ea240d2641c290f6dd7728eb65c4",
+      "storedSha256": "c00ceebea2e20000b743ba01621d588f6129a67777f68541a164dc5a591547a4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044903-227-44440-19705e7ac9e348258f5d35bd070d5c60-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/runner0/dotnet-test.log.gz",
+      "bytes": 1730672,
+      "sha256": "62535ccd221ee5c992caed82c105e77be0fb7429b84412b9a71505e94a7dd699",
+      "storedSha256": "49fb9fde9bb155d56c15ff84a6e532a143a90df49862706852afa4c1406755e7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044903-227-44440-19705e7ac9e348258f5d35bd070d5c60-categories/gm-doc-afterlife-current-consumers-unit-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/runner0/gm-doc-afterlife-current-consumers-unit-001.trx.gz",
+      "bytes": 31424,
+      "sha256": "d97f3c69455340d32f3b252b0e51e82232dac2a5c81de6648b5cee45e34ebaf6",
+      "storedSha256": "391351dca2caf6c8617739d8ca46afe8f22aa49a4f45b0271d01603ab9c80f4d",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044903-227-44440-19705e7ac9e348258f5d35bd070d5c60-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/runner0/plan.json.gz",
+      "bytes": 5517,
+      "sha256": "7ea97b57c2973f0fad4edc8026a033059cb763a79dc4a1ea83f5c38f1d1f0768",
+      "storedSha256": "0399b97b88311f8a6dc5fcbc01b6cf17d185d160a68cc2aad885204891ebe08b",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044903-227-44440-19705e7ac9e348258f5d35bd070d5c60-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/2-gm1557-A-current-consumers-first-59ac4bd7/runner0/summary.json.gz",
+      "bytes": 1478,
+      "sha256": "5b0cc3214ac03c4b1a5d310a748ba510aaa2f348f91053c6d61818ee01a7b3a5",
+      "storedSha256": "9cdc59e3a3368f27a12b85d5ada829e2cf65c5ce550e9c4e00983005655bfafc",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-repair-first-59ac4bd7/record.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/record.json.gz",
+      "bytes": 9866,
+      "sha256": "68fe5d0af53a5cded3e6e6c8605596ca38060d3383ddf880a73dca83846172c3",
+      "storedSha256": "6e5ee02993f3be8ab283514c919b2d1cfffd17fcb8202c7289f12a292cf0c97e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1557-implementation-tools/gm1557-A-repair-first-59ac4bd7/stdout.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/stdout.log.gz",
+      "bytes": 6712,
+      "sha256": "b7ed665b628b745b2fff80d9b9c9d4bf31ac4d30e0bbbb78f11e43327fb7db9d",
+      "storedSha256": "c8abe12f815ae20ccbb5a705b4b27d9364d70d2a7e2b545409bd21bbc05ef3b6",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044912-813-44653-e81965b816f34f4ca03e54b57c4cf9aa-categories/dotnet-test.log",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/runner0/dotnet-test.log.gz",
+      "bytes": 1700922,
+      "sha256": "97967ddfcf96b2f7e409f71331ff0b3b310b633836fa16e9073ee7ddb9bc93ea",
+      "storedSha256": "3f879e4d8f7d325d857c157a098713c379c29009d732fa489303d1d8deaeb0a3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044912-813-44653-e81965b816f34f4ca03e54b57c4cf9aa-categories/gm-doc-afterlife-repair-consumers-integration-001.trx",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/runner0/gm-doc-afterlife-repair-consumers-integration-001.trx.gz",
+      "bytes": 27984,
+      "sha256": "f3ac742de91bf7035edd8323695f8a28ee44c3a0b8d302fbd20939a609523862",
+      "storedSha256": "4776d459657db5b8dddad5b58d4d6e09fe67c320db5e4e0a02c53b90be22dad2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044912-813-44653-e81965b816f34f4ca03e54b57c4cf9aa-categories/plan.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/runner0/plan.json.gz",
+      "bytes": 1154,
+      "sha256": "2efc44f0887212ed48576eeec0b60d89a313eae44ebc13c1f6172882c6fffd6a",
+      "storedSha256": "ab778ab1f28c5c5f1b2e0b4b03681afee9e5683d9598eab4637efa44c4f4f14f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-044912-813-44653-e81965b816f34f4ca03e54b57c4cf9aa-categories/summary.json",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-third-actual-stop-20261017-files/3-gm1557-A-repair-first-59ac4bd7/runner0/summary.json.gz",
+      "bytes": 1376,
+      "sha256": "084d70fdae3556f93f9524c24356b2d3c309b233c92f75862bc006cd7606b94f",
+      "storedSha256": "7c201f3ea6f6aed671fbe45edf8e2e363f80d561f3a2d7da65d688823498191d",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "strictRoots": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-53ee32cfa66645d892e4d5c27ffb487b",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b7b9ac257c874f2cb1d76a74b75fd110",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-daebf8a0cbe74d7b9e6fa4b76b067038",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b512d723eddc49089c642a2df4c93d2d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-964a90e3de7a441a8f57f7add1c2052c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1849c56317ae4fa594332e183ff94024",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e3420a553b7e4e78914bd07ab5069cc8",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fefb3274684145dcb90de7cb7e2d5c97",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-57b92f9a02264a6d8c4e49a93a96fc07",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GmDocumentation.cs",
+      "sha256": "315b928191ff9062004c25df04e96a81ab92bc77152ccbbeff55a3e72d42ef8d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "a384c079c9fb23362daff575a40f82d1299f57a8f3fb9c36c33b2a2abaca82e6"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "7e05b365f8801b98c8eb720e5f609c7bfc4bf7d7959030b9781339ea4c14c132"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "sha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "7398cea1b08e33d750ae71e501cfba4d030bb8dd77529dc7125a14a1d4bb4e3e"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "5701c4c4fb7e294f908e28e384e45dc2f5beb473c9c69773ca404085ba69e96c"
+    }
+  ],
+  "delta": {
+    "path": "/tmp/gm1557-third-stop-delta-github-eeb4a318-20261017.json",
+    "bytes": 28337,
+    "sha256": "6432a567e994cdd4e555c0eb7ce3b4afcf6ebe79b9008102ec39d582aef7f680"
+  },
+  "supporting": {
+    "path": "/tmp/gm1557-third-stop-independent-results-20261017.json",
+    "sha256": "0cab92313fb891a90809116e4035b645cac7701d0153539abad8da037efe1d23"
+  },
+  "limits": [
+    "No reviewer runtime/build/test/CI/repo edits.",
+    "No proof of session template generation/delivery from the failed repair wrapper; declaration-only oracle must be labelled separately.",
+    "No production producer defect established; no actual repair application or broad gameplay/fullA/provider/Windows/CI/Block5 qualification.",
+    "No older accepted source/raw/base-family replay.",
+    "Future correction not yet reviewed; no automatic release."
+  ]
+}

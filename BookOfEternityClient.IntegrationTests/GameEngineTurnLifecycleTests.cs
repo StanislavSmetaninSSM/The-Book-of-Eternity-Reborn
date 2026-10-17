@@ -3524,10 +3524,10 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             new[]
             {
                 "CLI_Rules_Index.md",
-                "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+                "Examples/E_CLI_Afterlife_Shining_Actions.txt",
                 "Examples/E_CLI_Afterlife_Turns.txt",
-                "OtherGuides/Afterlife_Actor_Profiles.md",
-                "OtherGuides/Afterlife_Contract_Matrix.md"
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "OtherGuides/Afterlife_Shining_Actions.md"
             },
             packet.GetProperty("templateRefs")
                 .EnumerateArray()

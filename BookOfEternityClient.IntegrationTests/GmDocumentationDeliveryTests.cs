@@ -13,7 +13,7 @@ public sealed class GmDocumentationDeliveryTests
     [Fact]
     public async Task PackagedProductionWriterPublishesExactRequiredReadingClosure()
     {
-        var result = await GmDocumentationDeliveryScenario.RunAsync(TestRepoPaths.RepoRoot, publish: true);
+        var result = await GmDocumentationDeliveryScenario.RunAsync(TestRepoPaths.RepoRoot, publish: true, verifyGeneratedTemplate: true);
         _output.WriteLine("GM1557_DELIVERY " + result.Evidence.ToJsonString());
         // Real writer/close/ownership must succeed before the intended missing-new-module oracle.
         Assert.Null(result.Failure);
@@ -21,6 +21,16 @@ public sealed class GmDocumentationDeliveryTests
         Assert.True(result.Evidence["rootsRemoved"]!.GetValue<bool>());
         Assert.True(result.Ast!["runtimeExecuted"]!.GetValue<bool>());
         Assert.Empty(result.Issues);
+        var generated = result.Evidence["generatedTemplate"]!;
+        Assert.Equal(GmDocumentationGeneratedTemplateSource.RelativePath, generated["relativePath"]!.GetValue<string>());
+        Assert.Equal(GmDocumentationGeneratedTemplateSource.Role, generated["role"]!.GetValue<string>());
+        Assert.True(generated["generated"]!.GetValue<bool>());
+        Assert.True(generated["physicalPresent"]!.GetValue<bool>());
+        Assert.True(generated["containedWithoutSymlink"]!.GetValue<bool>());
+        Assert.Equal(generated["expectedSha256"]!.GetValue<string>(), generated["sha256"]!.GetValue<string>());
+        var retained = File.ReadAllBytes(generated["retainedRawPath"]!.GetValue<string>());
+        Assert.Equal(generated["bytes"]!.GetValue<int>(), retained.Length);
+        Assert.Equal(generated["sha256"]!.GetValue<string>(), GmDocumentationDeliveryScenario.Hash(retained));
     }
 
     [Theory]

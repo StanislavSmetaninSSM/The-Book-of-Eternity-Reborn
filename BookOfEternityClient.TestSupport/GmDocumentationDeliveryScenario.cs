@@ -101,9 +101,11 @@ internal static partial class GmDocumentationDeliveryScenario
     }
     internal static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
     internal static async Task<Result> RunAsync(string repo, bool publish, Func<byte[], byte[]>? sourceMutation = null,
-        Func<byte[], byte[]>? sourceSeedMutation = null, string? physicalFault = null)
+        Func<byte[], byte[]>? sourceSeedMutation = null, string? physicalFault = null, bool verifyGeneratedTemplate = false)
     {
         if (!OperatingSystem.IsLinux()) throw new PlatformNotSupportedException("This exact delivery responsibility is Linux-only.");
+        if (verifyGeneratedTemplate && (!publish || physicalFault is not null))
+            throw new ArgumentException("Generated physical proof belongs only to the unchanged normal genuine publisher.", nameof(verifyGeneratedTemplate));
         if (physicalFault is not null && (!publish || physicalFault is not ("missing_package_source" or "missing_session_copy")))
             throw new ArgumentException("Physical delivery faults require the unchanged real publishing producer.", nameof(physicalFault));
         var clock = new Clock();
@@ -223,6 +225,8 @@ internal static partial class GmDocumentationDeliveryScenario
                 var manifestPath = Path.Combine(files.GameSessionPath, "game_state/control/gm_context_pack/context_pack_manifest.json");
                 var manifest = JsonNode.Parse(File.ReadAllBytes(manifestPath))!.AsObject();
                 evidence["manifest"] = manifest.DeepClone();
+                if (verifyGeneratedTemplate)
+                    evidence["generatedTemplate"] = CaptureGeneratedTemplate(source, files.GameSessionPath, manifest, artifacts, clock);
                 if (physicalFault == "missing_session_copy")
                 {
                     const string relative = "OtherGuides/GM_Common_Core.md";

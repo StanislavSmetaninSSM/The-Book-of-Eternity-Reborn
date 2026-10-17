@@ -1,5 +1,13 @@
 # Implementation Plan: GM Documentation Modularization
 
+## A-E03 three-row repair reference correction WIP (2026-10-17)
+
+[Exact independent third-stop EVIDENCE](recovery/current-A-third-stop-evidence-independent-review-20261017.md), MD`9533eb99…`/JSON`09bb490f…`, confirms fixture defects: actual faction bodies belong to ShiningActions; the mixed Mortal template is generated under the context pack, not a repo file. [Complete first-outcome recovery](recovery/current-third-stop-complete-delta-recovery-eeb4a318-20261017.json) covers34GitHubfiles/all30paths. Preserve original9semantic rows/6PASS3FAIL and all prior history; no production defect or template delivery success is inferred.
+
+[Minimal correction/explicit lineage](recovery/current-A-repair-reference-correction-20261017.json) changes only two faction expected topic strings with exact Ordinal ordering; moves3failed InlineData tuples to a separately selected method over the same real-owner/strict-cleanup core. Six passing rows retain the identical repo-only availability branch. Only the exact known generated reference uses an actual unique source/declaration/body oracle with unknown/missing/duplicate/empty controls, explicitly not physical proof. The stillUNRUN genuine package writer gains actual manifest generated/role/exactsessionpath/nonlinkcontainment/bodybytes/hash proof and retained raw generated file before cleanup, through its same single producer. Other refs keep physical repo existence; `publish:false` paths stay unchanged. No fabricated template, blanket exemption or production/authority edit.
+
+Retain247qualifiedPASS; remaining8=correctedrepair3+genuinewriter1+physicalnegatives2+lifetime2. Full selection **proposed14categories/16descriptors/167methods/255cases** preserves all9 semantic tuples, adding only one wrapper method. Publish/recover WIP before fresh changed-testsource BOTH/catalog/exactPlanOnly0/packagepins and affected independentSOURCE. All8actualsHELD; no unchanged-six/nine-row replay, fullA/Block5/provider/gameplay/Windows/CI qualification.
+
 ## Third first-actual stop: repair9 has6PASS/3FAIL (2026-10-17)
 
 At clean actual `59ac4bd7567ad4988a903df73016242b7626c889` / compiled3e57, owned-section8, previouslyUNRUN wound-tail2 and current-consumers19 each passed native0/complete. FIRST real repair9 native1 **5.797482420s**, **9executed/6PASS/3FAIL**, complete1descriptor/no timeout/underfill/duplicates. Faction-materialization row fails exact topic-list equality; actor-materialization and actor-memory rows fail physical availability on `Templates/MORTAL_NPC_UPDATE_TEMPLATE.md`. These are raw observations, causal classification pending. All later package1/physicalnegatives2/lifetime2 remain **UNRUN/HELD**, no retry.

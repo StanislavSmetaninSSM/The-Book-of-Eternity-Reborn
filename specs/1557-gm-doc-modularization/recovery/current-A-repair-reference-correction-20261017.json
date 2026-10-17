@@ -1,0 +1,117 @@
+{
+  "kind": "A_E03_THREE_REPAIR_FIXTURE_CORRECTION_WIP_NO_PRODUCT_CHANGE",
+  "createdUtc": "2026-10-17T04:55:23.815273+00:00",
+  "causalReport": "current-A-third-stop-evidence-independent-review-20261017.md",
+  "semanticLineage": [
+    {
+      "original": "WriteValidationRepairRequestAsync_PendingGuardianCreationMaterializationErrors_AddsConcreteHarnessPacket",
+      "topics": "Actor_Profiles,Guardian_Contracts",
+      "kind": "guardian_pending_creation_materialization_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_ActorMemoryErrors_AddsNarrowPersistencePacket",
+      "topics": "Actor_Profiles,Story_Memory",
+      "kind": "actor_memory_persistence_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies",
+      "firstOutcome": "FAIL",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_FactionMaterializationRepair_ShiningExactCrossLinks_UsesOnlyNamedAuthorityRoots",
+      "topics": "Shining_Actions",
+      "kind": "faction_materialization_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies",
+      "firstOutcome": "FAIL",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_ActorMaterializationErrors_AddsBoundedHarnessPacket",
+      "topics": "Actor_Profiles",
+      "kind": "actor_materialization_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies",
+      "firstOutcome": "FAIL",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_AfterlifeActionCostSequenceErrors_AddsConcreteHarnessPacket",
+      "topics": "Spiritual_Conflict",
+      "kind": "afterlife_spiritual_conflict_action_cost_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_AfterlifeConflictRewardNotAllowed_AddsConcreteHarnessPacket",
+      "topics": "Spiritual_Conflict",
+      "kind": "afterlife_spiritual_conflict_reward_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_AfterlifeEntityProfileScaffoldErrors_AddsConcreteHarnessPacket",
+      "topics": "Actor_Profiles",
+      "kind": "afterlife_entity_profile_scaffold_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_AfterlifeChronicleStringArrayErrors_AddsConcreteHarnessPacket",
+      "topics": "Story_Memory",
+      "kind": "afterlife_chronicle_string_array_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    },
+    {
+      "original": "WriteValidationRepairRequestAsync_GuardianTradeInventoryResolutionErrors_AddsConcreteHarnessPacket",
+      "topics": "Guardian_Contracts",
+      "kind": "guardian_trade_inventory_resolution_repair",
+      "oldWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "newWrapper": "GmDocumentationRepairPacketsResolveActualBoundedBodies",
+      "firstOutcome": "PASS_RETAINED",
+      "sameRealOwnerAndStrictCleanup": true
+    }
+  ],
+  "faction": "Two expected topic paths now match actual A093/A132 ShiningActions owner; expected Ordinal order preserved, real producer unchanged.",
+  "generatedReference": {
+    "path": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+    "role": "compact_mortal_npc_update_template",
+    "sourceDaemonSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+    "hereStringContentBytes": 12975,
+    "hereStringContentSha256": "796b9102eb389484b56ad50d72b845d0856fd50c0aa33b99d4db3cc6665937bf",
+    "expectedFileBytes": 12977,
+    "expectedFileSha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+    "encoding": "actualLinuxUTF8noBOM; TemplateaddsNewLine then WriteGmCanonicalText addsNewLine",
+    "repairProof": "Exact unique real source/declaration with unknown/missing/duplicate/empty controls; NOT physical generation",
+    "physicalProof": "StillUNRUN existing single genuine writer optionaltrue captures actual manifest/generated/role/exactcontained nonlink sessionfile/bodyhash/rawartifact before strictcleanup; no secondproducer"
+  },
+  "unchanged": "All production/GM bodies/authorities; six retained repo-only repair branch and real owners; publish:false scenario paths keep optionalfalse",
+  "retainedQualifiedPass": 247,
+  "remainingActual": {
+    "correctedRepair": 3,
+    "genuinePackage": 1,
+    "physicalNegatives": 2,
+    "lifetime": 2,
+    "total": 8
+  },
+  "fullSelectionProposed": {
+    "categories": 14,
+    "descriptors": 16,
+    "methods": 167,
+    "cases": 255
+  },
+  "actual": "HELD pending new testsource BOTH/catalog/PlanOnly/packagepins and independent affectedSOURCE"
+}
