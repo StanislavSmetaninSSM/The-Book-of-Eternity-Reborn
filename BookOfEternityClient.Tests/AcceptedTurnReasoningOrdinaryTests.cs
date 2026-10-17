@@ -116,8 +116,10 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         // Guardian-centric additionally retains its actual downstream authority/identity
         // diagnostics; the extraction must neither suppress nor promote them.
         Assert.Equal(mode == "Guardian-centric"
-                ? new[] { "empty_relevant_actors_for_mode", "guardian_scope_invalid_validated_snapshot_context", "guardian_scope_missing_active_guardian" }
-                : new[] { "empty_relevant_actors_for_mode" },
+                ? new[] { "empty_relevant_actors_for_mode", "guardian_scope_invalid_validated_snapshot_context", "guardian_scope_missing_validated_guardians_snapshot", "guardian_scope_missing_active_guardian" }
+                : mode == "Mixed"
+                    ? new[] { "empty_relevant_actors_for_mode", "guardian_scope_invalid_validated_snapshot_context", "guardian_scope_missing_validated_guardians_snapshot" }
+                    : new[] { "empty_relevant_actors_for_mode" },
             issues.Select(x => x.Code));
     }
 

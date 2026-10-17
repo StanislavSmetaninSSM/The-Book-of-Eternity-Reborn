@@ -1,18 +1,20 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY_AWAIT_SAVED_DECISION_NAMED_PRODUCT_ACTIVATION",
+  "status": "MINIMAL_TWO_FILE_PRODUCT_PLUS_ISOLATED_S02_VECTOR_CAPSULE_WIP_UNCOMPILED_ALL_CURRENT_PRODUCT_ACTUALS_HELD",
   "counts": {
-    "categories": 5,
-    "methods": 18,
-    "declaredRows": 45,
-    "actualExecuted": 1
+    "categories": 6,
+    "methods": 20,
+    "declaredRows": 47,
+    "ordinaryRows": 45,
+    "protectedRows": 2,
+    "actualExecutedOnCurrentProduct": 0
   },
   "methods": [
     {
       "category": "fr063-reasoning-prefix-boundary",
       "project": "unit",
-      "status": "ACCEPTED_CAUSAL_STRUCTURAL_RED_1_ORIGINAL_RAW_FAIL_RETAINED",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 17,
@@ -23,7 +25,7 @@
     {
       "category": "fr063-reasoning-prefix-source",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 50,
@@ -34,7 +36,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 17,
@@ -58,7 +60,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 58,
@@ -69,7 +71,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 90,
@@ -80,7 +82,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_NI_3E_S02_EXPECTED_VECTORS_HELD",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 101,
@@ -95,7 +97,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 124,
@@ -114,7 +116,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 151,
@@ -128,7 +130,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 167,
@@ -142,7 +144,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 191,
@@ -153,7 +155,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 209,
@@ -164,7 +166,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 219,
@@ -180,7 +182,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 253,
@@ -194,7 +196,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 267,
@@ -209,7 +211,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 297,
@@ -220,7 +222,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
       "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
       "declaredRows": 1,
@@ -229,7 +231,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
       "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
       "declaredRows": 1,
@@ -242,16 +244,27 @@
       "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
       "declaredRows": 1,
       "kind": "Fact",
-      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION"
+      "status": "CURRENT_PRODUCT_WIP_UNCOMPILED_UNRUN_FULL_SOURCE_PENDING"
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "project": "integration",
+      "fqn": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "declaredRows": 1,
+      "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
+      "status": "PROTECTED_DIRECT_CONSUMER_UNRUN_ON_CURRENT_PRODUCT"
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "project": "integration",
+      "fqn": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "declaredRows": 1,
+      "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
+      "status": "PROTECTED_DIRECT_CONSUMER_UNRUN_ON_CURRENT_PRODUCT"
     }
   ],
-  "firstCausalRed": {
-    "category": "fr063-reasoning-prefix-boundary",
-    "methods": 1,
-    "rows": 1,
-    "prerequisites": "Real public Full returns no issues; all seeded files retain exact presence/bytes; REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE; strict owned cleanup before qualification.",
-    "finalOracle": "Assert.NotNull on actual private EvaluateAcceptedReasoningDocumentPrefix. Missing scaffold/import/compile/setup cannot qualify. The new source Fact is postproduct, not another causal RED."
-  },
   "fixtures": {
     "newOwnedPrefix": "boe-pd3e-reasoning-*",
     "newCleanup": "Each fixture Dispose emits actual root/removed PD3E_REASONING_STRICT_CLEANUP; later recording must verify physical absence. No raw or cleanup assertion has run yet.",
@@ -267,68 +280,6 @@
     "World33 pin Fact held with nine historical stale values",
     "A3 NO-PROCEED",
     "Windows ZIP403/CI and other branches"
-  ],
-  "firstPreparation": {
-    "nativeExit": 1,
-    "rawChains": 8,
-    "actualExecuted": 0,
-    "planOnly": "NOT_STARTED",
-    "archive": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-preparation-stop-files-20261017/archive.json",
-      "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
-      "rawChains": 8
-    }
-  },
-  "sourceCorrection": {
-    "status": "ONE_LINE_SOURCE_CORRECTED_UNCOMPILED_UNRUN",
-    "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
-    "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
-    "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
-    "references": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-prep-stop-inspection-d377f91c-20261017.json",
-        "sha256": "9ccfddca5b3dc40c36b0e2455d23be79c7f1783573f2f14d14137f1f285d682e",
-        "bytes": 3806
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
-        "sha256": "40f044cc0b2680d3d6929be31086e28c60c1cebd35c0b4cac90370304c25612f",
-        "bytes": 17554
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c0ba4299-20261017.json",
-        "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
-        "bytes": 17211
-      }
-    ]
-  },
-  "correctedPreparation": {
-    "actualSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
-    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
-    "archive": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-first-preparation-files-20261017/archive.json",
-      "sha256": "6c563dcfa8e17db72a48b1867853e09d87a4a96603e0c6a91baff1dd1175f805",
-      "rawChains": 18
-    },
-    "nativeExits": [
-      0,
-      0
-    ],
-    "actualExecuted": 0
-  },
-  "sourceKnownFindings": [
-    {
-      "id": "NI-3E-S02",
-      "status": "SOURCE_CONFIRMED_EXPECTED_VECTOR_DEFECT_HELD_NOT_A_NATIVE_FAILURE",
-      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
-      "affectedData": [
-        "Mixed",
-        "Guardian-centric"
-      ],
-      "exactCause": "Present canonical guardians:[] with missing original sets N1181 DirectCanonicalGuardianDiffRequiredButSnapshotMissing even empty. Existing Mixed/Guardian tail reports invalid validated snapshot context and missing validated guardians snapshot; Guardian additionally missing_active_guardian. Authored expected vector omits existing diagnostics.",
-      "safeBoundary": "Separate public Full boundary class/Scene-local fixture remains unchanged and unaffected. Seek eligibility ONLY structural boundary1; no semantic execution/acceptance of known-wrong regression method or blanket45-source acceptance.",
-      "disposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held."
-    }
   ],
   "acceptedSourceDecision": {
     "verdict": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY",
@@ -435,5 +386,89 @@
     "remainingActualsHeld": 44,
     "S02": "OPEN source-only two expected-code vectors inside conditional Assert.Equal expression; same three single-mode InlineData rows/signature/fixture/full equality and first-field checks, World unchanged. Correction only in a separately identifiable future product capsule after Root saved-decision activation.",
     "nextGate": "Nonforce publish/exact remote/full immediate GitHub recovery and Root readback before separately named minimal product+two-vector correction activation. Fresh selected BOTH/Plan6owners20methods47 then complete affected SOURCE; separately protectedLate2/EVIDENCE before ordinary45. No product/test edit or new native authorized by this persistence task."
-  }
+  },
+  "historicalTestsOnlyCounts": {
+    "categories": 5,
+    "methods": 18,
+    "declaredRows": 45,
+    "actualExecuted": 1
+  },
+  "S02Correction": {
+    "status": "AUTHORED_NOT_YET_INDEPENDENT_SOURCE_OR_RUNTIME_QUALIFIED",
+    "capsule": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-edit-capsule-e9f55c14-20261017.json",
+      "sha256": "c815875b11baefecd46d50fd3bb571e1583e7f8847c5698061baea337685a777",
+      "bytes": 3621
+    },
+    "scope": "Only two ordered expected-code vectors inside existing Assert.Equal; same3InlineData/signature/fixture/full equality/first-field assertions and unchanged World vector."
+  },
+  "historicalTestsOnlyFirstCausalRed": {
+    "category": "fr063-reasoning-prefix-boundary",
+    "methods": 1,
+    "rows": 1,
+    "prerequisites": "Real public Full returns no issues; all seeded files retain exact presence/bytes; REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE; strict owned cleanup before qualification.",
+    "finalOracle": "Assert.NotNull on actual private EvaluateAcceptedReasoningDocumentPrefix. Missing scaffold/import/compile/setup cannot qualify. The new source Fact is postproduct, not another causal RED."
+  },
+  "historicalTestsOnlyFirstPreparation": {
+    "nativeExit": 1,
+    "rawChains": 8,
+    "actualExecuted": 0,
+    "planOnly": "NOT_STARTED",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-preparation-stop-files-20261017/archive.json",
+      "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
+      "rawChains": 8
+    }
+  },
+  "historicalTestsOnlySourceCorrection": {
+    "status": "ONE_LINE_SOURCE_CORRECTED_UNCOMPILED_UNRUN",
+    "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
+    "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
+    "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-prep-stop-inspection-d377f91c-20261017.json",
+        "sha256": "9ccfddca5b3dc40c36b0e2455d23be79c7f1783573f2f14d14137f1f285d682e",
+        "bytes": 3806
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
+        "sha256": "40f044cc0b2680d3d6929be31086e28c60c1cebd35c0b4cac90370304c25612f",
+        "bytes": 17554
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c0ba4299-20261017.json",
+        "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
+        "bytes": 17211
+      }
+    ]
+  },
+  "historicalTestsOnlyCorrectedPreparation": {
+    "actualSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-first-preparation-files-20261017/archive.json",
+      "sha256": "6c563dcfa8e17db72a48b1867853e09d87a4a96603e0c6a91baff1dd1175f805",
+      "rawChains": 18
+    },
+    "nativeExits": [
+      0,
+      0
+    ],
+    "actualExecuted": 0
+  },
+  "historicalTestsOnlySourceKnownFindings": [
+    {
+      "id": "NI-3E-S02",
+      "status": "SOURCE_CONFIRMED_EXPECTED_VECTOR_DEFECT_HELD_NOT_A_NATIVE_FAILURE",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "affectedData": [
+        "Mixed",
+        "Guardian-centric"
+      ],
+      "exactCause": "Present canonical guardians:[] with missing original sets N1181 DirectCanonicalGuardianDiffRequiredButSnapshotMissing even empty. Existing Mixed/Guardian tail reports invalid validated snapshot context and missing validated guardians snapshot; Guardian additionally missing_active_guardian. Authored expected vector omits existing diagnostics.",
+      "safeBoundary": "Separate public Full boundary class/Scene-local fixture remains unchanged and unaffected. Seek eligibility ONLY structural boundary1; no semantic execution/acceptance of known-wrong regression method or blanket45-source acceptance.",
+      "disposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held."
+    }
+  ]
 }
