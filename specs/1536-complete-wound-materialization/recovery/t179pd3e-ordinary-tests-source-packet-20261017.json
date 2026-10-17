@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_MINIMAL_PRODUCT_CURRENT_SOURCE_BINDING_FRESH_PREPARATION_NOT_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_NEW_PRODUCT_PROTECTED_LATE2_RAW2PASS_SEPARATE_EVIDENCE_PENDING_ORDINARY45_HELD",
+  "status": "NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ACCEPTED_ORDINARY45_UNRUN_HELD",
   "productDelta": [
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
@@ -570,7 +570,7 @@
   "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "70c80c258a1efc3bfa497fa22a0f53a5ec8c27de5088d8654b154501e8305ee1"
+    "sha256": "75b23ae5f2851d697072697c40ef7b53d36dc6f7578f45f942d257c3016f9785"
   },
   "references": [
     {
@@ -929,7 +929,7 @@
     "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
   },
   "futureProduct": {
-    "status": "SOURCE_PREP_ACCEPTED_FIRST_NEW_PROTECTED2_RAWPASS_EVIDENCE_PENDING",
+    "status": "SOURCE_PREP_AND_SEPARATE_NEW_PROTECTED2_EVIDENCE_ACCEPTED_ORDINARY45_PENDING",
     "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
     "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
     "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
@@ -3403,7 +3403,7 @@
       }
     ],
     "scope": "Exact three frozen fragments to one new value-only partial and three owner adapters; parse/using/catch/timestamp/all IO/repeated reads/later Full tail remain with original owner; S02 two-vector test correction explicitly separate.",
-    "currentActuals": "FIRST new-product protected2 rawPASS on828/f766, independent EVIDENCE pending; ordinary45 unrun/held. Historical tests-only structuralRED1 retained separately.",
+    "currentActuals": "New protected2 independently accepted PASS on828/f766; ordinary45 unrun/held. Historical structuralRED1 separate. S02 SOURCE closed, semantic runtime pending ordinary45.",
     "futureOrder": "Saved product WIP/recovery ->Root FIRSTfreshBOTH PlanOnly0 ->full affected SOURCE ->separately named protectedLate2+EVIDENCE ->ordinary45+EVIDENCE. No automatic advance."
   },
   "protectedLate2Continuity": {
@@ -3557,11 +3557,12 @@
     "plannedOrdinary": 45,
     "plannedProtected": 2,
     "next": "Persist/push/exactremote/new GitHub recovery/Root readback, then only separately named FIRST protectedLate2; save/qualify separate new evidence before ordinary45 activation. No new code/build/retry or actual authorized by this persistence.",
-    "nonmaterialReviewMetadata": "Immutable reviewJSON controllers[] contains stale generic UNRUN labels for all4 tools. Root accepts actual authoritative raw/freshPreparation/MD: dc959 prep and0461 prep archive each ran once; a679 actual and023d actual archive are still UNRUN. Exact reports stay unchanged; no repeat build/review needed.",
-    "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay."
+    "nonmaterialReviewMetadata": "Immutable SOURCE reviewJSON controllers[] generic UNRUN labels are historical at that report. Raw/MD/Root establish dc959 prep and0461 prep archive each ran once before SOURCE; later a679 and023d recorded/froze protectedLate2 once. Current prospectiveControllers and firstProtectedLate2 record actual usage; ordinary45 remains unrun. Reports remain byte-exact.",
+    "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay.",
+    "phase": "HISTORICAL_SAVED_SOURCE_DECISION_BEFORE_ANY_PRODUCT_RUNTIME"
   },
   "firstProtectedLate2": {
-    "status": "FIRST_NEW_RAW2PASS_ROOT_LITERAL_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "status": "ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
     "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
     "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
     "nativeExit": 0,
@@ -3717,6 +3718,43 @@
         "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
       }
     ],
-    "ordinary45": "UNRUN_HELD_UNTIL_THIS_EVIDENCE_INDEPENDENT_ACCEPTANCE_SAVED_AND_SEPARATE_NAMED_ROOT_ACTIVATION"
+    "ordinary45": "UNRUN_HELD_UNTIL_SAVED_ACCEPTED_DECISION_READBACK_AND_SEPARATE_NAMED_ROOT_ACTIVATION",
+    "independentEvidence": {
+      "verdict": "ROOT_ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
+      "references": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.md",
+          "sha256": "3d6bb865b9018d4374817b9eafc5ffb6747e6781a64fea17eefdf5484a140df2",
+          "bytes": 2580
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.json",
+          "sha256": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc",
+          "bytes": 4695
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-check-20261017.json",
+          "sha256": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10",
+          "bytes": 27372
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-new-late2-evidence-acceptance-2f39b078-20261017.json",
+          "sha256": "5c790493535a6d19cc1c2e0bba5660a41d4e9455361afe6f649c193f0109d724",
+          "bytes": 1527
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-late2-delta-github-2f39b078-20261017.json",
+          "sha256": "cb057e90b5754a14d897407c0bb76b4ec58cdaa66848b59e2e79ccfc6e863057",
+          "bytes": 18484
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2f39b078-20261017.json",
+          "sha256": "a867edfb9b79444f34006e5c0990ad7ae730fa727ea1a8c599b6f0203c31c1ee",
+          "bytes": 20265
+        }
+      ],
+      "passed": 2,
+      "failed": 0
+    }
   }
 }

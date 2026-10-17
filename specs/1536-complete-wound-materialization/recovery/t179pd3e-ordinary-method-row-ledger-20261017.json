@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_NEW_PRODUCT_PROTECTED_LATE2_RAW2PASS_SEPARATE_EVIDENCE_PENDING_ORDINARY45_HELD",
+  "status": "NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ACCEPTED_ORDINARY45_UNRUN_HELD",
   "counts": {
     "categories": 6,
     "methods": 20,
@@ -253,7 +253,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "FIRST_NEW_PRODUCT_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING"
+      "status": "NEW_PRODUCT_PROTECTED_PASS_INDEPENDENT_EVIDENCE_ACCEPTED"
     },
     {
       "category": "fr063-joint-late-completion",
@@ -262,7 +262,7 @@
       "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
       "declaredRows": 1,
       "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
-      "status": "FIRST_NEW_PRODUCT_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING"
+      "status": "NEW_PRODUCT_PROTECTED_PASS_INDEPENDENT_EVIDENCE_ACCEPTED"
     }
   ],
   "fixtures": {
@@ -540,11 +540,43 @@
     "nativeExit": 0,
     "passed": 2,
     "failed": 0,
-    "status": "FIRST_RAW_ROOT_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "status": "INDEPENDENT_EVIDENCE_ACCEPTED_NEW2PASS_ONLY",
     "archive": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-late2-files-20261017/archive.json",
       "sha256": "9e253dcbd49c31c6b9a3f459df0fb77e164bb0e6e59e51160c0567f00d7ea06c",
       "rawChains": 9
-    }
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.md",
+        "sha256": "3d6bb865b9018d4374817b9eafc5ffb6747e6781a64fea17eefdf5484a140df2",
+        "bytes": 2580
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.json",
+        "sha256": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc",
+        "bytes": 4695
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-check-20261017.json",
+        "sha256": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10",
+        "bytes": 27372
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-new-late2-evidence-acceptance-2f39b078-20261017.json",
+        "sha256": "5c790493535a6d19cc1c2e0bba5660a41d4e9455361afe6f649c193f0109d724",
+        "bytes": 1527
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-late2-delta-github-2f39b078-20261017.json",
+        "sha256": "cb057e90b5754a14d897407c0bb76b4ec58cdaa66848b59e2e79ccfc6e863057",
+        "bytes": 18484
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2f39b078-20261017.json",
+        "sha256": "a867edfb9b79444f34006e5c0990ad7ae730fa727ea1a8c599b6f0203c31c1ee",
+        "bytes": 20265
+      }
+    ]
   }
 }

@@ -1,0 +1,28 @@
+{
+  "kind": "ROOT_ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
+  "carrier": "2f39b07874d49aec5bb9f1d79dabbb6de26a044f",
+  "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "reports": {
+    "/tmp/t179pd3e-first-product-late2-evidence-independent-review-20261017.md": "3d6bb865b9018d4374817b9eafc5ffb6747e6781a64fea17eefdf5484a140df2",
+    "/tmp/t179pd3e-first-product-late2-evidence-independent-review-20261017.json": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc",
+    "/tmp/t179pd3e-first-product-late2-evidence-independent-check-20261017.json": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10"
+  },
+  "nativeExit": 0,
+  "wallSeconds": 121.93179388899443,
+  "passed": 2,
+  "failed": 0,
+  "rootLiteralReadback": "/tmp/t179pd3e-root-first-product-late2-inspection-828d36cf-20261017.json",
+  "sourcePins": 55,
+  "newBinaryCopies": 9,
+  "sourceHistory": "CS0121/C01/S02/structuralRED preserved; no oldPASS replay/count",
+  "next": "Persist exact3reports+thisdecision+2f39 recovery58composition; commit/nonforcepush/exactremote/recover. Only after readback Root may name FIRST ordinary45 on unchanged55/new9; no build/retry/otherselection.",
+  "runtimeAuthorizedByThisFile": false,
+  "limits": [
+    "new protected2 only",
+    "finalcomputedbody absent/digest-inert proof only",
+    "ordinary45 unrun",
+    "full HOT/history/S/B/M3/F1/T197/Windows/CI/A3 held"
+  ],
+  "utc": "2026-10-17T18:36:23.680209+00:00"
+}
