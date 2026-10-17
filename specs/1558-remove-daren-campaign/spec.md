@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: Exact E01 five-signature repair published; FIRST fresh current SelectionFile build/PlanOnly returned native0 with17owners/19descriptors/42C#methods98cases+8frontendfileestimates/0executions. New seven managed DLLs,370packagefiles/source→package52 and retained frontend110/113 pinned; targeted independent SOURCE/PREP and named Root GREEN release pending. Originald09 one inventoryFAIL/18UNRUN and all prior history unchanged; actual/browser held.
+**Status**: Targeted E01 SOURCE/FIXTURE/SELECTION/PREP accepted independently and by Root: five signature-only correction, fresh selected build/PlanOnly0/new7DLL/FE110113/package370/source→package52 and distinct FIRST recorder all bound. Corrected aggregate98C#cases+8FEfileestimates remains UNRUN until exact new carrier Root activation. Original5551FAIL/18UNRUN and prior histories immutable; final EVIDENCE/RootChromium/tasks incomplete.
 
 ## Source issues and scope
 

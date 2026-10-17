@@ -1,0 +1,72 @@
+{
+  "kind": "ROOT_E01_FROZEN_PREP_CHAIN_SOURCE_PACKAGE_READBACK_NO_RUNTIME",
+  "utc": "2026-10-17T11:28:16.606605+00:00",
+  "carrier": "036d12620f616c20fd24f786e3a8b0576981937b",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "raw14Chains": [
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/record.json.gz",
+      "sha256": "08a4a632f77536ea497db4348d2202b038d1b80f6469d62aecaec82d85555b37"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/stdout.log.gz",
+      "sha256": "274dca89cf7ca47d285a5edfe4d2db76fdea8fb060531b6d5acaf1f72cbeee57"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/process.json.gz",
+      "sha256": "2b1b739055896d4416767339374b5bb5fc0935fb2eb93a3cbf729cfcade733e2"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/sentinel.json.gz",
+      "sha256": "b9055033c18362671e65be2e3a5f0aa861a537352931e1a19110849ded8988a7"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/source-binding-before.json.gz",
+      "sha256": "85010120a835e5c5bd439495d71fc10e0096d81e8c286f6f1431dbd4801c5863"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/first-preparation-helper.py.gz",
+      "sha256": "c7666f12860f1b7eadb1872735c03df4ff64bfd313954cc6e4a2657e33fde9b8"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/runner0/Build-integration.log.gz",
+      "sha256": "393ba19b3686c73e63ae3b0df9036a0efde9f3b24140e10458bfbca3f53629ff"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/runner0/Build-unit.log.gz",
+      "sha256": "36df6c26813cd9de649a792ff5c8b7f2962da921c302bf6dad4418207ae0416e"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/runner0/dotnet-test.log.gz",
+      "sha256": "c670b39aa2e32694f04ad30408eaffa4108d651ae324a84e4948d044ad06d5d6"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/runner0/plan.json.gz",
+      "sha256": "87777f8fa97e68ca927df658a184c595861e8b18e12a24169adb6cd5c7376069"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/runner0/summary.json.gz",
+      "sha256": "bd3481280c9f1b0be652c8229fda9eb250da98c1e48c652905009cf0fe6463bf"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/metadata-freezer-outcome.json.gz",
+      "sha256": "612e1fca6117558b5937dc32fe43c6b7f69c7acf89cced70a003312d07fe5954"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/metadata-freezer-continuation.py.gz",
+      "sha256": "8877f2abf8bb0cd57bfc16c33a13882afb44f8d8d5da3979b2cc81c312e8a9ad"
+    },
+    {
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017-files/fresh-package-frontend-docs-manifest.json.gz",
+      "sha256": "565f5295472b94951ea38db29d82ad2bd82d0b62d4a088d6ed1af34ec03069b0"
+    }
+  ],
+  "sourceBindingContext": "exactgitblobf076",
+  "sourceToPackage52Exact": true,
+  "cliOutside52": true,
+  "newRecorderSha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0",
+  "earlierLiveProof": "/tmp/gm1558-root-e01-prep-live-binding-f07643a8-20261017.json",
+  "recovery": "/tmp/gm1558-g2-e01-prep-delta-github-036d1262-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-036d1262-20261017.json",
+  "held": "RuntimeheldforindependenttargetedSOURCE andseparateRootactivation"
+}

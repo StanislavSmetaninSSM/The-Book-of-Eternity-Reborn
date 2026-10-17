@@ -1,0 +1,50 @@
+{
+  "kind": "ROOT_E01_SOURCE_ACCEPTED_CONDITIONAL_CORRECTED_GREEN_RELEASE_NOT_ACTUAL",
+  "utc": "2026-10-17T11:29:53.541906+00:00",
+  "reviewedCarrier": "036d12620f616c20fd24f786e3a8b0576981937b",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-e01-source-independent-20261017.md",
+      "sha256": "fad8717281243c499443c5e3de9c819a9be2fbc682b463a9e3e51e1a68787e7d"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e01-source-independent-20261017.json",
+      "sha256": "509025e9265ca5a1feb37793bb86fcaaa55357b38aeb205f61e7e7de5268b62b"
+    },
+    {
+      "path": "/tmp/gm1558-g2-e01-source-independent-check-20261017.json",
+      "sha256": "467a9eb087dd59bb0438d08e054c3277596b19cdadb1ce9565cabb40b4206801"
+    }
+  ],
+  "decision": "Accept exactE01five-signatureclosure/unchangedother273pins/selectedfreshBOTHbuildPlanOnly0exec/current19descriptors98C#+8FEfileestimates/new7pins/package370/FE113/docs52/newFIRSTrecorder ef4e. No findings; originalFULLG2SOURCE andcausalhistoryretained. No GREEN/EVIDENCEacceptance.",
+  "rootProofs": [
+    "/tmp/gm1558-root-e01-frozen-prep-readback-036d1262-20261017.json",
+    "/tmp/gm1558-root-e01-prep-live-binding-f07643a8-20261017.json",
+    "/tmp/gm1558-root-e01-five-signature-source-readback-f07643a8-20261017.json"
+  ],
+  "nextCheckpoint": "ONEfeaturemetadata-only decisioncheckpoint persists exactpair/support/Rootdecision/readbacks/new036delta110composition. Nonforcepush/exactremote/clean/newfullGithubdelta precedesseparateRootactivation. No build/source/data/selector/helper/pin changes.",
+  "conditionalActual": {
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "tests/selection.json",
+      "-NoBuild"
+    ],
+    "helper": {
+      "path": "/tmp/gm1558-g2-e01-green-first-run.py",
+      "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0"
+    },
+    "sourcePinsDigest": "7d3d498b298a5f2ec97efac5782cfebdc9c8e9eed1e7f31ac44bf8b0be0be55f",
+    "scope": "One distinctE01 FIRSTaggregate ofsame17owners19descriptors; all98C#cases+8FEfileestimates stillrequireactual. No perownerrepeat or silentlyfilledcounts. Nativefrontendactualcounts retainedseparately.",
+    "failure": "Stopall dependentactuals onfirstunexpected native/semantic/underfill/duplicate/timeout/cleanup. Freeze/publishFIRSTbeforecausalreview/correction. Original555failure/sentinelimmutable.",
+    "success": "Immediatelyfreeze/publish rawbeforeindependentfinalEVIDENCE. RootownactualChromium mayfollow onlywholeGREEN rawqualification andnewseparateexactRootactivation."
+  },
+  "held": "ActualpendingseparateRootactivation. RootChromium/finalEVIDENCE/taskscompletionpending.",
+  "limits": "No main/merge/forcepush/branchdelete/issueclose/newcredentials/settings/Windowsartifact/CI/provider/HOT/M3/fullsuite/unrelatedA1A2Late2 replay. No extrafrontendbuild or catalogs."
+}
