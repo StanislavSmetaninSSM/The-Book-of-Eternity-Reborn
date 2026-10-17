@@ -1,0 +1,147 @@
+{
+  "kind": "EXACT_FIRST_DECLARING_OWNER_CORRECTION_ZERO_TEST_PREP_ARCHIVE",
+  "createdUtc": "2026-10-17T14:52:09.210784+00:00",
+  "actualSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "originalUnexpectedCarrier": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+  "rawChainCount": 17,
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-guards-plan.FIRST.json",
+      "storedPath": "000-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-guards-plan.FIRST.json.gz",
+      "bytes": 358,
+      "sha256": "551259e7605f49545cea4ef6d0c7272ba491657c6bfc6768c4203bba6ac462b0",
+      "storedBytes": 286,
+      "storedSha256": "68031316f822122c031b4e06e51c74730d9ca67efd2f44700a6a8820ec5f385b"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-stage-build-plan.FIRST.json",
+      "storedPath": "001-fb6f89890cdd0fa2386920e05067a7f17d847305-lifecycle-ownerfix-stage-build-plan.FIRST.json.gz",
+      "bytes": 368,
+      "sha256": "880ec452b363b5820a4d2ea89f428ad6a5e4b4253932e19d4ef89ffe81abcbbf",
+      "storedBytes": 290,
+      "storedSha256": "fe233ddd4a1b3b704f6b8812cb516d7727a30976593271db4a1f423b66c8e62b"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-guards-plan-fb6f8989-20261017/process.json",
+      "storedPath": "002-process.json.gz",
+      "bytes": 835,
+      "sha256": "d8155a4e3b9bc2aeb903e156b8418589ff6e4d81e57662f1b614cd0d8c2c4508",
+      "storedBytes": 418,
+      "storedSha256": "916d9b3c70c62ec18d917fccc6889944451f0ab41a4745665bf667b2e85d23f5"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-guards-plan-fb6f8989-20261017/record.json",
+      "storedPath": "003-record.json.gz",
+      "bytes": 61371,
+      "sha256": "6bf661a075b06b71e3575ad1d047cda5937d5905e8e8be76531536372bdacffa",
+      "storedBytes": 18507,
+      "storedSha256": "c239697064291588c8936c0b422eaa0b7c41e637fc0f8f9e3fd79548b5f12f35"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-guards-plan-fb6f8989-20261017/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 3444,
+      "sha256": "0bd1fe1a9bc60f9c9faaa672cf035cf8f09d1ea5886d62c11f3b47ee0233ff61",
+      "storedBytes": 856,
+      "storedSha256": "f1b3da29f3ddf2995fec134a9aaa83a51448c27582e0312e6fbd678459917d00"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-stage-build-plan-fb6f8989-20261017/process.json",
+      "storedPath": "005-process.json.gz",
+      "bytes": 732,
+      "sha256": "b754fccd7dea2d785f86ab2e9091aa4ca2eb413f589d4f093e57c3db3938641b",
+      "storedBytes": 373,
+      "storedSha256": "a8328f158752c44ac653f5e3a119fb3a44cb0baec25a2212390ff7922b432349"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-stage-build-plan-fb6f8989-20261017/record.json",
+      "storedPath": "006-record.json.gz",
+      "bytes": 61302,
+      "sha256": "75790d36a0640dd66af6b341348f734a4942a10cb2a0e67a83479b75f7b49146",
+      "storedBytes": 18715,
+      "storedSha256": "4623fd3802a821d84cc8ac77cbfb6d8448f3c0e9afb57a2ce43206dbf848bc26"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-prep-first-stage-build-plan-fb6f8989-20261017/stdout.log",
+      "storedPath": "007-stdout.log.gz",
+      "bytes": 9256,
+      "sha256": "09f140c1a43c8b07c202e0bfcc56a063b55ae8d491685b2659a83940f458cdd4",
+      "storedBytes": 1541,
+      "storedSha256": "9ace2810b39967ea14800b6165f4aedea9fafa348a5d9c3425ca3b7d4e3bfb9f"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-source-context-fb6f8989-20261017.json",
+      "storedPath": "008-gm1559-lifecycle-source-context-fb6f8989-20261017.json.gz",
+      "bytes": 63118,
+      "sha256": "d1363e4bcf8cd26acf410567a89240d7e7f81ba0ffcb0f928943789356b8d104",
+      "storedBytes": 18204,
+      "storedSha256": "31b0ec5e7418e0a194932c5457a47a47dd0c6224fda526dbb3f3c0b7d4d7b4b5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-144810-842-131603-b61905e0089f40b080965bef99c86af2-categories/Build-integration.log",
+      "storedPath": "009-Build-integration.log.gz",
+      "bytes": 121700,
+      "sha256": "8317c31f471eb2dbdbb1e304cb0bb86fc42d41f4001517afeda86cf3382c478f",
+      "storedBytes": 9268,
+      "storedSha256": "e5ac48fae9d0e1d91974990d36b11adf58c5968e63c937917fd4b2dcf1bd4904"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-144810-842-131603-b61905e0089f40b080965bef99c86af2-categories/Build-unit.log",
+      "storedPath": "010-Build-unit.log.gz",
+      "bytes": 30103,
+      "sha256": "322a102d7b2f2c2c4c326fd0868dbe57e661dc9d1a350575f0b62f587a56aaa9",
+      "storedBytes": 1894,
+      "storedSha256": "917f262f7c5886d63b66642db11e98c5044c274b061ee1306e80fc71ed466736"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-144810-842-131603-b61905e0089f40b080965bef99c86af2-categories/dotnet-test.log",
+      "storedPath": "011-dotnet-test.log.gz",
+      "bytes": 3579654,
+      "sha256": "c5eff209058c8f508308f424cc9816cf89bc186ada9ee3acf3f27b598453f671",
+      "storedBytes": 390807,
+      "storedSha256": "8020fd3fbf994e99150dcaa0d1d7e3bbccbdd668e27c098796951341b3350b49"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-144810-842-131603-b61905e0089f40b080965bef99c86af2-categories/plan.json",
+      "storedPath": "012-plan.json.gz",
+      "bytes": 14946,
+      "sha256": "94f7b7c6803fb44e3e9a87a07c9e441fd43ad99624bfcdbcea4d3d730c084f96",
+      "storedBytes": 2349,
+      "storedSha256": "4f3a80f7c934287b27b2517daf596f9fadb87bd99657144661b4cb550d7afb47"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-144810-842-131603-b61905e0089f40b080965bef99c86af2-categories/summary.json",
+      "storedPath": "013-summary.json.gz",
+      "bytes": 6621,
+      "sha256": "f293bbf96207ee2c7cf7ae1513fd0f5ef41d01a9de536ec251e424c60f0a38b3",
+      "storedBytes": 1759,
+      "storedSha256": "7a245c1864dc848d079164018f43334ab4cfc5f5d07d6149bdccf3c01fb067b8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-145005-595-132142-c3bda7f0910e4031a5a99b71f3428be3-categories/dotnet-test.log",
+      "storedPath": "014-dotnet-test.log.gz",
+      "bytes": 3427116,
+      "sha256": "77dffd135a71cb3df86bbcd23d18c366cef4534f2a676ae161fbbcb6bd7f8200",
+      "storedBytes": 379511,
+      "storedSha256": "833f1ec45ca2821bed56b32d113128e7b88bbd14afce0f10be9f9bbed0b26d8e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-145005-595-132142-c3bda7f0910e4031a5a99b71f3428be3-categories/plan.json",
+      "storedPath": "015-plan.json.gz",
+      "bytes": 6107,
+      "sha256": "568f4fe56bd5ce1d91c4b67aca549f75dc7ac643c460542de7f277cfca40128b",
+      "storedBytes": 1318,
+      "storedSha256": "9ee219fdd80b5d3e733193a39db05e0af7e8074c994a0aac0b810b5dd20eb9af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-145005-595-132142-c3bda7f0910e4031a5a99b71f3428be3-categories/summary.json",
+      "storedPath": "016-summary.json.gz",
+      "bytes": 4039,
+      "sha256": "4bc84b4f959513a47fa70203d327d3150c3792b3af56f62c6f0dabe76d58af24",
+      "storedBytes": 1225,
+      "storedSha256": "726c6de8759bacb44f23f1f5376e0e85cabdfd9ebe86e34f92ae34617c0ec2c6"
+    }
+  ],
+  "actualTestsExecuted": 0
+}

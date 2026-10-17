@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "Original baseline8 and FIRSTprivate16(6PASS10FAIL) histories preserved. Current lifecycle136source has exact ValidationIssue owner correction UNCOMPILED/UNRUN; no other owner/native/production released.",
+  "actual": "Original baseline8 and nativefirst16(6PASS10FAIL) preserved; independentF01accepts6causal+6PASS with4unqualifiedfixturefailure. Corrected source136 nowfreshfb6fcompiled/discovered0exec, targetedSource pending. No corrected actuals or production release.",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "8be153acd425ee1c7ade85e5ecf5f0bd45561b55c2b34af45de555731734f480"
+    "sha256": "730308001fa10d51e14f083756b4292f062e3be5c9cb43b48f403bf17b7f90a9"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {

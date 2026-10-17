@@ -1,0 +1,552 @@
+{
+  "kind": "INDEPENDENT_FIRST_PRIVATE16_CAUSAL_RAW_SOURCE_CHECK",
+  "utc": "2026-10-17T14:41:44.407091+00:00",
+  "carrier": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+  "actualSource": "ed09dc0e44b69be41b6ce6592a4a66e79730a7a1",
+  "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "packetPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-stop.json",
+  "packetSha256": "221fc1597fc8490b917bcf87f315b8291b2fb6e705e97cecab99a8cf5eb598b4",
+  "archiveSha256": "c50cfa9f2f7883ca2455690ac23b8441d9a422802f7828193e656fc4f93866ad",
+  "chains": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6-gm-relay-operational-private-policy.lifecycle-guard.FIRST.json",
+      "sha256": "2e16843b5499154f4e904a0286c4ab95101f00b752bf39d8dfbb6e877cac5d6f",
+      "bytes": 361,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/000-7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6-gm-relay-operational-private-policy.lifecycle-guard.FIRST.json.gz",
+      "storedSha256": "c7e69ed10d2b7462406383b1d670dd5ba33e22be6494851cbc1141b194cf9597"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guard-first-private16-ed09dc0e-20261017/process.json",
+      "sha256": "818de01945c512a91f1915c23a09849c4f43accc67c95b9329a75a9a58c48852",
+      "bytes": 750,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/001-process.json.gz",
+      "storedSha256": "1b5025001cebacf51aa8d4fb4e9954da5dde9a7ab7bd1d7002e15d34e8bbd94f"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guard-first-private16-ed09dc0e-20261017/record.json",
+      "sha256": "916ca88ffb9ed778af1531a3948bd2bd692cb662b6b09c0c2f0c6fb552edac9b",
+      "bytes": 14508,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/002-record.json.gz",
+      "storedSha256": "dc54653b9c5e7b9c3189902db07db9a29750d6df4d1a6cde52bd0e50fe672bf2"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guard-first-private16-ed09dc0e-20261017/stdout.log",
+      "sha256": "62fdb723cd1c9df99e6e7985badb36cc24f7d06d39200abcd9212126723d48d9",
+      "bytes": 14128,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/003-stdout.log.gz",
+      "storedSha256": "865a32c37fcbb89239ebd993dedd803ba529ef12e456a4595dced9d14ccef3f5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-143507-023-130084-c2454588c48246d28bffb244dea3aa91-categories/dotnet-test.log",
+      "sha256": "b15a0201056302fef96480686e983ec14da68cd1946d4a4ba14584438bf469d8",
+      "bytes": 1747648,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/004-dotnet-test.log.gz",
+      "storedSha256": "12c806a5f55ad1c558bab4a283ce9fa6b7bed28cacb0f0c342010caa1bb74152"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-143507-023-130084-c2454588c48246d28bffb244dea3aa91-categories/gm-relay-operational-private-policy-unit-001.trx",
+      "sha256": "7198bd4d55dfd351f84b1c34b6390105e4a71029c030241fe6924be9dac2937d",
+      "bytes": 52109,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/005-gm-relay-operational-private-policy-unit-001.trx.gz",
+      "storedSha256": "19043ee658c67640e94424abd816163f9f145cf6247758814ae1735d94903d43"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-143507-023-130084-c2454588c48246d28bffb244dea3aa91-categories/plan.json",
+      "sha256": "f39d17e60f429b8702ee9ef0c28ad012157fba0267fddec57ab41b5de5999a0a",
+      "bytes": 1119,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/006-plan.json.gz",
+      "storedSha256": "40508f481ec589b0d496c259c74eff29b9afe2a612cb61174006e158d6c2bc40"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-143507-023-130084-c2454588c48246d28bffb244dea3aa91-categories/summary.json",
+      "sha256": "49dbabfa2c2a4a7bbcfa574c3d14f4a0ca9e963015f27fd0e642b2ae5b4b5d99",
+      "bytes": 1384,
+      "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/007-summary.json.gz",
+      "storedSha256": "03bc090ea6db5a1584e06736870a42e83ab4efa4f3df6e62dad4807b8a7e1749"
+    }
+  ],
+  "sourceContextChain": {
+    "rawPath": "/tmp/gm1559-implementation-tools/gm1559-private16-actual-source-context-ed09dc0e-20261017.json",
+    "storedPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-files/actual-source-context.json.gz",
+    "bytes": 59096,
+    "sha256": "372524e9328e8b3742594a7539c32fb39018e794b0dfd8d584b1ea07ea5688d5",
+    "storedBytes": 16757,
+    "storedSha256": "bd30bc117f66867baf3318f28dc0cff9f7a67c2c4b1e3f1bd9334859fe3925f4",
+    "role": "EXACT_ACTUAL_ED09_SOURCE_CONTEXT_NOT_CAUSAL_VERDICT"
+  },
+  "recordSha256": "916ca88ffb9ed778af1531a3948bd2bd692cb662b6b09c0c2f0c6fb552edac9b",
+  "nativeExit": 1,
+  "wallSeconds": 4.9333756339983665,
+  "summary": {
+    "Categories": [
+      "gm-relay-operational-private-policy"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ed09dc0e44b69be41b6ce6592a4a66e79730a7a1",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-relay-operational-private-policy",
+        "Seconds": 1.8459141,
+        "BudgetMinutes": 2,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.041881,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0366487,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0926507,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:04.3564846",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 16,
+      "CompletedCases": 16,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 16,
+      "Executed": 16,
+      "Passed": 6,
+      "Failed": 10
+    },
+    "DuplicateTests": []
+  },
+  "rows": [
+    {
+      "owner": "surface",
+      "path": "game_state/control/gm_relay_apply_receipt.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "testId": "38d6ba50-64f6-885f-63a7-ddab0a0b1eb4",
+      "executionId": "276df8ad-2f87-462d-baca-159855fcf2cc",
+      "outcome": "Failed",
+      "classification": "UNQUALIFIED_FIXTURE_OWNER_PREREQUISITE_FAILURE",
+      "witness": null,
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 41\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "surface",
+      "path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "testId": "71f19b1c-96d4-a0db-ce5d-4ecc1f89833e",
+      "executionId": "a74f523d-57d1-415c-ac78-4573f28ae649",
+      "outcome": "Failed",
+      "classification": "UNQUALIFIED_FIXTURE_OWNER_PREREQUISITE_FAILURE",
+      "witness": null,
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 41\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "surface",
+      "path": "game_state/control/gm_prompt_delivery.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "testId": "0b5f35cf-0b07-a6b0-4fdb-7be015120ce7",
+      "executionId": "c232f855-76f7-46fd-9518-b062a477ddd6",
+      "outcome": "Failed",
+      "classification": "UNQUALIFIED_FIXTURE_OWNER_PREREQUISITE_FAILURE",
+      "witness": null,
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 41\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "recoverable",
+      "path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: True)",
+      "testId": "7329f7f1-d251-cf20-c637-bd9de6406093",
+      "executionId": "581a219d-ca19-4387-b36b-b0db591b0b15",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": true,
+        "Actual": true
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "validation",
+      "path": "game_state/control/gm_prompt_delivery.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "testId": "118995b2-5b07-5e5d-04e7-ee7bfce6eae2",
+      "executionId": "08ad2ee4-a073-4c80-97f8-718e54dff31d",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": true,
+        "Actual": false
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "repair",
+      "path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "testId": "b237c087-8ad7-b412-6657-fc7125a1f7d8",
+      "executionId": "08f152f4-50e6-427e-9670-0ed43e7fa04a",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "surface",
+      "path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "testId": "90729608-1252-c56e-ad3a-92ba65fa37bb",
+      "executionId": "ff478b8c-47e4-45ef-a034-a74fc5e0518b",
+      "outcome": "Failed",
+      "classification": "UNQUALIFIED_FIXTURE_OWNER_PREREQUISITE_FAILURE",
+      "witness": null,
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 41\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "repair",
+      "path": "game_state/control/gm_prompt_delivery.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "testId": "ea4ea64f-f95f-37d7-21dc-e7593e13e8a5",
+      "executionId": "560147f3-ce40-47b8-97a6-acd8578b0f9f",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": true,
+        "Actual": false
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "repair",
+      "path": "game_state/control/gm_relay_apply_receipt.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "testId": "5e602de3-d4d0-2a6e-6dc1-91aa620d420a",
+      "executionId": "2f804547-d7c0-45d9-999f-1fabf41a101f",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": true,
+        "Actual": false
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "validation",
+      "path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "testId": "05261b37-24ba-a702-d55b-71d59a0a21f7",
+      "executionId": "f8fc246e-9ed8-4c81-9a73-46b0570c67bc",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "recoverable",
+      "path": "game_state/control/gm_prompt_delivery.json",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json\", expected: False)",
+      "testId": "33fe6e53-5343-b140-4f8b-1dccae0c9be6",
+      "executionId": "6806d7e2-9a04-4bfb-adbd-62c05540a9bb",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": false,
+        "Actual": true
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "validation",
+      "path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "testId": "162e797a-d28c-1483-13b0-4ec794333df7",
+      "executionId": "5ae10a54-b022-42dc-a42d-4492f8a616ef",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "repair",
+      "path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "testId": "a3a5cb8c-bd11-a3d9-9c1e-9ab5d197c3fc",
+      "executionId": "824bd0fd-60a7-4f07-bb75-3c89031637b6",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "recoverable",
+      "path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: True)",
+      "testId": "99318c41-0c49-0042-989a-ed444f374bee",
+      "executionId": "c1574f93-6716-4c22-848b-ede32f9166bc",
+      "outcome": "Passed",
+      "classification": "QUALIFIED_POSITIVE_SUFFIX",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": true,
+        "Actual": true
+      },
+      "error": "",
+      "stack": ""
+    },
+    {
+      "owner": "validation",
+      "path": "game_state/control/gm_relay_apply_receipt.json",
+      "expected": true,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "testId": "baaa7d8e-d2b0-2c4b-c648-d576adb1c207",
+      "executionId": "f4858763-f4ed-4729-855c-7d53557447ec",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": true,
+        "Actual": false
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "owner": "recoverable",
+      "path": "game_state/control/gm_relay_apply_receipt.json",
+      "expected": false,
+      "testName": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: False)",
+      "testId": "f23603cd-4487-7fab-e6c8-b2494b60912d",
+      "executionId": "9755f208-61e3-4fa6-9cfc-187c85115fe9",
+      "outcome": "Failed",
+      "classification": "QUALIFIED_CAUSAL_POLICY_RED",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": false,
+        "Actual": true
+      },
+      "error": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    }
+  ],
+  "classificationCounts": {
+    "QUALIFIED_CAUSAL_POLICY_RED": 6,
+    "QUALIFIED_POSITIVE_SUFFIX": 6,
+    "UNQUALIFIED_FIXTURE_OWNER_PREREQUISITE_FAILURE": 4
+  },
+  "sourceChecks": [
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+      "sha256": "29d06d330253cfce62c88924667bdea0f6873798ef8a58ca19babe2d2f07812e",
+      "bytes": 2936
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+      "bytes": 34289
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "bytes": 431342
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+      "bytes": 115087
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "7e05b365f8801b98c8eb720e5f609c7bfc4bf7d7959030b9781339ea4c14c132",
+      "bytes": 507651
+    }
+  ],
+  "actualDeclaringType": "BookOfEternityClient.Services.ValidationIssue",
+  "fixtureWrongType": "BookOfEternityClient.Services.ValidationService",
+  "currentNineBinariesVerified": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "4989f85e3e013000693d0490cfc84e8475aacd42667c65df31d32ce81993ef6b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "84c74cac797138f33cf366a290bed17818667651a260499697dd041da0a0f3ae"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "75c1e177c284dafda972037f73e54c8d0ccce9ecdd36e0fd1c693b17159b3ac8"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    }
+  ],
+  "namespaceUnchanged": {
+    "ownedRoots": [],
+    "retainedNativeTerminal": []
+  },
+  "fixtureRootsCreated": 0,
+  "fixtureCleanup": "NOT_APPLICABLE_NO_OWNED_FIXTURE_ROOTS; runner cleanup true",
+  "productDeltaEmpty": true,
+  "calleeSourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+      "bytes": 21146,
+      "sha256": "7fd2a3e3ae98f9d5bebae6a31cbfb95625a26733e105b870a7789a6f46e9f741",
+      "gitBlob": "e103982aa7dcf484245923e005d353827ac63f84",
+      "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+      "bytes": 9328,
+      "sha256": "baf73c92d63578063e92904277503dcc3322cd57c7db38f47734fa5c4a181c7a",
+      "gitBlob": "01c48f0c18b792d2f248764e5dfb2fd61bffee77",
+      "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+    }
+  ],
+  "calleeObservation": "MortalItemRepairPacketBuilder is directly shared; AfterlifeContractRegistry is direct only in ValidationIssue surface predicate, not current ValidationService filter.",
+  "recovery": {
+    "path": "/tmp/gm1559-private16-first-stop-delta-github-0771e125-20261017.json",
+    "sha256": "849675d0df4cfbcf9b452ddb31eedfb4aedb3187cdb6f4ba1487b974af78ff5d",
+    "files": 23,
+    "allChangedPaths": 19,
+    "allExactBytesBlobMode": true
+  },
+  "remainingThreeOwnersUnrun": [
+    "gm-relay-operational-engine-alias",
+    "gm-relay-operational-live-alias",
+    "gm-relay-operational-helper-policy"
+  ],
+  "priorSourceReportsRetained": {
+    "/tmp/gm1559-lifecycle-guards-source-independent-20261017.md": "9fcf77eed9d05fcd436ffdd0457ae4d5c5dc3b5915f5dbc7273f7bd2a2b533e1",
+    "/tmp/gm1559-lifecycle-guards-source-independent-20261017.json": "61948983ed92924da0391e9e775ceedfff410bfcd9708bbe6cacafa10031c418"
+  },
+  "scope": "No native execution, repository write, full134 source audit, prior baseline8 replay or production acceptance."
+}

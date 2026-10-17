@@ -1,0 +1,82 @@
+{
+  "kind": "ROOT_CORRECTED_PRIVATE_OWNER_ZERO_PREP_LITERAL_READBACK",
+  "actualSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "sourcePinCount": 136,
+  "sourcePinDigest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "native": [
+    0,
+    0
+  ],
+  "actualTestsExecuted": 0,
+  "stage": {
+    "categories": 9,
+    "descriptors": 10,
+    "methods": 15,
+    "rows": 47,
+    "wallSeconds": 88.60193480300222
+  },
+  "guards": {
+    "categories": 4,
+    "descriptors": 4,
+    "methods": 4,
+    "rows": 32,
+    "wallSeconds": 6.016188679001061
+  },
+  "selectedProjectBuildLogs": [
+    "Build-unit.log",
+    "Build-integration.log"
+  ],
+  "semanticPlansEqual7ff": true,
+  "fullCatalog": "Retained unchanged7ff; no catalogreplay",
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "3b7f7e50b0f96e89af951cfd71f6a205fc54fb119feb30e85b615636d509ff2c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "8320811127642275c0535ed048f011180896b3f5a8995b1217a08d061e2bdd10"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "ed60e99072a1db99b9a354c63150f356abdf71ec3ea7e78245709ae7949b6edf"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "ed60e99072a1db99b9a354c63150f356abdf71ec3ea7e78245709ae7949b6edf"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "6d8ea12045b84025dbb1f380ff1677e3713923fac5047c08f368510751bf75ca"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+    }
+  ],
+  "helperSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+  "namespacesStable": true,
+  "disposition": "ZEROtestpreparation only; affectedSource neededbeforecorrectedprivate16/other3owners. Original0771 firststop and sixcausal/sixpositive/fourprereq observations preserved; no doublecount."
+}

@@ -1,0 +1,205 @@
+{
+  "kind": "INDEPENDENT_FIRST_PRIVATE16_CAUSAL_EVIDENCE_AND_FIXTURE_CAUSE_REVIEW",
+  "createdUtc": "2026-10-17T14:42:48.812296+00:00",
+  "carrier": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+  "actualSource": "ed09dc0e44b69be41b6ce6592a4a66e79730a7a1",
+  "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "unchangedProductSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdicts": {
+    "EVIDENCE": "ACCEPT_MIXED_FIRST_OUTCOME_6_CAUSAL_POLICY_RED_6_POSITIVE_4_UNQUALIFIED_FIXTURE_FAILURE",
+    "CAUSE": "CONFIRMED_WRONG_DECLARING_TYPE_IN_SURFACE_REFLECTION_BRANCH",
+    "SOURCE": "PREVIOUS_SURFACE_FIXTURE_ELIGIBILITY_WAS_DEFECTIVE; CORRECTION_AND_FRESH_BINDING_REQUIRED",
+    "RUNTIME_OR_PRODUCTION_AUTHORIZATION": "NONE"
+  },
+  "actual": {
+    "nativeExit": 1,
+    "wallSeconds": 4.9333756339983665,
+    "descriptorsPlannedAndCompleted": 1,
+    "rowsPlannedAndExecuted": 16,
+    "nativePassed": 6,
+    "nativeFailed": 10,
+    "qualifiedPositive": 6,
+    "qualifiedCausalRed": 6,
+    "unqualifiedFixturePrerequisiteFailures": 4,
+    "complete": true,
+    "underfill": false,
+    "duplicates": false,
+    "timeout": false,
+    "runnerCleanup": true,
+    "fixtureRootsCreated": 0,
+    "fixtureRootCleanup": "N/A; pure reflection cases, empty owned namespace before/after",
+    "freshBinaryCopiesStable": 9
+  },
+  "finding": {
+    "id": "LIFECYCLE-F01",
+    "severity": "MATERIAL_FIXTURE_DEFECT_FOR_FOUR_SURFACE_ROWS",
+    "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:37",
+    "cause": "surface branch uses typeof(ValidationService), but private static IsClientOwnedSurfacePath belongs to the separate public ValidationIssue class beginning at ValidationService.PrivateImplementation.cs:644; actual declaration is line773. ValidationService closes before that class.",
+    "failure": "All four surface rows fail Assert.NotNull at test line41 before method-signature checks, invocation or diagnostic. No policy result or surface behavior was observed.",
+    "minimalCorrection": "Change only that branch to typeof(ValidationIssue); preserve method name, BindingFlags, all16 InlineData, signature checks, invocation, diagnostic and final equality. No production fix, null fallback, broadened reflection search, assertion relaxation or row shrink.",
+    "previousReviewAccountability": "The previous independent SOURCE review missed the declaring-class boundary. Its blanket eligibility claim for all four owners was too broad for this branch. Preserve its exact files and supersede the four-row fixture eligibility in this append-only review; this failure is not caused by a production semantic change."
+  },
+  "qualifiedObservations": [
+    {
+      "owner": "GameEngine",
+      "actualMethod": "IsClientOwnedRepairResubmissionPath",
+      "exactRows": "2 genuine causal RED after signature/invocation/witness and final Equal46",
+      "suffixRows": "2 positive PASS with exact predicate witness",
+      "expectedVsActualExact": "true vs false"
+    },
+    {
+      "owner": "GameEngine",
+      "actualMethod": "IsRecoverableFilesModifiedPath",
+      "exactRows": "2 genuine causal RED after signature/invocation/witness and final Equal46",
+      "suffixRows": "2 positive PASS with exact predicate witness",
+      "expectedVsActualExact": "false vs true"
+    },
+    {
+      "owner": "ValidationService",
+      "actualMethod": "IsClientOwnedSurfaceValidationPath",
+      "exactRows": "2 genuine causal RED after signature/invocation/witness and final Equal46",
+      "suffixRows": "2 positive PASS with exact predicate witness",
+      "expectedVsActualExact": "true vs false"
+    }
+  ],
+  "proofLimits": [
+    "These twelve qualified observations prove actual private policy behavior, not end-to-end validation, FilesModified acceptance or repair completion.",
+    "The four surface failures provide no actual ValidationIssue policy witness, even though the correct target exists in source.",
+    "Original native6PASS/10FAIL stays unchanged. Never reclassify all10 failures as causal RED or claim predicted8/8.",
+    "Other three guard owners /16rows remain UNRUN; the32-row block is not qualified.",
+    "Accepted baseline8 remains separate under original d473 provenance, without replay; no full lifecycle GREEN or full relay qualification."
+  ],
+  "dependencyAssessment": {
+    "MortalItemRepairPacketBuilder": "Direct pure-path callee shared by ValidationService.IsClientOwnedSurfaceValidationPath and ValidationIssue.IsClientOwnedSurfacePath.",
+    "AfterlifeContractRegistry": "Direct pure-path callee of ValidationIssue.IsClientOwnedSurfacePath; current ValidationService predicate does not directly call it.",
+    "coverage": "Both files independently matched retained recovered physical base bytes, current/compiled/product Gitshow, SHA256 and blob. They are outside the current134 review pin list, but are not missing from complete recovery.",
+    "nextSourceBinding": "Add only these two relevant audit pins for corrected source (136 total before other authorized changes); retain original134 snapshot and prior reports. No fresh full clone, package replay, or exhaustive unrelated graph audit needed.",
+    "pins": [
+      {
+        "path": "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+        "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+        "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+        "bytes": 21146,
+        "sha256": "7fd2a3e3ae98f9d5bebae6a31cbfb95625a26733e105b870a7789a6f46e9f741",
+        "gitBlob": "e103982aa7dcf484245923e005d353827ac63f84",
+        "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+        "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+        "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+        "bytes": 9328,
+        "sha256": "baf73c92d63578063e92904277503dcc3322cd57c7db38f47734fa5c4a181c7a",
+        "gitBlob": "01c48f0c18b792d2f248764e5dfb2fd61bffee77",
+        "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+      }
+    ]
+  },
+  "nextGates": [
+    "Persist this exact cause/evidence decision and the original FIRST stop unchanged.",
+    "Publish the minimal tests-only declaring-type correction with two narrow source pins and truthful history/selection metadata.",
+    "Fresh affected managed preparation and exact selection/binary binding, then targeted corrected SOURCE/FIXTURE/PREP review before any newly bound actual.",
+    "The existing single theory owns16 rows, so its corrected canonical owner may rerun16 after Root release; unchanged original12 remain historical evidence and must not be double-counted. No new row-selection framework is needed.",
+    "Remaining three owners and product stay held until separately named Root release; freeze any unexpected FIRST outcome before correction."
+  ],
+  "sourceAndEvidenceBindings": {
+    "packetPath": "specs/1559-relay-long-sessions/recovery/lifecycle-guard-first-private16-stop.json",
+    "packetSha256": "221fc1597fc8490b917bcf87f315b8291b2fb6e705e97cecab99a8cf5eb598b4",
+    "archiveSha256": "c50cfa9f2f7883ca2455690ac23b8441d9a422802f7828193e656fc4f93866ad",
+    "nativeChains": 8,
+    "sourceContextSupportChains": 1,
+    "actualSourceContextSha256": "372524e9328e8b3742594a7539c32fb39018e794b0dfd8d584b1ea07ea5688d5",
+    "currentNineBinaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9363968,
+        "sha256": "4989f85e3e013000693d0490cfc84e8475aacd42667c65df31d32ce81993ef6b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29154304,
+        "sha256": "84c74cac797138f33cf366a290bed17818667651a260499697dd041da0a0f3ae"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "75c1e177c284dafda972037f73e54c8d0ccce9ecdd36e0fd1c693b17159b3ac8"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      }
+    ],
+    "sourceChecks": [
+      {
+        "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+        "sha256": "29d06d330253cfce62c88924667bdea0f6873798ef8a58ca19babe2d2f07812e",
+        "bytes": 2936
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+        "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+        "bytes": 34289
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+        "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+        "bytes": 431342
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+        "bytes": 115087
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "7e05b365f8801b98c8eb720e5f609c7bfc4bf7d7959030b9781339ea4c14c132",
+        "bytes": 507651
+      }
+    ],
+    "recovery": {
+      "path": "/tmp/gm1559-private16-first-stop-delta-github-0771e125-20261017.json",
+      "sha256": "849675d0df4cfbcf9b452ddb31eedfb4aedb3187cdb6f4ba1487b974af78ff5d",
+      "files": 23,
+      "allChangedPaths": 19,
+      "allExactBytesBlobMode": true
+    },
+    "priorSourceReportsPreserved": {
+      "/tmp/gm1559-lifecycle-guards-source-independent-20261017.md": "9fcf77eed9d05fcd436ffdd0457ae4d5c5dc3b5915f5dbc7273f7bd2a2b533e1",
+      "/tmp/gm1559-lifecycle-guards-source-independent-20261017.json": "61948983ed92924da0391e9e775ceedfff410bfcd9708bbe6cacafa10031c418"
+    }
+  },
+  "support": {
+    "path": "/tmp/gm1559-private16-first-causal-independent-check-20261017.json",
+    "sha256": "8d30f2ad66ab60422b63e4efd5e337e003dc209ff12c3073a5782f937bda4275"
+  },
+  "reviewActivity": "Read-only source/raw/Git/JSON/XML/gzip/hash inspection; no native build, test, reflection invocation, producer, repository edit or cleanup action.",
+  "inspectionUtilityNote": "A read-only display-name matcher initially matched an exact path and its suffix together; fixed exact-match precedence before support creation. Native raw/outcomes were unchanged.",
+  "scope": "Inactive lifecycle-only reservation followed by wounds Pd.3d handoff; no new relay writer/reader/dispatch/schema, no C01-C06 completion, no Windows/CI expansion."
+}

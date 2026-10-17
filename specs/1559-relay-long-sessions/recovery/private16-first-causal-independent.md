@@ -1,0 +1,15 @@
+# FIRST private16 causal review — 2026-10-17
+
+**Accept mixed evidence: 6 causal policy RED + 6 positive PASS; 4 fixture prerequisite failures remain unqualified.** Native result stays **6 PASS / 10 FAIL**, complete16, exit1, 4.933375634s. There was no timeout, duplicate, underfill or runner-cleanup failure. These pure reflection cases created no fixture roots.
+
+Bound to published `0771e12578ae3a27adef1d8b4f2c998594d1eb2b`, actual `ed09dc0e44b69be41b6ce6592a4a66e79730a7a1`, compiled `7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6` and unchanged product `a82b3d8439f76f83baade6df8516e78eea86e546`. Independently checked all8 raw/gzip/live/committed chains plus exact actual-source context, nine current binary hashes and the complete23-file/19-path metadata delta.
+
+**LIFECYCLE-F01 — fixture owner defect.** `GmRelayOperationalProtectionTests.cs:37` searches `ValidationService` for `IsClientOwnedSurfacePath`. That private static method actually belongs to the separate `ValidationIssue` class (`ValidationService.PrivateImplementation.cs:644,773`). All4 surface rows fail NotNull41 before signature checks, invocation or diagnostic. They prove no surface policy outcome. The previous independent SOURCE acceptance missed this class boundary; preserve that report unchanged and supersede its four-row eligibility here.
+
+The other12 rows reached their real methods and emitted exact owner/method/path/expected/actual witnesses. The two exact names each return false instead of true for GameEngine repair and ValidationService validation, and true instead of false for GameEngine recoverable paths: **6 causal policy RED at Equal46**. All6 suffix-neighbor rows pass. This is private-predicate evidence, not end-to-end client/repair acceptance.
+
+The minimal correction is **only `typeof(ValidationIssue)` in the surface branch**, retaining all16 rows, method name, signature checks, diagnostic and equality. No production semantic change or fallback is justified by the four prerequisite failures. MortalItemRepairPacketBuilder is directly shared; AfterlifeContractRegistry is direct only in the ValidationIssue predicate. Both unchanged files match retained recovered source/current Gitshow and need two explicit narrow audit pins, not another clone or broad review.
+
+Publish the tests-only correction, refresh affected managed preparation/selection/binary binding, and obtain targeted SOURCE acceptance before Root releases another actual. The method-granular corrected owner can rerun16; do not double-count its original12 qualified observations. The other three owners/16rows remain UNRUN and all32 guards are not yet qualified. Baseline8 and every prior FAIL/report remain retained separately. Product remains held; no runtime permission is granted here.
+
+[Support](/tmp/gm1559-private16-first-causal-independent-check-20261017.json) — `8d30f2ad66ab60422b63e4efd5e337e003dc209ff12c3073a5782f937bda4275`. The companion JSON contains exact row provenance, source/pin/recovery details and remaining gates. No native execution or repository modification was performed.
