@@ -75,7 +75,7 @@
     },
     {
       "category": "gm-doc-afterlife-owned-lifetime",
-      "reason": "A-S04 separately proves controlled orphan/timeout semantics and provable pre-Process.Start File.Copy failure cleanup. No-start has real2roots, zero processes and no fabricated EOF; all-owned-terminal proof is separate from orphan/pipe semantic success. Unknown identity remains sticky; no new process framework.",
+      "reason": "Retain original FIRST prestart PASS: null identities/demonstrable-no-start root cleanup and no fabricated EOF remain unchanged. The affected controlled-orphan method moves without duplication to owned-orphan.",
       "contracts": [
         "#1557",
         "current A source-preserving conditional docs and real package/session closure"
@@ -111,6 +111,14 @@
       "contracts": [
         "#1557",
         "bounded repair topic and copied/generated reference availability"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-owned-orphan",
+      "reason": "A-E04 only affected existing controlled-orphan actual: both post-signal waits now reuse the unchanged exact-owned observer within the existing cleanup deadline. Retain254 qualified PASS with original provenance; prestart/no-signal publisher and physical-negative paths are byte-unchanged. Preserve all first FAIL evidence; no count replay.",
+      "contracts": [
+        "#1557",
+        "exact retained-process ownership and bounded strict fixture cleanup"
       ]
     }
   ]

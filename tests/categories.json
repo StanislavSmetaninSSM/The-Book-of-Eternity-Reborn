@@ -27799,7 +27799,7 @@
         },
         {
             "id": "gm-doc-afterlife-owned-lifetime",
-            "responsibility": "#1557 Separately labeled controlled orphan/timeout and real pre-Start File.Copy failure. Prove exact birth/argv/parent before helper authority, preserve two concurrent pipes and45+15/60deadline; distinguish demonstrable-no-start or all-owned-terminal cleanup authority from orphan/pipe semantic qualification. Unknown identities retain roots and are never signaled.",
+            "responsibility": "#1557 Retained original pre-Start File.Copy failure control only: actual owned roots removed with no process launch or fabricated pipe EOF. Its demonstrably-no-start cleanup branch is unchanged by A-E04; original FIRST PASS provenance is retained.",
             "excludes": "Never a replacement producer/prefix or real delivery proof; no new production endpoint/supervisor/framework, unknown-identity kills or provider.",
             "changeHints": [
                 "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs",
@@ -27817,7 +27817,6 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledLifetimePreStartCopyFailureRemovesActualOwnedRootsWithoutInventedPipeProof"
                     ]
                 }
@@ -27941,6 +27940,31 @@
               ]
             }
           ]
+        },
+        {
+            "id": "gm-doc-afterlife-owned-orphan",
+            "responsibility": "#1557 A-E04 existing controlled orphan timeout alone: exact birth/argv/parent before signal, unchanged ObserveOwned bounded post-signal terminal proof, concurrent EOF pipes and strict owned-root cleanup. Keeps original 45+15/60 deadlines; terminal nonchild state does not require parent reaping.",
+            "excludes": "Never a replacement producer/prefix or real delivery proof; no new production endpoint/supervisor/framework, unknown-identity kills or provider.",
+            "changeHints": [
+                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs",
+                "tests/fixtures/GmDocumentationDelivery/owned-lifetime.ps1"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.ControlledOwnedOrphanTimeoutKeepsConcurrentPipesAndStrictCleanup"
+                    ]
+                }
+            ]
         }
     ]
 }

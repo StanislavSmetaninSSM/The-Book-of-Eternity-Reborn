@@ -110,7 +110,8 @@ internal static partial class GmDocumentationDeliveryScenario
                     if (!ObserveOwned(identity, managed, ownership, clock, "lifetime_before_handle")) continue;
                     using var process = Process.GetProcessById(identity.Pid);
                     if (!ObserveOwned(identity, managed, ownership, clock, "lifetime_before_signal")) continue;
-                    process.Kill(); await process.WaitForExitAsync().WaitAsync(clock.Cleanup);
+                    process.Kill();
+                    await WaitForOwnedTerminalAsync(identity, managed, ownership, clock, "lifetime_after_signal");
                 }
                 if (launcher is not null) await launcher.WaitForExitAsync().WaitAsync(clock.Cleanup);
                 CensusProbe();

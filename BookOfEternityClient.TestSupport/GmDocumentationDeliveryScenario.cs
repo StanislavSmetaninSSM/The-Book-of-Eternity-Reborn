@@ -266,7 +266,8 @@ internal static partial class GmDocumentationDeliveryScenario
                     // Only a fresh exact live match may authorize this individual signal.
                     if (!ObserveOwned(identity, identity.Role == "pwsh" ? child : null, ownership, clock, "cleanup_before_signal")) continue;
                     process.Kill(); // Exact retained identity only; never delegate descendant selection.
-                    await process.WaitForExitAsync().WaitAsync(clock.Cleanup);
+                    await WaitForOwnedTerminalAsync(identity, identity.Role == "pwsh" ? child : null,
+                        ownership, clock, "cleanup_after_signal");
                 }
                 if (child is not null) await child.WaitForExitAsync().WaitAsync(clock.Cleanup);
                 if (outputPump is not null && errorPump is not null) await Task.WhenAll(outputPump, errorPump).WaitAsync(clock.Cleanup);
@@ -468,6 +469,12 @@ internal static partial class GmDocumentationDeliveryScenario
             evidence.Unresolved = true; row["classification"] = "Conflict"; row["failure"] = error.ToString(); throw;
         }
         finally { evidence.Observations.Add(row); }
+    }
+    private static async Task WaitForOwnedTerminalAsync(Identity identity, Process? managed,
+        OwnershipEvidence evidence, Clock clock, string phase)
+    {
+        while (ObserveOwned(identity, managed, evidence, clock, phase))
+            await Task.Delay(TimeSpan.FromMilliseconds(20)).WaitAsync(clock.Cleanup);
     }
     private static void Census(string package, string root,
         Dictionary<(int, long), Identity> authorized, Dictionary<(int, long), Identity> unknown, List<string> issues,

@@ -1,5 +1,11 @@
 # Tasks: GM Documentation Modularization
 
+## A-E04 minimal post-signal correction WIP (2026-10-17)
+
+Both duplicate post-signal nonchild managed waits now use one bounded loop over the unchanged exact-owned `ObserveOwned`; existing pre-signal identity checks, sticky conflicts, live-argv requirements, terminal/absence proof, original direct-child managed waits and45+15/60 deadlines remain unchanged. This fixes the observed same-birth terminal zombie wait without signal authority expansion or process-supervisor changes. The existing orphan method moves to singleton `gm-doc-afterlife-owned-orphan`; prestart remains in its old owner. Full membership remains167methods/255cases (proposed15categories/17descriptors until fresh discovery). No new test case, gameplay/GM production edit or assertion weakening.
+
+Retain254qualifiedPASS with original source provenance; exact first orphan FAIL and269historical executions/10FAIL/14superseded remain. [Complete decision recovery](recovery/current-fourth-causal-complete-delta-recovery-9d1f57cf-20261017.json) covers10GitHubfiles/all6paths. Publish/readback/recover this source before fresh BOTH/catalog/exactPlanOnly0 and affected independentSOURCE. Only orphan1 can later execute after its persisted gate/root release. The two old retained roots remain untouched pending separate fresh-census housekeeping authority. FullA/finalEVIDENCE/Block5/provider/gameplay/Windows/CI remain unqualified.
+
 ## A-E04 causal EVIDENCE accepted with limits — orphan correction pending (2026-10-17)
 
 [Exact independent fourth-stop verdict](recovery/current-A-fourth-stop-evidence-independent-review-20261017.md), MD`88f10223…`/JSON`824f3b78…`, accepts7newPASS and confirms genuine fixture nonchild cleanup failure. **254qualifiedPASS/1unresolved/0UNRUN**,255unique;269historicalexecutions/10FAIL/14superseded remain unchanged. Genuine36-doc publication, retained12977byte generated template, real physical negatives and no-start cleanup qualify with the report's source/hash/body-retention limits. [Complete original outcome recovery](recovery/current-fourth-stop-complete-delta-recovery-9c82f489-20261017.json) covers62GitHubfiles/all58paths, all51native/artifact/snapshot/censuschains. OriginalFAIL is never replaced by later terminal observations.
