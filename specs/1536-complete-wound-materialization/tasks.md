@@ -1,3 +1,7 @@
+## A2 missing interface member corrected — uncompiled WIP (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): firstPREPFAIL saved/recovered before adding only AssertCompleted0Reads to AwardNoInput. [Current checkpoint](plan.md): immediate persistence then fresh changed-test preparation/concreteSOURCE; no actual/production/causalRED claim or semantic/selection change.
+
 ## A2 first preparation nativeFAIL — no actual/causalRED (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first1c85catalognative1/CS0535 missing AwardNoInput.AssertCompleted,0tests. [Current checkpoint](plan.md) preserves4rawchains before minimal TEST-only correction; then changedsourcefreshBOTH/catalog/PlanOnly0/concreteSOURCE. No product/helper/actual or RED qualification; unchanged contract/selection/counts/holds.
