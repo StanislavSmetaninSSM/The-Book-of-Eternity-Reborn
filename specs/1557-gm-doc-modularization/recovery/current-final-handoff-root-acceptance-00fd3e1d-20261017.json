@@ -1,0 +1,52 @@
+{
+  "kind": "ROOT_ACCEPTED_FINAL_HANDOFF_PUBLICATION_AND_RECOVERY",
+  "acceptedCarrier": "00fd3e1d9272d21535afa5f9b2d3b03c52a7781e",
+  "branch": "1557-gm-doc-modularization-continuation-20261017",
+  "remoteExact": "00fd3e1d9272d21535afa5f9b2d3b03c52a7781e",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "acceptedUtc": "2026-10-17T07:34:28.671917+00:00",
+  "verdict": "ACCEPTED_T030_T031_T032_COMPLETE",
+  "materialBlockers": [],
+  "checks": {
+    "all32TasksComplete": true,
+    "exactFinalAndTargetedReviewPersistence": true,
+    "H_L01Closed": true,
+    "normativeBulletsUnchanged": 19,
+    "activeMetadataLocalLinksResolved": 55,
+    "allChangesFeatureMetadataOnly": true,
+    "acceptedBinaryPinsStable": 7,
+    "cleanAndDiffCheckPassed": true,
+    "newActualGitHubDeltaBytesShaBlobModePathSetExact": true,
+    "completeConsecutiveRecoveryDeltas": 77,
+    "wholeRecoveredTreePaths": 55653
+  },
+  "references": {
+    "gm1557-root-final-metadata-check-00fd3e1d-20261017.json": {
+      "path": "/tmp/gm1557-root-final-metadata-check-00fd3e1d-20261017.json",
+      "bytes": 3440,
+      "sha256": "440904f09e71fc4f4652b6624cab1b675aeba86e9141d11869b2a68acd27e77f"
+    },
+    "gm1557-final-handoff-completion-delta-github-00fd3e1d-20261017.json": {
+      "path": "/tmp/gm1557-final-handoff-completion-delta-github-00fd3e1d-20261017.json",
+      "bytes": 10396,
+      "sha256": "0e6d3ebb4096daeea9eb82b5762d86be5ec1be215d6ec4241d25882094d50f36"
+    },
+    "gm1557-root-recovery-composition-00fd3e1d-20261017.json": {
+      "path": "/tmp/gm1557-root-recovery-composition-00fd3e1d-20261017.json",
+      "bytes": 26720,
+      "sha256": "b2e7775240a797e3a6734566e1b09879f7999fdf711aae3aea18042ad086da2a"
+    }
+  },
+  "retainedProof": {
+    "A": 255,
+    "AmixedProvenanceUnchanged": true,
+    "B": 78,
+    "BIncludesSharedA": 12,
+    "currentDocuments": 52,
+    "freshStaticLocalEdgesAnchors": 470,
+    "freshRouterTargets": 36,
+    "newRuntimeExecution": false,
+    "newBuildCIProviderOrGameplayQualification": false
+  },
+  "limits": "B-CONTEXT-01, full FR063, HOT/M3, backend/provider/WorkerRelease, Windows/F1 and other accepted limits remain unchanged. No issue close, PR, merge or main change. Earlier publication-pending prose at00fd is a historical pre-verification snapshot; this Root decision resolves that gate. A metadata carrier recording this decision has no new source/runtime claim and receives normal final remote/recovery verification without recursive independent review."
+}
