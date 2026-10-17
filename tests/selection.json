@@ -2,31 +2,38 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "fr063-training-level-policy-boundary",
-      "reason": "A1-F01 TEST-only correction: existing two actual ComputeAsync/helper rows now probe canonical files through files.ResolvePath and require supplied source presence/exact encoded bytes before owner entry, then preserve real before/after bytes. Prior first2PASS exposed wrong-root byteproof and is retained unqualified.",
+      "category": "fr063-award-level-policy-boundary",
+      "reason": "First causalRED: two real constructed CheckLevelUp experience/status paths with initialized existing watermark10; complete canonical pre/postbyte guards, reads,lastKnown1to2,noUI/no-write and strictcleanup BEFORE each missing award helper assertion.",
       "contracts": [
-        "#1536 T179-Pd.3c-A1/F01 same4catalogowners/54plannedcases(A1=52+retainedLate2=2), unchanged budgets and product. Fresh changed-test BOTH/catalog/PlanOnly0 and affected independent SOURCE/FIXTURE/SELECTION before corrected boundary2/pure33/ordinary17, stop first unexpected. Prior accepted Late2 remains original e247 provenance; no oldRED/Late2/base rerun, CI/Windows/HOT/M3/newQTE activation."
+        "#1536 T179-Pd.3c-A2 accepted contract57A2cases(boundary2+pure33+owner20+existing2),24strictroots/pure0N-A; separate protectedLate2=2,PlanOnly59/5desc. No actual until concrete SOURCE/rootrelease; first intendedRED boundary2 only; product held until qualified causalRED."
       ]
     },
     {
-      "category": "fr063-training-level-policy",
-      "reason": "The unchanged pure33 parsed-value/exception cases remain UNRUN and are required for complete bounded A1. They own zero filesystem roots; F01 physical-fixture correction introduces no pure semantics.",
+      "category": "fr063-award-level-policy",
+      "reason": "All33 new award-only parsed leaves/nullable/value/exception controls; separate named contract from training, zero-root cleanupN-A. Tests are prepared now but never executed before concrete SOURCE release.",
       "contracts": [
-        "#1536 T179-Pd.3c-A1/F01 same4catalogowners/54plannedcases(A1=52+retainedLate2=2), unchanged budgets and product. Fresh changed-test BOTH/catalog/PlanOnly0 and affected independent SOURCE/FIXTURE/SELECTION before corrected boundary2/pure33/ordinary17, stop first unexpected. Prior accepted Late2 remains original e247 provenance; no oldRED/Late2/base rerun, CI/Windows/HOT/M3/newQTE activation."
+        "#1536 T179-Pd.3c-A2 accepted contract57A2cases(boundary2+pure33+owner20+existing2),24strictroots/pure0N-A; separate protectedLate2=2,PlanOnly59/5desc. No actual until concrete SOURCE/rootrelease; first intendedRED boundary2 only; product held until qualified causalRED."
       ]
     },
     {
-      "category": "fr063-training-level-ordinary",
-      "reason": "F01 affects the fifteen WithOwner source/fallback/order/IO-fault fixtures: canonical preimage presence/exact supplied bytes and before/after equality must be non-vacuous. Keep only the same two existing real ApplyStatsIncreasedAsync cap/write controls, preserving documented overlap and17cases.",
+      "category": "fr063-award-level-owner",
+      "reason": "18finite genuine CheckLevelUp source/fallback/abort rows plus2actual read IOExceptions; one outer abort/log catch, <=1fallback, nullable retention0/negative, exact source/pointsbytes/read/noUI/mutation/lastKnown oracles,20strictroots.",
       "contracts": [
-        "#1536 T179-Pd.3c-A1/F01 same4catalogowners/54plannedcases(A1=52+retainedLate2=2), unchanged budgets and product. Fresh changed-test BOTH/catalog/PlanOnly0 and affected independent SOURCE/FIXTURE/SELECTION before corrected boundary2/pure33/ordinary17, stop first unexpected. Prior accepted Late2 remains original e247 provenance; no oldRED/Late2/base rerun, CI/Windows/HOT/M3/newQTE activation."
+        "#1536 T179-Pd.3c-A2 accepted contract57A2cases(boundary2+pure33+owner20+existing2),24strictroots/pure0N-A; separate protectedLate2=2,PlanOnly59/5desc. No actual until concrete SOURCE/rootrelease; first intendedRED boundary2 only; product held until qualified causalRED."
+      ]
+    },
+    {
+      "category": "fr063-award-level-existing",
+      "reason": "Exactly2 affected real original bodies: award/distribution/restart guarded by new strict wrapper and existing level_mark genuine publication uncertainty with its original single strict receipt; no unrelated4mode replay.",
+      "contracts": [
+        "#1536 T179-Pd.3c-A2 accepted contract57A2cases(boundary2+pure33+owner20+existing2),24strictroots/pure0N-A; separate protectedLate2=2,PlanOnly59/5desc. No actual until concrete SOURCE/rootrelease; first intendedRED boundary2 only; product held until qualified causalRED."
       ]
     },
     {
       "category": "fr063-joint-late-completion",
-      "reason": "Retained accepted protected prerequisite, preparation/continuity only for this TEST-only F01 delta: product/shared GetPlayerLevel, joint adapter/fixtures/body and5m budget are unchanged from compiled e247. Sole actual465/carriera505 accepted in271 retains original provenance; no Late2 actual replay is released or needed for the changed unit fixture.",
+      "reason": "CONDITIONAL after production A2 extraction only: both protected tests genuine source42 ProcessPlayerTurn→FinalizePlayerTurn1963→ordinaryprogression2463→changedCheckLevelUp before joint43; not samefile/binary adjacency. Product unchanged during tests-onlyRED, so no Late2 execution now. One new FIRST after fresh productSOURCE, separateEVIDENCE before A2GREEN; original accepted A1/Late2 retained separately.",
       "contracts": [
-        "#1536 T179-Pd.3c-A1/F01 same4catalogowners/54plannedcases(A1=52+retainedLate2=2), unchanged budgets and product. Fresh changed-test BOTH/catalog/PlanOnly0 and affected independent SOURCE/FIXTURE/SELECTION before corrected boundary2/pure33/ordinary17, stop first unexpected. Prior accepted Late2 remains original e247 provenance; no oldRED/Late2/base rerun, CI/Windows/HOT/M3/newQTE activation."
+        "#1536 T179-Pd.3c-A2 accepted contract57A2cases(boundary2+pure33+owner20+existing2),24strictroots/pure0N-A; separate protectedLate2=2,PlanOnly59/5desc. No actual until concrete SOURCE/rootrelease; first intendedRED boundary2 only; product held until qualified causalRED."
       ]
     }
   ]

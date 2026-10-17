@@ -1,3 +1,7 @@
+## A2 tests-only57 fixtures WIP — preparation/SOURCE next (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): new award pure33 and actual constructed CheckLevelUp boundary2/owner20/existing2 fixtures +4category owners/current5descriptor59case selection implemented under root's tests-only release. [Current checkpoint](plan.md): publish/readback/newdelta before freshBOTH/catalog+PlanOnly0/frozen preparation/concreteSOURCE. Product/helper bodies unchanged/absent; no actual. Boundary fullbyte/read/state/noUI/no-write/cleanup precedes missinghelper; expected24A2strictroots/pure0N-A. ProtectedLate2 conditional only after futureproductsource; no oldproof/base replay.
+
 ## A2 contract accepted — tests-only preparation next after persistence (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent contract pair accepts two award leaves/57A2+separate2affectedLate2/no material finding; current [decision checkpoint](plan.md) preserves8af10file/all6delta. Publish/readback/newdelta then root may release tests-only fixtures/categoryselection/freshBOTH/catalog/PlanOnly0/frozen preparation for concreteSOURCE. Full realowner+byte/read/noUI/no-write+strictcleanup witness precedes missinghelper in boundary2. No production/actual yet, no oldproof/base replay or wider scope.

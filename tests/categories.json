@@ -2,6 +2,135 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-award-level-policy-boundary",
+      "responsibility": "Two causal real constructed CheckLevelUp experience/status branches; full guarded source bytes/read/state/noUI/no-write and strict cleanup finish before each missing award helper assertion.",
+      "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Only after A2 production leaf changes: genuine source42 producer reaches real CheckLevelUp before protected joint43; first new Late2 plus separate EVIDENCE precedes A2 GREEN. No replay for tests-only RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-award-level-policy",
+      "responsibility": "33 pure named award policies:13experience+10status numeric priority/nullable exact values,4conversion and6nonobject failures; zero owned roots cleanup N/A.",
+      "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.Tests/AwardLevelPolicyTests.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Only after A2 production leaf changes: genuine source42 producer reaches real CheckLevelUp before protected joint43; first new Late2 plus separate EVIDENCE precedes A2 GREEN. No replay for tests-only RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardExperiencePolicy_ReturnsExactNumericPriority",
+            "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardStatusPolicy_ReturnsOnlyExactNumericLevel",
+            "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardParsedPolicy_PreservesConversionFailure",
+            "BookOfEternityClient.Tests.AwardLevelPolicyTests.AwardParsedPolicy_PreservesNonObjectFailure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-award-level-owner",
+      "responsibility": "20 real CheckLevelUp controls:18finite source/fallback/abort rows plus2real read IOException faults; one outer catch, exact read order/pre-post bytes/noUI/no-write/lastKnown and20strict roots.",
+      "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Only after A2 production leaf changes: genuine source42 producer reaches real CheckLevelUp before protected joint43; first new Late2 plus separate EVIDENCE precedes A2 GREEN. No replay for tests-only RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_PreservesFallbackAbortOrderAndBytes",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_RealReadFaultIsLoggedAndStops"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-award-level-existing",
+      "responsibility": "Two exact affected existing owner bodies: actual award/distribution/restart with new strict wrapper; original level_mark genuine coordinated publication uncertainty with its own single strict receipt.",
+      "excludes": "A2 bounded award readers only; no A1 replay, watermark/arithmetic extraction, HOT/M3/F1/QTE/worker/native/UI qualification or broad old-family replay.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-joint-late-completion",
+          "when": "Only after A2 production leaf changes: genuine source42 producer reaches real CheckLevelUp before protected joint43; first new Late2 plus separate EVIDENCE precedes A2 GREEN. No replay for tests-only RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingRestartGuardHasStrictCleanup",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingMarkPublicationUncertaintyEscapes"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-training-level-policy-boundary",
       "responsibility": "T179-Pd.3c-A1 two real ordinary ComputeAsync controls before requiring each missing pure parsed-value method; structural causal RED, no fabricated source/authority.",
       "excludes": "Ordinary parsed-value/read/fallback prerequisite only. No HOT owner, full automatic family, S/B/M3, action/time/award, F1/T197/QTE activation, Windows worker/native/DOM/visual qualification.",
