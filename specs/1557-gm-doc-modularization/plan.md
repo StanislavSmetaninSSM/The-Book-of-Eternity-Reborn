@@ -1,5 +1,11 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Corrected A SOURCE accepted — first current actuals held for release (2026-10-17)
+
+The [exact independent corrected SOURCE/FIXTURE/SELECTION verdict](recovery/current-A-corrected-source-independent-review-20261017.md) (MD `ea8301d8…`, JSON `337c6237…`) accepts compiled `06a0d4a50d9aa1b35afe01e8881418f8c275be6c` and published fresh-preparation carrier `d3ed85f22e5c6a86de755561492153d2d793487a`. S01–S04/P01 close at SOURCE; the original SOURCE_NOT_READY and genuine PREPFAIL0tests remain immutable. [Complete preparation recovery](recovery/current-preparation-complete-delta-recovery-d3ed85f2-20261017.json) binds **06a→d3ed, all23 GitHub files/all19 changed paths**, no deletions. The retained full source base and consecutive deltas remain authoritative; no new full clone or base-byte rehash.
+
+Fresh BOTH/catalog and exact PlanOnly remain **0 executions**. The accepted finite selection is **10 categories /12 native descriptors /165 distinct methods /253 cases**, including actual body guards split60/60/2. Seven fresh DLL copies and all244 package files/36 documents retain compiled06a pins; this decision changes only feature metadata. After this decision is pushed/read back/recovered, root separately releases one canonical `-Category … -NoBuild` at a time under accepted budgets. Preserve each FIRST result and stop on the first native or qualification failure; no retry or passing-count replay. Separate independent EVIDENCE is still required. No current PASS, fullA/Block5/provider/gameplay/Windows/CI or broader completion is claimed; unchanged historical RED/A1/A2/Late2 are not replayed.
+
 ## Corrected fresh preparation frozen — affected SOURCE pending (2026-10-17)
 
 Source `06a0d4a50d9aa1b35afe01e8881418f8c275be6c` is [fully recovered from GitHub](recovery/current-correction-complete-delta-recovery-06a0d4a5-20261017.json), all47files/all43changedpaths; retained full7a+38complete consecutive deltas composes55090trackedpaths without another full clone/base rehash. Root independently rechecked both actual clipped views against exact a5 and all23sections/135orderedinputs (42five-kinds/38projection), unchanged golden data and single physical payload ownership.

@@ -1,0 +1,114 @@
+{
+  "kind": "INDEPENDENT_ASTRA_XHIGH_AFFECTED_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "verdict": "SOURCE_ACCEPTED_FOR_BOUNDED_CURRENT_A_ACTUAL_AFTER_PERSISTENCE_AND_ROOT_RELEASE",
+  "actualEvidence": "NOT_EXECUTED_OR_ACCEPTED",
+  "source": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+  "carrier": "d3ed85f22e5c6a86de755561492153d2d793487a",
+  "priorSource": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+  "priorReview": {
+    "mdSha256": "83c4aee60acb975cfaef5eacb6bd8e895c9979fe2704850fc8967a719a342023",
+    "jsonSha256": "3ec72d462532dec576fe69441615d3d0cb6c089c240f008ea60b694262017db9"
+  },
+  "newMaterialFindings": [],
+  "closedSourceFindings": [
+    "A-S01",
+    "A-S02",
+    "A-S03",
+    "A-S04",
+    "A-P01"
+  ],
+  "retainedFailure": "First b592 native1 CS0136/zero tests remains PREPFAIL, not RED; previous SOURCE_NOT_READY retained unchanged.",
+  "staticProof": {
+    "path": "/tmp/gm1557-correction-independent-static-results-20261017.json",
+    "sha256": "ee8b3127b4fd560bcd8eadf66ab6571aa6b206e811f593f12d3b9dc8c78dd5b8"
+  },
+  "selectionProof": {
+    "path": "/tmp/gm1557-correction-independent-selection-20261017.json",
+    "sha256": "107c9bacc799c7e7af80792980ffd391fe4a120f233f559b201153b601a7ab18"
+  },
+  "preparation": {
+    "manifestPath": "specs/1557-gm-doc-modularization/recovery/current-A-corrected-fresh-preparation-20261017.json",
+    "manifestSha256": "73915d7ebbdfba571b72db63623be55598f0916a36bbef0017aecfc3b71f5114",
+    "committedGzipRawLiveChains": 12,
+    "catalogNativeExit": 0,
+    "catalogWrapperSeconds": 90.16180983899903,
+    "catalogCategories": 795,
+    "catalogDiscoveredMethods": 11771,
+    "bothBuildsCompleted": true,
+    "integrationWarnings": 133,
+    "unitWarnings": 35,
+    "compilerErrors": 0,
+    "planNativeExit": 0,
+    "planWrapperSeconds": 6.059463393999977,
+    "categories": 10,
+    "descriptors": 12,
+    "distinctMethods": 165,
+    "plannedCases": 253,
+    "executedTests": 0,
+    "planCompleteFalseIsExpected": true,
+    "ownedPrefixesEmpty": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "a2756a7b57ad850b8c212f413f7fd69dec6b6b64c24cfb084b289234c4d29417",
+        "bytes": 9532416
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+        "bytes": 26181632
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "c6588d786f944bc13a269614ff795d0272c5b50c2f19f9b40cd8bf6e37be97ed",
+        "bytes": 29214720
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "561376349e8056fa1407c5823651104fe6f55d2e8caddd64743bdd72e20b5e55",
+        "bytes": 1935872
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "sha256": "561376349e8056fa1407c5823651104fe6f55d2e8caddd64743bdd72e20b5e55",
+        "bytes": 1935872
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+        "bytes": 26181632
+      }
+    ]
+  },
+  "package": {
+    "rawPinSha256": "638b7315282933694fde3d77cf83edb7170495cae32e9a1d0575a2b676316fa5",
+    "files": 244,
+    "bytes": 45038591,
+    "sourcePackageDocsExact": 36,
+    "sessionDeliveryExecuted": false
+  },
+  "recovery": {
+    "correctionReceipt": "/tmp/gm1557-correction-delta-github-06a0d4a5-20261017.json",
+    "correctionFiles": 47,
+    "correctionChangedPaths": 43,
+    "latestReceipt": "/tmp/gm1557-preparation-delta-github-d3ed85f2-20261017.json",
+    "latestReceiptSha256": "f3e18b1f4154e88008c128e69c67d37c10001d6e2c93bc7692b55681b74fed96",
+    "latestFiles": 23,
+    "latestChangedPaths": 19,
+    "sourceRuntimeSelectionScopeUnchanged": true,
+    "retainedFullBaseNotRepeated": true
+  },
+  "limits": [
+    "No reviewer build/test/application runtime/CI or repository changes",
+    "Actual selected253 cases and session delivery remain unrun",
+    "Unknown/unproved/live process identity retains roots; no widened signal authority",
+    "Controlled lifetime probe remains distinct from genuine packaged producer",
+    "No Block_5/full daemon/provider/HOT/M3/F1/new QTE/Windows/merge/main/issue-closure qualification",
+    "Historical RED/A1/A2/Late2 proof and original limits retained without replay"
+  ]
+}
