@@ -1492,6 +1492,8 @@ function Test-BoeClientOwnedRuntimePath {
     }
 
     foreach ($clientOwnedPath in @(
+        "game_state/control/gm_prompt_delivery.json",
+        "game_state/control/gm_relay_apply_receipt.json",
         "game_state/control/spiritual_wound_capture_checkpoint.json",
         "game_state/control/pending_spiritual_wound_decisions.json",
         "game_state/wounds/spiritual_wound_opportunity_receipts.json",

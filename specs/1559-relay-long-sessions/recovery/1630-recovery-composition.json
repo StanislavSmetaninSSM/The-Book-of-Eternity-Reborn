@@ -1,0 +1,1132 @@
+{
+  "kind": "ROOT_COMPLETE_RECOVERY_COMPOSITION_AND_NEW_DELTA_BYTES",
+  "head": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
+  "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+  "fullBaseReceiptSha256": "51d5a45a739fe6f5342efa035ca45f4c41c61b10e671a4cf3bcb4d62aa16741e",
+  "completeConsecutiveDeltas": [
+    {
+      "receipt": "/tmp/a1-source-prepared-delta-github-3da75b41-20261017.json",
+      "sha256": "64addac0367532a63dffd4447820e1054f9b7b37e7ea2520fbe2f16db0b8f198",
+      "base": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+      "sha": "3da75b412022f9268d10b289ddf620fee5ab63d3",
+      "files": 30,
+      "changedPaths": 26
+    },
+    {
+      "receipt": "/tmp/a1-source-recovery-correction-delta-github-12498e69-20261017.json",
+      "sha256": "bb6972cf6a51b2b52969e3a7c12c3e539fc1a97632c5908f5cc35a1b2a94071b",
+      "base": "3da75b412022f9268d10b289ddf620fee5ab63d3",
+      "sha": "12498e69f9475d71e628e554cb1b86b77312a954",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a1-source-accepted-delta-github-465bf972-20261017.json",
+      "sha256": "accabb03c1b9155bdd04be152eaf84269282cea11849c7d2d22a02bc212d3258",
+      "base": "12498e69f9475d71e628e554cb1b86b77312a954",
+      "sha": "465bf972a17b529c990e8d9ee4a4d85e20b18330",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a1-first-late2-delta-github-a50588d5-20261017.json",
+      "sha256": "50b05dd1eb6cf18ba81af6c9e4968f0289f883dc6c4007c9f60eb4395bb3ed35",
+      "base": "465bf972a17b529c990e8d9ee4a4d85e20b18330",
+      "sha": "a50588d568a786017949290bc748d45ce93c14ad",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/a1-late2-accepted-delta-github-271fb6be-20261017.json",
+      "sha256": "ceb8bed9a4151cc1bcc6f16315ca860e97a4f1e6687a99e801bd2a733c0ff8de",
+      "base": "a50588d568a786017949290bc748d45ce93c14ad",
+      "sha": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a1-boundary-first-unqualified-delta-github-34409b65-20261017.json",
+      "sha256": "e29642dfc8a6710128fe4980c959e561096ea567b9a443677140803b00a81429",
+      "base": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+      "sha": "34409b657852b669de6cbdf0f922145e5e7f17d1",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/a1-f01-fixture-wip-delta-github-4d1e3fa2-20261017.json",
+      "sha256": "5e451868eb192b0cfb66939c2052627f5b2055a21d6a465b11d09608c5a86ddb",
+      "base": "34409b657852b669de6cbdf0f922145e5e7f17d1",
+      "sha": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a1-f01-prepared-delta-github-e259efa1-20261017.json",
+      "sha256": "7e170437a880721fb4bc901f397cf0e75702fb6679c85518291a646c9368a492",
+      "base": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+      "sha": "e259efa168123b604c86454b4d5bc29a705dfcb1",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/a1-f01-source-accepted-delta-github-b2bdd663-20261017.json",
+      "sha256": "fa340602e4ea31c8068adbaed7988defce2d5e9cd913ab3381b3cb681cf21628",
+      "base": "e259efa168123b604c86454b4d5bc29a705dfcb1",
+      "sha": "b2bdd663c9b8daef97a1b91c701f5afa57b7503a",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a1-f01-corrected-boundary-delta-github-39dbbdf9-20261017.json",
+      "sha256": "b222fdfc84873fa79a3fc55f3d0debe821b2e3340e2992847130237fe21059f2",
+      "base": "b2bdd663c9b8daef97a1b91c701f5afa57b7503a",
+      "sha": "39dbbdf9a1d7e251ab8f6f04051866dfcf5a1aa4",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "receipt": "/tmp/a1-f01-runtime-accepted-delta-github-3a053db1-20261017.json",
+      "sha256": "730f00317c44da722db05015d4dba116d0780f7259999b5ee3ec6908f77c31ed",
+      "base": "39dbbdf9a1d7e251ab8f6f04051866dfcf5a1aa4",
+      "sha": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a1-qualified52-delta-github-dcc251e4-20261017.json",
+      "sha256": "d1f690e158d75c64782a4d0a06110ad6e249c11e0f91d901475152adf6f1a128",
+      "base": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "sha": "dcc251e40998e56ee6f472e8b679ad7b4d810a2b",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/a1-final-accepted-delta-github-65fcce70-20261017.json",
+      "sha256": "70ba67d0bd4f67cf5055bbdc968cd6e8becceed2eea3b0fa937ff3e15bfe7ad0",
+      "base": "dcc251e40998e56ee6f472e8b679ad7b4d810a2b",
+      "sha": "65fcce707ce63be31e2a1fb462f89998bc39bfd1",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a2-contract-delta-github-8af31391-20261017.json",
+      "sha256": "fb812176758705d8daa81caf01c13e6c78bcbbc53c50b555ad43acf8684c97d6",
+      "base": "65fcce707ce63be31e2a1fb462f89998bc39bfd1",
+      "sha": "8af31391b4ccab5d332445954dacdce248307d17",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a2-contract-accepted-delta-github-851655c0-20261017.json",
+      "sha256": "a4538fbd862d2119f6322466388ab35fe14f17ccf81e58b9b19f6ae5df561e0d",
+      "base": "8af31391b4ccab5d332445954dacdce248307d17",
+      "sha": "851655c027b1aa9961540fccef76b80d1484f173",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a2-tests-wip-delta-github-1c85a092-20261017.json",
+      "sha256": "84e6b6ef744e816374da2bd9774b4bad42a6d2a235f745682fb282e9ff00094b",
+      "base": "851655c027b1aa9961540fccef76b80d1484f173",
+      "sha": "1c85a0923d4d105a6a492b5d4787b9f793661294",
+      "files": 11,
+      "changedPaths": 7
+    },
+    {
+      "receipt": "/tmp/a2-first-preparation-fail-delta-github-47fa2227-20261017.json",
+      "sha256": "1f879084b5aaaaef7e71d4883a57dfeff2af54fe787225732fa4783faec9ce90",
+      "base": "1c85a0923d4d105a6a492b5d4787b9f793661294",
+      "sha": "47fa222755789e08d94eb3cd880221834548f210",
+      "files": 12,
+      "changedPaths": 8
+    },
+    {
+      "receipt": "/tmp/a2-interface-fix-delta-github-b7648a2b-20261017.json",
+      "sha256": "7cdfb8cba58bde967f5d5b4ae2f44c0d30c397e87ff78a0e682727c23be63cdc",
+      "base": "47fa222755789e08d94eb3cd880221834548f210",
+      "sha": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+      "files": 8,
+      "changedPaths": 4
+    },
+    {
+      "receipt": "/tmp/a2-second-preparation-fail-delta-github-a22c9280-20261017.json",
+      "sha256": "e541b08251c9fa65d3b214a9179ff589e913455ad589af01f0ab82e2fbc332ed",
+      "base": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+      "sha": "a22c9280da99bfdbfdfc34ec7722b8c8c3c44afc",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/a2-compile-import-fix-delta-github-40ed288b-20261017.json",
+      "sha256": "aeeb31320c5a66239d2cbb48e237e9390f8299f1c2cac27ff6038648e47432c4",
+      "base": "a22c9280da99bfdbfdfc34ec7722b8c8c3c44afc",
+      "sha": "40ed288b88a365b072deb81420f6e937565852f8",
+      "files": 8,
+      "changedPaths": 4
+    },
+    {
+      "receipt": "/tmp/a2-red-prepared-delta-github-778cd024-20261017.json",
+      "sha256": "c17a4085551b10789af779635dca2f40671995a3c6e9d72f20032ac087baeb33",
+      "base": "40ed288b88a365b072deb81420f6e937565852f8",
+      "sha": "778cd02408da1a7859083c265b2fe1c08aa179c7",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/a2-red-source-accepted-delta-github-38ea3f83-20261017.json",
+      "sha256": "f0c2737307c09e314185d4e891b3d04d5aee52efbc82ddfd99aae959ee2f3aa2",
+      "base": "778cd02408da1a7859083c265b2fe1c08aa179c7",
+      "sha": "38ea3f830e80e88de98110a84459aa286cd1eeb7",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a2-first-causal-red-delta-github-a00ff2d5-20261017.json",
+      "sha256": "80b63031ab49a1e378764cc478133b213f9df7e2e2320361340ccff4a4a5c0b3",
+      "base": "38ea3f830e80e88de98110a84459aa286cd1eeb7",
+      "sha": "a00ff2d51620a57c9ce0c0f39c8556f4cce124e0",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/a2-causal-red-accepted-delta-github-e479b11c-20261017.json",
+      "sha256": "5fd9c3a769a8b3f92631102f333c9d1ccc47c2734d8a14049c813dc52d383989",
+      "base": "a00ff2d51620a57c9ce0c0f39c8556f4cce124e0",
+      "sha": "e479b11c2b7804a635e286bf1d4961797d7459c4",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a2-production-wip-delta-github-a4e111b3-20261017.json",
+      "sha256": "1ea1a83b7f6c0f89db1e52e4b60d0b1b19f30d77137da0b310eaeb2a771cc024",
+      "base": "e479b11c2b7804a635e286bf1d4961797d7459c4",
+      "sha": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a2-green-prepared-delta-github-f42d90e5-20261017.json",
+      "sha256": "aea126806100e31d12f99594586d502feaf30e667a585d8dc71c4f7c6a49405d",
+      "base": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "sha": "f42d90e52f3c50c9d37b93941543934e79303aa8",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/a2-green-source-accepted-delta-github-505ffc92-20261017.json",
+      "sha256": "5210316ab68a0ef146494c63a03d898263e8e7761ee8d3b13c7415186b46d054",
+      "base": "f42d90e52f3c50c9d37b93941543934e79303aa8",
+      "sha": "505ffc926665fc250a72794d37f1c4a2538b3268",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a2-first-late2-delta-github-c538622e-20261017.json",
+      "sha256": "3114864c83490303ab419b5d0c4900607ed27964c6a9b09627ef089d8262f70f",
+      "base": "505ffc926665fc250a72794d37f1c4a2538b3268",
+      "sha": "c538622e99466b09d807bfebdfd81d95955ea734",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/a2-late2-accepted-delta-github-6104d973-20261017.json",
+      "sha256": "56522aefa99cd82706d64103ac25f9d0ec1aa46f6fd620a393d8bfa78159b007",
+      "base": "c538622e99466b09d807bfebdfd81d95955ea734",
+      "sha": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "files": 9,
+      "changedPaths": 5
+    },
+    {
+      "receipt": "/tmp/a2-green57-delta-github-d43f3a71-20261017.json",
+      "sha256": "69791437672373c01e5bf9d29b4312f9270de5483052c0b8fe1ad95535b1d2f6",
+      "base": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "sha": "d43f3a71453378be7b32b68e883522f8164f37cb",
+      "files": 41,
+      "changedPaths": 37
+    },
+    {
+      "receipt": "/tmp/a2-final-delta-github-9416298b-20261017.json",
+      "sha256": "75a99fc68243db4c465c6b5225344ee670c25248a14a3c18125568f797d36451",
+      "base": "d43f3a71453378be7b32b68e883522f8164f37cb",
+      "sha": "9416298b144c836aaa88e98e4545ea23626929f3",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/a3-contract-delta-github-387c4f48-20261017.json",
+      "sha256": "988c35ffa60dfd72112ee6ddfce45297b05f82d3854f3f0a322bb22deece777c",
+      "base": "9416298b144c836aaa88e98e4545ea23626929f3",
+      "sha": "387c4f481f5722aa3318af49033b1401ca49aaf7",
+      "files": 8,
+      "changedPaths": 4
+    },
+    {
+      "receipt": "/tmp/a3-deferred-delta-github-a5a41cfa-20261017.json",
+      "sha256": "4a9835ba4e0b9110679257ecd5f1f0f69d8217252735a96271a106cda0ae30b1",
+      "base": "387c4f481f5722aa3318af49033b1401ca49aaf7",
+      "sha": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "files": 11,
+      "changedPaths": 7
+    },
+    {
+      "receipt": "/tmp/gm1557-import-delta-github-1bfa02d9-20261017.json",
+      "sha256": "793b27706a69775cfa1e1911c4d85c29fb7722dfff2db7310c0e9d50660a3d63",
+      "base": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+      "sha": "1bfa02d9027e8b72285757053654d806a3611038",
+      "files": 286,
+      "changedPaths": 283
+    },
+    {
+      "receipt": "/tmp/gm1557-authoring-delta-github-f55ce9d5-20261017.json",
+      "sha256": "f6db5c41c9328239429d5a39c218ab7decc0ec3822b14d3ee5cda5c978b64d87",
+      "base": "1bfa02d9027e8b72285757053654d806a3611038",
+      "sha": "f55ce9d5ced46c46b7b0df1d4b58e2162c93c81c",
+      "files": 64,
+      "changedPaths": 60
+    },
+    {
+      "receipt": "/tmp/gm1557-consumers-delta-github-b5920ec3-20261017.json",
+      "sha256": "53cbe6179a9cd98d387187e0c23ca51fc0d34c659b118a10fc98c8a9a705df3e",
+      "base": "f55ce9d5ced46c46b7b0df1d4b58e2162c93c81c",
+      "sha": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+      "files": 61,
+      "changedPaths": 57
+    },
+    {
+      "receipt": "/tmp/gm1557-prepfail-delta-github-aadd4222-20261017.json",
+      "sha256": "3c5533dd734ba881391c63e4e0a4279264b8af4fe60eb29d8b1acd3a899171af",
+      "base": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+      "sha": "aadd4222b1fe1ad86a09965d20b8e117a84d7b62",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-correction-delta-github-06a0d4a5-20261017.json",
+      "sha256": "6673a56d0e0de2e72947c9974e78c2bd499add0518bc2ade307abe27394f9286",
+      "base": "aadd4222b1fe1ad86a09965d20b8e117a84d7b62",
+      "sha": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "files": 47,
+      "changedPaths": 43
+    },
+    {
+      "receipt": "/tmp/gm1557-preparation-delta-github-d3ed85f2-20261017.json",
+      "sha256": "f3e18b1f4154e88008c128e69c67d37c10001d6e2c93bc7692b55681b74fed96",
+      "base": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+      "sha": "d3ed85f22e5c6a86de755561492153d2d793487a",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1557-source-accepted-delta-github-1a48d0c2-20261017.json",
+      "sha256": "eff450702f392bb750a1f907a2dc0556347c63167b0d80399d0c5427c6e085ba",
+      "base": "d3ed85f22e5c6a86de755561492153d2d793487a",
+      "sha": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-first-actual-stop-delta-github-9cd4ddf9-20261017.json",
+      "sha256": "c64985cfb8971c2cede67b47eeaecb5e94722defc30102cbb38a055d324dc46a",
+      "base": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+      "sha": "9cd4ddf9535d1d9193de5ae423b884623f18706a",
+      "files": 88,
+      "changedPaths": 84
+    },
+    {
+      "receipt": "/tmp/gm1557-bootstrap-fix-delta-github-a4d08171-20261017.json",
+      "sha256": "06b152c5bdaad0ec73ed13173ad3ddc66e76019eef9c55c69dbb9eb1bea90428",
+      "base": "9cd4ddf9535d1d9193de5ae423b884623f18706a",
+      "sha": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "receipt": "/tmp/gm1557-bootstrap-prep-delta-github-ee0a5c65-20261017.json",
+      "sha256": "e7dc3b4e5926a8b4a69a49dada158182554b03748c1f9acf4d99e3c4cd0ae46e",
+      "base": "a4d081713d25913e3216d502c33ca5f7cb7a6cfd",
+      "sha": "ee0a5c6511e34be381b5a0d45d83c61230ea8d91",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1557-bootstrap-source-accepted-delta-github-5d2c9e61-20261017.json",
+      "sha256": "da6a05b012296ddc313a9a3b13cf6d421e7f40978bf13b5b77915dfd599fa061",
+      "base": "ee0a5c6511e34be381b5a0d45d83c61230ea8d91",
+      "sha": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-second-stop-delta-github-fdaf1666-20261017.json",
+      "sha256": "bcab40dd2187adc0e94d843b3c7dc6e45a0a50ed640abdf435006b5d1d1c41b7",
+      "base": "5d2c9e610b2d2f495de3ac23bfe0e96ae3276353",
+      "sha": "fdaf16665542e32c74d8d9c5acfb138da71a285d",
+      "files": 36,
+      "changedPaths": 32
+    },
+    {
+      "receipt": "/tmp/gm1557-owned-section-fix-delta-github-3e57c8da-20261017.json",
+      "sha256": "5e515312640c32d65b021780d812d51e3c62d9bd7e2724b0fd0e03ad1804ea02",
+      "base": "fdaf16665542e32c74d8d9c5acfb138da71a285d",
+      "sha": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "files": 20,
+      "changedPaths": 16
+    },
+    {
+      "receipt": "/tmp/gm1557-owned-section-prep-delta-github-c5c72320-20261017.json",
+      "sha256": "8e3df5f59a14c3a1679aae0d43c9fc87e4619227bb6b504fc850d4f9501cca2a",
+      "base": "3e57c8da1f3c943f90e9798ac541764fb790d9ed",
+      "sha": "c5c723203f968e432f4af132edd67e394eea1c99",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1557-owned-section-source-accepted-delta-github-59ac4bd7-20261017.json",
+      "sha256": "6ce1dbe3ca975320c5a704fdf6907dd061626d3150621b2e1bdee182834fe845",
+      "base": "c5c723203f968e432f4af132edd67e394eea1c99",
+      "sha": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-third-stop-delta-github-eeb4a318-20261017.json",
+      "sha256": "6432a567e994cdd4e555c0eb7ce3b4afcf6ebe79b9008102ec39d582aef7f680",
+      "base": "59ac4bd7567ad4988a903df73016242b7626c889",
+      "sha": "eeb4a318257969db3fea71e817aec3740fb8a5d0",
+      "files": 34,
+      "changedPaths": 30
+    },
+    {
+      "receipt": "/tmp/gm1557-repair-fix-delta-github-17043cf1-20261017.json",
+      "sha256": "47e29fb936d09d67b7b9e25d8e2427370b9fd972b5bb4d8705f3cee11a0cab19",
+      "base": "eeb4a318257969db3fea71e817aec3740fb8a5d0",
+      "sha": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "files": 20,
+      "changedPaths": 16
+    },
+    {
+      "receipt": "/tmp/gm1557-repair-prep-delta-github-9943f204-20261017.json",
+      "sha256": "d59b14a49866422816ab4d05b5742b516edf5c16d770150629dd96e9403334c8",
+      "base": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+      "sha": "9943f20482ff8cfcd0ea704ddf4db5f5c9e13b54",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1557-repair-source-accepted-delta-github-b821b685-20261017.json",
+      "sha256": "c74f3cd872019f2fe05dd0b5bf3f313c515b448c9c5dfeb88076132080552ff3",
+      "base": "9943f20482ff8cfcd0ea704ddf4db5f5c9e13b54",
+      "sha": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-fourth-stop-delta-github-9c82f489-20261017.json",
+      "sha256": "c9b74d1bdfdf8217870076b41ef4c22e25bd3faf82e8fef724ff1f61984c66ba",
+      "base": "b821b68549e9365281cf9c6e1167d924555f4d72",
+      "sha": "9c82f4898eacdb9e9f05b5ad00699d620c161640",
+      "files": 62,
+      "changedPaths": 58
+    },
+    {
+      "receipt": "/tmp/gm1557-fourth-causal-delta-github-9d1f57cf-20261017.json",
+      "sha256": "603505d7fbc595c7f6970039a02e409c0a67eb7be6e78a4052e57df8f4955dbd",
+      "base": "9c82f4898eacdb9e9f05b5ad00699d620c161640",
+      "sha": "9d1f57cf2aebc5d0d6e9d8fab30404e3f311fa90",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-orphan-fix-delta-github-c385a875-20261017.json",
+      "sha256": "bad1e4c7f894e0e56ae76a4b7540b1fb6ac25aba8d61dfd18d9a0cef51508a27",
+      "base": "9d1f57cf2aebc5d0d6e9d8fab30404e3f311fa90",
+      "sha": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-orphan-prep-delta-github-c09fa06b-20261017.json",
+      "sha256": "47a657c225c86c454c32454fcdc3032a786f997533f6420bcadd1d72ab6b3151",
+      "base": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+      "sha": "c09fa06baf563c740adced543f1dd796bd2077be",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/gm1557-orphan-source-accepted-delta-github-35d7375c-20261017.json",
+      "sha256": "3fb52322c186d9838574d68ec54c6435ec0c2b8bff7b4584611ec244b02f4e68",
+      "base": "c09fa06baf563c740adced543f1dd796bd2077be",
+      "sha": "35d7375cf3bbd379df8c8b7834e3f6546efda3cd",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1557-corrected-orphan-actual-delta-github-24fd72e9-20261017.json",
+      "sha256": "6f3606007a12856a8229f7216133601baa53032a89433e92d2274fc459cd9ea1",
+      "base": "35d7375cf3bbd379df8c8b7834e3f6546efda3cd",
+      "sha": "24fd72e9b03a2e061c58dec900b2f8975cc25727",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1557-final-A-delta-github-b6e1cdb3-20261017.json",
+      "sha256": "6289dd4ad23283cc43608aa29da25df8d64f32cf7eb7bb0c6ab6a142dfa58e23",
+      "base": "24fd72e9b03a2e061c58dec900b2f8975cc25727",
+      "sha": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-B-inventory-delta-github-a528e4be-20261017.json",
+      "sha256": "04ed8db19ae29001ca4bfd6aa68c7fe5be2a75633a35501367f2ea4253890a98",
+      "base": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+      "sha": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-B-tests-source-delta-github-4ab69c22-20261017.json",
+      "sha256": "c2c652b6ad978ac53ccfcf6e0a54f14d016e5e51cc210e920a56d1dcb3f48142",
+      "base": "a528e4be9f50b058990cf79098f26d9c23cf0366",
+      "sha": "4ab69c22b41533d94f74cd7ca43d65fc9a44869a",
+      "files": 31,
+      "changedPaths": 27
+    },
+    {
+      "receipt": "/tmp/gm1557-B-first-prep-delta-github-34b9bc7e-20261017.json",
+      "sha256": "953f1fc379da93e1b463cccac78cbd93c8c808b44a7676b32bc775a08c69a64c",
+      "base": "4ab69c22b41533d94f74cd7ca43d65fc9a44869a",
+      "sha": "34b9bc7ee90fe2dd51d4cca922c4a8f87a96be11",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/gm1557-B-corrected-tests-source-delta-github-324594a9-20261017.json",
+      "sha256": "b63ccc081afa2f93e6807f03eaf99661f60f98daefcee3f8a3b1716007044eef",
+      "base": "34b9bc7ee90fe2dd51d4cca922c4a8f87a96be11",
+      "sha": "324594a930dcb3aaf17aaf2441f47193f214957c",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1557-B-corrected-prep-delta-github-8207dc55-20261017.json",
+      "sha256": "83b46fd544fa3e7807b03337a2ef047036a74c8e4c9a8190193a21bc1020a9f7",
+      "base": "324594a930dcb3aaf17aaf2441f47193f214957c",
+      "sha": "8207dc55a173726a6f4af96d7ff53614473b70b2",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/gm1557-B-source-accepted-delta-github-0709cf29-20261017.json",
+      "sha256": "f266c536783a714b9ca65ec17a1c291eb38322153f089fe32b638e5262eda5e1",
+      "base": "8207dc55a173726a6f4af96d7ff53614473b70b2",
+      "sha": "0709cf29646c0e2b40643ea6f138a5d01b3e9155",
+      "files": 12,
+      "changedPaths": 8
+    },
+    {
+      "receipt": "/tmp/gm1557-B-first-red-delta-github-799f1c93-20261017.json",
+      "sha256": "970c4bcf9cd76df50ffaa6afa6c1388115880687b0b46436ba82516cec303b37",
+      "base": "0709cf29646c0e2b40643ea6f138a5d01b3e9155",
+      "sha": "799f1c93b19b8e55be80f913f84e043ee5bb42c6",
+      "files": 30,
+      "changedPaths": 26
+    },
+    {
+      "receipt": "/tmp/gm1557-B-red-accepted-delta-github-6b2d5a90-20261017.json",
+      "sha256": "75be9f9c7ae07188294f62657c1f1ad39ff7d9db3577dabb431c7e1b30ab8955",
+      "base": "799f1c93b19b8e55be80f913f84e043ee5bb42c6",
+      "sha": "6b2d5a905022977e9ae4cd1c7b66f700ce2f5f77",
+      "files": 12,
+      "changedPaths": 8
+    },
+    {
+      "receipt": "/tmp/gm1557-B-authoring-stop-delta-github-8daf2089-20261017.json",
+      "sha256": "67310e3e5a74060e1b97980a0a10290d463cb05375f08ed49b0de3bebe8ec727",
+      "base": "6b2d5a905022977e9ae4cd1c7b66f700ce2f5f77",
+      "sha": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+      "files": 39,
+      "changedPaths": 35
+    },
+    {
+      "receipt": "/tmp/gm1557-B-corrected-authoring-delta-github-69dc7c92-20261017.json",
+      "sha256": "a24addb2c63054bf54a87983e33f24aa8cc098a309171b4c0efd2477272e0ae5",
+      "base": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+      "sha": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+      "files": 19,
+      "changedPaths": 15
+    },
+    {
+      "receipt": "/tmp/gm1557-B-production-prep-delta-github-245a4940-20261017.json",
+      "sha256": "cb023d5bd16a090739cf6d501e93c417571af364e69ed1162bf4d11ce1f7d23f",
+      "base": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+      "sha": "245a4940b99245b304cbea2aacd1a2bd61bc5fa0",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1557-B-source-accepted-delta-github-a8e0456f-20261017.json",
+      "sha256": "fcf11293d2dbe5755040152fbe4bc3914f2b5965f00aa738ae3260c31eb0713e",
+      "base": "245a4940b99245b304cbea2aacd1a2bd61bc5fa0",
+      "sha": "a8e0456fd1208984b23a0c6813d3d199a900411c",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1557-B-first-green-delta-github-99e38610-20261017.json",
+      "sha256": "7ba96da3cbb58a8404814abbc784caf17c26d4fef646ae459a2bdc58dfea814a",
+      "base": "a8e0456fd1208984b23a0c6813d3d199a900411c",
+      "sha": "99e38610c2c9aec2eb4753a3567b0524d669e0d9",
+      "files": 91,
+      "changedPaths": 87
+    },
+    {
+      "receipt": "/tmp/gm1557-B-final-delta-github-f458631e-20261017.json",
+      "sha256": "e88580c3be413d7e3c976217b859634b993d82b7437d50bbe9871afc8a115863",
+      "base": "99e38610c2c9aec2eb4753a3567b0524d669e0d9",
+      "sha": "f458631e15cb49bebdb7b1fefe72ae5b1fc6d423",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/gm1557-final-handoff-wip-delta-github-a39c299e-20261017.json",
+      "sha256": "cef4e41b62967363e8c2efddfbcf67af89f93c80361c52900ab27400f36a1e6e",
+      "base": "f458631e15cb49bebdb7b1fefe72ae5b1fc6d423",
+      "sha": "a39c299e52c80dfbbe1f7f2fac31505029dbee46",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-final-handoff-wording-delta-github-9fcab07b-20261017.json",
+      "sha256": "91c5364cd3a7b9a04eb0afe7372f8ff7822b36acecc7275ea4f15d24807866bb",
+      "base": "a39c299e52c80dfbbe1f7f2fac31505029dbee46",
+      "sha": "9fcab07b653e1f4453788f67eb14fc1621909f66",
+      "files": 7,
+      "changedPaths": 3
+    },
+    {
+      "receipt": "/tmp/gm1557-final-handoff-review-delta-github-8520f557-20261017.json",
+      "sha256": "f87c51bd7c48516467feb155c3dcd6654aefee129af47f76dbd349336422dbf1",
+      "base": "9fcab07b653e1f4453788f67eb14fc1621909f66",
+      "sha": "8520f55719787eddb63dbd1254e2394638e83ecd",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1557-final-handoff-completion-delta-github-00fd3e1d-20261017.json",
+      "sha256": "0e6d3ebb4096daeea9eb82b5762d86be5ec1be215d6ec4241d25882094d50f36",
+      "base": "8520f55719787eddb63dbd1254e2394638e83ecd",
+      "sha": "00fd3e1d9272d21535afa5f9b2d3b03c52a7781e",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1557-final-handoff-receipt-delta-github-46ff637a-20261017.json",
+      "sha256": "c61deeec889e4b81e19df66865e70db6ccf099322205b129d84704ab0031ab81",
+      "base": "00fd3e1d9272d21535afa5f9b2d3b03c52a7781e",
+      "sha": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1558-preflight-delta-github-1634a802-20261017.json",
+      "sha256": "50659449bc3c4b06c25bf25597be5dc4e0eac6326393288765eaf7fad5e78af1",
+      "base": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+      "sha": "1634a802f474b24e003061659a361c32282af152",
+      "files": 13,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g0-accepted-delta-github-c83396d2-20261017.json",
+      "sha256": "a3f70e137325959189f5d09bfdc83a4c952ed3d28f4e3297d62793f8d3938ec8",
+      "base": "1634a802f474b24e003061659a361c32282af152",
+      "sha": "c83396d2604b4738af958e83553683e466a0be27",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-release-delta-github-cffc2df9-20261017.json",
+      "sha256": "d377e3705adf8d142adf4eccb6aa5ba047bfbe8a3766269f8015a5646069d0eb",
+      "base": "c83396d2604b4738af958e83553683e466a0be27",
+      "sha": "cffc2df96390561c8bb7cccac8b3cc6605adb2ea",
+      "files": 11,
+      "changedPaths": 7
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-partial-delta-github-3c574848-20261017.json",
+      "sha256": "0558df02841ba0d3ec119286a5156961b3515438b692076446604237652c73bf",
+      "base": "cffc2df96390561c8bb7cccac8b3cc6605adb2ea",
+      "sha": "3c57484848cece8553bff67bbddbb305defa0db8",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-concrete-delta-github-05d481d6-20261017.json",
+      "sha256": "ba060f08777357fe45d8943fa11fae14f92dbd5292728d1c9dd7473ad705680d",
+      "base": "3c57484848cece8553bff67bbddbb305defa0db8",
+      "sha": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+      "files": 19,
+      "changedPaths": 15
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-preparation-delta-github-de37954f-20261017.json",
+      "sha256": "50a4b9ae5c1a15660c7dbceb903124cf20243379c5039ec28d842781a6e5d116",
+      "base": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+      "sha": "de37954f4692a1c49d9183b0e40708f5a10afdde",
+      "files": 29,
+      "changedPaths": 25
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-capture-decision-delta-github-fdf9ddc6-20261017.json",
+      "sha256": "c69648061ec3d6fdfc21d45efd2c6f8db9b3e398be5bbaa1b27575e320b0b58d",
+      "base": "de37954f4692a1c49d9183b0e40708f5a10afdde",
+      "sha": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1558-first-capture-stop-delta-github-91a5f6b8-20261017.json",
+      "sha256": "eee66e345c8d36ff0e0935af89d629b94eeb4cc65f55efb1ff7d4159d0418cc7",
+      "base": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+      "sha": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+      "files": 20,
+      "changedPaths": 16
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-correction-delta-github-0b721c7c-20261017.json",
+      "sha256": "df6ad73fb0588b7559208b95921a53e3cdd44bb72a92ac2c65dd46873465d605",
+      "base": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+      "sha": "0b721c7c37207f1f1622172351fd515150eaf18d",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-corrected-preparation-delta-github-230d5980-20261017.json",
+      "sha256": "649d8c47d232a104af4683ecaaccc0ed61e737421d877fc7bee3ad83b7fcc7f6",
+      "base": "0b721c7c37207f1f1622172351fd515150eaf18d",
+      "sha": "230d598048e5e6521690aa9431d746f767d6fd21",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-corrected-source-decision-delta-github-b2e51273-20261017.json",
+      "sha256": "9c207ed02ab8fa3a731216946f0d531da1a35ab402f01586188eaeb0835375c3",
+      "base": "230d598048e5e6521690aa9431d746f767d6fd21",
+      "sha": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-corrected-capture-delta-github-46f916bd-20261017.json",
+      "sha256": "7c665efb8616e5480e37c362e8d22f82493702d9a6deac3bad5f78ac526d296c",
+      "base": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+      "sha": "46f916bd8b7848285d4ec4a369a2a7668f7219b1",
+      "files": 24,
+      "changedPaths": 20
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-data-selector-delta-github-1f978a82-20261017.json",
+      "sha256": "6a0d344c28b6a5f837a4971e5abcfe52185dcf4538c3c37a2b17e92615281138",
+      "base": "46f916bd8b7848285d4ec4a369a2a7668f7219b1",
+      "sha": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-data-selector-prep-delta-github-7a3bf9a0-20261017.json",
+      "sha256": "8f57c5b875f73123e6fd60d916ef4a8e0ed13ba2f78f0f14e315f777a5393877",
+      "base": "1f978a8231ebbd40dc31db8b5d5dde9d1a7f251f",
+      "sha": "7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-finite-red-decision-delta-github-df3ee99c-20261017.json",
+      "sha256": "f30c3be8dc5323c337a3cc09c0ed82a83723ac7c3cdd785bd8a3ea17cae5f097",
+      "base": "7a3bf9a07c9c108a68ee0ba404e6b6f32d092d4c",
+      "sha": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-first-consumer-stop-delta-github-589cdcd5-20261017.json",
+      "sha256": "c714e87bce405677c4f64a995b5f8798907b79d7204a83ed2bf00c0abcfba107",
+      "base": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+      "sha": "589cdcd52ded67313e11d66909767be43d74f855",
+      "files": 58,
+      "changedPaths": 54
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-s04-source-delta-github-72a29489-20261017.json",
+      "sha256": "9f52e7da0034d1d6e8a2f0550efae8be4351b2f3500a939cb2f7a0012c0e36f1",
+      "base": "589cdcd52ded67313e11d66909767be43d74f855",
+      "sha": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+      "files": 19,
+      "changedPaths": 15
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-s04-prep-delta-github-89023323-20261017.json",
+      "sha256": "cc4c0d8cb4e90d0577ee29e292a27c1802484c494665d2692524f2fec974503a",
+      "base": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+      "sha": "890233239b4aff5a0ea6122efc9de9c623f7d711",
+      "files": 29,
+      "changedPaths": 25
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-s04-decision-delta-github-5e6f57bb-20261017.json",
+      "sha256": "e9a135904e89becc6727125b9337254281eaefb37747c8dd0640645452838c09",
+      "base": "890233239b4aff5a0ea6122efc9de9c623f7d711",
+      "sha": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-first-s04-consumers-delta-github-d36ee9a0-20261017.json",
+      "sha256": "6a9c9c01f4b343f8a4bcb36765f166b633636ac288e80a34c32eab2f273a8aeb",
+      "base": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+      "sha": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+      "files": 34,
+      "changedPaths": 30
+    },
+    {
+      "receipt": "/tmp/gm1558-g1-evidence-accepted-delta-github-02393166-20261017.json",
+      "sha256": "6432b834a1842e6d577e02028431b177157841bb5970a136962a771e74282cd6",
+      "base": "d36ee9a04b8c6ac268464893f9a07be5d59ac044",
+      "sha": "023931661391926398a5c5ebe0897a66985235b2",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-partial-source-delta-github-ee2433bc-20261017.json",
+      "sha256": "0fbafb7d806a130a806a0df6277c29b306524f328f252377de518de95e2b15df",
+      "base": "023931661391926398a5c5ebe0897a66985235b2",
+      "sha": "ee2433bca20d9af4f11bf61fcd1ee35dd526859d",
+      "files": 32,
+      "changedPaths": 36
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-coherent-source-delta-github-77547b99-20261017.json",
+      "sha256": "500b1bd0fdfa4c5d1271e9cfd8aac144a44811db9a4e388e25c37e702fa4d57a",
+      "base": "ee2433bca20d9af4f11bf61fcd1ee35dd526859d",
+      "sha": "77547b99851d37f68313e31d9b573c4d578235f6",
+      "files": 38,
+      "changedPaths": 44
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-r02-r03-source-delta-github-ce7cf012-20261017.json",
+      "sha256": "c0b3965e1fe951cc35e86110ac3a3a28886919df1852fc815b93241af07feced",
+      "base": "77547b99851d37f68313e31d9b573c4d578235f6",
+      "sha": "ce7cf01204c55016fc8da636e603690155f008a9",
+      "files": 18,
+      "changedPaths": 14
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-first-frontend-stop-delta-github-9251c03c-20261017.json",
+      "sha256": "af3390ee29a27990ce9aa0089f5685ad6e2ad8183703ba90626cf3f488159fa5",
+      "base": "ce7cf01204c55016fc8da636e603690155f008a9",
+      "sha": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-refined-r03-source-delta-github-110e7ac5-20261017.json",
+      "sha256": "e80c1f81a29c88b7a43a9b3e65c610a1a8b53fe38da01633420628de2c4ef4d2",
+      "base": "9251c03cf86f2de74f66dda7f445965e96fd8882",
+      "sha": "110e7ac516789fb923adefde04997c04b4685ed7",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-r04-source-delta-github-555ceae6-20261017.json",
+      "sha256": "61b372fd06a617a4c9b0e54cc685ff2f726be202e032b87c257ebda317325f04",
+      "base": "110e7ac516789fb923adefde04997c04b4685ed7",
+      "sha": "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-first-managed-preparation-delta-github-bc6c28a1-20261017.json",
+      "sha256": "60bebd2034060d2742259d719b349312f1b3aefa0893ead93e3bef68c178dafd",
+      "base": "555ceae66e10300d3cf76ff849fb110b79b15549",
+      "sha": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+      "files": 34,
+      "changedPaths": 30
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-source-accepted-delta-github-d09b18c9-20261017.json",
+      "sha256": "62218cf0f00a104e47f5873d04b64075a02093bfec0c61a4a278bbdf8061dfc7",
+      "base": "bc6c28a139c86d858e4f24222716669bd469ca4f",
+      "sha": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+      "files": 17,
+      "changedPaths": 13
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-first-green-stop-delta-github-db749e46-20261017.json",
+      "sha256": "bb28fb32d704f04779f131d36b0f7b6f6a1d504705ea8778db5e6ebce9c35f23",
+      "base": "d09b18c9ab7d877146eab3556b369ac51f1fa60f",
+      "sha": "db749e462e88edbdc0690f57e68efefa0078e262",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e01-source-delta-github-f07643a8-20261017.json",
+      "sha256": "22af2b5976437a1fa561a8bdebce091e1f950dbb52207d2e2cca53e07e3447c3",
+      "base": "db749e462e88edbdc0690f57e68efefa0078e262",
+      "sha": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e01-prep-delta-github-036d1262-20261017.json",
+      "sha256": "443bff217584d880d6cfddea3d6764faded82e69c470b72f9c8a4e350b4ff7f8",
+      "base": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+      "sha": "036d12620f616c20fd24f786e3a8b0576981937b",
+      "files": 29,
+      "changedPaths": 25
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e01-accepted-source-delta-github-c5e62023-20261017.json",
+      "sha256": "c46dadf61eec8f41285db6b78d8d05c436fbc907c7f81c980fe667667012d707",
+      "base": "036d12620f616c20fd24f786e3a8b0576981937b",
+      "sha": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e01-first-green-stop-delta-github-386ca3c2-20261017.json",
+      "sha256": "cb40e8158ba4571eac67982aaebce8de80587fcf227d2d38aa35433edad62eec",
+      "base": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+      "sha": "386ca3c206d4ea7564374470acdb5624e848b269",
+      "files": 27,
+      "changedPaths": 23
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-source-delta-github-17329db6-20261017.json",
+      "sha256": "6ab933673a6c82bc75b0875097b96eb3305eda6a4bec0099862f26a16e08cd66",
+      "base": "386ca3c206d4ea7564374470acdb5624e848b269",
+      "sha": "17329db678313999b77ef53660d7ffb8291bcff8",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-prep-stop-delta-github-a208c99d-20261017.json",
+      "sha256": "224431959aef5657eee23f4085260a28ac2c329217d01e8f466e1771a56a9434",
+      "base": "17329db678313999b77ef53660d7ffb8291bcff8",
+      "sha": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+      "files": 25,
+      "changedPaths": 21
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-p01-repair-delta-github-5441e49f-20261017.json",
+      "sha256": "bfcfb18baaba899a3d3c1add99fce1bde826240b3018de3d36bd5684ed290df3",
+      "base": "a208c99d7ab62b2239ae770724ae20d8c6f13bea",
+      "sha": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-prep-delta-github-f3eee2a1-20261017.json",
+      "sha256": "8f7782404af01b7fba27a413481137269e62bbef9fb7cdb9d75b1cd857417175",
+      "base": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+      "sha": "f3eee2a1c2b9c9bd3cae1d666a4ba1ce3d4c2ba0",
+      "files": 45,
+      "changedPaths": 41
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-accepted-source-delta-github-d6318f0e-20261017.json",
+      "sha256": "cc19c96ddee147d2286c2d8298d8b7b06088bc8512cda84bb123ad7231086665",
+      "base": "f3eee2a1c2b9c9bd3cae1d666a4ba1ce3d4c2ba0",
+      "sha": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+      "files": 15,
+      "changedPaths": 11
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-e02-first-remaining-delta-github-fadb31a6-20261017.json",
+      "sha256": "f5c9049f859bf542722cc45900cad42d6e8fc78f072e673d6977dd4ab845419c",
+      "base": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+      "sha": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+      "files": 55,
+      "changedPaths": 51
+    },
+    {
+      "receipt": "/tmp/gm1558-g2-root-browser-delta-github-b18aae9a-20261017.json",
+      "sha256": "31bdf52a72edba52176a9fc791a107a5928765555e04b1dc3f05035c9dfa5936",
+      "base": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+      "sha": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+      "files": 26,
+      "changedPaths": 22
+    },
+    {
+      "receipt": "/tmp/gm1558-final-handoff-delta-github-a82b3d84-20261017.json",
+      "sha256": "5b1b54866853e8b3cad1e733405bd4b396d7cdefd71032464762f426094c94ec",
+      "base": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+      "sha": "a82b3d8439f76f83baade6df8516e78eea86e546",
+      "files": 18,
+      "changedPaths": 14
+    },
+    {
+      "receipt": "/tmp/gm1559-audit-candidate-delta-github-3930bd49-20261017.json",
+      "sha256": "d3a426be742b4f8b8b21aa546f7cbaf686cc40c9ab35a8b3e40d5020205ad51b",
+      "base": "a82b3d8439f76f83baade6df8516e78eea86e546",
+      "sha": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+      "files": 17,
+      "changedPaths": 14
+    },
+    {
+      "receipt": "/tmp/gm1559-a01-amendment-delta-github-25713634-20261017.json",
+      "sha256": "8cb4ff6312fe6ef11ac4da40ae26eba7edd6f5c56ccd0abd1465005920ab40f4",
+      "base": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+      "sha": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+      "files": 18,
+      "changedPaths": 14
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-release-delta-github-73238572-20261017.json",
+      "sha256": "ee9fd230c4d6ec039bd89f03623148d4d0e578c7c443b1bdf55576e6bce3ae38",
+      "base": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+      "sha": "732385721e0804032d0818f3f31c9e4dc13ba140",
+      "files": 17,
+      "changedPaths": 13
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-partial-tests-delta-github-eda1a34c-20261017.json",
+      "sha256": "2024fd9c03800db8d43268392e45a23f01f09a419d4f8c4bad36cd64e4d8e899",
+      "base": "732385721e0804032d0818f3f31c9e4dc13ba140",
+      "sha": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
+      "files": 10,
+      "changedPaths": 6
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-component-candidate-delta-github-d473ed33-20261017.json",
+      "sha256": "f5a46ffec45ef85616cb9ea6b0e1408feb30021796b96040638b218528731d03",
+      "base": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
+      "sha": "d473ed332fe7443f93759e44973ba963a790a13b",
+      "files": 25,
+      "changedPaths": 21
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-preparation-delta-github-837ff3a8-20261017.json",
+      "sha256": "2670f8ce5e44be17a3b24ea2276539f49c6d9d3c5235a847623a125184a7622a",
+      "base": "d473ed332fe7443f93759e44973ba963a790a13b",
+      "sha": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+      "files": 31,
+      "changedPaths": 27
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-source-decision-delta-github-360b3a39-20261017.json",
+      "sha256": "d5cbdffce0e30d17e34bf4a8a01dc5fd3ca721d5c1e637fac61f3aff1c22ec39",
+      "base": "837ff3a8ab9a81c483242d0875197dd5c869549e",
+      "sha": "360b3a39f725f391e96d73c29457d9a32fd73596",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "receipt": "/tmp/gm1559-g1-first-engine2-delta-github-a6f181af-20261017.json",
+      "sha256": "12816fccff0f5972b9e4deff8dc9f2b724695de93389687d836b30e020b6704a",
+      "base": "360b3a39f725f391e96d73c29457d9a32fd73596",
+      "sha": "a6f181af7642868036627bfac7509ab1c95c94fa",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1559-lifecycle-priority-delta-github-1fd2f480-20261017.json",
+      "sha256": "bd5f2ad64452d764b8067ad559669d0e499c9dc6e1e52d0ee90175f119448733",
+      "base": "a6f181af7642868036627bfac7509ab1c95c94fa",
+      "sha": "1fd2f4803be838bbd82466100f591f6753d2c27d",
+      "files": 18,
+      "changedPaths": 14
+    },
+    {
+      "receipt": "/tmp/gm1559-remaining-a01-source-delta-github-981ae845-20261017.json",
+      "sha256": "5be7e087994a1ff5b020e23e602b49af059fec97c76ce2e906c1dc57eb445435",
+      "base": "1fd2f4803be838bbd82466100f591f6753d2c27d",
+      "sha": "981ae845ae09081148434e6db1455e07951c173f",
+      "files": 13,
+      "changedPaths": 9
+    },
+    {
+      "receipt": "/tmp/gm1559-first-live5-delta-github-52a2e71e-20261017.json",
+      "sha256": "1584c61d7088b96ba2b6848e6d8adcac3e49e2089f4d3f396c1ddb329b30a8bb",
+      "base": "981ae845ae09081148434e6db1455e07951c173f",
+      "sha": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1559-first-save1-delta-github-6b4a54ef-20261017.json",
+      "sha256": "ad435b73e0912f3ba5c4d3a9b698e5ef63e3b83a29eb00aa31eb509d3ad8a0bf",
+      "base": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+      "sha": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+      "files": 22,
+      "changedPaths": 18
+    },
+    {
+      "receipt": "/tmp/gm1559-lifecycle-guards-source-delta-github-7ff66d81-20261017.json",
+      "sha256": "69e8c1c317089bb2ef018d148d168af32735065c61539f86640fb5793dde3411",
+      "base": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+      "sha": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1559-lifecycle-guard-prep-delta-github-ea5f605b-20261017.json",
+      "sha256": "b09dd494cbe681ef577f93670c20b513c633a14d11e8fe1e883668a3e0bb8595",
+      "base": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+      "sha": "ea5f605b2a9618feb2b66757433babbf32c35f9b",
+      "files": 41,
+      "changedPaths": 37
+    },
+    {
+      "receipt": "/tmp/gm1559-lifecycle-guards-source-decision-delta-github-ed09dc0e-20261017.json",
+      "sha256": "830477ef1aabac892df4349918fd4bb578d456179f93d0050eca87a2c76273d5",
+      "base": "ea5f605b2a9618feb2b66757433babbf32c35f9b",
+      "sha": "ed09dc0e44b69be41b6ce6592a4a66e79730a7a1",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1559-private16-first-stop-delta-github-0771e125-20261017.json",
+      "sha256": "849675d0df4cfbcf9b452ddb31eedfb4aedb3187cdb6f4ba1487b974af78ff5d",
+      "base": "ed09dc0e44b69be41b6ce6592a4a66e79730a7a1",
+      "sha": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+      "files": 23,
+      "changedPaths": 19
+    },
+    {
+      "receipt": "/tmp/gm1559-private-owner-fix-source-delta-github-fb6f8989-20261017.json",
+      "sha256": "521755de2666e3ab314bbf42da83e4773f811c582f5065d290c51de6d8a1b65a",
+      "base": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+      "sha": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1559-ownerfix-prep-delta-github-5ace63d1-20261017.json",
+      "sha256": "1bfa2a635b11da0c84146b28fa61a7ed583d4009fb6c001921afd20c750162ef",
+      "base": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "sha": "5ace63d19ba1c228106688a806421bcd50806b43",
+      "files": 36,
+      "changedPaths": 32
+    },
+    {
+      "receipt": "/tmp/gm1559-ownerfix-source-decision-delta-github-25e33349-20261017.json",
+      "sha256": "28bcd4e81448bd94f74cb00e692dcb450cd141c47a101e05daadaa1ecb9fbfcb",
+      "base": "5ace63d19ba1c228106688a806421bcd50806b43",
+      "sha": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+      "files": 14,
+      "changedPaths": 10
+    },
+    {
+      "receipt": "/tmp/gm1559-current-guards-raw-delta-github-1630c4e8-20261017.json",
+      "sha256": "308b989d36bae3ee479f0ff8c122cb2710bd677acdf7022b1210f59cbcfd3921",
+      "base": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+      "sha": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
+      "files": 170,
+      "changedPaths": 166
+    }
+  ],
+  "trackedPaths": 56620,
+  "newReceiptIndependentlyChecked": "/tmp/gm1559-current-guards-raw-delta-github-1630c4e8-20261017.json",
+  "verification": "Only immediate new recovered delta bytes/SHA256/Git blob/mode/Gitshow/set; retained receipts hashes+metadata composition exact entire tree. No prior accepted source-byte/base/clone/runtime replay.",
+  "verifiedUtc": "2026-10-17T15:10:01.939871+00:00"
+}

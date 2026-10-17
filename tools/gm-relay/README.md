@@ -7,6 +7,22 @@ local worker boundary for tests and future **separately authorized** API adapter
 It contains no model client, credentials, network request or provider integration.
 It cannot proxy a forbidden endpoint or qualify arbitrary APIs.
 
+## Inactive operational path reservation (#1559 lifecycle stage)
+
+`game_state/control/gm_prompt_delivery.json` and
+`game_state/control/gm_relay_apply_receipt.json` are reserved client-owned
+operational paths. The GM must neither write them nor include them in
+FilesModified or a repair resubmission. Ordinary rollback, live snapshots and
+spiritual draft inputs exclude only these two exact names; save/load treats them
+as ephemeral so a replaced session cannot inherit their future authority.
+Ordinary neighboring names retain their existing behavior.
+
+This stage introduces no record schema, producer, trusted reader, dispatch,
+application receipt, replay/recovery or sequence protocol. These reserved names
+are inactive and their presence grants no authority or accepted-turn status.
+Existing relay limits and exchange behavior below still apply; remaining #1559
+work is deferred. No gameplay or Mortal/afterlife GM-authored output changes.
+
 ## Install and configure for a developer test
 
 Copy the **whole folder** to an absolute path, including the fixed PowerShell

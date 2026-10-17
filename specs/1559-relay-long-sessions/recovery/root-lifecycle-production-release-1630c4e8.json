@@ -1,0 +1,21 @@
+{
+  "kind": "ROOT_BOUNDED_INACTIVE_LIFECYCLE_PRODUCTION_RELEASE",
+  "utc": "2026-10-17T15:14:22.165678+00:00",
+  "carrier": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
+  "current32": {
+    "causalRED": 16,
+    "positivePASS": 16,
+    "distinct": 32
+  },
+  "baseline8Retained": true,
+  "noDoubleCountOriginal0771": true,
+  "evidenceReports": {
+    "gm1559-ownerfix-guards-causal-independent-20261017.md": "a98914201b27659ee5504e0712790cca0d197d6c4a5b1a18c03ee0b9027708b9",
+    "gm1559-ownerfix-guards-causal-independent-20261017.json": "7c76ae32cbcc40d14555ecd0165dc085b0717911ebacf858547d5d8ee8ef0544",
+    "gm1559-ownerfix-guards-causal-independent-check-20261017.json": "5b2bc06f78a0ec1a11212efec19f18f2222f38dd32cbbb169469484c73d8b347"
+  },
+  "rootRawReadbackSha256": "b63f3d543a607ec471a8375966e57070183c3a56b4eac768632a00e2f652b9bc",
+  "sourceProof": "Root independently inspected raw all4owners and actualexisting8policyowners; complete140delta56620tree verified.",
+  "release": "Implement ONLY coherent8existingproductionpolicyowners+README exacttwo-name inactive reservation; persist independentdecision+LOWwordingfix+WIP in same bounded commit/push/completeGithubrecovery beforefreshprep. No relay producer/authority/newmodel/runtime integration.",
+  "next": "Root concrete diff review then separately release freshselectedbuildPlanOnly0; independent productionSOURCE plus freshPREP before actual47. No extra metadata-only decisioncheckpoint required. Fullrelaydeferred; afterverifiedstage explicitwoundsPd.3dhandoff."
+}

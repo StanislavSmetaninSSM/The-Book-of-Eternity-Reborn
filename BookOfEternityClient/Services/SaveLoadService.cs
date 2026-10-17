@@ -79,6 +79,8 @@ public partial class SaveLoadService
         "game_state/control/ascension.json",
         ProgressionScheduleService.ReportPath,
         "game_state/control/gm_cli_window_binding.json",
+        "game_state/control/gm_prompt_delivery.json",
+        "game_state/control/gm_relay_apply_receipt.json",
         "game_state/control/gm_bridge_status.json",
         LocalUiSessionLockService.LockPath,
         ResourceMaterializationContract.CommandPath,

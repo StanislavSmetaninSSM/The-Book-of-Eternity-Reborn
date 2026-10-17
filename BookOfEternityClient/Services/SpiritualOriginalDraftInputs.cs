@@ -133,7 +133,9 @@ internal sealed class SpiritualOriginalDraftInputs
         if (!path.StartsWith("game_state/control/", StringComparison.OrdinalIgnoreCase))
             return true;
         var control = path["game_state/control/".Length..];
-        return !control.Equals("pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) &&
+        return !control.Equals("gm_prompt_delivery.json", StringComparison.OrdinalIgnoreCase) &&
+               !control.Equals("gm_relay_apply_receipt.json", StringComparison.OrdinalIgnoreCase) &&
+               !control.Equals("pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) &&
                !control.Equals("pending_turn_snapshot.authority.json", StringComparison.OrdinalIgnoreCase) &&
                !control.StartsWith("pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) &&
                !path.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) &&

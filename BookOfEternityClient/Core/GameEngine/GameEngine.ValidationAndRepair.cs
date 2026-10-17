@@ -8872,6 +8872,8 @@ public partial class GameEngine
             string.Equals(normalized, "game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(normalized, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(normalized, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/gm_prompt_delivery.json", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(normalized, "game_state/control/gm_relay_apply_receipt.json", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(normalized, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase))
         {
             return false;

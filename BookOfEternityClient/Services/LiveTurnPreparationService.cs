@@ -38,6 +38,7 @@ internal sealed class LiveTurnPreparationService
     [
         TurnRequestPath, PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
         PendingTurnStateService.PendingDiceStatePath,
+        "game_state/control/gm_prompt_delivery.json", "game_state/control/gm_relay_apply_receipt.json",
         "game_state/control/gm_bridge_status.json", "game_state/control/gm_daemon_status.json",
         "game_state/control/gm_trajectory_ledger.jsonl", "game_state/control/validation_repair_request.json",
         "game_state/control/validation_repair_ready.json", "game_state/control/terminal_protocol_failure_request.json",

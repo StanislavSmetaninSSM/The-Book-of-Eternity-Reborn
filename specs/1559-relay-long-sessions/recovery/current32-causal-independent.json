@@ -1,0 +1,219 @@
+{
+  "kind": "INDEPENDENT_COMBINED_CORRECTED32_LIFECYCLE_CAUSAL_EVIDENCE_REVIEW",
+  "createdUtc": "2026-10-17T15:13:53.464281+00:00",
+  "carrier": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "unchangedProductSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdicts": {
+    "EVIDENCE": "ACCEPT_32_COMPLETE_DISTINCT_ROWS_16_CAUSAL_RED_16_POSITIVE",
+    "F01_ACTUAL_REQUALIFICATION": "FOUR_CORRECTED_SURFACE_ROWS_REACHED_REAL_VALIDATIONISSUE_PREDICATE_AND_FINAL_ORACLES",
+    "SOURCE": "RETAIN_ACCEPTED_TEST_SOURCE_AND_UNCHANGED_PRODUCT; NO_PRODUCTION_PATCH_REVIEWED",
+    "NEXT_ENGINEERING": "CAUSAL_EVIDENCE_SUPPORTS_ROOT_CONSIDERATION_OF_BOUNDED_INACTIVE_LIFECYCLE_IMPLEMENTATION",
+    "RUNTIME_OR_PRODUCTION_AUTHORIZATION": "NONE_FROM_THIS_REPORT"
+  },
+  "materialBlockers": [],
+  "groups": [
+    {
+      "owner": "private16",
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-private16-25e33349-20261017/record.json",
+      "recordSha256": "08de6e9529931dd52bbd72f77715d58126ec82425eeb8a3353b6bf98fed36a97",
+      "nativeExit": 1,
+      "wallSeconds": 4.85071185400011,
+      "tests": {
+        "Total": 16,
+        "Executed": 16,
+        "Passed": 8,
+        "Failed": 8
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 16,
+        "CompletedCases": 16,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "archiveSha256": "55a4b19833c0df480a161d739ff4bf269c8ec4bc16bd00bf5a982c60fbbdbb1f",
+      "rawChains": 8
+    },
+    {
+      "owner": "enginealias4",
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-enginealias4-25e33349-20261017/record.json",
+      "recordSha256": "b5e2957323563591737f5f73e945c5b4eb0eece15dbe91389827f247251edec9",
+      "nativeExit": 1,
+      "wallSeconds": 5.239279528002953,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 2,
+        "Failed": 2
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "archiveSha256": "99e629c92ff8ed0034cb02b70c45bd531424abb276dd2353f4ed38a54fe93472",
+      "rawChains": 8
+    },
+    {
+      "owner": "livealias4",
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-livealias4-25e33349-20261017/record.json",
+      "recordSha256": "8afcebdbeb2df77f0f6463592ccce362e5dc4863210421746d697e0e80b787d2",
+      "nativeExit": 1,
+      "wallSeconds": 5.6070355720003136,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 2,
+        "Failed": 2
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "archiveSha256": "f975943b927daae64c3bd67129101ec9b88ccd26b04832642d9279294f120e71",
+      "rawChains": 8
+    },
+    {
+      "owner": "helper8",
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-helper8-25e33349-20261017/record.json",
+      "recordSha256": "c9d64a86e4f68993c03dbffc4f6d8c222a3a10b9362c5916f9a9379647f70c55",
+      "nativeExit": 1,
+      "wallSeconds": 20.297060431999853,
+      "tests": {
+        "Total": 8,
+        "Executed": 8,
+        "Passed": 4,
+        "Failed": 4
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 8,
+        "CompletedCases": 8,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "archiveSha256": "53261be103e02f1451571cc90afaed1abf8d8cb4f4587129cb189d322c190702",
+      "rawChains": 120
+    }
+  ],
+  "classification": [
+    {
+      "scope": "private16",
+      "causalRed": 8,
+      "positive": 8,
+      "prerequisites": "Actual declaring owner, bool return and one string parameter validated; all16 invocation witnesses contain exact owner/method/path/expected/actual. Corrected surface owner is ValidationIssue.",
+      "failure": "Eight exact-name values differ at Equal46; eight suffix values match. No NotNull/signature/import failure."
+    },
+    {
+      "scope": "enginealias4",
+      "causalRed": 2,
+      "positive": "Both suffix rows reach exact physical rollback-byte and nonempty-backup assertions.",
+      "prerequisites": "Actual physical upper-case GM aliases or suffixes; real constructed engine CreatePreTurnBackup returned; seeded target bytes remain exact before failing assertion.",
+      "failure": "Two aliases fail IsType40 because failure is null. Raw observes two backups and actual mutation paths including each alias rollback.",
+      "limit": "Later alias message/no-mutation/no-backup assertions are unreached; no successful rejection is claimed."
+    },
+    {
+      "scope": "livealias4",
+      "causalRed": 2,
+      "positive": "Both suffix rows reach manifest.Files,RollbackBaselineFiles and RequestId assertions.",
+      "prerequisites": "Real valid canonical setup and PrepareAsync; all four runner-level witnesses matched to exact row path, failure null, publication1,15before/25after files and11changed image paths. Target-byte equality precedes failing assertion.",
+      "failure": "Two physical aliases fail IsType46; raw includes their actual pending snapshot copy and request publication.",
+      "limit": "Full before/after bytes are not retained; later alias refusal/no-publication/full-image-equality assertions are unreached. Global stdout receipts are not represented as per-result output."
+    },
+    {
+      "scope": "helper8",
+      "causalRed": 4,
+      "positive": "Suffix Write reaches parsed gm-after marker and changed hash; suffix FilesModified reaches exact unchanged-byte assertion.",
+      "prerequisites": "Actual maintained helper plus unchanged current-generation driver/glue/control. Real read of owned-before marker and no turn_complete/turn_error assertions precede all outcomes. Eight guardian/scenario records prove successful driver/ownership release,24 matched naturally completed helper children.",
+      "failure": "All four reserved operations returned0 and operation-returned marker; NotEqual69 fails. Reserved Write changed25-byte before-image to27-byte after-image hash; direct FilesModified validator returned without changing bytes.",
+      "limit": "Post69 denial-message/path/no-return/retained-byte assertions are unreached. Reserved Write physical after-body is represented by hash/length, not retained full JSON. Direct FilesModified is not Complete-BoeTurn, terminal processing or client acceptance."
+    }
+  ],
+  "completenessAndOwnership": {
+    "distinctRows": 32,
+    "methods": 4,
+    "commands": 4,
+    "descriptorsPlannedAndCompleted": 4,
+    "nativeExits": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "passed": 16,
+    "causalFailed": 16,
+    "unexpectedFailures": 0,
+    "underfill": false,
+    "duplicates": false,
+    "timeouts": false,
+    "runnerCleanupAll": true,
+    "distinctOwnedRootsRemoved": 16,
+    "rootGroups": {
+      "private": 0,
+      "engine": 4,
+      "live": 4,
+      "helper": 8
+    },
+    "privateRootCleanup": "N/A pure predicate cases",
+    "retainedNativeDiagnosticDirectories": 8,
+    "retainedNativeDiagnosticFiles": 112,
+    "naturalCompletedJoinedHelperChildren": 24,
+    "nativeAndFixtureChains": 144,
+    "sourceContextChains": 1
+  },
+  "binding": {
+    "packetPath": "specs/1559-relay-long-sessions/recovery/lifecycle-current-guards-first.json",
+    "packetSha256": "effe43f98f9df9ed0b9022e90cc456b75739be05291251728befdccb73564258",
+    "sourceContextSha256": "60cd49cb2536cbf86f78bbfd931ca4e022d9e2cae2aeb72a9757e8e23582b4d7",
+    "sourcePins": 136,
+    "sourcePinDigest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
+    "freshManagedCopies": 9,
+    "helperSourcePackageSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+    "sourceProductUnchanged": true,
+    "runtimeNamespacesContinuous": true,
+    "sourceDependencies": "Actual helper fixture/current role/glue/driver plus native supervisor/guardian/build sources are inside current136 pins; raw native provenance assets match those exact source bytes. No unbound new runtime owner found.",
+    "recovery": {
+      "path": "/tmp/gm1559-current-guards-raw-delta-github-1630c4e8-20261017.json",
+      "sha256": "308b989d36bae3ee479f0ff8c122cb2710bd677acdf7022b1210f59cbcfd3921",
+      "allGitHubFiles": 170,
+      "allChangedPaths": 166,
+      "exactBytesBlobMode": true
+    }
+  },
+  "history": {
+    "original0771": "Immutable original6PASS10FAIL=6causalRED6positive4unqualifiedF01; prior SOURCE review missed class boundary. No old outcome/report rewrite.",
+    "correctedPrivate16": "Current case qualification replaces original private16 for union accounting; original12 qualified observations are not extra distinct cases.",
+    "retainedBaseline8": "Separate accepted2positive6causalRED under d473 and original actual360b/981a/52a2 provenance; reused decision only, no raw replay.",
+    "qualifiedLifecycleUnion": "Current32 +retained8 =40 distinct rows:18positive22causalRED. This is causal baseline evidence, not GREEN."
+  },
+  "lowMetadata": [
+    {
+      "id": "LIFECYCLE-E02-L01",
+      "path": "specs/1559-relay-long-sessions/recovery/lifecycle-current-guards-first.json",
+      "field": "proofLimits",
+      "correction": "No-terminal assertions at helper65-66 precede failure69 and were reached. Denial-message/path/no-return/retained-byte assertions after69 were unreached. Correct next ordinary decision metadata only; raw/test/source unchanged."
+    }
+  ],
+  "nextScope": {
+    "productionBoundary": "After exact decision persistence and Root release, implement only the agreed eight existing lifecycle/policy owners and explanatory README: exact two opaque client-owned operational names, snapshot/draft exclusions, ordinary rollback preservation, save/load-generation invalidation, client-owned repair/validation/FilesModified/helper protections. Preserve ordinary suffix behavior and existing generic algorithms.",
+    "finiteAffectedSelection": "Current47 is sufficient for this bounded production intent subject to actual diff review: baseline8 +guards32 +six ordinary neighbors +one genuine PackagedProductionWriterPublishesExactRequiredReadingClosure. The package test is required by the changed GM_Turn_Helper.ps1 package-input hash edge;52docs/CLI/daemon/six-entrypoint inverse bodies are unchanged.",
+    "nextRequiredGates": "Publish coherent minimal production WIP, fresh affected preparation/selection and source review, then separately authorized GREEN47 with exact physical and process evidence. Future recorder must include package/session roots and retained genuine-writer artifacts.",
+    "held": "No new relay record schema, writer, reader, dispatch, batch, sequence, budget or trust authority. Full C01-C06/full49/platform acceptance remains deferred; hand off to woundsT179-Pd.3d after safe lifecycle checkpoint."
+  },
+  "support": {
+    "path": "/tmp/gm1559-ownerfix-guards-causal-independent-check-20261017.json",
+    "sha256": "5b2bc06f78a0ec1a11212efec19f18f2222f38dd32cbbb169469484c73d8b347"
+  },
+  "reviewActivity": "Only static source-order inspection and existing raw/TRX/JSON/gzip/Git/hash/physical-absence reads. No build, test, parser execution, helper/producer runtime, repository mutation or cleanup action."
+}

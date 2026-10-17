@@ -1,0 +1,14 @@
+{
+  "kind": "ROOT_CURRENT_32_CARRIER_LITERAL_READBACK",
+  "carrier": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "rawChains": 144,
+  "sourceContextExactActualGitShow": true,
+  "persistedFourActivationsAndFourRootReceiptsExact": true,
+  "predictedCausalRED": 16,
+  "observedPositivePASS": 16,
+  "productDeltaEmpty": true,
+  "currentLedgerPointersExact": true,
+  "proofLimitClarification": "Helper no-terminal assertions65/66 WERE reached before NotEqual69; denial/error/unchangedbytes later unreached. Engine/live later refusal or no-publication assertions unreached; raw witnesses show publication. Independent qualification pending."
+}

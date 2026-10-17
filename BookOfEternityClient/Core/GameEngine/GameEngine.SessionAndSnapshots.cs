@@ -1928,6 +1928,8 @@ public partial class GameEngine
                 "game_state/control/gm_timeout_bridge_cleanup.json",
                 "game_state/control/gm_live_test_notes.jsonl",
                 "game_state/control/terminal_protocol_failure_request.json",
+                "game_state/control/gm_prompt_delivery.json",
+                "game_state/control/gm_relay_apply_receipt.json",
                 "game_state/control/gm_bridge_status.json", "game_state/history/chat_log.json",
                 PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
                 AfterlifeSpiritualConflictState.StatePath, AfterlifeEntityProfileState.StatePath,
@@ -1960,6 +1962,8 @@ public partial class GameEngine
                     string.Equals(relative, "game_state/control/gm_timeout_bridge_cleanup.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/gm_live_test_notes.jsonl", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_prompt_delivery.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_relay_apply_receipt.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -2210,6 +2214,8 @@ public partial class GameEngine
     /// otherwise, <see langword="false"/>.
     /// </returns>
     private static bool IsClientOwnedRepairResubmissionPath(string path) =>
+        string.Equals(path, "game_state/control/gm_prompt_delivery.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(path, "game_state/control/gm_relay_apply_receipt.json", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(
             path,
             QteSceneService.QteRuntimePath,
