@@ -1,0 +1,278 @@
+{
+  "kind": "A2_GREEN_SINGLETON_WRITER_EVIDENCE_PENDING_INDEPENDENT_REVIEW",
+  "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+  "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+  "category": "fr063-award-level-existing",
+  "nativeExit": 0,
+  "plannedCompletedPassed": 2,
+  "summary": {
+    "Categories": [
+      "fr063-award-level-existing"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-award-level-existing",
+        "Seconds": 2.2515465,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0419921,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0449368,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0972707,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0030627,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:05.1832826",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-award-level-existing"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.6524377,
+    "Descriptors": [
+      {
+        "Name": "fr063-award-level-existing-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-award-level-existing",
+        "Categories": [
+          "fr063-award-level-existing"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingMarkPublicationUncertaintyEscapes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingRestartGuardHasStrictCleanup",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingMarkPublicationUncertaintyEscapes",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingRestartGuardHasStrictCleanup",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "3dcbfa13318ddfb87bb54701ccddea899232a97d5ac49f5ab1c06c21be0c869d",
+      "bytes": 9503232
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "aa5d3cab29c8e456850b5e2d29d79c5d1b6203282f5190d7e39583ae2c939a39",
+      "bytes": 29179904
+    }
+  ],
+  "verifiedChains": [
+    {
+      "rawPath": "/tmp/a2-implementation-tools/a2-green-existing2-20261017T030315Z-attempt1-9f28c651/record.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/record.json.gz",
+      "bytes": 6937,
+      "sha256": "3819fb11ea53e9582f911ada8eda652ec41e1c13e2521a7266ed05e8a7fc7361",
+      "storedSha256": "3d7c2b5bc994f7721710e0ce87677634e086e2cc2454c5f510bee9434076e3b8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/a2-implementation-tools/a2-green-existing2-20261017T030315Z-attempt1-9f28c651/stdout.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/stdout.log.gz",
+      "bytes": 2119,
+      "sha256": "06f82bc7d70f3d3e0f16120f9d2ebb4a8a9676f54779f50cfff1ae1f83779ce3",
+      "storedSha256": "df57aef1cc9724420f0b4a89d8dbe764e47f23bf0af03184eef5a5adbb3cffd4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-030316-297-22369-9406010e7ad34f1cabfd23169d9eae0f-categories/dotnet-test.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/dotnet-test.log.gz",
+      "bytes": 1690043,
+      "sha256": "f0286667fe2d7940f6133763264e8d1e8721424e92f3ac9f214a03b023e49e85",
+      "storedSha256": "37eb0220f850f501172feb840337f0c8bd0f3eba096380ac60954ac1f5256509",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-030316-297-22369-9406010e7ad34f1cabfd23169d9eae0f-categories/fr063-award-level-existing-integration-001.trx",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/fr063-award-level-existing-integration-001.trx.gz",
+      "bytes": 35895,
+      "sha256": "ecb5b89250529c4aa9730e9b8cc65a0fb710ff82ec071bea5926a603832cfe30",
+      "storedSha256": "7e8e1f5820c8b3df573a58eb98ac5489e0f690c10a0ec21a6c1618db2b78ba9a",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-030316-297-22369-9406010e7ad34f1cabfd23169d9eae0f-categories/plan.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/plan.json.gz",
+      "bytes": 1411,
+      "sha256": "58aec2d24d5fc382855c2c261cbaa0b598efe01647c32e9e2ebbd40fe6e051b5",
+      "storedSha256": "773c6577509fd8b6d2c556dbbd2ebec9cdd5f99f3c5b4c74690ca7db3a726dfa",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-030316-297-22369-9406010e7ad34f1cabfd23169d9eae0f-categories/summary.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/summary.json.gz",
+      "bytes": 1460,
+      "sha256": "04e21046a04ff7aa78e3e987ba1d28e8a129ebe3c6e26a099487173f28ff40cf",
+      "storedSha256": "6c70531930439f0080ade55608ba06b3d0f5dbef276a4a0d5f43cdd19613d770",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "cases": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingMarkPublicationUncertaintyEscapes",
+      "testId": "8760d324-b43b-1144-52cb-9b7ea17c77fb",
+      "executionId": "38fd274c-0bdf-4276-bf1f-1c974d0fa3cd",
+      "observations": [
+        {
+          "mode": "level_mark",
+          "Failure": "BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d. \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0438 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0434 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u043c \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435\u043c.\n ---> System.AggregateException: One or more errors occurred. (actual cleanup MemberPublished cut) (A publication member contains unknown bytes; evidence retained.)\n ---> System.InvalidOperationException: actual cleanup MemberPublished cut\n   at BookOfEternityClient.Tests.CleanupPublicationCut.Published(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:line 79\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 621\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 307\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 249\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 231\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<>c__DisplayClass19_0.<PublishWithOutcome>b__0(PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 162\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 173\n   --- End of inner exception stack trace ---\n ---> (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 486\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverCore(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 449\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 424\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 184<---\n\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 268\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 319\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 866\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 844\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 854\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 766\n   at BookOfEternityClient.Services.CharacteristicsService.SaveStatPointsRootAsync(JsonObject root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 377\n   at BookOfEternityClient.Services.CharacteristicsService.MarkLevelUpStatPointsAwardedThroughLevelAsync(Int32 level) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 348\n   at BookOfEternityClient.Core.GameEngine.CheckLevelUpAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 2586\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11365\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+          "before": "77u/eyJ1bnNwZW50U3RhdFBvaW50cyI6MH0=",
+          "priorCommitted": 0,
+          "priorTransaction": null,
+          "priorCommittedBytes": null,
+          "PriorAfter": null,
+          "Reads": 0,
+          "Cut": {
+            "Cuts": 1,
+            "Index": 0,
+            "Target": "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c/game_session/game_state/player/stat_points.json",
+            "JournalAtCut": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiJjZmY4ZGNmYjVhOWI0ZjljYjUxYzU2NGNlY2M5NDNjZSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6ImQ4ODg4YmE4YzY1NDRlNzM5ZDk1NWExMDg2NDY0YzU4In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiZDg4ODhiYThjNjU0NGU3MzlkOTU1YTEwODY0NjRjNTgifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWdhbWVlbmdpbmUtdHVybmxpZmVjeWNsZS04NWEyMmUwNWQyZGQ0NGM2YTQ4MTM0MTBlYjQzOTI1Yy9nYW1lX3Nlc3Npb24vZ2FtZV9zdGF0ZS9wbGF5ZXIvc3RhdF9wb2ludHMuanNvbiIsIkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V5SjFibk53Wlc1MFUzUmhkRkJ2YVc1MGN5STZNSDA9IiwiU2hhMjU2IjoiOUIwQUI2NjdGNUFCM0JENENGMkIxRjc5OURCN0ZBQjQ0NDMzQUUwQURGRTZBQjhGQjI5MTk4NDkwMkI2NkQ5MyJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V3b2dJQ0oxYm5Od1pXNTBVM1JoZEZCdmFXNTBjeUk2SURBc0NpQWdJbXhsZG1Wc1ZYQlRkR0YwVUc5cGJuUnpRWGRoY21SbFpGUm9jbTkxWjJoTVpYWmxiQ0k2SURJS2ZRPT0iLCJTaGEyNTYiOiJFMkNEN0ZDMjRFRkUzMzM3NDFFMjdFNkY5MDU5MEQ0RkM1MkJERUY4NEMwRkY2MEQ0QTMxQ0REQzNDNjI1RUQ5In19XX0=",
+            "PublishedBytes": "77u/ewogICJ1bnNwZW50U3RhdFBvaW50cyI6IDAsCiAgImxldmVsVXBTdGF0UG9pbnRzQXdhcmRlZFRocm91Z2hMZXZlbCI6IDIKfQ==",
+            "JournalSha256": "7351F3BD790FBA22C755D7021F2C23C0FC5B345E57796369CC13E3DE0EDA74F3",
+            "RetainedJournal": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiJjZmY4ZGNmYjVhOWI0ZjljYjUxYzU2NGNlY2M5NDNjZSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6ImQ4ODg4YmE4YzY1NDRlNzM5ZDk1NWExMDg2NDY0YzU4In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiZDg4ODhiYThjNjU0NGU3MzlkOTU1YTEwODY0NjRjNTgifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWdhbWVlbmdpbmUtdHVybmxpZmVjeWNsZS04NWEyMmUwNWQyZGQ0NGM2YTQ4MTM0MTBlYjQzOTI1Yy9nYW1lX3Nlc3Npb24vZ2FtZV9zdGF0ZS9wbGF5ZXIvc3RhdF9wb2ludHMuanNvbiIsIkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V5SjFibk53Wlc1MFUzUmhkRkJ2YVc1MGN5STZNSDA9IiwiU2hhMjU2IjoiOUIwQUI2NjdGNUFCM0JENENGMkIxRjc5OURCN0ZBQjQ0NDMzQUUwQURGRTZBQjhGQjI5MTk4NDkwMkI2NkQ5MyJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V3b2dJQ0oxYm5Od1pXNTBVM1JoZEZCdmFXNTBjeUk2SURBc0NpQWdJbXhsZG1Wc1ZYQlRkR0YwVUc5cGJuUnpRWGRoY21SbFpGUm9jbTkxWjJoTVpYWmxiQ0k2SURJS2ZRPT0iLCJTaGEyNTYiOiJFMkNEN0ZDMjRFRkUzMzM3NDFFMjdFNkY5MDU5MEQ0RkM1MkJERUY4NEMwRkY2MEQ0QTMxQ0REQzNDNjI1RUQ5In19XX0=",
+            "RetainedTarget": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl",
+            "ActualUncertainty": "BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d. \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0438 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0434 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u043c \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435\u043c.\n ---> System.AggregateException: One or more errors occurred. (actual cleanup MemberPublished cut) (A publication member contains unknown bytes; evidence retained.)\n ---> System.InvalidOperationException: actual cleanup MemberPublished cut\n   at BookOfEternityClient.Tests.CleanupPublicationCut.Published(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:line 79\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 621\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 307\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 249\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 231\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<>c__DisplayClass19_0.<PublishWithOutcome>b__0(PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 162\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 173\n   --- End of inner exception stack trace ---\n ---> (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 486\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverCore(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 449\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 424\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 184<---\n\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 268\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 319\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 866\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 844\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 854\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 766\n   at BookOfEternityClient.Services.CharacteristicsService.SaveStatPointsRootAsync(JsonObject root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 377\n   at BookOfEternityClient.Services.CharacteristicsService.MarkLevelUpStatPointsAwardedThroughLevelAsync(Int32 level) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 348\n   at BookOfEternityClient.Core.GameEngine.CheckLevelUpAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 2586\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11365\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+            "LaterMutations": [],
+            "LaterReads": [],
+            "LaterLeases": 0,
+            "ClosingLeases": 0,
+            "PendingClosingLease": false,
+            "LaterRecovery": 0,
+            "LaterPublications": 0
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "strictOwnedRootAbsent": "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c",
+      "realPublicationCut": {
+        "mode": "level_mark",
+        "Failure": "BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d. \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0438 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0434 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u043c \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435\u043c.\n ---> System.AggregateException: One or more errors occurred. (actual cleanup MemberPublished cut) (A publication member contains unknown bytes; evidence retained.)\n ---> System.InvalidOperationException: actual cleanup MemberPublished cut\n   at BookOfEternityClient.Tests.CleanupPublicationCut.Published(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:line 79\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 621\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 307\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 249\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 231\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<>c__DisplayClass19_0.<PublishWithOutcome>b__0(PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 162\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 173\n   --- End of inner exception stack trace ---\n ---> (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 486\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverCore(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 449\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 424\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 184<---\n\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 268\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 319\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 866\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 844\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 854\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 766\n   at BookOfEternityClient.Services.CharacteristicsService.SaveStatPointsRootAsync(JsonObject root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 377\n   at BookOfEternityClient.Services.CharacteristicsService.MarkLevelUpStatPointsAwardedThroughLevelAsync(Int32 level) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 348\n   at BookOfEternityClient.Core.GameEngine.CheckLevelUpAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 2586\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11365\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "before": "77u/eyJ1bnNwZW50U3RhdFBvaW50cyI6MH0=",
+        "priorCommitted": 0,
+        "priorTransaction": null,
+        "priorCommittedBytes": null,
+        "PriorAfter": null,
+        "Reads": 0,
+        "Cut": {
+          "Cuts": 1,
+          "Index": 0,
+          "Target": "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c/game_session/game_state/player/stat_points.json",
+          "JournalAtCut": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiJjZmY4ZGNmYjVhOWI0ZjljYjUxYzU2NGNlY2M5NDNjZSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6ImQ4ODg4YmE4YzY1NDRlNzM5ZDk1NWExMDg2NDY0YzU4In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiZDg4ODhiYThjNjU0NGU3MzlkOTU1YTEwODY0NjRjNTgifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWdhbWVlbmdpbmUtdHVybmxpZmVjeWNsZS04NWEyMmUwNWQyZGQ0NGM2YTQ4MTM0MTBlYjQzOTI1Yy9nYW1lX3Nlc3Npb24vZ2FtZV9zdGF0ZS9wbGF5ZXIvc3RhdF9wb2ludHMuanNvbiIsIkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V5SjFibk53Wlc1MFUzUmhkRkJ2YVc1MGN5STZNSDA9IiwiU2hhMjU2IjoiOUIwQUI2NjdGNUFCM0JENENGMkIxRjc5OURCN0ZBQjQ0NDMzQUUwQURGRTZBQjhGQjI5MTk4NDkwMkI2NkQ5MyJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V3b2dJQ0oxYm5Od1pXNTBVM1JoZEZCdmFXNTBjeUk2SURBc0NpQWdJbXhsZG1Wc1ZYQlRkR0YwVUc5cGJuUnpRWGRoY21SbFpGUm9jbTkxWjJoTVpYWmxiQ0k2SURJS2ZRPT0iLCJTaGEyNTYiOiJFMkNEN0ZDMjRFRkUzMzM3NDFFMjdFNkY5MDU5MEQ0RkM1MkJERUY4NEMwRkY2MEQ0QTMxQ0REQzNDNjI1RUQ5In19XX0=",
+          "PublishedBytes": "77u/ewogICJ1bnNwZW50U3RhdFBvaW50cyI6IDAsCiAgImxldmVsVXBTdGF0UG9pbnRzQXdhcmRlZFRocm91Z2hMZXZlbCI6IDIKfQ==",
+          "JournalSha256": "7351F3BD790FBA22C755D7021F2C23C0FC5B345E57796369CC13E3DE0EDA74F3",
+          "RetainedJournal": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiJjZmY4ZGNmYjVhOWI0ZjljYjUxYzU2NGNlY2M5NDNjZSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6ImQ4ODg4YmE4YzY1NDRlNzM5ZDk1NWExMDg2NDY0YzU4In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiZDg4ODhiYThjNjU0NGU3MzlkOTU1YTEwODY0NjRjNTgifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWdhbWVlbmdpbmUtdHVybmxpZmVjeWNsZS04NWEyMmUwNWQyZGQ0NGM2YTQ4MTM0MTBlYjQzOTI1Yy9nYW1lX3Nlc3Npb24vZ2FtZV9zdGF0ZS9wbGF5ZXIvc3RhdF9wb2ludHMuanNvbiIsIkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V5SjFibk53Wlc1MFUzUmhkRkJ2YVc1MGN5STZNSDA9IiwiU2hhMjU2IjoiOUIwQUI2NjdGNUFCM0JENENGMkIxRjc5OURCN0ZBQjQ0NDMzQUUwQURGRTZBQjhGQjI5MTk4NDkwMkI2NkQ5MyJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiNzd1L2V3b2dJQ0oxYm5Od1pXNTBVM1JoZEZCdmFXNTBjeUk2SURBc0NpQWdJbXhsZG1Wc1ZYQlRkR0YwVUc5cGJuUnpRWGRoY21SbFpGUm9jbTkxWjJoTVpYWmxiQ0k2SURJS2ZRPT0iLCJTaGEyNTYiOiJFMkNEN0ZDMjRFRkUzMzM3NDFFMjdFNkY5MDU5MEQ0RkM1MkJERUY4NEMwRkY2MEQ0QTMxQ0REQzNDNjI1RUQ5In19XX0=",
+          "RetainedTarget": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl",
+          "ActualUncertainty": "BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: \u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d. \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0438 \u0432\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0435\u0434 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u043c \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435\u043c.\n ---> System.AggregateException: One or more errors occurred. (actual cleanup MemberPublished cut) (A publication member contains unknown bytes; evidence retained.)\n ---> System.InvalidOperationException: actual cleanup MemberPublished cut\n   at BookOfEternityClient.Tests.CleanupPublicationCut.Published(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:line 79\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 621\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 307\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 249\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 231\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<>c__DisplayClass19_0.<PublishWithOutcome>b__0(PublicationAttempt attempt) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 162\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 173\n   --- End of inner exception stack trace ---\n ---> (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 486\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverCore(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 449\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 424\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 184<---\n\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 268\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 319\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 866\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 844\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 854\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 766\n   at BookOfEternityClient.Services.CharacteristicsService.SaveStatPointsRootAsync(JsonObject root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 377\n   at BookOfEternityClient.Services.CharacteristicsService.MarkLevelUpStatPointsAwardedThroughLevelAsync(Int32 level) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CharacteristicsService.cs:line 348\n   at BookOfEternityClient.Core.GameEngine.CheckLevelUpAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 2586\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11365\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+          "LaterMutations": [],
+          "LaterReads": [],
+          "LaterLeases": 0,
+          "ClosingLeases": 0,
+          "PendingClosingLease": false,
+          "LaterRecovery": 0,
+          "LaterPublications": 0
+        }
+      }
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardOwner_ExistingRestartGuardHasStrictCleanup",
+      "testId": "c762e146-196a-9590-854e-0d2e857379db",
+      "executionId": "2d17a833-fa41-4916-aad4-09029600faff",
+      "observations": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-03bc82a86b15450dbbef98d410f3801e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "strictOwnedRootAbsent": "/tmp/boe-gameengine-turnlifecycle-03bc82a86b15450dbbef98d410f3801e",
+      "proofLimit": "No raw awarded characteristics body retained; accepted unchanged original real restart assertions and PASS prove strength2to7, no second award, computed/base equality and points0."
+    }
+  ],
+  "strictOwnedRoots": [
+    "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c",
+    "/tmp/boe-gameengine-turnlifecycle-03bc82a86b15450dbbef98d410f3801e"
+  ],
+  "pureCleanup": "Complete raw strictcleanup+physicallyabsent distinctroots",
+  "checkerText": "from pathlib import Path\nimport sys,json,gzip,hashlib,xml.etree.ElementTree as ET,subprocess,datetime,re,collections\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn');rec=repo/'specs/1536-complete-wound-materialization/recovery';prefix,actual,category=sys.argv[1:];compiled='a4e111b33c9966ab0b6e65b531be63d436898c34';expected={'fr063-award-level-policy-boundary':2,'fr063-award-level-policy':33,'fr063-award-level-owner':20,'fr063-award-level-existing':2}[category]\npacket=json.loads((rec/(prefix+'.json')).read_text());assert len(packet['files'])==6 and len(packet['commands'])==1;cmd=packet['commands'][0];assert cmd['mode']=='actual' and cmd['nativeExit']==0 and cmd['argv']==['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-Category',category,'-NoBuild'];assert cmd['sourceHead']==cmd['headAfter']==actual and cmd['statusAfter']=='' and cmd['ownedPrefixesBefore']==cmd['ownedPrefixesAfter']==[]\nprep=json.loads((rec/'t179pd-award-level-green-preparation-20261017.json').read_text())['commands'][0];assert prep['sourceHead']==compiled and len(prep['binaryAfter'])==4 and cmd['binaryBefore']==cmd['binaryAfter']==prep['binaryAfter'];assert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,actual],cwd=repo,text=True).splitlines())\nraw={}\nfor row in packet['files']:\n s=(repo/row['storedPath']).read_bytes();b=gzip.decompress(s);assert hashlib.sha256(s).hexdigest()==row['storedSha256'] and hashlib.sha256(b).hexdigest()==row['sha256'] and len(b)==row['bytes'] and Path(row['rawPath']).read_bytes()==b;raw[Path(row['rawPath']).name]=b\nsummary=json.loads(raw['summary.json']);plan=json.loads(raw['plan.json']);assert summary['ExitCode']==0 and summary['Revision']['Head']==actual and summary['Revision']['ChangedFiles']==0 and not summary['TimedOut'] and not summary['DuplicateTests'] and summary['OwnedTreeCleanupSucceeded'] and summary['RuntimeCleanupSucceeded'];assert summary['Tests']==dict(Total=expected,Executed=expected,Passed=expected,Failed=0);assert summary['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True);assert len(plan['Descriptors'])==1 and plan['Descriptors'][0]['Category']==category and plan['Descriptors'][0]['EstimatedCases']==expected and plan['Descriptors'][0]['BudgetMinutes']==5\ntrx=ET.fromstring(next(v for k,v in raw.items() if k.endswith('.trx')));rs=trx.findall('.//{*}UnitTestResult');assert len(rs)==expected and all(r.attrib['outcome']=='Passed' for r in rs) and len({r.attrib['testId'] for r in rs})==len({r.attrib['executionId'] for r in rs})==expected;assert dict(collections.Counter(r.attrib['testName'].split('(')[0] for r in rs))=={x['Name']:x['Cases'] for x in plan['Descriptors'][0]['ExpectedMethodCounts']}\npaths=['game_state/player/experience.json','game_state/core/player_status.json','game_state/player/stat_points.json','game_state/player/computed_characteristics.json','game_state/misc/characteristics.json'];roots=[];cases=[];ownerRows=[];token=r'(\"(?:\\\\.|[^\"\\\\])*\"|null)'\nfor r in rs:\n output=r.find('./{*}Output/{*}StdOut');stdout='' if output is None else ''.join(output.itertext());rows=[]\n for line in stdout.splitlines():\n  try:v=json.loads(line.strip())\n  except ValueError:continue\n  if isinstance(v,dict):rows.append(v)\n name=r.attrib['testName'];case=dict(testName=name,testId=r.attrib['testId'],executionId=r.attrib['executionId'],observations=rows)\n if category=='fr063-award-level-policy':assert rows==[];case['cleanup']='NOT_APPLICABLE_PURE_ZERO_ROOTS';cases.append(case);continue\n clean=[v for v in rows if 'CleanupOwnedRoot' in v];assert len(clean)==1 and clean[0]['OwnedFixtureRemoved'] and clean[0]['CleanupFailure'] is None;root=Path(clean[0]['CleanupOwnedRoot']);assert root.parent==Path('/tmp') and root.name.startswith('boe-gameengine-turnlifecycle-') and not root.exists();roots.append(str(root));case['strictOwnedRootAbsent']=str(root)\n if category=='fr063-award-level-existing':\n  if 'ExistingMarkPublicationUncertainty' in name:\n   record=next(v for v in rows if v.get('mode')=='level_mark');assert record['Reads']==0 and 'CoordinatedStatePublicationUncertainException' in record['Failure'];case['realPublicationCut']=record\n  else:assert 'ExistingRestartGuardHasStrictCleanup' in name;case['proofLimit']='No raw awarded characteristics body retained; accepted unchanged original real restart assertions and PASS prove strength2to7, no second award, computed/base equality and points0.'\n  cases.append(case);continue\n o=next(v for v in rows if v.get('Boundary')=='ordinary_award_level_owner');assert o['Root']==str(root) and len(o['Images'])==len(o['Supplied'])==5 and o['BeforeLastKnown']==1 and o['Mutations']==[] and o['InputReads']==0\n if category=='fr063-award-level-policy-boundary':\n  method=o['Context'];assert method in ['ReadAwardExperienceLevel','ReadAwardStatusLevel'] and method in name;inputs=['{\"level\":2}','{\"level\":7}'] if method=='ReadAwardExperienceLevel' else ['{\"level\":1}','{\"level\":2}'];current=2;readspec='e,p' if method=='ReadAwardExperienceLevel' else 'e,s,p';error=None\n elif 'RealReadFaultIsLoggedAndStops' in name:\n  m=re.search(r'faultSource: ([01])\\)$',name);assert m,name;index=int(m.group(1));inputs=['{\"level\":2}' if index==0 else '{\"level\":1}','{\"level\":2}'];current=1;readspec='e' if index==0 else 'e,s';error='io'\n else:\n  m=re.search(r'experience: '+token+r', status: '+token+r', expectedCurrent: (-?\\d+), expectedReads: '+token+r', expectedError: '+token+r'\\)$',name);assert m,name;inputs=[json.loads(m.group(1)),json.loads(m.group(2))];current=int(m.group(3));readspec=json.loads(m.group(4));error=json.loads(m.group(5))\n assert o['Supplied'][:2]==inputs and o['ExpectedError']==error and o['AfterLastKnown']==(max(1,current) if error is None else 1) and o['Reads']==[paths[{'e':0,'s':1,'p':2}[x]] for x in readspec.split(',')]\n assert o['Supplied'][2]=='{\"unspentStatPoints\":0,\"levelUpStatPointsAwardedThroughLevel\":10}' and o['Supplied'][3]=='{\"playerLevel\":1,\"unspentStatPoints\":0,\"characteristics\":{\"strength\":1}}' and len(json.loads(o['Supplied'][4]))==12 and set(json.loads(o['Supplied'][4]).values())=={1}\n for path,supplied,image in zip(paths,o['Supplied'],o['Images'],strict=True):assert image['Path']==path and image['Present']==(supplied is not None) and image['Sha256']==(None if supplied is None else hashlib.sha256(b'\\xef\\xbb\\xbf'+supplied.encode()).hexdigest().upper())\n if error is None:assert o['WarningTypes']==[] and not o['SameReadFault']\n else:\n  assert len(o['WarningTypes'])==1\n  if error=='json':assert o['WarningTypes'][0] in ['System.Text.Json.JsonException','System.Text.Json.JsonReaderException']\n  else:assert o['WarningTypes'][0]=={'format':'System.FormatException','object':'System.InvalidOperationException','io':'System.IO.IOException'}[error]\n  assert o['SameReadFault']==(error=='io')\n ownerRows.append(o);case['actualOwner']=o;case['proofLimit']='Raw hashes retain exact guarded preimages; accepted compiled postbyte assertions completed before diagnostic/strictcleanup. Negative current is not exposed through max(1,current) lastKnown; pure values and exact nullable assignment are separate.';cases.append(case)\nrootCount=0 if category=='fr063-award-level-policy' else expected;assert len(roots)==len(set(roots))==rootCount\nif category=='fr063-award-level-owner':assert len(ownerRows)==20 and sum(sum(x['Present'] for x in o['Images']) for o in ownerRows)==97 and sum(o['SameReadFault'] for o in ownerRows)==2\nout=dict(kind='A2_GREEN_SINGLETON_WRITER_EVIDENCE_PENDING_INDEPENDENT_REVIEW',actualSource=actual,compiledSource=compiled,category=category,nativeExit=0,plannedCompletedPassed=expected,summary=summary,plan=plan,binaries=cmd['binaryAfter'],verifiedChains=packet['files'],cases=cases,strictOwnedRoots=roots,pureCleanup='NOT_APPLICABLE_PURE_ZERO_ROOTS' if not roots else 'Complete raw strictcleanup+physicallyabsent distinctroots',checkerText=Path(__file__).read_text(),inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat());p=rec/(prefix+'-writer-inspection.json');p.write_text(json.dumps(out,indent=2)+'\\n');print('A2_GREEN_SINGLETON_VERIFIED',category,expected,'PASS',len(roots),'strictroots;',len(ownerRows),'realowner5image/read/state/noUI-no-write rows;independentEVIDENCE pending')\n",
+  "inspectedUtc": "2026-10-17T03:03:36.988545+00:00"
+}

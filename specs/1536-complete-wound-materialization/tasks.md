@@ -1,3 +1,7 @@
+## A2 FIRST GREEN57 complete — final EVIDENCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): all4 FIRST singleton owners at actual6104/compileda4 native0/exact57PASS (2+33+20+2), 24rawchains/24strictroots/33pure0roots, 22realownerrows107present3absent images, fourDLLstable. [Current checkpoint](plan.md) honestly reconciles already-completed boundary after brief environment resume without replay/invented launch trace. Freeze/publish/readback/newcompletechanged recovery, then final whole-A2 independent EVIDENCE; no more actual/preparation/source/base/oldfamily repetition. Accepted newLate22PASS, causalRED2FAIL, PREPFAIL0tests and originalA1 remain separately scoped. All broader holds/no-GM-update rationale remain.
+
 ## A2 newLate2 EVIDENCE accepted — namedGREEN57 next after persistence (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent newLate2 pair accepts actual505/compileda4/exact2PASS and fullrawsemantic/strictcleanup/15all11delta, with finalcomputedbodylimit. [Currentdecision](plan.md): publish/readback/newdelta/fourDLLcontinuity then rootGREENboundary2→pure33→owner20→existing2 pernormalfirstrecord, samecleanHEAD; coherent57publication/finalEVIDENCE, no passinggroup-onlycheckpoint/review. AllGREEN57UNRUN now; no oldproof/base/prep/Late2 replay or broaderqualification.
