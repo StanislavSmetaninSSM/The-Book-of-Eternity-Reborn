@@ -3,7 +3,7 @@
 **Source issue**: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559) (open; read-only snapshot, 2026-10-17).
 **Branch**: `1559-relay-long-sessions-20261017`
 **Base**: `a82b3d8439f76f83baade6df8516e78eea86e546`
-**Status**: Architecture candidate; audit and planning only. No implementation or native verification released.
+**Status**: Narrow A01 architecture amendment after the independently reviewed 3930 candidate; targeted acceptance pending. Audit/planning only; no test/product/native release.
 
 ## Source issues and scope
 
@@ -57,7 +57,7 @@ Unknown helper outcome, committed publication with cleanup debt, malformed respo
 - **FR-003**: Replace arbitrary character/line/write-count limits with validated configurable byte/resource budgets, documented defaults and exact over-budget diagnostics before mutation.
 - **FR-004**: Keep RequestId/session/turn/kind/repair-revision, witness/hash, stale/duplicate, path, realm, client-owned surface and turn-validation checks.
 - **FR-005**: Classify transport, format/contract, stale/duplicate, game-validation and file-publication failures separately; only proven safe recovery may restore readiness.
-- **FR-006**: Retain the exact response winner and a durable application decision so reconnect/restart before, during and after acknowledgement neither loses the request/result binding nor applies the same response twice.
+- **FR-006**: Retain the exact response winner and a durable application decision so reconnect/restart before, during and after acknowledgement neither loses the request/result binding nor applies the same response twice. The exact client-owned dispatch/apply records survive ordinary rejected-turn rollback/repair without deletion or rewind; genuine save/load/session-generation replacement invalidates their old authority. Missing/corrupt records never authorize replay.
 - **FR-007**: Apply a multi-write response through the existing authoritative helper and durable publication mechanism, with detection/recovery of interruption and unchanged policy/normalization behavior.
 - **FR-008**: Retire settled full prompt bodies/tasks/cancellation sources safely; expired identities remain non-replayable and unresolved operations remain owned. Bounded compaction must not reset a lifetime counter to permit replay.
 - **FR-009**: Provide and prove the exchange using the AI's existing computer-access read/write capability without mandatory agent CLI invocation or new access/UI infrastructure; operator startup is a separate responsibility.

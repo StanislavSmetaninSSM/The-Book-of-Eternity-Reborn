@@ -1,0 +1,68 @@
+{
+  "kind": "ROOT_ARCH_A01_ACCEPTED_FINDING_NARROW_METADATA_AMENDMENT_RELEASE",
+  "utc": "2026-10-17T12:51:36.332572+00:00",
+  "carrier": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "independentArchReports": [
+    {
+      "path": "/tmp/gm1559-architecture-independent-review-20261017.md",
+      "sha256": "51be13278d0b185448b4a8fc22dce3a65169f6d97c16c5ada499cb7a07860cfa"
+    },
+    {
+      "path": "/tmp/gm1559-architecture-independent-review-20261017.json",
+      "sha256": "efde87996235278cc05f84f34b95bf2d3449b3948d33b274fb73e2929232e427"
+    },
+    {
+      "path": "/tmp/gm1559-architecture-independent-check-20261017.json",
+      "sha256": "90ed99d075c56c806183a87328c39c412064774fd45b7a2dd811e9f024b0c413"
+    }
+  ],
+  "architectureDirectionViableButNotYetAcceptedForG1": true,
+  "confirmedFinding": "1559-A01 operational dispatch/apply evidence currently falls under ordinary snapshot/rollback. Root directly read both real snapshot and restore owners. No runtime failure claimed.",
+  "chosenAmendmentScope": "Keep the exact two proposed game_state/control paths with narrowly named operational lifetime exclusions/protections in actual owners; do not widen helper ResolvePath/roots, exempt control directories, invent a journal or change ordinary canonical rollback. Include save/load, validation/client-owned and frozen gameplay-draft fingerprint consumers only where actual source shows the dependency.",
+  "requiredLifetime": "Preserve exact current-protocol dispatch/apply records through ordinary rejected-turn rollback and repair/lost ACK; bounded replacement/retirement only under verified request/generation/outcome. Genuine save/load/session-generation replacement invalidates old dispatch/application authority; no old queue/run/PID reuse. Missing/corrupt evidence never grants replay.",
+  "release": "Only amend current spec/plan/tasks/audit/source inventory and persist exact ARCH pair/support plus existing Root/recovery receipts. Recover only newly relevant source dependencies, retaining accepted78 coverage unchanged. Publish WIP/nonforce/exactremote/newcompleteGitHubdelta before targeted A01 closure review.",
+  "requiredControls": [
+    "Current real snapshot/rollback deletes/restores ordinary neighbor while retaining exact new operational records.",
+    "Committed response followed by rejected-turn rollback/repair and lost ACK still reconciles read-only; receipt absence never authorizes replay.",
+    "Same-live-binding daemon restart queries the original dispatch after rollback; changed/closed generation or request cannot reuse it."
+  ],
+  "laterMandatoryGates": [
+    {
+      "id": "C01",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Batch and authoritative reads",
+      "requirement": "Single dedicated-helper lease; all original physical read/kind/tree/witnesses rechecked independently from staged read view; exact ordinary normalization/policy and terminal checks retained; receipt is client-authored and denied to packet Writes/FilesModified. Hold real publication cuts including third member, terminal-before-commit, committed cleanup debt and lost ACK. Actual daemon AND current client reader must wait for recovery/complete decision; never raw-file existence. Terminal remains logically last; publisher unchanged."
+    },
+    {
+      "id": "C02",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Sequence and lifetime",
+      "requirement": "Freeze sequence/body before dispatch; same-sequence proven NotReady retry retains original identity. Handle concurrent direct producers/gap refusal, duplicate/conflict within and beyond compact window, expired-query no repaste, same-binding restart, new-binding stale evidence, late Stop and completed-task/CTS disposal only after settlement. Two live operations remain bounded; permanently closed queue never reopens."
+    },
+    {
+      "id": "C03",
+      "stage": "concrete SOURCE/PREP resource qualification then EVIDENCE",
+      "topic": "Byte and resource budgets",
+      "requirement": "4/16/64/256MiB and8MiB logs are proposed, not accepted measurements. Account for original target before-images, after-images, parser/object/base64 copies, journal/scratch and temporary publications, unresolved winner disk plus logs and descriptor windows. Admit/refuse before oversized buffering/mutation; quota cannot discard unresolved authority. Preserve32KiBchunks/64KiBcontrol frames and bounded parallelism. Real packet evidence remains separately labelled from synthetic >1MiB/>32writes growth."
+    },
+    {
+      "id": "C04",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Neutral exact framing",
+      "requirement": "Current bridge normalizes CRLF/CR and neutral TerminalScreen limits128rows/65536columns and trims final newlines. Explicitly prove exact neutral prompt bytes/hash including newline endings, tabs/Unicode, long multiline and long single-line packets; no silent normalization. Do not widen Mini/editor semantics or use a truncated diagnostic tail as exact proof."
+    },
+    {
+      "id": "C05",
+      "stage": "actual EVIDENCE",
+      "topic": "Existing computer-access exchange",
+      "requirement": "current-request descriptor is an optional stable locator over the existing queue, not a mandatory new file UI/tool/access method. Document operator startup separately. Actual agent read/write capability must read exact current request and relevant instructions/state, author and publish a correlated winner; Python worker fixture alone cannot qualify SC004. Partial response/reply publication must retain one winner without reinterpretation or unbounded retries."
+    },
+    {
+      "id": "C06",
+      "stage": "concrete selection and final EVIDENCE",
+      "topic": "Acceptance and platforms",
+      "requirement": "Select actual changed owner methods plus narrow rollback/read/receipt controls and positive ordinary helper neighbors. Twelve submissions/four repair cycles and >256 retention control must bind current original owners and complete exact payloads; transport/helper/terminal/daemon trajectory accepted is not client story/history acceptance. Observe actual client result separately. Fresh native discovery counts remain unknown at ARCH. Linux and nativeWindows remain separate; unavailable Windows is open, no CI/artifact workaround; no unchanged1558/A255/B78 replay."
+    }
+  ],
+  "held": "All test/production/catalog/selection/dependency/build/native changes until targeted ARCH acceptance and persisted Root G1 release. No Windows/CI/artifact retry/main/merge/issue closure."
+}

@@ -1,0 +1,92 @@
+{
+  "kind": "INDEPENDENT_1559_ARCHITECTURE_REVIEW",
+  "utc": "2026-10-17T12:50:38.925042+00:00",
+  "reviewer": "/root/a1_reviewer independent Astra/XHigh",
+  "carrier": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "base": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "verdict": "CHANGES_REQUIRED_NARROW_A01_BEFORE_G1",
+  "architectureDirection": "Viable: existing dedicated helper + staged ordinary policy + one existing multi-member trusted-local publisher; bounded current-binding sequence/high-water; queue correlation only; existing computer access. No second journal or new service/UI is needed.",
+  "findings": [
+    {
+      "id": "1559-A01",
+      "severity": "material_architecture_amendment",
+      "status": "OPEN_AT_3930",
+      "place": [
+        "specs/1559-relay-long-sessions/plan.md:40",
+        "specs/1559-relay-long-sessions/plan.md:48",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:1941",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:2405",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs:37"
+      ],
+      "scenario": "The proposed gm_prompt_delivery.json and gm_relay_apply_receipt.json live in game_state/control. Both current snapshot producers include them by default. A client turn rollback deletes newly created tracked paths or restores their earlier images before a lost ACK/daemon restart/repair reconciliation.",
+      "consequence": "Durable operational dispatch or committed application evidence can disappear or rewind independently of relay acknowledgement. The design then cannot guarantee continuing ordinary/repair sessions without lost correspondence or unsupported replay inference. Missing evidence must remain blocked, never interpreted as a fresh submit or rollback proof. This is a confirmed integration gap in proposed paths, not an executed runtime failure.",
+      "minimumCorrection": "Amend the existing plan/inventory with explicit operational lifetime/ownership for these two exact paths. Preserve them across ordinary game rollback and snapshot preparation by narrowly excluding them, or choose an equivalently safe already-authorized location with same-commit receipt publication. Define bounded replacement/retirement under original request+generation authority; no blanket control-directory exemption, old-run authority, new journal, or gameplay-policy change. Pin actual engine snapshot/restore, live preparation and daemon reader dependencies.",
+      "requiredTests": [
+        "Current real snapshot/rollback deletes/restores ordinary neighbor while retaining exact new operational records.",
+        "Committed response followed by rejected-turn rollback/repair and lost ACK still reconciles read-only; receipt absence never authorizes replay.",
+        "Same-live-binding daemon restart queries the original dispatch after rollback; changed/closed generation or request cannot reuse it."
+      ],
+      "gate": "Narrow metadata architecture amendment and exact dependency readback before G1 TDD release; targeted A01 closure review only, no full audit restart."
+    }
+  ],
+  "mandatoryLaterGates": [
+    {
+      "id": "C01",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Batch and authoritative reads",
+      "requirement": "Single dedicated-helper lease; all original physical read/kind/tree/witnesses rechecked independently from staged read view; exact ordinary normalization/policy and terminal checks retained; receipt is client-authored and denied to packet Writes/FilesModified. Hold real publication cuts including third member, terminal-before-commit, committed cleanup debt and lost ACK. Actual daemon AND current client reader must wait for recovery/complete decision; never raw-file existence. Terminal remains logically last; publisher unchanged."
+    },
+    {
+      "id": "C02",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Sequence and lifetime",
+      "requirement": "Freeze sequence/body before dispatch; same-sequence proven NotReady retry retains original identity. Handle concurrent direct producers/gap refusal, duplicate/conflict within and beyond compact window, expired-query no repaste, same-binding restart, new-binding stale evidence, late Stop and completed-task/CTS disposal only after settlement. Two live operations remain bounded; permanently closed queue never reopens."
+    },
+    {
+      "id": "C03",
+      "stage": "concrete SOURCE/PREP resource qualification then EVIDENCE",
+      "topic": "Byte and resource budgets",
+      "requirement": "4/16/64/256MiB and8MiB logs are proposed, not accepted measurements. Account for original target before-images, after-images, parser/object/base64 copies, journal/scratch and temporary publications, unresolved winner disk plus logs and descriptor windows. Admit/refuse before oversized buffering/mutation; quota cannot discard unresolved authority. Preserve32KiBchunks/64KiBcontrol frames and bounded parallelism. Real packet evidence remains separately labelled from synthetic >1MiB/>32writes growth."
+    },
+    {
+      "id": "C04",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Neutral exact framing",
+      "requirement": "Current bridge normalizes CRLF/CR and neutral TerminalScreen limits128rows/65536columns and trims final newlines. Explicitly prove exact neutral prompt bytes/hash including newline endings, tabs/Unicode, long multiline and long single-line packets; no silent normalization. Do not widen Mini/editor semantics or use a truncated diagnostic tail as exact proof."
+    },
+    {
+      "id": "C05",
+      "stage": "actual EVIDENCE",
+      "topic": "Existing computer-access exchange",
+      "requirement": "current-request descriptor is an optional stable locator over the existing queue, not a mandatory new file UI/tool/access method. Document operator startup separately. Actual agent read/write capability must read exact current request and relevant instructions/state, author and publish a correlated winner; Python worker fixture alone cannot qualify SC004. Partial response/reply publication must retain one winner without reinterpretation or unbounded retries."
+    },
+    {
+      "id": "C06",
+      "stage": "concrete selection and final EVIDENCE",
+      "topic": "Acceptance and platforms",
+      "requirement": "Select actual changed owner methods plus narrow rollback/read/receipt controls and positive ordinary helper neighbors. Twelve submissions/four repair cycles and >256 retention control must bind current original owners and complete exact payloads; transport/helper/terminal/daemon trajectory accepted is not client story/history acceptance. Observe actual client result separately. Fresh native discovery counts remain unknown at ARCH. Linux and nativeWindows remain separate; unavailable Windows is open, no CI/artifact workaround; no unchanged1558/A255/B78 replay."
+    }
+  ],
+  "recoveryReviewed": {
+    "candidateExactGithubFiles": 17,
+    "allMetadataChangedPaths": 14,
+    "baselineSourcePinsExact": 78,
+    "additionalReadOnlyDependencies": 6,
+    "fullInheritedBaseReplayed": false
+  },
+  "claims": {
+    "sourceOnly": true,
+    "noRuntimeFailureClaimed": true,
+    "noProductTestsCatalogSelectionEdits": true,
+    "noBuildTestProducerHostBrowserExecution": true,
+    "noNativeREDorGREEN": true,
+    "budgetDefaultsAccepted": false,
+    "exactFutureSelectionAccepted": false,
+    "windowsAccepted": false
+  },
+  "nextAllowedWork": "Root may authorize only the narrow plan/inventory A01 amendment and added-dependency readback. After targeted closure and persisted ARCH acceptance, G1 tests-only may proceed; actual runs and implementation remain separate gates. No routine user technical approval is needed.",
+  "support": {
+    "path": "/tmp/gm1559-architecture-independent-check-20261017.json",
+    "sha256": "90ed99d075c56c806183a87328c39c412064774fd45b7a2dd811e9f024b0c413"
+  }
+}

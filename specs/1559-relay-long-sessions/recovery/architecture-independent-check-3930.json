@@ -1,0 +1,186 @@
+{
+  "kind": "INDEPENDENT_1559_ARCH_STATIC_SUPPORT",
+  "utc": "2026-10-17T12:49:34.798240+00:00",
+  "carrier": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "base": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "scope": "Published metadata candidate and current related source only; no test/parser/producer/build/runtime execution. No historical1558/1557 raw re-review.",
+  "candidateRecovery": {
+    "receipt": "/tmp/gm1559-audit-candidate-delta-github-3930bd49-20261017.json",
+    "sha256": "d3a426be742b4f8b8b21aa546f7cbaf686cc40c9ab35a8b3e40d5020205ad51b",
+    "files": 17,
+    "changedPaths": 14,
+    "allBytesShaBlobModeGitShowExact": true,
+    "changed": [
+      "M\t.specify/feature.json",
+      "M\tAGENTS.md",
+      "A\tspecs/1559-relay-long-sessions/audit.md",
+      "A\tspecs/1559-relay-long-sessions/checklists/requirements.md",
+      "A\tspecs/1559-relay-long-sessions/plan.md",
+      "A\tspecs/1559-relay-long-sessions/recovery/audited-source-github.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/authoring-checks.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/inherited-base-recovery-composition.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/initial-branch-delta.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/issue-readonly-snapshot.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/root-initial-branch-readback.json",
+      "A\tspecs/1559-relay-long-sessions/source-inventory.json",
+      "A\tspecs/1559-relay-long-sessions/spec.md",
+      "A\tspecs/1559-relay-long-sessions/tasks.md"
+    ]
+  },
+  "auditedBaselineSource": {
+    "receipt": "/tmp/gm1559-audited-source-github-a82b3d84-20261017.json",
+    "sha256": "be083c5deb62d04cc4ff634d914d4fec2902dbb46f2ddf6fd55e95120b1e1be9",
+    "initialPins": 78,
+    "allBytesShaBlobModeGitShowExact": true,
+    "scopeLimit": "Initial78 pins do not include the six concrete dependencies below; complete inherited base was not replayed."
+  },
+  "additionalRelatedSource": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
+      "bytes": 10981,
+      "gitBlob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "sha256": "4488491ac2911d8b4c49347d10760106fc72e9c37f9a0169aa4d37f303cea349",
+      "bytes": 9926,
+      "gitBlob": "a09b793f325a6be828ef241ea74c6b358a62c49f",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+      "bytes": 115087,
+      "gitBlob": "7b64eb60f2b448d8e41527ab16cc1bbefd5ab422",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "bytes": 20289,
+      "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "bytes": 7153,
+      "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624",
+      "mode": "100644",
+      "basis": "read-only related current source, unchanged from a82; not in initial78-file receipt"
+    }
+  ],
+  "candidateFiles": [
+    {
+      "path": "specs/1559-relay-long-sessions/spec.md",
+      "sha256": "17eaf466acbb53581d58e4fd6a37691c1156e98b7c5b8e72d46b9a3f32f203c2"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/plan.md",
+      "sha256": "c5706cbbcb55aa267c9ed468bf72f09cda2445ab01957d12aaaa8278bcf7a09b"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/tasks.md",
+      "sha256": "c248a2e38be29f2a5c3daa3fbe96aad2304bd8805352d8b6553ba394b0b36dad"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/audit.md",
+      "sha256": "3ba0dfd6f185425bfb6579532a4e42002effde4b7535b59f79e2d9525ecfd913"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/source-inventory.json",
+      "sha256": "ce87e5ac0b52da9e849f4874ab920389db4ae93d3d8bc0b983cbff3f5fb78ae5"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/recovery/issue-readonly-snapshot.json",
+      "sha256": "19eff1070c2d7679b14643ec5d5d90d54739c4d6dd93264ef08506f91a1b5ea3"
+    }
+  ],
+  "counts": {
+    "functionalRequirements": 12,
+    "successCriteria": 6,
+    "uncheckedTasks": 18,
+    "existingOwnerCandidates": 11
+  },
+  "confirmedSourceBoundaries": [
+    {
+      "path": "tools/gm-relay/relay_cli.py",
+      "lines": "20-23,44-45,107-117",
+      "observation": "Fresh-only queue, lifetime3 and prompt count/byte limits are current source behavior."
+    },
+    {
+      "path": "tools/gm-relay/relay-apply-response.ps1",
+      "lines": "16,25-43",
+      "observation": "32writes limit; each Write-BoeJson publishes separately, terminal last."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+      "lines": "66-100",
+      "observation": "Lease-bound reads/kinds/trees and supplied hashes rechecked at original publication cut; one-file current call can be narrowly extended."
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "lines": "218-328",
+      "observation": "Ordered members under journal, before checks, staged intent, terminal can be last member, committed decision after complete set."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "lines": "81-107",
+      "observation": "Real snapshot reader acquires PublicationReadQuiescence; broad read permission is not mutation role."
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "lines": "3879-3947",
+      "observation": "Original/current admission and trusted-local recovery precede quiescent read return."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "lines": "1941-1985,2405-2433",
+      "observation": "New game_state files are rollback-tracked unless explicitly excluded; new paths delete, existing paths restore before-images."
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "lines": "37-46,140-150,241-267",
+      "observation": "Live prepared snapshot separately includes game_state and excludes only named paths."
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "lines": "39-99,154-155,207-241",
+      "observation": "Current NotReady same-operation retry, two-live admission, task retention, newline normalization and late completion ownership."
+    },
+    {
+      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "lines": "20-28,65-76",
+      "observation": "Neutral view128rows/65536columns and trimmed tail require actual byte-framing treatment, independent of Mini."
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "lines": "63-73",
+      "observation": "FromBytes copies before/after images; transfer byte cap alone does not bound old-target image cost."
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "lines": "6166-6202",
+      "observation": "Trajectory accepted can follow missing repair during grace interval; not authoritative proof of actual client acceptance."
+    }
+  ],
+  "findings": [
+    "1559-A01"
+  ],
+  "materialRuntimeFailureClaimed": false,
+  "newRuntime": false
+}

@@ -1,0 +1,355 @@
+{
+  "kind": "A01_ADDITIVE_SOURCE_INVENTORY_AND_OWNER_CANDIDATES_NOT_ACCEPTANCE",
+  "source": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "createdUtc": "2026-10-17T12:53:48.246654+00:00",
+  "original78RetainedUnchanged": true,
+  "oldSourcePinDigest": "4a8238ea4b4801d502e469087f03e1406096f1fbdc2e4b19ccaa2b484dfa0766",
+  "newSourceCount": 21,
+  "newEmptyDirectory": "/tmp/gm1559-a01-new-source-recovered-3930bd49-20261017",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "mode": "100644",
+      "gitBlob": "cb55397321e1cb14bfa2d2951f59b9464d68dc81",
+      "bytes": 584756,
+      "sha256": "fdf61469199e96331468726ccd6fa5500a742b31267d6e1ad35c672b398c0f64",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+      "mode": "100644",
+      "gitBlob": "678eb2a6dc676813b18e67eb661006ecdd3b79b8",
+      "bytes": 101344,
+      "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+      "mode": "100644",
+      "gitBlob": "ed499fa9a3d2572ca22037c9eb31787507052427",
+      "bytes": 27666,
+      "sha256": "b4f3535b7443ecdb1b7fee4a62f51eaff05a27ff275b2380fef11e019d619d3d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/SpiritualOriginalDraftInputsTests.cs",
+      "mode": "100644",
+      "gitBlob": "94d28362d2e9fe3cbd15c99e27135d6b4297e986",
+      "bytes": 11068,
+      "sha256": "fbedc38b2cc177911d9059d076c71ee600ec394d08303f36174bcf9d0413d985",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient.Tests/SpiritualOriginalDraftInputsTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ValidationSourceGuardTests.cs",
+      "mode": "100644",
+      "gitBlob": "4ae9a7d04e24834744d24522098a87fad082c04f",
+      "bytes": 55306,
+      "sha256": "d5ddcf3a0d35edb57427c74f7d16d582682cdfab7142d68298a2dbd2229a12e5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient.Tests/ValidationSourceGuardTests.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "mode": "100644",
+      "gitBlob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "bytes": 29382,
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "mode": "100644",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/FileSystemManager.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "mode": "100644",
+      "gitBlob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "bytes": 28648,
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "mode": "100644",
+      "gitBlob": "7b64eb60f2b448d8e41527ab16cc1bbefd5ab422",
+      "bytes": 115087,
+      "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "mode": "100644",
+      "gitBlob": "101cf737a47d797db229a047da7cfe72524ce00e",
+      "bytes": 507651,
+      "sha256": "7e05b365f8801b98c8eb720e5f609c7bfc4bf7d7959030b9781339ea4c14c132",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "mode": "100644",
+      "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624",
+      "bytes": 7153,
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Core/TrustedLocalFileImage.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+      "mode": "100644",
+      "gitBlob": "9263bcd239fd133a3d089aafb13620b8471d91bc",
+      "bytes": 11813,
+      "sha256": "5ea99d93fa0eb3da3030ba6134dcafbf845067d674014884a066b35665a0637e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "mode": "100644",
+      "gitBlob": "770c6cf26866089b4c34482dd13831fa86af448c",
+      "bytes": 67739,
+      "sha256": "f57da3eb26afcef157f49dc2c4eacb0054b1f327fd4f79208087ebc021e66e98",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "mode": "100644",
+      "gitBlob": "a09b793f325a6be828ef241ea74c6b358a62c49f",
+      "bytes": 9926,
+      "sha256": "4488491ac2911d8b4c49347d10760106fc72e9c37f9a0169aa4d37f303cea349",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "mode": "100644",
+      "gitBlob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
+      "bytes": 10981,
+      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "mode": "100644",
+      "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "bytes": 20289,
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/LiveTurnPreparationService.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "mode": "100644",
+      "gitBlob": "8b920d6026268123d80cc65e1e178eb558b7b075",
+      "bytes": 67034,
+      "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/SaveLoadService.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+      "mode": "100644",
+      "gitBlob": "db86d9e91dd12b5bea1d128104e2a9595d9cd88c",
+      "bytes": 12086,
+      "sha256": "23ab7ee1c59825d38232c99d1bc5082f874b9a7cc46547345e4d8e628569e972",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "mode": "100644",
+      "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "bytes": 431342,
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "mode": "100644",
+      "gitBlob": "456415569129ff288c324515aaba6927049eb543",
+      "bytes": 34289,
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "mode": "100644",
+      "gitBlob": "62ccbb7aeae9ad2e23d6714baf3aebfe9832b6c5",
+      "bytes": 30179,
+      "sha256": "d2a9881cba429ac747f9756292d465b6896a9e848db535d715053c3f9a26370f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/3930bd49da3b173df6e2ba2acedfced4c628b9ce/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+    }
+  ],
+  "sourcePinDigest": "010f8ad2c5c4cf128715ed7e35384cf8fa358783676b74bb9d9e1922b86afb94",
+  "runtime": "NOT_RUN",
+  "newProductTestsCatalogSelectionEdits": false,
+  "original78Packet": "source-inventory.json (unchanged)",
+  "currentTotalDistinctBaselinePins": 99,
+  "operationalPaths": [
+    "game_state/control/gm_prompt_delivery.json",
+    "game_state/control/gm_relay_apply_receipt.json"
+  ],
+  "actualConsumers": {
+    "snapshotRollback": "GameEngine.SessionAndSnapshots: fixed inventory/EnumerateOriginalBrowserRollbackTrackedFiles/CreatePreTurnBackup/RestorePreTurnBackupAsync; same selector supplies repair obligations/browser restored settlement",
+    "livePreparation": "LiveTurnPreparationService: SnapshotExcludedFiles/ShouldExcludeSnapshotFile; exact cleanup only manifest/authority/snapshot subtree",
+    "saveLoad": "SaveLoadService: EphemeralControlFiles/IsEphemeralArchivePath/DeleteEphemeralArtifacts; new session generation invalidates authority",
+    "repair": "GameEngine.ValidationAndRepair.IsRecoverableFilesModifiedPath plus engine IsClientOwnedRepairResubmissionPath",
+    "validation": "ValidationService.IsClientOwnedSurfaceValidationPath and IsClientOwnedSurfacePath",
+    "frozenDraft": "SpiritualOriginalDraftInputs.IsDraftPathCandidate via IsDraftPath; operational data must not enter gameplay original-input inventory",
+    "helperDeny": "GM_Turn_Helper.Test-BoeClientOwnedRuntimePath and FilesModified policy; already bound in original78",
+    "readers": "Existing GmMainParticipatingControl/Daemon and helper use canonical reader lease/recovery; new strict current-record readers cannot trust raw presence",
+    "cleanup": "Ordinary rollback/pending cleanup preserves the two records; fresh-session/save-load generation replacement invalidates them; do not add preservation to ClearGameState"
+  },
+  "existingNeighborCandidates": [
+    {
+      "existingMethod": "CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+      "currentOwners": [
+        {
+          "category": "portable-engine-snapshot-exact-names-linux",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot"
+          ]
+        },
+        {
+          "category": "turn-lifecycle-repair",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    },
+    {
+      "existingMethod": "CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+      "currentOwners": [
+        {
+          "category": "portable-engine-snapshot-exact-names-linux",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        },
+        {
+          "category": "portable-preparation-outcome-known-controls",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        },
+        {
+          "category": "portable-directory-consumers",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        },
+        {
+          "category": "turn-lifecycle-snapshots",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    },
+    {
+      "existingMethod": "PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "currentOwners": [
+        {
+          "category": "portable-signed-snapshot-authority-neighbors",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts"
+          ]
+        },
+        {
+          "category": "portable-preparation-current-admission-controls",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts"
+          ]
+        },
+        {
+          "category": "portable-directory-consumers-continuation",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts"
+          ]
+        },
+        {
+          "category": "portable-directory-consumers",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    },
+    {
+      "existingMethod": "PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+      "currentOwners": [
+        {
+          "category": "portable-preparation-current-admission-controls",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts"
+          ]
+        },
+        {
+          "category": "portable-directory-consumers-continuation",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts"
+          ]
+        },
+        {
+          "category": "portable-directory-consumers",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    },
+    {
+      "existingMethod": "SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+      "currentOwners": [
+        {
+          "category": "portable-console-rollback-preparation",
+          "project": "integration",
+          "selectors": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    },
+    {
+      "existingMethod": "OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+      "currentOwners": [
+        {
+          "category": "spiritual-conflict-rules",
+          "project": "unit",
+          "selectors": [
+            "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.*"
+          ]
+        }
+      ],
+      "selection": "Exact affected neighbor candidate; not a request to run containing broad categories. Final selectors reviewed/discovered in G1."
+    }
+  ],
+  "futureNewOracles": [
+    "EngineAndLiveSnapshotRollback_PreservesLatestOperationalRecordsAndRestoresOrdinaryNeighbors",
+    "RejectedRepairLostAck_ReconcilesCommittedReceiptWithoutWriting",
+    "SameLiveBindingRestart_AfterRollbackQueriesOriginalSequence",
+    "OperationalSaveLoad_ExcludesRecordsAndRefusesOldGeneration",
+    "MissingOrCorruptOperationalRecord_NeverGrantsReplay",
+    "ExactOperationalPathPolicy_RejectsGmWritesAndLeavesUnrelatedControlTracked"
+  ],
+  "limitations": [
+    "All source-only proposals; no new test methods/cases authored/discovered/executed",
+    "No gameplay rollback/publisher rewrite or afterlife-rule change",
+    "21 new sources recovered once; original78 coverage retained unchanged"
+  ]
+}

@@ -2,7 +2,7 @@
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Inputs: [spec.md](spec.md), [plan.md](plan.md), [audit.md](audit.md), [source-inventory.json](source-inventory.json). Branch `1559-relay-long-sessions-20261017`, base `a82b3d8439f76f83baade6df8516e78eea86e546`.
 
-Current phase: audit/architecture candidate only. All tasks remain unchecked until the corresponding evidence/review/publication exists. No implementation, test authoring or native runtime is released by this list. One writer executes sequentially; the existing independent reviewer evaluates gates through Root. No parallel subagent implementation is planned.
+Current phase: narrow A01 operational-lifetime architecture amendment after the 3930 review; targeted acceptance pending. All tasks remain unchecked until the corresponding evidence/review/publication exists. No implementation, test authoring or native runtime is released by this list. One writer executes sequentially; the existing independent reviewer evaluates gates through Root. No parallel subagent implementation is planned.
 
 ## Foundation / architecture
 
@@ -25,10 +25,10 @@ Current phase: audit/architecture candidate only. All tasks remain unchecked unt
 
 ## US3 — Publication and cold recovery
 
-- [ ] T011 [US3] Author batch/crash/ACK tests using current dedicated helper/trusted-local production publication: before apply, injected third-member interruption, committed-before-ACK, rollback/uncertain and changed generation; preserve exact original witnesses and all-before/whole-after bytes (FR-004/005/006/007, SC-003).
+- [ ] T011 [US3] Author batch/crash/ACK tests using current dedicated helper/trusted-local production publication: before apply, injected third-member interruption, committed-before-ACK, rollback/uncertain and changed generation; preserve exact original witnesses and all-before/whole-after bytes. Add real engine/live snapshot rollback with latest operational records preserved and ordinary neighbors restored/removed, rejected repair/lostACK/same-binding restart, save/load generation invalidation and missing-receipt no-replay controls (FR-004/005/006/007, SC-003).
 - [ ] T012 [US3] Implement the narrow helper batch preparation/commit seam in `GM_Turn_Helper.ps1`, `gm_turn_helper_transport.ps1`, `GmTurnHelperControl.cs` and `GmHelperCanonicalScope.cs`, reusing `PublishLocalFilesAsync` and current policy/normalization; same-commit latest client-owned relay receipt and terminal signal, no generic publisher rewrite (FR-004/006/007, SC-003).
 - [ ] T013 [US3] Implement exact winner/resume and typed relay outcomes in `relay_contract.py`, `relay_cli.py` and fixed `relay-apply-response.ps1`; preserve permanently closed queues, fresh queue/terminal authority, no replay of committed receipt and safe recoverable readiness (FR-005/006/007/008, SC-003).
-- [ ] T014 [US3] Add/update exact #1559 follow-up byte-edit inventory and affected #1557 entrypoint inverse/source guards, current helper package consumers and genuine document52 publisher when their concrete dependency changes; retain prior source/payload history and no broad A/B replay (FR-004/010/012, SC-006).
+- [ ] T014 [US3] Implement only two-name operational exclusions/protections in actual engine/live snapshot, save/load ephemeral, recoverable FilesModified, client-owned repair/validation and SpiritualOriginalDraftInputs owners per plan §D; ordinary rollback/publisher remains unchanged. Add/update exact #1559 follow-up byte-edit inventory and affected #1557 inverse/source/package guards; retain prior history and no broad A/B or spiritual/storage-family replay (FR-004/006/010/012, SC-003/006).
 
 ## Cross-cutting verification and handoff
 

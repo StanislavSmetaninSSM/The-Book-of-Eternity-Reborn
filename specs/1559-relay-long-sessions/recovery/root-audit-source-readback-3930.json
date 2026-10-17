@@ -1,0 +1,26 @@
+{
+  "kind": "ROOT_1559_AUDITED_SOURCE_COVERAGE_AND_ARCH_CANDIDATE_BINDING",
+  "utc": "2026-10-17T12:43:21.286781+00:00",
+  "carrier": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "auditedBase": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "auditedSourceFilesIndependentlyChecked": 78,
+  "sourcePinDigest": "4a8238ea4b4801d502e469087f03e1406096f1fbdc2e4b19ccaa2b484dfa0766",
+  "sourceReceipt": {
+    "path": "/tmp/gm1559-audited-source-github-a82b3d84-20261017.json",
+    "sha256": "be083c5deb62d04cc4ff634d914d4fec2902dbb46f2ddf6fd55e95120b1e1be9"
+  },
+  "newDirectory": "/tmp/gm1559-audited-source-recovered-a82b3d84-20261017",
+  "allByteHashGitBlobModeSetAndGitshowEqual": true,
+  "baselineGovernanceDistinguishedFromFeaturePointerUpdates": true,
+  "metadataOnlyCandidate": true,
+  "sourceTestCatalogSelectorRuntimeUnchanged": true,
+  "newCompleteDelta": {
+    "path": "/tmp/gm1559-audit-candidate-delta-github-3930bd49-20261017.json",
+    "files": 17,
+    "changedPaths": 14,
+    "completeConsecutiveDeltas": 121,
+    "trackedPaths": 56237
+  },
+  "architectureVerdict": "PENDING_INDEPENDENT_ASTRA_XHIGH",
+  "limitations": "Source coverage and planning, not compiler/preparation/test/relay/gameplay/resource qualification."
+}

@@ -14,3 +14,5 @@ Checked 2026-10-17 against `spec.md`, issue #1559, current governance and `plan.
 - [x] No full-suite/default selection, historical replay, CI/main/merge/issue close is introduced.
 - [x] Current phase/next gates are explicit; no implementation/native pass is claimed.
 - [ ] Independent architecture decision accepted and persisted after exact WIP publication/recovery.
+
+A01 amendment self-check: exact operational paths/lifetime, actual snapshot/restore/save/repair/validation/frozen-draft readers and six later gates are in plan §D. Original78 source packet unchanged;21 new disjoint source dependencies recovered. All18 task checkboxes remain open. Independent targeted A01 acceptance is still pending.
