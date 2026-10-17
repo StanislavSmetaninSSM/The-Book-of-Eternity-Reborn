@@ -1,0 +1,161 @@
+{
+  "kind": "WRITER_S04_FIRST_PREPARATION_RAW_BINDING_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE",
+  "utc": "2026-10-17T09:54:01.952996+00:00",
+  "source": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "rawPacket": "specs/1558-remove-daren-campaign/recovery/g1-s04-first-preparation-20261017.json",
+  "rawPacketSha256": "18f6c935ec743ac24a80896a0ff2a1a724950538286891c5fe6a2592b992ce8d",
+  "rawChains": 16,
+  "preparation": [
+    {
+      "mode": "catalog",
+      "nativeExit": 0,
+      "startedUtc": "2026-10-17T09:50:25.323215+00:00",
+      "finishedUtc": "2026-10-17T09:51:54.595667+00:00",
+      "wallSeconds": 89.0839053959935,
+      "resultDirectory": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-095025-863-88695-ba5e959559e24afbb0f9cd9da41d6668-categories",
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      }
+    },
+    {
+      "mode": "plan",
+      "nativeExit": 0,
+      "startedUtc": "2026-10-17T09:52:06.533617+00:00",
+      "finishedUtc": "2026-10-17T09:52:09.947077+00:00",
+      "wallSeconds": 3.2384681639960036,
+      "resultDirectory": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-095207-095-89235-21fc0fc8c0484b56a5fd49568f9075ea-categories",
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 21,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "daren-retirement-browser-host-integration-001",
+          "daren-retirement-save-rewards-integration-002"
+        ],
+        "Complete": false
+      }
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11807,
+    "Categories": 822,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "remainingPlan": {
+    "owners": 2,
+    "descriptors": 2,
+    "methods": 5,
+    "cases": 21,
+    "executed": 0,
+    "rows": [
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "Cases": 1,
+        "category": "daren-retirement-browser-host"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "Cases": 11,
+        "category": "daren-retirement-browser-host"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "Cases": 5,
+        "category": "daren-retirement-browser-host"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "Cases": 1,
+        "category": "daren-retirement-save-rewards"
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "Cases": 3,
+        "category": "daren-retirement-save-rewards"
+      }
+    ]
+  },
+  "newBinaryChain": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "575557c4531a9d5a920ed8b4b98ee14655e68ef46c10c532d19b7dc13924ee04",
+      "bytes": 9560064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "30b12c57583a3fbd90f22cfc2459eba4f6614fb256d8a20cb0227ccddf96b111",
+      "bytes": 29326336
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    }
+  ],
+  "sourceBinding": {
+    "path": "specs/1558-remove-daren-campaign/g1-s04-correction-source-packet-20261017.json",
+    "sha256": "f0ed4e12b1141dc5c9f57845192c3837406cb22671b2a228134eceaf6bbc7547",
+    "changedTestFiles": 2,
+    "canonicalReadChanges": 3,
+    "unchangedNonSelectorPins": 55,
+    "dataAndCurrentSelectorsUnchanged": true
+  },
+  "historicalRawChains50Unchanged": true,
+  "retainedAccepted": "ordinary2/storage4/menu1 originaldf3/compiled0b; no repeat from newassemblyhash or partial-file adjacency",
+  "futureCorrectedHelper": {
+    "path": "/tmp/gm1558-consumer-s04-run.py",
+    "bytes": 10547,
+    "sha256": "fbb176665eaac5fd5f2ab976df6179da975c9654e11c148dffe17986571bb331",
+    "helperText": "\"\"\"Prepared consumer-RED owner launcher. UNRUN; invocation requires separately persisted packet/transport SOURCE and exact Root release.\nNo import-time execution; no retry, cleanup, production edit or source authorization.\n\"\"\"\nfrom pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile,re,os\nROOT=Path('/workspace/The-Book-of-Eternity-Reborn-1558')\nCOMPILED='72a29489bd2daeb5edb32568d5543506f33a33a5'\nPRODUCT='46ff637a01390a27c45a7fc36dc30e31d688e499'\nCOUNTS={'daren-retirement-save-rewards':4,'daren-retirement-browser-host':17}\nDATA_PINS={'browser7.json':'05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7','standalone1.json':'06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53'}\nCOMPILED_METADATA={'tests/categories.json','tests/selection.json','tests/selections/1558-daren-retirement.json'}\nPREP=Path('/tmp/gm1558-implementation-tools/gm1558-g1-s04-catalog-first-72a29489-20261017T095025Z/record.json')\nPREP_SHA='4aafb40c42dc82fddbdb50351586c04116a287ce153864d9583bc2e0f3f685cb'\nPREFIXES=['boe-daren-retirement-capture-*','boe-daren-retirement-storage-*','boe-daren-retirement-host-*','boe-daren-retirement-save-*','boe-daren-retirement-console-*','boe-daren-retirement-artifacts-*','boe-gameengine-turnlifecycle-*','boe-original-other-close-*','boe-browser-protocol-*','boe-gm1557-*']\ndef sha(data):return hashlib.sha256(data).hexdigest()\ndef utc():return datetime.datetime.now(datetime.timezone.utc).isoformat()\ndef git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)\ndef namespaces():return sorted(str(p) for pat in PREFIXES for p in Path(tempfile.gettempdir()).glob(pat))\ndef file_pin(p):\n b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))\ndef main():\n assert len(sys.argv)==5,'label, exact released actual HEAD, one category, and reviewed finite PlanOnly record required'\n label,expected,category,plan_record=sys.argv[1:];assert re.fullmatch(r'gm1558-g1-consumer-s04-red-first-[A-Za-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',expected)\n assert category in COUNTS;CATEGORY=category\n plan_record=Path(plan_record);plan_bytes=plan_record.read_bytes();reviewed=json.loads(plan_bytes)\n assert reviewed['mode']=='plan' and reviewed['nativeExit']==0 and reviewed['compiledSource']==COMPILED\n assert '-PlanOnly' in reviewed['argv'] and '-NoBuild' in reviewed['argv'] and '-SelectionFile' in reviewed['argv']\n assert len(reviewed['resultDirectories'])==1\n plan_path=Path(reviewed['resultDirectories'][0])/'plan.json';plan=json.loads(plan_path.read_text(encoding='utf-8-sig'))\n assert set(plan['Categories'])==set(COUNTS) and len(plan['Descriptors'])==2\n assert sum(d['EstimatedCases'] for d in plan['Descriptors'])==21\n for cat,count in COUNTS.items():\n  rows=[d for d in plan['Descriptors'] if d['Category']==cat];assert len(rows)==1 and rows[0]['Adapter']=='integration' and rows[0]['EstimatedCases']==count\n  assert rows[0]['BudgetMinutes']==3 and rows[0]['Exclusive'] and not rows[0]['FrontendBuild']\n  if cat=='daren-retirement-storage-refusal':assert all('RetiredOriginalSchemaShape' not in m['Name'] for m in rows[0]['ExpectedMethodCounts'])\n descriptor=next(d for d in plan['Descriptors'] if d['Category']==CATEGORY)\n plan_source=reviewed['sourceHead'];assert git('merge-base','--is-ancestor',plan_source,expected)==b''\n assert all(p.startswith('specs/1558-remove-daren-campaign/') for p in git('diff','--name-only',plan_source,expected).decode().splitlines())\n assert git('branch','--show-current').decode().strip()=='1558-remove-daren-campaign-20261017'\n assert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\n assert sha(PREP.read_bytes())==PREP_SHA\n prep=json.loads(PREP.read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['sourceHead']==COMPILED\n delta=git('diff','--name-only',COMPILED,expected).decode().splitlines()\n assert all(p.startswith('specs/1558-remove-daren-campaign/') or p in COMPILED_METADATA or (p.startswith('tests/selections/1558-daren-retirement') and p.endswith('.json')) or p in {'BookOfEternityClient.IntegrationTests/TestData/DarenRetirement/'+name for name in DATA_PINS} for p in delta)\n data=[]\n for name,h in DATA_PINS.items():\n  path=ROOT/'BookOfEternityClient.IntegrationTests/TestData/DarenRetirement'/name;body=path.read_bytes();assert sha(body)==h;data.append(file_pin(path))\n assert subprocess.run(['git','merge-base','--is-ancestor',COMPILED,expected],cwd=ROOT).returncode==0\n def binaries():\n  return [dict(path=p['path'],bytes=(ROOT/p['path']).stat().st_size,sha256=sha((ROOT/p['path']).read_bytes())) for p in prep['binaryAfter']]\n before=binaries();assert len(before)==7 and before==prep['binaryAfter']\n source=json.loads(git('show',COMPILED+':specs/1558-remove-daren-campaign/g1-correction-source-packet-20261017.json'))\n assert len(source['sourcePins'])==60\n s04=json.loads(git('show',COMPILED+':specs/1558-remove-daren-campaign/g1-s04-correction-source-packet-20261017.json'))\n excluded=COMPILED_METADATA|set(s04['historicalCompiledBinding']['changedTestSources']);unchanged=0\n for pin in source['sourcePins']:\n  if pin['path'] not in excluded:assert sha((ROOT/pin['path']).read_bytes())==pin['sha256'],pin['path'];unchanged+=1\n assert unchanged==55\n for pin in [x['after'] for x in s04['changedTestSources']]+s04['currentDataBinding']['installedOriginalDataPins']+s04['currentDataBinding']['currentSelectorsUnchanged']+[s04['remainingSelection']]:assert sha((ROOT/pin['path']).read_bytes())==pin['sha256'],pin['path']\n assert before==reviewed['binaryBefore']==reviewed['binaryAfter']\n selection=json.loads((ROOT/'tests/selection.json').read_text());assert CATEGORY in {x['category'] for x in selection['selections']}\n catalog=json.loads((ROOT/'tests/categories.json').read_text());entry=next(x for x in catalog['categories'] if x['id']==CATEGORY)\n assert entry['timeoutMinutes']==3 and entry['requirements']['frontendBuild'] is False\n assert all(s['project']=='integration' for s in entry['selectors'])\n selector_pins=[file_pin(ROOT/p) for p in sorted(COMPILED_METADATA)]\n ns_before=namespaces();assert not any(Path(p).match('boe-daren-retirement-capture-*') for p in ns_before),'Unreconciled preexisting owned capture root; do not launch/delete/retry'\n parent=Path('/tmp/gm1558-implementation-tools');parent.mkdir(exist_ok=True)\n out=parent/label;assert not out.exists();out.mkdir()\n marker=parent/(COMPILED+'-'+CATEGORY+'.consumer-red.first-launch.json')\n # Atomic first-launch sentinel survives an interrupted conversation/process. Never\n # remove it to retry; reconcile actual PID/record/raw after any uncertain outcome.\n with marker.open('x') as m:json.dump(dict(kind='FIRST_LAUNCH_SENTINEL_NOT_APPROVAL',actualSource=expected,compiledSource=COMPILED,productSource=PRODUCT,label=label,createdUtc=utc(),recordPath=str(out/'record.json')),m,indent=2)\n args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-Category',CATEGORY,'-NoBuild']\n result_root=ROOT/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\n start=utc();clock=time.monotonic();native=None;launch_error=None\n print('LOCAL_GM1558_CONSUMER_RED_START',expected,'compiled',COMPILED,'log',out/'stdout.log',flush=True)\n try:\n  with (out/'stdout.log').open('wb') as stream:\n   process=subprocess.Popen(args,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT)\n   (out/'process.json').write_text(json.dumps(dict(pid=process.pid,argv=args,startedUtc=start,actualSource=expected,compiledSource=COMPILED),indent=2)+'\\n')\n   native=process.wait()\n except BaseException as e:launch_error=repr(e)\n elapsed=time.monotonic()-clock;ns_after=namespaces();new_dirs=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\n raw=[]\n for directory in new_dirs:\n  for p in sorted(Path(directory).rglob('*')):\n   if p.is_file():raw.append(file_pin(p))\n new_artifact_dirs=sorted(p for p in set(ns_after)-set(ns_before) if Path(p).match('boe-daren-retirement-artifacts-*'))\n artifacts=[file_pin(p) for directory in new_artifact_dirs for p in sorted(Path(directory).rglob('*')) if p.is_file()]\n after=binaries();record=dict(mode='actual',phase='FIRST_CONSUMER_RED_OWNER',reviewedFinitePlanRecord=str(plan_record),reviewedFinitePlanRecordSha256=sha(plan_bytes),reviewedFinitePlanPath=str(plan_path),reviewedFinitePlanSha256=sha(plan_path.read_bytes()),expectedDescriptor=descriptor,originalPacketPins=data,currentSelectorPins=selector_pins,label=label,category=CATEGORY,argv=args,cwd=str(ROOT),actualSource=expected,sourceHead=expected,compiledSource=COMPILED,productSource=PRODUCT,preparationRecord=str(PREP),preparationSha256=PREP_SHA,startedUtc=start,finishedUtc=utc(),wallSeconds=elapsed,nativeExit=native,launchError=launch_error,stdoutPath=str(out/'stdout.log'),stdoutSha256=sha((out/'stdout.log').read_bytes()),resultDirectories=new_dirs,resultFiles=raw,binaryBefore=before,binaryAfter=after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),ownedPrefixesBefore=ns_before,ownedPrefixesAfter=ns_after,newRetainedArtifactDirectories=new_artifact_dirs,fixtureArtifactFiles=artifacts,firstLaunchSentinel=str(marker),processRecord=str(out/'process.json'),helperText=Path(__file__).read_text(),scope='ONE reviewed canonical consumer owner only. Remaining two-owner proposal totals21 only if both first commands complete; accepted ordinary/menu/storage stay under their original provenance without replay. Expected semantic RED may yield native1; qualification and causality are not inferred from exit code. No automatic next command/retry/production change.',authority='UNRUN S04 draft. Caller must have separately persisted independent S04 SOURCE/remaining PlanOnly/new seven-pin binding and exact Root owner runtime release. This helper grants none.',qualification='Record FIRST raw even native1; exact per-case identities, source-derived before/after images/callbacks, expected retirement assertion and strict settling/cleanup require read-only inspection and independent EVIDENCE. Synthetic6 is GREEN/source-order only and excluded.')\n (out/'record.json').write_text(json.dumps(record,indent=2)+'\\n')\n print('LOCAL_GM1558_CONSUMER_RED_EXIT',native,'wall',round(elapsed,3),'record',out/'record.json','artifacts',new_artifact_dirs,flush=True)\n assert record['headAfter']==expected and record['statusAfter']=='' and before==after\n if launch_error:raise RuntimeError('First outcome retained; '+launch_error)\n sys.exit(native)\nif __name__=='__main__':main()\n",
+    "execution": "UNRUN; requires separate exact Root release after targetedSOURCE; newcompiled72a/new7pins/exactremaining2/21; old0bhelper/sentinelsunchanged"
+  },
+  "helperText": "from pathlib import Path\nimport hashlib,json,gzip,datetime,subprocess,re\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1558');f=repo/'specs/1558-remove-daren-campaign';r=f/'recovery';sha=lambda b:hashlib.sha256(b).hexdigest();pp=r/'g1-s04-first-preparation-20261017.json';packet=json.loads(pp.read_text());assert len(packet['files'])==16\nfor x in packet['files']:\n z=(repo/x['storedPath']).read_bytes();b=gzip.decompress(z);assert sha(z)==x['storedSha256'] and sha(b)==x['sha256'] and len(b)==x['bytes'] and b==Path(x['rawPath']).read_bytes()\ncat,plan=packet['commands'];source='72a29489bd2daeb5edb32568d5543506f33a33a5';assert cat['nativeExit']==plan['nativeExit']==0 and cat['compiledSource']==plan['compiledSource']==source;assert '-NoBuild' not in cat['argv'] and '-ValidateCatalog' in cat['argv'] and '-NoBuild' in plan['argv'] and '-PlanOnly' in plan['argv'] and 'tests/selections/1558-daren-retirement-red-remaining.json' in plan['argv']\nfor x in [cat,plan]:assert x['headAfter']==x['sourceHead']==source and not x['statusAfter'] and x['ownedPrefixesBefore']==x['ownedPrefixesAfter']\nassert cat['ownedPrefixesAfter']==plan['ownedPrefixesBefore'] and cat['binaryAfter']==plan['binaryBefore']==plan['binaryAfter'] and len(plan['binaryAfter'])==7\nfor x in plan['binaryAfter']:assert sha((repo/x['path']).read_bytes())==x['sha256']\ncd=Path(cat['resultDirectories'][0]);pd=Path(plan['resultDirectories'][0]);audit=json.loads((cd/'catalog-audit.json').read_text(encoding='utf-8-sig'));assert audit==dict(Valid=True,Methods=11807,Categories=822,Unmapped=[],StaleSelectors=[])\np=json.loads((pd/'plan.json').read_text(encoding='utf-8-sig'));rows=[dict(Name=m['Name'],Cases=m['Cases'],category=d['Category']) for d in p['Descriptors'] for m in d['ExpectedMethodCounts']];assert len(p['Categories'])==len(p['Descriptors'])==2 and len(rows)==len({x['Name'] for x in rows})==5 and sum(x['Cases'] for x in rows)==21;assert {d['Category']:d['EstimatedCases'] for d in p['Descriptors']}=={'daren-retirement-save-rewards':4,'daren-retirement-browser-host':17};assert all(d['Adapter']=='integration' and d['BudgetMinutes']==3 and d['Exclusive'] for d in p['Descriptors'])\nsummary=[]\nfor x,d in [(cat,cd),(plan,pd)]:\n s=json.loads((d/'summary.json').read_text(encoding='utf-8-sig'));assert s['Tests']==dict(Total=0,Executed=0,Passed=0,Failed=0) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'];summary.append(dict(mode=x['mode'],nativeExit=x['nativeExit'],startedUtc=x['startedUtc'],finishedUtc=x['finishedUtc'],wallSeconds=x['wallSeconds'],resultDirectory=str(d),tests=s['Tests'],selection=s['Selection']))\nbp=f/'g1-s04-correction-source-packet-20261017.json';bb=bp.read_bytes();assert cat['sourceBindingSha256']==plan['sourceBindingSha256']==sha(bb);binding=json.loads(bb);old=json.loads((repo/binding['historicalCompiledBinding']['path']).read_text());exc=set(binding['historicalCompiledBinding']['excludedHistoricalSelectorPins'])|set(binding['historicalCompiledBinding']['changedTestSources']);unchanged=[x for x in old['sourcePins'] if x['path'] not in exc];assert len(unchanged)==55\nfor x in unchanged+[x['after'] for x in binding['changedTestSources']]+binding['currentDataBinding']['installedOriginalDataPins']+binding['currentDataBinding']['currentSelectorsUnchanged']+[binding['remainingSelection']]:assert sha((repo/x['path']).read_bytes())==x['sha256']\nfuture=Path('/tmp/gm1558-consumer-s04-run.py');assert sha(future.read_bytes())=='fbb176665eaac5fd5f2ab976df6179da975c9654e11c148dffe17986571bb331';compile(future.read_text(),str(future),'exec');assert sha(Path('/tmp/gm1558-consumer-red-run.py').read_bytes())=='1b48849b4efe732c5e799630c59874820c35ee418ad0e4a28076008bb3defd1c'\noldraw=0\nfor path in [r/'g1-first-capture-stop-20261017-files/archive.json',r/'g1-corrected-first-capture-20261017-files/archive.json']+[r/'g1-first-consumer-stop-20261017-files'/tag/'archive.json' for tag in ['ordinary','storage','menu','save']]:\n a=json.loads(path.read_text())\n for x in a['files']:\n  z=(path.parent/x['storedPath']).read_bytes();assert sha(z)==x['storedSha256'] and sha(gzip.decompress(z))==x['sha256'] and gzip.decompress(z)==Path(x['rawPath']).read_bytes();oldraw+=1\nassert oldraw==50\nreport=dict(kind='WRITER_S04_FIRST_PREPARATION_RAW_BINDING_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source=source,compiledSource=source,productSource=binding['unchangedProductSource'],rawPacket=str(pp.relative_to(repo)),rawPacketSha256=sha(pp.read_bytes()),rawChains=16,preparation=summary,catalog=audit,remainingPlan=dict(owners=2,descriptors=2,methods=5,cases=21,executed=0,rows=rows),newBinaryChain=plan['binaryAfter'],sourceBinding=dict(path=str(bp.relative_to(repo)),sha256=sha(bb),changedTestFiles=2,canonicalReadChanges=3,unchangedNonSelectorPins=55,dataAndCurrentSelectorsUnchanged=True),historicalRawChains50Unchanged=True,retainedAccepted='ordinary2/storage4/menu1 originaldf3/compiled0b; no repeat from newassemblyhash or partial-file adjacency',futureCorrectedHelper=dict(path=str(future),bytes=len(future.read_bytes()),sha256=sha(future.read_bytes()),helperText=future.read_text(),execution='UNRUN; requires separate exact Root release after targetedSOURCE; newcompiled72a/new7pins/exactremaining2/21; old0bhelper/sentinelsunchanged'),helperText=Path(__file__).read_text(),limits=['Fresh builds/zeroexec only; no corrected save4 or firstHTTP17 actual.','No repeated oldaccepted families, capture, source-body preservation tests or full99.','No unnecessary pre-removalpackage258 inventory repeated; no product source behavior change.','S04 authored/sourcepending, not runtime fixed; old4fixtureFAIL immutable.'])\n(r/'g1-s04-first-preparation-inspection-20261017.json').write_text(json.dumps(report,indent=2)+'\\n')\nfor src,h in [('/tmp/gm1558-root-s04-source-readback-72a29489-20261017.json','4834fd7d0365a7904b5c7d5ab3df2d65afff29efdffc3400f7d85c0999f3e9e6'),('/tmp/gm1558-root-s04-preparation-readback-72a29489-20261017.json','2c9944b8962641b9c019294ac0f4e94183111208db23cfb0bc2b26673dacd040'),('/tmp/gm1558-g1-s04-source-delta-github-72a29489-20261017.json',None),('/tmp/gm1558-root-recovery-composition-72a29489-20261017.json',None)]:\n path=Path(src);raw=path.read_bytes();assert h is None or sha(raw)==h;dest=r/path.name;assert not dest.exists();dest.write_bytes(raw);assert dest.read_bytes()==raw\ncurrent='S04 FIRSTfreshBOTH/catalog0/822valid +remainingPlanOnly0 exact2integrationdescriptors/5methods/21cases/0exec;16raw chains/new7compiled72aDLL preserved. TargetedaffectedSOURCE pending; distinctcorrectedownerhelper UNRUN, no save4/HTTP17 actual. Acceptedordinary2/storage4/menu1 retainoriginaldf3/0b withoutreplay; old4savefixtureFAIL and allhistory unchanged. Productionheld;T004\u2013T020 unchecked.'\nfor name,label in [('plan.md','Current status'),('tasks.md','Current phase'),('spec.md','Status')]:\n path=f/name;t=path.read_text();t,n=re.subn(r'\\*\\*'+re.escape(label)+r'\\*\\*:.*','**'+label+'**: '+current,t,count=1);assert n==1;path.write_text(t)\npath=f/'plan.md';t=path.read_text().replace('## Current G1-S04 source correction \u2014 fresh affected preparation pending','## Historical G1-S04 source correction at72a29489',1);t+='''\n\n## Current S04 preparation/SOURCE handoff \u2014 corrected save4 and HTTP17 still unrun\n\n[Exact16 FIRST preparation chains](recovery/g1-s04-first-preparation-20261017.json) and [writer raw binding](recovery/g1-s04-first-preparation-inspection-20261017.json) preserve fresh BOTH/catalog native0/89.084s, valid822categories/11807methods-files/no stale or unmapped, followed by remainingSelection PlanOnly-NoBuild native0/3.238s: exact2exclusive integration descriptors/5unique methods/21cases,0executions. Fresh7compiled72a hashes agree across catalogAfter/planBefore/planAfter/current; namespaces/clean source stay continuous. Previous0b hashes/raw remain historical provenance, not current output pins. No unnecessary258-file package inventory was repeated.\n\n[Root source readback](recovery/gm1558-root-s04-source-readback-72a29489-20261017.json), [Root direct preparation readback](recovery/gm1558-root-s04-preparation-readback-72a29489-20261017.json), [complete72a delta](recovery/gm1558-g1-s04-source-delta-github-72a29489-20261017.json) and [95-delta composition](recovery/gm1558-root-recovery-composition-72a29489-20261017.json) bind the published correction. Two test-source hashes change only at the three approved reads;55other nonselector pins/current originaldata/oldcatalog/full17/oldfinite5 remain byte-exact. Exact menuFact is preserved despite partial-file adjacency. All50prior native/capture chains and old helpers/sentinels are unchanged; accepted ordinary2/storage4/menu1 are retained without replay.\n\nDistinct future `/tmp/gm1558-consumer-s04-run.py` is syntax-checked only, with exact helper text/hash in the writer binding for review. It binds newcompiled72a/freshcatalog/new7DLLs, remaining2owners/21case nativePlan and current55+2source/data/selector pins; old0b helper/first-launch markers stay untouched. The unchanged exact archiver may be reused. Neither corrected save4 nor firstHTTP17 has run. This carrier changes featuremetadata/raw only, before independent affected S04SOURCE/selection/PREP and a separate exact Root activation. No current runtime fix/RED/GREEN or total28 completion is claimed; T006/T009 and all T004\u2013T020 remain unchecked. Production/G2/removal/prompts and prior unrelated/platform limits stay held.\n''';path.write_text(t)\npath=f/'tasks.md';t=path.read_text().replace('Current S04 disposition:','Historical S04 source disposition at72a:',1);t+='''\n\nCurrent S04 preparation: [16FIRST raw chains](recovery/g1-s04-first-preparation-20261017.json) bind freshBOTH/catalog0 and remainingPlanOnly0 exact2descriptors/5methods/21cases/0exec/new7compiled72aDLLs. Targeted independentSOURCE and explicitRootactivation still precede corrected save4/unrunHTTP17; accepted ordinary2/menu1/storage4 retainoldprovenance withoutrepeat. No actual runtime fix or completed task is claimed; all T004\u2013T020 stay unchecked.\n''';path.write_text(t)\npath=f/'spec.md';t=path.read_text().replace('Current [partial causal EVIDENCE acceptance]','Historical [partial causal EVIDENCE acceptance]',1);t+='''\n\nCurrent [S04 fresh zero-execution preparation](recovery/g1-s04-first-preparation-20261017.json) observes remaining2owners/5methods/21cases withnewcompiled72a/sevenDLL binding. Affected independentSOURCE and exactRootactivation remain pending; corrected save4 and firstHTTP17 are unrun. Accepted ordinary/storage/menu evidence keeps its originalprovenance; production and functional/success completion stay held.\n''';path.write_text(t)\nfor name in ['spec.md','tasks.md']:\n oldtext=subprocess.check_output(['git','show','HEAD:specs/1558-remove-daren-campaign/'+name],cwd=repo).decode();new=(f/name).read_text();pat=r'^- \\*\\*(?:FR|SC)-.*$' if name=='spec.md' else r'^- \\[[ x]\\] T\\d+.*$';assert re.findall(pat,oldtext,re.M)==re.findall(pat,new,re.M)\nprint('EXACT16CHAINS_55PLUS2SOURCE_2DATA_5SELECTOR_BINDING;NEW7DLL_CHAIN;2DESC5METHOD21ZEROEXEC;OLD50RAW_UNCHANGED')\n",
+  "limits": [
+    "Fresh builds/zeroexec only; no corrected save4 or firstHTTP17 actual.",
+    "No repeated oldaccepted families, capture, source-body preservation tests or full99.",
+    "No unnecessary pre-removalpackage258 inventory repeated; no product source behavior change.",
+    "S04 authored/sourcepending, not runtime fixed; old4fixtureFAIL immutable."
+  ]
+}

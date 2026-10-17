@@ -1,0 +1,27 @@
+{
+  "kind": "ROOT_NARROW_S04_SOURCE_INVERSE_AND_RECOVERY_READBACK",
+  "createdUtc": "2026-10-17T09:50:18.949059+00:00",
+  "carrier": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "parent": "589cdcd52ded67313e11d66909767be43d74f855",
+  "exactCodeChanges": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs",
+      "changedReadSites": 2,
+      "sha256": "50429a840bc77e189b7fd7fb59693bbb4de2fc8b2b1a2727e0674d4f7cb3ffa5",
+      "restOfFileExactInverseToParent": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs",
+      "changedReadSites": 1,
+      "sha256": "5b92fe46af74610db5578593956aa577d310d8a78eef4d88bfe2c2737ad5ad98",
+      "restOfFileExactInverseToParent": true
+    }
+  ],
+  "unchangedNonSelectorAndNonCorrectedSourcePins": 55,
+  "catalogFullAndOldRedSelectorsUnchanged": true,
+  "productFrontendUnchanged": true,
+  "acceptedMenuMethodPreserved": true,
+  "completeDeltas": 95,
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-72a29489-20261017.json",
+  "runtimeRelease": "NONE__FRESH_PREP_AND_TARGETED_SOURCE_REQUIRED"
+}

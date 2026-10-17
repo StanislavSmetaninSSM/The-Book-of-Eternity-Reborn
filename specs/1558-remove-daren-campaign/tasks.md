@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: Partial causal EVIDENCE accepted: ordinary2PASS/storage4+menu1causalRED; save4 confirmedG1-S04fixturedecoderFAIL,HTTP17UNRUN. Exact3canonical soul testreads corrected in2files only, unchangedoracles/profile/archive/product; remaining2owners/5methods/21cases authored. FreshBOTH/catalog+remainingPlanOnly and targetedSOURCE pending; noactual/replay/G2. Historicaldf3/0b raw retained; T004–T020 unchecked.
+**Current phase**: S04 FIRSTfreshBOTH/catalog0/822valid +remainingPlanOnly0 exact2integrationdescriptors/5methods/21cases/0exec;16raw chains/new7compiled72aDLL preserved. TargetedaffectedSOURCE pending; distinctcorrectedownerhelper UNRUN, no save4/HTTP17 actual. Acceptedordinary2/storage4/menu1 retainoriginaldf3/0b withoutreplay; old4savefixtureFAIL and allhistory unchanged. Productionheld;T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -63,4 +63,7 @@ Historical accepted binding atdf3 before activation: [independent data/selector/
 Historical FIRST finite block at589 is [partialSTOP](recovery/g1-first-consumer-stop-20261017.json): four activated owners/11cases completed,2ordinaryPASS,5storage/menu locallycausalFAIL and4unexpected save fixtureBOMFAIL; HTTP17UNRUN. All32rawchains/11strictroot removals/current source+7DLL continuity are preserved. Independent causal EVIDENCE is pending; no qualified save RED/preservation result or full28 completeness is claimed. No retry/source correction; T006/T009 and all T004–T020 remain open, production and further actuals held.
 
 
-Current S04 disposition: [accepted partial causal EVIDENCE](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) retains ordinary2PASS+storage4/menu1RED without replay, confirms save4fixture decoder failure and HTTP17unrun. [Root tests-only correction release](recovery/gm1558-root-s04-test-correction-preparation-release-589cdcd5-20261017.json) authorizes exactly3BOM-aware canonical soul reads in2testfiles, unchanged final oracles, plus remaining21selection. FreshBOTH/catalog/PlanOnly and independent affectedSOURCE remain pending; no actual or product change. Original4saveFAIL/32raw and T004–T020 unchecked stay intact.
+Historical S04 source disposition at72a: [accepted partial causal EVIDENCE](recovery/gm1558-first-consumer-stop-evidence-independent-20261017.md) retains ordinary2PASS+storage4/menu1RED without replay, confirms save4fixture decoder failure and HTTP17unrun. [Root tests-only correction release](recovery/gm1558-root-s04-test-correction-preparation-release-589cdcd5-20261017.json) authorizes exactly3BOM-aware canonical soul reads in2testfiles, unchanged final oracles, plus remaining21selection. FreshBOTH/catalog/PlanOnly and independent affectedSOURCE remain pending; no actual or product change. Original4saveFAIL/32raw and T004–T020 unchecked stay intact.
+
+
+Current S04 preparation: [16FIRST raw chains](recovery/g1-s04-first-preparation-20261017.json) bind freshBOTH/catalog0 and remainingPlanOnly0 exact2descriptors/5methods/21cases/0exec/new7compiled72aDLLs. Targeted independentSOURCE and explicitRootactivation still precede corrected save4/unrunHTTP17; accepted ordinary2/menu1/storage4 retainoldprovenance withoutrepeat. No actual runtime fix or completed task is claimed; all T004–T020 stay unchecked.

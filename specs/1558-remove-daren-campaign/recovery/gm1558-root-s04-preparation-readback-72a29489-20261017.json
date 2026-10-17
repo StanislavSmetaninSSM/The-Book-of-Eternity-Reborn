@@ -1,0 +1,75 @@
+{
+  "kind": "ROOT_FIRST_S04_FRESH_PREPARATION_RAW_READBACK_NO_RUNTIME_ACCEPTANCE",
+  "createdUtc": "2026-10-17T09:52:53.594458+00:00",
+  "preparedSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "records": [
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g1-s04-catalog-first-72a29489-20261017T095025Z/record.json",
+      "sha256": "4aafb40c42dc82fddbdb50351586c04116a287ce153864d9583bc2e0f3f685cb",
+      "mode": "catalog",
+      "nativeExit": 0,
+      "wallSeconds": 89.0839053959935
+    },
+    {
+      "path": "/tmp/gm1558-implementation-tools/gm1558-g1-s04-plan-first-72a29489-20261017T095206Z/record.json",
+      "sha256": "4118464515227c86f8af6cea33a22c6f4e3a3c9d562706fa331144ff05de1144",
+      "mode": "plan",
+      "nativeExit": 0,
+      "wallSeconds": 3.2384681639960036
+    }
+  ],
+  "catalog": {
+    "categories": 822,
+    "methodsFiles": 11807,
+    "unmapped": 0,
+    "stale": 0
+  },
+  "remainingPlan": {
+    "owners": 2,
+    "descriptors": 2,
+    "methods": 5,
+    "cases": 21,
+    "executed": 0
+  },
+  "freshSevenBinaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "575557c4531a9d5a920ed8b4b98ee14655e68ef46c10c532d19b7dc13924ee04",
+      "bytes": 9560064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "30b12c57583a3fbd90f22cfc2459eba4f6614fb256d8a20cb0227ccddf96b111",
+      "bytes": 29326336
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331",
+      "bytes": 1992192
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505",
+      "bytes": 26183168
+    }
+  ],
+  "catalogAfterPlanBeforePlanAfterExact": true,
+  "namespaceContinuous": true,
+  "sourceAcceptance": "PENDING_TARGETED_S04_PREP_AND_HELPER_BINDING",
+  "actualRelease": false
+}
