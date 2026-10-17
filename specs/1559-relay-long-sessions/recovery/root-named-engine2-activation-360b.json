@@ -1,0 +1,18 @@
+{
+  "kind": "ROOT_NAMED_FIRST_ENGINE_ROLLBACK2_ACTIVATION",
+  "utc": "2026-10-17T13:40:54.152390+00:00",
+  "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "rootSourceRelease": "/tmp/gm1559-root-g1-source-engine2-release-837ff3a8-20261017.json",
+  "rootSourceReleaseSha256": "118c616a2a3be421a307a1af3be0707eb452d09eb27fee60b1fcf3de89ad4a75",
+  "persistedReviewReleaseRecorderByteExact": true,
+  "completeGithubMetadataSuccessor": "/tmp/gm1559-root-recovery-composition-360b3a39-20261017.json",
+  "exactRemoteClean": true,
+  "activate": "ONE_FIRST_GM_RELAY_OPERATIONAL_ENGINE_ROLLBACK_TWO_ROWS_ONLY",
+  "recorder": "/tmp/gm1559-g1-engine-rollback-first-run.py",
+  "recorderSha256": "f17fccc488c9e09101289fa631d7e3a7c57a55194d869d2b3a5ce3474b065b0b",
+  "planRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-plan-first-d473ed33-20261017t1330z/record.json",
+  "scope": "Canonical category gm-relay-operational-engine-rollback -NoBuild,1integration method/2rows. Source119/DLL9 assertions remain mandatory. No source/binary/fixture mutation. Freeze native/TRX/summary/plan/stdout/process/ownership raw before qualification. All other actuals/product held.",
+  "after": "Freeze/publish FIRST raw WIP/nonforce/exactremote/fullchangedpath GitHub recovery; separate independent causal EVIDENCE before any fix/retry/production."
+}

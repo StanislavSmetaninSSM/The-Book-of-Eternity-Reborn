@@ -1,0 +1,79 @@
+{
+  "kind": "EXACT_FIRST_OWNER_ARCHIVE_NOT_CAUSAL_ACCEPTANCE",
+  "createdUtc": "2026-10-17T13:42:01.316288+00:00",
+  "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "category": "gm-relay-operational-engine-rollback",
+  "recordPath": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/record.json",
+  "nativeExit": 1,
+  "rawChainCount": 8,
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/d473ed332fe7443f93759e44973ba963a790a13b-g1-engine-rollback.FIRST.json",
+      "storedPath": "000-d473ed332fe7443f93759e44973ba963a790a13b-g1-engine-rollback.FIRST.json.gz",
+      "bytes": 339,
+      "sha256": "25889938d3d2494247bcf4cb2b743ecdf0f15ed850a93b0580da102f5a25ebbe",
+      "storedBytes": 260,
+      "storedSha256": "9082448ac540ec08626f6f91a0f4577a539d74768755afaa63c71e5e32a1e59a"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 752,
+      "sha256": "7b5046f720507b3aa9fb4c2f8ec19e2d15da3663f22b9a9307d4a191f3be6d11",
+      "storedBytes": 390,
+      "storedSha256": "01dbf74a6a6d3e17f8db5fccfe93334a58566bd1ed0be242781ab2e0862c4c37"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 12383,
+      "sha256": "f07bc59d3769a07dd474c0f4cd123ec62a5f39b5d9cc4e188e0ea7d0d8f1bb2c",
+      "storedBytes": 3650,
+      "storedSha256": "5da19fcfada215cff262895898e14e505960066598653755055d7cc1cd9bec25"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/stdout.log",
+      "storedPath": "003-stdout.log.gz",
+      "bytes": 4795,
+      "sha256": "5e3c06a7cc10571964e0416d45704a6a3737abec2b6a41e6eb4af0db55fe9634",
+      "storedBytes": 1255,
+      "storedSha256": "4316ad3f32c7de0ced50a6d4654da0ea3e169af0444dbaaa4ed999b1b1b28185"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-134122-768-122257-27f86dff04ac43459ad5453d1fdfad14-categories/dotnet-test.log",
+      "storedPath": "004-dotnet-test.log.gz",
+      "bytes": 1695727,
+      "sha256": "72192a259192903580edc1bbf8538d8b26fc479bf472f22b323532867118683c",
+      "storedBytes": 188677,
+      "storedSha256": "8341b03cce3f3acdc1f68f0ab5e2217ed463cab4733fec1c3025d9a45a0f9af0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-134122-768-122257-27f86dff04ac43459ad5453d1fdfad14-categories/gm-relay-operational-engine-rollback-integration-001.trx",
+      "storedPath": "005-gm-relay-operational-engine-rollback-integration-001.trx.gz",
+      "bytes": 10047,
+      "sha256": "f63d13b21f7dcd4fe0259d2e4b33f3f533d11052b06ac7a0feb3682bba40ca47",
+      "storedBytes": 2009,
+      "storedSha256": "1ad5fec1ac6b1f4e4b3a05e3681dc1b7b95f6b30aa7cee2eb17075f4701e4520"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-134122-768-122257-27f86dff04ac43459ad5453d1fdfad14-categories/plan.json",
+      "storedPath": "006-plan.json.gz",
+      "bytes": 1229,
+      "sha256": "f38f116c33afe030d724a88b2641d0fbfc7a63a4bceed2676819e4820dfff49e",
+      "storedBytes": 545,
+      "storedSha256": "300c07ed370685dbb7f4ef6ec6e2cbb0bcb65971a1c8bfd9679003dc567e57dd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-134122-768-122257-27f86dff04ac43459ad5453d1fdfad14-categories/summary.json",
+      "storedPath": "007-summary.json.gz",
+      "bytes": 1382,
+      "sha256": "cc04bd99330614566bb59f5704ba268e3a649da9301a660a79a27169d1c508e1",
+      "storedBytes": 598,
+      "storedSha256": "4af8ab6d50c3125a406b7f8b4ace064e6fdbff8985bcd86df31ef60fa16b381d"
+    }
+  ],
+  "scope": "Existing terminal raw only; no execution, cleanup/deletion, retry, source mutation or RED classification.",
+  "helperText": "\"\"\"Read-only archival of an already terminal FIRST owner; never invokes native code.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nraw_record=record.read_bytes();command=json.loads(raw_record);assert command['category']=='gm-relay-operational-engine-rollback'\npaths=[record,Path(command['stdoutPath']),Path(command['processRecord']),Path(command['firstLaunchSentinel'])]\nfor result in command['resultDirectories']:paths.extend(p for p in sorted(Path(result).rglob('*')) if p.is_file())\nfiles=[]\ndef h(b):return hashlib.sha256(b).hexdigest()\nfor i,p in enumerate(sorted(set(paths))):\n data=p.read_bytes();name=str(i).zfill(3)+'-'+p.name+'.gz';out=destination/name;encoded=gzip.compress(data,compresslevel=9,mtime=0);out.write_bytes(encoded);assert gzip.decompress(out.read_bytes())==data\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(data),sha256=h(data),storedBytes=len(encoded),storedSha256=h(encoded)))\nmanifest=dict(kind='EXACT_FIRST_OWNER_ARCHIVE_NOT_CAUSAL_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=command['actualSource'],compiledSource=command['compiledSource'],productSource=command['productSource'],category=command['category'],recordPath=str(record),nativeExit=command['nativeExit'],rawChainCount=len(files),files=files,scope='Existing terminal raw only; no execution, cleanup/deletion, retry, source mutation or RED classification.',helperText=Path(__file__).read_text())\n(destination/'archive.json').write_text(json.dumps(manifest,indent=2)+'\\n')\nprint(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files),nativeExit=command['nativeExit'])))\n"
+}

@@ -1,0 +1,58 @@
+{
+  "kind": "FIRST_ENGINE_ROLLBACK2_NATIVE_RAW_NOT_CAUSAL_ACCEPTANCE",
+  "utc": "2026-10-17T13:42:53.810653+00:00",
+  "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "nativeExit": 1,
+  "wallSeconds": 5.552704322995851,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 0,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "rawArchive": "specs/1559-relay-long-sessions/recovery/g1-first-engine2-files/archive.json",
+  "archiveSha256": "3b9bf3f33067dd0737e4d274a0fc90f992150c86644d955c570a1017c0545b1b",
+  "nativeRawChainCount": 8,
+  "sourceResultSupportChain": {
+    "rawPath": "/tmp/gm1559-g1-engine2-first-raw-observation-360b3a39-20261017.json",
+    "storedPath": "specs/1559-relay-long-sessions/recovery/g1-first-engine2-files/source-and-result-observation.json.gz",
+    "bytes": 55911,
+    "sha256": "3ae7c4229d81c22b2278aef49af1394b6d3c039cfa7feaa23357025b1ff0775c",
+    "storedBytes": 15096,
+    "storedSha256": "792ca66299bca1f4b67479bf4bad390e6eb6044254e0551f2671dad27051f333",
+    "role": "WRITER_LITERAL_RAW_READ_AND_CURRENT_SOURCE119_CONTEXT_NOT_INDEPENDENT_CAUSAL_VERDICT"
+  },
+  "nativeRecord": "/tmp/gm1559-implementation-tools/gm1559-g1-engine-rollback-first-360b3a39-20261017/record.json",
+  "resultDirectories": [
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-134122-768-122257-27f86dff04ac43459ad5453d1fdfad14-categories"
+  ],
+  "nativeObservedFailures": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(existedBefore: True)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"game_state/control/gm_prompt_delivery.json\", \"game_state/control/gm_relay_apply_receipt.json\"]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(Boolean existedBefore) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RelayOperational.cs:line 33\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(existedBefore: False)",
+      "outcome": "Failed",
+      "message": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"game_state/control/gm_prompt_delivery.json\", \"game_state/control/gm_relay_apply_receipt.json\"]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(Boolean existedBefore) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RelayOperational.cs:line 33\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "nineBinariesStable": true,
+  "namespaceUnchanged": true,
+  "strictRunnerCleanup": true,
+  "disposition": "UNQUALIFIED_FIRST_RAW: native1/2FAIL at original Assert.Empty33. Actual output/prerequisites/cleanup preserved; independent causal EVIDENCE pending. No fix/retry/otherowner/product release.",
+  "remainingPlannedCasesUnrun": 47
+}
