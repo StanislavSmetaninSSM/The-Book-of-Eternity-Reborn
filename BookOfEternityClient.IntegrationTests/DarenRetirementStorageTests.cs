@@ -24,7 +24,7 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
         var manifest = JsonNode.Parse(File.ReadAllBytes(manifestPath))!.AsObject();
         Assert.Equal(7, manifest["schemaVersion"]!.GetValue<int>());
         Assert.Equal("staged", manifest["status"]!.GetValue<string>());
-        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var generation = DarenRetirementEvidenceFixtures.ReadCurrentGeneration(File.ReadAllBytes(files.SessionGenerationPath));
         Assert.Equal(generation, manifest["generation"]!.GetValue<string>());
         Assert.Equal("daren_reward_profile", manifest["externalEntries"]![0]!["fileId"]!.GetValue<string>());
         Assert.Equal(DarenRetirementEvidenceFixtures.After, File.ReadAllBytes(Path.Combine(root, DarenRetirementEvidenceFixtures.Profile)));
@@ -50,7 +50,7 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
             Assert.Equal(Path.Combine(root, DarenRetirementEvidenceFixtures.Profile),
                 actual.RootElement.GetProperty("Members")[0].GetProperty("Path").GetString());
         }
-        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var generation = DarenRetirementEvidenceFixtures.ReadCurrentGeneration(File.ReadAllBytes(files.SessionGenerationPath));
         if (ordinaryFirstMixedJournal)
             WriteSyntheticSharedJournal(files, generation, "game_state/meta/retirement-mixed.bin", includeProfile: true);
         output.WriteLine("RetirementFixturePrerequisites=VALID_CAPTURE_DERIVED_PROFILE; mixed=" + ordinaryFirstMixedJournal);
@@ -65,7 +65,7 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
         var transaction = ExplorerLocalTurnRollbackArtifacts.Root + "/retired_original/638000000000000000_" + Guid.NewGuid().ToString("N");
-        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var generation = DarenRetirementEvidenceFixtures.ReadCurrentGeneration(File.ReadAllBytes(files.SessionGenerationPath));
         var manifest = new JsonObject
         {
             ["schemaVersion"] = 6, ["transactionKind"] = "browser_local_write", ["status"] = "staged",
@@ -120,7 +120,7 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
         using var cleanup = new CleanupOwnedFixture(root, output.WriteLine);
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
-        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var generation = DarenRetirementEvidenceFixtures.ReadCurrentGeneration(File.ReadAllBytes(files.SessionGenerationPath));
         WriteSyntheticSharedJournal(files, generation, DarenRetirementEvidenceFixtures.Member, includeProfile: false);
         await using (var recovered = await new FileSystemManager(root, NullLogger<FileSystemManager>.Instance).AcquireCanonicalWriteLeaseAsync()) { }
         Assert.Equal(DarenRetirementEvidenceFixtures.Before, File.ReadAllBytes(files.ResolvePath(DarenRetirementEvidenceFixtures.Member)));

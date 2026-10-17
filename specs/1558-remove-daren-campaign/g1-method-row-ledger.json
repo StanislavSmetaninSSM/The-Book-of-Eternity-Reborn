@@ -1,5 +1,5 @@
 {
-  "status": "G1_STATIC_METHOD_ROW_LEDGER_WITH_NATIVE_ZEROEXEC_MEMBERSHIP; actual/capture UNRUN",
+  "status": "CORRECTED_G1_STATIC_METHOD_ROW_LEDGER; G1-S01/S02/S03 concrete correction authored, fresh preparation/SOURCE pending; old native membership historical",
   "baseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "transfer": {
     "newOwners": [
@@ -129,7 +129,7 @@
     "scope": "G1 exact split; G2 only retired branches/dependencies removed while8 generic tuple oracles remain"
   },
   "captureDataStatus": "UNRUN; browser7/standalone1 packet files intentionally absent until separately released capture and frozen-data source review; no fallback",
-  "testsBuildDiscoveryActual": "FreshBOTH/catalog0 + exactPlan0 succeeded; all actual/capture/consumer/browser/frontend executions UNRUN",
+  "testsBuildDiscoveryActual": "Corrected tests uncompiled/unrun. Historical05d zeroexec prep remains; FIRST fdf9 capture2 actual2FAIL/0artifacts confirmed fixture S03, not retirementRED.",
   "metadataUtilityFirstOutcomes": [
     {
       "helper": "/tmp/gm1558-g1-categories-first.py",
@@ -4472,8 +4472,8 @@
             "browser-api-host"
           ],
           "selectedCurrent": false,
-          "disposition": "RETAIN_UNSELECTED_COMMON_OR_HISTORICAL",
-          "reason": "Not a campaign deletion target; no actual changed dependency proven for broad replay. If G2 changes this method/fixture input, extend selection explicitly before fresh SOURCE."
+          "disposition": "RETIRE_CAMPAIGN_SUBJECT",
+          "reason": "G1-S02: Windows-only method directly calls removed QteSceneService.RestoreDarenProfileRollbackBytesAsync. Retire this exact method/selector with campaign profile authority in G2; its body remains pending subject removal now. Unrelated common junction/authority controls stay. No Windows actual required or claimed."
         },
         {
           "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileRollback_HardLinkedProfileIsRejectedWithoutChangingExternalBytes",
@@ -8864,7 +8864,7 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs",
-      "sha256": "e2c9e43cc7c0a446e3b9e399c838e6e3c90bba7d72be01710a6db8bde3e80209",
+      "sha256": "08090ad201e8355019ff47ac9dd3fd35ff8868c6b9fdb6ff217f31ddfe3ea435",
       "methods": [
         {
           "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
@@ -8877,7 +8877,7 @@
           "memberData": [
             "nameof(Types)"
           ],
-          "sourceSegmentSha256": "ad51d3a066ebae910903ce25f4ae0fbb302b20f397a7d7daa590852d6e4491c3",
+          "sourceSegmentSha256": "9acd68c8c3ce6ee932a60cb6c17cd28546bbf505873cd667eb3644038bd7c96f",
           "campaignReferences": [
             "DarenRetirementEvidenceFixtures",
             "daren"
@@ -8886,7 +8886,8 @@
           "currentOwners": [
             "daren-retirement-console-practice"
           ],
-          "selectedCurrent": true
+          "selectedCurrent": true,
+          "segmentScope": "Full corrected Theory declaration/body through EOF; old hash retained in Git05d/de379 history"
         }
       ]
     },
@@ -8966,7 +8967,7 @@
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs",
-      "sha256": "5c0dde64a462a58bfa5a461fa2995d122d6fabe8689e298897dda2dbf1ec3b70",
+      "sha256": "08d213d8d4cc8fc53c75599f7617ccfae4bd0f198c63dd5fc23fb663c68fb7da",
       "methods": [
         {
           "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
@@ -9239,9 +9240,9 @@
         "packet.GenerationPath (.boe_runtime/session-generation/current.json, exact original producer path)"
       ],
       "generationFields": [
-        "browser manifest generation",
+        "browser manifest generation (unchanged lowercase schema)",
         "standalone journal GenerationBefore.Id and GenerationAfter.Id",
-        "session-generation metadata generationId"
+        "session generation current SchemaVersion/GenerationId; read through original FileSystemManager.ParseSessionGenerationText with BOM-aware decoding"
       ],
       "rootFields": [
         "standalone journal Members[].Path; only exact original-root string replacement",
@@ -9253,7 +9254,7 @@
     "mixed": "ordinary-first synthetic shared publisher Format1; not Daren-produced journal; actual physical members match After and complete whole-set refusal oracles run",
     "schema6": "explicit synthetic original shape; no native Windows/authentic schema6 claim",
     "release": "No producer/test/native/browser actual released; capture2 must precede dependent consumer fixture-binding review and causal RED release",
-    "clients": "HTTP11 complete/retry/exit; real console11 timed no-input completion, not successful score; SSR11 catalogue plus common minigame tests; Root later genuine Chromium sample",
+    "clients": "UNRUN: HTTP11 real complete/retry/exit with explicit grades; console11 corrected real selected-offer/frame/result and accepted-input witnesses, genuine ChargeRelease start/release, other actual bounded no-input outcomes; no successful-score claim. Root Chromium remains separate.",
     "save": "supported owned save/load with existing currency/grant/history; no arbitrary historical schema promise"
   },
   "staticBindingCorrections": [
@@ -9562,5 +9563,14 @@
         "adapter": "integration"
       }
     ]
-  }
+  },
+  "correctionDisposition": {
+    "G1-S02": {
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite",
+      "status": "EXPLICIT_RETIRE_WITH_REMOVED_SUBJECT; source/Windows execution unchanged until G2"
+    },
+    "G1-S01": "Genuine ChargeRelease keys + exact selected chapter/result/live-frame witness; per-ready-snapshot keys; task settling before any root cleanup, unresolved task retains input/root and fails qualification. Existing11 rows/category3m unchanged.",
+    "G1-S03": "Existing strict FileSystemManager.ParseSessionGenerationText with BOM-aware captured byte decoding; Capture/Instantiate/storage4 read corrections. No new alias/fallback or product serialization change."
+  },
+  "nativeMembershipSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0 (historical0exec; new corrected prep pending)"
 }

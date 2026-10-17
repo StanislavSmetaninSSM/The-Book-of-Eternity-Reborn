@@ -1,0 +1,54 @@
+{
+  "carrier": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+  "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "nativeExit": 1,
+  "verifiedRawGzipChains": [
+    {
+      "storedPath": "native/record.json.gz",
+      "sha256": "8ee2193a6eaa4168d2dc98e3cf9b745007ba6c55207a207539561b45a24c03f4",
+      "storedSha256": "638c7631a248c738188d0b3f293661dc63c4c1a1d1e3ea7fbbcdf6d9e1debcef"
+    },
+    {
+      "storedPath": "native/stdout.log.gz",
+      "sha256": "3bcbe9136ca0a371b678bf8c5913b18d2b5601828443c0849971c8a2991d16f7",
+      "storedSha256": "b26cb83de2ae8745bb113f72538270e500659e7242190d86446a08cba30175d8"
+    },
+    {
+      "storedPath": "native/first-launch-sentinel.json.gz",
+      "sha256": "d42e17ebc3e8300aa33fc30e9ba6e0cb29c02a62093dbdd56871803a132da176",
+      "storedSha256": "79043d21f594161ec9411513d685894aa87337ec75e21c8b6914d473150491c8"
+    },
+    {
+      "storedPath": "native/process.json.gz",
+      "sha256": "c7a90108cfb2034cc64b5e7ef30cf86d4be7c67557ab3fe50f46a3225675815e",
+      "storedSha256": "d45bcdfffb9b9cce8bd33d3b122cf06d567ee5f97e6d81136c22aff18199e4db"
+    },
+    {
+      "storedPath": "runner/0/daren-retirement-producer-capture-integration-001.trx.gz",
+      "sha256": "658c3bd8ab3b2f4ad2c94c1b55ce5cc3c28d108d4a89b2775a0f88b6fe42eded",
+      "storedSha256": "0aad0071d8abcd68de40f14247265ed7a656c965c658a51ebf73ff35152f4bf0"
+    },
+    {
+      "storedPath": "runner/0/dotnet-test.log.gz",
+      "sha256": "c8c5e104658a5ca283be0b28bc9d42d1fd5765d439fed6ab479f5cdc6e05328d",
+      "storedSha256": "4d94f13c9862d4da87599c74874197807ca7089b55a2c6503164ec8e05504933"
+    },
+    {
+      "storedPath": "runner/0/plan.json.gz",
+      "sha256": "0990664f02d81b3abf58388a03a2f530bc5068b1439077230de1850d8cf8b4cf",
+      "storedSha256": "0e4e798fc7fabb7666a638e622d2203b0543eb38d772b219b3f02da4ac4b147c"
+    },
+    {
+      "storedPath": "runner/0/summary.json.gz",
+      "sha256": "0cf14fd76a9d554eda27b4070128e9a0b2b283129c2acb0286b29c6a446c6605",
+      "storedSha256": "fb9d7b657223ad64c9198a6ea56275fd5b5c388e03939cc39f59a5b4951b3953"
+    }
+  ],
+  "independentFailureDecisionSha256": "df16e0b5b193b875ac3564fca662596a321f22e8ca91bea827f8b6286341dd0c",
+  "classification": "ACCEPTED_CAUSAL_FIXTURE_FAILURE_NOT_SUCCESSFUL_CAPTURE_OR_RETIREMENT_RED",
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-91a5f6b8-20261017.json",
+  "completeDeltas": 86,
+  "nextRelease": "/tmp/gm1558-root-g1-corrections-release-91a5f6b8-20261017.json",
+  "runtimeExecutedByReadback": false
+}

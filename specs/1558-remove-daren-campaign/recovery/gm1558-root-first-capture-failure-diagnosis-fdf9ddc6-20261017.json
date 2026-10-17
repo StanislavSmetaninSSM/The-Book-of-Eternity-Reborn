@@ -1,0 +1,90 @@
+{
+  "kind": "ROOT_READ_ONLY_FIRST_CAPTURE_FAILURE_CAUSAL_DIAGNOSIS",
+  "createdUtc": "2026-10-17T08:46:00.565168+00:00",
+  "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 1,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+      "outcome": "Failed",
+      "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 44\n--- End of stack trace from previous location ---",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-7068fad6b3c645999db6711cea661ae1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootPhysicallyAbsent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+      "outcome": "Failed",
+      "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 82\n--- End of stack trace from previous location ---",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-ef97307c422148bbbf89ab71075cb6f1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootPhysicallyAbsent": true
+    }
+  ],
+  "rawPins": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-084330-824-79172-a8fd700ccd8548c9a398cff946d6d084-categories/daren-retirement-producer-capture-integration-001.trx",
+      "sha256": "658c3bd8ab3b2f4ad2c94c1b55ce5cc3c28d108d4a89b2775a0f88b6fe42eded"
+    }
+  ],
+  "actualRecordSha256": "8ee2193a6eaa4168d2dc98e3cf9b745007ba6c55207a207539561b45a24c03f4",
+  "status": "CONFIRMED_CAPTURE_HELPER_CONTRACT_MISMATCH_SOURCE_BACKED_NOT_PRODUCT_OR_RETIREMENT_RED",
+  "cause": "Capture helper48\u201349 parses generation authority using case-sensitive lower generationId. Current GenerationCreation/WriteSessionGeneration default System.Text.Json serialize SessionGenerationDocument(int SchemaVersion,string GenerationId), yielding PascalCase. The case-sensitive lookup is null and dereference causes both observed NullReferenceException before Freeze.",
+  "sourceAnchors": [
+    "DarenRetirementEvidenceFixtures.Capture48\u201349",
+    "FileSystemManager.TrustedLocalStorage.GenerationCreation150\u2013151",
+    "FileSystemManager.WriteSessionGeneration5920\u20135924",
+    "FileSystemManager.SessionGenerationDocument5974",
+    "FileSystemManager.GenerationSnapshot.ParseSessionGenerationText48\u201369"
+  ],
+  "affectedAssumptions": [
+    "Capture generation reader",
+    "InstantiateAsync fresh generation reader",
+    "Storage fixture generation readers",
+    "Prepared /tmp capture inspector and source packet generation-file field description"
+  ],
+  "availableExistingContract": "FileSystemManager.ParseSessionGenerationText validates current generation schema, no new casing/legacy fallback needed. Browser schema7 lower generation is a separate serialized contract.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+      "sha256": "b993568c21835a1a003d9054b329a5cb8b5dee4fce1f4ff8820d1e5aed4d891d",
+      "gitBlob": "a66061ef3a325516845d44e29cdabd2f29d45395"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs",
+      "sha256": "5c0dde64a462a58bfa5a461fa2995d122d6fabe8689e298897dda2dbf1ec3b70",
+      "gitBlob": "51421c259791712ba268193a6cd934121fa4f8a1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "gitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4"
+    }
+  ],
+  "evidenceLimits": [
+    "No original generation/raw packet was frozen; original roots were strictly removed, so physical generation bytes cannot be inspected from this FIRST attempt. The casing cause is established from exact tested source plus both raw stack traces, not invented reconstructed original bytes.",
+    "Pre-Freeze native paths reached genuine original producer assertions; this does not qualify archived authentic packets.",
+    "No runtime, new fixture, source edit, build or retry performed for this diagnosis. Independent causal EVIDENCE review still pending."
+  ],
+  "next": "Publish FIRSTFAIL unchanged; independent causal EVIDENCE over existingraw. Then combine S03 current-generation fixture correction with S01 console settling and S02 ledger in one tests-only correction, freshprep/targetedSOURCE and newly bound capture release; preserve all oldfail/source history."
+}

@@ -1,0 +1,275 @@
+{
+  "kind": "INDEPENDENT_FIRST_CAPTURE_FAILURE_CAUSAL_EVIDENCE_REVIEW",
+  "reviewedUtc": "2026-10-17T08:48:46.332082+00:00",
+  "verdict": "CONFIRMED_CAPTURE_FIXTURE_FAILURE_G1_S03__NO_ACCEPTED_CAPTURE_OR_RETIREMENT_RED",
+  "carrier": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+  "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "actual": {
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "daren-retirement-producer-capture",
+      "-NoBuild"
+    ],
+    "startedUtc": "2026-10-17T08:43:30.254821+00:00",
+    "finishedUtc": "2026-10-17T08:43:35.680602+00:00",
+    "wrapperSeconds": 5.357310117000452,
+    "runnerWallTime": "00:00:04.7518793",
+    "categorySeconds": 2.0467607,
+    "nativeExit": 1,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "timedOut": false,
+    "duplicateTests": [],
+    "trxCounters": {
+      "total": "2",
+      "executed": "2",
+      "passed": "0",
+      "failed": "2",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "failures": [
+      {
+        "method": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+        "outcome": "Failed",
+        "duration": "00:00:00.0516609",
+        "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+        "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 44\n--- End of stack trace from previous location ---"
+      },
+      {
+        "method": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+        "outcome": "Failed",
+        "duration": "00:00:00.1128180",
+        "message": "System.NullReferenceException : Object reference not set to an instance of an object.",
+        "stack": "   at BookOfEternityClient.Tests.DarenRetirementEvidenceFixtures.Capture(String kind, String producer, FileSystemManager files, String evidencePath) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs:line 48\n   at BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs:line 82\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "packetArtifacts": 0,
+    "strictCleanup": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-7068fad6b3c645999db6711cea661ae1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-ef97307c422148bbbf89ab71075cb6f1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "rootsPhysicallyAbsent": true,
+    "ownedPrefixSetsUnchanged": true,
+    "categoryResultCompleted": false,
+    "categoryResultMeaning": "False because the category failed; selection descriptor/case completion is true, not underfill."
+  },
+  "finding": {
+    "id": "G1-S03",
+    "severity": "HIGH",
+    "classification": "Capture/consumer fixture serializer-contract mismatch; not a production defect",
+    "path": "BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+    "line": 48,
+    "cause": "Capture indexes case-sensitive JsonNode with generationId, then dereferences null. Both actual generation writers use default JsonSerializer with SessionGenerationDocument(int SchemaVersion,string GenerationId), so the declared field is PascalCase GenerationId.",
+    "sourceEvidence": [
+      "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:150–151",
+      "BookOfEternityClient/Core/FileSystemManager.cs:5922",
+      "BookOfEternityClient/Core/FileSystemManager.cs:5974"
+    ],
+    "precedence": "Both exact stacks reach Capture only after real producer calls and their assertions, closed browser access/canonical lease, and physical file reads into images. Freeze argument evaluation fails before Freeze executes.",
+    "physicalProofLimit": "No original generation/journal/backup packet bytes were frozen. Causality is established from the exact tested source contract plus actual stacks/ordering, not reconstructed or observed physical generation content. Successful preceding assertions do not constitute accepted authentic capture."
+  },
+  "boundedCorrection": {
+    "combineWith": [
+      "G1-S01 console genuine input/owned task settling",
+      "G1-S02 retired Windows API caller ledger disposition"
+    ],
+    "dependentAssumptions": [
+      "DarenRetirementEvidenceFixtures.cs Capture48–49 and InstantiateAsync89",
+      "DarenRetirementStorageTests.cs27/53/68/123",
+      "/tmp/gm1558-inspect-capture.py:66",
+      "g1-method-row-ledger.json session-generation field wording",
+      "g1-source-packet-20261017.md generation-file wording"
+    ],
+    "existingInterpretation": "FileSystemManager.ParseSessionGenerationText in FileSystemManager.GenerationSnapshot.cs50 validates current schema1 and canonical N-format generation. Tests may use this existing parsed reader with proper byte decoding; do not change production serialization, add case-insensitive legacy fallback, rewrite profile/backups or conflate browser manifest lowercase generation with generation-file GenerationId.",
+    "nextGates": "Persist this exact first failure and causal decision; one bounded tests-only correction, published new source and fresh BOTH/catalog+PlanOnly binding, then targeted independent SOURCE and separate Root release for newly bound capture. Do not replay unchanged05d or clear its first-launch sentinel. Consumer installation/RED and production remain held."
+  },
+  "priorSourceDisposition": "Prior capture-only static eligibility is retained as historical SOURCE review, not execution evidence. This FIRST actual exposes a serializer assumption missed by that review; no successful capture was previously qualified. G1-S03 now blocks further capture until corrected/reviewed.",
+  "bindings": {
+    "rawChains": [
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-first-fdf9ddc6-20261017T0845Z/record.json",
+        "storedPath": "native/record.json.gz",
+        "bytes": 16483,
+        "sha256": "8ee2193a6eaa4168d2dc98e3cf9b745007ba6c55207a207539561b45a24c03f4",
+        "storedSha256": "638c7631a248c738188d0b3f293661dc63c4c1a1d1e3ea7fbbcdf6d9e1debcef"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-first-fdf9ddc6-20261017T0845Z/stdout.log",
+        "storedPath": "native/stdout.log.gz",
+        "bytes": 4719,
+        "sha256": "3bcbe9136ca0a371b678bf8c5913b18d2b5601828443c0849971c8a2991d16f7",
+        "storedSha256": "b26cb83de2ae8745bb113f72538270e500659e7242190d86446a08cba30175d8"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/05d481d684fe0831ea060a1e9853e91f6b9749a0-daren-retirement-producer-capture.first-launch.json",
+        "storedPath": "native/first-launch-sentinel.json.gz",
+        "bytes": 465,
+        "sha256": "d42e17ebc3e8300aa33fc30e9ba6e0cb29c02a62093dbdd56871803a132da176",
+        "storedSha256": "79043d21f594161ec9411513d685894aa87337ec75e21c8b6914d473150491c8"
+      },
+      {
+        "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-first-fdf9ddc6-20261017T0845Z/process.json",
+        "storedPath": "native/process.json.gz",
+        "bytes": 376,
+        "sha256": "c7a90108cfb2034cc64b5e7ef30cf86d4be7c67557ab3fe50f46a3225675815e",
+        "storedSha256": "d45bcdfffb9b9cce8bd33d3b122cf06d567ee5f97e6d81136c22aff18199e4db"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-084330-824-79172-a8fd700ccd8548c9a398cff946d6d084-categories/daren-retirement-producer-capture-integration-001.trx",
+        "storedPath": "runner/0/daren-retirement-producer-capture-integration-001.trx.gz",
+        "bytes": 9402,
+        "sha256": "658c3bd8ab3b2f4ad2c94c1b55ce5cc3c28d108d4a89b2775a0f88b6fe42eded",
+        "storedSha256": "0aad0071d8abcd68de40f14247265ed7a656c965c658a51ebf73ff35152f4bf0"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-084330-824-79172-a8fd700ccd8548c9a398cff946d6d084-categories/dotnet-test.log",
+        "storedPath": "runner/0/dotnet-test.log.gz",
+        "bytes": 1704966,
+        "sha256": "c8c5e104658a5ca283be0b28bc9d42d1fd5765d439fed6ab479f5cdc6e05328d",
+        "storedSha256": "4d94f13c9862d4da87599c74874197807ca7089b55a2c6503164ec8e05504933"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-084330-824-79172-a8fd700ccd8548c9a398cff946d6d084-categories/plan.json",
+        "storedPath": "runner/0/plan.json.gz",
+        "bytes": 1513,
+        "sha256": "0990664f02d81b3abf58388a03a2f530bc5068b1439077230de1850d8cf8b4cf",
+        "storedSha256": "0e4e798fc7fabb7666a638e622d2203b0543eb38d772b219b3f02da4ac4b147c"
+      },
+      {
+        "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-084330-824-79172-a8fd700ccd8548c9a398cff946d6d084-categories/summary.json",
+        "storedPath": "runner/0/summary.json.gz",
+        "bytes": 1375,
+        "sha256": "0cf14fd76a9d554eda27b4070128e9a0b2b283129c2acb0286b29c6a446c6605",
+        "storedSha256": "fb9d7b657223ad64c9198a6ea56275fd5b5c388e03939cc39f59a5b4951b3953"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs",
+        "sha256": "9f0acae666c2f24fa7c7950a8925a6fccbb5df03dd2ff4388601ad440a9d3ffa",
+        "bytes": 5569
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+        "sha256": "b993568c21835a1a003d9054b329a5cb8b5dee4fce1f4ff8820d1e5aed4d891d",
+        "bytes": 8206
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs",
+        "sha256": "5c0dde64a462a58bfa5a461fa2995d122d6fabe8689e298897dda2dbf1ec3b70",
+        "bytes": 12439
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+        "bytes": 19220
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+        "bytes": 3337
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+        "bytes": 241886
+      }
+    ],
+    "sevenBinaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9560064,
+        "sha256": "7f464e32acbd477796756d225e1343f793475157666ddc299b5a8bc03c66db58"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29313024,
+        "sha256": "a297dcb2c2d0cbce4310fb2bfee0e42c9de6daa2ccfd4bc7c5ebc08f980a14e8"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "561b0cde848ff44f787edf18c89eb6e92759ed3c86a2848d68a40e3d5d2be92b"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26183168,
+        "sha256": "fba8748cf89df8da0a9b4f768a628ada0f52db11ffe08739da341d16fc5de44b"
+      }
+    ],
+    "prepToActualToCurrentPinsEqual": true,
+    "actualAndCurrentDiffFromCompiled": "Feature metadata only",
+    "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-first-fdf9ddc6-20261017T0845Z/record.json",
+    "recordSha256": "8ee2193a6eaa4168d2dc98e3cf9b745007ba6c55207a207539561b45a24c03f4",
+    "archiveManifestSha256": "34ca51c8afd49c5c135de1aa0938b2760351a9b3d15737c929189a196dcc8cba",
+    "recoveryReceipt": "/tmp/gm1558-first-capture-stop-delta-github-91a5f6b8-20261017.json",
+    "recoveryReceiptSha256": "eee66e345c8d36ff0e0935af89d629b94eeb4cc65f55efb1ff7d4159d0418cc7",
+    "recoveredFiles": 20,
+    "changedPaths": 16,
+    "allRecoveryBytesShaBlobModeVerified": true
+  },
+  "inspectorQualificationIssues": {
+    "count": 8,
+    "nativeFailureCount": 2,
+    "meaning": "Expected missing-PASS/packet qualification predicates; not eight native failures and not independent acceptance."
+  },
+  "limits": [
+    "Reviewer performed only file/Git/raw read and hashes; no runtime/build/test/extractor/producer/host/browser or repository edits.",
+    "No frozen TestData exists, no source-derived transport or consumer admission was executed, no retirement RED/GREEN or successful authentic capture is accepted.",
+    "No G0/full G1/old family/fullbase replay; no Windows/CI/Library request or unavailable artifact prerequisite.",
+    "No product/schema fix is justified by this fixture failure; no existing user data was touched by this owned-root capture."
+  ]
+}

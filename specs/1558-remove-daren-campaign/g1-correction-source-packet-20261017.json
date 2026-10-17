@@ -1,0 +1,517 @@
+{
+  "kind": "G1_CONSOLIDATED_TESTS_ONLY_CORRECTION_SOURCE_CANDIDATE_UNCOMPILED_UNRUN",
+  "baseCarrier": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+  "unchangedProductSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "firstFail": {
+    "actualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+    "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+    "nativeExit": 1,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "packets": 0,
+    "classification": "CONFIRMED_CAPTURE_FIXTURE_FAILURE_G1_S03__NO_ACCEPTED_CAPTURE_OR_RETIREMENT_RED",
+    "preserved": "recovery/g1-first-capture-stop-20261017.json"
+  },
+  "release": "recovery/gm1558-root-g1-corrections-release-91a5f6b8-20261017.json",
+  "corrections": {
+    "G1-S03": {
+      "status": "AUTHORED_PENDING_FRESH_PREPARATION_AND_TARGETED_SOURCE",
+      "files": [
+        "DarenRetirementEvidenceFixtures.cs Capture/Instantiate/ReadCurrentGeneration",
+        "DarenRetirementStorageTests.cs four generation reads",
+        "new /tmp/gm1558-inspect-capture-corrected.py",
+        "current plan/ledger/narrative"
+      ],
+      "currentContract": "Actual generation authority is SchemaVersion/GenerationId; original strict FileSystemManager.ParseSessionGenerationText is reused after StreamReader UTF8/BOM decoding. Original parser/options/schema are unchanged, no alias/fallback introduced. Browser manifest generation is an independent unchanged lowercase field. Profile/backups stay raw bytes; only actual authority metadata roots/generations transform after authentic data admission.",
+      "newDependency": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs"
+    },
+    "G1-S01": {
+      "status": "AUTHORED_PENDING_FRESH_PREPARATION_AND_TARGETED_SOURCE",
+      "scope": "Same oneTheory/eleven original data rows/category3m. No production timeout/grade/clock or new general harness.",
+      "input": "One accepted key per ready snapshot, actual selected-index arrow movement/Enter, Accepted screen identity and no rejected normal inputs. ChargeRelease gets two physical Spacebar events through live source. No grade fabricated.",
+      "witness": "Difficulty selected-title plus exact selected-offer chapter/result screen IDs bind actual RunCheck. Ten live types bind current frame; MashInput/RhythmPulse/PrecisionChoice are genuinely generic QteLive with exact source-backed title. BranchChoice has no live frame and uses real synchronous branch grade between exact chapter/result.",
+      "lifetime": "Keep input live during real Escape/continue/Exit teardown, CancelPendingReads only for blocked ReadKey. Only a confirmed completed Task permits Shutdown/Dispose/root cleanup. Unknown/unsettled task is explicit failure retaining input/root, never strict-cleanup/PASS. Existing35s normal/10s settling and canonical3m guards unchanged.",
+      "proofLimit": "Most timed loops use their original bounded no-input result; this is not eleven successful-score playthroughs. Actual console/browser still unrun."
+    },
+    "G1-S02": {
+      "status": "EXPLICIT_RETIRE_DISPOSITION_AUTHORED_PENDING_TARGETED_SOURCE",
+      "method": "BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite",
+      "actualSubject": "Direct call to removed QteSceneService.RestoreDarenProfileRollbackBytesAsync; exact method/selector retires in G2 with subject. Current test body remains until product removal. Generic junction/authority neighbors retained; no Windows execution."
+    }
+  },
+  "selectedOwners": [
+    "daren-retirement-producer-capture",
+    "daren-retirement-console-menu",
+    "daren-retirement-save-rewards",
+    "daren-retirement-storage-refusal",
+    "daren-retirement-ordinary-storage",
+    "daren-retirement-browser-host",
+    "daren-retirement-console-practice",
+    "daren-retirement-source-guidance",
+    "daren-retirement-common-qte",
+    "daren-retirement-affected-guards",
+    "portable-original-remaining-owning-close-linux",
+    "frontend-qte",
+    "daren-retirement-frontend-shell",
+    "frontend-shell-types",
+    "gm-doc-afterlife-package-delivery",
+    "portable-browser-protocol-admission-linux"
+  ],
+  "selectorAndBudgetMembershipUnchanged": true,
+  "onlyCatalogResponsibilityChanged": [
+    "daren-retirement-console-practice"
+  ],
+  "oldPlanMembershipHistorical": {
+    "owners": 16,
+    "descriptors": 18,
+    "methodsOrFiles": 48,
+    "csharpMethods": 40,
+    "csharpCases": 91,
+    "frontendFilesEstimated": 8,
+    "estimatedTotal": 99,
+    "executed": 0,
+    "compiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0"
+  },
+  "freshPreparation": "NOT_RUN; only after new tests WIP remote/readback/newcomplete GitHubdelta",
+  "nextActual": "HELD; targeted independent SOURCE + persisted Root exact-source release required before newly bound capture2; frozen-data EVIDENCE before consumer RED",
+  "sourcePins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "mode": "100644"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11661,
+      "sha256": "8bedaee7fd91504b6cd20dddf08fe03c1b987381cbba9792f45485b70dce45f2",
+      "gitBlob": "b2a17d32279219977280fa1e9936c5af2ff30575",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+      "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
+      "bytes": 12103,
+      "sha256": "c2da7ea7eaa91bbba5cc1e93a7731f0bc9b0d76781fa09fee142c3a442bbb609",
+      "gitBlob": "878d33e6d37d4d35b0fa4ee889453756127a6a0e",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs",
+      "bytes": 7451,
+      "sha256": "66004a2fb7f5b1e21793aabb5986bf1b803583b58bd4280c80ebb09befee4f72",
+      "gitBlob": "f3366c8ae7e2e8e9565bc1ac2207ca5582375545",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs",
+      "bytes": 10421,
+      "sha256": "08090ad201e8355019ff47ac9dd3fd35ff8868c6b9fdb6ff217f31ddfe3ea435",
+      "gitBlob": "e5e0bb7d33da272108cd171c2d6dad9c2825fc55",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs",
+      "bytes": 8437,
+      "sha256": "7ddc2cce33f2ed53e7160bbbd3652568bd5a800f5a07a46f8a4b8ba592f5b938",
+      "gitBlob": "ecb2de94dcac34372db957762143da522f43e57f",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementProducerCaptureTests.cs",
+      "bytes": 5569,
+      "sha256": "9f0acae666c2f24fa7c7950a8925a6fccbb5df03dd2ff4388601ad440a9d3ffa",
+      "gitBlob": "8f05469dbb258a89662ada4f6d8f47607d088c8c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs",
+      "bytes": 3537,
+      "sha256": "ddd3016db616667c3c5d590393b0ec40b2da06ac8d39748d853ea6a84eb1a255",
+      "gitBlob": "43cd2273a29655af6c76c4fd621e48d79d04ae65",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs",
+      "bytes": 12447,
+      "sha256": "08d213d8d4cc8fc53c75599f7617ccfae4bd0f198c63dd5fc23fb663c68fb7da",
+      "gitBlob": "c5076341c784ead9026afa835741dbfa96097176",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs",
+      "bytes": 4871,
+      "sha256": "a13da4c8ecb3eee3015d75f90a0ffffb95d104633392350d21e4ec5db2af0635",
+      "gitBlob": "e30d8043be04e74b0dc452ead74772eb4a4bdb56",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584756,
+      "sha256": "fdf61469199e96331468726ccd6fa5500a742b31267d6e1ad35c672b398c0f64",
+      "gitBlob": "cb55397321e1cb14bfa2d2951f59b9464d68dc81",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "bytes": 19544,
+      "sha256": "f453bfc42fbc01cf96935a0b6fc5d79089be779fbecbf0c670c75f13bbe66aae",
+      "gitBlob": "3f0918cd40956fd8ada85a766361cc33727fd85f",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+      "bytes": 35987,
+      "sha256": "30d9d5ba048009bedd7be216508a18008e980196c46692592716bd10bf6264c2",
+      "gitBlob": "16d15edfe146d0dd8b18cfdeafd637a66eb395f1",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+      "bytes": 2383,
+      "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6",
+      "gitBlob": "eea32080e458e653c1beb8c56ba21280cbd7e569",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/DarenRetirementSourceTests.cs",
+      "bytes": 3857,
+      "sha256": "8f3abd7d88faa82c493ad821548337e1513ca1632ee2f0e280251dd8762e37bc",
+      "gitBlob": "2cca71db45d45edac30dba8ccaab682b50be786c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+      "bytes": 29551,
+      "sha256": "45ef04d367a754510a3a04a19c1a278b60f747d1556343b9a4d8cc4db3b39d2f",
+      "gitBlob": "643dbf5698654c1ae0833c97ad72e2fff12a74c5",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs",
+      "bytes": 87374,
+      "sha256": "9b84ebd78becc72280a72d2e2efef48a9eb0f3b847a40689177da583477e32c5",
+      "gitBlob": "b5faa810688b72f99da3f83ed2887963b2bedf48",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/QtePracticeModeTests.cs",
+      "bytes": 9213,
+      "sha256": "b03653f26988f9c60920a126d9fd46b1f2466b0df57017cc25a25fa599c47deb",
+      "gitBlob": "b8187542f7c3925111bec57e304494d685e3a573",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.WebFrontend/test/darenRetirement.test.tsx",
+      "bytes": 3127,
+      "sha256": "64341dd4534e5e7279ca88247fb99454c9ec8683390232f874c81de73063e456",
+      "gitBlob": "7bb4480b742d6eedcf29b7a45db051f3b39f9f9c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleE2EObservationMapper.cs",
+      "bytes": 5897,
+      "sha256": "044c36c2819676513fd2cad7921a3415c360b1d0614e40abb9499718f16dd22b",
+      "gitBlob": "576499ca6b019e48f16a8cdf7267e9e2cce435e0",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleInputModels.cs",
+      "bytes": 1220,
+      "sha256": "bdeb57770cec71cb59cb0544b22083346ae6ebb823d1e97be20a1482fd9e5d9d",
+      "gitBlob": "87ea4ec85e732bd669d82583f0ca80c919baf662",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+      "bytes": 42395,
+      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f",
+      "gitBlob": "be1c372f3407aa3f0737aae3fb23e0ace323440c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleModels.cs",
+      "bytes": 7722,
+      "sha256": "1531ed0f67801f13dcf79aa675f14396c66b31aa93221590bfbdb2d735ea908d",
+      "gitBlob": "d096e65b258dddf3081f9f6e22d202771cf1ccb7",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleStateStore.cs",
+      "bytes": 3206,
+      "sha256": "04360e44179f74cad8c86dd98232810bc01140f892f4e0285be8f6012689759a",
+      "gitBlob": "caee572736ea1e790ca1537acf68ecc8fd602d76",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleMainMenuInputHandler.cs",
+      "bytes": 2738,
+      "sha256": "8f5e2ba687fe513241b73cb08efd68c6c74a9a8390fb16b0f55b54e4bbfbc603",
+      "gitBlob": "b435121907e78533847ec4c13c123ea0baab746f",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "bytes": 1751,
+      "sha256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb",
+      "gitBlob": "a2a68f54385ca2dd751518b40805494efd68388c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "bytes": 3337,
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "gitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "bytes": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf",
+      "gitBlob": "c5e01efc0192b13bca529bf2c6d92daf897d0fc6",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AudioService.cs",
+      "bytes": 14340,
+      "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c",
+      "gitBlob": "d4695f126952f31a2695c514ae48a5c9594b397a",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "bytes": 28635,
+      "sha256": "1ad5d5e42a27a4dd6a53c3403c0084c1f945c57b7377833e5368131f98fb8503",
+      "gitBlob": "12fde5369dcc7b6749b304f145d1eb546220398b",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+      "bytes": 6038,
+      "sha256": "61e8fa7d5edae3f52cef85d42060a9ecc5cc11d73a136e152cd0f07bc96b9488",
+      "gitBlob": "434b69b206c976dd1302682f05ed9e855cd2671a",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+      "bytes": 14030,
+      "sha256": "a862a23cd5cb111f4cca315c9b8e2c9e6658c87d83bbc84a3eb78baa0b9cc3b6",
+      "gitBlob": "74d6212828e5302d577511562487145711b092e4",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "bytes": 12960,
+      "sha256": "385e5b7d62360681e89ef506dddf5de67137295fc093cd3bf158131cf1c04b3f",
+      "gitBlob": "e590b0318775f69db7546649355ca32df0e1ab96",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ImageService.cs",
+      "bytes": 40280,
+      "sha256": "152f7ae6afc901f74cbdfad26221fd9ad79e0275f783795650b390cefbf744a9",
+      "gitBlob": "d6665a14395cdbcf4202d263e5245eec50b4bc40",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteKeyInput.cs",
+      "bytes": 2762,
+      "sha256": "af370cd6e335fad0d7353a07adfe60e7d221e2c68c66cfc6406a2d1ab7caf33d",
+      "gitBlob": "618b124db5c505f55f71e461f11d4e0d0945531c",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.AgentConsole.cs",
+      "bytes": 7895,
+      "sha256": "c431577c2400369f7b2c9a4344f55497eb8a639110750867b0e0e9ce2f8d41ba",
+      "gitBlob": "70938c86da1983eee5689337b4461e5226d6a570",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Practice.cs",
+      "bytes": 31434,
+      "sha256": "d76b4042d4d27e5a8b4a653923f01823fe51d7e07e3de5d6c017f13759f8b310",
+      "gitBlob": "3caad9f3a9367166e8cd77729cd3131da35e2f58",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "bytes": 264036,
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "gitBlob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/UI/LocalizationManager.cs",
+      "bytes": 27382,
+      "sha256": "4c12cc29075d4246baf9aab6c10504d0e0d624dd6de24cf7c97b9d1dbfae6659",
+      "gitBlob": "c6e7d0cf98ab0a96e580d7623149854e50ecd8fe",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "bytes": 17677,
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "gitBlob": "d53830e80bd6352ec43c06e23c06d8509cc5f560",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "bytes": 82146,
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "gitBlob": "1b7ffbed260ee04eb19e00191e50f76a668022dc",
+      "mode": "100644"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 251478,
+      "sha256": "d6e585b5a00d0109a78345a803547297c4a20ca3728f83215e8b08d2706c133c",
+      "gitBlob": "3a7b38d1c2494123c922fc472905fd4c6302f683",
+      "mode": "100644"
+    },
+    {
+      "path": "Examples/E_CLI_QTE_Offer.txt",
+      "bytes": 70553,
+      "sha256": "691252786980c31541d02e25ea97417822916dde1043428f019a38a35cb81127",
+      "gitBlob": "da61d258372287e414de61cbacb35d448a77d000",
+      "mode": "100644"
+    },
+    {
+      "path": "Rules/Block_CLI_QTE.txt",
+      "bytes": 31342,
+      "sha256": "3aeda212813df746857acdb12e7c42b7e951869582a7ee55a7d219134ab9db39",
+      "gitBlob": "49a57624ca6b4451c27055082cb972bd9cc1b918",
+      "mode": "100644"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 189633,
+      "sha256": "2e2bacc407bed25774ba6494af1a25faad5a2e3c5615d3a76d6b84dfd311b3fb",
+      "gitBlob": "5479ecba4c0b193ecf87d690ce40d78ea8fd9728",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "mode": "100644"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "mode": "100644"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+      "gitBlob": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "mode": "100644"
+    },
+    {
+      "path": "scripts/testing/TestCategoryExecution.ps1",
+      "bytes": 11710,
+      "sha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+      "gitBlob": "02867549fd55db86f32e765164d65c8eb921ebdd",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "bytes": 74430,
+      "sha256": "3a629a2b671df6134bd5228c8e79af671dba29147aeb6a8bf85c319df5d9ed23",
+      "gitBlob": "07ffc0d6af2c868c792e64aaa462415fce9c850e",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2081316,
+      "sha256": "c1b1954a2649f3b504e64c183e0224cd983c9a6535e9743ef0120ede91fc1584",
+      "gitBlob": "16f8b10b5f6f73285b3312e437d6bfaede608e86",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 6750,
+      "sha256": "362eb47c2ae464c840a16313a120b417a8991f64c1d1e39cec66760d26cc8361",
+      "gitBlob": "36991e0b5f8f2e99993c3bc995b649304d364ccd",
+      "mode": "100644"
+    },
+    {
+      "path": "tests/selections/1558-daren-retirement.json",
+      "bytes": 6750,
+      "sha256": "362eb47c2ae464c840a16313a120b417a8991f64c1d1e39cec66760d26cc8361",
+      "gitBlob": "36991e0b5f8f2e99993c3bc995b649304d364ccd",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinCount": 60,
+  "addedRealDependencies": [
+    "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+    "BookOfEternityClient/Services/QteSceneService.AgentConsole.cs",
+    "BookOfEternityClient/AgentConsole/AgentConsoleInputModels.cs",
+    "BookOfEternityClient/AgentConsole/AgentConsoleE2EObservationMapper.cs",
+    "BookOfEternityClient/Core/ConsoleMainMenuInputHandler.cs",
+    "BookOfEternityClient/Services/QteKeyInput.cs"
+  ],
+  "recovery": "Retained exact full7a plus86complete deltas covers all unchanged new dependencies; next complete GitHub delta covers every new changed path. No fullclone/basebyte replay.",
+  "oldHelpersAndSentinel": "Original05d /tmp capture-run/inspector/archive helpers and FIRST sentinel unchanged; future corrected helper has distinct filename.",
+  "correctedInspector": {
+    "path": "/tmp/gm1558-inspect-capture-corrected.py",
+    "sha256": "d402f4cdff91a59fd4440d6f88b3f16f1a7ee141500d48d81fea7b3d5e82282d",
+    "execution": "NONE; syntax check only"
+  },
+  "helperText": "from pathlib import Path\nimport json,hashlib,subprocess\nF=Path('specs/1558-remove-daren-campaign');prior=json.loads((F/'g1-source-packet-20261017.json').read_text());paths={p['path'] for p in prior['pins']}\nadded=['BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs','BookOfEternityClient/Services/QteSceneService.AgentConsole.cs','BookOfEternityClient/AgentConsole/AgentConsoleInputModels.cs','BookOfEternityClient/AgentConsole/AgentConsoleE2EObservationMapper.cs','BookOfEternityClient/Core/ConsoleMainMenuInputHandler.cs','BookOfEternityClient/Services/QteKeyInput.cs'];paths.update(added)\ndef h(b):return hashlib.sha256(b).hexdigest()\npins=[]\nfor path in sorted(paths):\n p=Path(path);b=p.read_bytes();pins.append(dict(path=path,bytes=len(b),sha256=h(b),gitBlob=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest(),mode='100755' if p.stat().st_mode&0o111 else '100644'))\nassert len(pins)==60\nledger=json.loads((F/'g1-method-row-ledger.json').read_text());p=Path('BookOfEternityClient.IntegrationTests/DarenRetirementConsolePracticeTests.cs');b=p.read_bytes()\nfor f in ledger['newMethodRows']:\n if f['path']==str(p):\n  f['sha256']=h(b)\n  for m in f['methods']:m['sourceSegmentSha256']=h(b[b.index(b'    [Theory]'):])\n(F/'g1-method-row-ledger.json').write_text(json.dumps(ledger,indent=2,ensure_ascii=False)+'\\n')\n# Read-only checks of the actual correction, not execution/compile acceptance.\nc=p.read_text();assert c.count('[MemberData(nameof(Types))]')==1 and 'AddSeconds(35)' in c and 'AddSeconds(10)' in c and 'chargeKeys < 2' in c and 'Assert.Equal(2, chargeKeys)' in c\nassert c.index('if (!settled)')<c.index('cleanup.Dispose();') and 'input!.CancelPendingReads' in c\nassert 'Assert.Empty(rejectedInputs)' in c and 'AcceptedScreenId' in c\nassert 'ParseSessionGenerationText(reader.ReadToEnd())' in Path('BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs').read_text()\nassert 'generationId' not in Path('BookOfEternityClient.IntegrationTests/DarenRetirementEvidenceFixtures.cs').read_text()\nassert 'generationId' not in Path('BookOfEternityClient.IntegrationTests/DarenRetirementStorageTests.cs').read_text()\nassert Path('tests/selection.json').read_bytes()==Path('tests/selections/1558-daren-retirement.json').read_bytes()\nselection=json.loads(Path('tests/selection.json').read_text());assert len(selection['selections'])==16\nold=json.loads(subprocess.check_output(['git','show','91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8:tests/categories.json']))['categories'];new=json.loads(Path('tests/categories.json').read_text())['categories'];changed=[c['id'] for a,c in zip(old,new) if a!=c];assert changed==['daren-retirement-console-practice']\nfor a,c in zip(old,new):assert a['selectors']==c['selectors'] and a['timeoutMinutes']==c['timeoutMinutes']\nrecord=dict(kind='G1_CONSOLIDATED_TESTS_ONLY_CORRECTION_SOURCE_CANDIDATE_UNCOMPILED_UNRUN',baseCarrier='91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8',unchangedProductSource='46ff637a01390a27c45a7fc36dc30e31d688e499',firstFail=dict(actualSource='fdf9ddc664f844a3e89263956fd9065e1e706872',compiledSource='05d481d684fe0831ea060a1e9853e91f6b9749a0',nativeExit=1,executed=2,passed=0,failed=2,packets=0,classification='CONFIRMED_CAPTURE_FIXTURE_FAILURE_G1_S03__NO_ACCEPTED_CAPTURE_OR_RETIREMENT_RED',preserved='recovery/g1-first-capture-stop-20261017.json'),release='recovery/gm1558-root-g1-corrections-release-91a5f6b8-20261017.json',corrections={\n'G1-S03':{'status':'AUTHORED_PENDING_FRESH_PREPARATION_AND_TARGETED_SOURCE','files':['DarenRetirementEvidenceFixtures.cs Capture/Instantiate/ReadCurrentGeneration','DarenRetirementStorageTests.cs four generation reads','new /tmp/gm1558-inspect-capture-corrected.py','current plan/ledger/narrative'],'currentContract':'Actual generation authority is SchemaVersion/GenerationId; original strict FileSystemManager.ParseSessionGenerationText is reused after StreamReader UTF8/BOM decoding. Original parser/options/schema are unchanged, no alias/fallback introduced. Browser manifest generation is an independent unchanged lowercase field. Profile/backups stay raw bytes; only actual authority metadata roots/generations transform after authentic data admission.','newDependency':'BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs'},\n'G1-S01':{'status':'AUTHORED_PENDING_FRESH_PREPARATION_AND_TARGETED_SOURCE','scope':'Same oneTheory/eleven original data rows/category3m. No production timeout/grade/clock or new general harness.','input':'One accepted key per ready snapshot, actual selected-index arrow movement/Enter, Accepted screen identity and no rejected normal inputs. ChargeRelease gets two physical Spacebar events through live source. No grade fabricated.','witness':'Difficulty selected-title plus exact selected-offer chapter/result screen IDs bind actual RunCheck. Ten live types bind current frame; MashInput/RhythmPulse/PrecisionChoice are genuinely generic QteLive with exact source-backed title. BranchChoice has no live frame and uses real synchronous branch grade between exact chapter/result.','lifetime':'Keep input live during real Escape/continue/Exit teardown, CancelPendingReads only for blocked ReadKey. Only a confirmed completed Task permits Shutdown/Dispose/root cleanup. Unknown/unsettled task is explicit failure retaining input/root, never strict-cleanup/PASS. Existing35s normal/10s settling and canonical3m guards unchanged.','proofLimit':'Most timed loops use their original bounded no-input result; this is not eleven successful-score playthroughs. Actual console/browser still unrun.'},\n'G1-S02':{'status':'EXPLICIT_RETIRE_DISPOSITION_AUTHORED_PENDING_TARGETED_SOURCE','method':'BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite','actualSubject':'Direct call to removed QteSceneService.RestoreDarenProfileRollbackBytesAsync; exact method/selector retires in G2 with subject. Current test body remains until product removal. Generic junction/authority neighbors retained; no Windows execution.'}},selectedOwners=[x['category'] for x in selection['selections']],selectorAndBudgetMembershipUnchanged=True,onlyCatalogResponsibilityChanged=changed,oldPlanMembershipHistorical=dict(owners=16,descriptors=18,methodsOrFiles=48,csharpMethods=40,csharpCases=91,frontendFilesEstimated=8,estimatedTotal=99,executed=0,compiledSource='05d481d684fe0831ea060a1e9853e91f6b9749a0'),freshPreparation='NOT_RUN; only after new tests WIP remote/readback/newcomplete GitHubdelta',nextActual='HELD; targeted independent SOURCE + persisted Root exact-source release required before newly bound capture2; frozen-data EVIDENCE before consumer RED',sourcePins=pins,sourcePinCount=60,addedRealDependencies=added,recovery='Retained exact full7a plus86complete deltas covers all unchanged new dependencies; next complete GitHub delta covers every new changed path. No fullclone/basebyte replay.',oldHelpersAndSentinel='Original05d /tmp capture-run/inspector/archive helpers and FIRST sentinel unchanged; future corrected helper has distinct filename.',correctedInspector=dict(path='/tmp/gm1558-inspect-capture-corrected.py',sha256=h(Path('/tmp/gm1558-inspect-capture-corrected.py').read_bytes()),execution='NONE; syntax check only'),helperText=Path(__file__).read_text())\n(F/'g1-correction-source-packet-20261017.json').write_text(json.dumps(record,indent=2)+'\\n')\nplan=F/'plan.md';s=plan.read_text();lines=s.splitlines();i=next(i for i,l in enumerate(lines) if l.startswith('**Current status**:'));lines[i]='**Current status**: Independent causal EVIDENCE confirmed FIRST capture fixture failure G1-S03, not an accepted capture or retirement RED. Root released one consolidated tests-only S01/S02/S03 correction, now authored/uncompiled/unrun. Fresh zero-execution preparation follows this WIP publication/recovery; targeted SOURCE and separate exact-source Root release are still required before any new capture. Product/prompts/consumer RED/TestData/other actuals held; T004\u2013T020 unchecked.';s='\\n'.join(lines)+'\\n';s=s.replace('## Current FIRST capture2 STOP \u2014 evidence-only publication','## Historical FIRST capture2 STOP at91a5f6b8 \u2014 evidence-only publication')\ns+='''\\n## Current consolidated G1-S01/S02/S03 tests-only correction\\n\\nRoot accepted [immutable causal MD](recovery/gm1558-first-capture-failure-independent-20261017.md) / [JSON](recovery/gm1558-first-capture-failure-independent-20261017.json): confirmed capture fixture failure S03, no successful original packet or retirement RED. [Root source diagnosis](recovery/gm1558-root-first-capture-failure-diagnosis-fdf9ddc6-20261017.json), [FIRST raw readback](recovery/gm1558-root-first-failure-evidence-readback-91a5f6b8-20261017.json), [91a5 immediate delta](recovery/gm1558-first-capture-stop-delta-github-91a5f6b8-20261017.json) and [86-delta composition](recovery/gm1558-root-recovery-composition-91a5f6b8-20261017.json) preserve all8FIRST raw/seven05d pins/2FAIL/strict2cleanup/no-packet facts. The [exact bounded correction release](recovery/gm1558-root-g1-corrections-release-91a5f6b8-20261017.json) authorizes this test-only source work and fresh zero-execution prep after publication, never actuals. Old05d source verdict, helper/sentinel and FIRSTFAIL bytes are unchanged.\\n\\n[Current correction binding](g1-correction-source-packet-20261017.json) supersedes the old lowercase generation/no-input lifetime/Windows-row assumptions. S03 reuses the existing strict `FileSystemManager.ParseSessionGenerationText` after BOM-aware UTF8 byte decoding in Capture/Instantiate and all4Storage reads. Actual generation fields are `SchemaVersion`/`GenerationId`; independent browser manifest lower`generation` and standalone `GenerationBefore.Id/GenerationAfter.Id` remain unchanged. Profile/backups are never decoded or normalized. This introduces the real `FileSystemManager.GenerationSnapshot.cs` dependency; current source binding is60pins, not the old54 snapshot. Existing parser/options/product serialization are untouched; no new alias or legacy fallback. A new temporary corrected inspector expects exact original PascalCase generation bytes, while the original helper stays retained unchanged.\\n\\nS01 retains11 rows and actual public RunPracticeMode/RunCheck: one accepted key per ready snapshot, actual selected-index movement, exact selected-offer ready/result IDs and real frame/title witness; no rejected normal input or wrong accepted screen is qualified. ChargeRelease receives two genuine Spacebar events. MashInput/RhythmPulse/PrecisionChoice honestly expose generic `QteLive` plus their actual titles; BranchChoice has a synchronous grade/no live frame. Teardown keeps live input open for real Escape/continue/Exit, uses CancelPendingReads only for blocking ReadKey, and requires the Task completed before Shutdown/Dispose/root cleanup. An unknown/unsettled task retains its root/input and explicitly fails qualification. No product timeout/grade/clock/harness change or limit increase.35s normal/10s settling/category3m remain protective guards; timed no-input outcomes are not successful-score proofs. All console actuals remain unrun.\\n\\nS02 marks the exact Windows-only removed profile-rollback API caller RETIRE_CAMPAIGN_SUBJECT in the ledger; its body/selector will retire with that subject in G2. Common junction/authority controls remain; no Windows runtime follows. Only console responsibility/reason prose changes in catalog/selection; all selectors/budgets/16-owner membership remain. Native18/48/99 membership is historical05d0exec until fresh discovery confirms this source. These corrections are authored, not self-approved closed findings. No capture packet/TestData install, retry or consumer/product/prompt execution occurred. Next: publish/recover tests WIP, one fresh BOTH/catalog and exact PlanOnly0, publish frozen preparation, then targeted independent SOURCE. T004\u2013T020 remain unchecked.\\n''';plan.write_text(s)\nfor name in ['spec.md','tasks.md']:\n p=F/name;lines=p.read_text().splitlines();i=next(i for i,l in enumerate(lines) if l.startswith('**Status**:') or l.startswith('**Current phase**:'));lead='**Status**:' if name=='spec.md' else '**Current phase**:';lines[i]=lead+' FIRST capture2 fixture failure S03 independently confirmed (2FAIL/0packets; original raw preserved). Consolidated Root-authorized tests-only S01/S02/S03 correction authored, uncompiled/unrun; fresh0execprep follows publication, then targeted SOURCE and separate newcapture release. No consumer/TestData/production/prompts/other actual. T001\u2013T003 complete; T004\u2013T020 unchecked.';s='\\n'.join(lines)+'\\n'\n if name=='tasks.md':s+='\\nCurrent correction state: [S01/S02/S03 source binding](g1-correction-source-packet-20261017.json) records authored genuine console input/lifetime, explicit Windows removed-API retirement and original strict generation interpretation. Historical failure/verdicts remain; findings await targeted SOURCE rather than self-approval. No new actual or completed T006/T009 is claimed.\\n'\n p.write_text(s)\nprint(json.dumps({'sourcePins':len(pins),'newRealDependencies':added,'owners':len(selection['selections']),'selectorsBudgetsUnchanged':True,'runtime':'NONE','production':'UNCHANGED'}))\n"
+}

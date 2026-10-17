@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -27,6 +26,13 @@ internal static class DarenRetirementEvidenceFixtures
 
     internal static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
 
+    internal static string ReadCurrentGeneration(byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+        return FileSystemManager.ParseSessionGenerationText(reader.ReadToEnd());
+    }
+
     internal static void Put(string root, string relative, byte[] bytes)
     {
         Assert.False(Path.IsPathRooted(relative));
@@ -45,8 +51,7 @@ internal static class DarenRetirementEvidenceFixtures
         var images = selected.Distinct(StringComparer.Ordinal).ToDictionary(
             path => Path.GetRelativePath(root, path).Replace('\\', '/'), File.ReadAllBytes, StringComparer.Ordinal);
         Assert.All(images.Keys, path => Assert.DoesNotContain("..", path, StringComparison.Ordinal));
-        var generation = JsonNode.Parse(images[Path.GetRelativePath(root, files.SessionGenerationPath).Replace('\\', '/')])!
-            ["generationId"]!.GetValue<string>();
+        var generation = ReadCurrentGeneration(images[Path.GetRelativePath(root, files.SessionGenerationPath).Replace('\\', '/')]);
         return new(kind, OriginalProductSource, producer, root,
             Path.GetRelativePath(root, files.SessionGenerationPath).Replace('\\', '/'), generation,
             relativeEvidence, images.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
@@ -86,7 +91,7 @@ internal static class DarenRetirementEvidenceFixtures
         Assert.NotEqual(packet.OriginalRoot, root);
         var bootstrap = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await new StateManager(bootstrap, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
-        var targetGeneration = JsonNode.Parse(File.ReadAllBytes(bootstrap.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var targetGeneration = ReadCurrentGeneration(File.ReadAllBytes(bootstrap.SessionGenerationPath));
         var transformations = new List<object>();
         foreach (var (relative, encoded) in packet.FilesBase64)
         {

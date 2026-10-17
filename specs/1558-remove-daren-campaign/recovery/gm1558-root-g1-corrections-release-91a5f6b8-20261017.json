@@ -1,0 +1,51 @@
+{
+  "kind": "ROOT_G1_BOUNDED_TESTS_ONLY_CORRECTION_RELEASE",
+  "status": "ACTIVE_AUTHORING_AND_AFTER_PUBLISHED_WIP_ZEROEXEC_PREPARATION_ONLY",
+  "createdUtc": "2026-10-17T08:49:35.373232+00:00",
+  "baseCarrier": "91a5f6b8b996d7fa2fa9aaea3f8c9c1d81a06be8",
+  "priorActualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+  "priorCompiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+  "unchangedProductSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "independentFailureDecision": [
+    {
+      "path": "/tmp/gm1558-first-capture-failure-independent-20261017.md",
+      "sha256": "f0d2389c477a13286584362f5438de420034cdcb7c68cbc6a644c21e00ef728d"
+    },
+    {
+      "path": "/tmp/gm1558-first-capture-failure-independent-20261017.json",
+      "sha256": "df16e0b5b193b875ac3564fca662596a321f22e8ca91bea827f8b6286341dd0c"
+    }
+  ],
+  "rootEvidence": [
+    {
+      "path": "/tmp/gm1558-root-first-capture-failure-diagnosis-fdf9ddc6-20261017.json",
+      "sha256": "d86945a1f16a92abf350afb71bcc231561bf7013f16fa58fb81bc20de8aa2589"
+    },
+    {
+      "path": "/tmp/gm1558-root-recovery-composition-91a5f6b8-20261017.json",
+      "sha256": "a6b382ca2f70ae7daccaa4289349e4abebe141387dd840137a06f1a78d697f16"
+    }
+  ],
+  "acceptedClassification": "CONFIRMED_CAPTURE_FIXTURE_FAILURE_G1_S03__NO_ACCEPTED_CAPTURE_OR_RETIREMENT_RED",
+  "approvedAuthoring": [
+    "Preserve/persist immutable causal review, FIRSTFAIL, Root diagnosis/recovery receipts and this exact release in the next tests-only correction WIP. No separate metadata-only release commit is required before these already-authorized test edits.",
+    "G1-S03: correct capture/derived fixture/current generation reads with existing FileSystemManager.ParseSessionGenerationText/proper decoding or exact current schema. Correct every affected storage/inspector/narrative generation assumption; browser manifest lowercase generation remains separate. No product/schema or legacy fallback.",
+    "G1-S01: genuine bounded ChargeRelease input, observed selected-type/frame witness and full owned-task settling before root cleanup. Preserve real RunPracticeMode/RunCheck and byte/reward assertions. Use existing input/cancel primitives; no grade fabrication, product behavior change, broad new harness or increased limits to hide a hang.",
+    "G1-S02: explicitly retire the exact Windows-only removed-API caller in the method/row ledger with its subject; retain unrelated common/junction controls. No Windows execution.",
+    "Update affected category responsibility/reasons/current selection mirror and current spec/plan/tasks/source binding accurately. Keep all11 types and useful current generic assertions. Preserve old reports/raw and source-verdict history; current correction should explicitly supersede wrong assumptions.",
+    "Prepare new actual/inspector helpers in /tmp for the future corrected compiled source, retaining the original05d sentinel/helpers/raw. Helpers confer no runtime permission."
+  ],
+  "afterAuthoring": [
+    "Publish concrete tests-only WIP[skip ci]/nonforcepush/fullremote readback/newcomplete immediateGitHubdelta before any build or long review.",
+    "Then one fresh canonical BOTH/catalog and exactSelectionFile PlanOnly-NoBuild zero-execution preparation. PreserveFIRST outcomes/raw/new7binarypins and actual source. No automatic retries.",
+    "Publish preparation checkpoint and request targeted independent SOURCE/FIXTURE/SELECTION/PREP on the three corrections and changed dependencies. A separate exact-source Root release still precedes any newly bound capture."
+  ],
+  "held": [
+    "Unchanged05d capture retry or deletion/reset of original first-launch sentinel",
+    "Any capture/consumer/console/frontend/game/browser actual until separately released",
+    "Fixture TestData installation/transformation until authentic capture EVIDENCE accepted",
+    "Production/API/UI/content/prompt/removal/recovery implementation; requires accepted causal retirementRED first",
+    "Windows/CI/Library transfer or forbidden download workarounds"
+  ],
+  "scope": "Tests-only causal correction to finish G1. No actual successful capture, retirementRED, GREEN or product change is claimed."
+}
