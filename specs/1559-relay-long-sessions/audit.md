@@ -1,8 +1,10 @@
-# Current relay audit — architecture candidate
+# Historical baseline relay audit — a82 architecture candidate
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Exact baseline `a82b3d8439f76f83baade6df8516e78eea86e546`; read-only source inspection, no relay/game/test execution. Machine-readable file bytes/SHA/blob/mode, packet measurements and category owners are in [source-inventory.json](source-inventory.json).
 
-## Confirmed boundaries
+Current stage disposition is in [plan.md](plan.md): only the inactive two-path lifecycle reservation is accepted, with 47-case GREEN/final EVIDENCE. The full relay backlog remains deferred. This original a82 source audit, measurements and pin inventory are historical; they do not describe later source/test/runtime status or imply full relay implementation.
+
+## Confirmed baseline boundaries
 
 | Owner | Current behavior | Consequence / proposed responsibility |
 |---|---|---|

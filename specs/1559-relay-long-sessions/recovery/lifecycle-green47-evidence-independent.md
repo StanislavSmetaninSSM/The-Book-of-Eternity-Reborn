@@ -1,0 +1,29 @@
+# #1559 inactive lifecycle stage — independent final EVIDENCE
+
+**ACCEPT_BOUNDED_LIFECYCLE_GREEN47. No material findings or remaining runtime blocker for this stage.** This accepts the inactive two-name lifecycle reservation, not the full relay issue.
+
+Bound to raw carrier `fdf3cf436434483b22832dd38a95e4457cb283f3`, actual source `328da15f1fa91cf935c044206923717cc8a4fe22`, and compiled production `d8e53413483e434752651e7e7b5b4f2dc392a6cf`. I reviewed existing raw only; no native command, build, producer, test or repository edit was performed.
+
+The one fixed SelectionFile/NoBuild aggregate returned **native 0 in 44.97535421700013 seconds**. All **9 categories / 10 descriptors / 15 methods / 47 distinct cases** completed and passed. TRX identities and per-method multiplicities exactly match the accepted fresh plan; there are no skipped, duplicate, underfilled, timed-out or unexpected outcomes. Compilation/preparation and historical results are not counted as these 47 executions.
+
+The formerly failing boundaries now reach their complete unchanged oracles:
+
+- Real engine rollback preserves both latest operational records for newly created and pre-existing cases while restoring/deleting the ordinary neighbors correctly.
+- Real live preparation excludes both names from snapshot/rollback baseline, preserves their live presence and retains ordinary linked state. Exact draft exclusions and suffix positives pass.
+- Real save/load excludes both records from the archive and the replacement session; ordinary revision restoration and changed generation assertions pass. The successful empty OR-filter proves both absences. No raw archive/body image is invented where only source-bound assertion evidence exists.
+- All four actual private predicates return the exact reserved/suffix classifications, including the corrected `ValidationIssue` owner. Both engine and live physical case aliases now raise the intended exception before backup/publication/mutation; suffix cases retain their ordinary behavior.
+- All eight genuine repository-helper cases reach their read prerequisite. Exact reserved Write/FilesModified operations return the explicit client-owned denial, leave bytes unchanged, emit no terminal and do not reach the operation-return marker. Suffix operations remain allowed, including actual changed JSON for writes. This is policy-consumer evidence, not Complete-BoeTurn or client acceptance.
+
+All **135 frozen native/fixture chains**, plus the separate actual328 source-context chain, match stored gzip hashes/lengths, decompressed original bytes, live raw and committed carrier bytes. The 136 source pins and nine current DLL copies match accepted production preparation; source/test/selector changes after compilation are absent. The complete immediate GitHub recovery is exact: **153 files / all 149 changed metadata/raw paths**, including blob/mode/set checks.
+
+Ownership evidence is complete within its actual scope: **20 distinct lifecycle strict-root receipts** report successful removal and each root is physically absent. Eight retained helper diagnostic directories contain 112 files; all guardians close without emergency/deadline/failure, scenarios release canonical ownership, and all **24 observed helper children** complete and join naturally with matching exit status. Three children per helper case is an observed count, not a protocol constant. Six ordinary neighbors pass unchanged bodies with stable aggregate owned namespace; no nonexistent per-test receipt is claimed.
+
+The separate genuine package writer also passed. Its captured **258-file package inventory** exactly matches fresh managed output, including helper `e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49` and product `27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58`. Actual AST-selected production execution completed; its byte-prefix/source binding is exact. All **52 path/role/source→package→captured-session hashes** match the current source contract. The generated template's retained **12,977 bytes** match its declaration/content/hash/contained-path oracle. Original pwsh and both package-DLL helpers have exact birth/argv provenance, both pipes reach EOF, and all three are `TerminalOwnedAbsent` before cleanup. Package and session roots are physically absent, adding **two roots** to the 20 lifecycle receipts. All nine diagnostic directories/118 files remain retained and archived.
+
+This proves the changed helper's package-input lineage and actual publisher/session closure. It does **not** prove a frozen session-bootstrap body/hash or PowerShell helper execution from that bootstrap; the eight repository-helper tests provide the separate execution evidence. No old documentation family was rerun for this result.
+
+Original causal RED, the first F01 fixture-owner failure and prior SOURCE decisions remain immutable. The corrected current rows replace their previous qualification without double counting. SOURCE acceptance is retained by exact decision hashes; no old raw family/base replay was needed.
+
+The proposed final status projection is appropriate: complete only scoped **T014** for this lifecycle reservation, record bounded contributions to T011/T015/T016/T018 without closing their broader clauses, and retain full relay C01–C06, Windows and issue-wide FR/SC work as open. After exact verdict persistence and Root's final remote/recovery check, checkpoint this stage and hand off to wounds **T179-Pd.3d**. No new relay schema/writer/reader/dispatch/batch/sequence, GM accepted-turn or long-session completion is claimed. Root should verify the actual derived metadata diff; another SOURCE/native/raw review cycle is unnecessary unless that diff changes scope or evidence.
+
+Supporting checks: `/tmp/gm1559-lifecycle-green47-evidence-independent-check-20261017.json`, SHA256 `e5c2d0ead8c18795bf532a094787055c5065d836dd7c6168342d4bb80331a9ed`.

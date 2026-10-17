@@ -5,7 +5,7 @@
 **Source issue**: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559) (open; read-only snapshot, 2026-10-17).
 **Branch**: `1559-relay-long-sessions-20261017`
 **Base**: `a82b3d8439f76f83baade6df8516e78eea86e546`
-**Status**: ARCH accepted at25713634 for tests-only G1 authoring; concrete SOURCE/FIXTURE/SELECTION/PREP and all native/product gates remain open.
+**Status**: The inactive two-path lifecycle substage has accepted production SOURCE/PREP and 47-case GREEN/final EVIDENCE. Final durable publication/readback remains Root’s gate. Full relay requirements and native Windows acceptance remain open/deferred; see the accepted stage and handoff in plan.md.
 
 ## Source issues and scope
 

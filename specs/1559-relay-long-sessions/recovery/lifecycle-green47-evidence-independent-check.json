@@ -1,0 +1,3127 @@
+{
+  "kind": "INDEPENDENT_FINAL_LIFECYCLE_GREEN47_RAW_CHECK",
+  "utc": "2026-10-17T15:34:31.712109+00:00",
+  "carrier": "fdf3cf436434483b22832dd38a95e4457cb283f3",
+  "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "sourceDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
+  "sourcePinCount": 136,
+  "unchangedSourceBinding": true,
+  "actualSourceContext": {
+    "rawPath": "/tmp/gm1559-lifecycle-source-context-328da15f-20261017.json",
+    "storedPath": "recovery/lifecycle-green47-first-files/actual328-source-context.json.gz",
+    "bytes": 78269,
+    "sha256": "6b6b2e1e524c10b9c42f2709e77943ac9faad13b781f6f8a36982bbafd71a804",
+    "storedBytes": 21284,
+    "storedSha256": "b941007fede0ddd16b36648cc50fe661aa795e6517e931790de1eab54fd587f2"
+  },
+  "packet": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1559/specs/1559-relay-long-sessions/recovery/lifecycle-green47-first.json",
+    "bytes": 40873,
+    "sha256": "2ddb4fc9e0c663e0e68ae258d82278dc4148944d0c43a0b88821c957ce9d4ffa"
+  },
+  "record": {
+    "path": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-green-first-328da15f-20261017/record.json",
+    "bytes": 61964,
+    "sha256": "a0b6919a059cbe627c84077f6a4d957744524b5c9af42a017b0b8501d75f1719"
+  },
+  "archive": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1559/specs/1559-relay-long-sessions/recovery/lifecycle-green47-first-files/archive.json",
+    "bytes": 61503,
+    "sha256": "ac11b265c475aab09c0eb1599f8a09506864934b5d9ad53f79a761fb6bf4c3f6"
+  },
+  "chains": [
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/ast-and-publication.json",
+      "storedPath": "000-ast-and-publication.json.gz",
+      "bytes": 710209,
+      "sha256": "7556b9e8abcfa3a8a8000fdce1308cb60cd32bcb197cc0a65314a86bce1b2861",
+      "storedBytes": 116461,
+      "storedSha256": "2dd373af82701002e7ef050868b8cc6efe4ffecab9418029e20783fc892ae7b0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/generated-MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "storedPath": "001-generated-MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "bytes": 12977,
+      "sha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "storedBytes": 4878,
+      "storedSha256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/inspect-and-publish.ps1",
+      "storedPath": "002-inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedBytes": 2666,
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/outcome.json",
+      "storedPath": "003-outcome.json.gz",
+      "bytes": 901375,
+      "sha256": "041b0456efaf341c499e3db2f13d8af7421298e262031379d70cfb025aba99c9",
+      "storedBytes": 136991,
+      "storedSha256": "3201caff79127924c182a8ac791974339f7528110d396abc0b7585594de37288"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/stderr.log",
+      "storedPath": "004-stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/stdout.log",
+      "storedPath": "005-stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/d8e53413483e434752651e7e7b5b4f2dc392a6cf.lifecycle-stage-green.FIRST.json",
+      "storedPath": "006-d8e53413483e434752651e7e7b5b4f2dc392a6cf.lifecycle-stage-green.FIRST.json.gz",
+      "bytes": 348,
+      "sha256": "084d0f0f992ce5aed7de0712ec5664d9ae7dd989d0798fd74a1bf86a684cc124",
+      "storedBytes": 278,
+      "storedSha256": "e30b4b5f6dab4383c59824f8440c532cc59160d4fc5e295016b3c617d747f65b"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-green-first-328da15f-20261017/process.json",
+      "storedPath": "007-process.json.gz",
+      "bytes": 730,
+      "sha256": "f7a3d163afbc0b5683996dd73c8dcde7c77a20b6c73c3f440bc7fd3c320d4d60",
+      "storedBytes": 372,
+      "storedSha256": "ef415215e5280e3bd8aaa871e399c2aaa9feb632f2a7db9651f50e62777fb3f2"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-green-first-328da15f-20261017/record.json",
+      "storedPath": "008-record.json.gz",
+      "bytes": 61964,
+      "sha256": "a0b6919a059cbe627c84077f6a4d957744524b5c9af42a017b0b8501d75f1719",
+      "storedBytes": 10973,
+      "storedSha256": "712a13c05b864ed4921e1f8c869a770316c77ff61c6ee69487943fb84485b612"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-green-first-328da15f-20261017/stdout.log",
+      "storedPath": "009-stdout.log.gz",
+      "bytes": 14983,
+      "sha256": "d9be79deae6699c7d413fd6b2be77dd6c83bd68df3bac3e8549750c1fed98961",
+      "storedBytes": 1874,
+      "storedSha256": "913f8c02ed5ac8b0ca866f55fc856347bff91dd04181b6701a0ab9831015b6c6"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/boe-lineage-supervisor",
+      "storedPath": "010-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/build-provenance.json",
+      "storedPath": "011-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/build.log",
+      "storedPath": "012-build.log.gz",
+      "bytes": 127,
+      "sha256": "836a6d55e901e235f87ce1fefbd75597c8c0162f043a8d32f7b36ee399fb2366",
+      "storedBytes": 131,
+      "storedSha256": "903d0df2799dcd6e1035878ec1f7761f42f4a8f4ea1223f60f0128467f0bc1bb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/guardian.json",
+      "storedPath": "013-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/guardian.log",
+      "storedPath": "014-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/helper-child-141250.json",
+      "storedPath": "015-helper-child-141250.json.gz",
+      "bytes": 104,
+      "sha256": "184b566e0673d3f9083891dc114b16ccb1f616eec20004fd3ebe03e2fc113bed",
+      "storedBytes": 114,
+      "storedSha256": "b8f6e604c431f5dd3a31e45de1ea5965a8f7240bf24e7ac19aeaa529b7eda655"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/helper-child-141263.json",
+      "storedPath": "016-helper-child-141263.json.gz",
+      "bytes": 104,
+      "sha256": "0946ab10da29c10e5f324048178f3b6f5cb574170d3625349e716b42b0960221",
+      "storedBytes": 115,
+      "storedSha256": "56a32c08fee9214d4812dd56661bb43f4ba6f35db516388b9d6ce1be5dccf71f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/helper-child-141276.json",
+      "storedPath": "017-helper-child-141276.json.gz",
+      "bytes": 104,
+      "sha256": "1d5c1da86730dcffe6527f2ca335407725df8e5290f88d1282fb6b0e10d6e456",
+      "storedBytes": 115,
+      "storedSha256": "c6d25141e2adf2b7fc49507a4f4475f2d489bd5d9e89f5df6d148e700d6d698e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/host-guardian",
+      "storedPath": "018-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/joined.jsonl",
+      "storedPath": "019-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "b3cb9860b8ad124a73dd928d5321c4f1228a9df0e708baeffad5e014aaf60020",
+      "storedBytes": 86,
+      "storedSha256": "4d7fa414abd2abdbd4c96efef743d3b2aebfa6c9a9f4b8e78a45509a38c5bfe8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/original.ps1",
+      "storedPath": "020-original.ps1.gz",
+      "bytes": 640,
+      "sha256": "4422b63fb626798cbe21152acb714280b2480121b3cc8cc0a1ba3840604800e8",
+      "storedBytes": 428,
+      "storedSha256": "debeeb0d9595cec10541f1d7b6601ec0e157500bc60d6d056f69e7743a3ece8c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/owned.ps1",
+      "storedPath": "021-owned.ps1.gz",
+      "bytes": 1006,
+      "sha256": "29d7b7d79643f843d4e54188995f048854ca0384c8fbec4388b6cb1df82ddf63",
+      "storedBytes": 555,
+      "storedSha256": "eeefb03656baa86410e37e547a5cfc9bb214df6a27b80e2b2b47eb00ee2214c6"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/package-manifest.json",
+      "storedPath": "022-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c/scenario.json",
+      "storedPath": "023-scenario.json.gz",
+      "bytes": 878,
+      "sha256": "116592eeab5dd034153db829e26b801805753f1edda99be89c27cec1b3c28752",
+      "storedBytes": 443,
+      "storedSha256": "4efa58b10c40b4543f2716be8234f8069788a1479b781c8be887fd8d597eb6cb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/boe-lineage-supervisor",
+      "storedPath": "024-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/build-provenance.json",
+      "storedPath": "025-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/build.log",
+      "storedPath": "026-build.log.gz",
+      "bytes": 127,
+      "sha256": "deafd819655d61e477820b21ab7a9906ca2687b54149be52598210d2a0efda6e",
+      "storedBytes": 132,
+      "storedSha256": "e3c102b06a12e4562378d48212cefcf295b26566e8d150d8ed05d4f1b76a8a33"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/guardian.json",
+      "storedPath": "027-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/guardian.log",
+      "storedPath": "028-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/helper-child-141480.json",
+      "storedPath": "029-helper-child-141480.json.gz",
+      "bytes": 104,
+      "sha256": "08ddb265923e2317aaf0aa4cc9ffb1aa51f011fbb14a07561ac91ee4b8b97446",
+      "storedBytes": 114,
+      "storedSha256": "845c4101d0a1f69372ef446270d6f2bf282573bcbc1ebba9e163a6845499c25f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/helper-child-141493.json",
+      "storedPath": "030-helper-child-141493.json.gz",
+      "bytes": 104,
+      "sha256": "d60ed76bdc1d9c679229e6ade6924308444c6b35a84273c0df86148f5eee2303",
+      "storedBytes": 115,
+      "storedSha256": "b184401eb548068ef1aca9ab9fa5da7199abe98e9ba9b4ed5cb33898ccf90a87"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/helper-child-141506.json",
+      "storedPath": "031-helper-child-141506.json.gz",
+      "bytes": 104,
+      "sha256": "a9960a93393e52ed4b679a19d9bf54fb9e6df7337f041c184483da7eb91c5a04",
+      "storedBytes": 115,
+      "storedSha256": "c1c6410b4f68ba2e92e4697de16da076407555781f4de1b09edb7b591b0fccb2"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/host-guardian",
+      "storedPath": "032-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/joined.jsonl",
+      "storedPath": "033-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "7e7b5ec339550f69b10eb94eb5c6ba275d68696f47b998191e91d5031d517b99",
+      "storedBytes": 88,
+      "storedSha256": "61f1f3cd55f2df2e446307e1fa757ae82c331bd90b93b79e51ce25a5cb5ae1cb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/original.ps1",
+      "storedPath": "034-original.ps1.gz",
+      "bytes": 658,
+      "sha256": "fa44594c347945fd87ce913203fdaa229c55b3868d501fdf315a312e9ac6e9ec",
+      "storedBytes": 437,
+      "storedSha256": "ad7b0592a731695efcd05f1c951877c56b50f843e531b3bfd653e9f541e901f8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/owned.ps1",
+      "storedPath": "035-owned.ps1.gz",
+      "bytes": 1024,
+      "sha256": "22cdd71d39f53606ebbb5de0316deeacea3f6322b4ba7406c2f8b2adb5d0c7e5",
+      "storedBytes": 562,
+      "storedSha256": "47b0001d47f5dd20460a1e9a3350a472077c78e29503cb0c927b61ace225efb7"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/package-manifest.json",
+      "storedPath": "036-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7/scenario.json",
+      "storedPath": "037-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "e557ef5d423a20de76f54568f8027f55767458d8884b7bd84f2a6293f14b39eb",
+      "storedBytes": 242,
+      "storedSha256": "8742f5897eeb29ffde47e254c8e8e14ef6a16f5eb20eac70cd642fbe43b98d1e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/boe-lineage-supervisor",
+      "storedPath": "038-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/build-provenance.json",
+      "storedPath": "039-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/build.log",
+      "storedPath": "040-build.log.gz",
+      "bytes": 127,
+      "sha256": "de04d16002cb5bff40b4c81c3da0fe164fd15040cb74d30ccdfc09c8797f09b1",
+      "storedBytes": 131,
+      "storedSha256": "07f32962618babded39d41694696b312a93ffca0a33ae78a3345bafd5fb92cb8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/guardian.json",
+      "storedPath": "041-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/guardian.log",
+      "storedPath": "042-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/helper-child-141022.json",
+      "storedPath": "043-helper-child-141022.json.gz",
+      "bytes": 104,
+      "sha256": "6e55949683b7b06c747a1982646899ed44646f33a98f19b9242c601d699fbfbb",
+      "storedBytes": 114,
+      "storedSha256": "b139870bb5553c35cda728708c1111902cfdbbba3c46b53dcb9b660733bc8cce"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/helper-child-141035.json",
+      "storedPath": "044-helper-child-141035.json.gz",
+      "bytes": 104,
+      "sha256": "98f1f00417e1a73627daccfe6bff0f1636b220015c755cc5ee94d8cf77570dde",
+      "storedBytes": 115,
+      "storedSha256": "569b16d63a6934617f4b1956b54711ce32c39f895058c33c6b56741e18adc40f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/helper-child-141048.json",
+      "storedPath": "045-helper-child-141048.json.gz",
+      "bytes": 104,
+      "sha256": "ac8cebc733271e0d7d320e1cbdaba998e26b9617ca5990965409e3690e3bf949",
+      "storedBytes": 115,
+      "storedSha256": "5ce496f69134af70feeba4a0149301c2b9eab66522ee7dfe4b3d872eb3dcce7c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/host-guardian",
+      "storedPath": "046-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/joined.jsonl",
+      "storedPath": "047-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "3785733ae783c2b6707b0cde083590008617da87f340c838f772704ba144d524",
+      "storedBytes": 88,
+      "storedSha256": "0c3754291165ce1fb7985f58c31c8ec2129f56380ad4523e9c3470bf58acd09b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/original.ps1",
+      "storedPath": "048-original.ps1.gz",
+      "bytes": 677,
+      "sha256": "c7703cb2a647e56c33ac818faa5157c4aefc4718d6703e729d58a1a4ec5277d3",
+      "storedBytes": 441,
+      "storedSha256": "9a1f46ffc4b6bbc1888d174bb5bd702601dffc3dc4fc1e928dc8d0abc389b228"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/owned.ps1",
+      "storedPath": "049-owned.ps1.gz",
+      "bytes": 1043,
+      "sha256": "a2181fefbe93e0c3daf856e64f18e1e6a6868b91e2b01644c99c98a50ad6c2be",
+      "storedBytes": 569,
+      "storedSha256": "22326f5d7ae61ba002589f47f274cec30163ccbf4c36993e5805484ee5d462f1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/package-manifest.json",
+      "storedPath": "050-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592/scenario.json",
+      "storedPath": "051-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "749ebbf461dc15648a9727d672f323876c7915aaf9a38fc6d01cd830dd87f786",
+      "storedBytes": 240,
+      "storedSha256": "c0087982f2a6506369bdfcb360b69ed5a69ad20e8e982ece58f98999d1338c59"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/boe-lineage-supervisor",
+      "storedPath": "052-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/build-provenance.json",
+      "storedPath": "053-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/build.log",
+      "storedPath": "054-build.log.gz",
+      "bytes": 127,
+      "sha256": "52c77cd4d9e9208a726382d741cfde973780cbe79295e5da0da75d1d2fe5090b",
+      "storedBytes": 132,
+      "storedSha256": "9540b2f8c5995d3b8b6ed5e80a2204420aff100b1c6ec5ceb9b77da25455180a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/guardian.json",
+      "storedPath": "055-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/guardian.log",
+      "storedPath": "056-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/helper-child-141821.json",
+      "storedPath": "057-helper-child-141821.json.gz",
+      "bytes": 104,
+      "sha256": "02297db0b4fd48ce256226b395683c6c5ef03beabb1ee85d3f9008828e927eab",
+      "storedBytes": 115,
+      "storedSha256": "644e205b290ad38947937368e9c5ed2d31a3e1df689cac8b75a9d8e158c2211c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/helper-child-141834.json",
+      "storedPath": "058-helper-child-141834.json.gz",
+      "bytes": 104,
+      "sha256": "f2e40291742bfd17908ee5ca9954632b612dc6f4e79767a3cc38bd48da4c7a5a",
+      "storedBytes": 115,
+      "storedSha256": "461886376a90dca16788956eba1f5191ac3e05086acc68de01c56ba416afabd3"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/helper-child-141847.json",
+      "storedPath": "059-helper-child-141847.json.gz",
+      "bytes": 104,
+      "sha256": "98e81b0a5eeeeb5703088701791231087afbe47e3b3fb8f643fb63cdb2f4934a",
+      "storedBytes": 115,
+      "storedSha256": "0e6ac4dbb13b0ff54c17d447db79aaa23dce3336c3a91d9228c01d8b6443dda5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/host-guardian",
+      "storedPath": "060-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/joined.jsonl",
+      "storedPath": "061-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "140875b971fdab34d24bea67b6962bc6b77d909b6a18224add9dea0fa6b0d842",
+      "storedBytes": 87,
+      "storedSha256": "0cbdec3577b77b9370aa1199e00c8739b3ee7affff9d41d9bd44911b7e951546"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/original.ps1",
+      "storedPath": "062-original.ps1.gz",
+      "bytes": 667,
+      "sha256": "f38b17bf2d1bf0af5926af82fe4e563b289e01a0868c809cd3cc8b2d4bca0278",
+      "storedBytes": 437,
+      "storedSha256": "11587676de1ed15c787f9b2631d6a83942674b304c40fb3932fbc4fcd290bdcf"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/owned.ps1",
+      "storedPath": "063-owned.ps1.gz",
+      "bytes": 1033,
+      "sha256": "fa87805145a34576e481c7a5c8d650fbd7758e90d092cfcdcf01be93362b0be5",
+      "storedBytes": 564,
+      "storedSha256": "f83621306bed1d75e4efce60008ff87c80a9e1ecbebb6d5f34b38b6ea7b23098"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/package-manifest.json",
+      "storedPath": "064-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627/scenario.json",
+      "storedPath": "065-scenario.json.gz",
+      "bytes": 862,
+      "sha256": "8ed2b533ed896e7af90ed0ed204e6cb4a2356d3bf74c8f94934016344c69f1ad",
+      "storedBytes": 438,
+      "storedSha256": "6b826d6ef0537069ade27701639c43f57cef914ed7e172c946856ca8d7a81f2b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/boe-lineage-supervisor",
+      "storedPath": "066-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/build-provenance.json",
+      "storedPath": "067-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/build.log",
+      "storedPath": "068-build.log.gz",
+      "bytes": 127,
+      "sha256": "f588724242adb886f48f5618b6f442857deb481f4ffc3d3fd263a29c63b2a218",
+      "storedBytes": 131,
+      "storedSha256": "5650ee7b09db6b057d6a5ca2c9e040803f32d6753169b8c576c8b0c0de2a7195"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/guardian.json",
+      "storedPath": "069-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/guardian.log",
+      "storedPath": "070-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/helper-child-141136.json",
+      "storedPath": "071-helper-child-141136.json.gz",
+      "bytes": 104,
+      "sha256": "a6fb34b65de3b8cd5f72ea153f595dd6a89fcf5d9ee0a6b07968dd31b6facf0d",
+      "storedBytes": 115,
+      "storedSha256": "c237a2f32bcef6268554fad4f5562b0736b737c590fe5805e94982a6f3f57e9e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/helper-child-141149.json",
+      "storedPath": "072-helper-child-141149.json.gz",
+      "bytes": 104,
+      "sha256": "a67150c3ec163abc18e3795a83b56088367c1974a47e2ccf781b07de3074edb5",
+      "storedBytes": 115,
+      "storedSha256": "195baaa177d229c9d9b7f7f1d1125f3f5b2cf15f9b1a3403fccf54a9cde86720"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/helper-child-141162.json",
+      "storedPath": "073-helper-child-141162.json.gz",
+      "bytes": 104,
+      "sha256": "4a054993615a01753ca94858c67b328089566fcee5bef7c8f1d19d085e2488d1",
+      "storedBytes": 114,
+      "storedSha256": "209b0ccfcbf80d7bc27da5937542265b8c21edb52ed6f986b62d7d0bd31ac672"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/host-guardian",
+      "storedPath": "074-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/joined.jsonl",
+      "storedPath": "075-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "e45b28fcc48e475cb78822d9a3b09ac32fc30a6c86a29649484d8e7bbd74d74d",
+      "storedBytes": 89,
+      "storedSha256": "46194e1b32b1604edfa8c5a85b34442992180826d7f4f27033b998b0c9b082c7"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/original.ps1",
+      "storedPath": "076-original.ps1.gz",
+      "bytes": 659,
+      "sha256": "19f319c00836a8b351d639282831dade8539de352a019468dc289b3beb0df047",
+      "storedBytes": 435,
+      "storedSha256": "7945a45a4f698b1be8de760022249588bad8a74886b82924113732c3da57f47b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/owned.ps1",
+      "storedPath": "077-owned.ps1.gz",
+      "bytes": 1025,
+      "sha256": "e341d5b8edf9715d3b7faf549753eaf0b0f303b42f374353f84282a39a6e7d12",
+      "storedBytes": 560,
+      "storedSha256": "47cfee6e1a6c1af3ea24f7cfe5b4cd39e13618986a5c85f1f7dc145647326b94"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/package-manifest.json",
+      "storedPath": "078-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f/scenario.json",
+      "storedPath": "079-scenario.json.gz",
+      "bytes": 854,
+      "sha256": "4d9a8b44d6a7d7fd9753da6b039f8f6fdca70145b4b05b88c642908a604accdf",
+      "storedBytes": 435,
+      "storedSha256": "4f92c43ea6ccb8223522420ed9663e0e9ecb3060e6b581ca8bd3cad24b00fbf5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/boe-lineage-supervisor",
+      "storedPath": "080-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/build-provenance.json",
+      "storedPath": "081-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/build.log",
+      "storedPath": "082-build.log.gz",
+      "bytes": 127,
+      "sha256": "a6639ae6e9a6c8e5b8fc803c0acd338e00c75efc49a2d8d943f97c029fc31782",
+      "storedBytes": 131,
+      "storedSha256": "b2f80c70884cfab533ddecceb15e25315ba780e81fe1785e8368be044f71d23c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/guardian.json",
+      "storedPath": "083-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/guardian.log",
+      "storedPath": "084-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/helper-child-141593.json",
+      "storedPath": "085-helper-child-141593.json.gz",
+      "bytes": 104,
+      "sha256": "4c5aa4dfb1f50590117167967c52ddda82f704a07040b67d7298f47f199c44fa",
+      "storedBytes": 115,
+      "storedSha256": "eed2632279cc16fad0c111390f8fd8af69bfb2c3edd18ca164b2f447da34b519"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/helper-child-141606.json",
+      "storedPath": "086-helper-child-141606.json.gz",
+      "bytes": 104,
+      "sha256": "b58f6620a680bc40198d3840a38d563cb2ae54242029a5dd4d8eca6c80461da2",
+      "storedBytes": 115,
+      "storedSha256": "05c4309662b180400533de3bbdb4579e8bf96c72bc697794e5882ea6bff8c225"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/helper-child-141619.json",
+      "storedPath": "087-helper-child-141619.json.gz",
+      "bytes": 104,
+      "sha256": "0f8000bfbef510cf7e6250b175cfc91da68a6d8d77210b41775505d9b0137bed",
+      "storedBytes": 115,
+      "storedSha256": "e595da433c6f223dc6b22dedc5cbe672454612fb4624840b7a740bc0089a05d1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/host-guardian",
+      "storedPath": "088-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/joined.jsonl",
+      "storedPath": "089-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "1ba9f04af4e74190f7fbde0c9bbee124cf8eb161378c452d073e8e8b6b624d9d",
+      "storedBytes": 89,
+      "storedSha256": "08b92855eececd83f8f4878898e7e068a506761e1a1dc0e9a02b05eb58de930c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/original.ps1",
+      "storedPath": "090-original.ps1.gz",
+      "bytes": 648,
+      "sha256": "fb25c3c6a9d19461128257b9c3e84aaa63000f1026a8db77dc53f8b4604fada9",
+      "storedBytes": 432,
+      "storedSha256": "2369d4f147d8fae99c8eabc9524bb5c9a42229aadda62e18b7e1155a66197e30"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/owned.ps1",
+      "storedPath": "091-owned.ps1.gz",
+      "bytes": 1014,
+      "sha256": "7c28f109c86fe3134d856ffc74cc4040a3b781f2be03e767cb4c98218fa5ab9f",
+      "storedBytes": 557,
+      "storedSha256": "8e0f520fa96337da90144a6265c434c9caa8ee9e96da89e8cea090a781c5aa75"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/package-manifest.json",
+      "storedPath": "092-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49/scenario.json",
+      "storedPath": "093-scenario.json.gz",
+      "bytes": 894,
+      "sha256": "6c957e45cb793a2e01d6cf30f2d9528f080b30b8f302cea3c93a7f318ca2b5f3",
+      "storedBytes": 447,
+      "storedSha256": "67374061cff686f60df6f4e1fae96d5e372cda4aa92d3065d22c43477802b662"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/boe-lineage-supervisor",
+      "storedPath": "094-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/build-provenance.json",
+      "storedPath": "095-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/build.log",
+      "storedPath": "096-build.log.gz",
+      "bytes": 127,
+      "sha256": "49607484bffbe3981d4043d88c4acb2384e658533efbbbb95b5cae5bb1cfdb2b",
+      "storedBytes": 131,
+      "storedSha256": "ac458f1b8c30c76cab46e8daf4fe3be749e411cd50a1b749ca36c6b659c86637"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/guardian.json",
+      "storedPath": "097-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/guardian.log",
+      "storedPath": "098-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/helper-child-141364.json",
+      "storedPath": "099-helper-child-141364.json.gz",
+      "bytes": 104,
+      "sha256": "7fec8e53f8fd6731484a2465fc39b13aa3da92b4388d8e738015f9afa20ef8af",
+      "storedBytes": 115,
+      "storedSha256": "7505d7db599e4176b2b0d1c9e2819f45095f6935db68a26744f9b304bdce5a16"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/helper-child-141377.json",
+      "storedPath": "100-helper-child-141377.json.gz",
+      "bytes": 104,
+      "sha256": "50373fcbdfb844510b10ed1522305cbfbe6d3f52868f62f5a04d1a69fdfc5862",
+      "storedBytes": 115,
+      "storedSha256": "f4097babbc696ae40b9aa3ad5e18a3ee70ca69fd3f41de63908d93bcc16c9a37"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/helper-child-141390.json",
+      "storedPath": "101-helper-child-141390.json.gz",
+      "bytes": 104,
+      "sha256": "2e065127ad2e24251672be87b84f007c4d54558f109c66f820a31ae92412b118",
+      "storedBytes": 114,
+      "storedSha256": "9b79bfcb98e2301c967078aba3687bf10f2c293ebc6d828134ef332b72eb7a07"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/host-guardian",
+      "storedPath": "102-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/joined.jsonl",
+      "storedPath": "103-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "3b74b6f867be4305e17746ca1b0da7956d3543618a14263f59540b7970df496b",
+      "storedBytes": 88,
+      "storedSha256": "20a5dc349f2ced1cb47c9b072dcda5e758c442cd1effc0e292dc5f5188ee3a0f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/original.ps1",
+      "storedPath": "104-original.ps1.gz",
+      "bytes": 666,
+      "sha256": "f0a47c89f98a7ee81aca59ace50127fe02107afa28982d290a2d602804d1a2c0",
+      "storedBytes": 440,
+      "storedSha256": "5c49801d4e60d6779c74704934f8de183e0086a8d37387688986831b53e51c38"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/owned.ps1",
+      "storedPath": "105-owned.ps1.gz",
+      "bytes": 1032,
+      "sha256": "949bbbf512fa0c8b81ef05e476d29edd3912134bbc2733fb8d9448f3349c1d54",
+      "storedBytes": 564,
+      "storedSha256": "f7dc47f5c7ecff15b03d6edb5948705ffba7e7ee637566949f70f4e2e3802272"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/package-manifest.json",
+      "storedPath": "106-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653/scenario.json",
+      "storedPath": "107-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "b0c74a4326b137f9dc707d32f23abb9a7021874f1c8e19a8e19952020686337a",
+      "storedBytes": 240,
+      "storedSha256": "ba8a4d0dc7bd23751591678b5e6880f691201c47b06596eb6fa0a2f4108fc97a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/boe-lineage-supervisor",
+      "storedPath": "108-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/build-provenance.json",
+      "storedPath": "109-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/build.log",
+      "storedPath": "110-build.log.gz",
+      "bytes": 127,
+      "sha256": "1302f35ffb2dc49b08d51eb69302b81f3ac99e12458f0273580b13deca7243a2",
+      "storedBytes": 133,
+      "storedSha256": "0cafc65d8c4efa4a6b4dbc19a5815361029a9ead679be9dab83f3390dd9d928d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/guardian.json",
+      "storedPath": "111-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/guardian.log",
+      "storedPath": "112-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/helper-child-141707.json",
+      "storedPath": "113-helper-child-141707.json.gz",
+      "bytes": 104,
+      "sha256": "3ba4d0f9decd7c229ebc4baaf8d4f30d4a06062d1dfa9ce9c61673dc25c2e8fd",
+      "storedBytes": 115,
+      "storedSha256": "28cdf0a9a88bc01c047d4dd1b3bb650536a680d838c37cc79bab86baeb564772"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/helper-child-141720.json",
+      "storedPath": "114-helper-child-141720.json.gz",
+      "bytes": 104,
+      "sha256": "0507054d776c6cf1117b7b1ed77e3c7d2fa9160f57e5c65cb0afdc9be03f5771",
+      "storedBytes": 114,
+      "storedSha256": "6c93928290435993987f04b99d48a4a0ac658f78cc8fed4ba242e57b9ffe09bf"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/helper-child-141733.json",
+      "storedPath": "115-helper-child-141733.json.gz",
+      "bytes": 104,
+      "sha256": "3dff4ee2a57e17b7be63c84f46b9f1d475d8c6f1e879cd4dca25c8f4f1cf23d8",
+      "storedBytes": 115,
+      "storedSha256": "34ad8b1a17f9ebbbea946fe287faa0f18babeca4d2c63293bb032b3918b1094f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/host-guardian",
+      "storedPath": "116-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/joined.jsonl",
+      "storedPath": "117-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "7d5744bf9f112946e02bf83676dedc7c0db6afbb152aafdfd48750f69ca50152",
+      "storedBytes": 88,
+      "storedSha256": "9c2a8de8b2b5f9bce9c07167b69762efff6dc7b1312a0d0cf8bc2c1ff661d502"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/original.ps1",
+      "storedPath": "118-original.ps1.gz",
+      "bytes": 685,
+      "sha256": "3672637bf5beeb04e19346ed75198d6e629172ea669d6b596bac94bbf51186e6",
+      "storedBytes": 444,
+      "storedSha256": "f9c853ae03ab5ebe74da2255312965e71c03f97d018492b35382486d77a163cf"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/owned.ps1",
+      "storedPath": "119-owned.ps1.gz",
+      "bytes": 1051,
+      "sha256": "f10f7a04a210d2e5405a552d37f0f5857527ed8e3f0cb64976e6d80bba0c9333",
+      "storedBytes": 571,
+      "storedSha256": "ef82d59f4bcba30f93d641331f964ce0fb688f37ec5210105b80d0f1a78731c8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/package-manifest.json",
+      "storedPath": "120-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "079aa1726461403db351fb2d820f973700876141a6848b6817584de20b1e3f71",
+      "storedBytes": 630,
+      "storedSha256": "b07e387f55ba3d30a24fd29bfce556aed60ee9489c2604f60d9a4ec5e9e36a46"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854/scenario.json",
+      "storedPath": "121-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "f1f9852e17af0ae229fcd644addb858f7e12e43af61acd64c61b9cb5b76d918d",
+      "storedBytes": 239,
+      "storedSha256": "31371868058063ad6853bd9af8d1c309fc3e15835daeed251b738243108f631c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/dotnet-test.log",
+      "storedPath": "122-dotnet-test.log.gz",
+      "bytes": 3437124,
+      "sha256": "b8cb703f7556c4e57cf0c63a495c34bb15b2b7c55d8a072a906c2f8cf3600129",
+      "storedBytes": 380247,
+      "storedSha256": "8cc3a0ddb8064b3dd10fbd7c7529309fcacb93095e930c36d305f5caa16d8c5b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-doc-afterlife-package-delivery-integration-001.trx",
+      "storedPath": "123-gm-doc-afterlife-package-delivery-integration-001.trx.gz",
+      "bytes": 904589,
+      "sha256": "d24bede2ed96704af7ea907b6599a1737216c4304626de5de6135fe9260df9b0",
+      "storedBytes": 138390,
+      "storedSha256": "72b83d2b300aa88634bc21ccd452e5f4356582f9fd63c08081934e4e3690e532"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-alias-integration-002.trx",
+      "storedPath": "124-gm-relay-operational-engine-alias-integration-002.trx.gz",
+      "bytes": 14906,
+      "sha256": "eccd6e75e7f81e807d1f42b4a4085650b7826e75796ed58e3e156f379c79ee45",
+      "storedBytes": 2590,
+      "storedSha256": "8ef9ed6f8595e922cfcffac11114b1d5459881ee6953e9e0523311d8b71e6387"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-rollback-integration-003.trx",
+      "storedPath": "125-gm-relay-operational-engine-rollback-integration-003.trx.gz",
+      "bytes": 5585,
+      "sha256": "43627c3b25c2eb2d8261486d11cb93dac0eb2f92e6b44c825fd880de5b25ff60",
+      "storedBytes": 1597,
+      "storedSha256": "00b9573ab0073958201b5d0f2110dd181a418d0dc7d6bc9b4d22b3d41a8b61d0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "storedPath": "126-gm-relay-operational-helper-policy-integration-004.trx.gz",
+      "bytes": 25740,
+      "sha256": "a7dca9720b7375753ba960eb34ac6cea3c00d6e7e63df5b03cd5d297ba2c7a1d",
+      "storedBytes": 3461,
+      "storedSha256": "5dc1a9c67cda5695609d431645804c74cf0b4957268b110ccdd60aaa57256299"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-alias-unit-005.trx",
+      "storedPath": "127-gm-relay-operational-live-alias-unit-005.trx.gz",
+      "bytes": 21922,
+      "sha256": "7a26eb636f0e930b818fcc86a16868a5d3bb571a773700c951c479d1e7c61c02",
+      "storedBytes": 2905,
+      "storedSha256": "3e775e24cf67660bfe49a52ddb98d0701bd7180d7ce16f56c2e18d8eaff36d03"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "storedPath": "128-gm-relay-operational-live-preparation-unit-006.trx.gz",
+      "bytes": 9980,
+      "sha256": "46c9e345fed7f614da9ac0e460a5723983c1ab92043538300a2ed05068ffa925",
+      "storedBytes": 1970,
+      "storedSha256": "86bc01580289e0a27698220e1526e9df098c6f77814750ac3a0dae977f75b75c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-integration-007.trx",
+      "storedPath": "129-gm-relay-operational-neighbors-integration-007.trx.gz",
+      "bytes": 6257,
+      "sha256": "7391a1f3f3c1ba5fc1d7190b929d4f8107689a45a08641a2c5b4b459e67c1180",
+      "storedBytes": 1592,
+      "storedSha256": "df818af0e9442288a41d26760e8e6fa95ac52711d6302cd73f2ebd00cbaa4063"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-unit-008.trx",
+      "storedPath": "130-gm-relay-operational-neighbors-unit-008.trx.gz",
+      "bytes": 6117,
+      "sha256": "2629f36b1fb9be8d129b190af7891b860d6147e0c4a904e9f31a377f81e71809",
+      "storedBytes": 1598,
+      "storedSha256": "0761042b9e0ac4c6448b441917268654ca964010d79fc86c45702796bcc7ffbd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "storedPath": "131-gm-relay-operational-private-policy-unit-009.trx.gz",
+      "bytes": 32559,
+      "sha256": "38dff04e7e3e95b41af5f4c840815074e6505a8ae033e92791ee91f326ce6818",
+      "storedBytes": 3200,
+      "storedSha256": "4502e2261e9ae7be99ce7ec7b8c1f8fac98f085005b24d459e8641c67eb20eeb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-save-load-integration-010.trx",
+      "storedPath": "132-gm-relay-operational-save-load-integration-010.trx.gz",
+      "bytes": 3308,
+      "sha256": "4102c0e6e8483edf2ae6b6cd8c155dfb0d10a79462ac2e3129070a83be80ee93",
+      "storedBytes": 1334,
+      "storedSha256": "0471558b668a80da1bc979736d819fec3cb34d4ec65978960e32c0e6968bf1fa"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/plan.json",
+      "storedPath": "133-plan.json.gz",
+      "bytes": 14945,
+      "sha256": "d257ec9c8413ab63537aa37687c72662046b3a34b89a90ff551f91b4e679b989",
+      "storedBytes": 2348,
+      "storedSha256": "b9802e68fe70a3af6041aa9df05589edb271585187005221935eebd7dfc2773b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/summary.json",
+      "storedPath": "134-summary.json.gz",
+      "bytes": 7184,
+      "sha256": "56ffe91ff6502ece02408b885a52184489fa8b66d31be752eaabc854d4f2f0c6",
+      "storedBytes": 1778,
+      "storedSha256": "070a3d2ae1df52b3ba120a9e5d181b47ca565a6d5f374ee9e2c480961fd3f5a5"
+    }
+  ],
+  "nativeExit": 0,
+  "wallSeconds": 44.97535421700013,
+  "selection": {
+    "PlannedDescriptors": 10,
+    "CompletedDescriptors": 10,
+    "PlannedCases": 47,
+    "CompletedCases": 47,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 47,
+    "Executed": 47,
+    "Passed": 47,
+    "Failed": 0
+  },
+  "categories": [
+    "gm-relay-operational-engine-rollback",
+    "gm-relay-operational-live-preparation",
+    "gm-relay-operational-save-load",
+    "gm-relay-operational-private-policy",
+    "gm-relay-operational-engine-alias",
+    "gm-relay-operational-live-alias",
+    "gm-relay-operational-helper-policy",
+    "gm-relay-operational-neighbors",
+    "gm-doc-afterlife-package-delivery"
+  ],
+  "categoryResults": [
+    {
+      "Category": "gm-doc-afterlife-package-delivery",
+      "Seconds": 5.4424307,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-engine-alias",
+      "Seconds": 2.0075751,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-engine-rollback",
+      "Seconds": 2.0135434,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-helper-policy",
+      "Seconds": 16.8733453,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-live-alias",
+      "Seconds": 2.2107274,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-live-preparation",
+      "Seconds": 2.0091364,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-neighbors",
+      "Seconds": 4.6188596,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-private-policy",
+      "Seconds": 1.609443,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-operational-save-load",
+      "Seconds": 2.4126555,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "planEqualsAcceptedFreshPlan": true,
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+      "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+      "executionId": "7d9f8718-d8c8-431e-95ac-87d95730ae5d",
+      "testId": "3aa9e4b6-1d6c-6a59-72f4-5ffe58134803",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-doc-afterlife-package-delivery-integration-001.trx",
+      "witness": null,
+      "packageEvidencePath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/outcome.json"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_relay_apply_receipt.json\", alias: False)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+      "executionId": "51017172-3ee6-4625-b4bc-b4536755af78",
+      "testId": "6bf30073-066c-11ae-20ff-6a7b9e2c4320",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-alias-integration-002.trx",
+      "witness": {
+        "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "ExpectedRefusal": false,
+        "Failure": null,
+        "Mutations": [
+          "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+          "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+        ],
+        "BackupCount": 2,
+        "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+        "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_prompt_delivery.json\", alias: False)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+      "executionId": "dd20fde4-2aec-4cfc-a9f5-4caa73779f62",
+      "testId": "617650e7-6fb6-773e-550f-3b93812dbf01",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-alias-integration-002.trx",
+      "witness": {
+        "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "ExpectedRefusal": false,
+        "Failure": null,
+        "Mutations": [
+          "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+          "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+        ],
+        "BackupCount": 2,
+        "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+        "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_prompt_delivery.json\", alias: True)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+      "executionId": "1a86429d-79d8-4071-911e-5c30f644aaba",
+      "testId": "3e28c41c-1497-0844-d4dd-aaef3e60dc83",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-alias-integration-002.trx",
+      "witness": {
+        "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+        "Path": "game_state/control/GM_prompt_delivery.json",
+        "ExpectedRefusal": true,
+        "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_prompt_delivery.json' and 'game_state/control/gm_prompt_delivery.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventoryCore(String[] physicalInventory, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1901\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventory(CanonicalWriteLease writeLease, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1893\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(CanonicalWriteLease writeLease, String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2013\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2004\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2006\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11390\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "Mutations": [],
+        "BackupCount": 0,
+        "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+        "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_relay_apply_receipt.json\", alias: True)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+      "executionId": "efb2f74f-9648-4f68-becf-3eb1fb72ecf0",
+      "testId": "54ca1078-ccfb-33f6-2cf8-017b3c07e646",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-alias-integration-002.trx",
+      "witness": {
+        "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+        "Path": "game_state/control/GM_relay_apply_receipt.json",
+        "ExpectedRefusal": true,
+        "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_relay_apply_receipt.json' and 'game_state/control/gm_relay_apply_receipt.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventoryCore(String[] physicalInventory, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1901\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventory(CanonicalWriteLease writeLease, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1893\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(CanonicalWriteLease writeLease, String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2013\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2004\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2006\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11390\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "Mutations": [],
+        "BackupCount": 0,
+        "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+        "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(existedBefore: False)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+      "executionId": "f5f9adbc-6f7a-47b8-9803-802bc8224257",
+      "testId": "1a5fbab8-1148-4fda-fbf0-5701e4c3dfef",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-rollback-integration-003.trx",
+      "witness": {
+        "ExistedBefore": false,
+        "ActualOrdinaryRestored": true,
+        "ActualNewOrdinaryRemoved": true,
+        "OperationalChanges": [],
+        "RealRestoreCompleted": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors(existedBefore: True)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+      "executionId": "00a132d6-0e50-41e7-98e0-8b22dd13b160",
+      "testId": "a2ddd8a8-55ea-f07f-51c8-75beb8a0245f",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-engine-rollback-integration-003.trx",
+      "witness": {
+        "ExistedBefore": true,
+        "ActualOrdinaryRestored": true,
+        "ActualNewOrdinaryRemoved": true,
+        "OperationalChanges": [],
+        "RealRestoreCompleted": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_relay_apply_receipt.json\", reserved: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "08544682-fe4b-4db1-a75d-29b2ee07cdcd",
+      "testId": "bcdf7418-365a-4d5f-5ad4-4532f9f75283",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "write",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "ExpectedDenied": false,
+        "ExitCode": 0,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+        "StdErr": "",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+        "BeforeBytes": 25,
+        "AfterBytes": 27,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_relay_apply_receipt.json\", reserved: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "be8e84f2-898d-4e6b-80e2-00739ec93708",
+      "testId": "a2b78cdf-35f8-0631-b3fb-02693286fac7",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "files-modified",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "ExpectedDenied": true,
+        "ExitCode": 1,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+        "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1673\nLine |\n1673 |              throw \"filesModified contains client-owned runtime state. …\n     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | filesModified contains client-owned runtime state. Remove this entry and\n     | let the client maintain it:\n     | game_state/control/gm_relay_apply_receipt.json (requested:\n     | game_state/control/gm_relay_apply_receipt.json)\n",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_relay_apply_receipt.json\", reserved: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "53a524a3-6a91-440b-b850-10a41c3c4464",
+      "testId": "7c223c86-c2f2-c329-e0bd-26898be9dba9",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "write",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "ExpectedDenied": true,
+        "ExitCode": 1,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+        "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1653\nLine |\n1653 |          throw \"Path is client-owned runtime state and must not be wri …\n     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | Path is client-owned runtime state and must not be written by the GM\n     | helper: game_state/control/gm_relay_apply_receipt.json (requested:\n     | game_state/control/gm_relay_apply_receipt.json)\n",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_prompt_delivery.json\", reserved: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "9e27396f-3f8d-47c5-82a9-2876b15f35b5",
+      "testId": "1d7e09ac-d88e-1283-42dc-dfbe063c8829",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "files-modified",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "ExpectedDenied": false,
+        "ExitCode": 0,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+        "StdErr": "",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_prompt_delivery.json\", reserved: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "2dc70192-6a90-47b4-9cb0-44272098ba28",
+      "testId": "7da6b56d-917d-9da8-0671-5c97b3af2ac1",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "files-modified",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "ExpectedDenied": true,
+        "ExitCode": 1,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+        "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1673\nLine |\n1673 |              throw \"filesModified contains client-owned runtime state. …\n     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | filesModified contains client-owned runtime state. Remove this entry and\n     | let the client maintain it: game_state/control/gm_prompt_delivery.json\n     | (requested: game_state/control/gm_prompt_delivery.json)\n",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_relay_apply_receipt.json\", reserved: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "925ef30b-02e9-4548-bdf2-da54d5058b90",
+      "testId": "5f0502c6-29d6-8f31-0e62-7e90c1970ae7",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "files-modified",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "ExpectedDenied": false,
+        "ExitCode": 0,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+        "StdErr": "",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_prompt_delivery.json\", reserved: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "cb8e3b5b-8805-422d-a7b5-f254d5d16fcf",
+      "testId": "00e7f5e9-35bc-ef66-f4d0-3888ebf6df4f",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "write",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "ExpectedDenied": false,
+        "ExitCode": 0,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+        "StdErr": "",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+        "BeforeBytes": 25,
+        "AfterBytes": 27,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_prompt_delivery.json\", reserved: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+      "executionId": "db4e7331-d1f0-4a12-a698-586694303817",
+      "testId": "ed12c2b1-1d63-258f-c4fe-f109af5b6517",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-helper-policy-integration-004.trx",
+      "witness": {
+        "Operation": "write",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "ExpectedDenied": true,
+        "ExitCode": 1,
+        "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+        "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1653\nLine |\n1653 |          throw \"Path is client-owned runtime state and must not be wri …\n     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | Path is client-owned runtime state and must not be written by the GM\n     | helper: game_state/control/gm_prompt_delivery.json (requested:\n     | game_state/control/gm_prompt_delivery.json)\n",
+        "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+        "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+        "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+        "BeforeBytes": 25,
+        "AfterBytes": 25,
+        "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_prompt_delivery.json\", alias: False)",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+      "executionId": "1f524a95-7c29-429b-ad72-8e67f901d08b",
+      "testId": "b241529e-2148-0058-71e6-f9ca2ea5fb40",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-alias-unit-005.trx",
+      "witness": {
+        "Owner": "ACTUAL_LIVE_PREPARE",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "ExpectedRefusal": false,
+        "Failure": null,
+        "PublicationWitnessCount": 1,
+        "BeforeFileCount": 15,
+        "AfterFileCount": 25,
+        "ChangedPhysicalImages": [
+          "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+          "game_state/control/pending_turn_snapshot.authority.json",
+          "game_state/control/pending_turn_snapshot.json",
+          "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+          "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+          "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+          "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+          "input/turn_request.json"
+        ]
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_relay_apply_receipt.json\", alias: True)",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+      "executionId": "15bce0be-30ea-4b8e-9514-1d11912008af",
+      "testId": "fedaeace-329d-31e0-273f-df672ba1fe83",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-alias-unit-005.trx",
+      "witness": {
+        "Owner": "ACTUAL_LIVE_PREPARE",
+        "Path": "game_state/control/GM_relay_apply_receipt.json",
+        "ExpectedRefusal": true,
+        "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_relay_apply_receipt.json' and 'game_state/control/gm_relay_apply_receipt.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "PublicationWitnessCount": 0,
+        "BeforeFileCount": 15,
+        "AfterFileCount": 15,
+        "ChangedPhysicalImages": []
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_relay_apply_receipt.json\", alias: False)",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+      "executionId": "028faa14-57c8-4d80-828e-64debf5207d2",
+      "testId": "2e95e121-3d05-5175-0393-29f66a7fa53c",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-alias-unit-005.trx",
+      "witness": {
+        "Owner": "ACTUAL_LIVE_PREPARE",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "ExpectedRefusal": false,
+        "Failure": null,
+        "PublicationWitnessCount": 1,
+        "BeforeFileCount": 15,
+        "AfterFileCount": 25,
+        "ChangedPhysicalImages": [
+          "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+          "game_state/control/pending_turn_snapshot.authority.json",
+          "game_state/control/pending_turn_snapshot.json",
+          "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+          "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+          "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+          "input/turn_request.json"
+        ]
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_prompt_delivery.json\", alias: True)",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+      "executionId": "c48e0d7e-7f70-4f6b-a625-33ca8c4d7978",
+      "testId": "82aaf764-7879-07fe-541d-e1d8fff4588a",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-alias-unit-005.trx",
+      "witness": {
+        "Owner": "ACTUAL_LIVE_PREPARE",
+        "Path": "game_state/control/GM_prompt_delivery.json",
+        "ExpectedRefusal": true,
+        "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_prompt_delivery.json' and 'game_state/control/gm_prompt_delivery.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "PublicationWitnessCount": 0,
+        "BeforeFileCount": 15,
+        "AfterFileCount": 15,
+        "ChangedPhysicalImages": []
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+      "executionId": "b67697d9-a8a9-4f69-ae2c-c33758681846",
+      "testId": "09ad896a-0458-5f01-e64b-2c7d473f7254",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged exact IsDraftPath equality; no raw body diagnostic."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_relay_apply_receipt.json\", expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+      "executionId": "adda9ee1-6900-4025-a1f6-6edef9cadc81",
+      "testId": "9bf33a38-cfcf-8f59-18d1-4feb58594925",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged exact IsDraftPath equality; no raw body diagnostic."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+      "executionId": "10a78745-bcfb-43a2-8e6d-5047d1cb97d0",
+      "testId": "6fcceab0-6b14-5d6a-1998-81aa5157b8db",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_prompt_delivery.json\", expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+      "executionId": "352d8aca-e179-46ff-840e-b2eb1032d31a",
+      "testId": "ddcabe28-149f-b0e6-d5f6-06b03781c5fc",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged exact IsDraftPath equality; no raw body diagnostic."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors(path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+      "executionId": "bbdddae3-c188-4beb-9b8d-5eaa4ef5df08",
+      "testId": "5597b463-7d69-4a88-43f7-d586a1ff4885",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-live-preparation-unit-006.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged exact IsDraftPath equality; no raw body diagnostic."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+      "method": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+      "executionId": "f7f6797c-03bc-469c-98a9-57e2c2e5911f",
+      "testId": "50377be8-3f3a-4608-7aa5-ccbc13f342f5",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-integration-007.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+      "executionId": "62c7a56a-e08a-47f6-bdc2-50ca645327ad",
+      "testId": "8f8ac63a-3ce8-80d5-6ff1-639f4af07f1a",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-integration-007.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+      "executionId": "1e8ca2e0-591d-44dc-a2ee-9683e1807abd",
+      "testId": "755860f7-36a5-7670-bc71-2f4f98ffa58f",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-integration-007.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+      "method": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+      "executionId": "ff691b36-8333-4c72-b27f-16b7f3884c7e",
+      "testId": "e6fe2ca6-3d43-dc69-7d0c-5e3730cc77b2",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-unit-008.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "executionId": "c43072e2-0463-4666-a748-ca7c2a55e523",
+      "testId": "300df175-31ab-4dc4-60d3-d31e1ee89765",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-unit-008.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+      "executionId": "02f8a317-4b6d-4d57-aa36-4c8583f747ae",
+      "testId": "3387e496-c75c-213f-1a5b-bd9af75634d8",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-neighbors-unit-008.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "b0bd4661-4ba4-4918-8287-48b982872f1b",
+      "testId": "5e602de3-d4d0-2a6e-6dc1-91aa620d420a",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "db38bdd4-b8cc-4b71-92d1-b498b05083e4",
+      "testId": "7329f7f1-d251-cf20-c637-bd9de6406093",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "8a6d9da9-bfac-48fa-8fd3-3812253683d0",
+      "testId": "99318c41-0c49-0042-989a-ed444f374bee",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "c94ada97-6644-4a2d-ac11-372781bbc507",
+      "testId": "71f19b1c-96d4-a0db-ce5d-4ecc1f89833e",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationIssue",
+        "Method": "IsClientOwnedSurfacePath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "96356320-abd8-4b31-a69d-13091ceae0db",
+      "testId": "b237c087-8ad7-b412-6657-fc7125a1f7d8",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json\", expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "4a14b53f-3bda-49c8-8f24-ffaf9e8b018a",
+      "testId": "33fe6e53-5343-b140-4f8b-1dccae0c9be6",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "3cac1648-ddff-4a2a-88be-95868d7c06bb",
+      "testId": "162e797a-d28c-1483-13b0-4ec794333df7",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "9efc2241-3908-4b97-a678-64637d8592f8",
+      "testId": "f23603cd-4487-7fab-e6c8-b2494b60912d",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsRecoverableFilesModifiedPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "7461106b-4314-4b07-b825-af12769a29ca",
+      "testId": "0b5f35cf-0b07-a6b0-4fdb-7be015120ce7",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationIssue",
+        "Method": "IsClientOwnedSurfacePath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "43a403a7-465f-4207-9f11-ef832f828b6d",
+      "testId": "baaa7d8e-d2b0-2c4b-c648-d576adb1c207",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "ad452666-5f10-480f-88f2-da7c01b7a0c8",
+      "testId": "ea4ea64f-f95f-37d7-21dc-e7593e13e8a5",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "f6862946-fa45-435a-853e-92e4dec40336",
+      "testId": "05261b37-24ba-a702-d55b-71d59a0a21f7",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "016aa8aa-8748-41d2-b3e0-e88ff5ead670",
+      "testId": "118995b2-5b07-5e5d-04e7-ee7bfce6eae2",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationService",
+        "Method": "IsClientOwnedSurfaceValidationPath",
+        "Path": "game_state/control/gm_prompt_delivery.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "6728a836-2b5f-4586-a76d-5311bb806f8a",
+      "testId": "a3a5cb8c-bd11-a3d9-9c1e-9ab5d197c3fc",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Core.GameEngine",
+        "Method": "IsClientOwnedRepairResubmissionPath",
+        "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "c759bc87-be51-4ff2-9adf-e3dd9035dc48",
+      "testId": "38d6ba50-64f6-885f-63a7-ddab0a0b1eb4",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationIssue",
+        "Method": "IsClientOwnedSurfacePath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json",
+        "Expected": true,
+        "Actual": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "method": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+      "executionId": "bfbf31ac-4a1d-427c-b0be-cea6205bbfb4",
+      "testId": "90729608-1252-c56e-ad3a-92ba65fa37bb",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-private-policy-unit-009.trx",
+      "witness": {
+        "Owner": "BookOfEternityClient.Services.ValidationIssue",
+        "Method": "IsClientOwnedSurfacePath",
+        "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "Expected": false,
+        "Actual": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+      "method": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+      "executionId": "ff29e708-a948-472f-81ae-0bf90f8d94a3",
+      "testId": "9ae22e5c-0fb7-96d6-190b-123ff04344b8",
+      "outcome": "Passed",
+      "trx": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-152651-098-140477-fc76b25862bb4ce68d140c564313fc52-categories/gm-relay-operational-save-load-integration-010.trx",
+      "witness": null,
+      "assertionEvidence": "Passed unchanged selected existing test body; values lacking raw diagnostics remain source-bound assertion evidence."
+    }
+  ],
+  "globalDiagnostics": [
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "PublicationWitnessCount": 1,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 25,
+      "ChangedPhysicalImages": [
+        "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+        "game_state/control/pending_turn_snapshot.authority.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+        "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+        "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+        "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+        "input/turn_request.json"
+      ]
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-698f7b4dcef443f89b668c5bbb1a4307",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/GM_prompt_delivery.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_prompt_delivery.json' and 'game_state/control/gm_prompt_delivery.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "PublicationWitnessCount": 0,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 15,
+      "ChangedPhysicalImages": []
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-77e7cb158761427e96e7a363d05f802c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "PublicationWitnessCount": 1,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 25,
+      "ChangedPhysicalImages": [
+        "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+        "game_state/control/pending_turn_snapshot.authority.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+        "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+        "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+        "input/turn_request.json"
+      ]
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-b128d857427f46f089a2eb070cc015ce",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/GM_relay_apply_receipt.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_relay_apply_receipt.json' and 'game_state/control/gm_relay_apply_receipt.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "PublicationWitnessCount": 0,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 15,
+      "ChangedPhysicalImages": []
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-9f917cc0524d48a6a65691859fe6fb12",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-2fff98c7982048769907217348630cf8",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-save-load-tests-a638eebcea3c4d7ab9927920c5628e45",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strictLifecycleRootReceipts": [
+    "/tmp/boe-gameengine-turnlifecycle-dfbcc13da774483f8ecc33c1520f7901",
+    "/tmp/boe-gameengine-turnlifecycle-d8af3f5bb76f428aacff8fdb030ec944",
+    "/tmp/boe-gameengine-turnlifecycle-b4c4aa209fe141beb9fdd630cc8ed75e",
+    "/tmp/boe-gameengine-turnlifecycle-fd903567dda547f0918290162edc0e54",
+    "/tmp/boe-gameengine-turnlifecycle-193b1b92bf6445d88536460df0b0a9f0",
+    "/tmp/boe-gameengine-turnlifecycle-c5d5753f4a5347cb8b2ce59131304b50",
+    "/tmp/boe-relay-operational-helper-61c040b1bf01464d842d44281a7df360",
+    "/tmp/boe-relay-operational-helper-72fbc0fcd780457a8eec8e386bf126d2",
+    "/tmp/boe-relay-operational-helper-f60b5d8bccb043748acd15c2c30783d9",
+    "/tmp/boe-relay-operational-helper-ca268e3c2341452b8a98e087490e80d1",
+    "/tmp/boe-relay-operational-helper-eb4f67a4d5c14044a2e70c4cc7c29f61",
+    "/tmp/boe-relay-operational-helper-a5a56fbd77e24fff8114b90706c56321",
+    "/tmp/boe-relay-operational-helper-ea95eb216da64d8fb007402a8e5cd0b3",
+    "/tmp/boe-relay-operational-helper-b1b71ffdf8c04292887e5a29bc0a60f6",
+    "/tmp/boe-live-turn-prep-698f7b4dcef443f89b668c5bbb1a4307",
+    "/tmp/boe-live-turn-prep-77e7cb158761427e96e7a363d05f802c",
+    "/tmp/boe-live-turn-prep-b128d857427f46f089a2eb070cc015ce",
+    "/tmp/boe-live-turn-prep-9f917cc0524d48a6a65691859fe6fb12",
+    "/tmp/boe-live-turn-prep-2fff98c7982048769907217348630cf8",
+    "/tmp/boe-save-load-tests-a638eebcea3c4d7ab9927920c5628e45"
+  ],
+  "strictLifecycleRootCount": 20,
+  "packageSessionRemovedRoots": [
+    "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a",
+    "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a"
+  ],
+  "explicitRemovedRootCountIncludingPackage": 22,
+  "helperArtifacts": [
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 0,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141707
+        },
+        {
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141720
+        },
+        {
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141733
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141720,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141707,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141733,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "3672637bf5beeb04e19346ed75198d6e629172ea669d6b596bac94bbf51186e6"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 1,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 141593
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 141606
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 141619
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141606,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141593,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141619,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "fb25c3c6a9d19461128257b9c3e84aaa63000f1026a8db77dc53f8b4604fada9"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 1,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ProcessId": 141821,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 141834,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 141847,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141834,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141821,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141847,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "f38b17bf2d1bf0af5926af82fe4e563b289e01a0868c809cd3cc8b2d4bca0278"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 0,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ProcessId": 141480,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 141493,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 141506,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141480,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141493,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141506,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "fa44594c347945fd87ce913203fdaa229c55b3868d501fdf315a312e9ac6e9ec"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 1,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ProcessId": 141250,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 141263,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 141276,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141276,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141263,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141250,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "4422b63fb626798cbe21152acb714280b2480121b3cc8cc0a1ba3840604800e8"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 0,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ExitCode": 0,
+          "ProcessId": 141364,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 141377,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 141390,
+          "ExitedBeforeDispose": true
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141377,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141364,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141390,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "f0a47c89f98a7ee81aca59ace50127fe02107afa28982d290a2d602804d1a2c0"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 0,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ExitCode": 0,
+          "ProcessId": 141022,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 141035,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 141048,
+          "ExitedBeforeDispose": true
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141048,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141035,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141022,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "c7703cb2a647e56c33ac818faa5157c4aefc4718d6703e729d58a1a4ec5277d3"
+    },
+    {
+      "directory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "scenarioOutcome": {
+        "Success": true,
+        "ExitCode": 1,
+        "CanonicalOwnershipReleased": true,
+        "BootstrapInsertions": 1
+      },
+      "joined": [
+        {
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141136,
+          "ExitCode": 0
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141149,
+          "ExitCode": 0
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ProcessId": 141162,
+          "ExitCode": 0
+        }
+      ],
+      "childReports": [
+        {
+          "ProcessId": 141149,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141136,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 141162,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "sourceScriptSha256": "19f319c00836a8b351d639282831dade8539de352a019468dc289b3beb0df047"
+    }
+  ],
+  "naturallyJoinedHelperChildren": 24,
+  "newManagedPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "ec5f9a7c26898ed4c5dc54c382a163423eb9d26ace267a518765c0009a3c1a03"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "21d2d6f8ea08c01b5f8eb0c8cc4ef6f867f7bcaace2a1027d668f93ea7cbd03f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "d55d10ea6bbf30a44288cceb99730bb1a90d65ad1ca03b4bdeac7be956b96237"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    }
+  ],
+  "helperSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+  "namespaceBefore": {
+    "ownedRoots": [],
+    "retainedNativeTerminal": [
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e"
+    ],
+    "retainedGmDocumentation": [
+      "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+      "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+      "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+      "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+      "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+      "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+      "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+      "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c",
+      "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468",
+      "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079",
+      "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+      "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+      "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+      "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+      "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+      "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb",
+      "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+      "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+      "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc",
+      "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64"
+    ]
+  },
+  "namespaceAfter": {
+    "ownedRoots": [],
+    "retainedNativeTerminal": [
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854",
+      "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e"
+    ],
+    "retainedGmDocumentation": [
+      "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+      "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+      "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+      "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+      "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+      "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+      "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+      "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c",
+      "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a",
+      "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468",
+      "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079",
+      "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+      "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+      "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+      "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+      "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+      "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb",
+      "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+      "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+      "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+      "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+      "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc",
+      "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64"
+    ]
+  },
+  "retainedArtifactDirectories": [
+    "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854"
+  ],
+  "retainedArtifactFileCount": 118,
+  "package": {
+    "outcome": {
+      "path": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/outcome.json",
+      "bytes": 901375,
+      "sha256": "041b0456efaf341c499e3db2f13d8af7421298e262031379d70cfb025aba99c9"
+    },
+    "ast": {
+      "path": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/ast-and-publication.json",
+      "bytes": 710209,
+      "sha256": "7556b9e8abcfa3a8a8000fdce1308cb60cd32bcb197cc0a65314a86bce1b2861"
+    },
+    "packageInventoryCount": 258,
+    "inventoryExactFreshManaged": true,
+    "packagePins": {
+      "BookOfEternityClient.dll": "27FD580AA276FC323AD5E24B3DF298DCF0B72E068633E4FB6243E31329574E58",
+      "BookOfEternityClient.deps.json": "63D6DF9329DBF1A4CF141CD1A790BE5DA49170C32C291B4E80542A3CA22E61B0",
+      "BookOfEternityClient.runtimeconfig.json": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+      "Launcher/gm_main_operation.ps1": "9EC146965C358BF28424154C1D9FA1FA5E626CB0B5568911A12B130DFB6AB97D",
+      "Launcher/GM_Turn_Helper.ps1": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "operational-resources/CLI_Agent_Daemon_Specification.md": "F2E5AAFA0CC3DCBCDDE89B360DBF636A72D4DC26457990310BAA1B5661EED354"
+    },
+    "identities": [
+      {
+        "Pid": 140684,
+        "BirthTicks": 5412913,
+        "ParentPid": 140659,
+        "Args": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/inspect-and-publish.ps1",
+          "-DaemonPath",
+          "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/game_master_daemon.ps1",
+          "-SessionPath",
+          "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a/game_session",
+          "-ReportPath",
+          "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/ast-and-publication.json",
+          "-Mode",
+          "publish"
+        ],
+        "Role": "pwsh",
+        "State": "R"
+      },
+      {
+        "Pid": 140706,
+        "BirthTicks": 5413077,
+        "ParentPid": 140684,
+        "Args": [
+          "dotnet",
+          "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/BookOfEternityClient.dll",
+          "--gm-main-operation",
+          "--root",
+          "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a"
+        ],
+        "Role": "helper",
+        "State": "R"
+      },
+      {
+        "Pid": 140719,
+        "BirthTicks": 5413107,
+        "ParentPid": 140684,
+        "Args": [
+          "dotnet",
+          "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/BookOfEternityClient.dll",
+          "--gm-main-operation",
+          "--root",
+          "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a"
+        ],
+        "Role": "helper",
+        "State": "R"
+      }
+    ],
+    "cleanupBeforeHandleAndFinal": "all3 TerminalOwnedAbsent",
+    "pipesEof2": true,
+    "noUnknownUnresolvedCleanupDebt": true,
+    "workElapsedSeconds": 3.3981637,
+    "totalElapsedSeconds": 3.424639,
+    "doc52": [
+      {
+        "path": "CLI_Agent_Daemon_Specification.md",
+        "role": "daemon_protocol",
+        "sha256": "f2e5aafa0cc3dcbcdde89b360dbf636a72d4dc26457990310baa1b5661eed354"
+      },
+      {
+        "path": "TaskGuides/CLI_Step_Main.txt",
+        "role": "main_turn_guide",
+        "sha256": "62942143daf3c1ac3c8ffb1d30bdacb45dbcf1ca826475435acbae0a95493daa"
+      },
+      {
+        "path": "Examples/E_CLI_Step_Main.txt",
+        "role": "main_turn_example",
+        "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3"
+      },
+      {
+        "path": "Examples/E_CLI_Mortal_Item_Materialization.txt",
+        "role": "mortal_item_materialization_examples",
+        "sha256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0"
+      },
+      {
+        "path": "Examples/E_CLI_Mortal_Resources.txt",
+        "role": "mortal_resource_materialization_examples",
+        "sha256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398"
+      },
+      {
+        "path": "OtherGuides/Effect_Materialization_Contract.md",
+        "role": "effect_materialization_contract",
+        "sha256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751"
+      },
+      {
+        "path": "Examples/E_CLI_Effect_Materialization.txt",
+        "role": "effect_materialization_examples",
+        "sha256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554"
+      },
+      {
+        "path": "OtherGuides/Wound_Materialization_Contract.md",
+        "role": "wound_materialization_contract",
+        "sha256": "3bde751e8ffb5a1bae01ad169a0104d093a1c055f75333609a52d49a6a3fc2d3"
+      },
+      {
+        "path": "Examples/E_CLI_Wound_Materialization.txt",
+        "role": "wound_treatment_scene_authority_examples",
+        "sha256": "f0db4343161727ec0b62b160bbf178fe828a7e72b94a93c78266ff7580acd1dd"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Turns.txt",
+        "role": "afterlife_turn_examples",
+        "sha256": "5654bfd4838344d4984938a95279bc96a463bd38f59836236a8a02ad14d769b4"
+      },
+      {
+        "path": "Examples/E_CLI_Training_Showcases.txt",
+        "role": "training_showcase_example",
+        "sha256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+        "role": "afterlife_contract_matrix",
+        "sha256": "9bb7bdb877203fb20096631a4ccfb49ac8752095f478f5f1450480a5b473e34b"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Combat_Terminology_Glossary.md",
+        "role": "afterlife_combat_glossary",
+        "sha256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa"
+      },
+      {
+        "path": "Examples/E_CLI_Ink_Feather_Actions.txt",
+        "role": "ink_feather_action_example",
+        "sha256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2"
+      },
+      {
+        "path": "CLI_Rules_Index.md",
+        "role": "gm_situation_router",
+        "sha256": "cb8626a5765a5369134ffe1c665a79d841f48778cf3d7cba5f4513ed5fb67ab5"
+      },
+      {
+        "path": "OtherGuides/GM_Common_Core.md",
+        "role": "gm_common_core",
+        "sha256": "1d8f7347b97a9c5f10a841690d2bfba4646f50214e39662b0a1a68700d3ee21e"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Lifecycle.md",
+        "role": "afterlife_rules_lifecycle",
+        "sha256": "b6f1fbfedfb4c3d67aa1bfe75fe1809d4e2fecb2a9131d7b4ef041c1a087da29"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Scheduler.md",
+        "role": "afterlife_rules_scheduler",
+        "sha256": "48d6895eb6185b9ff068cdce88982ff818016e4616bef801862ab6a6c6792b33"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Guardian_Contracts.md",
+        "role": "afterlife_rules_guardian_contracts",
+        "sha256": "e9ad8e5945911ad88907469c7dc24ceeeddcbe6f10369d0f600849ed4bdde3f7"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Abodes_Residents.md",
+        "role": "afterlife_rules_abodes_residents",
+        "sha256": "5d0ee8365e540e4fa284d0ecc1cc5a8848b3f16dfbbc3c14ecaf98223e55826e"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Shining_Actions.md",
+        "role": "afterlife_rules_shining_actions",
+        "sha256": "c637702fdad40245f931864ad171f0a3705ce2a3e50583abda88e0efdb6d9cdb"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Spiritual_Conflict.md",
+        "role": "afterlife_rules_spiritual_conflict",
+        "sha256": "2b49ec8a61fa165488fea9912763ff732cb2fb5e7f8e176d0268d7a9399818a0"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Effects_Resources.md",
+        "role": "afterlife_rules_effects_resources",
+        "sha256": "ff27ef64a244c7eae7a142fb9edcc314c84d2f7c5dbaa61f7b5e1f533a75f3b7"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Actor_Profiles.md",
+        "role": "afterlife_rules_actor_profiles",
+        "sha256": "62427b2d2eb73a5c12b10194dab5e83db6c83c62e2f3cfc052623fa2b95726fa"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Story_Memory.md",
+        "role": "afterlife_rules_story_memory",
+        "sha256": "07cf1d9cade3e9640dd8dd486e61d63066db355f864b2573ddedcfd0c2869c7f"
+      },
+      {
+        "path": "OtherGuides/Afterlife_Wound_Continuation.md",
+        "role": "afterlife_rules_wound_continuation",
+        "sha256": "da1caf4b61fac9aba7e5d84d405837e85d009f46700d3b2d79063401cfff8e55"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Lifecycle.txt",
+        "role": "afterlife_examples_lifecycle",
+        "sha256": "a373d549f798f5b9179092b75ba016c0c3f860e57be7732adddaa0bd8306a456"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Scheduler.txt",
+        "role": "afterlife_examples_scheduler",
+        "sha256": "12923bfdaf2429a3060946d8b2a0ed04d045e343723fbdcff0e7711ecb18d2e7"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Guardian_Contracts.txt",
+        "role": "afterlife_examples_guardian_contracts",
+        "sha256": "fad371fd3422bbb5678d479613b88408f3c8767cb55a8a7243940e2c5a132131"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Abodes_Residents.txt",
+        "role": "afterlife_examples_abodes_residents",
+        "sha256": "fa274b3b85a7da63e4c4b75f128c2868d65a03ae144eb898de8f4adb2265010b"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Shining_Actions.txt",
+        "role": "afterlife_examples_shining_actions",
+        "sha256": "98d6e9f6bd63cbf05239169d48f1314c8f0dba314858f68153cc4a85bd124f0c"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Spiritual_Conflict.txt",
+        "role": "afterlife_examples_spiritual_conflict",
+        "sha256": "842c6dd554082d018bb8f6d0cc2880f96348e78bd8b1269e238d09a84c732cdb"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Effects_Resources.txt",
+        "role": "afterlife_examples_effects_resources",
+        "sha256": "d0962fa975ad1c0bdd24a024fcd8a93820fa3171a41bd8e51f03d4b626c125aa"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+        "role": "afterlife_examples_actor_profiles",
+        "sha256": "e55e0186808b887582f36cd157bc7d69c4ed711833ea4e1b53471a85e8b6f4b0"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Story_Memory.txt",
+        "role": "afterlife_examples_story_memory",
+        "sha256": "5bde56e9308695cd5abc5804dd3d014c72962e9b1044ff161b9865ab12272258"
+      },
+      {
+        "path": "Examples/E_CLI_Afterlife_Wound_Continuation.txt",
+        "role": "afterlife_examples_wound_continuation",
+        "sha256": "0bd219f90e81109b1a596c160df28dd451246ed02a004ca756ba12e0ef8f5908"
+      },
+      {
+        "path": "Rules/Block_5.txt",
+        "role": "block5_rule_navigator",
+        "sha256": "93cd59bcacee180907423f1089f1b5cdf33d4f587c25352941cef954eed5e239"
+      },
+      {
+        "path": "Examples/E_Block_5.txt",
+        "role": "block5_example_navigator",
+        "sha256": "3dd3debe6cda1da72510f36ccbbe08b6359b0874fa1cca10eefb1f0fe0011fef"
+      },
+      {
+        "path": "Rules/Block_5_Units_Ids.txt",
+        "role": "block5_rules_units_ids",
+        "sha256": "8810fb7148ced01d41e61ed2d29bcc0fbd5fcc8bbce544de66038eb3b4a6d252"
+      },
+      {
+        "path": "Examples/E_Block_5_Units_Ids.txt",
+        "role": "block5_examples_units_ids",
+        "sha256": "47bd7224ae246aaff0f8cefec43921a76616a79fb0a5eed9ea2a25077e201af1"
+      },
+      {
+        "path": "Rules/Block_5_Characteristics_Progression.txt",
+        "role": "block5_rules_characteristics_progression",
+        "sha256": "9d29668294e62898105bf67893e699958213f6b90f84b70a4dc0b62bfd30ea74"
+      },
+      {
+        "path": "Examples/E_Block_5_Characteristics_Progression.txt",
+        "role": "block5_examples_characteristics_progression",
+        "sha256": "eb694e5165c5c546c66b4ab615006a6a03df3b13431d35ab6e124a4b1b541ceb"
+      },
+      {
+        "path": "Rules/Block_5_Combat_Foundations.txt",
+        "role": "block5_rules_combat_foundations",
+        "sha256": "ad6dd1f2b36fa0159864af82aae25f0d5009e30b64fb230c44966f2cbcf75c07"
+      },
+      {
+        "path": "Examples/E_Block_5_Combat_Foundations.txt",
+        "role": "block5_examples_combat_foundations",
+        "sha256": "129e3db72ff37d75f2072dce94bbd7a72da3f53e4f1c98d28e08d50e681de041"
+      },
+      {
+        "path": "Rules/Block_5_Items_Resources.txt",
+        "role": "block5_rules_items_resources",
+        "sha256": "c32387464f9bde9a6020b9c270d6248becabf501515d9fbdc8d6682b40ed1800"
+      },
+      {
+        "path": "Examples/E_Block_5_Items_Resources.txt",
+        "role": "block5_examples_items_resources",
+        "sha256": "87db53269eaa0ac8be87c1cd43aed697661cec68f4095baba6ebad5c48ca6b77"
+      },
+      {
+        "path": "Rules/Block_5_Narrative_Social.txt",
+        "role": "block5_rules_narrative_social",
+        "sha256": "a6db45113aaa79987de36cd3c8d5f550edcdadadabbb564c5691df20471d3ff0"
+      },
+      {
+        "path": "Examples/E_Block_5_Narrative_Social.txt",
+        "role": "block5_examples_narrative_social",
+        "sha256": "59893de741de13f1f5539db7302ffcb89e4de5950943cb61b348ddceeeba6f26"
+      },
+      {
+        "path": "Rules/Block_5_Wounds.txt",
+        "role": "block5_rules_wounds",
+        "sha256": "08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42"
+      },
+      {
+        "path": "Examples/E_Block_5_Wounds.txt",
+        "role": "block5_examples_wounds",
+        "sha256": "6cef5de3fca65095d666691f9ff370607839d0f337523045a945a4a1b2027cd7"
+      },
+      {
+        "path": "Rules/Block_5_World_Chronology.txt",
+        "role": "block5_rules_world_chronology",
+        "sha256": "dda3c17ce94b8c3056cddc14c6caac361a408d84ca3d38665536d62107518e9d"
+      },
+      {
+        "path": "Examples/E_Block_5_World_Chronology.txt",
+        "role": "block5_examples_world_chronology",
+        "sha256": "b599e3a9d7fbad9186e4e8dae7055d0d6524b38125a5e367c4c0fa23c8c5638a"
+      }
+    ],
+    "generatedTemplate": {
+      "relativePath": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "role": "compact_mortal_npc_update_template",
+      "generated": true,
+      "contextPackRoot": "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a/game_session/game_state/control/gm_context_pack",
+      "sessionPath": "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "physicalPresent": true,
+      "containedWithoutSymlink": true,
+      "bytes": 12977,
+      "sha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+      "expectedSha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+      "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "retainedRawPath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/generated-MORTAL_NPC_UPDATE_TEMPLATE.md"
+    },
+    "sourceDaemonHash": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+    "prefixHash": "bb243bba3f1a906bdaf3bf91661a90e8187aaf705786491c7bdebe733cf6b53a",
+    "prefixUtf8Bytes": 204853,
+    "endOffsetUtf16": 202003,
+    "runtimeExecuted": true,
+    "actualProducerComplete": true
+  },
+  "recovery": {
+    "path": "/tmp/gm1559-lifecycle-green47-raw-delta-github-fdf3cf43-20261017.json",
+    "bytes": 102538,
+    "sha256": "6182f38cfd52ee47cb08d0d8b6976afcb7cf642a4882d40937bc76b9ab34f99c",
+    "allGitHubFiles": 153,
+    "allChangedPaths": 149,
+    "exactBytesBlobModeSet": true
+  },
+  "retainedDecisions": [
+    {
+      "path": "/tmp/gm1559-lifecycle-production-source-independent-20261017.md",
+      "sha256": "859ad1e7f66c058cc81f6ce41ec6a5fae5f421bf8faaf0845a04e01912fdc5f0"
+    },
+    {
+      "path": "/tmp/gm1559-lifecycle-production-source-independent-20261017.json",
+      "sha256": "2dc3ecbf0c1e9e5314aab5c248d3bcf9d733089f00304ca7b2cf6f697c15a465"
+    },
+    {
+      "path": "/tmp/gm1559-ownerfix-guards-causal-independent-20261017.json",
+      "sha256": "7c76ae32cbcc40d14555ecd0165dc085b0717911ebacf858547d5d8ee8ef0544"
+    },
+    {
+      "path": "/tmp/gm1559-first-engine2-evidence-independent-20261017.json",
+      "sha256": "89e0e9ca69ee7020a1bd005f1d97acbc538c41c597a53526d6d40492198faa2d"
+    },
+    {
+      "path": "/tmp/gm1559-remaining-a01-baseline-evidence-independent-20261017.json",
+      "sha256": "0f743c4a31245b9525f43a2eea049a9e92d46f7e12f4f980e1299fb37f253302"
+    }
+  ],
+  "findings": [],
+  "limits": [
+    "20 lifecycle strict-root receipts plus separate package/session outcome proves 22 explicit roots absent. Six ordinary neighbor results are qualified by unchanged bodies/nativePASS and stable owned namespace; no fabricated per-test strict receipt.",
+    "Save/load successful OR-empty assertion proves both absence from archive and absence after actual load, with ordinary revision/generation assertions reached; no frozen save/soul body claimed.",
+    "Live snapshot/save/draft rows without raw detailed values remain source-bound assertions plus PASS; no invented physical images.",
+    "Native package inventory/helper input and actual publisher/session52 are qualified; session bootstrap raw body/hash and PowerShell helper execution from it are not captured or claimed. Repo helper execution is independently proved by eight controls.",
+    "Old causal/F01 failures are retained history; current47 identities supersede their matching row qualification without adding them to current counts.",
+    "No full relay C01-C06, Windows, long-session transport, new record schema/writer/reader, GM accepted-turn or client acceptance proof.",
+    "Metadata closure may mark only scoped T014 complete; bounded contributions to T011/T015/T016/T018 do not complete their full relay clauses. Persist exact verdict/checkpoint then hand off wounds T179-Pd.3d."
+  ]
+}

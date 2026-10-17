@@ -1,0 +1,178 @@
+{
+  "kind": "INDEPENDENT_FINAL_INACTIVE_LIFECYCLE_EVIDENCE",
+  "utc": "2026-10-17T15:35:50.468783+00:00",
+  "verdict": "ACCEPT_BOUNDED_LIFECYCLE_GREEN47",
+  "carrier": "fdf3cf436434483b22832dd38a95e4457cb283f3",
+  "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "sourceVerdict": "RETAIN_ACCEPTED_EXACT_SOURCE_PREP_859a_2dc3_NO_SOURCE_REOPEN",
+  "evidenceVerdict": "QUALIFIED_47_DISTINCT_PASS_ALL_SELECTED_ORACLES_REACHED",
+  "materialFindings": [],
+  "blockers": [],
+  "native": {
+    "exitCode": 0,
+    "wallSeconds": 44.97535421700013,
+    "categoryCount": 9,
+    "descriptorCount": 10,
+    "methodCount": 15,
+    "cases": 47,
+    "passed": 47,
+    "failed": 0,
+    "duplicates": 0,
+    "underfilled": 0,
+    "timedOut": false,
+    "complete": true
+  },
+  "selection": {
+    "PlannedDescriptors": 10,
+    "CompletedDescriptors": 10,
+    "PlannedCases": 47,
+    "CompletedCases": 47,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "sourcePinCount": 136,
+  "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
+  "currentManagedBinaryCopies": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "ec5f9a7c26898ed4c5dc54c382a163423eb9d26ace267a518765c0009a3c1a03"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "21d2d6f8ea08c01b5f8eb0c8cc4ef6f867f7bcaace2a1027d668f93ea7cbd03f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "d55d10ea6bbf30a44288cceb99730bb1a90d65ad1ca03b4bdeac7be956b96237"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790976,
+      "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
+    }
+  ],
+  "helperSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+  "originalRawChains": 135,
+  "actualSourceContextChains": 1,
+  "recovery": {
+    "path": "/tmp/gm1559-lifecycle-green47-raw-delta-github-fdf3cf43-20261017.json",
+    "bytes": 102538,
+    "sha256": "6182f38cfd52ee47cb08d0d8b6976afcb7cf642a4882d40937bc76b9ab34f99c",
+    "allGitHubFiles": 153,
+    "allChangedPaths": 149,
+    "exactBytesBlobModeSet": true
+  },
+  "ownership": {
+    "strictLifecycleRoots": 20,
+    "packageSessionRoots": 2,
+    "totalExplicitRemovedRoots": 22,
+    "allExplicitRootsPhysicallyAbsent": true,
+    "helperDiagnosticDirectories": 8,
+    "naturallyJoinedHelperChildren": 24,
+    "packageIdentities": 3,
+    "allPackageIdentitiesTerminalBeforeCleanup": true,
+    "bothPackagePipesEof": true,
+    "retainedDiagnosticDirectories": 9,
+    "retainedArtifactFiles": 118,
+    "unknownOrCleanupDebt": false,
+    "ordinaryNeighborLimit": "Six unchanged ordinary results plus stable aggregate owned namespace; no fabricated per-test strict-root receipt."
+  },
+  "actualPackage": {
+    "fileCount": 258,
+    "exactFreshManagedInventory": true,
+    "helperSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+    "productSha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58",
+    "runtimeExecuted": true,
+    "docPathRoleCount": 52,
+    "docSourcePackageSessionHashesExact": true,
+    "generatedBytes": 12977,
+    "generatedSha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+    "prefixUtf8Bytes": 204853,
+    "prefixEndOffsetUtf16": 202003,
+    "limit": "No frozen session bootstrap body/hash or PowerShell helper execution FROM session bootstrap; repo-helper execution separately qualified by eight cases."
+  },
+  "causalTransitions": [
+    "Engine created-after and changed-before operational records preserved through actual ordinary rollback.",
+    "Live preparation and draft exact exclusions retain ordinary neighbors.",
+    "Actual save/load drops reserved authority from both archive and replacement session; ordinary data and generation assertions pass.",
+    "Private predicates exact protected/suffix classifications including ValidationIssue.",
+    "Physical case aliases refuse before effects; ordinary suffixes remain operational.",
+    "Actual helper Write and FilesModified deny reserved paths with unchanged bytes/no terminal, suffix positives unchanged."
+  ],
+  "retainedDecisions": [
+    {
+      "path": "/tmp/gm1559-lifecycle-production-source-independent-20261017.md",
+      "sha256": "859ad1e7f66c058cc81f6ce41ec6a5fae5f421bf8faaf0845a04e01912fdc5f0"
+    },
+    {
+      "path": "/tmp/gm1559-lifecycle-production-source-independent-20261017.json",
+      "sha256": "2dc3ecbf0c1e9e5314aab5c248d3bcf9d733089f00304ca7b2cf6f697c15a465"
+    },
+    {
+      "path": "/tmp/gm1559-ownerfix-guards-causal-independent-20261017.json",
+      "sha256": "7c76ae32cbcc40d14555ecd0165dc085b0717911ebacf858547d5d8ee8ef0544"
+    },
+    {
+      "path": "/tmp/gm1559-first-engine2-evidence-independent-20261017.json",
+      "sha256": "89e0e9ca69ee7020a1bd005f1d97acbc538c41c597a53526d6d40492198faa2d"
+    },
+    {
+      "path": "/tmp/gm1559-remaining-a01-baseline-evidence-independent-20261017.json",
+      "sha256": "0f743c4a31245b9525f43a2eea049a9e92d46f7e12f4f980e1299fb37f253302"
+    }
+  ],
+  "historyPolicy": "Keep all original FAIL/F01/source reports immutable. Current47 replaces matching row qualification, never adds old rows to current counts.",
+  "scopedClosure": {
+    "task": "T014 bounded inactive lifecycle reservation",
+    "contributionsOnly": [
+      "T011",
+      "T015",
+      "T016",
+      "T018"
+    ],
+    "finalization": "Persist exact decision, reconcile derived metadata truthfully, Root verifies final remote/recovery; no recursive source/runtime review unless scope changes.",
+    "handoff": "T179-Pd.3d wounds; stop automatic full relay backlog expansion."
+  },
+  "open": [
+    "Full relay C01-C06",
+    "Full issue FR/SC and broader task clauses",
+    "Windows",
+    "Long-session transport/sequence/batch/recovery/client acceptance"
+  ],
+  "reviewerActions": "Existing raw/source/hash inspection only; no test/build/producer/native execution or repository edits.",
+  "support": {
+    "path": "/tmp/gm1559-lifecycle-green47-evidence-independent-check-20261017.json",
+    "bytes": 186943,
+    "sha256": "e5c2d0ead8c18795bf532a094787055c5065d836dd7c6168342d4bb80331a9ed"
+  },
+  "markdownSha256": "353dd0cfd49bff15a5f657a2b8c62cbecce6f73ce6f6b161ca332e6f507a7c80"
+}
