@@ -1,0 +1,114 @@
+{
+  "kind": "INDEPENDENT_NEXT3E_NECESSITY_ASSESSMENT",
+  "head": "47d0f4a33770f028963b5d112eb6b22859010a3b",
+  "verdict": "SELECT_BOUNDED_RETAINED_PASS_SOURCE_OWNER_CONTRACT_CLOSURE_NEXT",
+  "confidence": "High for the concrete current edges below; this is not an exhaustive proof that every imaginable ordinary-only refactor is impossible.",
+  "summary": "The accepted ordinary prefix is real and complete within its declared bounds. Remaining meaningful work is same-invocation source/projection/write-return history and its actual owner/consumer, not relocating already named policy helpers. A useful source/design closure is ZIP-independent now. A retained ordinary producer could subsequently be an explicit prerequisite, but a DTO or pass-through lease helper without an actual consuming lifecycle is not full3e progress or authority.",
+  "currentEvidence": "Retain accepted ordinary45 plus separately accepted protectedLate2. No old raw, package, native test or counts were replayed.",
+  "confirmedEdges": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "lines": "7473–7530,7661–7720",
+      "fact": "Every successful scope still obtains guardian policy, performs structured current/original extraction and aliases/action reads, builds conditional original contexts, calls existing ActorBrain and six selected Full audits. The public API selects Full; emptiness does not skip these dependencies."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "lines": "759–812,943–1060",
+      "fact": "NPC original lookup sits inside its broad catch; residents normalize current then read/normalize original inside one catch; entity/Shining original reads precede their parse catches. Hoisting, batching, caching or conflating these reads changes ordinary behavior."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentState.cs",
+      "lines": "1202,1213,1234,1242",
+      "fact": "Detached resident normalization fills missing UTC receipt/history fields. Current/original NormalizeShape invocations at N954/978 are distinct real first passes; current normalized bytes cannot reconstruct those earlier outputs."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "lines": "194–207,281–319",
+      "fact": "Actual Full builds a new guardian context outside the earlier game-state cache lifetime. Completed-musings comparison is outside the broad domain catch; identity/quest/authority/power/reasoning construction follows, including a conditional second authority-root build."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "lines": "85–96,139–146,242–249",
+      "fact": "Provided-lease ReadForComparisonAsync already exists. The missing observed adapter must cover MatchesAsync original reads and binding reads plus current published-hash/JSON comparison. Default ordinary wrapper owns acquisition/physical close; its null/disabled/mismatch and storage/close outcomes cannot be merged. Another overload alone is redundant."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "lines": "240–251,1093–1125,2237–2268",
+      "fact": "Real ordinary validation returns issues and bool; it does not retain a same-invocation projection/read/write-return history. Repair invalidates completed scopes before mutation; a future retained pass needs exact route/iteration/owner/generation invalidation rather than global cached authority."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "lines": "2280–2285,849–858",
+      "fact": "Corrected joint canonical refresh publishes through its dedicated path and returns to post-publication validation before the later ordinary loop at1095. An ordinary pass there is not necessarily a prepublication pass for this branch."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "lines": "62–87,159–177",
+      "fact": "Existing capture retains specific original-read evidence, then irrevocably closes Capturing. Canonical publisher47–48 calls that close before preparation. An adapter attached after return is too late; invoking mutating validators under the publication lease to fabricate missing history is not allowed."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "lines": "3588–3626",
+      "fact": "Truly uncovered original actor-memory data may remain usable-null policy; indexed/baseline-tracked but unregistered, registered missing/unreadable/hash-mismatched originals produce issues. Do not turn policy-null into authenticated absence or strengthen the ordinary rule."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "lines": "93–104",
+      "fact": "The real post-publication continuation calls public Full at99. New changes to that common orchestration must account for the genuinely affected protectedLate2, separately from ordinary controls."
+    }
+  ],
+  "candidateDispositions": [
+    {
+      "candidate": "More debug/scope extraction or moving ActorBrain",
+      "disposition": "Not selected: prefix is implemented, ActorBrain is already a named real ordinary consumer at N2867/A7689. No concrete additional missing contract is closed by moving it."
+    },
+    {
+      "candidate": "GuardianMusings provided-lease pass-through",
+      "disposition": "Not selected: lower provided-lease API already exists. A real fixed observation adapter needs actual owner/session and nested read closure."
+    },
+    {
+      "candidate": "Ordinary-only retained pass producer",
+      "disposition": "Feasible in principle without Windows or HOT activation, but explicitly incomplete unless its real producer, direct ordinary consumer, lifetime and unavailable routes are fixed. Do not introduce a public accepted flag, generic read delegate/map or silent global scope."
+    },
+    {
+      "candidate": "Retained pass to actual preseal continuation",
+      "disposition": "Meaningful target but concrete missing route/history ownership must be specified first. Connecting it into Capturing crosses the held HOT integration boundary; no implementation/runtime activation is inferred here."
+    },
+    {
+      "candidate": "Current fixed-point or already-completed GuardianMusings as general Full proof",
+      "disposition": "Rejected: these cannot establish original earlier reads, volatile projections, no prior publication or full family history."
+    }
+  ],
+  "smallestUsefulNextDeliverable": {
+    "scope": "One finite source-backed ordinary-pass producer/consumer and lifetime contract, reusing accepted design rather than restarting architecture approval.",
+    "requiredDecisions": [
+      "Name actual producer entry before the relevant VR validation iteration, direct ordinary consumption of the same calls/results, and terminal outcome after their actual completion/owning close; preserve existing public List/exception behavior and call once.",
+      "Pin fixed source roles and each occurrence/catch boundary, including nested original callbacks/control/rollback, exact current-vs-original policies, same-generation drift and end-rechecks. Missing/caught-source evidence stays unavailable without a new ordinary rejection.",
+      "Record current and original guardian/resident projection results at their actual first invocation, including volatile fields/order and failures. Do not replay normalization or add an artificial clock/ID provider.",
+      "Define repair iteration, source replacement/generation, missing pass, scope disablement and original-route invalidation; no holding a canonical lease across a model/worker wait.",
+      "Identify where a genuine consumer may inspect this retained pass. For the corrected-joint path with no prior pass, explicit MissingOrdinaryObservation/ProjectionRequired is future family disposition, not permission to rerun mutating validators or to alter current ordinary v2 acceptance.",
+      "Keep HOT source issue/fullS, B/M3 publication and cold import inactive. Any eventual consuming join must occur while the same actual attempt is still Capturing, before CloseCapture/preparation."
+    ],
+    "finiteTddFrontier": [
+      "Actual ordinary engine invocation once, exact ordered issues and before/current data; no synthetic accepted pass.",
+      "Real write returned only after owning close; changed/no-write/primary fault/close uncertainty retain NI-D01 distinctions.",
+      "Genuine completed musings positive plus original/request/generation/published-output drift and existing storage/close failure boundaries; ordinary acquisition unchanged.",
+      "Resident current/original missing-UTC inputs retain separate actual first-pass results with no resampling; swallowed domain failure versus source fault distinct.",
+      "Two actual current reads, late source drift and original hash mismatch preserve existing ordinary policy while unavailable evidence cannot become family success.",
+      "Consumer/route lifetime control demonstrates exact actual owner; no later attachment after capture closure."
+    ],
+    "selection": "Determine exact new bounded owners after the concrete contract. Existing guardian-musings-publication/original-consumers/repair-recheck-close and actual-repair responsibilities are conditional dependencies, not automatic broad runs. Actual A/common Full changes require exact source inverse Facts and separately protectedLate2. No old45/52 replay merely for file adjacency."
+  },
+  "holdsVsData": {
+    "windowsZip": "Not an input to ordinary policy, read/lease/projection source inspection, or finite Linux-only prerequisite design. No transfer/CI retry needed.",
+    "hot": "Real original-issued owner, provided live lease, full observations and preseal phase are structural prerequisites; current integration/qualification hold is separate.",
+    "ordinary": "Existing diagnostics/stale Warning/policy-null original behavior and write/read/catch semantics must remain unchanged.",
+    "global": "No full3e/Full/S/B/M3/F1/T197/A3/platform/newQTE or whole-wounds acceptance."
+  },
+  "support": {
+    "path": "/tmp/t179pd3e-remainder-necessity-independent-47d0f4a3-20261017-check.json",
+    "bytes": 18711,
+    "sha256": "bbd15d8ad87d8f6ef7c13b18468eff13445a58f4f3a0f8ea99e2d644b979c39c"
+  },
+  "nextAuthority": "Root consolidation and a concrete bounded candidate precede any edit/native activation. No new user question or principled design-approval loop is required by this assessment."
+}
