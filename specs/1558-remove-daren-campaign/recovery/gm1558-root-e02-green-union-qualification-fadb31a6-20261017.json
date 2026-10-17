@@ -1,0 +1,977 @@
+{
+  "kind": "ROOT_QUALIFIED_REMAINING_AND_RETAINED_FIVE_UNION_PENDING_CHROMIUM_FINAL_EVIDENCE",
+  "utc": "2026-10-17T12:06:57.027464+00:00",
+  "carrier": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "actualSource": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "rawArchive": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/recovery/g2-e02-first-remaining-observed-d6318f0e-20261017-files/archive.json",
+    "sha256": "b08761c1573fb45f987a52a6349d2e3b3fb8830ffe0e16cecf5cb607eb1def57",
+    "chains": 42
+  },
+  "record": {
+    "path": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z/record.json",
+    "sha256": "e783aa99efa94050c4078f9b33b5bae79e49a54485d539a3c8e8cdacfcf9106d",
+    "wallSeconds": 109.72605322900199
+  },
+  "remaining": {
+    "nativeExit": 0,
+    "descriptors": 18,
+    "csharpCasesAllPassed": 103,
+    "csharpMethods": 37,
+    "vitestTestsPassed": 29,
+    "nodeFileProgramsPassed": 2,
+    "typecheckContractFilesPassed": 2,
+    "runnerMixedResults": 136,
+    "actualCases": [
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"explorer-command-result.json\", csharpDto: ExplorerCommandResult { Actions = [UiAction { Command = \"/status\", Id = \"open-status\", Label = \"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u0441\u0442\u0430\u0442\u0443\u0441\", Payload = null, RequiresConfirmation = False, \u00b7\u00b7\u00b7 }], Blocks = [UiMessageBlock { Message = \"\u041a\u043e\u043d\u0442\u0440\u0430\u043a\u0442\u043d\u044b\u0439 \u043f\u0440\u0438\u043c\u0435\u0440 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430 \u043a\u043e\u043c\u0430\u043d\u0434\u044b.\", Severity = Info, Title = \"\u0421\u043f\u0440\u0430\u0432\u043a\u0430\" }], Command = \"/help\", InteractiveSession = UiPromptSession { CancelEndpoint = \"/api/explorer/prompt-sessions/cancel\", ExpiresAtUtc = 2026-05-25T09:50:00.0000000Z, OwnerId = \"browser:contract\", RequiresLocalUiLock = True, SessionId = \"prompt_contract\", \u00b7\u00b7\u00b7 }, Notifications = [UiNotification { Message = \"DTO \u0433\u043e\u0442\u043e\u0432 \u043a \u043e\u0442\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044e.\", Severity = Success, Title = \"\u041a\u043e\u043c\u0430\u043d\u0434\u0430 \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0430\" }], \u00b7\u00b7\u00b7 })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "6a575d6e-3456-4e64-b505-52cc8de96e79",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"qte-practice-state.json\", csharpDto: QtePracticeWebStateDto { ActiveScene = null, AvailableOperations = [\"startAttempt\", \"exit\"], Catalog = [QtePracticeCatalogEntryDto { Available = True, Description = \"\u0422\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 \u0432\u044b\u0431\u043e\u0440\u0430 \u0431\u044b\u0441\u0442\u0440\u043e\u0433\u043e \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0431\u0435\u0437 \u043d\u0430\u0433\u0440\u0430\u0434 \u0438 \u0431\"\u00b7\u00b7\u00b7, Difficulties = [\u00b7\u00b7\u00b7], Instructions = \"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u0438 \u043f\u043e\u0441\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043e\"\u00b7\u00b7\u00b7, SupportedSurfaces = [\u00b7\u00b7\u00b7], \u00b7\u00b7\u00b7 }, QtePracticeCatalogEntryDto { Available = True, Description = \"\u0422\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 \u0447\u0430\u0441\u0442\u044b\u0445 \u043d\u0430\u0436\u0430\u0442\u0438\u0439 \u0431\u0435\u0437 \u043d\u0430\u0433\u0440\u0430\u0434 \u0438 \u0431\u0435\u0437 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\"\u00b7\u00b7\u00b7, Difficulties = [\u00b7\u00b7\u00b7], Instructions = \"\u041d\u0430\u0436\u0438\u043c\u0430\u0439\u0442\u0435 Space \u0432 \u0440\u0430\u043c\u043a\u0430\u0445 \u043c\u0438\u043d\u0438-\u0438\u0433\u0440\u044b.\", SupportedSurfaces = [\u00b7\u00b7\u00b7], \u00b7\u00b7\u00b7 }], Completion = null, Error = null, \u00b7\u00b7\u00b7 })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "9c5edb56-686e-4145-a9c7-88dc7db60a0d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "method": "BookOfEternityClient.Tests.BrowserFrontendWorkspaceTests.ReactAppShell_RendersCurrentTabCommandShellAndSharedState",
+        "executionId": "ffa4314a-cb2c-420b-8554-fc1e05ba047b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"command-coverage.json\", csharpDto: BrowserCommandCoverageDto { SchemaVersion = 2, Summary = BrowserCommandCoverageSummaryDto { DescriptorCount = 107, AliasCount = 235, SubcommandCount = 9, BrowserExecutableCount = 107, BrowserExecutableSubcommandCount = 9, PlayerDefaultActionCount = 100, PlayerDefaultExecutableSubcommandCount = 9, AdvancedOnlyActionCount = 7, MutatingCommandCount = 51, CommandsNeedingFollowUpCount = 0, SubcommandsNeedingFollowUpCount = 0 }, Commands = BookOfEternityClient.WebUi.BrowserCommandCoverageEntryDto[] })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "96dda1e3-1546-45c3-b507-8b92ee70f87b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"client-settings.json\", csharpDto: BrowserClientSettingsDto { SchemaVersion = 1, Language = BrowserSettingsChoiceGroupDto { Value = ru, Label = \u0420\u0443\u0441\u0441\u043a\u0438\u0439, Choices = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserSettingsChoiceDto] }, Difficulty = BrowserSettingsChoiceGroupDto { Value = normal, Label = \u041e\u0431\u044b\u0447\u043d\u0430\u044f, Choices = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserSettingsChoiceDto] }, ShowGmThoughts = False, Audio = BrowserClientAudioSettingsDto { MusicEnabled = True, MusicVolume = 65, SoundEnabled = True, SoundVolume = 75 }, Accessibility = BrowserClientAccessibilitySettingsDto { FontScalePercent = 100, UiScalePercent = 100, ReducedMotion = False, ContrastFriendly = False }, Locality = BrowserClientLocalityDto { LocalhostOnly = True, SessionLabel = \u0422\u0435\u043a\u0443\u0449\u0430\u044f \u0433\u043b\u0430\u0432\u0430 \u043a\u043d\u0438\u0433\u0438, GameSessionExists = True, GmBridgeEnabled = True, GmBridgeLabel = \u041b\u043e\u043a\u0430\u043b\u044c\u043d\u044b\u0439 \u043c\u043e\u0441\u0442 \u0413\u041c\u0430 \u0432\u043a\u043b\u044e\u0447\u0451\u043d, SafetySummary = \u041a\u043d\u0438\u0433\u0430 \u043e\u0442\u043a\u0440\u044b\u0442\u0430 \u0442\u043e\u043b\u044c\u043a\u043e \u043d\u0430 \u044d\u0442\u043e\u043c \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435 \u0438 \u0445\u0440\u0430\u043d\u0438\u0442 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u0432\u043c\u0435\u0441\u0442\u0435 \u0441 \u0432\u0430\u0448\u0438\u043c \u043f\u0440\u043e\u0445\u043e\u0436\u0434\u0435\u043d\u0438\u0435\u043c. }, PersistenceWarning =  })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "a342212c-8858-4adc-87f3-e97daaa86269",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"lifecycle-dashboard.json\", csharpDto: BrowserLifecycleDashboardDto { SchemaVersion = 1, Session = LocalWebUiSessionStatus { SchemaVersion = 1, Status = ok, LocalOnly = True, BasePath = E:/Games/The Book of Eternity Reborn/BookOfEternityClient, GameSessionPath = E:/Games/The Book of Eternity Reborn/BookOfEternityClient/game_session, GameSessionExists = True, CheckedAtUtc = 05/25/2026 09:30:00, CanStartBrowserWrite = True, PendingTurn = BrowserPendingTurnStatus { HasActiveGmTurn = False, Artifacts = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserPendingTurnArtifactStatus], Message = \u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0439 \u0445\u043e\u0434 \u0413\u041c\u0430 \u043d\u0435 \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d. }, LocalUiLock = BrowserLocalUiLockStatus { Exists = False, IsReadable = False, IsStale = False, OwnerId = , OwnerKind = , OwnerLabel = , AcquiredAtUtc = , HeartbeatAtUtc = , LeaseSeconds = 0, LastOperation =  } }, Soul = BrowserSoulSummaryDto { Name = \u0410\u0440\u0438\u043e\u043d, FormDescription = \u041c\u0443\u0436\u0447\u0438\u043d\u0430 \u0438\u0437 \u0442\u0438\u0445\u043e\u0433\u043e \u0441\u0435\u0440\u0435\u0431\u0440\u044f\u043d\u043e\u0433\u043e \u0441\u0432\u0435\u0442\u0430, CurrentRealm = Mortal World, RealmLabel = \u0421\u043c\u0435\u0440\u0442\u043d\u044b\u0439 \u043c\u0438\u0440, CurrentIncarnation = 3, IsReadable = True, ReadError =  }, PendingTurn = BrowserPendingTurnStatus { HasActiveGmTurn = False, Artifacts = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserPendingTurnArtifactStatus], Message = \u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0439 \u0445\u043e\u0434 \u0413\u041c\u0430 \u043d\u0435 \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d. }, LocalUiLock = BrowserLocalUiLockStatus { Exists = False, IsReadable = False, IsStale = False, OwnerId = , OwnerKind = , OwnerLabel = , AcquiredAtUtc = , HeartbeatAtUtc = , LeaseSeconds = 0, LastOperation =  }, CanStartBrowserWrite = True, Validation = BrowserValidationSummaryDto { State = clean, StatusLabel = \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0432\u0430\u043b\u0438\u0434\u043d\u043e, IssueCount = 0, ErrorCount = 0, WarningCount = 0, InfoCount = 0, DisplayedIssueCount = 0, Groups = BookOfEternityClient.WebUi.BrowserValidationGroupDto[], Issues = BookOfEternityClient.WebUi.BrowserValidationIssueDto[] }, Guidance = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserLifecycleGuidanceDto], Entrypoints = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserLifecycleEntrypointDto] })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "54a55f8f-737e-4eb7-a024-367dd81b19c8",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"audio-settings.json\", csharpDto: BrowserAudioSettingsDto { SchemaVersion = 1, MusicEnabled = True, MusicVolume = 65, SoundEnabled = True, SoundVolume = 75, AutoplayGuidance = \u0417\u0432\u0443\u043a \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f \u043f\u043e\u0441\u043b\u0435 \u0432\u0430\u0448\u0435\u0433\u043e \u043d\u0430\u0436\u0430\u0442\u0438\u044f: \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u00ab\u0412\u043a\u043b\u044e\u0447\u0438\u0442\u044c \u043c\u0443\u0437\u044b\u043a\u0443\u00bb, \u0447\u0442\u043e\u0431\u044b \u0440\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u044c \u043c\u0443\u0437\u044b\u043a\u0443 \u0438 \u0437\u0432\u0443\u043a\u043e\u0432\u044b\u0435 \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0438 \u0434\u043b\u044f \u044d\u0442\u043e\u0439 \u0432\u043a\u043b\u0430\u0434\u043a\u0438., MissingAssetsMessage = , Playlists = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserAudioPlaylistDto], Cues = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserAudioCueDto], PersistenceWarning =  })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "c6a48e0d-103d-4fd6-a91e-28432cdc4d8a",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"qte-state.json\", csharpDto: QteWebStateDto { ActiveScene = QteWebActiveSceneDto { AcceptedAtTurn = 12, CurrentChapter = QteWebChapterDto { \u00b7\u00b7\u00b7 }, QteId = \"qte_browser_contract\", ScoreState = null, Title = \"\u0411\u044b\u0441\u0442\u0440\u0430\u044f \u0441\u0446\u0435\u043d\u0430\" }, AvailableOperations = [\"submitAction\"], Completion = null, Error = null, ErrorCode = null, \u00b7\u00b7\u00b7 })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "66ae9a10-6af7-487d-ab01-60f62b447b99",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"main-menu.json\", csharpDto: BrowserMainMenuDto { SchemaVersion = 1, Session = BrowserMainMenuSessionDto { GameSessionExists = True, HasReadableSoul = True, CanContinue = True, ContinueReason = \u0422\u0435\u043a\u0443\u0449\u0443\u044e \u0433\u043b\u0430\u0432\u0443 \u043c\u043e\u0436\u043d\u043e \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c., SoulName = \u0410\u0440\u0438\u043e\u043d, CurrentRealm = Mortal World, RealmLabel = \u0421\u043c\u0435\u0440\u0442\u043d\u044b\u0439 \u043c\u0438\u0440, CurrentIncarnation = 3, TurnNumber = 12, TurnLabel = \u0425\u043e\u0434 12, TerminalSoulDissipated = False, ValidationState = clean, ValidationLabel = \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0432\u0430\u043b\u0438\u0434\u043d\u043e, PendingTurnMessage = \u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0439 \u0445\u043e\u0434 \u0413\u041c\u0430 \u043d\u0435 \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d., CanStartBrowserWrite = True, LocalUiLocked = False, CheckedAtUtc = 05/25/2026 09:30:00 }, Actions = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserMainMenuActionDto], Saves = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserSaveSlotDto], Options = BrowserOptionsSummaryDto { MusicEnabled = True, SoundEnabled = False, ConsoleFontSize = 18, Guidance = \u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u043a\u043d\u0438\u0433\u0438, \u0437\u0432\u0443\u043a\u0430 \u0438 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u0432 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u043c \u0440\u0430\u0437\u0434\u0435\u043b\u0435. }, About = BrowserAboutDto { Title = \u041a\u043d\u0438\u0433\u0430 \u0412\u0435\u0447\u043d\u043e\u0441\u0442\u0438: \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435, Body = \u041a\u043d\u0438\u0433\u0430 \u0412\u0435\u0447\u043d\u043e\u0441\u0442\u0438: \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u0442\u0435\u043a\u0443\u0449\u0443\u044e \u0433\u043b\u0430\u0432\u0443, \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0438 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u0432 \u043e\u0434\u043d\u043e\u043c \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u043c \u043e\u043a\u043d\u0435. }, AdvancedShell = BrowserAdvancedShellDto { Label = \u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c, Description = \u0421\u043b\u0443\u0436\u0435\u0431\u043d\u044b\u0435 \u0441\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u0438 \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0451\u043d\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b \u0441\u043a\u0440\u044b\u0442\u044b \u043e\u0442 \u043e\u0431\u044b\u0447\u043d\u043e\u0433\u043e \u0433\u043b\u0430\u0432\u043d\u043e\u0433\u043e \u043c\u0435\u043d\u044e., InitiallyExpanded = False }, LoadGeneration =  })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "f1fe8228-4dcc-4bc7-92f7-f720e945074b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"game-screen.json\", csharpDto: BrowserGameScreenDto { SchemaVersion = 2, Theme = BrowserGameScreenThemeDto { Key = mortal-world, Label = \u0421\u043c\u0435\u0440\u0442\u043d\u044b\u0439 \u043c\u0438\u0440, Icon = \\ud83d\\udd6f, Accent = #e1b85e }, Soul = BrowserGameScreenSoulDto { Name = \u0410\u0440\u0438\u043e\u043d, FormDescription = \u041c\u0443\u0436\u0447\u0438\u043d\u0430 \u0438\u0437 \u0442\u0438\u0445\u043e\u0433\u043e \u0441\u0435\u0440\u0435\u0431\u0440\u044f\u043d\u043e\u0433\u043e \u0441\u0432\u0435\u0442\u0430, Realm = Mortal World, Incarnation = 3, InkFeathers = 5, EnlightenmentTier = \u0418\u0441\u043a\u0440\u0430, ActiveGuardianName = \u0421\u0430\u0440\u0435\u0444 }, Player = BrowserGameScreenPlayerDto { Name = \u0410\u0440\u0438\u043e\u043d, Class = \u0421\u043b\u0435\u0434\u043e\u043f\u044b\u0442, Race = \u0427\u0435\u043b\u043e\u0432\u0435\u043a, CurrentCondition = \u0421\u043e\u0431\u0440\u0430\u043d, HealthPercentage = 90%, EnergyPercentage = 75%, PoisePercentage = 60%, ActiveConditions = <>z__ReadOnlySingleElementList`1[System.String], ResourceProjectionAvailable = True, ResourceUnavailableMessage =  }, World = BrowserGameScreenWorldDto { Location = \u041f\u0435\u043f\u0435\u043b\u044c\u043d\u0430\u044f \u0434\u043e\u0440\u043e\u0433\u0430, WorldTime = \u0421\u0443\u043c\u0435\u0440\u043a\u0438, TurnNumber = 12, SessionId = session-contract }, Narrative = BrowserGameScreenNarrativeDto { Text = \u041f\u0435\u0440\u0435\u0434 \u0433\u0435\u0440\u043e\u0435\u043c \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442\u0441\u044f \u0442\u0438\u0445\u0430\u044f \u0434\u043e\u0440\u043e\u0433\u0430., DialogueOptions = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserGameScreenDialogueOptionDto], CombatLog = \u0411\u043e\u0435\u0432\u044b\u0445 \u0441\u043e\u0431\u044b\u0442\u0438\u0439 \u043d\u0435\u0442., ImagePrompt = mystic road at dusk }, Media = BrowserGameScreenMediaDto { SchemaVersion = 1, SceneImagePrompt = mystic road at dusk, Gallery = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserGameScreenMediaItemDto], Map = BookOfEternityClient.CommandProtocol.MapViewDto }, Afterlife = BrowserGameScreenAfterlifeDto { ShiningRadianceExperience = 10, ShiningRadianceTier = 1, ShiningLightSparks = 2, ShiningHallCount = 1, ShiningFactionCount = 1, HasOpenShiningGatesDraft = False, IsShiningGatesDraftStale = False }, TurnState = BrowserGameScreenTurnStateDto { State = ready, Title = \u041c\u043e\u0436\u043d\u043e \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0430\u0442\u044c, Message = \u041e\u043f\u0438\u0448\u0438\u0442\u0435 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u0436\u0430 \u0432 \u043f\u0440\u043e\u0437\u0435. \u041f\u043e\u0441\u043b\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f \u0445\u043e\u0434 \u0431\u0443\u0434\u0435\u0442 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043b\u0435\u043d \u0434\u043b\u044f \u0413\u041c., CanStartBrowserWrite = True, Phase = idle, PhaseLabel = \u041c\u043e\u0436\u043d\u043e \u0433\u043e\u0442\u043e\u0432\u0438\u0442\u044c \u0445\u043e\u0434, Severity = success, PlayerGuidance = \u0418\u0433\u0440\u0430 \u043d\u0435 \u0436\u0434\u0451\u0442 \u0413\u041c\u0430; \u043c\u043e\u0436\u043d\u043e \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u044c \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0445\u0443\u0434\u043e\u0436\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 \u0445\u043e\u0434., RecommendedActions = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserGameScreenTurnActionDto], KnownPhases = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserGameScreenTurnPhaseDto] }, ActionComposer = BrowserGameScreenActionComposerDto { CanSubmit = True, Mode = prose, Placeholder = \u041e\u043f\u0438\u0448\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u0436\u0430..., Guidance = Slash-\u043a\u043e\u043c\u0430\u043d\u0434\u044b \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0447\u0435\u0440\u0435\u0437 \u0440\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c., DisabledReason =  }, Qte = BookOfEternityClient.WebUi.QteWebStateDto, ActionMenu = BrowserPlayerCommandMenuDto { SchemaVersion = 1, Sections = BookOfEternityClient.WebUi.BrowserPlayerCommandSectionDto[] }, Flags = BrowserGameScreenFlagsDto { IsInChaosSea = False, IsInAnyShiningAbodeState = False, IsInShiningAbode = False, IsInShiningAbodePendingBootstrap = False, IsInAfterlifeRealm = False, CanReenterShiningAbode = True } })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "5c957b53-2644-4481-ad59-4881a50d977b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"api-error.json\", csharpDto: { error = \"\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0441\u0435\u0439\u0447\u0430\u0441 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0430: \u043a\u043d\u0438\u0433\u0430 \u0437\u0430\u043d\u044f\u0442\"\u00b7\u00b7\u00b7, loadedSaveId = \"manual:sample.json\", menu = BrowserMainMenuDto { SchemaVersion = 1, Session = BrowserMainMenuSessionDto { GameSessionExists = True, HasReadableSoul = True, CanContinue = True, ContinueReason = \u0422\u0435\u043a\u0443\u0449\u0443\u044e \u0433\u043b\u0430\u0432\u0443 \u043c\u043e\u0436\u043d\u043e \u043f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c., SoulName = \u0410\u0440\u0438\u043e\u043d, CurrentRealm = Mortal World, RealmLabel = \u0421\u043c\u0435\u0440\u0442\u043d\u044b\u0439 \u043c\u0438\u0440, CurrentIncarnation = 3, TurnNumber = 12, TurnLabel = \u0425\u043e\u0434 12, TerminalSoulDissipated = False, ValidationState = clean, ValidationLabel = \u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u0432\u0430\u043b\u0438\u0434\u043d\u043e, PendingTurnMessage = \u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0439 \u0445\u043e\u0434 \u0413\u041c\u0430 \u043d\u0435 \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d., CanStartBrowserWrite = True, LocalUiLocked = False, CheckedAtUtc = 05/25/2026 09:30:00 }, Actions = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserMainMenuActionDto], Saves = <>z__ReadOnlySingleElementList`1[BookOfEternityClient.WebUi.BrowserSaveSlotDto], Options = BrowserOptionsSummaryDto { MusicEnabled = True, SoundEnabled = False, ConsoleFontSize = 18, Guidance = \u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u043a\u043d\u0438\u0433\u0438, \u0437\u0432\u0443\u043a\u0430 \u0438 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u0438 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u044e\u0442\u0441\u044f \u0432 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u043c \u0440\u0430\u0437\u0434\u0435\u043b\u0435. }, About = BrowserAboutDto { Title = \u041a\u043d\u0438\u0433\u0430 \u0412\u0435\u0447\u043d\u043e\u0441\u0442\u0438: \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435, Body = \u041a\u043d\u0438\u0433\u0430 \u0412\u0435\u0447\u043d\u043e\u0441\u0442\u0438: \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u0442\u0435\u043a\u0443\u0449\u0443\u044e \u0433\u043b\u0430\u0432\u0443, \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f \u0438 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u0432 \u043e\u0434\u043d\u043e\u043c \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u043c \u043e\u043a\u043d\u0435. }, AdvancedShell = BrowserAdvancedShellDto { Label = \u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c, Description = \u0421\u043b\u0443\u0436\u0435\u0431\u043d\u044b\u0435 \u0441\u0432\u0435\u0434\u0435\u043d\u0438\u044f \u0438 \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0451\u043d\u043d\u044b\u0435 \u043a\u043e\u043c\u0430\u043d\u0434\u044b \u0441\u043a\u0440\u044b\u0442\u044b \u043e\u0442 \u043e\u0431\u044b\u0447\u043d\u043e\u0433\u043e \u0433\u043b\u0430\u0432\u043d\u043e\u0433\u043e \u043c\u0435\u043d\u044e., InitiallyExpanded = False }, LoadGeneration =  } })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "a061fab0-3e17-42f8-a6b2-87fda2c613a1",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos(fixtureName: \"session-status.json\", csharpDto: LocalWebUiSessionStatus { SchemaVersion = 1, Status = ok, LocalOnly = True, BasePath = E:/Games/The Book of Eternity Reborn/BookOfEternityClient, GameSessionPath = E:/Games/The Book of Eternity Reborn/BookOfEternityClient/game_session, GameSessionExists = True, CheckedAtUtc = 05/25/2026 09:30:00, CanStartBrowserWrite = True, PendingTurn = BrowserPendingTurnStatus { HasActiveGmTurn = False, Artifacts = <>z__ReadOnlyArray`1[BookOfEternityClient.WebUi.BrowserPendingTurnArtifactStatus], Message = \u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0439 \u0445\u043e\u0434 \u0413\u041c\u0430 \u043d\u0435 \u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d. }, LocalUiLock = BrowserLocalUiLockStatus { Exists = False, IsReadable = False, IsStale = False, OwnerId = , OwnerKind = , OwnerLabel = , AcquiredAtUtc = , HeartbeatAtUtc = , LeaseSeconds = 0, LastOperation =  } })",
+        "method": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendContractFixtures_MatchRepresentativeCSharpDtos",
+        "executionId": "7d45ce1c-be15-421b-a3e4-f2d8455bc9ea",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+        "trxSha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PromptChain\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "f981f873-a996-4bae-bebf-d09718f6b39d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PrecisionChoice\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "5a9deb89-4167-4c16-a05c-7c6133385831",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/retry\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "executionId": "d49e2ca2-d073-42f9-821f-a3c3abf9302a",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"BranchChoice\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "463a7d51-c195-41ce-bfdc-755efc902f57",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/start\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "executionId": "fa183821-eacd-466d-aaad-ffd59c271548",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"StealthNoise\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "a3882be9-2629-4c00-aebb-834aca3059b3",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/action\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "executionId": "6d5afbf9-a974-423a-a5fb-803ca24ae771",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"RhythmPulse\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "e412c01c-5c47-459c-83a9-deffe342bc0c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+        "executionId": "16044517-43d1-4aa0-a4cc-0120a078f908",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"BalanceMeter\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "9eef0aad-33f1-4f48-8a9f-8e4e833fd26c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"TimingBar\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "14977586-66d2-46ba-ab95-ce91c261c707",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PatternMemory\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "cd32ed89-1291-4c90-a7e0-216c8419f6cf",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"GET\", path: \"/api/qte/daren\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "executionId": "79476365-698f-4e37-987c-b0d63bfd6bd3",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/exit\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+        "executionId": "af8c3130-d3e0-4fbe-b484-761a8296375d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"ChargeRelease\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "a93db49f-0f6d-4691-95e9-ab618749b566",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"MashInput\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "f1797399-67eb-4880-9bee-54529b4a6137",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"LockPinSet\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+        "executionId": "7fad52b1-cb7f-4ddb-ac37-c12c166df6c8",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+        "trxSha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
+        "executionId": "a257010a-c405-448d-857b-491f714eacf4",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+        "executionId": "2a31ff7a-6700-4cfa-8144-14a5a41cb05e",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_DirectLatePersistenceFailureRollsBackResourceQuartetAndPreservesSelectedBoundary",
+        "executionId": "1db5eb45-1ea3-47a7-b49f-b108e4fd9d84",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+        "executionId": "ab71cd5f-3665-45c2-a391-552523ab079c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+        "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeRetry_ProjectionFailureRestoresCompletedAttempt",
+        "executionId": "c0a3b172-fba2-444f-97ae-ea47df3b6fa2",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory",
+        "executionId": "c6a7838f-aa13-4f25-a150-a580b3e172f7",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+        "trxSha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeCatalog_ListsOnlyImplementedTypesWithSessionOnlyBoundary",
+        "executionId": "3b802d8c-d752-4f8c-9970-830ed99c1ac0",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"BranchChoice\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "3118b598-953a-4d51-b4f8-0a3636019e18",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"BalanceMeter\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "1a490796-5ee7-4d1b-ac2c-218f3b38318e",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"TimingBar\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "ea518d13-f2c1-4820-8864-2a62b90b4486",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"LockPinSet\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "1c2133f9-8331-420b-9507-e646bd82cb78",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"PatternMemory\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "6689a415-df53-41a5-86c1-25ee903145b7",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"MashInput\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "0fc2e32d-02c6-4f36-b17c-11140cff5561",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"StealthNoise\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "0f846748-991c-4002-be23-273086fc161c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"ChargeRelease\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "287cb1f7-cdfc-48b0-a50e-724af063229d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"PrecisionChoice\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "bb4b4e9a-f1ef-4d56-af2c-861bfff7662c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"RhythmPulse\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "3e5b4b00-e253-480d-8a39-a3df4fb7345e",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_ResolvesScoredAttemptWithoutMutatingCampaignOrRewardFiles",
+        "executionId": "a383f9ea-8755-405c-a66b-e1d29918246c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape(typeId: \"PromptChain\")",
+        "method": "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_GeneratedOfferHasValidQteConfigShape",
+        "executionId": "478f44f7-3dc2-4600-a38d-6ed1f7cf9d4b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+        "trxSha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+        "executionId": "dfffdee7-40e3-490a-8363-96fe475d40c5",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-menu-integration-005.trx",
+        "trxSha256": "e35404dd1be9431f632e2bc808b5ddb0fec6759a744c742199cb851588ccad76"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"BranchChoice\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "1a35a969-699f-4a51-9d2d-b13a4e5cf307",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"MashInput\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "fabc1bf1-07ff-4051-9fad-3a202288e9c8",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"RhythmPulse\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "fca1f5d3-94aa-4604-b0f7-6c94ed8e9411",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"PromptChain\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "5ec8a9bd-7c5f-4a37-bfa1-01a1b9fdeb01",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"ChargeRelease\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "01286889-16cf-43d4-aa7d-f1a8554cf9f8",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"TimingBar\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "e03f522a-ef27-43e1-adce-37a306b7971c",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"StealthNoise\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "cfc07407-4e07-4709-9329-f1e81b5065a4",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"PatternMemory\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "417812da-32e6-4a47-93de-e021077f5247",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"BalanceMeter\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "af05c61a-c7fd-4060-87ee-19ffa2bd61e5",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"LockPinSet\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "0f51489d-9d76-4452-ac9d-c0a70aa7f0c4",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards(type: \"PrecisionChoice\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementConsolePracticeTests.RealConsolePractice_RunsSelectedTypeAndReturnsWithoutPersistentRewards",
+        "executionId": "17d3f3bd-8a42-4a3d-b416-a1f8cf6f6c40",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+        "trxSha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+        "executionId": "11b7ac3b-00a1-42a2-bd96-1e2ab9d3da3f",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-ordinary-storage-integration-008.trx",
+        "trxSha256": "d7d71ed909969ef801d9dd8958fb90b8b6252a997d25d7e6fa935eb64bd4ca5c"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+        "executionId": "53d0c003-5c34-4c4f-b25e-7cf4863916b7",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-ordinary-storage-integration-008.trx",
+        "trxSha256": "d7d71ed909969ef801d9dd8958fb90b8b6252a997d25d7e6fa935eb64bd4ca5c"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation",
+        "executionId": "4f0da4de-08e5-40cd-8483-a6883397d042",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-original-schema6-green-integration-009.trx",
+        "trxSha256": "e1238b3881400a1660efe280c5bb92494d02e51ff794379d718d97452046e0f7"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence(format: 2)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence",
+        "executionId": "6142098a-4545-422a-9fa6-15e7a65bf0e3",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard(format: 1)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard",
+        "executionId": "91d2dcb7-0080-4295-bdc3-929ef60f3424",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.ActiveRetiredFormat2_PreservesExactRetirementRefusalAndEvidence",
+        "executionId": "f98e9dd7-68b7-41c9-9186-3229d827de2b",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard(format: 2)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard",
+        "executionId": "ba57fe04-560f-487f-b2d1-98d2da7aa12a",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy(format: 2, truncated: False)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
+        "executionId": "9d1b2583-6ffa-45c3-8e20-ca7f601d4d01",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence(format: 1)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.RecognizedRetiredIntentWithInvalidLaterImage_RetainsEvidence",
+        "executionId": "5f33a972-107b-42e8-a273-0b0deb63ec38",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy(format: 2, truncated: True)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
+        "executionId": "9cfb3b3e-d5c1-4f2b-b3b3-ccc8f9879376",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy(format: 1, truncated: True)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
+        "executionId": "0b9edd62-e5d6-48a5-8729-410f9a073d62",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy(format: 1, truncated: False)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.OrdinaryOrTruncatedPrivateIntent_KeepsScratchDiscardPolicy",
+        "executionId": "a9ad723d-a11a-420b-8f94-8ea294a1837d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+        "trxSha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"duplicate\")",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "executionId": "74c5ae5e-54aa-444f-b8a5-504610c3e981",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-save-rewards-integration-011.trx",
+        "trxSha256": "1e9df8a4778c4cda2930490b34d0962c7adc08f87bca533bc7614adb25f2b78d"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+        "executionId": "fe017bf6-bb7c-4e88-a3c5-2c4c57cf7ef3",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-save-rewards-integration-011.trx",
+        "trxSha256": "1e9df8a4778c4cda2930490b34d0962c7adc08f87bca533bc7614adb25f2b78d"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"valid\")",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "executionId": "50c18305-8488-4df8-8501-adfd81ea07a5",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-save-rewards-integration-011.trx",
+        "trxSha256": "1e9df8a4778c4cda2930490b34d0962c7adc08f87bca533bc7614adb25f2b78d"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"malformed\")",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+        "executionId": "11431a9a-0a08-4c1d-bc0e-f2c84e67606f",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-save-rewards-integration-011.trx",
+        "trxSha256": "1e9df8a4778c4cda2930490b34d0962c7adc08f87bca533bc7614adb25f2b78d"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises(path: \"CLI_API_Specification.md\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "executionId": "5e524db3-2c21-4312-94f0-11cff7863f6a",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining",
+        "executionId": "7cbdc83e-1381-4c63-9707-1e0f314b7333",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises(path: \"Examples/E_CLI_QTE_Offer.txt\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "executionId": "3d2a8024-a11c-4752-a3e6-c8c1c956a580",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "executionId": "498cc04a-37b3-4e92-901f-a31617f8417d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.CampaignResourcesAndDispatchAreRemovedWhileCommonScenarioAndPracticeRemain",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.CampaignResourcesAndDispatchAreRemovedWhileCommonScenarioAndPracticeRemain",
+        "executionId": "b7934b08-cd37-45ff-9826-6c5587230895",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.ScoredQteContract_IsDocumentedForGmAndPlayers",
+        "executionId": "02efd9aa-3a85-48b8-a348-842a4bfcb354",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises(path: \"TaskGuides/CLI_Step_Main.txt\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "executionId": "5830f54b-4492-4ec5-80b6-a42b4c0dbc29",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises(path: \"Rules/Block_CLI_QTE.txt\")",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.ActiveGuidancePreservesOrdinaryPracticeWithoutRetiredCampaignPromises",
+        "executionId": "386ba5f3-b6c0-49eb-90f6-552da00195a2",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementSourceTests.FreshBuildCopiesCurrentCliApiBytesWithoutClaimingSessionMembership",
+        "method": "BookOfEternityClient.Tests.DarenRetirementSourceTests.FreshBuildCopiesCurrentCliApiBytesWithoutClaimingSessionMembership",
+        "executionId": "204bd696-b950-4042-a674-507fc82b86bc",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+        "trxSha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(ordinaryFirstMixedJournal: True)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+        "executionId": "57087373-562a-4dcc-b2e8-1f55d8637f1e",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-storage-refusal-integration-013.trx",
+        "trxSha256": "9ad83d08933c204e107f2877a576f87880b18180915437b7190a2ca4970b9fdc"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery(ordinaryFirstMixedJournal: False)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
+        "executionId": "350624a3-70fb-48c7-85c1-4cd3d23e9843",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-storage-refusal-integration-013.trx",
+        "trxSha256": "9ad83d08933c204e107f2877a576f87880b18180915437b7190a2ca4970b9fdc"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(coexistingOrdinaryJournal: True)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+        "executionId": "c8c7d70e-accf-440d-813c-4539a848ab58",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-storage-refusal-integration-013.trx",
+        "trxSha256": "9ad83d08933c204e107f2877a576f87880b18180915437b7190a2ca4970b9fdc"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery(coexistingOrdinaryJournal: False)",
+        "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
+        "executionId": "a54c53c3-a7cf-4aab-8581-196dd507b3c4",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-storage-refusal-integration-013.trx",
+        "trxSha256": "9ad83d08933c204e107f2877a576f87880b18180915437b7190a2ca4970b9fdc"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "executionId": "45b05af0-cd37-478f-8150-3e0660d59211",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/gm-doc-afterlife-package-delivery-integration-016.trx",
+        "trxSha256": "0081b6f96836fa4380d6d5532fc5d0101103a29bac0e2c1aa4e7097a164e175a"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"empty-old-intent\")",
+        "method": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "executionId": "3b36534d-f763-4d98-ae22-0e8560f9f4a6",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+        "trxSha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"malformed-current-intent\")",
+        "method": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "executionId": "400b16d2-bd33-4b18-a706-540e78c9430f",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+        "trxSha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"mixed-manifest\")",
+        "method": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "executionId": "abbd054e-3ab2-4701-bdcf-201705b5410d",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+        "trxSha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest",
+        "method": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest",
+        "executionId": "c07f54bb-aca8-490e-9ed9-e3a3170f6aa7",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+        "trxSha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"neutral\")",
+        "method": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+        "executionId": "a43b0e77-05c4-4eee-855d-d511a2a33dae",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+        "trxSha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"prompt_lock\", uncertain: False)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "ae7a33d5-3e7a-4d7d-9d6c-51fef01d5279",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"bootstrap\", uncertain: False)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "1fc00239-cafc-4bff-9c26-34176fd07a71",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"prompt_generation\", uncertain: True)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "64cf99f8-9cf3-485e-a535-3194f2900ff7",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"ui_lock\", uncertain: False)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "3ec779de-1e79-4d75-82c2-2460ec8416fb",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"prompt_lock\", uncertain: True)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "42ff8415-7429-47b2-9b1a-b8dfb56a9df8",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"bootstrap\", uncertain: True)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "fb9a1ac9-b01b-473e-835e-40e138d794e3",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"prompt_generation\", uncertain: False)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "039c09a6-24bd-48cc-981f-d876b9718b24",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      },
+      {
+        "testName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(mode: \"ui_lock\", uncertain: True)",
+        "method": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose",
+        "executionId": "99c6ec02-00a3-4742-bb66-619c93232ee2",
+        "outcome": "Passed",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+        "trxSha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05"
+      }
+    ]
+  },
+  "retainedFive": {
+    "actualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+    "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+    "cases": [
+      {
+        "executionId": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+        "testId": "2caf4b33-971f-d69d-69bf-c455b5bfe833",
+        "testName": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1307338",
+        "startTime": "2026-10-17T11:31:17.1968434+00:00",
+        "endTime": "2026-10-17T11:31:17.1968526+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7f80bafc-8c6e-46af-b2ef-8942ef699951",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-integration-001.trx",
+        "trxSha256": "3d2b52c3a8cf32891e2cf799177d97f457ffa2fb080b8284a706da55a3d2720e"
+      },
+      {
+        "executionId": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+        "testId": "ae130a80-35b0-cc94-5c74-551737979e3b",
+        "testName": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0077599",
+        "startTime": "2026-10-17T11:31:18.9252081+00:00",
+        "endTime": "2026-10-17T11:31:18.9252263+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7feec9a8-2df8-47eb-a813-25cb606ce23d",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+        "testId": "f41b3573-146a-a22c-463a-f2ecfc5a86d2",
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0007076",
+        "startTime": "2026-10-17T11:31:19.1686775+00:00",
+        "endTime": "2026-10-17T11:31:19.1686775+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "26bd72a3-a074-446e-8b12-c47d9c07bd05",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "8bd11711-07d7-44d6-86fc-417c821c6903",
+        "testId": "06477a30-f4ff-2d67-f848-7baf42f607c3",
+        "testName": "BookOfEternityClient.Tests.BrowserApiContractTests.TypeScriptFixtureChecks_ImportEveryContractFixtureWithSatisfiesTypes",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0014060",
+        "startTime": "2026-10-17T11:31:19.1686553+00:00",
+        "endTime": "2026-10-17T11:31:19.1686554+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8bd11711-07d7-44d6-86fc-417c821c6903",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      },
+      {
+        "executionId": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+        "testId": "03011f09-1182-65b1-8913-e5db725ee840",
+        "testName": "BookOfEternityClient.Tests.FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1246122",
+        "startTime": "2026-10-17T11:31:19.0353363+00:00",
+        "endTime": "2026-10-17T11:31:19.0353364+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c8bc1d7b-a3d6-4658-bbe0-03316a2450c5",
+        "trx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-113110-186-103528-767cbc66befc45edbeadfad8a5422b24-categories/daren-retirement-affected-guards-unit-002.trx",
+        "trxSha256": "fd1c340f1925830dbb67b3f04b180209a0329aedcf8d62bee157c90dc001ac54"
+      }
+    ]
+  },
+  "union": {
+    "uniqueCsharpCasesAllPassed": 108,
+    "uniqueCsharpMethods": 42,
+    "oldNineAPIPassesSupersededNotExtraCoverage": true,
+    "allCurrentFullMethodsCovered": true
+  },
+  "strictNewDomainFixtureCleanup": {
+    "roots": 57,
+    "allPhysicallyAbsent": true,
+    "consoleOwnedTasksSettled": 11
+  },
+  "consoleProof": "ElevenactualRunPracticeMode selectedoffer/RunCheck/resultpaths. ChargeRelease twoacceptedkeys; otherlivegames boundedno-inputoutcomes. Not11successful-score orinteractivebrowserplaythroughs.",
+  "hostProof": {
+    "practiceTypeFlows": 11,
+    "menu": 1,
+    "retiredRoutes404": 5
+  },
+  "freshSoul": {
+    "variants": 3,
+    "realInit": true,
+    "newGrants": false,
+    "ink": {
+      "current": 0,
+      "total": 0
+    },
+    "profilePreserved": true
+  },
+  "genuineCurrentPublisher52": {
+    "outcome": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/outcome.json",
+    "sha256": "7c5f5396010891923c6ce855f2b0c4782b8a018330f0348e1a1e9755be179d0b",
+    "originalASTRuntime": true,
+    "sourcePackageSessionHashesEqual": true,
+    "CLIoutside52": true,
+    "packageAndSessionRootsPhysicallyRemoved": true,
+    "ownedProcessTerminal": true
+  },
+  "source277AndNewSevenPins": true,
+  "cleanupTimeoutDuplicates": "cleanupcomplete; no timeout/duplicates; soleintentionalnewdiagnosticdirectorygenuinepublisher",
+  "rootInspectorNote": "copiedPins is52-entrymap, notlist; initialreadonly sample-index0 raisedKeyError andwasreplacedwithtypedmapinspection; no native/raw/source change.",
+  "recovery": "/tmp/gm1558-g2-e02-first-remaining-delta-github-fadb31a6-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-fadb31a6-20261017.json",
+  "next": "EligibleforseparateRootactualChromiumreleaseatthisexactcleanremote carrier. FinalindependentEVIDENCE awaitsRootbrowserraw."
+}

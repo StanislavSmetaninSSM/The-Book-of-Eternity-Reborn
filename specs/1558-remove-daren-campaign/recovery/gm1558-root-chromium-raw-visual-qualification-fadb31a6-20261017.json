@@ -1,0 +1,138 @@
+{
+  "kind": "ROOT_READ_ONLY_CHROMIUM_RAW_AND_VISUAL_QUALIFICATION",
+  "qualifiedUtc": "2026-10-17T12:11:29.615645+00:00",
+  "actualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "record": {
+    "path": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/record.json",
+    "sha256": "7146c6aae5f09f1cff997d30653926a780053229f70408ef5efa8b04c9cf7e58"
+  },
+  "browserResult": {
+    "path": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/result.json",
+    "sha256": "131c7fab77557a4e206ca2eb589866ba43862491adc9edacff8597473cc5dbd3",
+    "status": "PASS",
+    "snapshotCount": 7,
+    "proofLimit": "Actual Chromium desktop BranchChoice through mouse input, retry/exit and stale SPA URL. Eleven catalog entries; not eleven interactive playthroughs or a Windows/mobile qualification."
+  },
+  "gate": {
+    "path": "/tmp/gm1558-root-chromium-actual-release-fadb31a6-20261017.json",
+    "sha256": "5ab9e7aa248b788494f1c9098a71476e1d5a0b304cccf300254b66374face5bd"
+  },
+  "scripts": [
+    {
+      "path": "/tmp/gm1558-root-browser-smoke.mjs",
+      "sha256": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818"
+    },
+    {
+      "path": "/tmp/gm1558-root-cdp-client.mjs",
+      "sha256": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23"
+    },
+    {
+      "path": "/tmp/gm1558-root-browser-first-run.py",
+      "sha256": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0"
+    }
+  ],
+  "checkedRawFiles": [
+    {
+      "path": "browser/01-menu.png",
+      "bytes": 1459765,
+      "sha256": "ff6cfe2157e19e2ec534f2947a38dea9a822426351ea6fca4c9580b0991e7c13"
+    },
+    {
+      "path": "browser/02-practice-catalog.png",
+      "bytes": 1424813,
+      "sha256": "947380828dcd4d36c3a3b2edf4126be90e8be552252d7a82aaf11f275fd6504a"
+    },
+    {
+      "path": "browser/03-ready.png",
+      "bytes": 1083289,
+      "sha256": "ee147f1c84e5fa4df8e81854c8004c50d72d15239a7a57946de925b81c884a52"
+    },
+    {
+      "path": "browser/04-branch-choice.png",
+      "bytes": 1068345,
+      "sha256": "5b29f7dd379bcd11084438b74e80cd066955ce51bc7839fb3df430b40505a6be"
+    },
+    {
+      "path": "browser/05-result.png",
+      "bytes": 1157755,
+      "sha256": "75d8fc00fd250fa05b8ecd027a759149651a87621f3c379b46374495115d32fb"
+    },
+    {
+      "path": "browser/06-exit-catalog.png",
+      "bytes": 1401607,
+      "sha256": "5522c02acbf158ecd8aca20a2911785fe690bcd0fee650fd6c121c019d902eaa"
+    },
+    {
+      "path": "browser/07-stale-route-home.png",
+      "bytes": 1434826,
+      "sha256": "3f15e41ea4be22d5a7779b4e3d4940b9c6f11a748e90aae35e06dfd943f17f09"
+    },
+    {
+      "path": "browser/result.json",
+      "bytes": 314569,
+      "sha256": "131c7fab77557a4e206ca2eb589866ba43862491adc9edacff8597473cc5dbd3"
+    },
+    {
+      "path": "cdp.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "chromium.log",
+      "bytes": 5452,
+      "sha256": "78c33e1cd04f8336b5cef6ddba378742dc63252c7a6f026993d1592ca07ac62c"
+    },
+    {
+      "path": "host.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "beforeStartupInteractionAndAfterByteEqual": true,
+  "fileSnapshotHashes": {
+    "oldProfile": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd",
+    "soul": "423df340cba0e31a4b32b54a8203401d5b46728c985435509cb9b5fa3a773a53"
+  },
+  "servedFreshFrontendFilesByteEqual": 113,
+  "postRequests": {
+    "qte/practice/start": 1,
+    "qte/practice/action": 2,
+    "qte/practice/retry": 1,
+    "qte/practice/exit": 1
+  },
+  "clientActionGrades": [
+    null,
+    null
+  ],
+  "noDarenApiRequest": true,
+  "runtimeExceptions": 0,
+  "catalogCardsDom": 11,
+  "screenshotsVisuallyInspectedByRoot": 7,
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "visualObservations": [
+    "Menu, catalog, ready state, real BranchChoice control, partial-success result, return catalog and stale /daren-showcase URL render at sampled desktop viewport without gross control/text overlap.",
+    "BranchChoice mouse input, retry, second choice and exit are real browser actions; result shown is partial success with score 60.",
+    "Catalog DOM contains eleven cards; single normal-scroll screenshot shows only the currently visible portion, not eleven individually inspected or interactively completed games.",
+    "No separate Daren campaign entry or visible Daren text appears in sampled screens."
+  ],
+  "fixtureLimits": [
+    "Owned minimal source-derived current soul shape, not a captured user save or full-world seed.",
+    "Home shows thirteen validation issues from this intentionally minimal fixture; no validation-clean save or full-world compatibility verdict.",
+    "One network log error is favicon.ico HTTP404; no Runtime.exceptionThrown.",
+    "No Windows, mobile, eleven browser playthroughs, full-world save/load or unrelated HOT/M3 qualification."
+  ],
+  "terminalAllOwned": true,
+  "ownershipErrors": [],
+  "ownedRootsPhysicallyAbsent": [
+    "/tmp/boe-gm1558-root-chromium-42309349cc4c4d1fa986d8eb6a507cdf",
+    "/tmp/boe-gm1558-root-chromium-profile-2319619cc60d403988e706d7dbcea08c"
+  ],
+  "sourceHeadCleanAndUnchanged": true,
+  "inspectorCorrection": "Initial read-only directory cardinality assertion expected 14 entries; corrected to exact 12 regular files (record plus 11 listed raw files). No runtime/raw/source change or replay.",
+  "status": "QUALIFIED_BOUNDED_PASS"
+}

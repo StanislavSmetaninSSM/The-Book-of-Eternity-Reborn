@@ -1,0 +1,132 @@
+{
+  "kind": "ROOT_FIRST_CHROMIUM_ORIGINAL_RAW_FREEZE_PENDING_FINAL_INDEPENDENT_EVIDENCE",
+  "utc": "2026-10-17T12:12:58.181673+00:00",
+  "actualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "rootRawDirectory": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017",
+  "rawChains": 12,
+  "originalPngCount": 7,
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/01-menu.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/01-menu.png.gz",
+      "bytes": 1459765,
+      "sha256": "ff6cfe2157e19e2ec534f2947a38dea9a822426351ea6fca4c9580b0991e7c13",
+      "storedBytes": 1460211,
+      "storedSha256": "1be67b19bf99e068ff9301a579e341f48d96080a2f821f276d8f06b629d0f739",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/02-practice-catalog.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/02-practice-catalog.png.gz",
+      "bytes": 1424813,
+      "sha256": "947380828dcd4d36c3a3b2edf4126be90e8be552252d7a82aaf11f275fd6504a",
+      "storedBytes": 1425025,
+      "storedSha256": "290abffe3c660f27efc78dca76817d37044ca10fe3974b3e42934b9bcdadc4e8",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/03-ready.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/03-ready.png.gz",
+      "bytes": 1083289,
+      "sha256": "ee147f1c84e5fa4df8e81854c8004c50d72d15239a7a57946de925b81c884a52",
+      "storedBytes": 1083153,
+      "storedSha256": "1e9b28600cb9bd7cbf24b20584c5fb54e9e81bf479af1f1899320b35fc4a4b12",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/04-branch-choice.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/04-branch-choice.png.gz",
+      "bytes": 1068345,
+      "sha256": "5b29f7dd379bcd11084438b74e80cd066955ce51bc7839fb3df430b40505a6be",
+      "storedBytes": 1068503,
+      "storedSha256": "32a37da8857972e0bcc422708b757b60a6676767faa5d561b123e7a0eb430c02",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/05-result.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/05-result.png.gz",
+      "bytes": 1157755,
+      "sha256": "75d8fc00fd250fa05b8ecd027a759149651a87621f3c379b46374495115d32fb",
+      "storedBytes": 1158057,
+      "storedSha256": "3b186c590c58c8cd0056cfe209197d66f3d4bde39a67b0ed5e9c59e0e12da904",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/06-exit-catalog.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/06-exit-catalog.png.gz",
+      "bytes": 1401607,
+      "sha256": "5522c02acbf158ecd8aca20a2911785fe690bcd0fee650fd6c121c019d902eaa",
+      "storedBytes": 1401856,
+      "storedSha256": "880f362d4395bb06a27249a47088046db884b3c5aa5680272b0c59894467926a",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/07-stale-route-home.png",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/07-stale-route-home.png.gz",
+      "bytes": 1434826,
+      "sha256": "3f15e41ea4be22d5a7779b4e3d4940b9c6f11a748e90aae35e06dfd943f17f09",
+      "storedBytes": 1435284,
+      "storedSha256": "4c235a14412d9e89189d2ba08af428ed15868937556646193994be82c718aaac",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/browser/result.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/browser/result.json.gz",
+      "bytes": 314569,
+      "sha256": "131c7fab77557a4e206ca2eb589866ba43862491adc9edacff8597473cc5dbd3",
+      "storedBytes": 16317,
+      "storedSha256": "e735babf31181bd61902fc02e848a09476c15d3de0f206666d997e503991ea15",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/cdp.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/cdp.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/chromium.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/chromium.log.gz",
+      "bytes": 5452,
+      "sha256": "78c33e1cd04f8336b5cef6ddba378742dc63252c7a6f026993d1592ca07ac62c",
+      "storedBytes": 716,
+      "storedSha256": "8dd94a1d6bdc97e894a205c93086bbec8e50680ce09316bf7450fb7ac3332227",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/host.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/host.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    },
+    {
+      "rawPath": "/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017-files/record.json.gz",
+      "bytes": 88882,
+      "sha256": "7146c6aae5f09f1cff997d30653926a780053229f70408ef5efa8b04c9cf7e58",
+      "storedBytes": 12301,
+      "storedSha256": "9a047e68eedce79faf209811a7ab7131617e32103591cb3922c4fdacce54f982",
+      "compression": "gzip mtime0; original PNG/log/JSON bytes retained, no image edits"
+    }
+  ],
+  "rootGate": "recovery/gm1558-root-chromium-actual-release-fadb31a6-20261017.json",
+  "rootQualification": "recovery/gm1558-root-chromium-raw-visual-qualification-fadb31a6-20261017.json",
+  "rootNativeUnion": "recovery/gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json",
+  "rootObservedStatus": "QUALIFIED_BOUNDED_PASS",
+  "proof": "Actual desktop Chromium1440x1000: menu\u219211card catalog\u2192BranchChoice ready/mouse choice\u2192score60partial result\u2192retry/second choice\u2192exit\u2192stale/daren-showcase SPAhome. Actual action grade=null twice, no Daren API request/runtime exception, all113servedfrontendfiles exact, profile/soul bytes equal beforestartup/interaction/after, owned roots physically absent and process ownership terminal perRootqualifiedraw.",
+  "limits": [
+    "One desktop BranchChoice sample; eleven catalog entries are not eleven interactive playthroughs. No mobile/Windows/full-world-save/backend/HOT/M3/CI qualification.",
+    "Owned minimal source-derived soul fixture shows13validationissues; not a validation-clean save or full-world compatibility proof. One favicon.ico404 is retained, Runtime.exceptionThrown0.",
+    "Root raw/visual qualification is credited; independent final EVIDENCE and final metadata/publication remain pending."
+  ],
+  "writerReadUtilityNote": "First read-only top-level lister encountered browser subdirectory and stopped IsADirectoryError before any write. Corrected to recursive regular-file inventory; exact12files/7originalPNGs; no runtime/raw/source mutation or replay.",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime,subprocess\nR=Path('/workspace/The-Book-of-Eternity-Reborn-1558');F=R/'specs/1558-remove-daren-campaign';REC=F/'recovery';D=Path('/tmp/gm1558-root-chromium-FIRST-5441e49f-20261017');base='fadb31a6afdfd28e48bdcf763d42769856f847b6'\ndef h(b):return hashlib.sha256(b).hexdigest()\nassert subprocess.check_output(['git','rev-parse','HEAD'],cwd=R).decode().strip()==base and not subprocess.check_output(['git','status','--porcelain'],cwd=R)\nassert h((D/'record.json').read_bytes())=='7146c6aae5f09f1cff997d30653926a780053229f70408ef5efa8b04c9cf7e58';assert h((D/'browser/result.json').read_bytes())=='131c7fab77557a4e206ca2eb589866ba43862491adc9edacff8597473cc5dbd3';record=json.loads((D/'record.json').read_text());result=json.loads((D/'browser/result.json').read_text());assert result['status']=='PASS'\nraw=sorted(p for p in D.rglob('*')if p.is_file());assert len(raw)==12 and len([p for p in raw if p.suffix=='.png'])==7 and not any(p.is_symlink()for p in raw)\nfolder=REC/'g2-root-first-chromium-fadb31a6-20261017-files';assert not folder.exists();folder.mkdir();rows=[]\nfor p in raw:\n b=p.read_bytes();z=gzip.compress(b,mtime=0);dest=folder/(str(p.relative_to(D))+'.gz');dest.parent.mkdir(parents=True,exist_ok=True);assert not dest.exists();dest.write_bytes(z);assert gzip.decompress(dest.read_bytes())==b;rows.append(dict(rawPath=str(p),storedPath=str(dest.relative_to(R)),bytes=len(b),sha256=h(b),storedBytes=len(z),storedSha256=h(z),compression='gzip mtime0; original PNG/log/JSON bytes retained, no image edits'))\nfiles=[('gm1558-root-chromium-actual-release-fadb31a6-20261017.json','5ab9e7aa248b788494f1c9098a71476e1d5a0b304cccf300254b66374face5bd'),('gm1558-root-chromium-raw-visual-qualification-fadb31a6-20261017.json','8aecff72b5efe29c9ee9e9b87868e1df75bc4dcc73c61d16845d650dffa770fd'),('gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json','2cf0c1d03359558c4f2bd0b6283e77ca887f3ed0d5452be2cbd5eeaf6a44b7e8'),('gm1558-g2-e02-first-remaining-delta-github-fadb31a6-20261017.json',None),('gm1558-root-recovery-composition-fadb31a6-20261017.json',None)]\nfor name,digest in files:\n p=Path('/tmp')/name;b=p.read_bytes();assert digest is None or h(b)==digest;target=REC/name;assert not target.exists();target.write_bytes(b)\npacket=dict(kind='ROOT_FIRST_CHROMIUM_ORIGINAL_RAW_FREEZE_PENDING_FINAL_INDEPENDENT_EVIDENCE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=base,compiledSource='5441e49f3662dd319de9f5935910a3a37fd14fd9',retainedFrontendSource='17329db678313999b77ef53660d7ffb8291bcff8',rootRawDirectory=str(D),rawChains=len(rows),originalPngCount=7,files=rows,rootGate='recovery/gm1558-root-chromium-actual-release-fadb31a6-20261017.json',rootQualification='recovery/gm1558-root-chromium-raw-visual-qualification-fadb31a6-20261017.json',rootNativeUnion='recovery/gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json',rootObservedStatus='QUALIFIED_BOUNDED_PASS',proof='Actual desktop Chromium1440x1000: menu\u219211card catalog\u2192BranchChoice ready/mouse choice\u2192score60partial result\u2192retry/second choice\u2192exit\u2192stale/daren-showcase SPAhome. Actual action grade=null twice, no Daren API request/runtime exception, all113servedfrontendfiles exact, profile/soul bytes equal beforestartup/interaction/after, owned roots physically absent and process ownership terminal perRootqualifiedraw.',limits=['One desktop BranchChoice sample; eleven catalog entries are not eleven interactive playthroughs. No mobile/Windows/full-world-save/backend/HOT/M3/CI qualification.','Owned minimal source-derived soul fixture shows13validationissues; not a validation-clean save or full-world compatibility proof. One favicon.ico404 is retained, Runtime.exceptionThrown0.','Root raw/visual qualification is credited; independent final EVIDENCE and final metadata/publication remain pending.'],writerReadUtilityNote='First read-only top-level lister encountered browser subdirectory and stopped IsADirectoryError before any write. Corrected to recursive regular-file inventory; exact12files/7originalPNGs; no runtime/raw/source mutation or replay.',helperText=Path(__file__).read_text());pkt=REC/'g2-root-first-chromium-fadb31a6-20261017.json';pkt.write_text(json.dumps(packet,indent=2)+'\\n')\nstatus='Root-qualified native union108uniqueC#cases (103new+5retained),29Vitestcases,2Nodeprograms,2typecheckfiles; genuinecurrent52 and strictcleanup preserved. Root desktopChromium BranchChoice/retry/exit/staleSPA samplePASS onactualfadb/compiled544/frontend17329; exact12originalraw/7PNGs frozen with minimalfixture13issues/favicon404 limits. Final independentEVIDENCE and task/FR/SC completion pending; no further source/runtime changes.'\np=F/'g2-implementation-source-packet-20261017.json';j=json.loads(p.read_text());assert len(j['sourcePins'])==277;j['status']=status;j['rootBrowserOutcome']=dict(packet=str(pkt.relative_to(F)),rootQualified='BOUNDED_PASS_NOT_INDEPENDENT_FINAL_EVIDENCE',nativeUnion='108uniqueCSharp+29Vitest+2NodePrograms+2TypecheckFiles',actualSource=base,compiledSource=packet['compiledSource'],retainedFrontendSource=packet['retainedFrontendSource'],rawChains=12,originalPngs=7,independentEvidence='PENDING',limits=packet['limits']);p.write_text(json.dumps(j,indent=2)+'\\n')\nfor name,marker in [('plan.md','**Current status**:'),('spec.md','**Status**:'),('tasks.md','**Current phase**:')]:\n p=F/name;s=p.read_text();a=s.index(marker);b=s.index('\\n',a);p.write_text(s[:a]+marker+' '+status+s[b:])\np=F/'plan.md';s=p.read_text();s+='''\\n## Root FIRST actual Chromium \u2014 original raw frozen, final EVIDENCE next\\n\\n[Exact browser raw packet](recovery/g2-root-first-chromium-fadb31a6-20261017.json) freezes all12original files and seven original PNGs as deterministic gzip/hash chains, without optimization/editing. [Root actual release](recovery/gm1558-root-chromium-actual-release-fadb31a6-20261017.json) and [raw/visual qualification](recovery/gm1558-root-chromium-raw-visual-qualification-fadb31a6-20261017.json) bind actualfadb/compiled544/frontend17329, served113assets and all process/root/data ownership. Root alone executed one real1440x1000 desktop mouse BranchChoice sample: menu/catalog/ready/choice/partialscore60, retry/secondchoice/exit/staleSPAhome; action grade=null twice, noDarenAPI/runtimeexception, exactprofile/soulbytes and strictownedcleanup.\\n\\nLimits retained: minimal source-derived owned soul has13validationissues and favicon.ico404; no validation-clean/full-world-save promise, eleven interactive playthroughs, mobile/Windows/backend/HOT/M3/CI proof. [Root native union qualification](recovery/gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json) separates103new+5retained=108uniqueC#cases,29Vitest,2Nodeprograms and2typecheckfiles; it does not present136adapteraggregate as homogeneous tests. [fadb raw carrier delta](recovery/gm1558-g2-e02-first-remaining-delta-github-fadb31a6-20261017.json) and [118-delta composition](recovery/gm1558-root-recovery-composition-fadb31a6-20261017.json) are preserved.\\n\\nPublish/recover this evidence-only carrier before independent final EVIDENCE. No source/runtime/test/helper/selector/pin/raw mutation, new run or checklist completion. Final metadata will qualify earlier CurrentG1/pending-source paragraphs as historical and mapFR001\u2013009/SC001\u2013004 to accepted evidence; T020/FR010/SC005 finalpublication conditions must not be preclaimed. All original first failures/sentinels and historical#1557/A1/A2 scope remain untouched.\\n''';p.write_text(s)\nprint('ROOT_FIRST_BROWSER_FROZEN',len(rows),'originalchains7PNGs;',sum(x['bytes']for x in rows),'rawbytes; finalEVIDENCEpending',flush=True)\n"
+}

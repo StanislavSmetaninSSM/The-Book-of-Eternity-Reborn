@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: FIRST named remaining observed native0/complete: 136 actual aggregate cases, 136PASS/0FAIL; 18/18descriptors completed. Exact42raw/native/frontend/fixture/process chains frozen; source277/new7DLL stable. Counts/unique union/semantic cleanup pending independent EVIDENCE; retained5 keepc5e/f076provenance, RootChromium and task completion held. No retry/source correction.
+**Status**: Root-qualified native union108uniqueC#cases (103new+5retained),29Vitestcases,2Nodeprograms,2typecheckfiles; genuinecurrent52 and strictcleanup preserved. Root desktopChromium BranchChoice/retry/exit/staleSPA samplePASS onactualfadb/compiled544/frontend17329; exact12originalraw/7PNGs frozen with minimalfixture13issues/favicon404 limits. Final independentEVIDENCE and task/FR/SC completion pending; no further source/runtime changes.
 
 ## Source issues and scope
 

@@ -1,0 +1,585 @@
+{
+  "kind": "ROOT_RELEASED_G2_CHROMIUM_SAMPLE",
+  "utc": "2026-10-17T12:07:22.494817+00:00",
+  "actualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "productDll": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+    "sha256": "4962b5701f0c15682412a747f5bf9548cd57f3a1b0b57fda8a7a18824d932e11"
+  },
+  "frontendRoot": "/workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.WebFrontend/dist",
+  "frontendFiles": [
+    {
+      "path": "assets/cinzel-decorative-latin-400-normal-Bspm-4mP.woff",
+      "bytes": 17272,
+      "sha256": "db59e3da738a030e4a54bb2aa5a4855a371a478a08a40f00be9bbc05b49ac0ba"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-400-normal-C3uAaiWr.woff2",
+      "bytes": 14416,
+      "sha256": "97d28bf5a628c4f0305a6f837e85d5ae7dbf44485f04d2a4cada8d7810c9bb03"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-700-normal-CnX1aK6s.woff2",
+      "bytes": 15488,
+      "sha256": "0826d61da654ac987a9f0046cdc6bcb95eba7f8d2d20f93531d51d008fedea14"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-700-normal-ov6XPGpn.woff",
+      "bytes": 18300,
+      "sha256": "c711446c66c923e7723195155a504ea96c40d9470a2e0a0d5308dc87cf17a975"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-900-normal-BBdTCSMn.woff",
+      "bytes": 17440,
+      "sha256": "0e0df9048a2b665d4d58b0f43d8e87e5e64f8f3a3b3a1b2c62191eea90f3adc4"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-900-normal-MnIZQgjg.woff2",
+      "bytes": 14568,
+      "sha256": "30318b42fd7fdb8436bdf2e4a10c90e8064f911e303a481196c1772a381c53e0"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-400-normal-DFyBg16u.woff",
+      "bytes": 9868,
+      "sha256": "f4d0e0d401287eb75efb7dfd941e2cfdad40498e4b6592cd3b1a13f6e6487b27"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-400-normal-bHvtSFkP.woff2",
+      "bytes": 8024,
+      "sha256": "57d6cf9d284ab796528836ae25094b144107bc087111fe539b7404e5fc338812"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-700-normal-BaOC-94C.woff",
+      "bytes": 10452,
+      "sha256": "88b172ecf95c0174fa9de9a48075f452b991e97977be48d6e0f6be7369e31a27"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-700-normal-Dul5pKgq.woff2",
+      "bytes": 8600,
+      "sha256": "3e593aeea80c73130f0125e39894a7466999982f77330a9a43eea9de44d9608a"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-900-normal-BhxIA4xV.woff2",
+      "bytes": 8064,
+      "sha256": "6ab3c105161fbae7bc7db01e1861e2a330a96d12ec4d1e1959f0aaddf3db0e52"
+    },
+    {
+      "path": "assets/cinzel-decorative-latin-ext-900-normal-CTiVNQCf.woff",
+      "bytes": 9992,
+      "sha256": "47065a3a1c7e67e8f60cafa1334fb14bcf7b7a92425628dce45adac49faca66e"
+    },
+    {
+      "path": "assets/cinzel-latin-400-normal-C8jUSQqm.woff",
+      "bytes": 16616,
+      "sha256": "99c6477f06f0c717d31f2bb41013582c347be65366179d5726d107ad908ff3b0"
+    },
+    {
+      "path": "assets/cinzel-latin-400-normal-DnUIPmzd.woff2",
+      "bytes": 14128,
+      "sha256": "b873cdd90d6bd9ca4793c805b4175abfae00b3611ee8afccf63067133dcf1217"
+    },
+    {
+      "path": "assets/cinzel-latin-600-normal-CH_LB4su.woff",
+      "bytes": 17504,
+      "sha256": "7cffb40d1c02861fd0f2fedf9446f36b9d38ce312c723927667ebcffc8690894"
+    },
+    {
+      "path": "assets/cinzel-latin-600-normal-Dd5YO2UX.woff2",
+      "bytes": 15204,
+      "sha256": "61efc27ceb7d08bb841652fa8979c0b6833b92548b7f9544c07968a6c02f28e4"
+    },
+    {
+      "path": "assets/cinzel-latin-700-normal-C-gK7hA8.woff",
+      "bytes": 17524,
+      "sha256": "83ea41e439a253b4d436cc895d07a0d47f714c4816a23e86df35c442eddffafb"
+    },
+    {
+      "path": "assets/cinzel-latin-700-normal-Dkw14w9r.woff2",
+      "bytes": 15184,
+      "sha256": "8efa224fe70fef188a39c095e218b81fd31061809f2752537e33a9ec7b9c2263"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-400-normal-DJ0Lq8y-.woff",
+      "bytes": 9292,
+      "sha256": "92a7ae1bae4213eff4bd574b5d0161b11fa226b70d299716b1870fdd076ba027"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-400-normal-XQK_CSAr.woff2",
+      "bytes": 7856,
+      "sha256": "4fc5b16d66f7ec618140abe75294dfb615c34ab2d824bd8a67691af58ddf6640"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-600-normal-BEFdM_VE.woff2",
+      "bytes": 8352,
+      "sha256": "a5779eb98b5046090f99169b529743e356b452909295ad7db4cb70011e0425e0"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-600-normal-BY9Mq9iK.woff",
+      "bytes": 9780,
+      "sha256": "a63b4e0285c06622db095f5847f25b4577ef2f9c1b3d6efbd9a71dbb0d80fd6e"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-700-normal-C24KFjuG.woff2",
+      "bytes": 8256,
+      "sha256": "55b110958b9b614a410cf607c12b1ff2990fa3e5bd0bfacf17e5fd7dce681562"
+    },
+    {
+      "path": "assets/cinzel-latin-ext-700-normal-CORa-yIv.woff",
+      "bytes": 9812,
+      "sha256": "dd34984698f3fa925365b89530fdfdfe9fa70ee2f681b233f267491145c8ecbd"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-400-italic-AH1vqu4S.woff",
+      "bytes": 16012,
+      "sha256": "0fbe68f0ae86850291607fed0654535ca0e4e59774f2083be8e6a2b0838330fe"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-400-italic-D3GtrbRZ.woff2",
+      "bytes": 12720,
+      "sha256": "109ce34012f204b9794f2fa2e8e6fdff52b156636cd5da86d86ae7142b48aa03"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-400-normal-CVFrM67f.woff",
+      "bytes": 15696,
+      "sha256": "11a86b7cdc25186a0a119cfc4e9269032ae8b11aa9e70acf98e48ac5d05e390d"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-400-normal-DD2KOZkl.woff2",
+      "bytes": 12776,
+      "sha256": "0d23162e67528fdc5fe1b12bedc525a69bbdc86d5d9f3c2ee9e9ee459934ecd4"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-500-normal-CyAY5ZLS.woff2",
+      "bytes": 12920,
+      "sha256": "30aec8d9cdb4ea84534ffcd7c58b0f06069f63dc177b5aafd7438627dfe10fb8"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-500-normal-DkJXBcIH.woff",
+      "bytes": 15760,
+      "sha256": "77aa93b818437cd94c9b77eb8f06593a7401696bc05af21cb199ec8fa540c706"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-600-normal-C2atO-64.woff2",
+      "bytes": 13016,
+      "sha256": "012bad3c47fada69f033bab125a60357379d69080ecfd37282e636f8390c6bf9"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-600-normal-FNmA3REe.woff",
+      "bytes": 15824,
+      "sha256": "bd9271a11ce512935f8eb74d3663cec7b70640917b80eaeaee3acc2804b3f96e"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-700-normal-D3uyJ5DH.woff",
+      "bytes": 15288,
+      "sha256": "4b9e7b466e1830c78d460c2bf78bd6dba26e9b47dd82cb14c30aa064dbb48063"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-700-normal-SLG_-a_c.woff2",
+      "bytes": 12536,
+      "sha256": "a767c1a110fa77514eda50ac2f962e92f99db4b8760c2bea2a6c04cbdf9b02aa"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-400-italic-BEGvmv_3.woff2",
+      "bytes": 14748,
+      "sha256": "91b622f3d9d90c295a5667852858e85493586e5950a3b6c052dc275e6ea49f77"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-400-italic-C_Uk1MUY.woff",
+      "bytes": 19136,
+      "sha256": "c144b6b4715551b519a4fa74e9010c212b3891d07778e5ccc462dcea780b2bb9"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-400-normal-DLdKLAvx.woff",
+      "bytes": 17428,
+      "sha256": "2373fdbd96854b3a6868d3ea36019d0e6f2f48c9990de8f80f0ae867fbaa4a53"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-400-normal-W3Dto7M0.woff2",
+      "bytes": 13920,
+      "sha256": "02a3bbfd23dfcfac40ad87d8954078cd96f8a85e661fc73617245fe06d2aa4ea"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-500-normal-Yta7XZ9C.woff2",
+      "bytes": 14096,
+      "sha256": "acab2d007aaa8b005a573cf1389f8f4f35bfb3413e2f6d59af49fbcc3668d925"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-500-normal-lsPpqi9g.woff",
+      "bytes": 17552,
+      "sha256": "94ff60604efd714cd2da16316554a894e969e9b8e779231921743aff5d51b046"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-600-normal-BMhMHfrj.woff2",
+      "bytes": 14184,
+      "sha256": "c7e2b743c908a6ce81639cff1d0847f2c8b3d7d7a3ae10cbfa34eb31c1a2b26d"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-600-normal-CsIYWmWK.woff",
+      "bytes": 17620,
+      "sha256": "bfbfeb7171787ae6b6cd710d22dd8620d3d345491278aa5a31c89aeede279eea"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-700-normal-BaW-xaxb.woff",
+      "bytes": 17084,
+      "sha256": "ea3322150817acf8f4d6060770e1d03d386b076101c17a5aef64e10292c37827"
+    },
+    {
+      "path": "assets/cormorant-garamond-cyrillic-ext-700-normal-Do0rx6yy.woff2",
+      "bytes": 13832,
+      "sha256": "6d9b0d3a9279cbfc9618627fc2cbbbcfd2c61c42c857ff1c9c2e9b66dcc2285f"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-400-italic-BLh7T8o8.woff",
+      "bytes": 32888,
+      "sha256": "337d07118277acbf5a0eb19c602aaf917b2485585360f2c7139ce42d9d4e6cc1"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-400-italic-Dc_OZ8oc.woff2",
+      "bytes": 23660,
+      "sha256": "e48e58027030df56869b795ca6f19b7012158275f7ad7cde1900b4a0b68d02e2"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-400-normal-B-1hWBU7.woff2",
+      "bytes": 22876,
+      "sha256": "8048ac209bec741e1c29cd0cfac5aac1c0c2ba8c3ddbd4a58fa9bd92ef5c63c2"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-400-normal-B7YtguxJ.woff",
+      "bytes": 30980,
+      "sha256": "b926f33f9d3d5cb64e639b8fe9ad5380560a63f3e7a29d212f2b80a2d22ec051"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-500-normal-BsRWmXhO.woff2",
+      "bytes": 23312,
+      "sha256": "8197bf53615ddc8c423f444c7f0eec63b7fa0ba093fcfbec60dfdd28429b0fc8"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-500-normal-zIXX3Q-H.woff",
+      "bytes": 31372,
+      "sha256": "314ee3edd5ddcdef5cf2374c1126b8be9f7f1ebd6c5c66a23c237f3b836a3ec1"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-600-normal-2CBVLo0M.woff",
+      "bytes": 31304,
+      "sha256": "6d837ba78b1d06e83248201bfc5de93b6e1c67aed36820021cff3db9602542c8"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-600-normal-Co1r35X9.woff2",
+      "bytes": 23396,
+      "sha256": "ae062b6d5ae308e7edf61b28b07b9984bbb6e961b1f34d9b2c2f4389c33f21ea"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-700-normal-DajfzrDU.woff2",
+      "bytes": 22340,
+      "sha256": "21a0fc1c5c22708cf4aa0c147fd32982e25bf9e21efec0ca31a4495ba41753eb"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-700-normal-O25Qpphb.woff",
+      "bytes": 30248,
+      "sha256": "19812cffd2e85fbf08d1b49adf35d3331bff4922d03847922e18e4ce81b3eff8"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-400-italic-BdEzgT7i.woff2",
+      "bytes": 20284,
+      "sha256": "96ec6109d044a8f2b279937499923fc0435db3e6bd91ce4cb1fd806d566378b9"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-400-italic-CQvLaSWn.woff",
+      "bytes": 28716,
+      "sha256": "2697e1ecd11cd30adf57e52f7571bf821c92719fd7c471cea1d7a178cf39d3a1"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-400-normal-Drx2k2n9.woff2",
+      "bytes": 19888,
+      "sha256": "375a088756d1cb10eb91a9a7de18ad5e9858689abe76496dd78e560fef0bbebb"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-400-normal-uvC0WHQr.woff",
+      "bytes": 27928,
+      "sha256": "751bcaa2bf2f07cb2b03f6c83e548dc254d3161741245fa96b372e78cf4c4055"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-500-normal-CH1kM7og.woff2",
+      "bytes": 20200,
+      "sha256": "3de1b0f23516d8ff77cc1a5af88b6c19037a375ec52729a8a5633998f58aa609"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-500-normal-DYeaGGzO.woff",
+      "bytes": 28280,
+      "sha256": "08ef933798b9939e6c79d08b68c0aad8c0024d5ea25c2c1b00da51aa5ffb38c3"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-600-normal-DaBc-lu7.woff2",
+      "bytes": 20304,
+      "sha256": "4993f7f4feb5e31d94f54e3b11428337a06f0c8c8d9ffef331aabd7e6a81b4c8"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-600-normal-Dk3-quAP.woff",
+      "bytes": 28260,
+      "sha256": "05eb51186a2b5a3df53ee8f4abe5e25c9a01b5f921a858e1814e0794ae582f5e"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-700-normal-CNjt5vTB.woff2",
+      "bytes": 19328,
+      "sha256": "f6cf9ae2417875c056a91df3669b14099da0a004ed66460324208d3541e7fa86"
+    },
+    {
+      "path": "assets/cormorant-garamond-latin-ext-700-normal-qRbaVVD7.woff",
+      "bytes": 27040,
+      "sha256": "0aef139d390bb53077afd128065c78772b59fa1dde7677d1d6187955e71f4fa6"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-400-italic-BoXDRTEW.woff2",
+      "bytes": 6764,
+      "sha256": "4a82e13d26b06c46839898021bb511623f9b73779b4ded1ef60e11df2b136426"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-400-italic-CJpMwFnN.woff",
+      "bytes": 9408,
+      "sha256": "b6c8a02deaec45a9e558be98b4666732041665cccf4779e791d075a8a1992412"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-400-normal-4uxlocMh.woff",
+      "bytes": 9316,
+      "sha256": "d2eac685abd3003ac60c4a208fe1d2febceba397964db73df656b1d2d62e2b24"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-400-normal-6K-YXo6g.woff2",
+      "bytes": 6744,
+      "sha256": "eddcd28ffd8e111c669789b2978019359bb67b2e2696e566364fd37133c20a3b"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-500-normal-BZGLGj12.woff2",
+      "bytes": 6756,
+      "sha256": "f245c41ee20c58be0acd85ac9e3060f8ff9a2dba455892ff37c1e11b9133eda0"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-500-normal-DqXqCC0q.woff",
+      "bytes": 9332,
+      "sha256": "b981d0af206e554e32a75cd806da1c266576843e6696d5df8d32f43e26935848"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-600-normal-BoXdMtcr.woff2",
+      "bytes": 6796,
+      "sha256": "5b1d7b7a52c90f436f97008deaf87aba7924bb3cddf1574f11068ff4119c9115"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-600-normal-C4HEjEaf.woff",
+      "bytes": 9420,
+      "sha256": "0866c0b1774f7a7282eac8c668df632c6fb3ed157f0365a571f9c4ff446b3662"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-700-normal--OtHbi1I.woff2",
+      "bytes": 6228,
+      "sha256": "212275cd3ee9d6a80d8715fc1ac12920b3f328bfc7d1a6bb15442826675e6186"
+    },
+    {
+      "path": "assets/cormorant-garamond-vietnamese-700-normal-GOTdnRS1.woff",
+      "bytes": 8872,
+      "sha256": "fb2ae74e9136f2b0b532f8552e2ee069654e93ce9451f4271ae688c32ef2aa30"
+    },
+    {
+      "path": "assets/index-QUgDBvoW.js",
+      "bytes": 528553,
+      "sha256": "01a6841c734b52af7f6223683147f5ffe412db17bc9d5482e0c59f1a73215152"
+    },
+    {
+      "path": "assets/index-q_a6FVOM.css",
+      "bytes": 247413,
+      "sha256": "d7099731065c3f3d78b728e16d7a1ea927b29681b7bd0e1fc161875ab1ee7015"
+    },
+    {
+      "path": "assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2",
+      "bytes": 25960,
+      "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd"
+    },
+    {
+      "path": "assets/inter-cyrillic-wght-normal-DqGufNeO.woff2",
+      "bytes": 18748,
+      "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075"
+    },
+    {
+      "path": "assets/inter-greek-ext-wght-normal-DlzME5K_.woff2",
+      "bytes": 11232,
+      "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190"
+    },
+    {
+      "path": "assets/inter-greek-wght-normal-CkhJZR-_.woff2",
+      "bytes": 18996,
+      "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6"
+    },
+    {
+      "path": "assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2",
+      "bytes": 85068,
+      "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+    },
+    {
+      "path": "assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+      "bytes": 48256,
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+    },
+    {
+      "path": "assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2",
+      "bytes": 10252,
+      "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2",
+      "bytes": 5328,
+      "sha256": "522f5827308102a9c0ea7860b5a11306043610ecf03d150ba32056a06e8c56e2"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-400-normal-ugxPyKxw.woff",
+      "bytes": 6976,
+      "sha256": "67c9cc7864b4940dbfb246c7b452c1de8e96f140f334d363fcdd87dbfeadab72"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-600-normal-8K4wrrwR.woff",
+      "bytes": 7020,
+      "sha256": "658b2246b9d068b64c9f2dbea7af4faa1a58c9428664ae5507a7306f3999895b"
+    },
+    {
+      "path": "assets/jetbrains-mono-cyrillic-600-normal-EVf6-Yzo.woff2",
+      "bytes": 5384,
+      "sha256": "b450f960a0d29846370fc050b6183727d2075a2bcb1c5595c99374bf083b5a83"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-400-normal-B9oWc5Lo.woff",
+      "bytes": 5664,
+      "sha256": "09f89e8369d7745ac5fe92e62a9ea13f66f40fd95b5495fac014c54b3a1ca6cc"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-400-normal-C190GLew.woff2",
+      "bytes": 4228,
+      "sha256": "365b7a8eaff022b13ed0561fde3890a04a30507d773ecd5adb3aca8e766a285c"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-600-normal-H7WoG9Et.woff2",
+      "bytes": 4308,
+      "sha256": "de02415369898d9aa2d9f30379b6c201fc1c0a7017589d973747d993a68f709b"
+    },
+    {
+      "path": "assets/jetbrains-mono-greek-600-normal-mc2nkWzM.woff",
+      "bytes": 5700,
+      "sha256": "5d78d0d7859974f41fc49b1cae442e25575016670c5946c2d1317661c4a728ad"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff",
+      "bytes": 27496,
+      "sha256": "658b9ee07b0249cf910a8d6f3d812d46c962bae81d7379a0355b1db35c61586f"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2",
+      "bytes": 21168,
+      "sha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-600-normal-BfsvjouI.woff",
+      "bytes": 28180,
+      "sha256": "3f4ad0687bcb0edc596c7c85138c5140ba3a9c5a3ce2ee944f27608c0f18bab9"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-600-normal-C8RAYTDA.woff2",
+      "bytes": 21860,
+      "sha256": "400c6bfda18d5d14acad1c15d6dcb9f8e13c015e7286317e0b9a482539bef147"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2",
+      "bytes": 7336,
+      "sha256": "505dfba8ecbe77e82765f36d317ed7ef4ac42719dc5f4ae68d1c483fd22d0d14"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-400-normal-fXTG6kC5.woff",
+      "bytes": 10128,
+      "sha256": "e7131bbf591e1ed9b74e44e162f6a39affa00ac21654cb683585d085733f6355"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-600-normal-BfB_LPfz.woff2",
+      "bytes": 7512,
+      "sha256": "90899aac1c15552c028fd205376bb537a2a5205164fe8626efabad77d7260c20"
+    },
+    {
+      "path": "assets/jetbrains-mono-latin-ext-600-normal-DObL3zCW.woff",
+      "bytes": 10316,
+      "sha256": "7f5fbd7caf6fefa665e65015225fea76b59d425a7bc4645dfd77e6eb7db35ea2"
+    },
+    {
+      "path": "assets/jetbrains-mono-vietnamese-400-normal-CqNFfHCs.woff",
+      "bytes": 5372,
+      "sha256": "1dfe0f740fa86409034058e49474b01126ae9ea8c1ecda905917b90d57f03b00"
+    },
+    {
+      "path": "assets/jetbrains-mono-vietnamese-600-normal-OWROknRo.woff",
+      "bytes": 5476,
+      "sha256": "1e3421e0f17174374ea4b6103d2f0118cf914c36004ca10cd4b092b8390ee6ed"
+    },
+    {
+      "path": "browser-ui-assets/catalog.md",
+      "bytes": 4406,
+      "sha256": "7a3c68932cbe69853f591c8dd0a5840905fe3d4c951044942450c50ed7e87aad"
+    },
+    {
+      "path": "browser-ui-assets/gallery-empty-archive.png",
+      "bytes": 117027,
+      "sha256": "b1f65cb877066ad88372322f758c4c119e971f62c2a4c1b614ff85f343b792a4"
+    },
+    {
+      "path": "browser-ui-assets/scene-hero-fallback.png",
+      "bytes": 110752,
+      "sha256": "1befc790fb18945f822d7c07a6ab157e27120788a66ebb35a4f398b0000c33c9"
+    },
+    {
+      "path": "browser-ui-assets/status-soul-vignette.png",
+      "bytes": 204661,
+      "sha256": "2e846bb000bfea3d0218cd1e35331f50c17f9c65d4b2fd024d2ed54f8e3f3f97"
+    },
+    {
+      "path": "generated-art/README.md",
+      "bytes": 785,
+      "sha256": "59f8ff666a9ed60c1ecbddb81ac17d26fd5b508cb657951f6a473601654cb638"
+    },
+    {
+      "path": "generated-art/game-shell-bg.png",
+      "bytes": 1825333,
+      "sha256": "3997396f28268a191eaf773d0bb38b25003c8c78ef85f9eb5f45964648bb546a"
+    },
+    {
+      "path": "generated-art/launcher-side-left.png",
+      "bytes": 1101823,
+      "sha256": "ed9bff92e2a21e85d967d9104e7cf049834b32faf2364cf4ed8779690da8e3b4"
+    },
+    {
+      "path": "generated-art/launcher-side-right.png",
+      "bytes": 409421,
+      "sha256": "c1b72e98ed51649e659fec8f50164f6c01634a842afdb186360ef3f073b84ead"
+    },
+    {
+      "path": "index.html",
+      "bytes": 765,
+      "sha256": "27d0886c6ca7f2761e67f8574b90b4837d21a6df27d4821a225ba41ae0dc53bc"
+    },
+    {
+      "path": "local-web-ui-shell.html",
+      "bytes": 67515,
+      "sha256": "d38e3a6afaada716aa578a985ffa09afc3b4ee4b5b2b1531969c5ce5851fa24c"
+    },
+    {
+      "path": "main-menu-bg.source.md",
+      "bytes": 1679,
+      "sha256": "2670f8257778c2367f5341e040f991c4068561dd5dfb8411ae2441cf687fc17f"
+    },
+    {
+      "path": "main-menu-bg.webp",
+      "bytes": 98876,
+      "sha256": "fad4c6838f4fd0df4d53e480b67e6f2ca6994663e25ce58b3bef3823509e35c6"
+    }
+  ],
+  "greenQualification": {
+    "path": "/tmp/gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json",
+    "sha256": "2cf0c1d03359558c4f2bd0b6283e77ca887f3ed0d5452be2cbd5eeaf6a44b7e8"
+  },
+  "independentGreenPreliminary": "Reviewerverified42chains/108uniqueC#/57strictroots/genuine52; no materialGREENfinding; finalpairheldforRootsample.",
+  "scope": "OnegenuineheadlessdesktopChromium BranchChoice mouseflow/retry/exit/staleURL withstrictownedfixtures/processcleanup. Inspectall7screenshots afterrun. No11interactive/Windows/mobile/fullsaveworldcompatibilityclaim. No othernative orrepomutationconcurrent."
+}
