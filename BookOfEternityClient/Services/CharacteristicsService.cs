@@ -289,12 +289,8 @@ public partial class CharacteristicsService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
-                if (doc.RootElement.TryGetProperty("playerLevel", out var playerLvl) &&
-                    playerLvl.ValueKind == JsonValueKind.Number)
-                    return playerLvl.GetInt32();
+                if (ReadTrainingExperienceLevel(doc.RootElement) is { } level)
+                    return level;
             }
             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }
@@ -306,9 +302,8 @@ public partial class CharacteristicsService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)
+                    return level;
             }
             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }
@@ -320,9 +315,8 @@ public partial class CharacteristicsService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)
+                    return level;
             }
             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }

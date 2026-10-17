@@ -379,6 +379,8 @@ Time retains distinct validation, progression Int32 direct-first and effect Int6
 
 ##### T179-Pd.3c-A1 — ordinary training-level kernel
 
+Current implementation status (2026-10-17): qualified structural RED EVIDENCE is preserved at36ee5b014; minimal two-method/three-leaf source WIP is authored under the current mandate. No current compilation, SOURCE acceptance or actual run is claimed; [current plan checkpoint](../plan.md) records exact persistence/preparation/Late2/EVIDENCE gates. Existing design/interfaces/semantics and protected bodies/budgets below are unchanged.
+
 **Goal/accepted parent scope:** independently shippable prerequisite selected by the direct04f5 continuation; same existing ordinary GetPlayerLevel semantics through a shared pure body, no complete3c family/HOT claim. Existing broader3c design and AP-D01 stay unchanged. [Independent narrow DESIGN review](../recovery/t179pd-training-level-a1-contract-independent-review-20261016.md) accepts45aad with no material blocker; root17pins/18projections/6diffs/7localrecords checked. Only concrete test/source preparation is released; actual execution remains gated.
 
 **Files/interfaces:** new `BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs`, same partial class, two `internal static int?` methods `ReadTrainingExperienceLevel(JsonElement root)` and `ReadTrainingSingleLevel(JsonElement root)`. Modify only the three parsed leaf blocks in `CharacteristicsService.cs:GetPlayerLevel` to consume these methods. Leave async reads, each JsonDocument lifetime, three separate catches, `_jointProjectionRead` rethrow, file priority and final1 in their original positions. No new filesystem API, source injection, accepted flag, mutation/initializer/award/time policy or SDK/dependency.
