@@ -2560,12 +2560,8 @@ public partial class GameEngine
             if (expJson != null)
             {
                 using var doc = JsonDocument.Parse(expJson);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    currentLevel = lvl.GetInt32();
-                else if (doc.RootElement.TryGetProperty("playerLevel", out var pl) &&
-                    pl.ValueKind == JsonValueKind.Number)
-                    currentLevel = pl.GetInt32();
+                if (CharacteristicsService.ReadAwardExperienceLevel(doc.RootElement) is { } level)
+                    currentLevel = level;
             }
 
             // Also check player_status for level
@@ -2575,9 +2571,8 @@ public partial class GameEngine
                 if (statusJson != null)
                 {
                     using var doc = JsonDocument.Parse(statusJson);
-                    if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                        lvl.ValueKind == JsonValueKind.Number)
-                        currentLevel = lvl.GetInt32();
+                    if (CharacteristicsService.ReadAwardStatusLevel(doc.RootElement) is { } level)
+                        currentLevel = level;
                 }
             }
 
