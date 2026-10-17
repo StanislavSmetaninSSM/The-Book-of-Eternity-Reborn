@@ -1,0 +1,24 @@
+{
+  "kind": "ROOT_NARROW_EXISTING_PREDICATE_CALLEE_RETAINED_SOURCE_COVERAGE",
+  "scope": "Two unchanged purepath callees used by ValidationIssue.IsClientOwnedSurfacePath and alreadyreached ValidationService.IsClientOwnedSurfaceValidationPath; exact retainedfullbase+newdeltabytes vs currentGitshow. No newclone/fetch/fixture/runtime or assertion of exhaustive transitiveclosure.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+      "bytes": 21146,
+      "sha256": "7fd2a3e3ae98f9d5bebae6a31cbfb95625a26733e105b870a7789a6f46e9f741",
+      "gitBlob": "e103982aa7dcf484245923e005d353827ac63f84",
+      "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "coveredPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "origin": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+      "bytes": 9328,
+      "sha256": "baf73c92d63578063e92904277503dcc3322cd57c7db38f47734fa5c4a181c7a",
+      "gitBlob": "01c48f0c18b792d2f248764e5dfb2fd61bffee77",
+      "currentHead": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b"
+    }
+  ]
+}

@@ -34,7 +34,7 @@ public sealed class GmRelayOperationalProtectionTests(ITestOutputHelper output)
             "repair" => (typeof(GameEngine), "IsClientOwnedRepairResubmissionPath"),
             "recoverable" => (typeof(GameEngine), "IsRecoverableFilesModifiedPath"),
             "validation" => (typeof(ValidationService), "IsClientOwnedSurfaceValidationPath"),
-            "surface" => (typeof(ValidationService), "IsClientOwnedSurfacePath"),
+            "surface" => (typeof(ValidationIssue), "IsClientOwnedSurfacePath"),
             _ => throw new ArgumentOutOfRangeException(nameof(owner))
         };
         var method = type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static);

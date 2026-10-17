@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "FIRSTPRIVATE16_UNEXPECTED_STOP_6PASS10FAIL_4PREREQFAIL; OTHER3OWNERS16ROWS_UNRUN; CAUSAL_REVIEW_PENDING; PRODUCTION_HELD",
+  "currentGate": "PRIVATE16_WRONG_DECLARING_TYPE_CONFIRMED; ONE_LINE_FIXTURE_CORRECTION_WIP_UNCOMPILED; OTHER3OWNERS_UNRUN; PRODUCTION_HELD",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -501,7 +501,7 @@
   },
   "lifecycleStage": {
     "scope": "INACTIVE_EXACT_TWO_NAME_OPERATIONAL_LIFECYCLE_ONLY_THEN_WOUNDS_HANDOFF",
-    "status": "FIRSTPRIVATE16_UNEXPECTED_STOP; CAUSAL_REVIEW_PENDING; ALL_DEPENDENTS_HELD",
+    "status": "SOURCE_ONLY_FIXTURE_OWNER_CORRECTION_WIP; NEW_PREP_SOURCE_AND_ACTUAL_HELD",
     "historicalBaseline": {
       "engine2Accepted": 2,
       "remaining6Accepted": {
@@ -606,7 +606,7 @@
           }
         ],
         "staticCount": 16,
-        "status": "FIRST16_EXECUTED_6PASS10FAIL; FOUR_UNEXPECTED_PREREQUISITE_FAILURES; CAUSAL_REVIEW_PENDING",
+        "status": "EXACT_OWNER_SOURCE_CORRECTED_WIP_UNCOMPILED; ORIGINAL16_RAW_6PASS10FAIL_RETAINED; NO_RERUN",
         "oracle": "Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only."
@@ -814,6 +814,18 @@
       "remainingOwners": 3,
       "remainingRows": 16,
       "qualification": "UNEXPECTED_FIRST_STOP_RAW_ONLY; CAUSAL_REVIEW_PENDING; NO_RETRY"
+    },
+    "privateFixtureCorrection": {
+      "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+      "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+      "before": "surface => typeof(ValidationService)",
+      "after": "surface => typeof(ValidationIssue)",
+      "scope": "EXACT_ONE_LINE_ONLY;16InlineData rows and all signature/value/output/final oracles unchanged.",
+      "cause": "Actual ValidationService.PrivateImplementation.cs closes ValidationService before public ValidationIssue; IsClientOwnedSurfacePath is declared on ValidationIssue. Four original NotNull41 failures are fixture owner lookup failures, not product RED. Six other exact-name Eq46 failures have actual values; six suffix PASS remain distinct.",
+      "reviewDisposition": "Root and independent reviewer source cause confirmed; original accepted SOURCE reports remain immutable as a missed declaring-owner finding. Final causal report persistence pending arrival.",
+      "callees": "Root retained-fullbase coverage2, no clone/fetch: MortalItemRepairPacketBuilder direct to BOTH validation predicates; AfterlifeContractRegistry direct only to ValidationIssue surface.",
+      "preparation": "NOT_RUN_FOR_CORRECTED_SOURCE; fixed zero-test controller after published WIP, before any prep.",
+      "actual": "NOT_RUN; all dependent native/production held. Future failed-private16 requalification is changed-fixture verification, not original accepted baseline8 replay."
     }
   }
 }

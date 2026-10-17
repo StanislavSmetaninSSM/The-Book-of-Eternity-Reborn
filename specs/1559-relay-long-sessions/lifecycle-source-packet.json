@@ -1,11 +1,11 @@
 {
   "kind": "TESTS_ONLY_INACTIVE_OPERATIONAL_LIFECYCLE_PROTECTION_SOURCE_CANDIDATE",
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
-  "sourceParent": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+  "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "FIRSTPRIVATE16_UNEXPECTED_STOP; ORIGINAL_SOURCE_VERDICT_RETAINED; CAUSAL_REVIEW_PENDING; OTHERACTUALS_AND_PRODUCTION_HELD",
-  "sourcePinCount": 134,
-  "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
+  "stage": "EXACT_ONE_LINE_FIXTURE_OWNER_CORRECTION_WIP_UNCOMPILED; NO_NEW_PREP_OR_NATIVE",
+  "sourcePinCount": 136,
+  "sourcePinDigest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
   "sourcePins": [
     {
       "path": ".agents/skills/speckit-analyze/SKILL.md",
@@ -346,9 +346,9 @@
     {
       "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
       "mode": "100644",
-      "gitBlob": "22b4f5a0c4e46cffafc210d0d4e03d5b3df05179",
-      "bytes": 2936,
-      "sha256": "29d06d330253cfce62c88924667bdea0f6873798ef8a58ca19babe2d2f07812e",
+      "gitBlob": "3fa321d543809a2aa8e78a884d46bd02bb477d1e",
+      "bytes": 2934,
+      "sha256": "e6d198046e370409876619d0555951fe07649551b538e7bea5049f9ea1c12b47",
       "role": "new_guard_or_selection"
     },
     {
@@ -608,6 +608,16 @@
       "role": "retained_audited_dependency"
     },
     {
+      "path": "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "mode": "100644",
+      "gitBlob": "01c48f0c18b792d2f248764e5dfb2fd61bffee77",
+      "bytes": 9328,
+      "sha256": "baf73c92d63578063e92904277503dcc3322cd57c7db38f47734fa5c4a181c7a",
+      "role": "Direct pure-path callee ONLY of ValidationIssue.IsClientOwnedSurfacePath; current ValidationService validation predicate does NOT call it",
+      "retainedPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "retainedOrigin": "7a9eca35af13fe48c959b8d431087e9c058a45dc"
+    },
+    {
       "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
       "mode": "100644",
       "gitBlob": "9263bcd239fd133a3d089aafb13620b8471d91bc",
@@ -662,6 +672,16 @@
       "bytes": 20289,
       "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
       "role": "retained_audited_dependency"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "mode": "100644",
+      "gitBlob": "e103982aa7dcf484245923e005d353827ac63f84",
+      "bytes": 21146,
+      "sha256": "7fd2a3e3ae98f9d5bebae6a31cbfb95625a26733e105b870a7789a6f46e9f741",
+      "role": "Direct pure-path callee shared by ValidationService.IsClientOwnedSurfaceValidationPath AND ValidationIssue.IsClientOwnedSurfacePath",
+      "retainedPhysicalSource": "/workspace/a1-github-full-source-7a9eca35-20261017/BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "retainedOrigin": "7a9eca35af13fe48c959b8d431087e9c058a45dc"
     },
     {
       "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
@@ -1101,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "3a163d5ddeec06d0c17ef920998860980dfe4cecf9966a4b7fa3d395906f37ae"
+    "sha256": "8be153acd425ee1c7ade85e5ecf5f0bd45561b55c2b34af45de555731734f480"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1268,7 +1288,8 @@
       ],
       "cases": 32,
       "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141948-039-128017-72921438b8c547829499ccddc1939bc0-categories/plan.json"
-    }
+    },
+    "appliesTo": "Historical original134source/7ff; corrected136source is UNCOMPILED/UNPREPARED."
   },
   "currentManagedProvenance": {
     "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
@@ -1319,7 +1340,7 @@
         "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
       }
     ],
-    "note": "NEW7ff informational-version/source-revision managed copies from fresh build; unchanged production sourcea82, oldd473 raw kept under its original provenance."
+    "note": "Historical7ff managed copies produced original FIRST failure. Corrected one-line fixture has not been built; no current corrected-source qualification from them."
   },
   "historicalBaseline": {
     "engine2Accepted": 2,
@@ -1372,7 +1393,7 @@
   "newFirstActualRecorder": {
     "path": "recovery/tools/lifecycle-guard-first-run.py",
     "sha256": "59d0f95f04c08b3aa0ea93057e74dcd7babc2e1d2c0e98373bce3b0d5b16356f",
-    "status": "PRIVATE16_EXECUTED_ONCE_ORIGINAL_FIRST_PRESERVED; THREE_OTHER_OWNERS_UNRUN_HELD"
+    "status": "ORIGINAL59D0/7FF/FIRSTSENTINEL IMMUTABLE; corrected-source recorder and fresh compiled binding needed after WIP/prep."
   },
   "sourceDecision": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
@@ -1384,7 +1405,8 @@
     ],
     "root": "Explicit Root source acceptance recorded in plan.md; successor recovery required before any separately named owner activation.",
     "actual": "ALL32_UNRUN",
-    "lowMetadata": "LIFECYCLE-L01 four row statuses corrected; exact134sourceDigest and fresh9DLL/selector/prep bindings unchanged."
+    "lowMetadata": "LIFECYCLE-L01 four row statuses corrected; exact134sourceDigest and fresh9DLL/selector/prep bindings unchanged.",
+    "appliesTo": "Historical134source/7ff prep before unexpected first private16; immutable independent reports/source-review miss preserved. Corrected136source requires new zero-test prep and targeted SOURCE."
   },
   "firstGuardRaw": {
     "packet": "recovery/lifecycle-guard-first-private16-stop.json",
@@ -1398,5 +1420,23 @@
     "remainingOwners": 3,
     "remainingRows": 16,
     "qualification": "UNEXPECTED_FIRST_STOP_RAW_ONLY; CAUSAL_REVIEW_PENDING; NO_RETRY"
+  },
+  "privateFixtureCorrection": {
+    "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
+    "path": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+    "before": "surface => typeof(ValidationService)",
+    "after": "surface => typeof(ValidationIssue)",
+    "scope": "EXACT_ONE_LINE_ONLY;16InlineData rows and all signature/value/output/final oracles unchanged.",
+    "cause": "Actual ValidationService.PrivateImplementation.cs closes ValidationService before public ValidationIssue; IsClientOwnedSurfacePath is declared on ValidationIssue. Four original NotNull41 failures are fixture owner lookup failures, not product RED. Six other exact-name Eq46 failures have actual values; six suffix PASS remain distinct.",
+    "reviewDisposition": "Root and independent reviewer source cause confirmed; original accepted SOURCE reports remain immutable as a missed declaring-owner finding. Final causal report persistence pending arrival.",
+    "callees": "Root retained-fullbase coverage2, no clone/fetch: MortalItemRepairPacketBuilder direct to BOTH validation predicates; AfterlifeContractRegistry direct only to ValidationIssue surface.",
+    "preparation": "NOT_RUN_FOR_CORRECTED_SOURCE; fixed zero-test controller after published WIP, before any prep.",
+    "actual": "NOT_RUN; all dependent native/production held. Future failed-private16 requalification is changed-fixture verification, not original accepted baseline8 replay.",
+    "previous134SourceDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
+    "unchangedPrior134Pins": 133,
+    "changedPriorPin": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
+    "newRetainedCalleePins": 2,
+    "calleeCoverage": "recovery/root-private-surface-callee-coverage-0771e125.json",
+    "firstUnexpectedRootReadback": "recovery/root-private16-unexpected-inspection-ed09dc0e.json"
   }
 }
