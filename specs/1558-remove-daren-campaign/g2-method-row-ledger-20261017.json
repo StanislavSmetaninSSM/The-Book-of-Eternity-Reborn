@@ -10213,7 +10213,8 @@
       "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingMember_RecoversStandaloneOrDeclaredBytesOrAbsence"
     },
     "currentSelectedOwners": 16,
-    "native": "UNRUN; preciseGREENPlan follows coherentpublication/freshbuild"
+    "native": "UNRUN; preciseGREENPlan follows coherentpublication/freshbuild",
+    "snapshotQualification": "Historical G2 static authoring retirement/migration snapshot before private-intent and E02 owner additions; current full/remaining discovery membership and qualifiedRuntime below govern current counts."
   },
   "partition": {
     "remainingCloseRows": [
@@ -10248,7 +10249,7 @@
     "producerOnlySupport": "Capture/Freeze methods removed",
     "retained": "Exact browser7.json/standalone1.json and packet types/strict current-generation/Load/Instantiate/opaqueimage transport remain; all raw/sentinels/originalproducer provenance unchanged."
   },
-  "futureNative": "All current GREEN runtime/frontend adapters/RootChromium UNRUN; Source review and separate Root release remain. Original28causal baseline and all supersededfixture failures historical.",
+  "futureNative": "COMPLETED_BOUNDED_EVIDENCE_ACCEPTED:103new+5retained=108uniqueCSharp;29Vitest/2Nodeprograms/2typecheckfiles;oneRootdesktopBranchChoice. No further runtime. Final publication conditions pending.",
   "newG2Methods": [
     {
       "method": "BookOfEternityClient.Tests.DarenRetirementPreIntentTests.CompleteRetiredIntent_RefusesBeforePrivateScratchDiscard",
@@ -10310,9 +10311,9 @@
   ],
   "sourceAuthoringCorrections": {
     "R02": "Exact original shared193B rollback helper restored; retained ordinary caller",
-    "R03": "Refined before first managed compiler: strict envelope decoder separated from effect admission, journal transport outside malformed-codec catch, exact retired identity before image/physicalmember checks;9cases4methods pending native."
+    "R03": "Historical source-authoring snapshot before first managed compiler: Refined before first managed compiler: strict envelope decoder separated from effect admission, journal transport outside malformed-codec catch, exact retired identity before image/physicalmember checks;9cases4methods pending native. Subsequent9cases/4methods passed under accepted finalEVIDENCE; see qualifiedRuntime."
   },
-  "status": "E02 full and remaining fresh native discovery/PlanOnly accepted as zeroexec observations; targeted SOURCE and runtime pending; counts are discovery minima.",
+  "status": "Final bounded SOURCE/EVIDENCE accepted; historical nativeMembership remains discovery minimums, qualifiedRuntime is actual. Final publication conditions pending.",
   "nativeMembershipSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
   "nativeMembership": {
     "categories": 18,
@@ -10762,5 +10763,29 @@
       "executed": 0
     },
     "oldNativeMembership": "Historical555 snapshot; do not present as current E02 membership. MemberData11actual rows vs1discoveryestimate."
+  },
+  "qualifiedRuntime": {
+    "independentEvidence": "recovery/gm1558-g2-final-evidence-independent-20261017.md",
+    "rootDisposition": "recovery/gm1558-root-final-evidence-accepted-handoff-release-b18aae9a-20261017.json",
+    "coverage": {
+      "newCsharpPassed": 103,
+      "retainedCsharpPassed": 5,
+      "uniqueCsharpPassed": 108,
+      "csharpMethodIdentities": 42,
+      "vitestPassed": 29,
+      "nodeFileProgramsPassed": 2,
+      "typecheckCompileContractsPassed": 2,
+      "remainingDescriptorsComplete": "18/18",
+      "nativeRunnerResults": 136,
+      "notHomogeneousTestCount": true,
+      "desktopSample": "One real1440x1000Chromium BranchChoice mouse/normal/action grade=null twice/retry/exit/staleURLhome;11catalogDOM entries only."
+    },
+    "nativeActualSource": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+    "retainedFiveActualSource": "c5e620236f30a02415cafb64e28d7c4d9ffea1f9",
+    "retainedFiveCompiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+    "browserActualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+    "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+    "frontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+    "finalPublicationCondition": "Final T020/FR010/SC005 completion activates only after final nonforce push, exact remote SHA, Root independently checked complete immediate GitHub new-directory delta and retained full-tree composition; no selfreceipt-only loop required."
   }
 }

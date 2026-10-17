@@ -1,0 +1,19 @@
+{
+  "kind": "ROOT_FROZEN_ORIGINAL_BROWSER_RAW_CHAINS_READBACK",
+  "utc": "2026-10-17T12:13:38.884692+00:00",
+  "carrier": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+  "rawActualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "packet": {
+    "path": "specs/1558-remove-daren-campaign/recovery/g2-root-first-chromium-fadb31a6-20261017.json",
+    "sha256": "66fbc7739860fc5bdab575561797362875c08ad38182ad676af1064b6cd34e3c"
+  },
+  "chains": 12,
+  "originalPngs": 7,
+  "originalBytes": 9439303,
+  "allLiveRawStoredCompressedHashGitBlobBytesEqual": true,
+  "rootReceiptsCopiedExact": 5,
+  "all22ChangedPathsFeatureMetadataAndRawOnly": true,
+  "sourceTestHelperCatalogSelectionUnchanged": true,
+  "recovery": "Full new GitHub delta independently checked separately before final acceptance."
+}

@@ -1,0 +1,91 @@
+{
+  "kind": "ROOT_FINAL_ACTIVE_REFERENCE_CLASSIFICATION",
+  "utc": "2026-10-17T12:12:42.529897+00:00",
+  "actualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "scopes": [
+    "BookOfEternityClient",
+    "BookOfEternityClient.WebFrontend/src",
+    "CLI_API_Specification.md",
+    "Rules/Block_CLI_QTE.txt",
+    "Examples/E_CLI_QTE_Offer.txt",
+    "TaskGuides/CLI_Step_Main.txt"
+  ],
+  "rows": [
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "line": 94,
+      "text": "The Daren campaign is retired; existing profile bytes stay inert, and interrupted",
+      "classification": "retirement explanation"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "line": 214,
+      "text": "[repository roadmap](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/roadmap-after-daren.md) и",
+      "classification": "historical roadmap URL"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "line": 535,
+      "text": "throw Conflict(\"Retired Daren profile publication evidence retained without mutation.\");",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "line": 572,
+      "text": "throw Conflict(\"Retired Daren profile publication evidence retained without mutation.\");",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "line": 578,
+      "text": "throw Conflict(\"Retired Daren profile publication evidence retained without mutation.\");",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "line": 589,
+      "text": "FileSystemManager.RetiredDarenProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "line": 32,
+      "text": "internal const string RetiredDarenProfileRelativePath = \"client_profile/qte_showcase_rewards.json\";",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "line": 162,
+      "text": "entry?.FileId == RetiredDarenRewardProfileExternalFileId)",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "line": 163,
+      "text": "? \"Retired Daren browser publication evidence retained without mutation.\"",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "line": 12,
+      "text": "internal const string RetiredDarenRewardProfileExternalFileId = \"daren_reward_profile\";",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "line": 997,
+      "text": "entry?.FileId == RetiredDarenRewardProfileExternalFileId)",
+      "classification": "retired-evidence refusal identity/guard/error"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "line": 998,
+      "text": "? \"Retired Daren browser publication evidence retained without mutation.\"",
+      "classification": "retired-evidence refusal identity/guard/error"
+    }
+  ],
+  "sourceRemovalProof": "Read with prior independent SOURCE, fresh package and executed reachability controls; name search alone is not removal proof.",
+  "frontendSourceMatches": 0,
+  "activeGmDocumentMatches": 0,
+  "inspectorPathCorrection": "Initial read-only rg supplied nonexistent generic frontend/src and root Launcher path; corrected to actual BookOfEternityClient.WebFrontend/src and included actual product Launcher. No source/runtime/raw changes."
+}

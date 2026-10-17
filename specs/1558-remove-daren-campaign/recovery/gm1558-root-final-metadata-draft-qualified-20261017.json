@@ -1,0 +1,77 @@
+{
+  "kind": "ROOT_CONCRETE_FINAL_METADATA_DRAFT_QUALIFIED_FOR_NONFORCE_PUBLICATION",
+  "utc": "2026-10-17T12:19:29.420559+00:00",
+  "parent": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+  "activeDiff": {
+    "path": "/tmp/gm1558-final-handoff-active-metadata.diff",
+    "sha256": "4d6fc132ac6d6a1970e0f3ee27931662ad1cc591921eadde8d01fa32d8580c5d"
+  },
+  "activeMetadataFiles": [
+    {
+      "path": "specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+      "sha256": "a21a9f164848f8b67b55505b4885f633267d493afdd664ab62c37461d09a2a24"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/g2-method-row-ledger-20261017.json",
+      "sha256": "f5c430a6fa43b26c6bf6e3235aa243cb2a75532063bcefafd3f9453841b9c2b8"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/plan.md",
+      "sha256": "bbec43c02b7f37268b504384511774e2fcb4b5c83c34bc271e3c8e13e022eb1b"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/spec.md",
+      "sha256": "5e15cddd0d2ea825384e67baae2abec6ff53bdd0bdf77b86ed4724c8cd43c653"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/tasks.md",
+      "sha256": "b83e02b497039be8c2e54e6d916fe9478d4f58611ef86f466e86b1443de106e4"
+    }
+  ],
+  "newExactReportReceiptCopies": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-final-evidence-independent-20261017.json",
+      "sha256": "fa6bae70ae06d05a1491245ef5e5e17d9a3fe06dabc269a20866a9a27c3e1a37"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-final-evidence-independent-20261017.md",
+      "sha256": "805ad24e9ecc06090e78074586b2a3a8c8cecf381846981460c3ad1d8b513f6f"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-final-evidence-independent-check-20261017.json",
+      "sha256": "e331a93498fae8974ae8ef9a033e2d744a707278a2e3d3f78453e23965b5193b"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g2-root-browser-delta-github-b18aae9a-20261017.json",
+      "sha256": "31bdf52a72edba52176a9fc791a107a5928765555e04b1dc3f05035c9dfa5936"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-final-active-reference-sweep-20261017.json",
+      "sha256": "594cdc774fdba8e93bc9a6ae28228ec2517137986717c01d9ef6672cbfeb8da9"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-final-evidence-accepted-handoff-release-b18aae9a-20261017.json",
+      "sha256": "054e0303e8ff8c6fe9e65a84ed7ee15ac8f216019f59fb4cbcadfaac0e8048b4"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-frozen-browser-readback-b18aae9a-20261017.json",
+      "sha256": "4b3375f70c64517ed317d8eac74f098dd04ecd1957031adce4a47dd03c98851e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-b18aae9a-20261017.json",
+      "sha256": "11badf804426b6a1972160f05ef1980c37f84d2f1a4252bf7691d3cc9c758e3c"
+    }
+  ],
+  "normativeRequirementsAndCriteria": {
+    "unchanged": true,
+    "count": 15
+  },
+  "tasks": {
+    "count": 20,
+    "T004_T019": "complete on accepted SOURCE/EVIDENCE",
+    "T020": "conditional, activates only on final remote SHA and Root full new-delta/tree verification"
+  },
+  "protectedSource277SevenBinaryPinsAndSelectors": "objectwise identical to b18; no runtime/source change",
+  "narrowConsistencyCorrections": "Five stale current/held fields corrected; original frozen reports/raw unchanged.",
+  "metadataReview": "Independent short final metadata review of published SHA still required; no SOURCE/native/browser replay."
+}

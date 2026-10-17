@@ -1,0 +1,17 @@
+# Independent final bounded #1558 EVIDENCE
+
+**Accepted: remaining GREEN plus the separate desktop Chromium sample. No material blocker.** Final evidence carrier `b18aae9a7fd957d632a9adc7817a7f97296cbef7`; native actual `d6318f0e109258852e4da4146e14c7a1365abb4d`, browser actual `fadb31a6afdfd28e48bdcf763d42769856f847b6`, compiled `5441e49f3662dd319de9f5935910a3a37fd14fd9`, frontend `17329db678313999b77ef53660d7ffb8291bcff8`. Accepted SOURCE remains unchanged.
+
+The FIRST remaining invocation returned0 in109.726s, completing18/18 descriptors without underfill, duplicate cases, timeout or cleanup failure. Exact TRX identities qualify **103 new C# PASS +5 retained PASS =108 unique C# cases across42 methods**. Separately:29 Vitest cases,2 Node file programs and2 typecheck contracts passed. The runner's136 results are not136 homogeneous tests. Five retained guards keep their c5e/f076 provenance; nine old API passes are superseded by the current whole11-row method.
+
+Real console11 and HTTP11 practice controls, menu/routes, save4, retired storage/private-intent13 and generic neighbors reach their accepted oracles. Console tasks settle before cleanup; ChargeRelease uses two genuine keys. Other live minigames may use bounded no-input outcomes, so this is not11successful-score playthroughs. Save/load preserves owned17/29currency and historical grant/unknown fields; retirement fixtures retain opaque bytes and journals before effects. These bounded fixtures do not establish arbitrary historical-save compatibility.
+
+The genuine current publisher delivers52docs with source→temporarypackage→capturedsession hash equality, plus retained12977-byte generated template. Its three identities close, both pipes reachEOF and both roots are absent. All57explicit fixture-root receipts are distinct and physically absent; overall namespace growth is only the retained evidence directory.
+
+Root's separate real Chromium1440×1000 sample shows BranchChoice normal via mouse, two `grade:null` actions around retry, exit, and `/daren-showcase` rendering the ordinary home. All seven original PNGs were independently viewed; no gross overlap was observed. DOMcatalog11 is not11interactive playthroughs. All113served assets match, minimal owned soul/profile bytes remain exact across startup and interaction, and all owned processes settle before both roots are removed. The13homevalidationissues and favicon404 remain explicit fixture/sample limits; no Runtime.exceptionThrown occurred.
+
+Independently checked42native/artifact +12browser frozen chains, complete55/all51 and26/all22 recovered deltas, seven unchanged managed pins and source-context bindings. Original failures, accepted baseline RED and retained proof remain immutable. No Windows/mobile/full-world-save/backend/provider/CI/HOT/M3/full-suite claim is made.
+
+Root may now persist this decision and reconcile final FR/SC/tasks/handoff, marking old CurrentG1 text historical. Final remote/recovery/readback requirements remain; no issue closure, merge or further runtime is authorized here.
+
+[JSON](/tmp/gm1558-g2-final-evidence-independent-20261017.json) SHA256 `fa6bae70ae06d05a1491245ef5e5e17d9a3fe06dabc269a20866a9a27c3e1a37`. [Support](/tmp/gm1558-g2-final-evidence-independent-check-20261017.json) SHA256 `e331a93498fae8974ae8ef9a033e2d744a707278a2e3d3f78453e23965b5193b`. Reviewer performed read-only analysis and viewed existing images; no native execution or repository edits.

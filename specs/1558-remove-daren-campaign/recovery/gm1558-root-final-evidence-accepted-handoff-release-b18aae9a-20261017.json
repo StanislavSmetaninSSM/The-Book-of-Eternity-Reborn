@@ -1,0 +1,58 @@
+{
+  "kind": "ROOT_FINAL_EVIDENCE_ACCEPTED_AND_BOUNDED_HANDOFF_METADATA_RELEASE",
+  "utc": "2026-10-17T12:16:04.765122+00:00",
+  "evidenceCarrier": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+  "independentEvidenceAccepted": true,
+  "independentReports": [
+    {
+      "path": "/tmp/gm1558-g2-final-evidence-independent-20261017.md",
+      "sha256": "805ad24e9ecc06090e78074586b2a3a8c8cecf381846981460c3ad1d8b513f6f"
+    },
+    {
+      "path": "/tmp/gm1558-g2-final-evidence-independent-20261017.json",
+      "sha256": "fa6bae70ae06d05a1491245ef5e5e17d9a3fe06dabc269a20866a9a27c3e1a37"
+    },
+    {
+      "path": "/tmp/gm1558-g2-final-evidence-independent-check-20261017.json",
+      "sha256": "e331a93498fae8974ae8ef9a033e2d744a707278a2e3d3f78453e23965b5193b"
+    }
+  ],
+  "sourceVerdictRetained": "Final E02 SOURCE/PREP accepted without runtime/source changes in subsequent evidence carriers.",
+  "coverage": {
+    "newCsharpPassed": 103,
+    "retainedCsharpPassed": 5,
+    "uniqueCsharpPassed": 108,
+    "csharpMethodIdentities": 42,
+    "vitestPassed": 29,
+    "nodeFileProgramsPassed": 2,
+    "typecheckCompileContractsPassed": 2,
+    "remainingDescriptorsComplete": "18/18",
+    "nativeRunnerResults": 136,
+    "notHomogeneousTestCount": true,
+    "desktopSample": "One real1440x1000Chromium BranchChoice mouse/normal/action grade=null twice/retry/exit/staleURLhome;11catalogDOM entries only."
+  },
+  "recoveryAtEvidenceCarrier": {
+    "path": "/tmp/gm1558-root-recovery-composition-b18aae9a-20261017.json",
+    "sha256": "11badf804426b6a1972160f05ef1980c37f84d2f1a4252bf7691d3cc9c758e3c",
+    "consecutiveCompleteDeltas": 119,
+    "trackedPaths": 56216
+  },
+  "rootReadbacks": [
+    "/tmp/gm1558-root-e02-green-union-qualification-fadb31a6-20261017.json",
+    "/tmp/gm1558-root-chromium-raw-visual-qualification-fadb31a6-20261017.json",
+    "/tmp/gm1558-root-frozen-browser-readback-b18aae9a-20261017.json",
+    "/tmp/gm1558-root-final-active-reference-sweep-20261017.json"
+  ],
+  "release": "Persist exact independent EVIDENCE plus Root readbacks/recovery; reconcile authoritative current spec/plan/tasks/sourcepacket/ledger metadata, classify prior CurrentG1 panels as historical; no product/test/helper/catalog/selector/runtime changes. Review concrete final metadata diff within same bounded block.",
+  "completionCondition": "Final T020/FR010/SC005 completion activates only after final nonforce push, exact remote SHA, Root independently checked complete immediate GitHub new-directory delta and retained full-tree composition; no selfreceipt-only loop required.",
+  "limits": [
+    "Source-derived minimal owned366Bsoul/opaque6Bprofile, not user data or full-world save.",
+    "Home displays13validationissues from that fixture; favicon.ico404 retained; no Runtime.exceptionThrown.",
+    "One BranchChoice desktop mouse flow with retry/exit and stale SPA home; DOM11catalog is not11interactiveplaythroughs.",
+    "No Windows/mobile/backend/provider/CI/fullsave/gameworld qualification.",
+    "No arbitraryoldsavecompatibility, nativeWindows, fullsuite/1557/A1/A2/Late2/F1/HOT/M3/CI/provider qualification.",
+    "Source-only/syntheticoriginalschema6 proof remains labelled; originalproducerdata source-derived transport is not same-root authentication."
+  ],
+  "unchangedMain": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "prohibited": "No merge/force-push/branch deletion/issue closure/new credentials/settings/CI/Windows artifact retry/extra runtime; broader #1536 and Windows blocker remain open."
+}

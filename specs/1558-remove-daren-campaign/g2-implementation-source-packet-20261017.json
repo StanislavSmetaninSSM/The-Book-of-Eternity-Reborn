@@ -1,12 +1,12 @@
 {
-  "kind": "G2_IMPLEMENTATION_SOURCE_FIXTURE_SELECTION_PREPARATION_CANDIDATE_RUNTIME_UNRUN",
+  "kind": "G2_IMPLEMENTATION_SOURCE_EVIDENCE_BOUND_CURRENT_HANDOFF_CONDITIONAL_PUBLICATION",
   "utc": "2026-10-17T10:59:27.160321+00:00",
   "implementationBase": "023931661391926398a5c5ebe0897a66985235b2",
   "partialCarrier": "ee2433bca20d9af4f11bf61fcd1ee35dd526859d",
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "Root-qualified native union108uniqueC#cases (103new+5retained),29Vitestcases,2Nodeprograms,2typecheckfiles; genuinecurrent52 and strictcleanup preserved. Root desktopChromium BranchChoice/retry/exit/staleSPA samplePASS onactualfadb/compiled544/frontend17329; exact12originalraw/7PNGs frozen with minimalfixture13issues/favicon404 limits. Final independentEVIDENCE and task/FR/SC completion pending; no further source/runtime changes.",
+  "status": "Bounded #1558 implementation/SOURCE/final EVIDENCE accepted:108uniqueC#cases (103new+5retained),29Vitestcases,2Nodeprograms,2typecheckfiles; one real desktopBranchChoice sample with explicit minimalfixture limits. T004\u2013T019 complete. T020/FR010/SC005 conditional completion is prepared; final publication conditions remain pending until exact push/readback and Root complete GitHub delta/tree-composition verification. No further functional/runtime work; source/raw/selectors/pins unchanged.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2073,7 +2073,7 @@
   ],
   "currentLedger": {
     "path": "g2-method-row-ledger-20261017.json",
-    "sha256": "10fe82d9424855708993962e85875cd497ee0b2742b3424302b654dcc1e6fcec"
+    "sha256": "f5c430a6fa43b26c6bf6e3235aa243cb2a75532063bcefafd3f9453841b9c2b8"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -2535,23 +2535,26 @@
       "basis": "Catalog-only repair; frontend tree/package/lock/dist byteexact. FIRSTfrontend0retained, no npm replay."
     }
   },
-  "futureRuntime": "HELD until independently accepted concreteSOURCE/PREP +persistedRootexactrelease; Root one realChromium BranchChoice/retry/exit/staleSPA sample with actualnewDLL/servedReact/owneddata binding",
-  "recovery": "Retainedfull7a+105completeRootGitHubdeltas at555; this metadata-only freshPREP carrier adds raw/support/package observation paths via next complete immediate delta, no fullbase replay.",
+  "futureRuntime": "NO_FURTHER_RUNTIME; bounded native/frontend/RootChromium EVIDENCE accepted; only final metadata publication/readback/RootcompleteRecovery gate remains.",
+  "recovery": "Historical555 preparation snapshot used retainedfull7a+105complete deltas. Current b18 evidence carrier is verified by retainedfull7a+119complete consecutive GitHub deltas/56216trackedpaths: recovery/gm1558-root-recovery-composition-b18aae9a-20261017.json. Final metadata carrier adds only its complete immediate delta; final Root remote/recovery gate pending, no fullbase replay.",
   "authoringOutcomes": [
     "Guarded /tmp sourceedit first ambiguousmarker stop beforeExplorerwrite; narrowedexactcontext, no native/PREP outcome.",
     "RootR01 identified inadvertently removedgenericRestoretail; restored exact1690B beforebuild, Rootconfirmed, no testoracle weakening.",
     "Partial api-error JSON escaping normalized unnecessarily; coherentcandidate restoredalloriginalbytes exceptexactcampaignactionobject.",
     "Reviewer R02 missing generic helper from broad campaign cut restored exact023 before first compiler.",
-    "Reviewer R03 recognized full Format1/2 private intent boundary added before first compiler; eight new GREEN controls UNRUN.",
-    "Refined R03 supersedes unexecuted invalid-image-discard proposal: recognized retired metadata retains before image/physicalauthority checks; nine rows/fourmethods pending native.",
+    "Historical authoring snapshot before first compiler: Reviewer R03 recognized full Format1/2 private intent boundary added before first compiler; eight new GREEN controls UNRUN.",
+    "Historical authoring snapshot before first compiler: Refined R03 supersedes unexecuted invalid-image-discard proposal: recognized retired metadata retains before image/physicalauthority checks; nine rows/fourmethods pending native.",
     "Metadata helper first stopped TypeError treating futureRuntime string as object, then continuation omitted status binding and stopped NameError; neither wrote sourcepacket. Corrected using actual schema/current status, without repeating earlier file/catalog/report mutations. No product/native/PREP failure.",
     "R04 independently found V1 HasPlausibleV1Prefix advances stream; explicitPosition0 before MemoryStreamcopy restores old exact bytes. Corrected before first managed compiler, no new runtime/PREP failure. Retain unchanged firstfrontend0 with110e actualsource provenance, no replay.",
     "Post-freeze metadata inspection KeyError Adapter corrected using actual writer row schema/descriptor kinds; exact outcome/continuation retained as support, no native/test replay or source change."
   ],
   "limits": [
-    "UNCOMPILED/UNRUN source candidate; no G2SOURCE/GREEN/requirement/task completion.",
-    "Retain28qualifiedbaseline14positive14RED/old4fixtureFAIL/capturehistory and all raw immutable; no baseline replay beforeproduct.",
-    "Windows/Library403/CI/HOT/M3/providers/main/issueclosure/merge/security remain outside release."
+    "Source-derived minimal owned366Bsoul/opaque6Bprofile, not user data or full-world save.",
+    "Home displays13validationissues from that fixture; favicon.ico404 retained; no Runtime.exceptionThrown.",
+    "One BranchChoice desktop mouse flow with retry/exit and stale SPA home; DOM11catalog is not11interactiveplaythroughs.",
+    "No Windows/mobile/backend/provider/CI/fullsave/gameworld qualification.",
+    "No arbitraryoldsavecompatibility, nativeWindows, fullsuite/1557/A1/A2/Late2/F1/HOT/M3/CI/provider qualification.",
+    "Source-only/syntheticoriginalschema6 proof remains labelled; originalproducerdata source-derived transport is not same-root authentication."
   ],
   "coherentPriorCarrier": "77547b99851d37f68313e31d9b573c4d578235f6",
   "recoveryPredecessor": {
@@ -2563,17 +2566,17 @@
     {
       "path": "recovery/tools/gm1558-root-browser-first-run.py",
       "sha256": "0004ac60b321b60a0f35d9e13303e640aaaaffe79e5feac3065d57cc71b613e0",
-      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+      "status": "EXECUTED_ONCE_BY_ROOT_AT_FADB_WITH_EXACT_APPROVED_BYTES_BOUNDED_PASS"
     },
     {
       "path": "recovery/tools/gm1558-root-browser-smoke.mjs",
       "sha256": "013d6130ebc48d9588ab2bb1e17cb182569b538801da76c9c82697db03877818",
-      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+      "status": "EXECUTED_ONCE_BY_ROOT_AT_FADB_WITH_EXACT_APPROVED_BYTES_BOUNDED_PASS"
     },
     {
       "path": "recovery/tools/gm1558-root-cdp-client.mjs",
       "sha256": "d680469cd65206c9885ea032b322e344970d63ae221ee32ce9d4baf400ecab23",
-      "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
+      "status": "EXECUTED_ONCE_BY_ROOT_AT_FADB_WITH_EXACT_APPROVED_BYTES_BOUNDED_PASS"
     }
   ],
   "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
@@ -2630,7 +2633,8 @@
       "sourcePinsDigestUnchanged": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb"
     },
     "approvedRecorder": "recovery/tools/gm1558-g2-green-first-run.py",
-    "approvedRecorderSha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c"
+    "approvedRecorderSha256": "5b8a0f15a3ea02b5e056baf553700e4d3e9ba3d8848e0533a2097d40203b0e8c",
+    "snapshotQualification": "Historical initial SOURCE decision before d09 actual; original verdict retained. Current finalEvidenceAcceptance governs."
   },
   "firstG2RuntimeOutcome": {
     "packet": "recovery/g2-first-green-stop-d09b18c9-20261017.json",
@@ -2690,15 +2694,15 @@
         "executed": 0
       },
       "packageManifestSha256": "565f5295472b94951ea38db29d82ad2bd82d0b62d4a088d6ed1af34ec03069b0",
-      "targetedSourceAcceptance": "ACCEPTED_NO_REMAINING_FINDINGS_RUNTIME_HELD",
+      "targetedSourceAcceptance": "HISTORICAL_ACCEPTED_SOURCE_BEFORE_C5E_ACTUAL",
       "rootLiveBinding": "recovery/gm1558-root-e01-prep-live-binding-f07643a8-20261017.json",
       "metadataUtilityOutcome": "Post-freeze KeyError Adapter corrected in continuation using constructed lowercase adapter and unit/integration descriptor kinds; original11chains retained plus exact outcome/continuation/package=14chains. Native0/zeroexec not repeated."
     },
-    "runtime": "HELD_UNTIL_TARGETED_SOURCE_PREP_ACCEPTANCE_AND_SEPARATE_ROOT_ACTIVATION",
+    "runtime": "HISTORICAL_PRE_C5E_ACTIVATION_SCOPE; actual firstE01RuntimeOutcome retained; current finalEvidenceAcceptance governs.",
     "futureRecorder": {
       "path": "specs/1558-remove-daren-campaign/recovery/tools/gm1558-g2-e01-green-first-run.py",
       "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0",
-      "status": "UNRUN_DISTINCT_FIRST_REQUIRES_TARGETED_SOURCE_AND_NAMED_ROOT_ACTIVATION",
+      "status": "HISTORICAL_APPROVED_RECORDER_EXECUTED_ONCE_AT_C5E_PARTIAL_STOP_RETAINED",
       "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
       "preparedPlanRecord": "/tmp/gm1558-implementation-tools/gm1558-g2-e01-plan-first-f07643a8-20261017t1125z/record.json",
       "preparedPlanRecordSha256": "08a4a632f77536ea497db4348d2202b038d1b80f6469d62aecaec82d85555b37",
@@ -2715,7 +2719,7 @@
     "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
     "retainedFrontendSource": "110e7ac516789fb923adefde04997c04b4685ed7",
     "verdict": "ACCEPTED_TARGETED_SOURCE_FIXTURE_SELECTION_PREPARATION_NO_FINDINGS",
-    "currentGreen": "UNRUN_REQUIRES_SEPARATE_ROOT_EXACT_ACTIVATION",
+    "currentGreen": "HISTORICAL_PRE_C5E_SOURCE_DECISION; actual firstE01RuntimeOutcome retained; current finalEvidenceAcceptance governs.",
     "approvedRecorder": {
       "path": "/tmp/gm1558-g2-e01-green-first-run.py",
       "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0"
@@ -2732,7 +2736,7 @@
     "remainingUnderfilledDescriptors": 17,
     "remainingCsharpCases": 81,
     "remainingFrontendFileEstimates": 8,
-    "causalQualification": "PENDING_INDEPENDENT_REVIEW",
+    "causalQualification": "ACCEPTED_E02_PARTIAL_RESULT_AND_FIXTURE_SOURCE_GUARD_CAUSES; five retainedPASS, APIwholemethod subsequently requalified.",
     "allDependentRuntime": "STOPPED_NO_RETRY"
   },
   "e02Correction": {
@@ -2842,8 +2846,8 @@
       "remainingEntries": 45,
       "remainingCsharpMinimumEstimate": 93
     },
-    "preparation": "PENDING_FIRST_FRONTEND_BUILD_THEN_BOTH_CATALOG_FULL_PLAN_REMAINING_PLAN_ZEROEXEC",
-    "runtime": "HELD_NO_THIRD_FULL_AGGREGATE",
+    "preparation": "COMPLETED_CORRECTED_544_BOTH_CATALOG_FULL_REMAINING_PLAN_ZEROEXEC; successful17329frontend retained.",
+    "runtime": "COMPLETED_ONE_NAMED_REMAINING_D631; no third full aggregate; bounded finalEVIDENCE accepted.",
     "correctionOwner": "daren-retirement-affected-client-contracts",
     "futureRemainingRecorder": {
       "path": "recovery/tools/gm1558-g2-e02-remaining-green-first-run.py",
@@ -2855,7 +2859,7 @@
       "preparedPlanRecord": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-remaining-plan-first-5441e49f-20261017t1156z/record.json",
       "preparedPlanRecordSha256": "926e28f3efa907636f0bc146a324c1d24aed1b9d343a49c49d53e268556e283e",
       "packageManifestSha256": "ed90a4f0e221f29636a40c1293cb40f88ab39da1f75628836cebcb251179699f",
-      "status": "SOURCE_ACCEPTED_UNRUN_PENDING_EXACT_ROOT_ACTIVATION",
+      "status": "EXECUTED_ONCE_D631_COMPLETE_REMAINING_ACCEPTED_BOUNDED_FINAL_EVIDENCE",
       "originalSentinels": "UNCHANGED"
     }
   },
@@ -2867,8 +2871,8 @@
     "fullPlan": "NOT_STARTED",
     "remainingPlan": "NOT_STARTED",
     "nativeTestsExecuted": 0,
-    "causalVerdict": "PENDING",
-    "allRuntime": "HELD_NO_RETRY"
+    "causalVerdict": "ACCEPTED_G2_E02_P01_CATALOG_CONFIG_SCHEMA_FAILURE_NOT_GAMEPLAY",
+    "allRuntime": "HISTORICAL_FIRST_STOP_NO_RETRY_UNTIL_REVIEWED_REPAIR; corrected544prep and d631actual subsequently accepted."
   },
   "e02CatalogRepair": {
     "independentMd": "recovery/gm1558-g2-e02-catalog-stop-evidence-independent-20261017.md",
@@ -2911,7 +2915,7 @@
       ],
       "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
       "source277Digest": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
-      "targetedSource": "ACCEPTED_NO_FINDINGS_RUNTIME_HELD"
+      "targetedSource": "ACCEPTED_TARGETED_SOURCE; subsequent d631remaining runtime/finalEVIDENCE accepted."
     }
   },
   "remainingSelection": {
@@ -3217,7 +3221,7 @@
     "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
     "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
     "verdict": "ACCEPTED_SOURCE_FIXTURE_SELECTION_PREPARATION_NO_BLOCKERS",
-    "runtime": "NAMED_REMAINING_FIRST_UNRUN_REQUIRES_SEPARATE_ROOT_ACTIVATION"
+    "runtime": "COMPLETED_ONE_NAMED_REMAINING_D631; finalEvidenceAcceptance governs."
   },
   "firstE02RemainingOutcome": {
     "packet": "recovery/g2-e02-first-remaining-observed-d6318f0e-20261017.json",
@@ -3243,8 +3247,8 @@
       "RuntimeCleanupSucceeded": true
     },
     "rawChains": 42,
-    "independentEvidence": "PENDING",
-    "rootChromium": "HELD_SEPARATE_ROOT_GATE",
+    "independentEvidence": "ACCEPTED_BOUNDED_FINAL_EVIDENCE",
+    "rootChromium": "SEPARATE_ROOT_DESKTOP_SAMPLE_PASSED_AND_FINAL_EVIDENCE_ACCEPTED",
     "retainedFive": "ACTUAL_C5E_COMPILED_F076_NOT_REPLAYED"
   },
   "rootBrowserOutcome": {
@@ -3256,11 +3260,34 @@
     "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
     "rawChains": 12,
     "originalPngs": 7,
-    "independentEvidence": "PENDING",
+    "independentEvidence": "ACCEPTED_BOUNDED_FINAL_EVIDENCE",
     "limits": [
       "One desktop BranchChoice sample; eleven catalog entries are not eleven interactive playthroughs. No mobile/Windows/full-world-save/backend/HOT/M3/CI qualification.",
       "Owned minimal source-derived soul fixture shows13validationissues; not a validation-clean save or full-world compatibility proof. One favicon.ico404 is retained, Runtime.exceptionThrown0.",
-      "Root raw/visual qualification is credited; independent final EVIDENCE and final metadata/publication remain pending."
+      "Root raw/visual qualification and final independent EVIDENCE are accepted; final metadata publication/readback/Root new-delta composition condition remains pending."
     ]
+  },
+  "finalEvidenceAcceptance": {
+    "independentMd": "recovery/gm1558-g2-final-evidence-independent-20261017.md",
+    "independentJson": "recovery/gm1558-g2-final-evidence-independent-20261017.json",
+    "support": "recovery/gm1558-g2-final-evidence-independent-check-20261017.json",
+    "rootDisposition": "recovery/gm1558-root-final-evidence-accepted-handoff-release-b18aae9a-20261017.json",
+    "coverage": {
+      "newCsharpPassed": 103,
+      "retainedCsharpPassed": 5,
+      "uniqueCsharpPassed": 108,
+      "csharpMethodIdentities": 42,
+      "vitestPassed": 29,
+      "nodeFileProgramsPassed": 2,
+      "typecheckCompileContractsPassed": 2,
+      "remainingDescriptorsComplete": "18/18",
+      "nativeRunnerResults": 136,
+      "notHomogeneousTestCount": true,
+      "desktopSample": "One real1440x1000Chromium BranchChoice mouse/normal/action grade=null twice/retry/exit/staleURLhome;11catalogDOM entries only."
+    },
+    "completionCondition": "Final T020/FR010/SC005 completion activates only after final nonforce push, exact remote SHA, Root independently checked complete immediate GitHub new-directory delta and retained full-tree composition; no selfreceipt-only loop required.",
+    "referenceSweep": "recovery/gm1558-root-final-active-reference-sweep-20261017.json",
+    "source277DigestUnchanged": "5cd1548b4fdc2114776979d852fd73a91c447e0b6abe6761853beb026fb0bbe4",
+    "finalPublication": "PENDING_FINAL_PUSH_EXACT_REMOTE_ROOT_NEW_DELTA_COMPOSITION"
   }
 }

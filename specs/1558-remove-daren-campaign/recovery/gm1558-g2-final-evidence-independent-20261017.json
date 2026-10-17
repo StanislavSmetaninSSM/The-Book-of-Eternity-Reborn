@@ -1,0 +1,60 @@
+{
+  "kind": "INDEPENDENT_FINAL_BOUNDED_G2_EVIDENCE_VERDICT",
+  "verdict": "ACCEPTED_BOUNDED_G2_GREEN_AND_DESKTOP_BROWSER_SAMPLE",
+  "materialBlockers": [],
+  "carrier": "b18aae9a7fd957d632a9adc7817a7f97296cbef7",
+  "nativeActualSource": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+  "browserActualSource": "fadb31a6afdfd28e48bdcf763d42769856f847b6",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "frontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "sourceVerdict": "Accepted E02 SOURCE/PREP retained; no additional source change in evidence carriers.",
+  "qualifiedCoverage": {
+    "newCsharpPassed": 103,
+    "retainedCsharpPassed": 5,
+    "uniqueCsharpPassed": 108,
+    "csharpMethodIdentities": 42,
+    "vitestPassed": 29,
+    "nodeFileProgramsPassed": 2,
+    "typecheckCompileContractsPassed": 2,
+    "remainingDescriptorsComplete": "18/18",
+    "nativeRunnerResults": 136,
+    "notHomogeneousTestCount": true,
+    "desktopSample": "One real1440x1000Chromium BranchChoice mouse/normal/action grade=null twice/retry/exit/staleURLhome;11catalogDOM entries only."
+  },
+  "binding": {
+    "remainingRawChains": 42,
+    "browserRawChains": 12,
+    "originalPngs": 7,
+    "nativeRecovery": "55files/all51paths",
+    "browserRecovery": "26files/all22paths",
+    "currentManagedDlls": 7,
+    "servedFrontendFiles": 113,
+    "genuinePackageFiles": 370,
+    "actualSessionDocuments": 52
+  },
+  "proof": [
+    "Real console11 selected-type/easy chapter/result/input and tasksettling; ChargeRelease2genuinekeys; otherlivegames boundednoinputoutcome allowed. No claim11successfulscore playthroughs.",
+    "HTTP11practice start/action/retry/exit,menu1,removedroutes5; actualsave4 andstorage/private-intent13 preserve oldbytes/grants/evidence orordinaryscratchpolicy accordingtoacceptedoracles.",
+    "Genuine publisher runtime52docs source→temporarypackage→capturedsession hashes,generated12977bytes,3ownedidentities/EOF/strict2rootsgone.",
+    "57explicit distinct fixture-root cleanup receipts physicallyabsent; namespacechange onlyretainedpublisherartifactdir; runnercleanupcomplete; console11taskssettled.",
+    "Rootbrowser3leaders+descendants terminalbefore2ownedrootsremoved; source-derivedsoul17/29/historicalunknownfield andopaqueprofile byteequalbeforestartup/beforeinteraction/after; no DarenAPI orRuntime.exceptionThrown."
+  ],
+  "retainedHistory": [
+    "Five prior guards retain actualc5e/compiledf076 provenance, not rerun or claimedonnewDLL. Nine priorAPIpasses supersededbynewwhole11rowmethod, not addedcoverage.",
+    "Original G1captureNRE/saveBOMfixturefails, accepted28baseline14PASS14causalRED, firsttsc127, fingerprintguardfailure, E02fixture/shell3fail and catalogrelatedfailure remain historicalFIRSToutcomes; newGREENdoesnoterase them."
+  ],
+  "limits": [
+    "Source-derived minimal owned366Bsoul/opaque6Bprofile, not user data or full-world save.",
+    "Home displays13validationissues from that fixture; favicon.ico404 retained; no Runtime.exceptionThrown.",
+    "One BranchChoice desktop mouse flow with retry/exit and stale SPA home; DOM11catalog is not11interactiveplaythroughs.",
+    "No Windows/mobile/backend/provider/CI/fullsave/gameworld qualification.",
+    "No arbitraryoldsavecompatibility, nativeWindows, fullsuite/1557/A1/A2/Late2/F1/HOT/M3/CI/provider qualification.",
+    "Source-only/syntheticoriginalschema6 proof remains labelled; originalproducerdata source-derived transport is not same-root authentication."
+  ],
+  "completionGate": "Evidence permits Root to persist this exact decision and reconcile current FR/SC/task/handoff metadata. Historical CurrentG1/implementation-next text must be clearly historical. Final publication/remote/recovery/readback conditions remain; this report does not close issue, merge, mutate main, or authorize more runtime.",
+  "support": {
+    "path": "/tmp/gm1558-g2-final-evidence-independent-check-20261017.json",
+    "sha256": "e331a93498fae8974ae8ef9a033e2d744a707278a2e3d3f78453e23965b5193b",
+    "bytes": 339582
+  }
+}
