@@ -1,0 +1,79 @@
+{
+  "kind": "EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T15:05:32.431907+00:00",
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-engine-alias",
+  "nativeExit": 1,
+  "rawChainCount": 8,
+  "fixtureArtifactCount": 0,
+  "fixtureArtifactDirectories": [],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/fb6f89890cdd0fa2386920e05067a7f17d847305-gm-relay-operational-engine-alias.lifecycle-ownerfix-guard.FIRST.json",
+      "storedPath": "000-fb6f89890cdd0fa2386920e05067a7f17d847305-gm-relay-operational-engine-alias.lifecycle-ownerfix-guard.FIRST.json.gz",
+      "bytes": 371,
+      "sha256": "e4735de61cba19fa64bf3bb47eeb721cb1107a858aabef1e70d84785a4cba141",
+      "storedBytes": 293,
+      "storedSha256": "83a035583d4b719f570c6585feb021e9155d6c45cc0cb8a623f55243818528ef"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-enginealias4-25e33349-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 746,
+      "sha256": "95def55d8ef6ee432338722381d68e1c08f7f3748e385e03c2ddacdc46260415",
+      "storedBytes": 390,
+      "storedSha256": "4010c26f3b737fe91782f695c6817cda31f2477f9836b62eeb6cd81d6219db03"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-enginealias4-25e33349-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 14674,
+      "sha256": "b5e2957323563591737f5f73e945c5b4eb0eece15dbe91389827f247251edec9",
+      "storedBytes": 4263,
+      "storedSha256": "f320c5ebb8b6616f4d3467c631b0f0b8a2dd9bcb2a8a3ba3f78fea389f6dd946"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-enginealias4-25e33349-20261017/stdout.log",
+      "storedPath": "003-stdout.log.gz",
+      "bytes": 5236,
+      "sha256": "f4defd616e74ea4f83c846c8605a2b120335ad87c2ac7d45a7c0ffb0dbb07323",
+      "storedBytes": 1436,
+      "storedSha256": "5e36b8d5aad1f878f94c44ae7ca11d062047bbcdfffec93c4bbf098410b4e3c0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150513-674-134198-8a69aa8f85dc4c32b80f4a9a7f76088a-categories/dotnet-test.log",
+      "storedPath": "004-dotnet-test.log.gz",
+      "bytes": 1698497,
+      "sha256": "98151dd0c3d16f60cc34c9c820e0ca51f99c93aeb25bc2cadbbb1a684c4a6322",
+      "storedBytes": 189082,
+      "storedSha256": "be135ade89ed41d797836b7ffb40047e20957ab2bb45068314bde2709753201c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150513-674-134198-8a69aa8f85dc4c32b80f4a9a7f76088a-categories/gm-relay-operational-engine-alias-integration-001.trx",
+      "storedPath": "005-gm-relay-operational-engine-alias-integration-001.trx.gz",
+      "bytes": 15866,
+      "sha256": "4e44f0f5ee173ce5427c56e1e2d1b41436d731a341f191459ea4a39f5296fba4",
+      "storedBytes": 2589,
+      "storedSha256": "bd6c054a614d271d525e4284aa8c0139e2bc17f970f65792ad1a469066d09b23"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150513-674-134198-8a69aa8f85dc4c32b80f4a9a7f76088a-categories/plan.json",
+      "storedPath": "006-plan.json.gz",
+      "bytes": 1199,
+      "sha256": "18be6c6cf624844c3b28119ce3abcdb574521e8d85564c9b55b78c77f7c6a3ba",
+      "storedBytes": 539,
+      "storedSha256": "20cdc4a33592704d90b52ed2681136d435b88eca85b60340fc868c71382c59a1"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150513-674-134198-8a69aa8f85dc4c32b80f4a9a7f76088a-categories/summary.json",
+      "storedPath": "007-summary.json.gz",
+      "bytes": 1376,
+      "sha256": "496bddc5d261b50e2ef3d7bc40ad24029c5bc6b7581a3108da61241421141e33",
+      "storedBytes": 594,
+      "storedSha256": "75b41a84fc56d2146a9b17356f4b2e86ae872038ca9b94302555d8a50d165a55"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact terminal guard archive, including original native-terminal artifacts.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_ORIGINAL_LIFECYCLE_GUARD_OWNER_RAW_NOT_CAUSAL_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel'])]\nfor directory in record['resultDirectories']:paths.extend(p for p in sorted(Path(directory).rglob('*')) if p.is_file())\nfor row in record['fixtureArtifactFiles']:\n p=Path(row['path']);b=p.read_bytes();assert len(b)==row['bytes'] and h(b)==row['sha256'];paths.append(p)\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';encoded=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(encoded);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(encoded),storedSha256=h(encoded)))\nj=dict(kind='EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],category=record['category'],nativeExit=record['nativeExit'],rawChainCount=len(files),fixtureArtifactCount=len(record['fixtureArtifactFiles']),fixtureArtifactDirectories=record['newFixtureArtifactDirectories'],files=files,helperText=Path(__file__).read_text(),scope='Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification."
+}

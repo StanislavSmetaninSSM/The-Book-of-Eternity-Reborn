@@ -1,0 +1,984 @@
+{
+  "kind": "EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T15:07:01.855561+00:00",
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-helper-policy",
+  "nativeExit": 1,
+  "rawChainCount": 120,
+  "fixtureArtifactCount": 112,
+  "fixtureArtifactDirectories": [
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e"
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/fb6f89890cdd0fa2386920e05067a7f17d847305-gm-relay-operational-helper-policy.lifecycle-ownerfix-guard.FIRST.json",
+      "storedPath": "000-fb6f89890cdd0fa2386920e05067a7f17d847305-gm-relay-operational-helper-policy.lifecycle-ownerfix-guard.FIRST.json.gz",
+      "bytes": 367,
+      "sha256": "358df2707e1476f2d4cf4e4ac56ee2cc1488bff449b1dfcd6acc68bbe63cc04f",
+      "storedBytes": 292,
+      "storedSha256": "144cf80a011adf02e15bd69a05a03aeed937924ecfb1b4f0a80add2e40771eaa"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-helper8-25e33349-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 748,
+      "sha256": "fc9860984e2f2ce0bf38840e2d01328ed2cccaefb6ed7056f8ba7cff305cf30a",
+      "storedBytes": 393,
+      "storedSha256": "343c131df439d98443c7da0c690a0b06565383edfc00498bec8d511ce9822b4e"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-helper8-25e33349-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 45070,
+      "sha256": "c9d64a86e4f68993c03dbffc4f6d8c222a3a10b9362c5916f9a9379647f70c55",
+      "storedBytes": 8774,
+      "storedSha256": "3a362274c52dbb3b201ca95606bc5b1c7be9933596b583bf54f4ea17547d2b1a"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-helper8-25e33349-20261017/stdout.log",
+      "storedPath": "003-stdout.log.gz",
+      "bytes": 9729,
+      "sha256": "d55be78ed8f320255fa2c58fb84eed011747d125332912c755fd9f585f3709b3",
+      "storedBytes": 1882,
+      "storedSha256": "262c92dd722a7f52a29a736b1bfcf56ab09e9b23a39efd77a5b174ed72099e13"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/boe-lineage-supervisor",
+      "storedPath": "004-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/build-provenance.json",
+      "storedPath": "005-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/build.log",
+      "storedPath": "006-build.log.gz",
+      "bytes": 127,
+      "sha256": "e385d602c1dbcf7dd1372cf69e5bfb2702e2fc6aa50b7ba393f44c8ad6d3361d",
+      "storedBytes": 132,
+      "storedSha256": "a39fb496236d8692b9ecf51aebb952f919afe2a44e489d9890fd29a2023882d0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/guardian.json",
+      "storedPath": "007-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/guardian.log",
+      "storedPath": "008-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/helper-child-135527.json",
+      "storedPath": "009-helper-child-135527.json.gz",
+      "bytes": 104,
+      "sha256": "d7f8310e74eb6a61ee619f59c35d2468402c1ed30b2d3c8416028118faa15b2f",
+      "storedBytes": 115,
+      "storedSha256": "480b674de87db0d60036838214c6abeff766075ba44b13a90cc11bc3e9914d80"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/helper-child-135550.json",
+      "storedPath": "010-helper-child-135550.json.gz",
+      "bytes": 104,
+      "sha256": "faca89e37b824df456db4ad83932c6134f9f56702d021c5da521241c43a0b747",
+      "storedBytes": 114,
+      "storedSha256": "569613ee9fa07211e35f96b9a8ef65273f74e6988e078d9edc76f62c79a25a10"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/helper-child-135563.json",
+      "storedPath": "011-helper-child-135563.json.gz",
+      "bytes": 104,
+      "sha256": "32d250522bde06a8613274a583b9f858639cb0c6f037a7cb301396e762c19d05",
+      "storedBytes": 115,
+      "storedSha256": "b3e4a1059c2fec72977402cc8ab3a5f900560e9a17976df87b8d1413d49faf70"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/host-guardian",
+      "storedPath": "012-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/joined.jsonl",
+      "storedPath": "013-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "5d994b720fd90e566284eb400ba279f96974db5ee69292939101b03a24ce278e",
+      "storedBytes": 87,
+      "storedSha256": "82fa8a22dcc7df7bc5fa64f05e6e9dca7cb57915196e46e71a8227033a0df7e4"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/original.ps1",
+      "storedPath": "014-original.ps1.gz",
+      "bytes": 658,
+      "sha256": "bdca346701e10ce691b33ac921acf90bdb51b73e3edbeb5b102f776a7ad02aaa",
+      "storedBytes": 436,
+      "storedSha256": "cb6d7f7a778de0576870f562686a2d8dd49da5955cc3598c235bdd84512d41dd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/owned.ps1",
+      "storedPath": "015-owned.ps1.gz",
+      "bytes": 1024,
+      "sha256": "79ac48548c112ef9d79f4b9b140a0182769449fdf4e923d1e927a0aaf9b6cbcb",
+      "storedBytes": 561,
+      "storedSha256": "fdaa21d8982603e28c239542e0ea8fa3bb085664e2763358c4c170b63582dae2"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/package-manifest.json",
+      "storedPath": "016-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e/scenario.json",
+      "storedPath": "017-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "821d934d92efbc8b36dd550b0de91bdb4f28d2e7f65faa18f5521a67ddecdab7",
+      "storedBytes": 240,
+      "storedSha256": "92f26b2a400134884e273bc27fd02fb5cd156f3cbcc60b8c2d7626cf9723645d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/boe-lineage-supervisor",
+      "storedPath": "018-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/build-provenance.json",
+      "storedPath": "019-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/build.log",
+      "storedPath": "020-build.log.gz",
+      "bytes": 127,
+      "sha256": "d1656ca7badca623f9d0b4191b2a89cc729078f8064bc6e0e0b6cb430ce2a2e7",
+      "storedBytes": 130,
+      "storedSha256": "43258f41c5d344b5e0273b70d4c335b49169a1d2fd853cf2e432be9255471b84"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/guardian.json",
+      "storedPath": "021-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/guardian.log",
+      "storedPath": "022-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/helper-child-135781.json",
+      "storedPath": "023-helper-child-135781.json.gz",
+      "bytes": 104,
+      "sha256": "f3b1ee4465da60e62af317a598868cba7539bbfd7f0ab36b8ae7dd17845aab2b",
+      "storedBytes": 115,
+      "storedSha256": "d3cc509ce42e4e504b9d41e9305560323758d62374d2e9425bee5d1b45c3676b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/helper-child-135794.json",
+      "storedPath": "024-helper-child-135794.json.gz",
+      "bytes": 104,
+      "sha256": "ca09f3d4c78dffc02b25f29970258ab82cd8ac2992a47a044de1f0fdbaf581b6",
+      "storedBytes": 115,
+      "storedSha256": "d6270afbdae1041616aa950aa781df2f00a67e3b505335894a2b4c637013d3f9"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/helper-child-135807.json",
+      "storedPath": "025-helper-child-135807.json.gz",
+      "bytes": 104,
+      "sha256": "759036d5b1f128d9e7ae8e33e980acde8b94baef9187aecd3a0b63c34081bf37",
+      "storedBytes": 115,
+      "storedSha256": "d824619389eae0a046657e17fe46dd35a78b2da5f0a4c58af91b2f5021b41452"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/host-guardian",
+      "storedPath": "026-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/joined.jsonl",
+      "storedPath": "027-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "437f31bd4394d5c29ad590f2e0f0b10e4077398f4dd2c2d376106d5d69f1aee8",
+      "storedBytes": 89,
+      "storedSha256": "4a106eeefa1c77c497d97b1f93504f4faf40a0a5302a05c41cf9b64dff495674"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/original.ps1",
+      "storedPath": "028-original.ps1.gz",
+      "bytes": 685,
+      "sha256": "5f69793b1a5f0ee7c44308c79fc93b8dd94ff64c7f29df1af45c96f8b36895b2",
+      "storedBytes": 442,
+      "storedSha256": "f82b477bd2bb8461e5652ff6822de4c1b322581e6303c9910658a9393817b028"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/owned.ps1",
+      "storedPath": "029-owned.ps1.gz",
+      "bytes": 1051,
+      "sha256": "7e88586ed0bc334e37b7a99d2ce502d3f9c4ca7340c97dd0577b9d08193b9b33",
+      "storedBytes": 567,
+      "storedSha256": "5f6f3688bd63631726c95e4b860acdf67fecd2d40c4ec55e52f0ef998756c91b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/package-manifest.json",
+      "storedPath": "030-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33/scenario.json",
+      "storedPath": "031-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "fe0f7178096b04ff74872b7f5be334c88feaa123d1c5dfecb830c4a767a98795",
+      "storedBytes": 240,
+      "storedSha256": "c2e3ddeeca29072f83dd3ecf7ad17fbbb43c36a05c63fec7772cdd4ff6db3cb2"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/boe-lineage-supervisor",
+      "storedPath": "032-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/build-provenance.json",
+      "storedPath": "033-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/build.log",
+      "storedPath": "034-build.log.gz",
+      "bytes": 127,
+      "sha256": "ccccfc13ec6cbbe9d1f74059f573b09638fbdf705a7ed8ace3f7604ec2b8bcac",
+      "storedBytes": 132,
+      "storedSha256": "30476f7021d84b886ef61a08ca612a2aa404239acad4ba3fa5ead1012725a6fd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/guardian.json",
+      "storedPath": "035-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/guardian.log",
+      "storedPath": "036-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/helper-child-135074.json",
+      "storedPath": "037-helper-child-135074.json.gz",
+      "bytes": 104,
+      "sha256": "5def1c3ab09d1a53529cef9457f2a0b9aeb4fd695fbbe458e67be40b805b8276",
+      "storedBytes": 115,
+      "storedSha256": "dc7371d11fd6b6f2da3f504bf3506920a11ccaf1121cecea60a41fab60e5ae5a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/helper-child-135087.json",
+      "storedPath": "038-helper-child-135087.json.gz",
+      "bytes": 104,
+      "sha256": "83c34d5f59ced8d8d0e52e349650c41855a574ae41e7cdf48c3b34e61906e5c6",
+      "storedBytes": 115,
+      "storedSha256": "0956621ba2a0e6386c7a349882006007d83a5cfc8132b90faa92582b2677b58e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/helper-child-135100.json",
+      "storedPath": "039-helper-child-135100.json.gz",
+      "bytes": 104,
+      "sha256": "42ed0d782c4a1f516f5268b4398e4a4ceb0a619c455a1f57106754f0290b5adc",
+      "storedBytes": 114,
+      "storedSha256": "e5f6dbe98532d4db14590e6813e46e89fff67a19de5344dc7e42e6b9378311ff"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/host-guardian",
+      "storedPath": "040-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/joined.jsonl",
+      "storedPath": "041-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "e81eb784d9fcfaf8c22cdb3b9ad8fee31434464141f9524b9c02b2c729ef5270",
+      "storedBytes": 89,
+      "storedSha256": "645b9207ce02f67f052dbb63010cbe657e96715e10f20e995707de8b3c3178c6"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/original.ps1",
+      "storedPath": "042-original.ps1.gz",
+      "bytes": 677,
+      "sha256": "a5c317439533ee89ec4f105b001596d9b776a2e08134b873564683a414f9b603",
+      "storedBytes": 441,
+      "storedSha256": "dc1e631b11c0c2475f9a4356bdafdc75fd899d12bb4da023bbc7936f3b37a706"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/owned.ps1",
+      "storedPath": "043-owned.ps1.gz",
+      "bytes": 1043,
+      "sha256": "fb6f9d94b77c381837895d4b65cb5f839a8cce3c9d0007db0463940ec0d7085a",
+      "storedBytes": 569,
+      "storedSha256": "7c50589bd3d7f7690269a9df4127ee2ab63ea58e6b7909556374a791b577d20f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/package-manifest.json",
+      "storedPath": "044-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b/scenario.json",
+      "storedPath": "045-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "a334c4b5966eb11458b5c08a18ef5c6fef5b1397d91beb288d0f2a1bee3f7e37",
+      "storedBytes": 241,
+      "storedSha256": "24cc786dd3705c0dea83abad5f556923ed9a66b3d910d2f8aefcbcb6bc61fd8a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/boe-lineage-supervisor",
+      "storedPath": "046-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/build-provenance.json",
+      "storedPath": "047-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/build.log",
+      "storedPath": "048-build.log.gz",
+      "bytes": 127,
+      "sha256": "5476dde38393e4c18f920102f2230b239e02ff175e3ae4fbd94fca9017306581",
+      "storedBytes": 132,
+      "storedSha256": "54d2bc3bd0be4a2cd4244369dab4045aca1f60827d445ea9fdf7ac09569e3219"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/guardian.json",
+      "storedPath": "049-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/guardian.log",
+      "storedPath": "050-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/helper-child-135652.json",
+      "storedPath": "051-helper-child-135652.json.gz",
+      "bytes": 104,
+      "sha256": "339bfe52e95fcd1864028f73a0ab61ddf109fabd18a66273529b91bfb53b50c2",
+      "storedBytes": 114,
+      "storedSha256": "25996a3ac30eb94181abfa578392585bfefdb5912be221365e96956a3e2991e6"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/helper-child-135665.json",
+      "storedPath": "052-helper-child-135665.json.gz",
+      "bytes": 104,
+      "sha256": "1202c43c93f0d01afdc8c2272e1ce5817e91e4db93aaf3d75f31d53125586f83",
+      "storedBytes": 115,
+      "storedSha256": "ae71c6e0750e7835d258e94c6ea4f22191577e305971905733a020fe38a6b9e4"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/helper-child-135678.json",
+      "storedPath": "053-helper-child-135678.json.gz",
+      "bytes": 104,
+      "sha256": "913d176f31ad3fb4019602424fb6223615562b9ed65667cd461689fe47817d41",
+      "storedBytes": 115,
+      "storedSha256": "8cc6275771e0a0b823395f4fb2542c95d11a5c7d2566dc277316347fb84689da"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/host-guardian",
+      "storedPath": "054-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/joined.jsonl",
+      "storedPath": "055-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "57a003285bdb6ac7e90cfd80afd36f20d2cf90e0e4874a545e267feead062c03",
+      "storedBytes": 88,
+      "storedSha256": "d8854aa7a446a82c3b6aeb1d6287ff97f428049fdf99237d1f4a5bae90a2b5db"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/original.ps1",
+      "storedPath": "056-original.ps1.gz",
+      "bytes": 648,
+      "sha256": "912f62187636e455296e6eda62aa964cdf19abbeeae831c886bbf53f280cb9a6",
+      "storedBytes": 430,
+      "storedSha256": "7ddf0ac0be536f4ab4d841c965e1f9bc3a874050481706fa73b2773f3268f7d2"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/owned.ps1",
+      "storedPath": "057-owned.ps1.gz",
+      "bytes": 1014,
+      "sha256": "8b7fbf4851d6d1dd72387fb9e1b4a6560fe8311c2b24403f201054f542e14ab0",
+      "storedBytes": 556,
+      "storedSha256": "068f23ef417329588e149d71d30532b4e1aa6fd12f07e474ebaf06f17624fd96"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/package-manifest.json",
+      "storedPath": "058-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a/scenario.json",
+      "storedPath": "059-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "720d485e154c1f8196cfbbefff91bea6de69c88d582c54bc2a6a164f56ff7dd0",
+      "storedBytes": 237,
+      "storedSha256": "4c2f7424fd8cb0b773abb4e4a0324522220bdaf17e732f92cbeee8211a307d88"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/boe-lineage-supervisor",
+      "storedPath": "060-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/build-provenance.json",
+      "storedPath": "061-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/build.log",
+      "storedPath": "062-build.log.gz",
+      "bytes": 127,
+      "sha256": "3af272b06ea5cd02e9f4f5d141d3f9401ef2784bdd8e4d5aa3e6b9d44b4b9246",
+      "storedBytes": 131,
+      "storedSha256": "4655ff329450cf3743c41c804a004bbbea0db05f51a202b51a3a83f75fe32ec3"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/guardian.json",
+      "storedPath": "063-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/guardian.log",
+      "storedPath": "064-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/helper-child-135188.json",
+      "storedPath": "065-helper-child-135188.json.gz",
+      "bytes": 104,
+      "sha256": "ea3e21bad55a717fb20d77313d7631670c85febea9da97f69b62bf6344ba890c",
+      "storedBytes": 115,
+      "storedSha256": "050b068a68373a8eba1fd9ce1c0cb27a8f53ef385ea60107c57ad87cb3731f97"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/helper-child-135201.json",
+      "storedPath": "066-helper-child-135201.json.gz",
+      "bytes": 104,
+      "sha256": "6697edcb81741a3dff68ada507baa9540e0021b604ee784ffd7fdd68ea13f7e7",
+      "storedBytes": 115,
+      "storedSha256": "b0d4d41fa42ff6ef097f139b109ea7f4dcd0a71f96499a940a6b2791c4688c98"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/helper-child-135214.json",
+      "storedPath": "067-helper-child-135214.json.gz",
+      "bytes": 104,
+      "sha256": "d511a2f6f8299f9fe68ae33c343c8779d9c3440ba3a1a4b83e165ce92ae8d62f",
+      "storedBytes": 115,
+      "storedSha256": "4d1329fc6c1069ec8f49910de41741fc40b2dc7ff5478d7579364b3564b17c52"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/host-guardian",
+      "storedPath": "068-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/joined.jsonl",
+      "storedPath": "069-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "428a8663b57594ff3cb7dbb6d015b090b6777c5af16d2ac4be4641daba5bc071",
+      "storedBytes": 88,
+      "storedSha256": "a5260932ffbabc7db6e86197b48e398d1088dd1231f6423fb73d259da8b88ff0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/original.ps1",
+      "storedPath": "070-original.ps1.gz",
+      "bytes": 659,
+      "sha256": "0500fc88f02636045d9d1b5a0920b4767c169c54419eec28a5edd77238d212d4",
+      "storedBytes": 435,
+      "storedSha256": "32bb971b0a27c8ae5e2e68d5db90531b993af5991a0027fe2cd3e943a2ba27a8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/owned.ps1",
+      "storedPath": "071-owned.ps1.gz",
+      "bytes": 1025,
+      "sha256": "bed9431568930696610a3e4c459d6152e341bcd2628e664d5553c4c6bc2ea0c3",
+      "storedBytes": 561,
+      "storedSha256": "f7da448d0e7816d59f03c296a16b416592a151ae18d3202797f8c45cf8a639bc"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/package-manifest.json",
+      "storedPath": "072-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9/scenario.json",
+      "storedPath": "073-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "da6d38c9dd7c5ad822c4cbf408a64dd0185345e7c5bdb9520255eff10f79f4bc",
+      "storedBytes": 241,
+      "storedSha256": "e240c3fb8e2afd8c112ea49f49a45bc707ba62ee3e7e6f7654aff0e2f6fc9a65"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/boe-lineage-supervisor",
+      "storedPath": "074-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/build-provenance.json",
+      "storedPath": "075-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/build.log",
+      "storedPath": "076-build.log.gz",
+      "bytes": 127,
+      "sha256": "f3358ad132ee836bd8d83a14bc944842bc1a66ccae86b55569c9a5655968161d",
+      "storedBytes": 131,
+      "storedSha256": "e46d7ba55955289c1e0a43a9c2502434552c37d11173787a17a7f57c79853830"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/guardian.json",
+      "storedPath": "077-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/guardian.log",
+      "storedPath": "078-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/helper-child-135414.json",
+      "storedPath": "079-helper-child-135414.json.gz",
+      "bytes": 104,
+      "sha256": "492b29dd2ebc4686b872e9599de9fac0f4820c87f425e6f0d032c770037f2d26",
+      "storedBytes": 115,
+      "storedSha256": "a98951843bd8ec40caeffdf9f433de867dce75357f94f7e658bdcd32ab261593"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/helper-child-135427.json",
+      "storedPath": "080-helper-child-135427.json.gz",
+      "bytes": 104,
+      "sha256": "bb97c05f4ab1f6e772c9908e9b62749cecae0eafde52d9582b7211a52eaf032b",
+      "storedBytes": 115,
+      "storedSha256": "f4ae17ccf5bfbeba2511ce7f5b1697b4574f7f5329883d674c556a659a99ce22"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/helper-child-135440.json",
+      "storedPath": "081-helper-child-135440.json.gz",
+      "bytes": 104,
+      "sha256": "07471c1ab7c85352050aca3af7042dd2401128b59abf1d3d6a71e91758c5f2bf",
+      "storedBytes": 114,
+      "storedSha256": "08602806753e4e0c170b04e6bde4a692056b5e65e1eefcd08235776a756c1c30"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/host-guardian",
+      "storedPath": "082-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/joined.jsonl",
+      "storedPath": "083-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "fe3567a85ccd3f921abe39d36ad97a1b03ffe725f7223d7df8c46fef2713f86d",
+      "storedBytes": 88,
+      "storedSha256": "0cb3560b472106643c3829c84669ac0fef575a6ff94c61aa5fea9d388934e3ce"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/original.ps1",
+      "storedPath": "084-original.ps1.gz",
+      "bytes": 666,
+      "sha256": "439d9052a6c7eeb2b708ce6dfbb4fbe9e065d65f82e7cf79b80f3b4c69a5183d",
+      "storedBytes": 438,
+      "storedSha256": "88e76151f7de1e74475ae5e774b75ca69c73a52355dcad3e11769924a55cce50"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/owned.ps1",
+      "storedPath": "085-owned.ps1.gz",
+      "bytes": 1032,
+      "sha256": "49d2917d0220929f190d6b75dad8b4a14562618bade675b3e675590b0475ec28",
+      "storedBytes": 565,
+      "storedSha256": "c9ccac31ab14a10a70cec0672562ab9e189ccf2d6bd1042ee117089fa9c226a9"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/package-manifest.json",
+      "storedPath": "086-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b/scenario.json",
+      "storedPath": "087-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "0098c23e4a55a48a75274c4976602a89eb642cf6e9cb727e2cdf14cba485138f",
+      "storedBytes": 237,
+      "storedSha256": "5161b1c2a7b7c8b6abb1a24e74530e08aeed32297b6914e6b5715c97ecba792f"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/boe-lineage-supervisor",
+      "storedPath": "088-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/build-provenance.json",
+      "storedPath": "089-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/build.log",
+      "storedPath": "090-build.log.gz",
+      "bytes": 127,
+      "sha256": "ea4e3c736ec3cff0e5ec436d78043ea31ea629edcf196f06509ab8e0c6fa42ed",
+      "storedBytes": 132,
+      "storedSha256": "b3852d7f8234bf82f3e3dd5d3bbf8c92326079e7a5e4067f65b098c79b08c343"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/guardian.json",
+      "storedPath": "091-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/guardian.log",
+      "storedPath": "092-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/helper-child-135301.json",
+      "storedPath": "093-helper-child-135301.json.gz",
+      "bytes": 104,
+      "sha256": "45b2d70d86c413025a2cd8c1918c15a58d4cbdc30eff3b911818a374e6957edd",
+      "storedBytes": 115,
+      "storedSha256": "6e8c053d73a7f482f8d2027cca5c8ef13c2cea335be0a90d19bb6c1063463665"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/helper-child-135314.json",
+      "storedPath": "094-helper-child-135314.json.gz",
+      "bytes": 104,
+      "sha256": "b86c20540142881fa31fc04b779e913d9c1e9869acbfd5c51011ccdb39d3dfd3",
+      "storedBytes": 115,
+      "storedSha256": "8c5736b5fc2884ee8e11dc78bcc2644fe9783c4b55c96aed603f5a6cecb23a9a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/helper-child-135327.json",
+      "storedPath": "095-helper-child-135327.json.gz",
+      "bytes": 104,
+      "sha256": "33f818b765ce5f30630e405b971a213183163dea1f594389c9e0355247afa4a9",
+      "storedBytes": 115,
+      "storedSha256": "ec9c803948a8c0d35df63c2818ed9ea1400aba959cf315f649e51e348be7ca27"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/host-guardian",
+      "storedPath": "096-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/joined.jsonl",
+      "storedPath": "097-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "769017236081f1533e22771a0d8537894bd1e8161a2f82ebcf43f202071cc82b",
+      "storedBytes": 87,
+      "storedSha256": "55a669799d84312d33318c83ee5666a629a8563a2f68b35896e9bbb3bc3706b5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/original.ps1",
+      "storedPath": "098-original.ps1.gz",
+      "bytes": 640,
+      "sha256": "dd59b0aeef0646863eabb66c4e4bba61497d892a092e030eb931a392adfe80c3",
+      "storedBytes": 429,
+      "storedSha256": "6a476bf71f4ee65a8da7dc20ca326574d89d65f84a0e1417193c1ce8f99f36c8"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/owned.ps1",
+      "storedPath": "099-owned.ps1.gz",
+      "bytes": 1006,
+      "sha256": "db57b122761b99cb3aedd084c2508816f9ebc545ecc498098c9ac53a93e40adc",
+      "storedBytes": 555,
+      "storedSha256": "df0130b28f582c19094d95d8a84aab9bfee5a3392723c6a9fbaa7fb323d1f588"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/package-manifest.json",
+      "storedPath": "100-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f/scenario.json",
+      "storedPath": "101-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "b57d3534d351ae06becee46ae49b5d3be86f8e5c26a3b8866cfeedab45cb0772",
+      "storedBytes": 242,
+      "storedSha256": "0ac7d989e96361831c9c7a7ef3c21852ec41a144ff7a5a2e93495203fe41d12e"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/boe-lineage-supervisor",
+      "storedPath": "102-boe-lineage-supervisor.gz",
+      "bytes": 82080,
+      "sha256": "cbe20556dddf1d25ecaa16cc051b71274bb10815dd4d78c9ef279e3c05bf302c",
+      "storedBytes": 36397,
+      "storedSha256": "559b933aa008d4e4deb63b3a2e66add65f9e5281ba2fe9b9b64d15ba8794253c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/build-provenance.json",
+      "storedPath": "103-build-provenance.json.gz",
+      "bytes": 1153,
+      "sha256": "e38f81a689f42459894ed7f62b15e1469ca9be56df11709ca1e93f22771cf81a",
+      "storedBytes": 684,
+      "storedSha256": "a89f4028a71403b445e05b2eaefdce6801d4eb3cd2e78f6a71af5ccd04fde41c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/build.log",
+      "storedPath": "104-build.log.gz",
+      "bytes": 127,
+      "sha256": "3d4b316ba4b937b959e3750c243e4526ac8bb60693b4af69905ed44b9dcea607",
+      "storedBytes": 131,
+      "storedSha256": "451bde6b7c6002851086d4960ebca4f640d4a2ce7c6425e0b52b2343af760578"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/guardian.json",
+      "storedPath": "105-guardian.json.gz",
+      "bytes": 97,
+      "sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "storedBytes": 105,
+      "storedSha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/guardian.log",
+      "storedPath": "106-guardian.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/helper-child-135894.json",
+      "storedPath": "107-helper-child-135894.json.gz",
+      "bytes": 104,
+      "sha256": "d28d96c730761cbae8123bcddaeed667f01eeda97b85fc34cd2c6f5e037d27f7",
+      "storedBytes": 115,
+      "storedSha256": "ef6673046588efc332122894065422a9c7439fc39a322022a904da8d627cc06b"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/helper-child-135907.json",
+      "storedPath": "108-helper-child-135907.json.gz",
+      "bytes": 104,
+      "sha256": "6a2d249d902ba52a317c1dc3ae6ae3fc73081285c9b3090ee88dabbf9a5b340b",
+      "storedBytes": 115,
+      "storedSha256": "b23c6dd681369be076009c7c169432ac231ade4ed06b42d13344793f74f75881"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/helper-child-135920.json",
+      "storedPath": "109-helper-child-135920.json.gz",
+      "bytes": 104,
+      "sha256": "dd6d569ae97f2d976e2b753719d3b8f7a1a0855f40c8dad55ec7c8466d0af512",
+      "storedBytes": 114,
+      "storedSha256": "f764629347610bb66d566dfe295cbd5fd1136d4289d084441bf6d7d2fbcd6580"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/host-guardian",
+      "storedPath": "110-host-guardian.gz",
+      "bytes": 43104,
+      "sha256": "da0166b31358b3e0b3f87349e292d140e1258f339cf03451966c340cd861cefa",
+      "storedBytes": 17258,
+      "storedSha256": "acb61db7f2cbb463b7eb9b954f26f643e7ff1794161daf28ec365fec8bf7844a"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/joined.jsonl",
+      "storedPath": "111-joined.jsonl.gz",
+      "bytes": 183,
+      "sha256": "54b91724c942fcae3c93f65cc33ac87e8bc80dc2cbfc3f4427014c4fcdd97a9e",
+      "storedBytes": 89,
+      "storedSha256": "e114d630637c34eeaed847b88382bc8b2a21262f38dd9ab1e88d32e28cbbb1bd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/original.ps1",
+      "storedPath": "112-original.ps1.gz",
+      "bytes": 667,
+      "sha256": "7e1dbd97678e7ef4ed086e953ff54b7b3dc3a7bc6b53a72e842232fa1acdae41",
+      "storedBytes": 435,
+      "storedSha256": "db75a06b24c60614ae6f0275c16d2cb8cf815b0f7a4b0de76edef88ead00f6cd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/owned.ps1",
+      "storedPath": "113-owned.ps1.gz",
+      "bytes": 1033,
+      "sha256": "d9b3410b4904554f68fec85eca046508348b713c9ada2929f67350e865fc489a",
+      "storedBytes": 562,
+      "storedSha256": "de5c7d762a1c232ba4b542b50e5d1d4413ebc1804ce26b06637cbdde8ae998eb"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/package-manifest.json",
+      "storedPath": "114-package-manifest.json.gz",
+      "bytes": 968,
+      "sha256": "347e6560fa942fa262ab5f433bde7369ffa624751a06bb58939eb0b2068188b7",
+      "storedBytes": 630,
+      "storedSha256": "c3134b99b4155ad08e8dae1dedb0bbf1f5b15fd1eacf8c6211f11a193498487c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e/scenario.json",
+      "storedPath": "115-scenario.json.gz",
+      "bytes": 405,
+      "sha256": "a1d86d3722ac9e43897ad08185d3c639c40a268cfc4d077c8d176dbd50ef8865",
+      "storedBytes": 239,
+      "storedSha256": "a0c55a54db1734851558cfe4d7d9bc34d32a8583f8af20d8091ff4f65da097da"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150630-844-134837-04e070102c73418d9c5005e30ae5608d-categories/dotnet-test.log",
+      "storedPath": "116-dotnet-test.log.gz",
+      "bytes": 1703027,
+      "sha256": "72b49e2c51f12bb241feed2c7d4f4498dfe2f0ae563093e5e7c73163d54ae9c8",
+      "storedBytes": 189580,
+      "storedSha256": "44f85ba8a10fef1650ec4b3ceafa526e2cfcd88ca7bd0cc9029a6b47f0793cd7"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150630-844-134837-04e070102c73418d9c5005e30ae5608d-categories/gm-relay-operational-helper-policy-integration-001.trx",
+      "storedPath": "117-gm-relay-operational-helper-policy-integration-001.trx.gz",
+      "bytes": 34340,
+      "sha256": "1156ada7ac0ff2d24dbe002180786aa1fdef37e2bb7b5f9f5813b88559daf777",
+      "storedBytes": 3838,
+      "storedSha256": "e38c4ea90ea6654643cccb7b2980a0638548db58e8ccfdc9fdeed8c715ffbbf5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150630-844-134837-04e070102c73418d9c5005e30ae5608d-categories/plan.json",
+      "storedPath": "118-plan.json.gz",
+      "bytes": 1167,
+      "sha256": "82bf946a53f097ca2cfd8637948deaef79d032453184a16aa377fc10e57f8f2b",
+      "storedBytes": 524,
+      "storedSha256": "1a9f57b9bcbbd64250543f68d47183c576fdc00c9393cab81291f16e3f48f487"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-150630-844-134837-04e070102c73418d9c5005e30ae5608d-categories/summary.json",
+      "storedPath": "119-summary.json.gz",
+      "bytes": 1379,
+      "sha256": "51ea779063c423a85d363d20ab2f9ee816a41149b8f2815e855cf241d64c7815",
+      "storedBytes": 598,
+      "storedSha256": "9f3c0d9ad1581143aeb09f4bd23c59cc1080132824b3f448d23288eea4a7d9cc"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact terminal guard archive, including original native-terminal artifacts.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_ORIGINAL_LIFECYCLE_GUARD_OWNER_RAW_NOT_CAUSAL_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel'])]\nfor directory in record['resultDirectories']:paths.extend(p for p in sorted(Path(directory).rglob('*')) if p.is_file())\nfor row in record['fixtureArtifactFiles']:\n p=Path(row['path']);b=p.read_bytes();assert len(b)==row['bytes'] and h(b)==row['sha256'];paths.append(p)\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';encoded=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(encoded);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(encoded),storedSha256=h(encoded)))\nj=dict(kind='EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],category=record['category'],nativeExit=record['nativeExit'],rawChainCount=len(files),fixtureArtifactCount=len(record['fixtureArtifactFiles']),fixtureArtifactDirectories=record['newFixtureArtifactDirectories'],files=files,helperText=Path(__file__).read_text(),scope='Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification."
+}

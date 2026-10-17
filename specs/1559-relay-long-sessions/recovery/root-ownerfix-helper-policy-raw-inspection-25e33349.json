@@ -1,0 +1,683 @@
+{
+  "kind": "ROOT_LITERAL_CORRECTED_GUARD_RAW_INSPECTION",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-helper8-25e33349-20261017/record.json",
+  "recordSha256": "c9d64a86e4f68993c03dbffc4f6d8c222a3a10b9362c5916f9a9379647f70c55",
+  "archive": "/tmp/gm1559-ownerfix-helper8-first-archive-25e33349-20261017/archive.json",
+  "archiveSha256": "53261be103e02f1451571cc90afaed1abf8d8cb4f4587129cb189d322c190702",
+  "archiveChains": 120,
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-helper-policy",
+  "nativeExit": 1,
+  "wallSeconds": 20.297060431999853,
+  "tests": {
+    "Total": 8,
+    "Executed": 8,
+    "Passed": 4,
+    "Failed": 4
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 8,
+    "CompletedCases": 8,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "observations": [
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_prompt_delivery.json\", reserved: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Operation": "files-modified",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "ExpectedDenied": true,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "BeforeBytes": 25,
+          "AfterBytes": 25,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-c83cac67374340c3be7ca9a11d77ffa9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.NotEqual() Failure: Values are equal\nExpected: Not 0\nActual:       0",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(String operation, String name, Boolean reserved) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GmRelayOperationalHelperTests.cs:line 69\n--- End of stack trace from previous location ---",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135314,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135301,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135327,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ProcessId": 135301,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 135314,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        },
+        {
+          "ProcessId": 135327,
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_relay_apply_receipt.json\", reserved: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Operation": "write",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "ExpectedDenied": true,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+          "BeforeBytes": 25,
+          "AfterBytes": 27,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-d7c0ece7dd7e41aca3833c548116e3e9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.NotEqual() Failure: Values are equal\nExpected: Not 0\nActual:       0",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(String operation, String name, Boolean reserved) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GmRelayOperationalHelperTests.cs:line 69\n--- End of stack trace from previous location ---",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135894,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135920,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135907,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135894
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135907
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135920
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_prompt_delivery.json\", reserved: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Operation": "files-modified",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedDenied": false,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "BeforeBytes": 25,
+          "AfterBytes": 25,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-03ebbb931a7446e5a28c5ccb808f43ee",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135550,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135527,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135563,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ProcessId": 135527,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 135550,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 135563,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_relay_apply_receipt.json\", reserved: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Operation": "files-modified",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedDenied": false,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "BeforeBytes": 25,
+          "AfterBytes": 25,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-54b102aa2ea543b9a44ca0da4c6498d5",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135440,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135414,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135427,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135414
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135427
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135440
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_prompt_delivery.json\", reserved: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Operation": "write",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedDenied": false,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+          "BeforeBytes": 25,
+          "AfterBytes": 27,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-a3f6cddc4bab4a25aca2988d31f33700",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135100,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135074,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135087,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ExitCode": 0,
+          "ProcessId": 135074,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 135087,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 135100,
+          "ExitedBeforeDispose": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_relay_apply_receipt.json\", reserved: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Operation": "write",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedDenied": false,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+          "BeforeBytes": 25,
+          "AfterBytes": 27,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-25aaf7dc50f741498075fb5ea7a20f4b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135781,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135794,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135807,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ExitCode": 0,
+          "ProcessId": 135781,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 135794,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ExitCode": 0,
+          "ProcessId": 135807,
+          "ExitedBeforeDispose": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"files-modified\", name: \"gm_relay_apply_receipt.json\", reserved: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Operation": "files-modified",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "ExpectedDenied": true,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "BeforeBytes": 25,
+          "AfterBytes": 25,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-cacc8661a96e44a690afd0bee6589181",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.NotEqual() Failure: Values are equal\nExpected: Not 0\nActual:       0",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(String operation, String name, Boolean reserved) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GmRelayOperationalHelperTests.cs:line 69\n--- End of stack trace from previous location ---",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135652,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135678,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135665,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135652
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135665
+        },
+        {
+          "ExitedBeforeDispose": true,
+          "ExitCode": 0,
+          "ProcessId": 135678
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(operation: \"write\", name: \"gm_prompt_delivery.json\", reserved: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Operation": "write",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "ExpectedDenied": true,
+          "ExitCode": 0,
+          "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+          "StdErr": "",
+          "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9",
+          "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+          "RepoHelperSha256": "4C16BFFE3350B111ADC20A70CD059984FF0CE5285286B2DEE32EDE9D65FD618D",
+          "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+          "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+          "BeforeBytes": 25,
+          "AfterBytes": 27,
+          "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-relay-operational-helper-20f7cc18b9484d109aa9d71f26cb804a",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.NotEqual() Failure: Values are equal\nExpected: Not 0\nActual:       0",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets(String operation, String name, Boolean reserved) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GmRelayOperationalHelperTests.cs:line 69\n--- End of stack trace from previous location ---",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "childReports": [
+        {
+          "ProcessId": 135201,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135188,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        },
+        {
+          "ProcessId": 135214,
+          "ExitCode": 0,
+          "Completed": true,
+          "PublicationCuts": 0,
+          "LeaseOpens": 2,
+          "RecoveryPhases": 0
+        }
+      ],
+      "joins": [
+        {
+          "ProcessId": 135188,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 135201,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        },
+        {
+          "ProcessId": 135214,
+          "ExitCode": 0,
+          "ExitedBeforeDispose": true
+        }
+      ]
+    }
+  ],
+  "binaryNamespaceContinuity": true,
+  "noDoubleCountOriginal0771": true,
+  "newArtifactDirectories": [
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/20e900c1a8a74fa5a6dfb4485939ae0e",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/5ad34a5201ec4bc895155af73e7eea33",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/637b6bac2ffa4f21a1de23015403423b",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/70d281f6cd9949489a32ef07d5ee824a",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/a4f0e996ab69463398e7c2c6ba3fbcd9",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/b311783d9ee0470bb37c96113eebac2b",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d0c72b640e594262aca75d142dd5f64f",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/fb1504d5a34045e3b9bff851dba0c20e"
+  ],
+  "artifactFiles": 112,
+  "disposition": "EXPECTED_COMPLETE_RAW; independent causal review pending. No otherowner or production released."
+}

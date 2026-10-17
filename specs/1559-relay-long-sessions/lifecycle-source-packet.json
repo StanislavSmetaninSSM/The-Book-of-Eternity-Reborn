@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "0771e12578ae3a27adef1d8b4f2c998594d1eb2b",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "CORRECTED_OWNER_FB6F_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; F01_CLOSED_SOURCE_ONLY; CURRENT_GUARD_ACTUALS_UNRUN_HELD; PRODUCTION_HELD",
+  "stage": "CURRENT32_FIRST_RAW_COMPLETE_16PASS16FAIL; INDEPENDENT_CAUSAL_EVIDENCE_PENDING; PRODUCTION_HELD",
   "sourcePinCount": 136,
   "sourcePinDigest": "6c30e3dc161c4d17eeedab313191fcc16fe893bfd729d6bdc3410b23b4dcfdb4",
   "sourcePins": [
@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "3ffacaabd9593b146372112e11cc389405623bd8eeebb64d03a96ef57d988ef9"
+    "sha256": "6092f70acdba874150851bd867971977e0d19a6032ffbbdde6bb2e4d2173a8b5"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1431,7 +1431,7 @@
     "reviewDisposition": "Root accepted exact independent first-causal pair/support. Four fixture prerequisite failures remain unqualified;6causalRED+6suffixPASS retained with original provenance and no double-counting. Old SOURCE report unchanged, four-row eligibility superseded.",
     "callees": "Root retained-fullbase coverage2, no clone/fetch: MortalItemRepairPacketBuilder direct to BOTH validation predicates; AfterlifeContractRegistry direct only to ValidationIssue surface.",
     "preparation": "Freshfb6f stage-build-plan0 +guards-plan-NoBuild0 saved; targeted SOURCE/FIXTURE/SELECTION/PREP accepted, no actual release.",
-    "actual": "CORRECTED_SOURCE_UNRUN_HELD; originalFIRST0771 immutable; separate named Root activation required before relevant private16 requalification, no baseline8 replay.",
+    "actual": "Corrected private16 requalified once with all16actualmethod witnesses;8finalEqualFAIL+8suffixPASS, noNotNull. Original0771native6PASS10FAIL immutable and not extra distinct cases.",
     "previous134SourceDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
     "unchangedPrior134Pins": 133,
     "changedPriorPin": "BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs",
@@ -1557,7 +1557,7 @@
   "correctedFirstActualRecorder": {
     "path": "recovery/tools/lifecycle-ownerfix-guard-first-run.py",
     "sha256": "9b87152a0d37a6b44d85de9a8ab94495177decb8b2f96e46ecc64498d12d69cc",
-    "status": "UNRUN; distinct corrected-source requalification after0771, not replacement of historical first16.",
+    "status": "USED_ONCE_PER_OWNER under4separateNamedRootActivations actual25e; all32originalrawpreserved; no retry.",
     "archive": "recovery/tools/archive-lifecycle-guard.py",
     "archiveSha256": "140bf58b064c5b6d30c2fcbb3af33112ee3c6a1cec9e52edecd6374645c26ab8"
   },
@@ -1580,7 +1580,7 @@
       }
     ],
     "rootDisposition": "Root read/hashverified all three final reports and accepted source-only F01 closure with no material blocker. Persist/recover successor before separately named corrected-private16 activation. Other three owners require separate later releases; no production authority.",
-    "actual": "CORRECTED_PRIVATE16_AND_OTHER3_CURRENT_GUARD_OWNERS_ALL_UNRUN; no runtime release",
+    "actual": "Current corrected16 + other3FIRSTowners executed once under four named Root activations;32rawcomplete16PASS16FAIL. Independent causal EVIDENCE pending; no production release.",
     "retention": "Original0771 native6PASS10FAIL remains immutable:6qualifiedpolicyRED+6suffixPASS+4unqualifiedwrong-owner prerequisites; old Source miss retained. Requalification is not replacement or double-counting; originalbaseline8 retained without replay.",
     "recovery": {
       "completeDelta": "recovery/5ace-delta-github.json",
@@ -1588,5 +1588,16 @@
       "retainedDeltas": 138,
       "trackedPaths": 56454
     }
+  },
+  "currentGuardRaw": {
+    "packet": "recovery/lifecycle-current-guards-first.json",
+    "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+    "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+    "executed": 32,
+    "passed": 16,
+    "failed": 16,
+    "rawChains": 144,
+    "supportChains": 1,
+    "qualifiedByIndependentReview": false
   }
 }

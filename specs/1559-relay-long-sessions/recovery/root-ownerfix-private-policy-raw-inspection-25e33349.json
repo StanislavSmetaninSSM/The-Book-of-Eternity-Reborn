@@ -1,0 +1,274 @@
+{
+  "kind": "ROOT_LITERAL_CORRECTED_GUARD_RAW_INSPECTION",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-private16-25e33349-20261017/record.json",
+  "recordSha256": "08de6e9529931dd52bbd72f77715d58126ec82425eeb8a3353b6bf98fed36a97",
+  "archive": "/tmp/gm1559-ownerfix-private16-first-archive-25e33349-20261017/archive.json",
+  "archiveSha256": "55a4b19833c0df480a161d739ff4bf269c8ec4bc16bd00bf5a982c60fbbdbb1f",
+  "archiveChains": 8,
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-private-policy",
+  "nativeExit": 1,
+  "wallSeconds": 4.85071185400011,
+  "tests": {
+    "Total": 16,
+    "Executed": 16,
+    "Passed": 8,
+    "Failed": 8
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 16,
+    "CompletedCases": 16,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "observations": [
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsClientOwnedRepairResubmissionPath",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsClientOwnedRepairResubmissionPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: False)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsRecoverableFilesModifiedPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "Expected": false,
+          "Actual": true
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationService",
+          "Method": "IsClientOwnedSurfaceValidationPath",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsClientOwnedRepairResubmissionPath",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationService",
+          "Method": "IsClientOwnedSurfaceValidationPath",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"repair\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsClientOwnedRepairResubmissionPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: True)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsRecoverableFilesModifiedPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "Expected": true,
+          "Actual": true
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationService",
+          "Method": "IsClientOwnedSurfaceValidationPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationIssue",
+          "Method": "IsClientOwnedSurfacePath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationIssue",
+          "Method": "IsClientOwnedSurfacePath",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"validation\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationService",
+          "Method": "IsClientOwnedSurfaceValidationPath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json\", expected: False)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsRecoverableFilesModifiedPath",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "Expected": false,
+          "Actual": true
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: False\nActual:   True",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"recoverable\", path: \"game_state/control/gm_prompt_delivery.json.neighbo\"···, expected: True)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Core.GameEngine",
+          "Method": "IsRecoverableFilesModifiedPath",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "Expected": true,
+          "Actual": true
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_relay_apply_receipt.json.nei\"···, expected: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationIssue",
+          "Method": "IsClientOwnedSurfacePath",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "Expected": false,
+          "Actual": false
+        }
+      ],
+      "error": "",
+      "stack": ""
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(owner: \"surface\", path: \"game_state/control/gm_prompt_delivery.json\", expected: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "BookOfEternityClient.Services.ValidationIssue",
+          "Method": "IsClientOwnedSurfacePath",
+          "Path": "game_state/control/gm_prompt_delivery.json",
+          "Expected": true,
+          "Actual": false
+        }
+      ],
+      "error": "Assert.Equal() Failure: Values differ\nExpected: True\nActual:   False",
+      "stack": "   at BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(String owner, String path, Boolean expected) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/GmRelayOperationalProtectionTests.cs:line 46\n   at InvokeStub_GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+    }
+  ],
+  "binaryNamespaceContinuity": true,
+  "noDoubleCountOriginal0771": true,
+  "newArtifactDirectories": [],
+  "artifactFiles": 0,
+  "disposition": "EXPECTED_COMPLETE_RAW; independent causal review pending. No otherowner or production released."
+}

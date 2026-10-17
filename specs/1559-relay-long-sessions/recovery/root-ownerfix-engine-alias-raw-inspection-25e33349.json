@@ -1,0 +1,442 @@
+{
+  "kind": "ROOT_LITERAL_CORRECTED_GUARD_RAW_INSPECTION",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-enginealias4-25e33349-20261017/record.json",
+  "recordSha256": "b5e2957323563591737f5f73e945c5b4eb0eece15dbe91389827f247251edec9",
+  "archive": "/tmp/gm1559-ownerfix-enginealias4-first-archive-25e33349-20261017/archive.json",
+  "archiveSha256": "99e629c92ff8ed0034cb02b70c45bd531424abb276dd2353f4ed38a54fe93472",
+  "archiveChains": 8,
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-engine-alias",
+  "nativeExit": 1,
+  "wallSeconds": 5.239279528002953,
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 2,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "observations": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_relay_apply_receipt.json\", alias: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_relay_apply_receipt.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d5999d10e79a4256a1c1e961d8262733",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.IsType() Failure: Value is null\nExpected: typeof(System.IO.InvalidDataException)\nActual:   null",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(String name, Boolean alias) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RelayPhysicalAliases.cs:line 40\n--- End of stack trace from previous location ---",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_relay_apply_receipt.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_prompt_delivery.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d5999d10e79a4256a1c1e961d8262733",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4fe54a2b58a74b7b988f060819fc3560",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ea90a46a98c94b4cb05563895807cb4f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-718a032546d64a07ab31c742d6b6004d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_relay_apply_receipt.json\", alias: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4fe54a2b58a74b7b988f060819fc3560",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_relay_apply_receipt.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_prompt_delivery.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d5999d10e79a4256a1c1e961d8262733",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4fe54a2b58a74b7b988f060819fc3560",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ea90a46a98c94b4cb05563895807cb4f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-718a032546d64a07ab31c742d6b6004d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_prompt_delivery.json\", alias: False)",
+      "outcome": "Passed",
+      "values": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ea90a46a98c94b4cb05563895807cb4f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "",
+      "stack": "",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_relay_apply_receipt.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_prompt_delivery.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d5999d10e79a4256a1c1e961d8262733",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4fe54a2b58a74b7b988f060819fc3560",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ea90a46a98c94b4cb05563895807cb4f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-718a032546d64a07ab31c742d6b6004d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(name: \"gm_prompt_delivery.json\", alias: True)",
+      "outcome": "Failed",
+      "values": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_prompt_delivery.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-718a032546d64a07ab31c742d6b6004d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "error": "Assert.IsType() Failure: Value is null\nExpected: typeof(System.IO.InvalidDataException)\nActual:   null",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication(String name, Boolean alias) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RelayPhysicalAliases.cs:line 40\n--- End of stack trace from previous location ---",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_relay_apply_receipt.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        },
+        {
+          "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "Mutations": [
+            "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+            "game_state/control/GM_prompt_delivery.json.rollback.relay-physical-alias"
+          ],
+          "BackupCount": 2,
+          "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+          "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d5999d10e79a4256a1c1e961d8262733",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4fe54a2b58a74b7b988f060819fc3560",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ea90a46a98c94b4cb05563895807cb4f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-718a032546d64a07ab31c742d6b6004d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    }
+  ],
+  "binaryNamespaceContinuity": true,
+  "noDoubleCountOriginal0771": true,
+  "newArtifactDirectories": [],
+  "artifactFiles": 0,
+  "disposition": "EXPECTED_COMPLETE_RAW; independent causal review pending. No otherowner or production released."
+}

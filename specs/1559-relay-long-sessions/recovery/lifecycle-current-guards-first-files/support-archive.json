@@ -1,0 +1,13 @@
+{
+  "kind": "EXACT_ACTUAL25E_CURRENT_SOURCE_CONTEXT_SUPPORT",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-lifecycle-source-context-25e33349-20261017.json",
+      "storedPath": "recovery/lifecycle-current-guards-first-files/actual25e-source-context.json.gz",
+      "bytes": 70316,
+      "sha256": "60cd49cb2536cbf86f78bbfd931ca4e022d9e2cae2aeb72a9757e8e23582b4d7",
+      "storedBytes": 19193,
+      "storedSha256": "f782db66ea92a0ba987052e2356bf03bf6ff02f4508bca3150111dfc256aa6da"
+    }
+  ]
+}

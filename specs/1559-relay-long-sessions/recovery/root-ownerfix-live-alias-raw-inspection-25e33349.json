@@ -1,0 +1,510 @@
+{
+  "kind": "ROOT_LITERAL_CORRECTED_GUARD_RAW_INSPECTION",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-ownerfix-guard-first-livealias4-25e33349-20261017/record.json",
+  "recordSha256": "8afcebdbeb2df77f0f6463592ccce362e5dc4863210421746d697e0e80b787d2",
+  "archive": "/tmp/gm1559-ownerfix-livealias4-first-archive-25e33349-20261017/archive.json",
+  "archiveSha256": "f975943b927daae64c3bd67129101ec9b88ccd26b04832642d9279294f120e71",
+  "archiveChains": 8,
+  "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+  "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+  "category": "gm-relay-operational-live-alias",
+  "nativeExit": 1,
+  "wallSeconds": 5.6070355720003136,
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 2,
+    "Failed": 2
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "observations": [
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_prompt_delivery.json\", alias: True)",
+      "outcome": "Failed",
+      "values": [],
+      "error": "Assert.IsType() Failure: Value is null\nExpected: typeof(System.IO.InvalidDataException)\nActual:   null",
+      "stack": "   at BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(String name, Boolean alias) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.RelayPhysicalAliases.cs:line 46\n--- End of stack trace from previous location ---",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_prompt_delivery.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_relay_apply_receipt.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-102e414a05014932aa6d8bca830b334c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-4287443075594172abde425c6aa4ed99",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-bd3f6836364a4957b91a5156bc3f76dc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-e3f9b65d57dc449da60f34d92c2615c9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_prompt_delivery.json\", alias: False)",
+      "outcome": "Passed",
+      "values": [],
+      "error": "",
+      "stack": "",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_prompt_delivery.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_relay_apply_receipt.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-102e414a05014932aa6d8bca830b334c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-4287443075594172abde425c6aa4ed99",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-bd3f6836364a4957b91a5156bc3f76dc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-e3f9b65d57dc449da60f34d92c2615c9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_relay_apply_receipt.json\", alias: False)",
+      "outcome": "Passed",
+      "values": [],
+      "error": "",
+      "stack": "",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_prompt_delivery.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_relay_apply_receipt.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-102e414a05014932aa6d8bca830b334c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-4287443075594172abde425c6aa4ed99",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-bd3f6836364a4957b91a5156bc3f76dc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-e3f9b65d57dc449da60f34d92c2615c9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(name: \"gm_relay_apply_receipt.json\", alias: True)",
+      "outcome": "Failed",
+      "values": [],
+      "error": "Assert.IsType() Failure: Value is null\nExpected: typeof(System.IO.InvalidDataException)\nActual:   null",
+      "stack": "   at BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication(String name, Boolean alias) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.RelayPhysicalAliases.cs:line 46\n--- End of stack trace from previous location ---",
+      "allOwnerWitnesses": [
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_prompt_delivery.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_prompt_delivery.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+          "ExpectedRefusal": false,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        },
+        {
+          "Owner": "ACTUAL_LIVE_PREPARE",
+          "Path": "game_state/control/GM_relay_apply_receipt.json",
+          "ExpectedRefusal": true,
+          "Failure": null,
+          "PublicationWitnessCount": 1,
+          "BeforeFileCount": 15,
+          "AfterFileCount": 25,
+          "ChangedPhysicalImages": [
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "game_state/control/pending_turn_snapshot.authority.json",
+            "game_state/control/pending_turn_snapshot.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/GM_relay_apply_receipt.json",
+            "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+            "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "input/turn_request.json"
+          ]
+        }
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-102e414a05014932aa6d8bca830b334c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-4287443075594172abde425c6aa4ed99",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-bd3f6836364a4957b91a5156bc3f76dc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-live-turn-prep-e3f9b65d57dc449da60f34d92c2615c9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    }
+  ],
+  "binaryNamespaceContinuity": true,
+  "noDoubleCountOriginal0771": true,
+  "newArtifactDirectories": [],
+  "artifactFiles": 0,
+  "disposition": "EXPECTED_COMPLETE_RAW; independent causal review pending. No otherowner or production released."
+}

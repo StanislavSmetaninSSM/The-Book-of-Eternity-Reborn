@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "F01_SOURCE_ONLY_CLOSED; CORRECTED_FB6F_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; ALL_CURRENT_GUARD_ACTUALS_UNRUN_HELD_PENDING_NAMED_ROOT_ACTIVATION; PRODUCTION_HELD",
+  "currentGate": "CURRENT32_FIRST_RAW_COMPLETE_16PASS16FAIL; COMBINED_CAUSAL_EVIDENCE_PENDING; ORIGINAL0771_HISTORY_RETAINED_NODOUBLECOUNT; PRODUCTION_HELD",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -501,7 +501,7 @@
   },
   "lifecycleStage": {
     "scope": "INACTIVE_EXACT_TWO_NAME_OPERATIONAL_LIFECYCLE_ONLY_THEN_WOUNDS_HANDOFF",
-    "status": "CORRECTED_OWNER_FRESH_FB6F_COMPILED_DISCOVERED_0EXEC; TARGETED_SOURCE_PENDING",
+    "status": "CURRENT_CORRECTED32_ACTUAL_RAW_COMPLETE; INDEPENDENT_CAUSAL_REVIEW_PENDING",
     "historicalBaseline": {
       "engine2Accepted": 2,
       "remaining6Accepted": {
@@ -606,10 +606,16 @@
           }
         ],
         "staticCount": 16,
-        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
+        "status": "FIRST_CURRENT_RAW_EXECUTED_COMPLETE; INDEPENDENT_CAUSAL_EVIDENCE_PENDING",
         "oracle": "Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
-        "limits": "No relay writer/reader/authority; original opaque images and real owners only."
+        "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
+        "currentActual": {
+          "passed": 8,
+          "failed": 8,
+          "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+          "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305"
+        }
       },
       {
         "category": "gm-relay-operational-engine-alias",
@@ -634,10 +640,16 @@
           }
         ],
         "staticCount": 4,
-        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
+        "status": "FIRST_CURRENT_RAW_EXECUTED_COMPLETE; INDEPENDENT_CAUSAL_EVIDENCE_PENDING",
         "oracle": "Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
-        "limits": "No relay writer/reader/authority; original opaque images and real owners only."
+        "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
+        "currentActual": {
+          "passed": 2,
+          "failed": 2,
+          "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+          "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305"
+        }
       },
       {
         "category": "gm-relay-operational-live-alias",
@@ -662,10 +674,16 @@
           }
         ],
         "staticCount": 4,
-        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
+        "status": "FIRST_CURRENT_RAW_EXECUTED_COMPLETE; INDEPENDENT_CAUSAL_EVIDENCE_PENDING",
         "oracle": "Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
-        "limits": "No relay writer/reader/authority; original opaque images and real owners only."
+        "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
+        "currentActual": {
+          "passed": 2,
+          "failed": 2,
+          "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+          "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305"
+        }
       },
       {
         "category": "gm-relay-operational-helper-policy",
@@ -714,10 +732,16 @@
           }
         ],
         "staticCount": 8,
-        "status": "CORRECTED_FB6F_PREPARED_SOURCE_ACCEPTED_UNRUN; separate Root named actual activation required; original7ffFIRSTprivate16 retained separately",
+        "status": "FIRST_CURRENT_RAW_EXECUTED_COMPLETE; INDEPENDENT_CAUSAL_EVIDENCE_PENDING",
         "oracle": "Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
-        "limits": "Actual FilesModified policy consumer called first by Complete-BoeTurn; no Complete/client acceptance or terminal writer exercised. Read/writer children, original guardian.json driverExitCode0, scenario/helper-child/joined originals retained."
+        "limits": "Actual FilesModified policy consumer called first by Complete-BoeTurn; no Complete/client acceptance or terminal writer exercised. Read/writer children, original guardian.json driverExitCode0, scenario/helper-child/joined originals retained.",
+        "currentActual": {
+          "passed": 4,
+          "failed": 4,
+          "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+          "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305"
+        }
       }
     ],
     "proposedNewGuardMethods": 4,
@@ -867,7 +891,7 @@
         }
       ],
       "rootDisposition": "Root read/hashverified all three final reports and accepted source-only F01 closure with no material blocker. Persist/recover successor before separately named corrected-private16 activation. Other three owners require separate later releases; no production authority.",
-      "actual": "CORRECTED_PRIVATE16_AND_OTHER3_CURRENT_GUARD_OWNERS_ALL_UNRUN; no runtime release",
+      "actual": "Current corrected16 + other3FIRSTowners executed once under four named Root activations;32rawcomplete16PASS16FAIL. Independent causal EVIDENCE pending; no production release.",
       "retention": "Original0771 native6PASS10FAIL remains immutable:6qualifiedpolicyRED+6suffixPASS+4unqualifiedwrong-owner prerequisites; old Source miss retained. Requalification is not replacement or double-counting; originalbaseline8 retained without replay.",
       "recovery": {
         "completeDelta": "recovery/5ace-delta-github.json",
@@ -875,6 +899,17 @@
         "retainedDeltas": 138,
         "trackedPaths": 56454
       }
+    },
+    "currentGuardRaw": {
+      "packet": "recovery/lifecycle-current-guards-first.json",
+      "actualSource": "25e333498d4e22b1c369c28cc1f348fe5211eef8",
+      "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+      "executed": 32,
+      "passed": 16,
+      "failed": 16,
+      "rawChains": 144,
+      "supportChains": 1,
+      "qualifiedByIndependentReview": false
     }
   }
 }
