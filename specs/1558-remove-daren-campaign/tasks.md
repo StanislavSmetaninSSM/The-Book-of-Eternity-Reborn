@@ -2,7 +2,7 @@
 
 Source: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). Authority: [spec.md](spec.md), [plan.md](plan.md), current AGENTS/workflow/constitution.
 
-**Current phase**: S04 SOURCE/FIXTURE/SELECTION/PREP accepted on72a/890; actualvalidation pending. Exactreview/conditionalRootprotocol persisted, remaining2owners/5methods/21cases0exec/new7pins unchanged. Only after newcarrier remote/recovery may Root activate correctedsave4 first; HTTP17 requires next separate activation. Oldaccepted7cases/4savefixtureFAIL retainoriginaldf3/0b provenance; no replay/actual/product. T004–T020 unchecked.
+**Current phase**: FIRST corrected save4+previouslyUNRUN HTTP17 completed once atactual5e6/compiled72a:21unique cases/5methods/2complete descriptors,12PASS+9locallycausal finalFAIL;16raw chains/21strict roots physicallyabsent preserved. Retainoldaccepted7cases atdf3/0b and4oldsavefixtureFAIL separately; proposedfinite28=14positivePASS+14causalRED awaits independentEVIDENCE. No source/product change or newtask completion; T004–T020 unchecked.
 
 ## Phase 1 — Isolation, source inventory and reviewed contract
 
@@ -69,4 +69,7 @@ Historical S04 source disposition at72a: [accepted partial causal EVIDENCE](reco
 Historical S04 preparation at890: [16FIRST raw chains](recovery/g1-s04-first-preparation-20261017.json) bind freshBOTH/catalog0 and remainingPlanOnly0 exact2descriptors/5methods/21cases/0exec/new7compiled72aDLLs. Targeted independentSOURCE and explicitRootactivation still precede corrected save4/unrunHTTP17; accepted ordinary2/menu1/storage4 retainoldprovenance withoutrepeat. No actual runtime fix or completed task is claimed; all T004–T020 stay unchecked.
 
 
-Current S04 binding is [accepted independently](recovery/gm1558-g1-s04-source-independent-20261017.md); [conditional Root protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) still requires newcarrier readback/recovery and exact activation of corrected save4, followed separately by HTTP17. Neither actual ran. Keep7oldqualified cases and4oldfixtureFAIL at originalprovenance; no task completion or product release. T004–T020 remain unchecked.
+Historical S04 binding before5e6 activation is [accepted independently](recovery/gm1558-g1-s04-source-independent-20261017.md); [conditional Root protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) still requires newcarrier readback/recovery and exact activation of corrected save4, followed separately by HTTP17. Neither actual ran. Keep7oldqualified cases and4oldfixtureFAIL at originalprovenance; no task completion or product release. T004–T020 remain unchecked.
+
+
+Current [FIRST corrected save4+HTTP17 evidence](recovery/g1-first-s04-consumers-20261017.json) retains21completed cases/12PASS/9locallycausal finalFAIL,16exact raw chains and21strict physically removed roots. Oldaccepted7 retaindf3/0b provenance;4oldsave fixtureFAIL remain unqualified history. Proposed finite28unique/10methods now has14positivePASS+14causalRED and awaits independent EVIDENCE; no broader G1 completion/product release or task check is inferred. T004–T020 stay unchecked.

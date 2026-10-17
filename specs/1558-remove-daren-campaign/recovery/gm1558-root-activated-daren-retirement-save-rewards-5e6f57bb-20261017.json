@@ -1,0 +1,82 @@
+{
+  "kind": "ROOT_ACTIVATED_ONE_EXACT_SOURCE_S04_REMAINING_OWNER",
+  "createdUtc": "2026-10-17T10:00:13.400939+00:00",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "category": "daren-retirement-save-rewards",
+  "methods": [
+    {
+      "category": "daren-retirement-save-rewards",
+      "Name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "Cases": 1
+    },
+    {
+      "category": "daren-retirement-save-rewards",
+      "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "Cases": 3
+    }
+  ],
+  "cases": 4,
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "daren-retirement-save-rewards",
+    "-NoBuild"
+  ],
+  "finitePlanRecord": {
+    "path": "/tmp/gm1558-implementation-tools/gm1558-g1-s04-plan-first-72a29489-20261017T095206Z/record.json",
+    "sha256": "4118464515227c86f8af6cea33a22c6f4e3a3c9d562706fa331144ff05de1144"
+  },
+  "helperPins": [
+    {
+      "path": "/tmp/gm1558-consumer-s04-run.py",
+      "sha256": "fbb176665eaac5fd5f2ab976df6179da975c9654e11c148dffe17986571bb331",
+      "execution": "UNRUN_BY_REVIEWER"
+    },
+    {
+      "path": "/tmp/gm1558-archive-consumer-red.py",
+      "sha256": "6020e29ab28e39a69e2159fb281e7120804fb39ad0650421cd189ee9ab46a0a7"
+    }
+  ],
+  "conditionalDecisionSha256": "5bae0186ac0bc60f9842190ec05b525ba06f50727c68c48b7cdaf5d422685fe2",
+  "persistedDecisionChecks": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json",
+      "sha256": "5bae0186ac0bc60f9842190ec05b525ba06f50727c68c48b7cdaf5d422685fe2"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-s04-source-independent-20261017.md",
+      "sha256": "589145ad8e5b2baa02db642e8de782e1f52c47a83d9e2977cd46d17fbade2e7f"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-s04-source-independent-20261017.json",
+      "sha256": "8a9530ee3bf007d4ca0eb7c2e56501c9eee2a009597632caa63b48ce17fb6555"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-s04-source-independent-check-20261017.json",
+      "sha256": "ad4a056d72699e2d1a17bd81a1911ff2adb841b193ccf7cc09341f20a107f570"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-s04-prep-carrier-readback-89023323-20261017.json",
+      "sha256": "b9ac1ecc9b9d2c4b993d40e57c9ae4a72efa1b3381633fae2cd4702516046ae7"
+    }
+  ],
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-5e6f57bb-20261017.json",
+  "completeDeltas": 97,
+  "trackedPaths": 55910,
+  "firstOutcomeProtocol": [
+    "ExactlyonecanonicalownerCategory-NoBuild throughdistinctreviewedS04helper;fixed3mbudget;distinctFIRSTsentinelcompiled72a;no retry/noauto-next/no broadSelectionactual.",
+    "Preservefirstnative/stdout/process/TRX/summary/plan/support/source/new7DLL/namespace andarchiveexactlyinNEWtmpdirectory;validateallplannedpercaseidentities/ownerprereqs/strictrootsettling/removalbeforeaskingRootfornextowner.",
+    "save4includes3realfresh-soulvariantsandpositiveearnedSaveLoad;requireactualfinalcurrency/grant/profile/archiveoracles/diagnostics ororiginalownerstackforcausalclassification. Anyremainingtestcanonicaldecoder/fixtureerrorisSTOP,notretirementRED.",
+    "HTTP17includesactualmenu+5registeredretired-routeboundaries+11practiceHTTPneighbors. Requireactualregisteredhandler/status/body/unchangedprofile-and-soulwitnesses;anygenericHTTPerrororport/networkfailureisnotcausalbyitself. APIgrade=success isexplicitHTTPcontractproof,notinteractivebrowserplaythrough.",
+    "Unexpectedfixture/platform/timeout/duplicate/incomplete/cleanup/unsettledrooterrorstopsremainingactuals,preservesFIRSTrawandunknownroots;neverdelete/retrytoqualify.",
+    "AfterpermittedownersorfirstSTOP,publishcoherentFIRSTevidencecheckpoint/exactremote/newcompletedelta beforeindependentcausalEVIDENCE. Productstillhelduntilthatdecision."
+  ],
+  "releaseConditions": "Only named owner is activated. All other owner actuals require a distinct Root activation after first raw/archive/causal prequalification of preceding owner. Production remains held.",
+  "runtimeExecutedByThisReceipt": false
+}

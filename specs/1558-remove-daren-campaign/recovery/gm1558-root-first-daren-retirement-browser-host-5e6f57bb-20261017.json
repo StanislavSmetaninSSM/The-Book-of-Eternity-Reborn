@@ -1,0 +1,531 @@
+{
+  "kind": "ROOT_FIRST_CONSUMER_OWNER_RAW_PREQUALIFICATION_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-17T10:05:31.592979+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/record.json",
+  "recordSha256": "cb0d3ad8aac0fb891ad24a23bad9fc7b5288704d4d727748d6c61725eb274d7a",
+  "category": "daren-retirement-browser-host",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 1,
+  "wallSeconds": 8.538244183000643,
+  "tests": {
+    "Total": 17,
+    "Executed": 17,
+    "Passed": 11,
+    "Failed": 6
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 17,
+    "CompletedCases": 17,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": true,
+  "strictRootsRemoved": [
+    "/tmp/boe-daren-retirement-host-70c7abb5caf546dd92fa8f49cf4debab",
+    "/tmp/boe-daren-retirement-host-fc263ae8047d432e804e1aab1c2ae779",
+    "/tmp/boe-daren-retirement-host-51d53fc6704d4996bfa76a642d8762e6",
+    "/tmp/boe-daren-retirement-host-600448cca7fd401a89900bcf88aff945",
+    "/tmp/boe-daren-retirement-host-7fc5173b96144c80bf798c823023c9c9",
+    "/tmp/boe-daren-retirement-host-64b3797d8f214a44b4a61e51d622ff71",
+    "/tmp/boe-daren-retirement-host-3e203cdd3ad34f36b1936cc448520766",
+    "/tmp/boe-daren-retirement-host-5c304db06ae04652950aa559a94e0568",
+    "/tmp/boe-daren-retirement-host-820e4e1689084c4e8156f878ee5da58b",
+    "/tmp/boe-daren-retirement-host-64adf26222294f4e8945105c6e63ce10",
+    "/tmp/boe-daren-retirement-host-2fbfa9292c5f48ee92a10006e423044c",
+    "/tmp/boe-daren-retirement-host-f700b1d1d27540bfa7c2b54d345994cd",
+    "/tmp/boe-daren-retirement-host-75c71a920cce462893a8f61cd199f64a",
+    "/tmp/boe-daren-retirement-host-03efffa7ce634c698a472ca5501714d9",
+    "/tmp/boe-daren-retirement-host-1521eb1390b74016ac1dbede9c1e3cbc",
+    "/tmp/boe-daren-retirement-host-095037b6d4e441c3a126e8c267b1970f",
+    "/tmp/boe-daren-retirement-host-5713a3cc9d7742a7a5b6646ea59f4c71"
+  ],
+  "sevenBinaryContinuity": true,
+  "namespaceContinuity": true,
+  "caseEvidence": [
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PatternMemory\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "a8f4f4affe405f7aa5b5ba255d6c169f95c5a9536b8f5161ccc7917280ce90ce",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-70c7abb5caf546dd92fa8f49cf4debab",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "PatternMemory",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"MashInput\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "844bed2b572e0625a2294579fd2d39f86c0ec3d9c986843a8509f51903812419",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-fc263ae8047d432e804e1aab1c2ae779",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "MashInput",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/retry\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+      "outcome": "Failed",
+      "error": "Assert.Equal() Failure: Values differ\nExpected: NotFound\nActual:   OK",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<>c__DisplayClass5_0.<<RetiredDirectHostRoute_CannotDispatchOrMutateProfile>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 54\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "304e598b3dc9ac06c5169a752b6ac32935cc6783873786c10293171391680964",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-51d53fc6704d4996bfa76a642d8762e6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Method": "POST",
+          "Path": "/api/qte/daren/retry",
+          "Status": 200,
+          "Body": "{\n  \"state\": \"Failed\",\n  \"introTitle\": \"\u041e\u0433\u0440\u0430\u0431\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u044f \u0414\u0430\u0440\u0435\u043d\u043e\u043c\",\n  \"introText\": \"\",\n  \"boundaryNotice\": \"\u042d\u0442\u043e \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0432\u0442\u043e\u0440\u0441\u043a\u0430\u044f QTE-\u0432\u044b\u043b\u0430\u0437\u043a\u0430: \u043e\u0431\u044b\u0447\u043d\u0430\u044f \u0433\u043b\u0430\u0432\u0430, \u043e\u0431\u044b\u0447\u043d\u044b\u0435 \u0445\u043e\u0434\u044b \u0438 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 QTE \u043d\u0435 \u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f.\",\n  \"rewardNotice\": \"\u041b\u0443\u0447\u0448\u0438\u0439 \u0438\u0442\u043e\u0433 \u0414\u0430\u0440\u0435\u043d\u0430 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043a\u043d\u0438\u0433\u043e\u0439 \u0438 \u0434\u0430\u0451\u0442 \u0427\u0435\u0440\u043d\u0438\u043b\u044c\u043d\u044b\u0435 \u041f\u0435\u0440\u044c\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0438 \u0431\u0443\u0434\u0443\u0449\u0435\u0439 \u043d\u043e\u0432\u043e\u0439 \u0438\u0433\u0440\u044b.\",\n  \"bestReward\": null,\n  \"activeScene\": null,\n  \"resolution\": null,\n  \"completion\": null,\n  \"ending\": null,\n  \"availableOperations\": [],\n  \"interactionToken\": null,\n  \"notification\": null,\n  \"errorCode\": \"StaleInteraction\",\n  \"error\": \"\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0443\u0441\u0442\u0430\u0440\u0435\u043b\u0430. \u041e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0435\u0451 \u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.\"\n}",
+          "ProfileBefore": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProfileAfter": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/exit\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+      "outcome": "Failed",
+      "error": "Assert.Equal() Failure: Values differ\nExpected: NotFound\nActual:   OK",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<>c__DisplayClass5_0.<<RetiredDirectHostRoute_CannotDispatchOrMutateProfile>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 54\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "1407ad4f0ed21776a6842c8131e4ae21d990afd93bc0f17273e3d77729199502",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-600448cca7fd401a89900bcf88aff945",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Method": "POST",
+          "Path": "/api/qte/daren/exit",
+          "Status": 200,
+          "Body": "{\n  \"state\": \"Failed\",\n  \"introTitle\": \"\u041e\u0433\u0440\u0430\u0431\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u044f \u0414\u0430\u0440\u0435\u043d\u043e\u043c\",\n  \"introText\": \"\",\n  \"boundaryNotice\": \"\u042d\u0442\u043e \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0432\u0442\u043e\u0440\u0441\u043a\u0430\u044f QTE-\u0432\u044b\u043b\u0430\u0437\u043a\u0430: \u043e\u0431\u044b\u0447\u043d\u0430\u044f \u0433\u043b\u0430\u0432\u0430, \u043e\u0431\u044b\u0447\u043d\u044b\u0435 \u0445\u043e\u0434\u044b \u0438 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 QTE \u043d\u0435 \u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f.\",\n  \"rewardNotice\": \"\u041b\u0443\u0447\u0448\u0438\u0439 \u0438\u0442\u043e\u0433 \u0414\u0430\u0440\u0435\u043d\u0430 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043a\u043d\u0438\u0433\u043e\u0439 \u0438 \u0434\u0430\u0451\u0442 \u0427\u0435\u0440\u043d\u0438\u043b\u044c\u043d\u044b\u0435 \u041f\u0435\u0440\u044c\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0438 \u0431\u0443\u0434\u0443\u0449\u0435\u0439 \u043d\u043e\u0432\u043e\u0439 \u0438\u0433\u0440\u044b.\",\n  \"bestReward\": null,\n  \"activeScene\": null,\n  \"resolution\": null,\n  \"completion\": null,\n  \"ending\": null,\n  \"availableOperations\": [],\n  \"interactionToken\": null,\n  \"notification\": null,\n  \"errorCode\": \"StaleInteraction\",\n  \"error\": \"\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0443\u0441\u0442\u0430\u0440\u0435\u043b\u0430. \u041e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0435\u0451 \u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.\"\n}",
+          "ProfileBefore": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProfileAfter": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"BalanceMeter\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "d7d8db3e43fffc01e169290f537842b42adfb7bd811c23b5c1f6cd0d17932ad7",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-7fc5173b96144c80bf798c823023c9c9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "BalanceMeter",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"TimingBar\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "3956c6c8ea3595b3ac29ed4ba2f31ae55c1cb86d43f6260db66b99a02fdc79aa",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-64b3797d8f214a44b4a61e51d622ff71",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "TimingBar",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"LockPinSet\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "af28f504e049301b0c8a0d84d34b6796a8c5e2bc3bedcbd906eaa49ae67dfee3",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-3e203cdd3ad34f36b1936cc448520766",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "LockPinSet",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/start\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+      "outcome": "Failed",
+      "error": "Assert.Equal() Failure: Values differ\nExpected: NotFound\nActual:   OK",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<>c__DisplayClass5_0.<<RetiredDirectHostRoute_CannotDispatchOrMutateProfile>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 54\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "cf59118850f9cb511d32ccaf3e39b4349a4f2d29c6d15240d5ad092b7625b886",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-5c304db06ae04652950aa559a94e0568",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Method": "POST",
+          "Path": "/api/qte/daren/start",
+          "Status": 200,
+          "Body": "{\n  \"state\": \"Failed\",\n  \"introTitle\": \"\u041e\u0433\u0440\u0430\u0431\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u044f \u0414\u0430\u0440\u0435\u043d\u043e\u043c\",\n  \"introText\": \"\",\n  \"boundaryNotice\": \"\u042d\u0442\u043e \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0432\u0442\u043e\u0440\u0441\u043a\u0430\u044f QTE-\u0432\u044b\u043b\u0430\u0437\u043a\u0430: \u043e\u0431\u044b\u0447\u043d\u0430\u044f \u0433\u043b\u0430\u0432\u0430, \u043e\u0431\u044b\u0447\u043d\u044b\u0435 \u0445\u043e\u0434\u044b \u0438 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 QTE \u043d\u0435 \u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f.\",\n  \"rewardNotice\": \"\u041b\u0443\u0447\u0448\u0438\u0439 \u0438\u0442\u043e\u0433 \u0414\u0430\u0440\u0435\u043d\u0430 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043a\u043d\u0438\u0433\u043e\u0439 \u0438 \u0434\u0430\u0451\u0442 \u0427\u0435\u0440\u043d\u0438\u043b\u044c\u043d\u044b\u0435 \u041f\u0435\u0440\u044c\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0438 \u0431\u0443\u0434\u0443\u0449\u0435\u0439 \u043d\u043e\u0432\u043e\u0439 \u0438\u0433\u0440\u044b.\",\n  \"bestReward\": null,\n  \"activeScene\": null,\n  \"resolution\": null,\n  \"completion\": null,\n  \"ending\": null,\n  \"availableOperations\": [],\n  \"interactionToken\": null,\n  \"notification\": null,\n  \"errorCode\": \"StaleInteraction\",\n  \"error\": \"\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0443\u0441\u0442\u0430\u0440\u0435\u043b\u0430. \u041e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0435\u0451 \u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.\"\n}",
+          "ProfileBefore": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProfileAfter": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"POST\", path: \"/api/qte/daren/action\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+      "outcome": "Failed",
+      "error": "Assert.Equal() Failure: Values differ\nExpected: NotFound\nActual:   OK",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<>c__DisplayClass5_0.<<RetiredDirectHostRoute_CannotDispatchOrMutateProfile>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 54\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "da692219e8e947d201ae4e386a9a144a26ee791f9795a7ab08d6a540d62eb8fd",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-820e4e1689084c4e8156f878ee5da58b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Method": "POST",
+          "Path": "/api/qte/daren/action",
+          "Status": 200,
+          "Body": "{\n  \"state\": \"Failed\",\n  \"introTitle\": \"\u041e\u0433\u0440\u0430\u0431\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u044f \u0414\u0430\u0440\u0435\u043d\u043e\u043c\",\n  \"introText\": \"\",\n  \"boundaryNotice\": \"\u042d\u0442\u043e \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0432\u0442\u043e\u0440\u0441\u043a\u0430\u044f QTE-\u0432\u044b\u043b\u0430\u0437\u043a\u0430: \u043e\u0431\u044b\u0447\u043d\u0430\u044f \u0433\u043b\u0430\u0432\u0430, \u043e\u0431\u044b\u0447\u043d\u044b\u0435 \u0445\u043e\u0434\u044b \u0438 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 QTE \u043d\u0435 \u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f.\",\n  \"rewardNotice\": \"\u041b\u0443\u0447\u0448\u0438\u0439 \u0438\u0442\u043e\u0433 \u0414\u0430\u0440\u0435\u043d\u0430 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043a\u043d\u0438\u0433\u043e\u0439 \u0438 \u0434\u0430\u0451\u0442 \u0427\u0435\u0440\u043d\u0438\u043b\u044c\u043d\u044b\u0435 \u041f\u0435\u0440\u044c\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0438 \u0431\u0443\u0434\u0443\u0449\u0435\u0439 \u043d\u043e\u0432\u043e\u0439 \u0438\u0433\u0440\u044b.\",\n  \"bestReward\": null,\n  \"activeScene\": null,\n  \"resolution\": null,\n  \"completion\": null,\n  \"ending\": null,\n  \"availableOperations\": [],\n  \"interactionToken\": null,\n  \"notification\": null,\n  \"errorCode\": \"StaleInteraction\",\n  \"error\": \"\u0421\u0442\u0440\u0430\u043d\u0438\u0446\u0430 \u0432\u0437\u0430\u0438\u043c\u043e\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0443\u0441\u0442\u0430\u0440\u0435\u043b\u0430. \u041e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0435\u0451 \u0438 \u043f\u043e\u0432\u0442\u043e\u0440\u0438\u0442\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.\"\n}",
+          "ProfileBefore": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProfileAfter": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"RhythmPulse\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "9274fab9ef7b966012c7f6de3c9be74b98f937f74df60009a34e1200c933088b",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-64adf26222294f4e8945105c6e63ce10",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "RhythmPulse",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch",
+      "outcome": "Failed",
+      "error": "Assert.DoesNotContain() Failure: Item found in collection\n                                              \u2193 (pos 3)\nCollection: [\u00b7\u00b7\u00b7, \"new-game\", \"qte-practice\", \"daren-showcase\", \"load\", \"options\", \u00b7\u00b7\u00b7]\nFound:      \"daren-showcase\"",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<RealBrowserMenu_KeepsPracticeWithoutCampaignLaunch>b__4_0(HttpClient client, FileSystemManager files) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 31\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "496e25ad2da87b545549b8bafa86f2f9ec58c5527c97699fc8e52830b8dd921e",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-2fbfa9292c5f48ee92a10006e423044c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "RealHostMenuActionIds": [
+            "continue",
+            "new-game",
+            "qte-practice",
+            "daren-showcase",
+            "load",
+            "options",
+            "about",
+            "exit"
+          ]
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"ChargeRelease\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "a74165efb3f81ddc21c8b812e002c364323302744cf1765f1e03f5f52b8e3924",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-f700b1d1d27540bfa7c2b54d345994cd",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "ChargeRelease",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PromptChain\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "093b3ccaa5e466a7de5a305b9b60f823edf95b8b71013f482c22f039b93900f2",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-75c71a920cce462893a8f61cd199f64a",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "PromptChain",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"StealthNoise\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "80116ff0374fb552cf8beb1f3065a6aac9b8d073308c0c820abeb98f29123786",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-03efffa7ce634c698a472ca5501714d9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "StealthNoise",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"BranchChoice\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "b96d2ab33fdf8c4b1366daf8534ea42f888dcd37a77a5fa861484a2c963edee3",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-1521eb1390b74016ac1dbede9c1e3cbc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "BranchChoice",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData(type: \"PrecisionChoice\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RealPracticeHost_StartCompleteRetryExitPreservesRewardData",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "370c7afae98b8335d3b85f550b69ac5196fdab43b9f575c574c10edb1485a582",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-095037b6d4e441c3a126e8c267b1970f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Type": "PrecisionChoice",
+          "RealHost": true,
+          "Operations": [
+            "start",
+            "action",
+            "retry",
+            "exit"
+          ],
+          "ProofLimit": "HTTP and real C# owner execution; not an interactive browser minigame playthrough",
+          "State": "Completed",
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "Soul": "942BA1BEDDF2DAA961D54456057D92F61F8B714AE75E1A7FF53C6A6F482E7923"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile(method: \"GET\", path: \"/api/qte/daren\")",
+      "method": "BookOfEternityClient.Tests.DarenRetirementClientTests.RetiredDirectHostRoute_CannotDispatchOrMutateProfile",
+      "outcome": "Failed",
+      "error": "Assert.Equal() Failure: Values differ\nExpected: NotFound\nActual:   OK",
+      "stack": "   at BookOfEternityClient.Tests.DarenRetirementClientTests.<>c__DisplayClass5_0.<<RetiredDirectHostRoute_CannotDispatchOrMutateProfile>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 54\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 107\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n   at BookOfEternityClient.Tests.DarenRetirementClientTests.WithHostAsync(Func`3 body) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementClientTests.cs:line 109\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "8b0d4ac316ea636c408bfe40df3c9fa103a898eda24b9946617ddc993c76257a",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-host-5713a3cc9d7742a7a5b6646ea59f4c71",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Method": "GET",
+          "Path": "/api/qte/daren",
+          "Status": 200,
+          "Body": "{\n  \"state\": \"Intro\",\n  \"introTitle\": \"\u041e\u0433\u0440\u0430\u0431\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u044f \u0414\u0430\u0440\u0435\u043d\u043e\u043c\",\n  \"introText\": \"\u0425\u0438\u0442\u0440\u044b\u0439 \u0432\u043e\u0440 \u0414\u0430\u0440\u0435\u043d \u043f\u0440\u043e\u043d\u0438\u043a\u0430\u0435\u0442 \u0432 \u0437\u0430\u043f\u0435\u0440\u0442\u043e\u0435 \u043f\u043e\u043c\u0435\u0441\u0442\u044c\u0435, \u043a\u0440\u0430\u0434\u0451\u0442 \u043c\u0430\u0433\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u043f\u043e\u0441\u043e\u0445, \u0443\u0445\u043e\u0434\u0438\u0442 \u043e\u0442 \u043f\u043e\u0433\u043e\u043d\u0438 \u0438 \u0432\u043e\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442\u0441\u044f \u0432 \u0443\u0431\u0435\u0436\u0438\u0449\u0435.\",\n  \"boundaryNotice\": \"\u042d\u0442\u043e \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u0430\u044f \u0430\u0432\u0442\u043e\u0440\u0441\u043a\u0430\u044f QTE-\u0432\u044b\u043b\u0430\u0437\u043a\u0430: \u043e\u0431\u044b\u0447\u043d\u0430\u044f \u0433\u043b\u0430\u0432\u0430, \u043e\u0431\u044b\u0447\u043d\u044b\u0435 \u0445\u043e\u0434\u044b \u0438 \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0442\u0440\u0435\u043d\u0438\u0440\u043e\u0432\u043a\u0430 QTE \u043d\u0435 \u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f.\",\n  \"rewardNotice\": \"\u041b\u0443\u0447\u0448\u0438\u0439 \u0438\u0442\u043e\u0433 \u0414\u0430\u0440\u0435\u043d\u0430 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u043a\u043d\u0438\u0433\u043e\u0439 \u0438 \u0434\u0430\u0451\u0442 \u0427\u0435\u0440\u043d\u0438\u043b\u044c\u043d\u044b\u0435 \u041f\u0435\u0440\u044c\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0438 \u0431\u0443\u0434\u0443\u0449\u0435\u0439 \u043d\u043e\u0432\u043e\u0439 \u0438\u0433\u0440\u044b.\",\n  \"bestReward\": null,\n  \"activeScene\": null,\n  \"resolution\": null,\n  \"completion\": null,\n  \"ending\": null,\n  \"availableOperations\": [\n    \"start\",\n    \"exit\"\n  ],\n  \"interactionToken\": \"1e24afaac0924dae93bf67d93692dd55\",\n  \"notification\": null,\n  \"errorCode\": null,\n  \"error\": null\n}",
+          "ProfileBefore": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProfileAfter": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD"
+        }
+      ],
+      "prerequisiteLines": []
+    }
+  ],
+  "classification": "PENDING_ROOT_CAUSAL_READING_AND_LATER_INDEPENDENT_EVIDENCE",
+  "rawTrx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/daren-retirement-browser-host-integration-001.trx",
+  "rawTrxSha256": "15042b724a3035605b477c79689a14490e06ea74eb4c625ef647f8acb17da3dd"
+}

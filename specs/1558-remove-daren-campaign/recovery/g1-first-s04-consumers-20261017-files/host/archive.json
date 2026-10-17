@@ -1,0 +1,86 @@
+{
+  "kind": "EXACT_FIRST_CONSUMER_RED_OWNER_RAW_ARCHIVE_NOT_INDEPENDENT_ACCEPTANCE",
+  "utc": "2026-10-17T10:04:12.414405+00:00",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 1,
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/record.json",
+  "recordSha256": "cb0d3ad8aac0fb891ad24a23bad9fc7b5288704d4d727748d6c61725eb274d7a",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/record.json",
+      "storedPath": "native/record.json.gz",
+      "bytes": 23912,
+      "sha256": "cb0d3ad8aac0fb891ad24a23bad9fc7b5288704d4d727748d6c61725eb274d7a",
+      "storedBytes": 6660,
+      "storedSha256": "1994f624e193c42d8975a72ff56f4d915b17e8e4904d0de7f0436e8912bb0883",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/stdout.log",
+      "storedPath": "native/stdout.log.gz",
+      "bytes": 24655,
+      "sha256": "df56ab07ef82714e2f37e1c00680bc4b0ddd3ab49ae60f7c62a134e9e6c40e68",
+      "storedBytes": 2688,
+      "storedSha256": "7d1ea95a193706f46f9cb41acd9b3632fbdc91a6bc5c49262f59f09833f1690d",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/72a29489bd2daeb5edb32568d5543506f33a33a5-daren-retirement-browser-host.consumer-red.first-launch.json",
+      "storedPath": "native/first-launch-sentinel.json.gz",
+      "bytes": 497,
+      "sha256": "1a5965051f0784c4d5e142ea31f717294f1b85d46dc41966532c6731847fde45",
+      "storedBytes": 331,
+      "storedSha256": "742279933d9b3625f391ebb855e98b9d0418f826d363886cb4a24084f0403ff9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-host-5e6f57bb-20261017T100413Z/process.json",
+      "storedPath": "native/process.json.gz",
+      "bytes": 372,
+      "sha256": "713cbd2582824622f0994965b6a6035f5d7b5fbd0f6b932aab000e0c91ce4e0f",
+      "storedBytes": 269,
+      "storedSha256": "076cf7fc5e1c99cb289e2f57c1bd656272fb350be9af6b580ebe3f1fdd3c27fc",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/daren-retirement-browser-host-integration-001.trx",
+      "storedPath": "runner/0/daren-retirement-browser-host-integration-001.trx.gz",
+      "bytes": 79667,
+      "sha256": "15042b724a3035605b477c79689a14490e06ea74eb4c625ef647f8acb17da3dd",
+      "storedBytes": 7220,
+      "storedSha256": "f293ba7143a277674ed247790f37150aced35df5c30ac3261266781d2d8c5fae",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/dotnet-test.log",
+      "storedPath": "runner/0/dotnet-test.log.gz",
+      "bytes": 1724706,
+      "sha256": "5fd876a04d6b9f71751e78bf8dab71cbf993c2e470ea8c886d175ffbd806376b",
+      "storedBytes": 191394,
+      "storedSha256": "8c86341d5ce64b073bf653549fd539ee1448de2dca9ed0d5b7632aab22fb0dce",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/plan.json",
+      "storedPath": "runner/0/plan.json.gz",
+      "bytes": 1731,
+      "sha256": "cbba2fb71ca6a1e7ba473792c27d4d76c649e4ab92dd1d328b8b7527c5387239",
+      "storedBytes": 621,
+      "storedSha256": "bb4e6c5f9d7d07210a8f153c6d42834740316aff0f0b3028fbdb7393253cd739",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100338-102-90805-1d108793f8914b698c0a61eafc24e19d-categories/summary.json",
+      "storedPath": "runner/0/summary.json.gz",
+      "bytes": 1373,
+      "sha256": "ade7e0361601c610316300748be774112e7558a55ea7c1a775a97d1bc4d06492",
+      "storedBytes": 592,
+      "storedSha256": "fd89b83d17bf2f1adb0fcd1b3245b4373ce5a4280321dc3d14abe7f283978dc6",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "helperText": "\"\"\"Future archival recipe only: exact FIRST actual raw -> NEW /tmp directory.\nNo producer execution, replay, consumer fixture install/rebase or root cleanup.\nIt can preserve an unexpected outcome before any semantic diagnosis.\n\"\"\"\nfrom pathlib import Path\nimport sys,json,hashlib,gzip,datetime\n\ndef sha(b):return hashlib.sha256(b).hexdigest()\ndef main():\n assert len(sys.argv)==3,'actual record and NEW EMPTY /tmp archive directory required'\n rp=Path(sys.argv[1]);dest=Path(sys.argv[2]);assert dest.is_absolute() and str(dest).startswith('/tmp/') and not dest.exists();dest.mkdir()\n r=json.loads(rp.read_text());assert r['category'] in {'daren-retirement-console-menu','daren-retirement-save-rewards','daren-retirement-storage-refusal','daren-retirement-ordinary-storage','daren-retirement-browser-host'};rows=[]\n def save(p,relative,expected=None):\n  p=Path(p);assert p.is_file() and not p.is_symlink();b=p.read_bytes()\n  if expected is not None:assert len(b)==expected['bytes'] and sha(b)==expected['sha256']\n  stored=dest/(relative+'.gz');assert not stored.exists();stored.parent.mkdir(parents=True,exist_ok=True);z=gzip.compress(b,mtime=0);stored.write_bytes(z);assert gzip.decompress(stored.read_bytes())==b\n  rows.append(dict(rawPath=str(p),storedPath=relative+'.gz',bytes=len(b),sha256=sha(b),storedBytes=len(z),storedSha256=sha(z),compression='gzip mtime0'))\n save(rp,'native/record.json');save(r['stdoutPath'],'native/stdout.log');save(r['firstLaunchSentinel'],'native/first-launch-sentinel.json')\n if Path(r['processRecord']).is_file():save(r['processRecord'],'native/process.json')\n for p in r['resultFiles']:\n  path=Path(p['path']);matches=[(i,Path(d)) for i,d in enumerate(r['resultDirectories']) if path.is_relative_to(Path(d))];assert len(matches)==1;i,base=matches[0];save(path,'runner/'+str(i)+'/'+str(path.relative_to(base)),p)\n for p in r['fixtureArtifactFiles']:\n  path=Path(p['path']);matches=[Path(d) for d in r['newRetainedArtifactDirectories'] if path.is_relative_to(Path(d))];assert len(matches)==1;base=matches[0];assert base.parent==Path('/tmp') and base.name.startswith('boe-daren-retirement-artifacts-');save(path,'artifacts/'+base.name+'/'+str(path.relative_to(base)),p)\n packet=dict(kind='EXACT_FIRST_CONSUMER_RED_OWNER_RAW_ARCHIVE_NOT_INDEPENDENT_ACCEPTANCE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=r['actualSource'],compiledSource=r['compiledSource'],productSource=r['productSource'],nativeExit=r['nativeExit'],recordPath=str(rp),recordSha256=sha(rp.read_bytes()),files=rows,helperText=Path(__file__).read_text(),scope='Exact FIRST native/runner raw and support. No producer/consumer launch, fixture installation/transformation or owned cleanup is performed by this archiver. Parent release governs any repository persistence.')\n (dest/'archive.json').write_text(json.dumps(packet,indent=2)+'\\n');print('EXACT_FIRST_CONSUMER_RED_OWNER_ARCHIVE',dest,'rawchains',len(rows),'nativeExit',r['nativeExit'])\nif __name__=='__main__':main()\n",
+  "scope": "Exact FIRST native/runner raw and support. No producer/consumer launch, fixture installation/transformation or owned cleanup is performed by this archiver. Parent release governs any repository persistence."
+}

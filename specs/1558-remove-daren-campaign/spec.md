@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: S04 SOURCE/FIXTURE/SELECTION/PREP accepted on72a/890; actualvalidation pending. Exactreview/conditionalRootprotocol persisted, remaining2owners/5methods/21cases0exec/new7pins unchanged. Only after newcarrier remote/recovery may Root activate correctedsave4 first; HTTP17 requires next separate activation. Oldaccepted7cases/4savefixtureFAIL retainoriginaldf3/0b provenance; no replay/actual/product. T004–T020 unchecked.
+**Status**: FIRST corrected save4+previouslyUNRUN HTTP17 completed once atactual5e6/compiled72a:21unique cases/5methods/2complete descriptors,12PASS+9locallycausal finalFAIL;16raw chains/21strict roots physicallyabsent preserved. Retainoldaccepted7cases atdf3/0b and4oldsavefixtureFAIL separately; proposedfinite28=14positivePASS+14causalRED awaits independentEVIDENCE. No source/product change or newtask completion; T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -87,4 +87,7 @@ Historical [partial causal EVIDENCE acceptance](recovery/gm1558-first-consumer-s
 Historical [S04 fresh zero-execution preparation](recovery/g1-s04-first-preparation-20261017.json) observes remaining2owners/5methods/21cases withnewcompiled72a/sevenDLL binding. Affected independentSOURCE and exactRootactivation remain pending; corrected save4 and firstHTTP17 are unrun. Accepted ordinary/storage/menu evidence keeps its originalprovenance; production and functional/success completion stay held.
 
 
-Current [S04 SOURCE/FIXTURE/SELECTION/PREP acceptance](recovery/gm1558-g1-s04-source-independent-20261017.md) leaves actual validation pending. [Root conditional remaining-owner protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) gates corrected save4 first, then HTTP17, after exact persistence/readback/recovery and separate activation. No new runtime or requirement/success completion is declared; old accepted/unqualified evidence remains distinct and production is held.
+Historical pre-activation [S04 SOURCE/FIXTURE/SELECTION/PREP acceptance](recovery/gm1558-g1-s04-source-independent-20261017.md) leaves actual validation pending. [Root conditional remaining-owner protocol](recovery/gm1558-root-s04-remaining-red-conditional-release-89023323-20261017.json) gates corrected save4 first, then HTTP17, after exact persistence/readback/recovery and separate activation. No new runtime or requirement/success completion is declared; old accepted/unqualified evidence remains distinct and production is held.
+
+
+Current [FIRST remaining consumer evidence](recovery/g1-first-s04-consumers-20261017.json) freezes corrected save4 and previously unrun HTTP17 atactual5e6/compiled72a:21complete/12PASS/9locallycausal finalFAIL,16rawchains/21strict physically absent roots. Retained7oldqualified cases and4oldsave fixtureFAIL keep originaldf3/0b provenance. Finite28unique/10methods=14positivePASS+14causalRED is a local aggregate pending independent EVIDENCE; no all-command GREEN, completeG1, FR/SC/task completion or product removal is claimed.

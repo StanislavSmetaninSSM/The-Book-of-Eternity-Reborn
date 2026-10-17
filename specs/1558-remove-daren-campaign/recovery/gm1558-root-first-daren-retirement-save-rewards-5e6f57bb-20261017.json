@@ -1,0 +1,168 @@
+{
+  "kind": "ROOT_FIRST_CONSUMER_OWNER_RAW_PREQUALIFICATION_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-17T10:00:53.968344+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-s04-red-first-save-5e6f57bb-20261017T100038Z/record.json",
+  "recordSha256": "e4e09f30d023528dc1a429431c406934a6a31cc02dd39369fd4692803e31805b",
+  "category": "daren-retirement-save-rewards",
+  "actualSource": "5e6f57bb35c2177691ecb9e1c3dd5d0cf28ba95d",
+  "compiledSource": "72a29489bd2daeb5edb32568d5543506f33a33a5",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 1,
+  "wallSeconds": 7.121826056005375,
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 1,
+    "Failed": 3
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": true,
+  "strictRootsRemoved": [
+    "/tmp/boe-gameengine-turnlifecycle-c0b9a10eaba349ee95fb48f9c023b889",
+    "/tmp/boe-daren-retirement-save-10797d27df564c429fc4a8ba116d5772",
+    "/tmp/boe-gameengine-turnlifecycle-44014fdc0a77489d87dc2e8deefe0b65",
+    "/tmp/boe-gameengine-turnlifecycle-2f6a8062583d4b1185d1aa3ae473f0c7"
+  ],
+  "sevenBinaryContinuity": true,
+  "namespaceContinuity": true,
+  "caseEvidence": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"malformed\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "outcome": "Failed",
+      "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"old-profile-read-normalized-or-mutated\"]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 68\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "84c529db54c1237a4fde1def09947c3a2f1509ec2e4bbc5ecae2c8ecfc564c89",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-c0b9a10eaba349ee95fb48f9c023b889",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Variant": "malformed",
+          "RealInitializeChaosSeaCompleted": true,
+          "ProfileBefore": "2E342DB8D8FBEF9837D514D5D39F99A0B50C474695BEBA3E3FB86D2D3137697A",
+          "ProfileAfter": "B0D0E0604957F144D1129804891E7662E04805FFB3E02D4EE83E489ACA9A9638",
+          "InkFeathers": {
+            "current": 0,
+            "total": 0
+          },
+          "Grant": null,
+          "Issues": [
+            "old-profile-read-normalized-or-mutated"
+          ]
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "method": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "32733ea7a548620ce643b9ca2172c89b2a3cdc652ea22513be479bcc375318d6",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-save-10797d27df564c429fc4a8ba116d5772",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "RealSaveAndLoad": true,
+          "Archive": "88FC410CBD1DA6D807A3E8D99E12D08DD4CFA366B25987EDF364862C330BCF90",
+          "InkFeathers": {
+            "current": 17,
+            "total": 29
+          },
+          "RetainedGrant": {
+            "darenQteShowcase": {
+              "source": "daren_qte_showcase",
+              "tierId": "perfect_shadow",
+              "inkFeatherBonus": 6,
+              "grantedAtUtc": "2026-06-11T05:00:00Z",
+              "historicalUnknownField": "retain-owned-data"
+            },
+            "unrelatedGrant": "unchanged"
+          },
+          "Profile": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+          "ProofLimit": "owned supported-schema fixture, no arbitrary historical-schema compatibility claim"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"valid\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "outcome": "Failed",
+      "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"old-profile-read-normalized-or-mutated\", \"fresh-soul-received-retired-campaign-currency\"]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 68\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "31d197a839d9517e74159a9c3a03227a166e9617b1fe284c0425b574324111a3",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-44014fdc0a77489d87dc2e8deefe0b65",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Variant": "valid",
+          "RealInitializeChaosSeaCompleted": true,
+          "ProfileBefore": "1012E2FDB28C27006C9C8E1435272D0E4CE895CB11BD6056A1CAC49ED48A6CC4",
+          "ProfileAfter": "406491E88636CADF4B45A8D071A8CBEEDF6DB9A1D77110160F1B7DE887F456FA",
+          "InkFeathers": {
+            "current": 6,
+            "total": 6
+          },
+          "Grant": null,
+          "Issues": [
+            "old-profile-read-normalized-or-mutated",
+            "fresh-soul-received-retired-campaign-currency"
+          ]
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"duplicate\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "outcome": "Failed",
+      "error": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"old-profile-read-normalized-or-mutated\", \"fresh-soul-received-retired-campaign-currency\"]",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 68\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "a63674dd4b5716f63e0d3ca53dea1e6f05a243c83c31c1213cf918359fcdc7d4",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-2f6a8062583d4b1185d1aa3ae473f0c7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Variant": "duplicate",
+          "RealInitializeChaosSeaCompleted": true,
+          "ProfileBefore": "5C8BCFE9D3A31C418A47ECDE5A1279478888EB2B869230B4209AF6C3A4AFBBBD",
+          "ProfileAfter": "F74D967B6B978594D283774CE189BA429B99C83A1D863D29DA82585A2D48450A",
+          "InkFeathers": {
+            "current": 6,
+            "total": 6
+          },
+          "Grant": null,
+          "Issues": [
+            "old-profile-read-normalized-or-mutated",
+            "fresh-soul-received-retired-campaign-currency"
+          ]
+        }
+      ],
+      "prerequisiteLines": []
+    }
+  ],
+  "classification": "PENDING_ROOT_CAUSAL_READING_AND_LATER_INDEPENDENT_EVIDENCE",
+  "rawTrx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-100039-741-90353-3919620539764e30b9170ee95d995f74-categories/daren-retirement-save-rewards-integration-001.trx",
+  "rawTrxSha256": "b1d7d63992d9e7eded29d64b2560b8c64b0cdb7f5ae3d820dc0306e9a8ef8384"
+}
