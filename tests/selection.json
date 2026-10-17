@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "gm-doc-afterlife-preservation",
-      "reason": "Current-base byte partition, actual moved bodies and manifest locators change; select preservation against current GM append and unchanged semantic obligations, not old baseline counts.",
+      "reason": "Current-base byte partition, actual moved bodies and manifest locators change; select preservation against current GM append and unchanged semantic obligations, not old baseline counts. After N025, direct D01/inverse/final-source methods belong only to gm-doc-afterlife-bootstrap-authority; unaffected FIRST PASS provenance is retained, not replayed.",
       "contracts": [
         "#1557",
         "approved A lossless conditional afterlife reading and real packaged session delivery"
@@ -11,7 +11,7 @@
     },
     {
       "category": "gm-doc-afterlife-reading",
-      "reason": "A-S01/S02 corrected complete operational triggers and current-scope transitive pair-header closure. Adds21owned-family triggers/9restricted-ordinary closures/2restored-L negatives to the existing28illustration/D01 controls; no production context-selector or gameplay semantics.",
+      "reason": "A-S01/S02 corrected complete operational triggers and current-scope transitive pair-header closure. Adds21owned-family triggers/9restricted-ordinary closures/2restored-L negatives to the existing28illustration/D01 controls; no production context-selector or gameplay semantics. After N025, direct D01/inverse/final-source methods belong only to gm-doc-afterlife-bootstrap-authority; unaffected FIRST PASS provenance is retained, not replayed.",
       "contracts": [
         "#1557",
         "approved A lossless conditional afterlife reading and real packaged session delivery"
@@ -19,7 +19,7 @@
     },
     {
       "category": "gm-doc-afterlife-delivery-source-guards",
-      "reason": "Final daemon explicit copy/read directives change on current base; AST/dataflow and exact source/memory/link guards must bind new source. Excludes redundant historical failed-pair selection.",
+      "reason": "Final daemon explicit copy/read directives change on current base; AST/dataflow and exact source/memory/link guards must bind new source. Excludes redundant historical failed-pair selection. After N025, direct D01/inverse/final-source methods belong only to gm-doc-afterlife-bootstrap-authority; unaffected FIRST PASS provenance is retained, not replayed.",
       "contracts": [
         "#1557",
         "approved A lossless conditional afterlife reading and real packaged session delivery"
@@ -79,6 +79,14 @@
       "contracts": [
         "#1557",
         "current A source-preserving conditional docs and real package/session closure"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-bootstrap-authority",
+      "reason": "Affected closure of real first-current bootstrap source exception: failed final-source1 plus directly changed inverse1 and D01 positive1/negative2. All four existing methods move from their old owners without duplication. Fresh source/package preparation precedes their affected actual; no new test or oracle weakening.",
+      "contracts": [
+        "#1557",
+        "approved D01 authority and reversible current-source entrypoint edits"
       ]
     }
   ]

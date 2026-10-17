@@ -1,0 +1,806 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "9cd4ddf9535d1d9193de5ae423b884623f18706a",
+  "base": "1a48d0c2a37b5e26fd6744a567f429a33a67b3cd",
+  "directory": "/workspace/gm1557-first-actual-stop-github-9cd4ddf9-20261017",
+  "completedUtc": "2026-10-17T04:21:38.555557+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1557-gm-doc-modularization/plan.md",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.seed.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/nonexecuting-source-seed.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/ast-and-publication.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/inspect-and-publish.ps1.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/outcome.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stderr.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/record.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/dotnet-test.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/gm-doc-afterlife-preservation-unit-001.trx.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/plan.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/summary.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/record.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/dotnet-test.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/gm-doc-afterlife-reading-unit-001.trx.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/plan.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/summary.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/record.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/dotnet-test.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/gm-doc-afterlife-delivery-source-guards-integration-001.trx.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/plan.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/summary.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/stdout.log.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-writer-inspection-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-source-accepted-complete-delta-recovery-1a48d0c2-20261017.json",
+    "M\tspecs/1557-gm-doc-modularization/spec.md",
+    "M\tspecs/1557-gm-doc-modularization/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 88,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/docs/testing.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "mode": "100644",
+      "git_blob": "f8befae26337fe995087ce4ae08fd132d3e043bb",
+      "bytes": 90634,
+      "sha256": "402bff2f027c531c2c0771de6761caecfc58dee826f4bc455879271811dbdb8a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/plan.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017.json",
+      "mode": "100644",
+      "git_blob": "b847c99e96baf44a78a353dd5a2c7b6a60cb89c3",
+      "bytes": 43127,
+      "sha256": "0829e13d82d9d414ac3ee172cfce1870b33a9d3ef2e5dfa6fcae02ad45298a03",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "48a2bc0d21a4e5e5db8f8f1774fe2918d0905527",
+      "bytes": 116700,
+      "sha256": "6e036f29c20d10182cf3bac8d9827b391d9ade86eb9ae04bae3d0ed8d4080a84",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "139ab5555635a27fb20243cd2b529781b552f902",
+      "bytes": 115978,
+      "sha256": "452edaa78d28c0d45265102656ff13dde9a21d567375155022ae9d49d23489a3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "f4423940568b45b63929ff63f920ce91388de4ba",
+      "bytes": 129005,
+      "sha256": "ca17e4cdd5e535e5f0331e48e86828b3078e2dcddffd0cab56594118b67ba4e2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "4d9e9b4954a740411c6f30791745315b17578593",
+      "bytes": 231214,
+      "sha256": "d9298a020cd1070f57d1f2c15215529e4d3b40cc1014755ed2abd368446cdb2c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "a8f6dde4a084aa95ad0b7952d0d41481be8e6f63",
+      "bytes": 115590,
+      "sha256": "cc5bc05189c650362a61847cb43763b20e69fc79b1daf1909fb99636d1d1b620",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "30d8676c76cf3644cbc8ecbb0d454db93903e85b",
+      "bytes": 242177,
+      "sha256": "f7af4f74c3f0a50d6197e2a56dd1f40bee1a45fb84a808665a29b895c271ce4f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "4ab26aba73f62ecfaa9cee228d629d50127e7b30",
+      "bytes": 115337,
+      "sha256": "ada2b4fe93c0118df2d7797dd546efd4190314fe5ac8d3b509fb799469239cef",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "f8f5f7460061cc64d33dd7d22ae26b3a58f99293",
+      "bytes": 127919,
+      "sha256": "34d8948a0c8f0692d4d93adc890eb3cfbb3975ee2735a8fdfcfeed92e2f17f93",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "88218b451221bb9aeb191face5d62b5a88439d94",
+      "bytes": 230906,
+      "sha256": "1f12883e9eb438a69a58d2c0825bb986987c59539fba4931b4670f852f97931a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "52bb471b6903d7b0b9d70fb1a05180145ad45723",
+      "bytes": 115414,
+      "sha256": "ec11c428cac93fec71fc0a3cfcd291cb77242d552fab338a4d73e86bb6a52659",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "ddfc5bc1e46b00eced0cfc46fe13e5dce9677e0c",
+      "bytes": 241753,
+      "sha256": "2455d215b1eae2bd6f426deb98192654baed98d3722e39076e3febe58f73c454",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "c6086067e782f875e27fe3ac05b95fae80d48473",
+      "bytes": 230415,
+      "sha256": "967849eaaf5cccbe1d25779abac09e0f09fd8f5a2cd521b00553392339c8f409",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "b0646cd0222a3f190687cdb63d253fe5f532a99d",
+      "bytes": 115160,
+      "sha256": "36752597895209df5250bec4e00b9648594a0a1b852d23e2b0a651a8f5fff7e7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "0a294281cbb2ca97c6887fb301247bdb60764d2b",
+      "bytes": 241563,
+      "sha256": "a3824b45918db33b858ec82b484976cbb840c6f7ca535c20db16484deb151270",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "64c6001ba0162534532482e55ff49b95b333d7d7",
+      "bytes": 230930,
+      "sha256": "f38a588ebc1511c46005deb33d9540420f0928ed630379ed3bb15f66714c39eb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "27eb20d3138a09451a941f47e75420ae5591cd76",
+      "bytes": 115438,
+      "sha256": "5f9f3483f8ab5e090a3b983ae912e48429977a7fdd984f8eddcb31949f2f06fd",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "704d4d20c59b743fb0922cf17d6b38ceaab8c8e2",
+      "bytes": 242138,
+      "sha256": "c7f0ab33bb2e92c86a76a7fe32ee1fc86446960f0a09399b0f2b8538815b4297",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "0be390247abaf10119cfec1ccf7a92337bfc9bd6",
+      "bytes": 231427,
+      "sha256": "3b53b9a136ac04caea3c1889fc9192f31a1a8a99ea4c2cb5f8950cb1ea7bc5f1",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "fbaeb5ea1421900fae9bb3575af644d925002fed",
+      "bytes": 115709,
+      "sha256": "968e1eb2e50aad3ff72455a687680569a10ec4b7abe4c10b7fae070fe8895729",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "a1310624a2f75d476f14ca8068093bc2cfa0cea7",
+      "bytes": 242492,
+      "sha256": "83c7729ceb912ac11a84c4651299c6e03921ef83ae566e52d8b00f81df95da48",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "f80be38f06f754dee25171c3a6f452f95dc69335",
+      "bytes": 231630,
+      "sha256": "4741b3c571e44bda557c368ab34ffb50d5917c1963f3c4473d82b9555c1bcc82",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.seed.gz",
+      "mode": "100644",
+      "git_blob": "57b5ec764ad2f4585e85d9e0dc9a017208bbf60d",
+      "bytes": 115786,
+      "sha256": "e5105055d3fb09e32a936a12462f583455860b06e511e99e1bd4206571496145",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/ast-and-publication.json.seed.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/nonexecuting-source-seed.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3ec67ac5c38aa6c005a0f7bf35928e4e80b97753",
+      "bytes": 92372,
+      "sha256": "974a77b2502b1bc49ed2275553b028ed389ba333522ba5f036bc00a700270541",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/nonexecuting-source-seed.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "d7e205f907f430a7a4ed400e08ea80906d04e91f",
+      "bytes": 242617,
+      "sha256": "279b9f03e655ce206ca046160b9023d7a64ea41404b7cd100e4399986ab79d9c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/ast-and-publication.json.gz",
+      "mode": "100644",
+      "git_blob": "ac65a64ae53028a47c855317c589831d51ab0dec",
+      "bytes": 115536,
+      "sha256": "86abe689ca5db501c8d5f7dd3bd335eea637a31fd7b3c01f8e7908e710ca0753",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/ast-and-publication.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/inspect-and-publish.ps1.gz",
+      "mode": "100644",
+      "git_blob": "3c2327b226546f98adb5cec486d838dcd5ce1400",
+      "bytes": 2666,
+      "sha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/inspect-and-publish.ps1.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/outcome.json.gz",
+      "mode": "100644",
+      "git_blob": "60fd0775a13de72045e1a76a019e374519fb90da",
+      "bytes": 127974,
+      "sha256": "4d2d22f05f440d199995fef65e567f5439d69d37dde3ba7090b763dea72fbe21",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/outcome.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stderr.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stderr.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-fixture-artifacts-20261017/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/record.json.gz",
+      "mode": "100644",
+      "git_blob": "ac59a903237cd8f199adc58a53ec7a8f68f58ea4",
+      "bytes": 2521,
+      "sha256": "6bcda499b63948d4c08ec7a7c1630a2fecf239d398053a01a4bcd340ff9e322b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/record.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "e989a1a8c80cbb306c0aac817c33d06ba99fd49a",
+      "bytes": 191995,
+      "sha256": "7bc65034ae80456a8599b85dd632de5fdb8cf9ab16ea5c0cf4544a15cbdd5102",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/gm-doc-afterlife-preservation-unit-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "8c15c91b79b5c96e41dd7d6b39eae6b05c349d42",
+      "bytes": 3472,
+      "sha256": "68d98e7c43dd51a44f3eb78bc4130b3bc9d08e83bde7296c0f6d077f1b3d4ad0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/gm-doc-afterlife-preservation-unit-001.trx.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "749504e05dc37e613c1dbd6ed7bdc0fcdc374b97",
+      "bytes": 786,
+      "sha256": "7465f7e384e008d8df07a67af79affb44931e85d050d7723d9303037eaa08be2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "a12f0efe9b4281cc5278b42e8f776a80ad013c90",
+      "bytes": 606,
+      "sha256": "591d07375fb0ec2918052fe68f37b7cb5c6056d9da9ae71f64473a6681534076",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "251e0beb1e00cc23a2468090a29d51f371fb8f57",
+      "bytes": 1018,
+      "sha256": "e9ea4b1819dd11133125d52682f1c18b6320eb954fa4cad185ee7af0b5693c4d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/0-gm1557-current-A-preservation-first-1a48d0c2/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/record.json.gz",
+      "mode": "100644",
+      "git_blob": "51bea0e904e0d95d258fbf0465148d680742a40d",
+      "bytes": 2517,
+      "sha256": "39b1a3245b6a1bb32992113e5f1d21cf1dbffb6f7bf5cdcd34a3dabddc079167",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/record.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "5092f7d37cf4f89cf4ee5819818118be70c9c244",
+      "bytes": 191999,
+      "sha256": "133e3e1b252ead9cba62b7cd41c1da58122e8151906660448e9d89bcc72c4678",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/gm-doc-afterlife-reading-unit-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "e3c383a3b9d9dcb33d8d1e869ad281c6e9be1151",
+      "bytes": 11985,
+      "sha256": "103889f21ebe4cbd506350112b5ada7e7ab73a06f4169509e8960898c5c8b26c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/gm-doc-afterlife-reading-unit-001.trx.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "ae510411ccd0255413601cf94aa57f1b38dde7fd",
+      "bytes": 801,
+      "sha256": "de393e3a3f707bd3bfb4532003c4183057e0810b6bf43de2ef291712f84959fe",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "87d3552c856a17cfb35c466bb5318d235c2a25c7",
+      "bytes": 605,
+      "sha256": "e6e67af00701f6cbf29eda8833a6f9409c207a2eeb50b4273b99d5509050aecd",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "0a1152b98671a29189cf6a8bd89b140ff7f5ec8e",
+      "bytes": 1043,
+      "sha256": "cc499004ed62da3aa3a7a7180a809b5e1951f119e9283be463adbc15b470c9f3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/1-gm1557-current-A-reading-first-1a48d0c2/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/record.json.gz",
+      "mode": "100644",
+      "git_blob": "f1f6f6776ed4b54bb8c69e4360e77fae8909d05d",
+      "bytes": 2764,
+      "sha256": "d74730dbbc802b0d516649fef1b06a91e585d85ac34a5e19c7a48e87a243eb78",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/record.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "9847ff3f8deaa4140237852386ed559f46925277",
+      "bytes": 317286,
+      "sha256": "c05b2fb58a0aa80121fc88b51a39c4647f0a75feb48d6fcb6569da87ce390195",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/gm-doc-afterlife-delivery-source-guards-integration-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "5b9eb2f99b95f7642ffd37e7e10ea4dcb9b66840",
+      "bytes": 1972119,
+      "sha256": "7f3f310e94f76400dfe8ee74690644ead21e1560aae6cf33738ada8b40d8e0a7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/gm-doc-afterlife-delivery-source-guards-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "83126d5b4ded40ad6ddae4d2d86773eea37476b0",
+      "bytes": 785,
+      "sha256": "e3f273e6cb001c6220c95bbb4da35a09e590e775d9d40ed8f85b52ee3da9c6eb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "b849bc87b9bbfc9e10b752c3b46c34c02d4bfc23",
+      "bytes": 600,
+      "sha256": "bf2acadeb0e1820e63ec0f402064aab32bfd2974ed0a854d7f3102c35adff084",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "eab4291992838f54c94069d5af467a37a0c3e572",
+      "bytes": 129329,
+      "sha256": "587d5c39aff27f74146e7c3a0a9ec0a250abca18e6e34d03c671103a17a1d167",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017-files/2-gm1557-current-A-source-guards-first-1a48d0c2/stdout.log.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017.json",
+      "mode": "100644",
+      "git_blob": "020a1f8ea069fb649095112183497e10569dbfa7",
+      "bytes": 40322,
+      "sha256": "d6f886df97a02c51488995356b2983f4c9fa68cddca3c2c689401c474f5ff427",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-writer-inspection-20261017.json",
+      "mode": "100644",
+      "git_blob": "46c669110b1f6ad5f5dc54701a0b24498254bae7",
+      "bytes": 42303,
+      "sha256": "4319d464918c5599274b6e596ac3c7f27bd3ccd3b2c1f4a2f3d9286b1525ec73",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-A-first-actual-stop-writer-inspection-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-source-accepted-complete-delta-recovery-1a48d0c2-20261017.json",
+      "mode": "100644",
+      "git_blob": "f9387e6dfc57f218bd435ec88c52def8b33edf04",
+      "bytes": 8585,
+      "sha256": "eff450702f392bb750a1f907a2dc0556347c63167b0d80399d0c5427c6e085ba",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/recovery/current-source-accepted-complete-delta-recovery-1a48d0c2-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "mode": "100644",
+      "git_blob": "e7d8f7de2a87717126fb6a9710833336b191b617",
+      "bytes": 32120,
+      "sha256": "2428d3a7371176cea17ad2857f61ff21736e91a6f4e5ee37d21b4e4688769b45",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/spec.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "mode": "100644",
+      "git_blob": "732cdf1264232d214efe932844ed96b780a3c320",
+      "bytes": 83399,
+      "sha256": "5c965a8dede7f88b350b0b1d3adb27fbfb744a089dc8d1c237fe7d3c40b79ff7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/9cd4ddf9535d1d9193de5ae423b884623f18706a/specs/1557-gm-doc-modularization/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "9cd4ddf9535d1d9193de5ae423b884623f18706a\trefs/heads/1557-gm-doc-modularization-continuation-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nchanged=git('diff','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1557-gm-doc-modularization-continuation-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

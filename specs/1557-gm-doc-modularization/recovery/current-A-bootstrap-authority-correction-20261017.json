@@ -1,0 +1,55 @@
+{
+  "kind": "A_E01_PRECISE_BOOTSTRAP_AUTHORITY_CORRECTION_SOURCE_REOPENED",
+  "createdUtc": "2026-10-17T04:27:04.778080+00:00",
+  "source": "BookOfEternityClient/game_master_daemon.ps1",
+  "beforeSha256": "e402a923efc0f0f4f931c842a5ae403e417c692374837c6e44769b12758ec953",
+  "afterSha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+  "edit": {
+    "id": "N025",
+    "source": "BookOfEternityClient/game_master_daemon.ps1",
+    "start": 93391,
+    "end": 93623,
+    "kind": "D01 authority-conflict reconciliation",
+    "beforeSha256": "937f552f83eecd97feaf42c1497b0873adf57cd152fa02b4f2c8392ec5c3d6c3",
+    "beforeBase64": "VGhpcyBpcyBhIGJvdW5kZWQgYm9vdHN0cmFwIHRhc2sgcGFja2V0OiBkbyBub3Qgb3BlbiBicm9hZCBleGFtcGxlcywgYWZ0ZXJsaWZlIGRpcmVjdGl2ZXMsIHdlYXRoZXIgZ3VpZGFuY2UsIGNvbWJhdCBndWlkYW5jZSwgZmFjdGlvbi9sb2NhdGlvbi9OUEMvc2tpbGwgdGVtcGxhdGVzLCBvciByZXBvc2l0b3J5IHNvdXJjZSB1bmxlc3MgdmFsaWRhdGlvbiBsYXRlciBuYW1lcyBhbiBleGFjdCBzdXJmYWNlLg==",
+    "afterSha256": "1db1020a608418e1c4e0ec00d9ced3e3723fea17887c30ba22f680e726f763e8",
+    "afterBase64": "VGhpcyBpcyBhIGJvdW5kZWQgYm9vdHN0cmFwIHRhc2sgcGFja2V0OiBkbyBub3Qgb3BlbiBicm9hZCBleGFtcGxlcywgYWZ0ZXJsaWZlIGRpcmVjdGl2ZXMsIHdlYXRoZXIgZ3VpZGFuY2UsIGNvbWJhdCBndWlkYW5jZSwgZmFjdGlvbi9sb2NhdGlvbi9OUEMvc2tpbGwgdGVtcGxhdGVzLCBvciByZXBvc2l0b3J5IHNvdXJjZS4=",
+    "authority": "approved D01 ban; independent first-current source.bootstrap_source_exception causal finding",
+    "applied": true
+  },
+  "onlyProductionChange": "Remove existing validation source-reading exception from one bootstrap sentence; unchanged guard and dispatch/gameplay logic.",
+  "causalReview": "current-A-first-stop-evidence-independent-review-20261017.md",
+  "priorSourceMiss": "Prior accepted SOURCE final-source qualification reopened for real A-E01; original verdict and first FAIL retained.",
+  "testBodies": "BYTE_UNCHANGED; four existing methods moved to one new category without duplicate selected ownership",
+  "retainedFirst": {
+    "executed": 93,
+    "passed": 92,
+    "failed": 1
+  },
+  "qualifiedReuse": {
+    "preservation": 17,
+    "reading": 57,
+    "sourceGuards": 14,
+    "total": 88,
+    "provenance": "Original1a48/compiled06a FIRST raw; old prefix hash does not qualify new source bytes"
+  },
+  "affectedReverification": {
+    "cases": 5,
+    "methods": 4,
+    "category": "gm-doc-afterlife-bootstrap-authority",
+    "descriptorsProposed": 2
+  },
+  "remainingUnrunCases": 160,
+  "fullSelectionProposed": {
+    "categories": 11,
+    "descriptors": 14,
+    "methods": 165,
+    "cases": 253
+  },
+  "freshPreparation": "REQUIRED changed-source BOTH/catalog/exactSelectionFile PlanOnly0 and new package pins, not yet run",
+  "clarifiedSevenMutationSeeds": {
+    "sha256": "277e8c4abe0afb95130342ef10466dc88474ece60b39698e15adb9541f11990f",
+    "byteIdenticalBeforeAfter": true
+  },
+  "actual": "HELD until fresh affected SOURCE accepted/persisted and root release"
+}

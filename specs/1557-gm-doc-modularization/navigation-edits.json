@@ -312,6 +312,19 @@
       "afterBase64": "NS4gKipFeGFtcGxlcy9FX0NMSV9BZnRlcmxpZmVfVHVybnMudHh0KiogLSBDb21wYWN0IHdvcmtlZC1leGFtcGxlIG5hdmlnYXRvciByZXRhaW5pbmcgb2xkIGFuY2hvcnM7IGNvbXBsZXRlIGJvZGllcyBsaXZlIGluIHRoZSB0ZW4gcGFpcmVkIGBFeGFtcGxlcy9FX0NMSV9BZnRlcmxpZmVfPFRvcGljPi50eHRgIGZpbGVzIHNlbGVjdGVkIGZvciB0aGUgY3VycmVudCBjb250cmFjdA==",
       "authority": "approved A routing and current continuation scope",
       "applied": true
+    },
+    {
+      "id": "N025",
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 93391,
+      "end": 93623,
+      "kind": "D01 authority-conflict reconciliation",
+      "beforeSha256": "937f552f83eecd97feaf42c1497b0873adf57cd152fa02b4f2c8392ec5c3d6c3",
+      "beforeBase64": "VGhpcyBpcyBhIGJvdW5kZWQgYm9vdHN0cmFwIHRhc2sgcGFja2V0OiBkbyBub3Qgb3BlbiBicm9hZCBleGFtcGxlcywgYWZ0ZXJsaWZlIGRpcmVjdGl2ZXMsIHdlYXRoZXIgZ3VpZGFuY2UsIGNvbWJhdCBndWlkYW5jZSwgZmFjdGlvbi9sb2NhdGlvbi9OUEMvc2tpbGwgdGVtcGxhdGVzLCBvciByZXBvc2l0b3J5IHNvdXJjZSB1bmxlc3MgdmFsaWRhdGlvbiBsYXRlciBuYW1lcyBhbiBleGFjdCBzdXJmYWNlLg==",
+      "afterSha256": "1db1020a608418e1c4e0ec00d9ced3e3723fea17887c30ba22f680e726f763e8",
+      "afterBase64": "VGhpcyBpcyBhIGJvdW5kZWQgYm9vdHN0cmFwIHRhc2sgcGFja2V0OiBkbyBub3Qgb3BlbiBicm9hZCBleGFtcGxlcywgYWZ0ZXJsaWZlIGRpcmVjdGl2ZXMsIHdlYXRoZXIgZ3VpZGFuY2UsIGNvbWJhdCBndWlkYW5jZSwgZmFjdGlvbi9sb2NhdGlvbi9OUEMvc2tpbGwgdGVtcGxhdGVzLCBvciByZXBvc2l0b3J5IHNvdXJjZS4=",
+      "authority": "approved D01 ban; independent first-current source.bootstrap_source_exception causal finding",
+      "applied": true
     }
   ],
   "stableReferenceInventory": [
