@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "AUTHORED_UNCOMPILED_UNRUN; NO_PREPARATION_OR_NATIVE_AUTHORIZATION_INFERRED",
+  "stage": "FRESH_COMPILED_DISCOVERED_0EXEC; CONCRETE_SOURCE_FIXTURE_SELECTION_PREP_REVIEW_PENDING",
   "sourcePinCount": 134,
   "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
   "sourcePins": [
@@ -1101,7 +1101,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "b212320298be82513327fa5e9d4d8e69915faa34782b3a3f366014f9719de63b"
+    "sha256": "d776edfe69b497e34f602de9b531398aaa4f4bab8a1005355cd2213d75d83fb3"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1135,7 +1135,7 @@
     "proposedCases": 32,
     "executionShape": "Four separate canonical Category-NoBuild FIRST commands after source/prep and exact Root activation. Private16; enginealias4; livealias4; helper8. Each category has ONE descriptor, so expectedsemantic failure cannot underfill another owner. Stop immediately on unexpected; freeze each locally, one coherent32raw carrier before independent causal EVIDENCE. No old8 or fullstage47 baseline replay."
   },
-  "selectionStatus": "ALL_COUNTS_STATIC_PROPOSALS; DISCOVERY_AND_SOURCE_REVIEW_PENDING",
+  "selectionStatus": "OBSERVED_NATIVE_PLANS_STAGE9_10_15_47_AND_GUARDS4_4_4_32; ZERO_EXECUTION",
   "catalogChanges": {
     "prior": 824,
     "current": 829,
@@ -1153,10 +1153,173 @@
     "oldEntryBytes": "Authoring helper verified every unchanged top-level JSON category object slice byte-identical; no global reserialization.",
     "ownership": "Exactly one owner per method inside the finite current nine-owner selection. Existing unselected historical families/wildcards may overlap; none is selected or broadened. Six methods moved out of old long-session-neighbors, not removed from coverage."
   },
-  "nativePreparation": null,
+  "nativePreparation": {
+    "packet": "recovery/lifecycle-guard-first-preparation.json",
+    "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+    "nativeExits": [
+      0,
+      0,
+      0
+    ],
+    "actualTestsExecuted": 0,
+    "stage": {
+      "categories": [
+        "gm-relay-operational-engine-rollback",
+        "gm-relay-operational-live-preparation",
+        "gm-relay-operational-save-load",
+        "gm-relay-operational-private-policy",
+        "gm-relay-operational-engine-alias",
+        "gm-relay-operational-live-alias",
+        "gm-relay-operational-helper-policy",
+        "gm-relay-operational-neighbors",
+        "gm-doc-afterlife-package-delivery"
+      ],
+      "descriptors": 10,
+      "methods": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+          "Cases": 16
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+          "Cases": 1
+        }
+      ],
+      "cases": 47,
+      "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141914-676-127778-4a0fce81c6ba48c19f1a3e2a7514df2e-categories/plan.json"
+    },
+    "guards": {
+      "categories": [
+        "gm-relay-operational-private-policy",
+        "gm-relay-operational-engine-alias",
+        "gm-relay-operational-live-alias",
+        "gm-relay-operational-helper-policy"
+      ],
+      "descriptors": 4,
+      "methods": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+          "Cases": 16
+        }
+      ],
+      "cases": 32,
+      "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141948-039-128017-72921438b8c547829499ccddc1939bc0-categories/plan.json"
+    }
+  },
   "currentManagedProvenance": {
-    "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
-    "note": "Nine old managed copies remain original prior-prep provenance; these changed tests are not compiled or qualified by them."
+    "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+    "pins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9363968,
+        "sha256": "4989f85e3e013000693d0490cfc84e8475aacd42667c65df31d32ce81993ef6b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29154304,
+        "sha256": "84c74cac797138f33cf366a290bed17818667651a260499697dd041da0a0f3ae"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1992192,
+        "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "75c1e177c284dafda972037f73e54c8d0ccce9ecdd36e0fd1c693b17159b3ac8"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 25790464,
+        "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+      }
+    ],
+    "note": "NEW7ff informational-version/source-revision managed copies from fresh build; unchanged production sourcea82, oldd473 raw kept under its original provenance."
   },
   "historicalBaseline": {
     "engine2Accepted": 2,
@@ -1205,5 +1368,10 @@
     "notTriggered": "Six other #1557 inverse entrypoints unchanged; no inverse-map edit/test by adjacency and no A255/B78/family replay."
   },
   "runtimePolicy": "No native/prep/product run in this authoring block. Publish/readremote/new GitHub delta BEFORE long build/source review. First outcomes immutable; unknown setup/platform/underfill/cleanup is STOP, never automatic causal RED.",
-  "handoff": "Close only safe inactive lifecycle stage through affected GREEN/independent acceptance/durable checkpoint; then wounds T179-Pd.3d. Full relay backlog stays open/deferred."
+  "handoff": "Close only safe inactive lifecycle stage through affected GREEN/independent acceptance/durable checkpoint; then wounds T179-Pd.3d. Full relay backlog stays open/deferred.",
+  "newFirstActualRecorder": {
+    "path": "recovery/tools/lifecycle-guard-first-run.py",
+    "sha256": "59d0f95f04c08b3aa0ea93057e74dcd7babc2e1d2c0e98373bce3b0d5b16356f",
+    "status": "UNRUN_SOURCE_REVIEW_AND_NAMED_ROOT_ACTIVATION_REQUIRED"
+  }
 }

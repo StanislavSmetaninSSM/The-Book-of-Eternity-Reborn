@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "ENGINE2_PLUS_REMAINING6_BASELINE_ACCEPTED_8DISTINCT_2PASS6CAUSALRED; NEW32_GUARDS_AUTHORED_UNCOMPILED_UNRUN; PRODUCTION_HELD",
+  "currentGate": "BASELINE8_ACCEPTED_2PASS6CAUSALRED; NEW32GUARDS_FRESH_COMPILED_DISCOVERED_0EXEC; CONCRETE_SOURCE_REVIEW_PENDING; PRODUCTION_HELD",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -501,7 +501,7 @@
   },
   "lifecycleStage": {
     "scope": "INACTIVE_EXACT_TWO_NAME_OPERATIONAL_LIFECYCLE_ONLY_THEN_WOUNDS_HANDOFF",
-    "status": "TESTS_ONLY_AUTHORING_WIP; PREPARATION_AND_NATIVE_NOT_RUN",
+    "status": "FRESH_CATALOG_STAGEPLAN_GUARDPLAN_NATIVE0_0_0; TESTS0; SOURCE_REVIEW_PENDING",
     "historicalBaseline": {
       "engine2Accepted": 2,
       "remaining6Accepted": {
@@ -772,7 +772,25 @@
       "publisher": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
       "reason": "Exactly6 changed-lifetime ordinary neighbors plus helper packaged input genuine publisher1, no broad bridge/storage/spiritual/#1557 replay."
     },
-    "nativeDiscovery": null,
+    "nativeDiscovery": {
+      "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+      "catalogCategories": 829,
+      "catalogMethodsFiles": 11699,
+      "stage": {
+        "categories": 9,
+        "descriptors": 10,
+        "methods": 15,
+        "cases": 47
+      },
+      "guards": {
+        "categories": 4,
+        "descriptors": 4,
+        "methods": 4,
+        "cases": 32
+      },
+      "actualTestsExecuted": 0,
+      "packet": "recovery/lifecycle-guard-first-preparation.json"
+    },
     "production": "UNCHANGED_HELD",
     "metadataUtilityObservation": "The first authoring-only helper assertion incorrectly assumed globally unique catalog ownership; existing turn-lifecycle-core class wildcard also covers the new Live partial. Corrected the check to current finite selected-owner uniqueness, restored only generated catalog/selection bytes from clean HEAD and regenerated. Unselected preexisting family entries stayed byte-identical. No compiler/native/PREP/test execution or failure."
   }

@@ -1,0 +1,83 @@
+{
+  "kind": "ROOT_LIFECYCLE_GUARDS_ZERO_PREPARATION_LITERAL_READBACK",
+  "utc": "2026-10-17T14:20:35.085292+00:00",
+  "actualSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
+  "sourcePinCount": 134,
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "nativeExits": [
+    0,
+    0,
+    0
+  ],
+  "actualTestsExecuted": 0,
+  "catalogCategories": 829,
+  "catalogMethodsFiles": 11699,
+  "catalogWallSeconds": 91.79860833800194,
+  "stage": {
+    "categories": 9,
+    "descriptors": 10,
+    "methods": 15,
+    "rows": 47,
+    "wallSeconds": 5.930478515998402
+  },
+  "guards": {
+    "categories": 4,
+    "descriptors": 4,
+    "methods": 4,
+    "rows": 32,
+    "wallSeconds": 5.807916062003642
+  },
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "4989f85e3e013000693d0490cfc84e8475aacd42667c65df31d32ce81993ef6b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "84c74cac797138f33cf366a290bed17818667651a260499697dd041da0a0f3ae"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "75c1e177c284dafda972037f73e54c8d0ccce9ecdd36e0fd1c693b17159b3ac8"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    }
+  ],
+  "helperSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+  "namespaceStable": true,
+  "allCleanup": true,
+  "proofLimits": "Build/discovery/PlanOnly only; planned-but-unexecuted UnderfilledDescriptors and Complete=false are correct discovery facts. No native testcase, Source acceptance, causal RED/GREEN or live client proof.",
+  "disposition": "Eligible for concrete independent SOURCE after prep publication/exactremote/new GitHub delta. No actuals released."
+}

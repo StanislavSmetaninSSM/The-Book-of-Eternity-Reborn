@@ -1,0 +1,216 @@
+{
+  "kind": "LIFECYCLE_GUARDS_FIRST_PREPARATION_0EXEC_CONCRETE_SOURCE_REVIEW_PENDING",
+  "createdUtc": "2026-10-17T14:21:53.915407+00:00",
+  "actualSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "compiledSource": "7ff66d815d48cff5b2a6953f90dff6eb2b0a5bf6",
+  "productSource": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "sourcePinCount": 134,
+  "sourcePinDigest": "f25ab241502d75e154c9f4f4a04cae222e65e878c8ccead74cd18f7421d7246d",
+  "sourceContextRaw": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-source-context-7ff66d81-20261017.json",
+  "archive": "recovery/lifecycle-guard-preparation-files/archive.json",
+  "archiveSha256": "8531524a8788485f8d18e4243db2baaf4bac9ea6e7787909a50206c1219fccfb",
+  "rawChainCount": 24,
+  "phases": [
+    {
+      "mode": "catalog",
+      "nativeExit": 0,
+      "wallSeconds": 91.79860833800194,
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guards-prep-first-catalog-7ff66d81-20261017/record.json",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141730-111-127261-3c03b0e447234776aa42b55068093d1a-categories"
+      ]
+    },
+    {
+      "mode": "stage-plan",
+      "nativeExit": 0,
+      "wallSeconds": 5.930478515998402,
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guards-prep-first-stage-plan-7ff66d81-20261017/record.json",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141914-676-127778-4a0fce81c6ba48c19f1a3e2a7514df2e-categories"
+      ]
+    },
+    {
+      "mode": "guards-plan",
+      "nativeExit": 0,
+      "wallSeconds": 5.807916062003642,
+      "recordPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-guards-prep-first-guards-plan-7ff66d81-20261017/record.json",
+      "resultDirectories": [
+        "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141948-039-128017-72921438b8c547829499ccddc1939bc0-categories"
+      ]
+    }
+  ],
+  "stagePlan": {
+    "categories": [
+      "gm-relay-operational-engine-rollback",
+      "gm-relay-operational-live-preparation",
+      "gm-relay-operational-save-load",
+      "gm-relay-operational-private-policy",
+      "gm-relay-operational-engine-alias",
+      "gm-relay-operational-live-alias",
+      "gm-relay-operational-helper-policy",
+      "gm-relay-operational-neighbors",
+      "gm-doc-afterlife-package-delivery"
+    ],
+    "descriptors": 10,
+    "methods": [
+      {
+        "Name": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+        "Cases": 4
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors",
+        "Cases": 2
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+        "Cases": 8
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+        "Cases": 4
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors",
+        "Cases": 4
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload",
+        "Cases": 1
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+        "Cases": 16
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration",
+        "Cases": 1
+      }
+    ],
+    "cases": 47,
+    "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141914-676-127778-4a0fce81c6ba48c19f1a3e2a7514df2e-categories/plan.json"
+  },
+  "guardsPlan": {
+    "categories": [
+      "gm-relay-operational-private-policy",
+      "gm-relay-operational-engine-alias",
+      "gm-relay-operational-live-alias",
+      "gm-relay-operational-helper-policy"
+    ],
+    "descriptors": 4,
+    "methods": [
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication",
+        "Cases": 4
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets",
+        "Cases": 8
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication",
+        "Cases": 4
+      },
+      {
+        "Name": "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact",
+        "Cases": 16
+      }
+    ],
+    "cases": 32,
+    "planPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-141948-039-128017-72921438b8c547829499ccddc1939bc0-categories/plan.json"
+  },
+  "actualTestsExecuted": 0,
+  "freshNineManagedPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9363968,
+      "sha256": "4989f85e3e013000693d0490cfc84e8475aacd42667c65df31d32ce81993ef6b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29154304,
+      "sha256": "84c74cac797138f33cf366a290bed17818667651a260499697dd041da0a0f3ae"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "78546876434c770b0d2375cf31e73372e52b947cbed4ceee33da947648708030"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "75c1e177c284dafda972037f73e54c8d0ccce9ecdd36e0fd1c693b17159b3ac8"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 25790464,
+      "sha256": "acc71f5adb7734d7eb620ad47d50d000e1c381674b80695b1148699d7c124ffb"
+    }
+  ],
+  "managedPackageFiles": 258,
+  "managedPackageInventoryInOriginalRecord": true,
+  "repoHelperSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+  "managedHelperSha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+  "namespaceStable": true,
+  "strictRunnerCleanup": true,
+  "rootLiteralReadback": "recovery/root-lifecycle-guard-prep-readback-7ff66d81.json",
+  "newActualRecorder": {
+    "path": "recovery/tools/lifecycle-guard-first-run.py",
+    "sha256": "59d0f95f04c08b3aa0ea93057e74dcd7babc2e1d2c0e98373bce3b0d5b16356f",
+    "status": "UNRUN_SOURCE_REVIEW_AND_NAMED_ROOT_ACTIVATION_REQUIRED"
+  },
+  "rawArchiver": {
+    "path": "recovery/tools/archive-lifecycle-guard.py",
+    "sha256": "140bf58b064c5b6d30c2fcbb3af33112ee3c6a1cec9e52edecd6374645c26ab8",
+    "status": "UNRUN_FUTURE_EXACT_NATIVE_AND_ORIGINAL_FIXTURE_ARCHIVE"
+  },
+  "authority": "Root explicit zero-test preparation message at exact7ff: catalog then stage-plan then guards-plan only. No native testcase/producer/client or product release.",
+  "proofLimits": "Build/catalog/discovery/PlanOnly0 only. Complete=false/planned-but-unexecuted descriptors are expected here. Managed assemblies have NEW7ff source-revision metadata; product SOURCE unchangeda82. No old d473 binaries used for upcoming new guards, no source/evidence acceptance inferred."
+}
