@@ -1,0 +1,65 @@
+{
+  "kind": "ROOT_FIRST_CONSUMER_OWNER_RAW_PREQUALIFICATION_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-17T09:38:09.987596+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/record.json",
+  "recordSha256": "b99db9cd74551b011263d2194a03a612101b02ae9bed6dcb109481c1d00de17b",
+  "category": "daren-retirement-console-menu",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 1,
+  "wallSeconds": 5.452347867001663,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": true,
+  "strictRootsRemoved": [
+    "/tmp/boe-gameengine-turnlifecycle-ce85d32496a0404b89d541d905cab189"
+  ],
+  "sevenBinaryContinuity": true,
+  "namespaceContinuity": true,
+  "caseEvidence": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+      "outcome": "Failed",
+      "error": "Assert.DoesNotContain() Failure: Item found in collection\n                                               \u2193 (pos 3)\nCollection: [\u00b7\u00b7\u00b7, \"load_game\", \"qte_practice\", \"daren_showcase\", \"options\", \"about\", \u00b7\u00b7\u00b7]\nFound:      \"daren_showcase\"",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 31\n--- End of stack trace from previous location ---",
+      "stdoutSha256": "58e0e578edd2bad59fb2eb9de5910bfd44f79c016dbd799e96229612c0358f29",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ce85d32496a0404b89d541d905cab189",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "ActualConsoleMenuKeys": [
+            "new_game",
+            "load_game",
+            "qte_practice",
+            "daren_showcase",
+            "options",
+            "about",
+            "exit"
+          ],
+          "RealConstructedEngine": true
+        }
+      ],
+      "prerequisiteLines": []
+    }
+  ],
+  "classification": "PENDING_ROOT_CAUSAL_READING_AND_LATER_INDEPENDENT_EVIDENCE",
+  "rawTrx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093753-194-86920-421e7c0f278f4fa886186620405fb29d-categories/daren-retirement-console-menu-integration-001.trx",
+  "rawTrxSha256": "8a2d1571b970778f3767123f4fa7dd12c6f79d3cb536032541dc873ed9930b68"
+}

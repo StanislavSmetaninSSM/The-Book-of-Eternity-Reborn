@@ -1,0 +1,98 @@
+{
+  "kind": "WRITER_FIRST_SAVE_FIXTURE_STOP_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE",
+  "utc": "2026-10-17T09:40:34.427700+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-save-df3ee99c-20261017T093909Z/record.json",
+  "recordSha256": "195f71986e9fae5d7cba91f9b00544ee4fd4861b4da1bd75ee3d2ffe977072de",
+  "archivePath": "/tmp/gm1558-first-save-rewards-archive-df3ee99c-20261017/archive.json",
+  "archiveSha256": "f5f30633d55c11f20f2edc77b3d38d04805e8ba07d8a4db8d59b821f7acbf394",
+  "rawChains": 8,
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 0,
+    "Failed": 4
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "cases": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"malformed\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "error": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "failureSite": "owned-test soul JSON byte parsing after actual InitializeChaosSea await",
+      "finalRetirementOrPreservationOracleReached": false,
+      "postOwnerDiagnosticsAbsent": true,
+      "noOriginalDarenReaderStack": true,
+      "strictCleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-71698d5486de4bcaad6a8957deb4f2f9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rawStdoutSha256": "97a5b81d50a08b1f0b024a53621bbafce37beb9be4226dd98d24440154788398"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"valid\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "error": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "failureSite": "owned-test soul JSON byte parsing after actual InitializeChaosSea await",
+      "finalRetirementOrPreservationOracleReached": false,
+      "postOwnerDiagnosticsAbsent": true,
+      "noOriginalDarenReaderStack": true,
+      "strictCleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e6e9ccdce130433d8dd8f8fb5e4f59e4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rawStdoutSha256": "7e7d509c5f51e6619b043f0940eaf21d40e25fbd11dad2192321551e751272c1"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "method": "BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile",
+      "error": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.DarenRetirementSaveTests.RealSaveLoad_PreservesEarnedCurrencyGrantHistoryAndInertProfile() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/DarenRetirementSaveTests.cs:line 35\n--- End of stack trace from previous location ---",
+      "failureSite": "owned-test soul JSON byte parsing after actual SaveGame/LoadGame returned true",
+      "finalRetirementOrPreservationOracleReached": false,
+      "postOwnerDiagnosticsAbsent": true,
+      "noOriginalDarenReaderStack": true,
+      "strictCleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-save-0244c6389708427cb5c989bbcae58994",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rawStdoutSha256": "bd19a27706a4ad15cc736d6379d600bed9904ea62fcec7e104aff0b8037e70a1"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(variant: \"duplicate\")",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile",
+      "error": "System.Text.Json.JsonReaderException : '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.",
+      "stack": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.ParseUnrented(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, JsonTokenType tokenType)\n   at System.Text.Json.JsonDocument.ParseValue(ReadOnlySpan`1 utf8Json, JsonDocumentOptions options)\n   at System.Text.Json.Nodes.JsonNode.Parse(ReadOnlySpan`1 utf8Json, Nullable`1 nodeOptions, JsonDocumentOptions documentOptions)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_RealFreshSoulDoesNotReadNormalizeOrGrantOldProfile(String variant) in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 56\n--- End of stack trace from previous location ---",
+      "failureSite": "owned-test soul JSON byte parsing after actual InitializeChaosSea await",
+      "finalRetirementOrPreservationOracleReached": false,
+      "postOwnerDiagnosticsAbsent": true,
+      "noOriginalDarenReaderStack": true,
+      "strictCleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fc486450a8fe4d1ab88eeb7360032bef",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rawStdoutSha256": "c51a969b276d1aa95ca78088026116ec019e88f4e9d0ba1e6f2147501f33549e"
+    }
+  ],
+  "sevenBinariesContinuous": true,
+  "namespaceContinuous": true,
+  "classification": "UNEXPECTED_SAVE_SOUL_BOM_FIXTURE_PARSE; NO_ACCEPTED_SAVE_RETIREMENT_RED_OR_EARNED_PRESERVATION_PROOF; independentcausalreviewpending",
+  "remainingUnrun": [
+    "daren-retirement-browser-host17"
+  ],
+  "noRetryOrSourceCorrection": true
+}

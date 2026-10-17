@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: Targeted DATA/FIXTURE/SELECTOR/PREP binding accepted on7a3/1f with retained compiled0b, exactfinite5owners/5descriptors/10methods/28cases,0exec. Exact reports and conditional Root per-owner gate persisted; next activation may release ONLY ordinary-storage2 after this metadata publication/readback/recovery. No consumer/retirementRED or other actual/production run; installeddata/currentselectors/7DLL unchanged. Capture2accepted and old05d2FAIL retained; T004–T020 unchecked.
+**Status**: FIRST finiteconsumer block STOP atsave4 fixtureBOMparse:4owners/11cases executed,2PASS+9FAIL (storage4/menu1 locallycausal,save4unqualifiedfixture);HTTP17UNRUN. All32raw chains/11strictphysicallyremovedroots preserved; sameactualdf3/compiled0b/product46ff/data/selectors/7DLL. IndependentcausalEVIDENCE pending; no retry/sourcefix/production. T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -75,4 +75,7 @@ Historical source-installation [capture and actual-byte transport EVIDENCE/SOURC
 Historical [NoBuild data/selector preparation](recovery/g1-data-selector-first-preparation-20261017.json) observes exact finite5owners/5descriptors/10methods/28cases with0test execution and unchanged compiled0b/sevenDLLs. Targeted independent binding review and explicit Root runtime activation remain pending; no source-derived consumer behavior, retirement RED or functional/success-criterion completion is claimed.
 
 
-Current [accepted data/selector/PREP binding](recovery/gm1558-g1-data-selector-independent-20261017.md) remains source/preparation qualification only. [Root conditional per-owner decision](recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json) requires exact metadata publication/readback/recovery and separately names ordinary2 first, then gates each other owner on preserved FIRST raw. No consumer behavior/retirement RED or requirement/success-criterion completion is declared here; product removal remains held.
+Historical [accepted data/selector/PREP binding](recovery/gm1558-g1-data-selector-independent-20261017.md) remains source/preparation qualification only. [Root conditional per-owner decision](recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json) requires exact metadata publication/readback/recovery and separately names ordinary2 first, then gates each other owner on preserved FIRST raw. No consumer behavior/retirement RED or requirement/success-criterion completion is declared here; product removal remains held.
+
+
+Current [FIRST finite-consumer partialSTOP](recovery/g1-first-consumer-stop-20261017.json) preserves11executed/2PASS/9FAIL with5locallycausal retirement failures and4unqualified save fixtureBOMparse failures; HTTP17 remainsUNRUN. Independent causal classification/remaining fixture correction is pending. No save-preservation proof, full28 execution or requirement/success-criterion completion is claimed; production removal and additional runtime remain held.

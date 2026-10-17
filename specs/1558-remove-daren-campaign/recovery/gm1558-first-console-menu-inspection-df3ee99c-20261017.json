@@ -1,0 +1,44 @@
+{
+  "kind": "WRITER_FIRST_MENU_RAW_CAUSAL_PREQUALIFICATION_NOT_INDEPENDENT_EVIDENCE",
+  "utc": "2026-10-17T09:38:28.689900+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-menu-df3ee99c-20261017T093752Z/record.json",
+  "recordSha256": "b99db9cd74551b011263d2194a03a612101b02ae9bed6dcb109481c1d00de17b",
+  "archivePath": "/tmp/gm1558-first-console-menu-archive-df3ee99c-20261017/archive.json",
+  "archiveSha256": "663363e47a575a2072127acf01e96ffe780d1a9c94de370541cbb24b5f6cfe0b",
+  "rawChains": 8,
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "methodIdentity": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+  "actualMenu": {
+    "ActualConsoleMenuKeys": [
+      "new_game",
+      "load_game",
+      "qte_practice",
+      "daren_showcase",
+      "options",
+      "about",
+      "exit"
+    ],
+    "RealConstructedEngine": true
+  },
+  "finalFailureMessage": "Assert.DoesNotContain() Failure: Item found in collection\n                                               \u2193 (pos 3)\nCollection: [\u00b7\u00b7\u00b7, \"load_game\", \"qte_practice\", \"daren_showcase\", \"options\", \"about\", \u00b7\u00b7\u00b7]\nFound:      \"daren_showcase\"",
+  "finalFailureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch() in /workspace/The-Book-of-Eternity-Reborn-1558/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DarenRetirement.cs:line 31\n--- End of stack trace from previous location ---",
+  "strictCleanup": {
+    "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ce85d32496a0404b89d541d905cab189",
+    "OwnedFixtureRemoved": true,
+    "CleanupFailure": null
+  },
+  "sevenBinariesContinuous": true,
+  "namespaceContinuous": true,
+  "qualification": "Real menu includespractice/newgame and retainedcampaignkey before finalDoesNotContain; meaningfulretirementRED proposed, independentEVIDENCEpending",
+  "remainingUnrun": [
+    "save4",
+    "HTTP17"
+  ]
+}

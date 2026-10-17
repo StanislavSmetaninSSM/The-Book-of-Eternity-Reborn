@@ -1,0 +1,77 @@
+{
+  "kind": "ROOT_FIRST_CONSUMER_OWNER_RAW_PREQUALIFICATION_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-17T09:34:35.925319+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/record.json",
+  "recordSha256": "58a774fba99a929492ab406f9e587ea65a968a56b79e05053a1a4c361a435d48",
+  "category": "daren-retirement-ordinary-storage",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 0,
+  "wallSeconds": 5.558773018005013,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": true,
+  "strictRootsRemoved": [
+    "/tmp/boe-daren-retirement-storage-a9df5734aedc4e39bf509017d5429f3d",
+    "/tmp/boe-daren-retirement-storage-406ef6fce8464efca421820f169be682"
+  ],
+  "sevenBinaryContinuity": true,
+  "namespaceContinuity": true,
+  "caseEvidence": [
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+      "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "5dd9cc10de01ec0488768b01d729a6745ff50a90ec54d7e0f3289495521f3ab1",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-a9df5734aedc4e39bf509017d5429f3d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [
+        {
+          "Provenance": "SYNTHETIC_SHARED_PUBLISHER_FORMAT1_NOT_DAREN_PRODUCED",
+          "FormatSource": "TrustedLocalFilePublication.cs Journal/Member/Image; ordinary first, all physical members equal After",
+          "Ordinary": "game_state/meta/retirement-ordinary-member.bin",
+          "RetiredMemberAdded": false,
+          "Generation": "eca95308dde14c92992dc6ed4d1b15f0",
+          "Journal": "B7E7A5D623D95416B9C45D1CA550836C0346619C1F0D858AA5346D84D3C1B175"
+        }
+      ],
+      "prerequisiteLines": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+      "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+      "outcome": "Passed",
+      "error": "",
+      "stack": "",
+      "stdoutSha256": "7aafecebedcbf04af291b9d9835bfdb3d22db53b7b9cbbb0d233814c9fea2e84",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-406ef6fce8464efca421820f169be682",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "diagnostics": [],
+      "prerequisiteLines": []
+    }
+  ],
+  "classification": "PENDING_ROOT_CAUSAL_READING_AND_LATER_INDEPENDENT_EVIDENCE",
+  "rawTrx": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-093401-250-86237-01a2cf00828442638a76308c4d87a005-categories/daren-retirement-ordinary-storage-integration-001.trx",
+  "rawTrxSha256": "f0204623f87a6909aa69debbf1f11052f7e77615fddc1564b681f168b594bd06"
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "WRITER_FIRST_OWNER_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE",
+  "utc": "2026-10-17T09:35:13.928376+00:00",
+  "category": "daren-retirement-ordinary-storage",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-consumer-red-first-ordinary-df3ee99c-20261017T0935Z/record.json",
+  "recordSha256": "58a774fba99a929492ab406f9e587ea65a968a56b79e05053a1a4c361a435d48",
+  "archivePath": "/tmp/gm1558-first-ordinary-storage-archive-df3ee99c-20261017/archive.json",
+  "archiveSha256": "f41615528fc4d03eb299ae120ad573761acbde40026647a26544804458cb427f",
+  "rawChains": 8,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "methodIdentities": [
+    "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinaryBrowserJournal_StillRecoversItsExactBeforeImage",
+    "BookOfEternityClient.Tests.DarenRetirementStorageTests.OrdinarySharedJournal_StillRecoversItsExactBeforeImage"
+  ],
+  "strictCleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-a9df5734aedc4e39bf509017d5429f3d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-storage-406ef6fce8464efca421820f169be682",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "sevenBinariesContinuous": true,
+  "namespaceContinuous": true,
+  "source": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiled": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "semanticObservation": "Both source-bound ordinary beforeimage/journal assertions completed; positive neighbors, not retirement RED.",
+  "remainingOwnersUnrun": [
+    "storage4",
+    "menu1",
+    "save4",
+    "HTTP17"
+  ]
+}

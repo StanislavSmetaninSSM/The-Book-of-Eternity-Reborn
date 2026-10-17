@@ -1,0 +1,82 @@
+{
+  "kind": "ROOT_ACTIVATED_ONE_EXACT_SOURCE_FIRST_CONSUMER_OWNER",
+  "createdUtc": "2026-10-17T09:37:28.315826+00:00",
+  "actualSource": "df3ee99cc28e46c60e14659038ec9d0e91544d49",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "category": "daren-retirement-console-menu",
+  "methods": [
+    {
+      "category": "daren-retirement-console-menu",
+      "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DarenRetirement_ActualConsoleMenuKeepsPracticeWithoutCampaignLaunch",
+      "Cases": 1
+    }
+  ],
+  "cases": 1,
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "daren-retirement-console-menu",
+    "-NoBuild"
+  ],
+  "finitePlanRecord": {
+    "path": "/tmp/gm1558-implementation-tools/gm1558-g1-data-plan-first-1f978a82-20261017T0931Z/record.json",
+    "sha256": "2b8f2a084daa73e996202332528bca581970c2ba73b5a9a6f38d74d9a6cbd532"
+  },
+  "helperPins": [
+    {
+      "path": "/tmp/gm1558-consumer-red-run.py",
+      "sha256": "1b48849b4efe732c5e799630c59874820c35ee418ad0e4a28076008bb3defd1c",
+      "execution": "UNRUN"
+    },
+    {
+      "path": "/tmp/gm1558-archive-consumer-red.py",
+      "sha256": "6020e29ab28e39a69e2159fb281e7120804fb39ad0650421cd189ee9ab46a0a7",
+      "execution": "UNRUN"
+    },
+    {
+      "path": "/tmp/gm1558-consumer-red-inspection-recipe.md",
+      "sha256": "782e660eee9167e3105021ba7a6109f18d91ff4b21f51f6f6b307806e7ac85f5",
+      "execution": "UNRUN"
+    }
+  ],
+  "conditionalDecisionSha256": "df52a83b57fa37648676206aa2df192d5ba2caadaf0ec1636760d6a64546b85e",
+  "persistedDecisionChecks": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-finite-red-conditional-release-7a3bf9a0-20261017.json",
+      "sha256": "df52a83b57fa37648676206aa2df192d5ba2caadaf0ec1636760d6a64546b85e"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-data-selector-independent-20261017.md",
+      "sha256": "8ae74b284fbc85609c850cf33ffdff77fdf22c46f2f7d9d0952706686800430d"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-data-selector-independent-20261017.json",
+      "sha256": "41924c67fb334392a2d36538089991578916d4ee48f497b50129f0287ca4f3e3"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-data-selector-independent-check-20261017.json",
+      "sha256": "c17ff81f038c5eda66658006f0b54255d87ff59294862fe6a44d635a7b289337"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-data-selector-prep-carrier-readback-7a3bf9a0-20261017.json",
+      "sha256": "1d584977b1d5c928e383628c1bf087c9eec97dfa3fb7c11ade54ff2ccdc3bf79"
+    }
+  ],
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-df3ee99c-20261017.json",
+  "completeDeltas": 93,
+  "trackedPaths": 55820,
+  "firstOutcomeProtocol": [
+    "Each owner canonical -Category <one ID> -NoBuild exactlyonce using unchangedreviewedhelper and reviewedfinitePlanrecord,distinctatomicFIRSTsentinel. No broadSelectionactual.",
+    "Immediately preserve native/stdout/process/TRX/summary/plan/allraw and rununchangedexactarchiverintonewowned/tmp; inspect actualidentities/cases/cleanup/physicalroots/source/binary/namespace beforeaskingRootfornextowner. Do notchangeHEAD/sourcebetweenowners.",
+    "ordinary2expects native0/2PASS; otherownersexpectatleastone meaningfulretirementboundaryfailure,withpositivecontroloutcomes preserved andclassifiedpercase. No fixedall-fail prediction. Stack/bytes/actualregisteredroute needed; exit1alone isnotcausalproof.",
+    "Unexpectedfixture/platform/network/timeout/underfill/duplicate/cleanup/unknownownerfailure stopsremainingowners. Retainallfirstraw/ownedroots; no silentcleanup/retry/sourcecorrection.",
+    "Aftercompletedpermittedowners orfirstSTOP,publishcoherentFIRSTraw/evidenceonlycheckpointwithsource/pins/cleanup/remainingunrun;exactremote/newcompletedelta beforelongindependentcausalEVIDENCE. Noproductionreleaseuntilacceptedcausalverdict."
+  ],
+  "releaseConditions": "Only named owner is activated. All other owner actuals require a distinct Root activation after first raw/archive/causal prequalification of preceding owner. Production remains held.",
+  "runtimeExecutedByThisReceipt": false
+}
