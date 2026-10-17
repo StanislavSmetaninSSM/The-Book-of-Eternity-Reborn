@@ -1,0 +1,22 @@
+{
+  "kind": "ROOT_CURRENT_A_STATIC_CONTINUITY",
+  "sha": "b5920ec30891e302b7476ecda3d70478836b8a1e",
+  "prior137BlockProof": "/tmp/gm1557-root-authoring-static-readback-f55ce9d5-20261017.json",
+  "recoveredFiles": 61,
+  "allChangedPaths": 57,
+  "unchangedPayloads": 137,
+  "unchangedSources": 3,
+  "unchangedSnippetEntries": 188,
+  "actualInventoriedWrapperPrefixes": 24,
+  "externalSourcesOnlyRecordedEdits": [
+    "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+    "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+    "BookOfEternityClient/game_master_daemon.ps1",
+    "CLI_API_Specification.md",
+    "CLI_Agent_Daemon_Specification.md",
+    "TaskGuides/CLI_Step_Main.txt"
+  ],
+  "recordedEdits": 24,
+  "verification": "Static source preservation/changed-path proof only; freshprep and SOURCE/actual still pending",
+  "verifiedUtc": "2026-10-17T03:51:48.492505+00:00"
+}

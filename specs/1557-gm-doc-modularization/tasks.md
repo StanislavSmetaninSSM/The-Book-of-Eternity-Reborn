@@ -1,5 +1,12 @@
 # Tasks: GM Documentation Modularization
 
+## Current A first fresh PREP FAIL preserved — 2026-10-17
+
+[Immutable first preparation packet](recovery/current-A-first-preparation-fail-20261017.json) preserves native1/49.419344929s at source `b5920ec30891e302b7476ecda3d70478836b8a1e`: integration build failed before discovery/test execution (0tests/0actual/0Plan). One `CS0136` at `GmDocumentationDeliveryScenario.cs:152`, duplicated in build summary, is a newly introduced physical-negative fixture local `original` shadowing the existing outer process Identity variable. This is a fixture compile defect, not delivery RED, product failure or accepted preparation. Runner owned-tree cleanup complete, prefixes unchanged, source clean. All native/raw records retained before any correction.
+
+[Complete b592 recovery](recovery/current-consumers-complete-delta-recovery-b5920ec3-20261017.json) covers all61GitHubraw/all57changedpaths; [root static continuity](recovery/current-consumers-independent-root-static-continuity-b5920ec3-20261017.json) independently preserves137payloads/3sources/188records/24prefixes and six external sources exactlya5+24declared edits. Next minimal test-only descriptive local rename plus full new-declaration scope preflight, publish/recover correction before fresh changed-source BOTH/catalog/PlanOnly0. No unchanged failing-source retry, historical RED/A1/A2/Late2 replay, actual release or A acceptance.
+
+
 ## Current A coherent implementation WIP — preparation/SOURCE pending (2026-10-17)
 
 The published `f55ce9d5ced46c46b7b0df1d4b58e2162c93c81c` authoring draft is retained with [all64/all60 exact GitHub delta recovery](recovery/current-authoring-complete-delta-recovery-f55ce9d5-20261017.json), [independent root static byte proof](recovery/current-authoring-independent-root-static-readback-f55ce9d5-20261017.json) and [complete retained-base composition55064paths](recovery/current-authoring-root-recovery-composition-f55ce9d5-20261017.json). No new full clone/base rehash or old RED/runtime replay.
