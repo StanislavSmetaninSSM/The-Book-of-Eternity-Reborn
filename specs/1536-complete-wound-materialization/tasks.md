@@ -1,3 +1,7 @@
+## A2 implementation SOURCE accepted — FIRSTLate2 release conditional (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): exact independent affectedSOURCE pair accepts f42/compileda4 minimalimplementation/freshprep/unchangedfixture reuse/22all18recovery, no material finding. [Current decision](plan.md): persist/readback/newdelta/foura4DLLcontinuity then root onlyFIRSTnewprotectedLate2; separateEVIDENCE before individuallyreleasedA2GREEN57. AllactualcurrentlyUNRUN; no oldproof/base/prep/source replay or broadenedscope.
+
 ## A2 implementation prepared — affected SOURCE next (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): minimala4 freshBOTH/catalog0(784/11741/knownwarnings0errors),PlanOnly0(5desc11methods59planned/0executed),12chains/fourDLLs frozen. [Currentcheckpoint](plan.md): compact8pin affectedSOURCE proves entireowner only2leaf replacements, A1/tests/fixtures/runner/catalog unchanged; accepted40ed/causalRED reusedbyhash. Publish/readback/newdelta/affectedSOURCE before FIRSTnewprotectedLate2/separateEVIDENCE thenA2GREEN57. No actual yet or oldproof/base replay; allbroaderholds remain.
