@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "COHERENT8_EXISTING_POLICY_OWNERS_PLUS_README_WIP_UNCOMPILED_UNRUN",
+  "stage": "PRODUCTION_WIP_FRESH_COMPILED_DISCOVERED_0EXEC; SOURCE_PENDING",
   "sourcePinCount": 136,
   "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
   "sourcePins": [
@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "b2658f7e765e23ce90679078db049e96faece6b3aadfd429294d2edf56b2d1e7"
+    "sha256": "7e0e8613e3dffb399c8818fc3706c37a3577d53a1befbe15fc48634ba33ddd3e"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1292,55 +1292,55 @@
     "appliesTo": "Historical original134source/7ff zero-exec preparation. Corrected136source freshfb6f preparation is ownerFixPreparation; targeted SOURCE accepted, current actuals unrun."
   },
   "currentManagedProvenance": {
-    "compiledSource": "fb6f89890cdd0fa2386920e05067a7f17d847305",
+    "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
     "pins": [
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
-        "bytes": 25790464,
-        "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+        "bytes": 25790976,
+        "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
         "bytes": 9363968,
-        "sha256": "3b7f7e50b0f96e89af951cfd71f6a205fc54fb119feb30e85b615636d509ff2c"
+        "sha256": "ec5f9a7c26898ed4c5dc54c382a163423eb9d26ace267a518765c0009a3c1a03"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
-        "bytes": 25790464,
-        "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+        "bytes": 25790976,
+        "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
         "bytes": 29154304,
-        "sha256": "8320811127642275c0535ed048f011180896b3f5a8995b1217a08d061e2bdd10"
+        "sha256": "21d2d6f8ea08c01b5f8eb0c8cc4ef6f867f7bcaace2a1027d668f93ea7cbd03f"
       },
       {
         "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1992192,
-        "sha256": "ed60e99072a1db99b9a354c63150f356abdf71ec3ea7e78245709ae7949b6edf"
+        "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
       },
       {
         "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
         "bytes": 1992192,
-        "sha256": "ed60e99072a1db99b9a354c63150f356abdf71ec3ea7e78245709ae7949b6edf"
+        "sha256": "14c26f23f9aee32ad2013528a209435762df01e194dd10ebc001570c4008e43e"
       },
       {
         "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
-        "bytes": 25790464,
-        "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+        "bytes": 25790976,
+        "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
         "bytes": 248832,
-        "sha256": "6d8ea12045b84025dbb1f380ff1677e3713923fac5047c08f368510751bf75ca"
+        "sha256": "d55d10ea6bbf30a44288cceb99730bb1a90d65ad1ca03b4bdeac7be956b96237"
       },
       {
         "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
-        "bytes": 25790464,
-        "sha256": "37003a337f66de93b398315ac02cb792f4280c4ac4de28143bfb32a82502df67"
+        "bytes": 25790976,
+        "sha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58"
       }
     ],
-    "note": "HISTORICALFB6F current32causalbindings. ProductionWIPnowchanges8policies+README; theseassemblies/helper-copy are not newproductbuildproof. FreshselectedbothbuildPlanOnly47 is pending."
+    "note": "NEWd8efreshproductrevision; actual8policyedits+README. Oldfb6fcurrent32causal+original0771historyunchanged. Freshbuild/Plan0only; noGREENyet."
   },
   "historicalBaseline": {
     "engine2Accepted": 2,
@@ -1396,7 +1396,13 @@
     "onlyExistingGenuineCase": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
     "reason": "Actual scenario required[] pins Launcher/GM_Turn_Helper.ps1 in freshly copied package. Later eight-file patch changes helper; bind new source helper to freshly built managed copy and actual package. No docSpecs/daemon/52-reading-body changes.",
     "helperExecution": "New8 guards execute exact repo helper through unchanged ownership glue; future fresh managed helper must byte-equal repo helper. Genuine publisher proves current package chain separately.",
-    "notTriggered": "Six other #1557 inverse entrypoints unchanged; no inverse-map edit/test by adjacency and no A255/B78/family replay."
+    "notTriggered": "Six other #1557 inverse entrypoints unchanged; no inverse-map edit/test by adjacency and no A255/B78/family replay.",
+    "currentHelperBuildPin": {
+      "repoSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+      "managedSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+      "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+      "actualPublisher": "UNRUN_REQUIRED_GREEN1"
+    }
   },
   "runtimePolicy": "Current32causalEVIDENCEaccepted. Rootreleasedinactive8file+READMEsourceauthoringonly; publishexactWIP/recoverbeforefreshbuild. ActualGREENhelduntilproductionSOURCE/PREP/selection/controlleracceptance and namedRootactivation.",
   "handoff": "Close only safe inactive lifecycle stage through affected GREEN/independent acceptance/durable checkpoint; then wounds T179-Pd.3d. Full relay backlog stays open/deferred.",
@@ -1626,7 +1632,7 @@
     "classification": "ACCEPTED_CURRENT32_16CAUSAL_RED16POSITIVE; original0771notdoublecounted"
   },
   "productionWip": {
-    "status": "COHERENT8_EXISTING_POLICY_OWNERS_PLUS_README_WIP_UNCOMPILED_UNRUN",
+    "status": "D8E_FRESH_COMPILED_DISCOVERED_0EXEC_NOT_GREEN",
     "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
     "changedProductionPaths": [
       "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -1689,9 +1695,19 @@
         "status": "UNRUN; syntaxchecked/source-readable, separate Root prep/actual gates required"
       }
     ],
-    "preparation": "NOT_RUN; fresh selectedunit+integrationbuildPlan47 required after publishedWIP/exactremote/newGitHubdelta and Root release. No catalog/npm/oldbaseline replay; test/catalog/selector membership unchanged.",
+    "preparation": "FIRSTfreshbothbuildPlan47 native0/0exec; savedexactraw/new9managedpins. No catalog/npm repeat. CoherentproductionSOURCEandnamedGREEN47stillpending.",
     "green": "NOT_RUN; productionSource+freshPrep/selection/controller independently reviewed and exactRootactivation required before onefixed47SelectionFile-NoBuildaggregate.",
     "documentation": "README only: inactiveclient-ownednames; notGM-authorable,noMortal/afterlifepending/gameplay/schema/statecontract change. ExistingD01/sourceban,52readingdocs/daemon/CLI/sixinverseentrypoints unchanged. NoGMworkedexample/manifest/matrix/categoryreplaytriggered. Actualhelperpackageinputchanged=>exactgenuinepublisher1selected.",
     "handoff": "AfterboundedlifecycleGREEN/independentacceptance/remotecheckpoint STOPfullrelaybacklog; handoffwoundsT179-Pd.3d acceptedNI-D01implementation in preserved1536worktree, no repeatdesign. WindowsZIPblock/openWindowsunchanged,noCIretry."
+  },
+  "productionPreparation": {
+    "packet": "recovery/lifecycle-production-first-preparation.json",
+    "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+    "nativeExit": 0,
+    "actualTestsExecuted": 0,
+    "owners": 9,
+    "descriptors": 10,
+    "methods": 15,
+    "cases": 47
   }
 }

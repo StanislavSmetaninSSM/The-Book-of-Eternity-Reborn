@@ -1,0 +1,87 @@
+{
+  "kind": "EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T15:19:29.060333+00:00",
+  "actualSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "selection": "tests/selection.json",
+  "nativeExit": 0,
+  "rawChainCount": 9,
+  "fixtureArtifactCount": 0,
+  "fixtureArtifactDirectories": [],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/d8e53413483e434752651e7e7b5b4f2dc392a6cf-lifecycle-stage-stage-build-plan.FIRST.json",
+      "storedPath": "000-d8e53413483e434752651e7e7b5b4f2dc392a6cf-lifecycle-stage-stage-build-plan.FIRST.json.gz",
+      "bytes": 351,
+      "sha256": "a1d9c83f60bdd9e9ceab8862842f636264159aa6d9ff7d489df6cdc1d936e3ce",
+      "storedBytes": 282,
+      "storedSha256": "df872acf26034dd52e6a6d4bd4a9bad2bf3061e9b5f88626441c984978ac45ab"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-prep-first-d8e53413-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 732,
+      "sha256": "10a3edcf33dc2be8228d8d4afe31ae7e6953d3c5c220399e2cdd3ae5244d6f77",
+      "storedBytes": 371,
+      "storedSha256": "bca24f1cf87759882b764ef9e87419746aa77cd44671b4ecd72256e192692efa"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-prep-first-d8e53413-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 64893,
+      "sha256": "cc965219369d5de563a166c38a22e60d1be62ec6dfe9c11d6f040f03b35343e8",
+      "storedBytes": 19381,
+      "storedSha256": "511b0a7b54826def055b5b80017aa385fe1ef583f91d9306a1534d68514d823f"
+    },
+    {
+      "rawPath": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-prep-first-d8e53413-20261017/stdout.log",
+      "storedPath": "003-stdout.log.gz",
+      "bytes": 9256,
+      "sha256": "e2cfbabe102842eb560ef09d86f062a36762eb27e9827c831d08e69f7af253e3",
+      "storedBytes": 1538,
+      "storedSha256": "585a694ed6f73329ae69b10b7cb44e61a3ce891541ad71166b239b03702bb890"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-151751-177-138465-ffc85ec390cb490c99b4caf8877eb06a-categories/Build-integration.log",
+      "storedPath": "004-Build-integration.log.gz",
+      "bytes": 121700,
+      "sha256": "d78d9343f0924aae2268ef9b57a4e1681c70364cd88f128e6e51a6a6fefd6b48",
+      "storedBytes": 9277,
+      "storedSha256": "24735207b629abab470b184bab04e486406ef5ab7e59bf0ea732b4405d2dc4b5"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-151751-177-138465-ffc85ec390cb490c99b4caf8877eb06a-categories/Build-unit.log",
+      "storedPath": "005-Build-unit.log.gz",
+      "bytes": 30103,
+      "sha256": "db15d6d78dada350f4ae83bbac613b3d36655a69b3a148b39387db95bd433ffe",
+      "storedBytes": 1896,
+      "storedSha256": "bd651e43fdbecb67b0b876fb249ab5263eb6c86c99030e30a8efcf65e5b03543"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-151751-177-138465-ffc85ec390cb490c99b4caf8877eb06a-categories/dotnet-test.log",
+      "storedPath": "006-dotnet-test.log.gz",
+      "bytes": 3579654,
+      "sha256": "24fea07338dc51377d2e573b6742bc499695869b3854b78f73df751895dfa674",
+      "storedBytes": 390809,
+      "storedSha256": "e83c37bdcfc07beb76844b934c32da501c60fe7a450eec0b91af5d46a0bdc268"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-151751-177-138465-ffc85ec390cb490c99b4caf8877eb06a-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 14946,
+      "sha256": "05f11f04a7c2f8b64255ef6cab5529ef87b23f89e77bf8f055d54abdf4021442",
+      "storedBytes": 2350,
+      "storedSha256": "949191f3a44110f13ed2d38edb6cc56da8aa7295f0fc3c1e38fe6beac15e2c96"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-151751-177-138465-ffc85ec390cb490c99b4caf8877eb06a-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 6621,
+      "sha256": "d7d0d31f1420290ed6bd553eaea5b60540a9d262e3651a268c515bbeb326c45d",
+      "storedBytes": 1759,
+      "storedSha256": "d71706c7497f689d9f18b09e7d05f53f2d5206a5a3f9417e80b56f68a87f0a25"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact terminal guard archive, including original native-terminal artifacts.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind'] in {'FIRST_INACTIVE_LIFECYCLE_GREEN47_ORIGINAL_RAW_NOT_ACCEPTANCE','FIRST_INACTIVE_LIFECYCLE_PRODUCTION_ZERO_TEST_PREP_NOT_RUNTIME_ACCEPTANCE'}\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel'])]\nfor directory in record['resultDirectories']:paths.extend(p for p in sorted(Path(directory).rglob('*')) if p.is_file())\nfor row in record.get('fixtureArtifactFiles',[]):\n p=Path(row['path']);b=p.read_bytes();assert len(b)==row['bytes'] and h(b)==row['sha256'];paths.append(p)\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';encoded=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(encoded);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(encoded),storedSha256=h(encoded)))\nj=dict(kind='EXACT_ORIGINAL_GUARD_NATIVE_AND_FIXTURE_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],selection=record['selection'],nativeExit=record['nativeExit'],rawChainCount=len(files),fixtureArtifactCount=len(record.get('fixtureArtifactFiles',[])),fixtureArtifactDirectories=record.get('newFixtureArtifactDirectories',[]),files=files,helperText=Path(__file__).read_text(),scope='Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only exact FIRST raw, no execution, cleanup/deletion, retry or classification."
+}

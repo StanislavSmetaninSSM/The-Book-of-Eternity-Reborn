@@ -1,0 +1,21 @@
+{
+  "kind": "ROOT_NAMED_FRESH_STAGE_BUILD_PLAN_ONLY_ACTIVATION",
+  "utc": "2026-10-17T15:17:28.652185+00:00",
+  "actualSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "sourcePinCount": 136,
+  "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
+  "rootProductionDiffReadSha256": "9501cafa717f1889698a00f9eb70d32f1730e452244d1de1195e637ee9cb2c39",
+  "recorder": "/tmp/gm1559-lifecycle-stage-preparation-run.py",
+  "recorderSha256": "46d94d8096dc5d63b8f6456e88110bcf754706eab2fcaec148dea8abe28fe2c2",
+  "selection": "tests/selection.json",
+  "categories": 9,
+  "descriptors": 10,
+  "methods": 15,
+  "plannedRows": 47,
+  "actualTestsPermitted": 0,
+  "completeDeltas": 141,
+  "trackedPaths": 56631,
+  "release": "ONE fresh selectedunit+integrationbuild+PlanOnly canonicalselection47, noNoBuild/catalog/nativeactualtests. Freeze/provideoriginalrecord+archive, publishprep beforefinalSOURCE. UnexpectedSTOP nofixretry.",
+  "independentCausalEvidenceAccepted": "a989/7c76/5b2b;32distinct16RED16positive+retainedbaseline8. Productioninactive8owners+READMEconcretediffsameRoot60b84f."
+}

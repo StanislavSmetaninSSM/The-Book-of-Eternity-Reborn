@@ -1,0 +1,13 @@
+{
+  "kind": "EXACT_COMPILED_PRODUCTION_SOURCE_CONTEXT",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-lifecycle-source-context-d8e53413-20261017.json",
+      "storedPath": "recovery/lifecycle-production-preparation-files/actual-production-source-context.json.gz",
+      "bytes": 76183,
+      "sha256": "fdd60c7727366f2595dfba6e6f55b0fc67947fd4be9309aa3d3ee20c1d2edcec",
+      "storedBytes": 20761,
+      "storedSha256": "544e19cc040f4f61bce2c3704b730d0ae80c9c7caa2621430cb10f294f6cb476"
+    }
+  ]
+}
