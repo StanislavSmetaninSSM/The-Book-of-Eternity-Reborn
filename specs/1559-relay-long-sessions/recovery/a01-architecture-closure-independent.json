@@ -1,0 +1,114 @@
+{
+  "kind": "INDEPENDENT_1559_A01_TARGETED_ARCH_CLOSURE",
+  "utc": "2026-10-17T13:04:22.960524+00:00",
+  "reviewer": "/root/a1_reviewer independent Astra/XHigh",
+  "carrier": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+  "parentReviewed": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "verdict": "ACCEPT_ARCH_FOR_G1_TESTS_ONLY",
+  "findingDisposition": {
+    "id": "1559-A01",
+    "status": "CLOSED_AT_ARCHITECTURE_AMENDMENT_LEVEL",
+    "implementationAndRuntime": "NOT_IMPLEMENTED_NOT_EXECUTED_NOT_ACCEPTED",
+    "reason": "Plan §D and FR006/T011/T014 now specify exact operational ownership/lifetime and actual engine/live rollback, save-load, repair/validation/frozen-draft boundaries. Both absent-before/created-after and preexisting/changed cases preserve latest records while ordinary neighbors retain their original rollback behavior. The same-commit receipt survives rejected repair/lost ACK and strict identity/generation reconciliation prevents missing evidence or retired queues from authorizing replay."
+  },
+  "materialBlockers": [],
+  "reviewedSourceBoundaries": [
+    "Exactly two operational paths; no whole control directory or .boe_runtime authority enlargement.",
+    "Real engine and separate live snapshot producers; fixed exact path inventory and browser restored-settlement selector.",
+    "Exact GM Writes/FilesModified/repair/client-owned validation and frozen spiritual draft protections.",
+    "Save archives omit the two records; actual load filtering uses the shared exact ephemeral predicate; genuine session replacement invalidates prior-generation authority.",
+    "Bounded current records retained through unresolved rollback/repair/ACK; no process/PID/absence authority; actual client acceptance separate from helper publication."
+  ],
+  "retainedOriginalVerdict": {
+    "verdict": "CHANGES_REQUIRED_NARROW_A01_BEFORE_G1",
+    "at": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+    "mdSha256": "51be13278d0b185448b4a8fc22dce3a65169f6d97c16c5ada499cb7a07860cfa",
+    "jsonSha256": "efde87996235278cc05f84f34b95bf2d3449b3948d33b274fb73e2929232e427",
+    "supportSha256": "90ed99d075c56c806183a87328c39c412064774fd45b7a2dd811e9f024b0c413",
+    "persistedCopiesByteExact": true
+  },
+  "mandatoryLaterGates": [
+    {
+      "id": "C01",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Batch and authoritative reads",
+      "requirement": "Single dedicated-helper lease; all original physical read/kind/tree/witnesses rechecked independently from staged read view; exact ordinary normalization/policy and terminal checks retained; receipt is client-authored and denied to packet Writes/FilesModified. Hold real publication cuts including third member, terminal-before-commit, committed cleanup debt and lost ACK. Actual daemon AND current client reader must wait for recovery/complete decision; never raw-file existence. Terminal remains logically last; publisher unchanged."
+    },
+    {
+      "id": "C02",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Sequence and lifetime",
+      "requirement": "Freeze sequence/body before dispatch; same-sequence proven NotReady retry retains original identity. Handle concurrent direct producers/gap refusal, duplicate/conflict within and beyond compact window, expired-query no repaste, same-binding restart, new-binding stale evidence, late Stop and completed-task/CTS disposal only after settlement. Two live operations remain bounded; permanently closed queue never reopens."
+    },
+    {
+      "id": "C03",
+      "stage": "concrete SOURCE/PREP resource qualification then EVIDENCE",
+      "topic": "Byte and resource budgets",
+      "requirement": "4/16/64/256MiB and8MiB logs are proposed, not accepted measurements. Account for original target before-images, after-images, parser/object/base64 copies, journal/scratch and temporary publications, unresolved winner disk plus logs and descriptor windows. Admit/refuse before oversized buffering/mutation; quota cannot discard unresolved authority. Preserve32KiBchunks/64KiBcontrol frames and bounded parallelism. Real packet evidence remains separately labelled from synthetic >1MiB/>32writes growth."
+    },
+    {
+      "id": "C04",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Neutral exact framing",
+      "requirement": "Current bridge normalizes CRLF/CR and neutral TerminalScreen limits128rows/65536columns and trims final newlines. Explicitly prove exact neutral prompt bytes/hash including newline endings, tabs/Unicode, long multiline and long single-line packets; no silent normalization. Do not widen Mini/editor semantics or use a truncated diagnostic tail as exact proof."
+    },
+    {
+      "id": "C05",
+      "stage": "actual EVIDENCE",
+      "topic": "Existing computer-access exchange",
+      "requirement": "current-request descriptor is an optional stable locator over the existing queue, not a mandatory new file UI/tool/access method. Document operator startup separately. Actual agent read/write capability must read exact current request and relevant instructions/state, author and publish a correlated winner; Python worker fixture alone cannot qualify SC004. Partial response/reply publication must retain one winner without reinterpretation or unbounded retries."
+    },
+    {
+      "id": "C06",
+      "stage": "concrete selection and final EVIDENCE",
+      "topic": "Acceptance and platforms",
+      "requirement": "Select actual changed owner methods plus narrow rollback/read/receipt controls and positive ordinary helper neighbors. Twelve submissions/four repair cycles and >256 retention control must bind current original owners and complete exact payloads; transport/helper/terminal/daemon trajectory accepted is not client story/history acceptance. Observe actual client result separately. Fresh native discovery counts remain unknown at ARCH. Linux and nativeWindows remain separate; unavailable Windows is open, no CI/artifact workaround; no unchanged1558/A255/B78 replay."
+    }
+  ],
+  "sourceEvidence": {
+    "publishedDelta": {
+      "receipt": "/tmp/gm1559-a01-amendment-delta-github-25713634-20261017.json",
+      "sha256": "8cb4ff6312fe6ef11ac4da40ae26eba7edd6f5c56ccd0abd1465005920ab40f4",
+      "exactFiles": 18,
+      "allChangedPaths": 14,
+      "metadataOnly": true
+    },
+    "publishedInventory": {
+      "original78ByteUnchanged": true,
+      "additivePins": 21,
+      "combinedDistinct": 99,
+      "new21ExactRecoveredBytesShaBlobModeParentAndHead": true
+    },
+    "additionalActualLoadCaller": {
+      "receipt": "/tmp/gm1559-root-save-load-caller-source-25713634-20261017.json",
+      "receiptSha256": "276f424818b2fa6ebcf50b5d08fb04dfe7f9f8700352f290fa38d261c04210a2",
+      "pin": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "mode": "100644",
+        "gitBlob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+        "bytes": 27722,
+        "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+        "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/25713634cdc7e33ffa48147de84e2ca9f6656674/BookOfEternityClient/Services/SaveLoadService.Loading.cs"
+      },
+      "independentlyVerifiedRecoveredBytesShaBlobModeParentAndHead": true,
+      "combinedDistinctIncludingThisReceipt": 100,
+      "pendingG1Requirement": "Persist this additive caller binding with the concrete G1 save/load controls; do not substitute the unused DeleteEphemeralArtifacts helper for the actual loading owner. This is a later SOURCE dependency requirement, not a material ARCH blocker."
+    }
+  },
+  "limits": {
+    "onlyArchitectureAccepted": true,
+    "testsOnlyG1EligibleAfterRootPersistenceRelease": true,
+    "productionSourceFixtureSelectionPrepNotAccepted": true,
+    "runtimeNotRun": true,
+    "nativeRedGreenNotClaimed": true,
+    "budgetsStillProposed": true,
+    "discoveredCountsNotClaimed": true,
+    "windowsEvidenceOpen": true,
+    "oldFamiliesOrFullBaseNotReplayed": true
+  },
+  "support": {
+    "path": "/tmp/gm1559-a01-architecture-closure-independent-check-20261017.json",
+    "sha256": "f27613a85dbbeb92c2e6962ea176ac8222bd53693068bf5228904d72c774445f"
+  },
+  "nextStep": "Root may persist this targeted closure and release G1 tests-only authoring. Concrete SOURCE/FIXTURE/SELECTION/PREP, authentic runtime evidence and production releases remain separate; carry C01-C06 unchanged."
+}

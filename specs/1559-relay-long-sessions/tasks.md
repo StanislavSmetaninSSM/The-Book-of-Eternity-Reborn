@@ -2,13 +2,13 @@
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Inputs: [spec.md](spec.md), [plan.md](plan.md), [audit.md](audit.md), [source-inventory.json](source-inventory.json). Branch `1559-relay-long-sessions-20261017`, base `a82b3d8439f76f83baade6df8516e78eea86e546`.
 
-Current phase: narrow A01 operational-lifetime architecture amendment after the 3930 review; targeted acceptance pending. All tasks remain unchecked until the corresponding evidence/review/publication exists. No implementation, test authoring or native runtime is released by this list. One writer executes sequentially; the existing independent reviewer evaluates gates through Root. No parallel subagent implementation is planned.
+Current phase: ARCH accepted for G1 tests-only at25713634; exact independent closure and Root release persisted below. T001–T003 foundation complete; T004–T018 unrun/open. Production, dependency changes and native execution remain held. One writer executes sequentially, with the existing independent reviewer and Root gates; no new implementer agents.
 
 ## Foundation / architecture
 
-- [ ] T001 Publish the isolated branch and bind initial GitHub recovery/retained120-delta base in `recovery/initial-branch-delta.json` and `plan.md`; preserve other worktrees/main.
-- [ ] T002 Complete current relay/bridge/daemon/helper/consumer and category-owner audit with exact source hashes/measurements in `audit.md` and `source-inventory.json`, distinguishing public real captures/current worked examples/synthetic controls.
-- [ ] T003 Publish aligned `spec.md`, `plan.md`, `tasks.md`, active feature pointers and source recovery; persist independent ARCH decision before any TDD/production changes (FR-001–012, SC-001–006).
+- [x] T001 Publish the isolated branch and bind initial GitHub recovery/retained120-delta base in `recovery/initial-branch-delta.json` and `plan.md`; preserve other worktrees/main.
+- [x] T002 Complete current relay/bridge/daemon/helper/consumer and category-owner audit with exact source hashes/measurements in `audit.md` and `source-inventory.json`, distinguishing public real captures/current worked examples/synthetic controls.
+- [x] T003 Publish aligned `spec.md`, `plan.md`, `tasks.md`, active feature pointers and source recovery; persist independent ARCH decision before any TDD/production changes (FR-001–012, SC-001–006).
 
 ## US1 — Sustained exact exchange and bounded prompt retention
 

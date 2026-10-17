@@ -13,6 +13,8 @@ Checked 2026-10-17 against `spec.md`, issue #1559, current governance and `plan.
 - [x] Native Linux/Windows acceptance and unavailable-platform open scope are separate.
 - [x] No full-suite/default selection, historical replay, CI/main/merge/issue close is introduced.
 - [x] Current phase/next gates are explicit; no implementation/native pass is claimed.
-- [ ] Independent architecture decision accepted and persisted after exact WIP publication/recovery.
+- [x] Independent architecture accepted for G1 tests-only at25713634; exact closure/Root release persisted, no product/native acceptance.
 
 A01 amendment self-check: exact operational paths/lifetime, actual snapshot/restore/save/repair/validation/frozen-draft readers and six later gates are in plan §D. Original78 source packet unchanged;21 new disjoint source dependencies recovered. All18 task checkboxes remain open. Independent targeted A01 acceptance is still pending.
+
+Current closure supersedes the historical pending sentence above: A01 accepted for tests-only. Concrete SOURCE/PREP, causal RED and product/EVIDENCE remain open.

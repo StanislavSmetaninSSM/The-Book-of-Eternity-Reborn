@@ -3,7 +3,7 @@
 **Source issue**: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559) (open; read-only snapshot, 2026-10-17).
 **Branch**: `1559-relay-long-sessions-20261017`
 **Base**: `a82b3d8439f76f83baade6df8516e78eea86e546`
-**Status**: Narrow A01 architecture amendment after the independently reviewed 3930 candidate; targeted acceptance pending. Audit/planning only; no test/product/native release.
+**Status**: ARCH accepted at25713634 for tests-only G1 authoring; concrete SOURCE/FIXTURE/SELECTION/PREP and all native/product gates remain open.
 
 ## Source issues and scope
 

@@ -1,0 +1,23 @@
+{
+  "kind": "ROOT_ADDITIVE_ACTUAL_SAVE_LOAD_CALLER_SOURCE_NOT_RUNTIME",
+  "utc": "2026-10-17T13:02:37.800834+00:00",
+  "source": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+  "directory": "/tmp/gm1559-save-load-caller-recovered-25713634-20261017",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "mode": "100644",
+      "gitBlob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+      "bytes": 27722,
+      "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/25713634cdc7e33ffa48147de84e2ca9f6656674/BookOfEternityClient/Services/SaveLoadService.Loading.cs"
+    }
+  ],
+  "reason": "Targeted A01 dependency note: actual LoadAsync archive reader calls IsEphemeralArchivePath at line337; main-partial cleanup alone is not load evidence. G1 tests must bind actual save/load.",
+  "checks": [
+    "fresh direct exact-SHA public GitHub bytes",
+    "length/sha256/git blob/mode",
+    "git show exact source"
+  ],
+  "runtime": "NOT_RUN"
+}

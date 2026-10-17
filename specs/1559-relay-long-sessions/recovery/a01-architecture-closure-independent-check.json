@@ -1,0 +1,338 @@
+{
+  "kind": "INDEPENDENT_1559_A01_TARGETED_ARCH_CLOSURE_STATIC_CHECK",
+  "utc": "2026-10-17T13:03:08.605192+00:00",
+  "carrier": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+  "parent": "3930bd49da3b173df6e2ba2acedfced4c628b9ce",
+  "noRuntime": true,
+  "scope": "A01 amendment only; retained original ARCH and C01-C06, no base/family replay.",
+  "candidateRecovery": {
+    "path": "/tmp/gm1559-a01-amendment-delta-github-25713634-20261017.json",
+    "sha256": "8cb4ff6312fe6ef11ac4da40ae26eba7edd6f5c56ccd0abd1465005920ab40f4",
+    "exactGitHubFiles": 18,
+    "allChangedMetadataPaths": 14,
+    "allBytesShaBlobModeGitShowExact": true,
+    "changes": [
+      "M\tspecs/1559-relay-long-sessions/audit.md",
+      "M\tspecs/1559-relay-long-sessions/checklists/requirements.md",
+      "M\tspecs/1559-relay-long-sessions/plan.md",
+      "A\tspecs/1559-relay-long-sessions/recovery/3930-delta-github.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/3930-recovery-composition.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/a01-new-source-github.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/architecture-independent-check-3930.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/architecture-independent-review-3930.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/architecture-independent-review-3930.md",
+      "A\tspecs/1559-relay-long-sessions/recovery/root-a01-metadata-amendment-release.json",
+      "A\tspecs/1559-relay-long-sessions/recovery/root-audit-source-readback-3930.json",
+      "A\tspecs/1559-relay-long-sessions/source-inventory-a01.json",
+      "M\tspecs/1559-relay-long-sessions/spec.md",
+      "M\tspecs/1559-relay-long-sessions/tasks.md"
+    ]
+  },
+  "additiveSource": {
+    "receipt": "/tmp/gm1559-a01-new-source-github-3930bd49-20261017.json",
+    "sha256": "2f6f2806c3aaafa0b23dfb151d0ecaa78a5ec08ac2d21442ff61c735a15bb5b8",
+    "newPins": 21,
+    "original78InventoryByteUnchanged": true,
+    "setsDisjoint": true,
+    "combinedCount": 99,
+    "all21RecoveredBytesShaBlobModeParentAndHeadExact": true,
+    "checked": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "bytes": 584756,
+        "sha256": "fdf61469199e96331468726ccd6fa5500a742b31267d6e1ad35c672b398c0f64",
+        "mode": "100644",
+        "gitBlob": "cb55397321e1cb14bfa2d2951f59b9464d68dc81"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+        "bytes": 101344,
+        "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c",
+        "mode": "100644",
+        "gitBlob": "678eb2a6dc676813b18e67eb661006ecdd3b79b8"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+        "bytes": 27666,
+        "sha256": "b4f3535b7443ecdb1b7fee4a62f51eaff05a27ff275b2380fef11e019d619d3d",
+        "mode": "100644",
+        "gitBlob": "ed499fa9a3d2572ca22037c9eb31787507052427"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/SpiritualOriginalDraftInputsTests.cs",
+        "bytes": 11068,
+        "sha256": "fbedc38b2cc177911d9059d076c71ee600ec394d08303f36174bcf9d0413d985",
+        "mode": "100644",
+        "gitBlob": "94d28362d2e9fe3cbd15c99e27135d6b4297e986"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/ValidationSourceGuardTests.cs",
+        "bytes": 55306,
+        "sha256": "d5ddcf3a0d35edb57427c74f7d16d582682cdfab7142d68298a2dbd2229a12e5",
+        "mode": "100644",
+        "gitBlob": "4ae9a7d04e24834744d24522098a87fad082c04f"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+        "bytes": 29382,
+        "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+        "mode": "100644",
+        "gitBlob": "50d49a20cdf7305d04412b35f25998f01e8448f4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "bytes": 241886,
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+        "mode": "100644",
+        "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+        "bytes": 28648,
+        "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+        "mode": "100644",
+        "gitBlob": "733ada0284d92cc70274edf8f3d0d594fc54b605"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "bytes": 115087,
+        "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+        "mode": "100644",
+        "gitBlob": "7b64eb60f2b448d8e41527ab16cc1bbefd5ab422"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "bytes": 507651,
+        "sha256": "7e05b365f8801b98c8eb720e5f609c7bfc4bf7d7959030b9781339ea4c14c132",
+        "mode": "100644",
+        "gitBlob": "101cf737a47d797db229a047da7cfe72524ce00e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "bytes": 7153,
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+        "mode": "100644",
+        "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "bytes": 11813,
+        "sha256": "5ea99d93fa0eb3da3030ba6134dcafbf845067d674014884a066b35665a0637e",
+        "mode": "100644",
+        "gitBlob": "9263bcd239fd133a3d089aafb13620b8471d91bc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "bytes": 67739,
+        "sha256": "f57da3eb26afcef157f49dc2c4eacb0054b1f327fd4f79208087ebc021e66e98",
+        "mode": "100644",
+        "gitBlob": "770c6cf26866089b4c34482dd13831fa86af448c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+        "bytes": 9926,
+        "sha256": "4488491ac2911d8b4c49347d10760106fc72e9c37f9a0169aa4d37f303cea349",
+        "mode": "100644",
+        "gitBlob": "a09b793f325a6be828ef241ea74c6b358a62c49f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "bytes": 10981,
+        "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
+        "mode": "100644",
+        "gitBlob": "527dd1f4f99f16faef164d0e5ee91832636632a1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "bytes": 20289,
+        "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+        "mode": "100644",
+        "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "bytes": 67034,
+        "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+        "mode": "100644",
+        "gitBlob": "8b920d6026268123d80cc65e1e178eb558b7b075"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+        "bytes": 12086,
+        "sha256": "23ab7ee1c59825d38232c99d1bc5082f874b9a7cc46547345e4d8e628569e972",
+        "mode": "100644",
+        "gitBlob": "db86d9e91dd12b5bea1d128104e2a9595d9cd88c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+        "bytes": 431342,
+        "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+        "mode": "100644",
+        "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+        "bytes": 34289,
+        "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+        "mode": "100644",
+        "gitBlob": "456415569129ff288c324515aaba6927049eb543"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "bytes": 30179,
+        "sha256": "d2a9881cba429ac747f9756292d465b6896a9e848db535d715053c3f9a26370f",
+        "mode": "100644",
+        "gitBlob": "62ccbb7aeae9ad2e23d6714baf3aebfe9832b6c5"
+      }
+    ]
+  },
+  "originalReviewCopies": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1559/specs/1559-relay-long-sessions/recovery/architecture-independent-review-3930.md",
+      "sha256": "51be13278d0b185448b4a8fc22dce3a65169f6d97c16c5ada499cb7a07860cfa"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1559/specs/1559-relay-long-sessions/recovery/architecture-independent-review-3930.json",
+      "sha256": "efde87996235278cc05f84f34b95bf2d3449b3948d33b274fb73e2929232e427"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn-1559/specs/1559-relay-long-sessions/recovery/architecture-independent-check-3930.json",
+      "sha256": "90ed99d075c56c806183a87328c39c412064774fd45b7a2dd811e9f024b0c413"
+    }
+  ],
+  "mandatoryLaterGates": [
+    {
+      "id": "C01",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Batch and authoritative reads",
+      "requirement": "Single dedicated-helper lease; all original physical read/kind/tree/witnesses rechecked independently from staged read view; exact ordinary normalization/policy and terminal checks retained; receipt is client-authored and denied to packet Writes/FilesModified. Hold real publication cuts including third member, terminal-before-commit, committed cleanup debt and lost ACK. Actual daemon AND current client reader must wait for recovery/complete decision; never raw-file existence. Terminal remains logically last; publisher unchanged."
+    },
+    {
+      "id": "C02",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Sequence and lifetime",
+      "requirement": "Freeze sequence/body before dispatch; same-sequence proven NotReady retry retains original identity. Handle concurrent direct producers/gap refusal, duplicate/conflict within and beyond compact window, expired-query no repaste, same-binding restart, new-binding stale evidence, late Stop and completed-task/CTS disposal only after settlement. Two live operations remain bounded; permanently closed queue never reopens."
+    },
+    {
+      "id": "C03",
+      "stage": "concrete SOURCE/PREP resource qualification then EVIDENCE",
+      "topic": "Byte and resource budgets",
+      "requirement": "4/16/64/256MiB and8MiB logs are proposed, not accepted measurements. Account for original target before-images, after-images, parser/object/base64 copies, journal/scratch and temporary publications, unresolved winner disk plus logs and descriptor windows. Admit/refuse before oversized buffering/mutation; quota cannot discard unresolved authority. Preserve32KiBchunks/64KiBcontrol frames and bounded parallelism. Real packet evidence remains separately labelled from synthetic >1MiB/>32writes growth."
+    },
+    {
+      "id": "C04",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Neutral exact framing",
+      "requirement": "Current bridge normalizes CRLF/CR and neutral TerminalScreen limits128rows/65536columns and trims final newlines. Explicitly prove exact neutral prompt bytes/hash including newline endings, tabs/Unicode, long multiline and long single-line packets; no silent normalization. Do not widen Mini/editor semantics or use a truncated diagnostic tail as exact proof."
+    },
+    {
+      "id": "C05",
+      "stage": "actual EVIDENCE",
+      "topic": "Existing computer-access exchange",
+      "requirement": "current-request descriptor is an optional stable locator over the existing queue, not a mandatory new file UI/tool/access method. Document operator startup separately. Actual agent read/write capability must read exact current request and relevant instructions/state, author and publish a correlated winner; Python worker fixture alone cannot qualify SC004. Partial response/reply publication must retain one winner without reinterpretation or unbounded retries."
+    },
+    {
+      "id": "C06",
+      "stage": "concrete selection and final EVIDENCE",
+      "topic": "Acceptance and platforms",
+      "requirement": "Select actual changed owner methods plus narrow rollback/read/receipt controls and positive ordinary helper neighbors. Twelve submissions/four repair cycles and >256 retention control must bind current original owners and complete exact payloads; transport/helper/terminal/daemon trajectory accepted is not client story/history acceptance. Observe actual client result separately. Fresh native discovery counts remain unknown at ARCH. Linux and nativeWindows remain separate; unavailable Windows is open, no CI/artifact workaround; no unchanged1558/A255/B78 replay."
+    }
+  ],
+  "candidateMetadata": [
+    {
+      "path": "specs/1559-relay-long-sessions/spec.md",
+      "bytes": 10423,
+      "sha256": "efddb5c5661b58ba3a545ded315959eb517ba8419ccb259d5e56bb85e6bdf7b4",
+      "mode": "100644",
+      "gitBlob": "47b71192e1039a67d1e4cb54ca175ce8ba41f4f9"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/plan.md",
+      "bytes": 28783,
+      "sha256": "474650ddefea74358ea9bab78b77ba38e0c10253fd51fcbdd4efe7220a0e1b71",
+      "mode": "100644",
+      "gitBlob": "8cea29564fd59d98fa92f995b8e79e98dd6020fb"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/tasks.md",
+      "bytes": 7297,
+      "sha256": "31c3972c4f7b32d2b8661bd973b18f7fef6535e18f215c8795993d7a82415ee2",
+      "mode": "100644",
+      "gitBlob": "0d99cf65a3da942dca651b93ea843364adeefefe"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/audit.md",
+      "bytes": 10346,
+      "sha256": "1288f359fd63da67c0975371a84a0206ba8d91cc79bcf67260947bf8e165b993",
+      "mode": "100644",
+      "gitBlob": "663e5af8b725412d18e8ea5ada33d88d2bf987c0"
+    },
+    {
+      "path": "specs/1559-relay-long-sessions/source-inventory-a01.json",
+      "bytes": 19627,
+      "sha256": "df3218b9e9e36760df76c8bc225a6eace0c64d15a9dd9fe734bb631aaf58e8b3",
+      "mode": "100644",
+      "gitBlob": "ecd8c803e2206b06f31a4fe19b6f5729d46161b4"
+    }
+  ],
+  "additionalConcreteLoadCaller": {
+    "pin": {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "bytes": 27722,
+      "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+      "mode": "100644",
+      "gitBlob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516"
+    },
+    "sourceObservation": "SaveLoadService.Loading.PrepareLoadArchiveAsync:337 consumes IsEphemeralArchivePath before extraction. This actual consumer must be pinned/recovered with the concrete G1 save/load fixture SOURCE; DeleteEphemeralArtifacts alone is not proof of actual load behavior.",
+    "status": "later_concrete_SOURCE_binding_requirement_not_ARCH_blocker"
+  },
+  "sourceBoundaryObservations": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "lines": "1941-1985,2174-2196,2212+,2405-2433",
+      "observation": "Engine snapshot/restore and repair path obligations share exact tracked inventory; amendment adds exact operational classifications and preserves ordinary neighbors."
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "lines": "37-46,241-266",
+      "observation": "Separate live snapshot exclusion and fixed exact signed-path admission both covered by amendment."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "lines": "383-396",
+      "observation": "Browser restored settlement compares the same engine rollback selector and exact before-image hashes."
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "lines": "69-100,564,1116-1133,1548-1570",
+      "observation": "Exact ephemeral set reaches archive save/filter/integrity handling; no whole-control exemption is needed."
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "lines": "4363-4395",
+      "observation": "Existing load transaction allocates replacement generation and activation writes it; amendment requires strict old-generation refusal, not record preservation through session replacement."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "lines": "8866-8880",
+      "observation": "Recoverable FilesModified path predicate is a real extra protection boundary, named in amendment."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "lines": "743-751,773-815",
+      "observation": "Client-owned category classification is a distinct predicate; named in amendment."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "lines": "4929-4980",
+      "observation": "Actual client-owned validation path predicate also requires exact protected names."
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+      "lines": "109-151",
+      "observation": "Strict path admission precedes frozen gameplay-draft filtering; amendment names exact operational exclusions without broadening ordinary exemptions."
+    }
+  ],
+  "uncheckedTasks": 18,
+  "assertionOutcome": "PASS_STATIC_BINDINGS_ONLY"
+}

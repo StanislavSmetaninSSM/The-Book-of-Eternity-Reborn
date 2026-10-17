@@ -1,0 +1,89 @@
+{
+  "kind": "ROOT_ARCH_ACCEPTANCE_AND_G1_TESTS_ONLY_RELEASE",
+  "utc": "2026-10-17T13:05:12.737596+00:00",
+  "carrier": "25713634cdc7e33ffa48147de84e2ca9f6656674",
+  "branch": "1559-relay-long-sessions-20261017",
+  "independentReviewer": "/root/a1_reviewer independent Astra/XHigh",
+  "architectureVerdict": "ACCEPT_ARCH_FOR_G1_TESTS_ONLY",
+  "rootDecision": "ACCEPT_ARCH_FOR_G1_TESTS_ONLY",
+  "reports": [
+    {
+      "path": "/tmp/gm1559-a01-architecture-closure-independent-20261017.md",
+      "sha256": "41e473b8c463107533725180b2b8f1a8a533c85e6d51b36da0c4174e34f0f75e"
+    },
+    {
+      "path": "/tmp/gm1559-a01-architecture-closure-independent-20261017.json",
+      "sha256": "43367f6bb2dfb3e56443bf330801c44f307114260421e583906f224c7247b863"
+    },
+    {
+      "path": "/tmp/gm1559-a01-architecture-closure-independent-check-20261017.json",
+      "sha256": "f27613a85dbbeb92c2e6962ea176ac8222bd53693068bf5228904d72c774445f"
+    }
+  ],
+  "rootSourceReceipts": [
+    {
+      "path": "/tmp/gm1559-root-a01-source-readback-25713634-20261017.json",
+      "sha256": "02d2061921104d3f4927a59ac852cf031f157a59009456ddf89a82f3e87023f0"
+    },
+    {
+      "path": "/tmp/gm1559-root-save-load-caller-source-25713634-20261017.json",
+      "sha256": "276f424818b2fa6ebcf50b5d08fb04dfe7f9f8700352f290fa38d261c04210a2"
+    }
+  ],
+  "recoveryComposition": "/tmp/gm1559-root-recovery-composition-25713634-20261017.json",
+  "foundationTasksT001T002T003": "Root confirms branch, audit, published/recovered artifacts and independent architecture accepted; writer may mark these foundation tasks completed when exact closure/release is durably persisted. This grants no implementation acceptance.",
+  "released": [
+    "First persist exact A01 closure pair/support, this release, Root source readback and additive actual Loading.cs source receipt; retain original3930 CHANGES_REQUIRED byte exact.",
+    "Then author one coherent tests-only T004/T005/T008/T011 candidate and exact category/selection/fixture/ledger/source-recovery metadata. Additive dependencies require concrete owner binding and new exact GitHub recovery only.",
+    "Tests must compile against unchanged production. Compiler/import/setup failures are not causal RED. Use actual existing relay/bridge/daemon/helper/snapshot/load seams; preserve genuine positive setup and exact expected missing behavior. Do not substitute a hand-written model or worker fixture for actual client/computer-access acceptance.",
+    "Publish tests-only WIP/nonforce, read exact remote and recover all new/changed paths before long preparation/review.",
+    "After publication, allow only bounded fresh selected project builds, ValidateCatalog discovery and PlanOnly zero-execution preparation plus syntax/metadata checks. Preserve first failed preparation and distinguish from native runtime. Existing activation source /workspace/.onboarding/activate.sh is authorized.",
+    "Return concrete SOURCE/FIXTURE/SELECTION/PREP packet with exact hashes, selected native method/row ledger, expected causal RED transitions, budgets/ownership and retained source coverage. Root/reviewer decide runtime release separately."
+  ],
+  "mandatoryLaterGates": [
+    {
+      "id": "C01",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Batch and authoritative reads",
+      "requirement": "Single dedicated-helper lease; all original physical read/kind/tree/witnesses rechecked independently from staged read view; exact ordinary normalization/policy and terminal checks retained; receipt is client-authored and denied to packet Writes/FilesModified. Hold real publication cuts including third member, terminal-before-commit, committed cleanup debt and lost ACK. Actual daemon AND current client reader must wait for recovery/complete decision; never raw-file existence. Terminal remains logically last; publisher unchanged."
+    },
+    {
+      "id": "C02",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Sequence and lifetime",
+      "requirement": "Freeze sequence/body before dispatch; same-sequence proven NotReady retry retains original identity. Handle concurrent direct producers/gap refusal, duplicate/conflict within and beyond compact window, expired-query no repaste, same-binding restart, new-binding stale evidence, late Stop and completed-task/CTS disposal only after settlement. Two live operations remain bounded; permanently closed queue never reopens."
+    },
+    {
+      "id": "C03",
+      "stage": "concrete SOURCE/PREP resource qualification then EVIDENCE",
+      "topic": "Byte and resource budgets",
+      "requirement": "4/16/64/256MiB and8MiB logs are proposed, not accepted measurements. Account for original target before-images, after-images, parser/object/base64 copies, journal/scratch and temporary publications, unresolved winner disk plus logs and descriptor windows. Admit/refuse before oversized buffering/mutation; quota cannot discard unresolved authority. Preserve32KiBchunks/64KiBcontrol frames and bounded parallelism. Real packet evidence remains separately labelled from synthetic >1MiB/>32writes growth."
+    },
+    {
+      "id": "C04",
+      "stage": "concrete SOURCE then EVIDENCE",
+      "topic": "Neutral exact framing",
+      "requirement": "Current bridge normalizes CRLF/CR and neutral TerminalScreen limits128rows/65536columns and trims final newlines. Explicitly prove exact neutral prompt bytes/hash including newline endings, tabs/Unicode, long multiline and long single-line packets; no silent normalization. Do not widen Mini/editor semantics or use a truncated diagnostic tail as exact proof."
+    },
+    {
+      "id": "C05",
+      "stage": "actual EVIDENCE",
+      "topic": "Existing computer-access exchange",
+      "requirement": "current-request descriptor is an optional stable locator over the existing queue, not a mandatory new file UI/tool/access method. Document operator startup separately. Actual agent read/write capability must read exact current request and relevant instructions/state, author and publish a correlated winner; Python worker fixture alone cannot qualify SC004. Partial response/reply publication must retain one winner without reinterpretation or unbounded retries."
+    },
+    {
+      "id": "C06",
+      "stage": "concrete selection and final EVIDENCE",
+      "topic": "Acceptance and platforms",
+      "requirement": "Select actual changed owner methods plus narrow rollback/read/receipt controls and positive ordinary helper neighbors. Twelve submissions/four repair cycles and >256 retention control must bind current original owners and complete exact payloads; transport/helper/terminal/daemon trajectory accepted is not client story/history acceptance. Observe actual client result separately. Fresh native discovery counts remain unknown at ARCH. Linux and nativeWindows remain separate; unavailable Windows is open, no CI/artifact workaround; no unchanged1558/A255/B78 replay."
+    }
+  ],
+  "held": [
+    "All production/prompt/GM-guide/helper/transport behavior edits, dependency updates and any native test execution remain held until concrete independent SOURCE/FIXTURE/SELECTION/PREP then separately released causal RED EVIDENCE.",
+    "No Windows/CI/artifact retry, external access setup, provider/context collector/mandatory interface, main/merge/force/issue closure.",
+    "No guessed completion count, broad family/full-suite replay, old accepted package replay, source checks described as platform/runtime proof."
+  ],
+  "runtime": "NOT_RUN",
+  "windows": "OPEN_NATIVE_UNAVAILABLE",
+  "next": "Persist accepted ARCH and prepare/publish tests-only causal candidate; implementation remains required after gates, do not end at design."
+}
