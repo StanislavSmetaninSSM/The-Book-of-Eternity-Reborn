@@ -1,0 +1,1194 @@
+{
+  "kind": "INDEPENDENT_FINAL_BOUNDED_BLOCK_B_FIRST_GREEN_EVIDENCE_REVIEW",
+  "reviewerRole": "independent Astra/XHigh; repository read-only",
+  "createdUtc": "2026-10-17T07:07:52.222465+00:00",
+  "verdict": "ACCEPTED_BOUNDED_BLOCK_B_GREEN_78",
+  "sourceVerdict": "RETAINED_ACCEPTED_SOURCE_FIXTURE_SELECTION_PREPARATION",
+  "carrier": "99e38610c2c9aec2eb4753a3567b0524d669e0d9",
+  "actualSource": "a8e0456fd1208984b23a0c6813d3d199a900411c",
+  "compiledSource": "69dc7c928246c9b389cedcf391f017ae6620acd9",
+  "acceptedSourcePair": {
+    "mdSha256": "af0c28a98548a64afc90eea3326d55b3593906a386b60ffec4aeee43f0952ae7",
+    "jsonSha256": "c2cfd689dc39b576a7491eb80f6a7c171aca1c8483c739deb6687eea0a4ced7b"
+  },
+  "materialEvidenceDefects": [],
+  "nativeQualification": {
+    "counts": {
+      "categories": 9,
+      "descriptors": 9,
+      "methods": 28,
+      "uniqueCases": 78,
+      "passed": 78,
+      "failed": 0,
+      "skipped": 0,
+      "underfill": false,
+      "duplicates": false,
+      "timeouts": false
+    },
+    "commands": [
+      {
+        "category": "gm-doc-block5-content-boundary",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-content-boundary-a8e0456f-20261017/record.json",
+        "recordSha256": "f740aa12f9df1bc9488c0312687c5066196a88f17d2395f26107c7ad37757509",
+        "nativeExit": 0,
+        "wrapperSeconds": 5.069871249997959,
+        "runnerWall": "00:00:04.4361599",
+        "cases": 1,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065612-219-64840-30ee4097cda9496d9af7109a01c81ccc-categories/gm-doc-block5-content-boundary-unit-001.trx",
+        "trxSha256": "338146c146d40af7461a9a28ebcefc87f171ba9d2d9fabcc1f86e35241d3f2e9",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-preservation-a8e0456f-20261017/record.json",
+        "recordSha256": "48e2a62d95d4fc29765becd2644f2a5a5b6e88b403c3cb9c7546e19910f429f2",
+        "nativeExit": 0,
+        "wrapperSeconds": 6.354797505002352,
+        "runnerWall": "00:00:05.7656600",
+        "cases": 19,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065632-112-65061-cc51e343b9cd40048179b4a81f343b39-categories/gm-doc-block5-preservation-unit-001.trx",
+        "trxSha256": "816b534583b284c862577adb2d5fbab2f5c46a87b05c34e539e0be535bcc4372",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-reading-a8e0456f-20261017/record.json",
+        "recordSha256": "fea00c298ce9fdb84a370b5f1ab576e546ac2e417b85495ccbe9d297312bf65f",
+        "nativeExit": 0,
+        "wrapperSeconds": 5.173341516001528,
+        "runnerWall": "00:00:04.5064017",
+        "cases": 20,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065653-822-65288-6d99f3c690a540a7a0614a5f19ad3ae8-categories/gm-doc-block5-reading-unit-001.trx",
+        "trxSha256": "957272d746647f72d3610956ab4bccdb95120b5ccaafa9a050a15016de84e828",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-permissions-links-a8e0456f-20261017/record.json",
+        "recordSha256": "b83bb4531c02f591937eebe1a5a1c3b08ae445aa569131e3e5250c8a17e25513",
+        "nativeExit": 0,
+        "wrapperSeconds": 5.1165105489999405,
+        "runnerWall": "00:00:04.5254308",
+        "cases": 8,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065714-975-65507-9b10f424c2b2499594bb705b64428e88-categories/gm-doc-block5-permissions-links-unit-001.trx",
+        "trxSha256": "1762191ba0d0056479ca56c948726896f4abfe3ba26d8cada864ed6db9c7eb97",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-body-guards-a8e0456f-20261017/record.json",
+        "recordSha256": "6fc94389d2ad07c7f4d073bfb8c4a81c9d3be69ffa1c89f28f46fb5c39e94cfa",
+        "nativeExit": 0,
+        "wrapperSeconds": 6.064658725998015,
+        "runnerWall": "00:00:05.4582732",
+        "cases": 14,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065748-267-65720-fd3e16a480694c98b465f90a1ced2dad-categories/gm-doc-block5-current-body-guards-unit-001.trx",
+        "trxSha256": "b7d3364211b47500f824732545d099dab036a39a6f28cec96fc8a258d6b05226",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-shared-preservation-a8e0456f-20261017/record.json",
+        "recordSha256": "b3f8e179bb4db035ac94474860ba10ba41b154975e49ee1c87ee480dfcd2692c",
+        "nativeExit": 0,
+        "wrapperSeconds": 5.320159311999305,
+        "runnerWall": "00:00:04.6767772",
+        "cases": 12,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065807-870-65942-84bd516220d349879219860fb0d74cfb-categories/gm-doc-block5-shared-preservation-unit-001.trx",
+        "trxSha256": "247a9c377d484db77dc3d294bb6fa92425d530ee1823f548f68c1185972489e9",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": []
+      },
+      {
+        "category": "gm-doc-block5-delivery-source",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-delivery-source-a8e0456f-20261017/record.json",
+        "recordSha256": "a759e1b421fcefb5f53257eaed51580f478b26a2fc198b77a73abe182a7d4daa",
+        "nativeExit": 0,
+        "wrapperSeconds": 6.991380242001469,
+        "runnerWall": "00:00:06.4038004",
+        "cases": 1,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065833-798-66157-e8cad1716c6f4cbdb5cf843199394b3d-categories/gm-doc-block5-delivery-source-integration-001.trx",
+        "trxSha256": "d28c29d2968e6e66efa0afddccafa5ab60cb3a453bcf4bad60533a80f5b764ed",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": [
+          "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c"
+        ]
+      },
+      {
+        "category": "gm-doc-afterlife-package-delivery",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-genuine-publisher-a8e0456f-20261017/record.json",
+        "recordSha256": "6cb12e4201b769d343b30b57a5e426a08a42fca3cb341823eea9b655faa7bae8",
+        "nativeExit": 0,
+        "wrapperSeconds": 9.303371271998913,
+        "runnerWall": "00:00:08.6212228",
+        "cases": 1,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-065911-320-66427-31b0b80f1caa4fdeb7c2cd829cb4d3f5-categories/gm-doc-afterlife-package-delivery-integration-001.trx",
+        "trxSha256": "38c687ffcd802cd7b98bbc1010abaed5737837d31e7d050f1e0c29e398bde1d2",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": [
+          "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b"
+        ]
+      },
+      {
+        "category": "gm-doc-block5-package-negatives",
+        "record": "/tmp/gm1557-implementation-tools/gm1557-B-first-green-package-negatives-a8e0456f-20261017/record.json",
+        "recordSha256": "a24c0c9d0623ef632dd813d731bc789432179cd23d7b7df11fb1f9981c98930e",
+        "nativeExit": 0,
+        "wrapperSeconds": 11.92583082299825,
+        "runnerWall": "00:00:11.2909007",
+        "cases": 2,
+        "trxPath": "/workspace/The-Book-of-Eternity-Reborn-1557/TestResults/test-categories/20261017-070003-289-66737-8da875fb739d440fb3cb39c6bcee2660-categories/gm-doc-block5-package-negatives-integration-001.trx",
+        "trxSha256": "f3818c06f2dfda8dd188379460535c181193762396cc1599df8a7fe92dcd6325",
+        "selectionComplete": true,
+        "cleanupComplete": true,
+        "newArtifactDirectories": [
+          "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+          "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb"
+        ]
+      }
+    ],
+    "methodCases": {
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles": 10,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators": 3,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody": 2,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope": 12,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract": 8,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion": 5,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36": 1,
+      "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape": 2,
+      "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous": 7,
+      "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority": 1,
+      "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure": 9,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources": 1,
+      "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority": 1,
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch": 1,
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure": 1,
+      "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries": 2
+    },
+    "exactNativeCaseNames": [
+      {
+        "category": "gm-doc-block5-content-boundary",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualOwnedBodiesReachTheMissingModuleOracleAfterFullBaselineContext",
+        "outcome": "Passed",
+        "duration": "00:00:00.1503620"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"nested_file\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.1496121"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"supplement\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.1020669"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"foreign_ancestor\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0718362"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"context\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0993625"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualManifestChangesOnlyTheTwoExactBlock5ExemptionLocators",
+        "outcome": "Passed",
+        "duration": "00:00:00.0594068"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators(mutation: \"allowed_row_semantics\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0123216"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentBaselineRetainsEveryByteXmlAncestorAndCompleteExample",
+        "outcome": "Passed",
+        "duration": "00:00:00.0828174"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"reorder_examples\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0927261"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"component_owner\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.1047330"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody(mutation: \"lost_id\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0586089"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"classification\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0774069"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators(mutation: \"missing_family\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0081674"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"missing\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0701661"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"cdata\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0868204"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.IndependentFullXmlMutationsReachTheirSpecificPreservationOracles(mutation: \"duplicate\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0963577"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualCompactNavigatorsResolveEveryOriginalIdToItsPhysicalOwner",
+        "outcome": "Passed",
+        "duration": "00:00:00.0121720"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NavigatorMutationsCannotLoseForeignIdsOrPointAtAnotherIntactBody(mutation: \"wrong_alias\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0702895"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CompleteManifestMutationsCannotHideBehindTheTwoRelocatedLocators(mutation: \"unrelated_row\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0105850"
+      },
+      {
+        "category": "gm-doc-block5-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualFlatExtractorInputsMapToAllNineOriginalSourceOccurrences",
+        "outcome": "Passed",
+        "duration": "00:00:00.0530334"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"union_item_social\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0034112"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Characteristics_Progression\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0051659"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"missing_wound_contract\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0136861"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"missing_router\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0226659"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"repair\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0098492"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"lost_union\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0345683"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Wounds\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0032630"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"union_combat_wound\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0045213"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"unconditional_dependency\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0058062"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"unconditional_effect\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0071631"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"receipt_only\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0034603"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"universal\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0120259"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Units_Ids\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0076412"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Combat_Foundations\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0044324"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Narrative_Social\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0041915"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"missing_dependency\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0210702"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"Items_Resources\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0036294"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"World_Chronology\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0088888"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.ActualConditionalRowsPreserveTopicUnionAndRestrictedScope(route: \"bootstrap\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0044970"
+      },
+      {
+        "category": "gm-doc-block5-reading",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.RouteMutationsCannotBroadenScopeOrDropTheSecondContract(mutation: \"repair_expansion\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0059955"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion(worker: \"npc_content_codex\", task: \"NpcContent\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0030894"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion(worker: \"inventory_content_codex\", task: \"InventoryContent\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0199181"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.CurrentRealPublicationInventoryIsIndependentExact52WhileASeedStays36",
+        "outcome": "Passed",
+        "duration": "00:00:00.0089347"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion(worker: \"skill_content_codex\", task: \"SkillContent\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0026021"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion(worker: \"narrative_draft_codex\", task: \"NarrativeDraft\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0092326"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.FiveRealProfilesAllowPairedBReadingWithoutWriteOrTaskExpansion(worker: \"analysis_codex\", task: \"Analysis\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0021213"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape(mutation: \"escape\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0207369"
+      },
+      {
+        "category": "gm-doc-block5-permissions-links",
+        "method": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape",
+        "case": "BookOfEternityClient.Tests.GmDocumentationBlock5Tests.NewPhysicalRelativeLinkRequirementsRefuseWrongExistingTargetsAndEscape(mutation: \"wrong_relative\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0823754"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Items_Resources\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0119312"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.CompleteActiveContractsExamplesAndTemplatesContainNoRemovedResourceAuthority",
+        "outcome": "Passed",
+        "duration": "00:00:00.9745375"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"World_Chronology\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0030774"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+        "case": "BookOfEternityClient.Tests.EffectMaterializationSourceGuardTests.ActiveGmEffectGuidance_UsesOnlyCanonicalRuntimeAuthority",
+        "outcome": "Passed",
+        "duration": "00:00:00.0581072"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints",
+        "case": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.CompleteEffectMaterializationContract_IsRequiredAcrossMortalGmEntrypoints",
+        "outcome": "Passed",
+        "duration": "00:00:00.0177011"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Wounds\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0026097"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor",
+        "case": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.WoundRulesAndWorkedExamples_UseOnlyStrictOptionalConstructor",
+        "outcome": "Passed",
+        "duration": "00:00:00.0060410"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership",
+        "case": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership",
+        "outcome": "Passed",
+        "duration": "00:00:00.0107760"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Combat_Foundations\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0232401"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Narrative_Social\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0395560"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Units_Ids\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0036588"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous",
+        "case": "BookOfEternityClient.Tests.ResourceContractSourceGuardTests.Block5ActualModulesKeepResourceAndItemAuthorityGuardsNonVacuous(topic: \"Characteristics_Progression\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0567936"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract",
+        "case": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract",
+        "outcome": "Passed",
+        "duration": "00:00:00.2918767"
+      },
+      {
+        "category": "gm-doc-block5-current-body-guards",
+        "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites",
+        "case": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.UnifiedResourceAuthorityGuidance_CoversMortalCommandsOwnersAndNoDirectWrites",
+        "outcome": "Passed",
+        "duration": "00:00:00.0249210"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"invalid_context\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0579630"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"missing\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0499304"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0522721"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"lost_companion\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0524446"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"unlisted_edit\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0515525"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"context\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0490893"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"orphan\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.1093338"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+        "outcome": "Passed",
+        "duration": "00:00:00.0323301"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"reordered_fences\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0534469"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualEntrypointEditsReverseToTheExactCurrentBaseSources",
+        "outcome": "Passed",
+        "duration": "00:00:00.0075754"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate_owner\")",
+        "outcome": "Passed",
+        "duration": "00:00:00.0700051"
+      },
+      {
+        "category": "gm-doc-block5-shared-preservation",
+        "method": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+        "case": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+        "outcome": "Passed",
+        "duration": "00:00:00.0195014"
+      },
+      {
+        "category": "gm-doc-block5-delivery-source",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+        "case": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+        "outcome": "Passed",
+        "duration": "00:00:01.6689889"
+      },
+      {
+        "category": "gm-doc-afterlife-package-delivery",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "case": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure",
+        "outcome": "Passed",
+        "duration": "00:00:03.5037467"
+      },
+      {
+        "category": "gm-doc-block5-package-negatives",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries",
+        "case": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries(fault: \"missing_session_copy\")",
+        "outcome": "Passed",
+        "duration": "00:00:03.2636206"
+      },
+      {
+        "category": "gm-doc-block5-package-negatives",
+        "method": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries",
+        "case": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.Block5PhysicalFaultsReachTheRealWriterAtDistinctDeliveryBoundaries(fault: \"missing_package_source\")",
+        "outcome": "Passed",
+        "duration": "00:00:03.2579174"
+      }
+    ],
+    "freshPlanSha256": "a7d0a5ad0e76781c31f9e209c96d0d5a252a9b0979c14beb814998f9b662675c",
+    "sourceInlineDataArgumentSetsMatch": true,
+    "canonicalSelection": "tests/selection.json",
+    "exactMirror": "tests/selections/1557-gm-doc-block5.json",
+    "all9FirstOutcomesNative0": true,
+    "nativeWrapperSecondsSum": 61.31992119499773,
+    "sourceAndBinaryContinuity": {
+      "metadataOnlySinceCompiledSource": true,
+      "sevenPins": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+          "bytes": 26183168
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "sha256": "f6cf4ea13e8215937448915faabf2497ba5e8153658d232de84dc4feff3af468",
+          "bytes": 9556480
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+          "bytes": 26183168
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "c9bad7a7ca6b7327aa3c00736a7b32a4260deb96173ee189a51c472abe3cf1f2",
+          "bytes": 29221888
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+          "bytes": 1992192
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "45ed364fbdd25fe146d11d5b4cee6d3aa4e39a738db05f5321b9d5efea29f0c1",
+          "bytes": 1992192
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "sha256": "fca554dfb26ba89b1792f5cf08a0cfd72562a46dd7da1a1bac3357c3a8a8b2b6",
+          "bytes": 26183168
+        }
+      ],
+      "namespaceChainContinuous": true
+    }
+  },
+  "rawBinding": {
+    "nativeChains": 54,
+    "fixtureChains": 21,
+    "totalChains": 75,
+    "storedGzipRawLiveCommittedExact": true,
+    "completeDelta": {
+      "path": "/tmp/gm1557-B-first-green-delta-github-99e38610-20261017.json",
+      "sha256": "7ba96da3cbb58a8404814abbc784caf17c26d4fef646ae459a2bdc58dfea814a",
+      "files": 91,
+      "changedPaths": 87,
+      "bytesBlobModePathSetExact": true
+    },
+    "rootUnionConfirmedIndependently": true,
+    "writerInspectionNotUsedAsVerdict": true
+  },
+  "semanticQualification": {
+    "boundary": "Actual16docs present/Missing[] and final VerifyMoved succeeds; baseline Sources diagnostics are declared original pins, not live remeasurement. Accepted source audit supplies byte preservation binding.",
+    "preservationAndConsumers": "19preservation/navigation,20reading,8permissions/links,14actual-body/resource and12affected shared-A cases passed with exact method/theory identities and retained accepted assertions; no invented detailed diagnostics for unlogged bodies.",
+    "sourceInspection": "One real subprocess source-AST inspection completed with native0/runtimeExecutedfalse; its exact source/prefix hash is bound. It is not a producer execution.",
+    "genuinePublisher": "One unchanged real writer invocation native0/runtimeExecutedtrue; manifest52 unique approved path/roles, captured52physical copies, all source→temporarypackageInventory258→capturedsession SHA chains exact and issues[].",
+    "generatedTemplate": "Actual generated role/path/contained nonlink body12977B SHA2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239 retained; all subsequent test assertions now reached and passed.",
+    "physicalNegatives": "ActualWounds preimage SHA08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42. Package-source removal precedes real producer and yields manifest51/copies51 with inventory+missingmanifest; session-copy removal follows producer and yields manifest52/copies51 without either manifest defect. Both produce only intended target-specific closure diagnostics.",
+    "diagnosticMultiplicity": "Repeated target link/copy issues represent distinct verifier observations, not duplicated native cases.",
+    "ownershipCleanup": "Four actual scopes,10distinct positive-birth/exact-argv identities with live census and terminal absence; EOF2/empty streams/noerrors per scope, no unknown/unresolved/remaining/cleanupFailures. All8 unique ownedpackage/session roots physically absent;4artifact dirs intentionally retained. No signal needed in observed cleanup branches.",
+    "permissionsLimit": "Five actual validator/PathMatches profiles prove logical read availability and no task/write expansion; backend/worker execution is not claimed."
+  },
+  "fixtureRuntime": [
+    {
+      "artifactDirectory": "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+      "outcomeSha256": "9d16638d3911c0bfa37fcdf66fd6faadeb39c16a75116d1a16932f6d319d2bc3",
+      "publish": false,
+      "producerNativeExit": 0,
+      "runtimeExecuted": false,
+      "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "prefixSha256": "bb243bba3f1a906bdaf3bf91661a90e8187aaf705786491c7bdebe733cf6b53a",
+      "prefixBytes": 204853,
+      "manifestDocs": 0,
+      "copiedDocs": 0,
+      "packageInventoryFiles": 258,
+      "identities": [
+        {
+          "Pid": 66311,
+          "BirthTicks": 2362939,
+          "ParentPid": 66286,
+          "Args": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/inspect-and-publish.ps1",
+            "-DaemonPath",
+            "/tmp/boe-gm1557-package-0a81b87c9c3a4a8d83b25b636fe6e37c/game_master_daemon.ps1",
+            "-SessionPath",
+            "/tmp/boe-gm1557-session-0a81b87c9c3a4a8d83b25b636fe6e37c/game_session",
+            "-ReportPath",
+            "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c/ast-and-publication.json",
+            "-Mode",
+            "inspect"
+          ],
+          "Role": "pwsh",
+          "State": "R"
+        }
+      ],
+      "allTerminalOwnedAbsent": true,
+      "signalsRequired": false,
+      "elapsedSeconds": 1.6346626,
+      "physicalFault": null,
+      "issues": [],
+      "pipes": {
+        "stdoutBytes": 0,
+        "stderrBytes": 0,
+        "bothEof": true,
+        "errors": null
+      },
+      "strictRemovedRoots": [
+        "/tmp/boe-gm1557-package-0a81b87c9c3a4a8d83b25b636fe6e37c",
+        "/tmp/boe-gm1557-session-0a81b87c9c3a4a8d83b25b636fe6e37c"
+      ],
+      "generatedTemplate": null
+    },
+    {
+      "artifactDirectory": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+      "outcomeSha256": "3ce5193dae4db4695d6e1322c9166a1ea4eea74fbde862bbb9159880cd95801a",
+      "publish": true,
+      "producerNativeExit": 0,
+      "runtimeExecuted": true,
+      "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "prefixSha256": "bb243bba3f1a906bdaf3bf91661a90e8187aaf705786491c7bdebe733cf6b53a",
+      "prefixBytes": 204853,
+      "manifestDocs": 52,
+      "copiedDocs": 52,
+      "packageInventoryFiles": 258,
+      "identities": [
+        {
+          "Pid": 66581,
+          "BirthTicks": 2366742,
+          "ParentPid": 66556,
+          "Args": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/inspect-and-publish.ps1",
+            "-DaemonPath",
+            "/tmp/boe-gm1557-package-1585a6b6996d484398563c2d345c6c0b/game_master_daemon.ps1",
+            "-SessionPath",
+            "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b/game_session",
+            "-ReportPath",
+            "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/ast-and-publication.json",
+            "-Mode",
+            "publish"
+          ],
+          "Role": "pwsh",
+          "State": "R"
+        },
+        {
+          "Pid": 66603,
+          "BirthTicks": 2366892,
+          "ParentPid": 66581,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-1585a6b6996d484398563c2d345c6c0b/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b"
+          ],
+          "Role": "helper",
+          "State": "R"
+        },
+        {
+          "Pid": 66615,
+          "BirthTicks": 2366927,
+          "ParentPid": 66581,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-1585a6b6996d484398563c2d345c6c0b/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b"
+          ],
+          "Role": "helper",
+          "State": "R"
+        }
+      ],
+      "allTerminalOwnedAbsent": true,
+      "signalsRequired": false,
+      "elapsedSeconds": 3.482108,
+      "physicalFault": null,
+      "issues": [],
+      "pipes": {
+        "stdoutBytes": 0,
+        "stderrBytes": 0,
+        "bothEof": true,
+        "errors": null
+      },
+      "strictRemovedRoots": [
+        "/tmp/boe-gm1557-package-1585a6b6996d484398563c2d345c6c0b",
+        "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b"
+      ],
+      "generatedTemplate": {
+        "relativePath": "Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+        "role": "compact_mortal_npc_update_template",
+        "generated": true,
+        "contextPackRoot": "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b/game_session/game_state/control/gm_context_pack",
+        "sessionPath": "/tmp/boe-gm1557-session-1585a6b6996d484398563c2d345c6c0b/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md",
+        "physicalPresent": true,
+        "containedWithoutSymlink": true,
+        "bytes": 12977,
+        "sha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+        "expectedSha256": "2B850DA7BAEE8E5B291722E1C25BFEA25CE857A818D778ACC8530FDB6F7E5239",
+        "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+        "retainedRawPath": "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b/generated-MORTAL_NPC_UPDATE_TEMPLATE.md"
+      }
+    },
+    {
+      "artifactDirectory": "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+      "outcomeSha256": "e836a3fbc4100659778fa990ea1212326e57098250f64578f13438f3da97f085",
+      "publish": true,
+      "producerNativeExit": 0,
+      "runtimeExecuted": true,
+      "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "prefixSha256": "bb243bba3f1a906bdaf3bf91661a90e8187aaf705786491c7bdebe733cf6b53a",
+      "prefixBytes": 204853,
+      "manifestDocs": 52,
+      "copiedDocs": 51,
+      "packageInventoryFiles": 258,
+      "identities": [
+        {
+          "Pid": 66890,
+          "BirthTicks": 2371901,
+          "ParentPid": 66865,
+          "Args": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/inspect-and-publish.ps1",
+            "-DaemonPath",
+            "/tmp/boe-gm1557-package-847f24e007af4d48934f806983cb48dd/game_master_daemon.ps1",
+            "-SessionPath",
+            "/tmp/boe-gm1557-session-847f24e007af4d48934f806983cb48dd/game_session",
+            "-ReportPath",
+            "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd/ast-and-publication.json",
+            "-Mode",
+            "publish"
+          ],
+          "Role": "pwsh",
+          "State": "R"
+        },
+        {
+          "Pid": 66912,
+          "BirthTicks": 2372054,
+          "ParentPid": 66890,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-847f24e007af4d48934f806983cb48dd/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-847f24e007af4d48934f806983cb48dd"
+          ],
+          "Role": "helper",
+          "State": "R"
+        },
+        {
+          "Pid": 66925,
+          "BirthTicks": 2372085,
+          "ParentPid": 66890,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-847f24e007af4d48934f806983cb48dd/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-847f24e007af4d48934f806983cb48dd"
+          ],
+          "Role": "helper",
+          "State": "R"
+        }
+      ],
+      "allTerminalOwnedAbsent": true,
+      "signalsRequired": false,
+      "elapsedSeconds": 3.2396722,
+      "physicalFault": {
+        "kind": "missing_session_copy",
+        "relativePath": "Rules/Block_5_Wounds.txt",
+        "physicalPath": "/tmp/boe-gm1557-session-847f24e007af4d48934f806983cb48dd/game_session/game_state/control/gm_context_pack/Rules/Block_5_Wounds.txt",
+        "beforeSha256": "08A949194D8864AC0162B81796233CBAEC5870C9E6F24DF2857E9597A9204D42",
+        "presentBefore": true,
+        "presentAfter": false,
+        "phase": "after unchanged real producer, before closure check"
+      },
+      "issues": [
+        "delivery.copy_missing:Rules/Block_5_Wounds.txt",
+        "delivery.copy_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt"
+      ],
+      "pipes": {
+        "stdoutBytes": 0,
+        "stderrBytes": 0,
+        "bothEof": true,
+        "errors": null
+      },
+      "strictRemovedRoots": [
+        "/tmp/boe-gm1557-package-847f24e007af4d48934f806983cb48dd",
+        "/tmp/boe-gm1557-session-847f24e007af4d48934f806983cb48dd"
+      ],
+      "generatedTemplate": null
+    },
+    {
+      "artifactDirectory": "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb",
+      "outcomeSha256": "5d8471af6900ce75f28b6f4279d36aa99162162c5d583e17c0ac710e43df8432",
+      "publish": true,
+      "producerNativeExit": 0,
+      "runtimeExecuted": true,
+      "sourceSha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "prefixSha256": "bb243bba3f1a906bdaf3bf91661a90e8187aaf705786491c7bdebe733cf6b53a",
+      "prefixBytes": 204853,
+      "manifestDocs": 51,
+      "copiedDocs": 51,
+      "packageInventoryFiles": 257,
+      "identities": [
+        {
+          "Pid": 66948,
+          "BirthTicks": 2372225,
+          "ParentPid": 66865,
+          "Args": [
+            "pwsh",
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/inspect-and-publish.ps1",
+            "-DaemonPath",
+            "/tmp/boe-gm1557-package-b7b1cad9ec24449b9c4953fd594c8ccb/game_master_daemon.ps1",
+            "-SessionPath",
+            "/tmp/boe-gm1557-session-b7b1cad9ec24449b9c4953fd594c8ccb/game_session",
+            "-ReportPath",
+            "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb/ast-and-publication.json",
+            "-Mode",
+            "publish"
+          ],
+          "Role": "pwsh",
+          "State": "R"
+        },
+        {
+          "Pid": 66970,
+          "BirthTicks": 2372373,
+          "ParentPid": 66948,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-b7b1cad9ec24449b9c4953fd594c8ccb/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-b7b1cad9ec24449b9c4953fd594c8ccb"
+          ],
+          "Role": "helper",
+          "State": "D"
+        },
+        {
+          "Pid": 66982,
+          "BirthTicks": 2372404,
+          "ParentPid": 66948,
+          "Args": [
+            "dotnet",
+            "/tmp/boe-gm1557-package-b7b1cad9ec24449b9c4953fd594c8ccb/BookOfEternityClient.dll",
+            "--gm-main-operation",
+            "--root",
+            "/tmp/boe-gm1557-session-b7b1cad9ec24449b9c4953fd594c8ccb"
+          ],
+          "Role": "helper",
+          "State": "R"
+        }
+      ],
+      "allTerminalOwnedAbsent": true,
+      "signalsRequired": false,
+      "elapsedSeconds": 3.242684,
+      "physicalFault": {
+        "kind": "missing_package_source",
+        "relativePath": "Rules/Block_5_Wounds.txt",
+        "physicalPath": "/tmp/boe-gm1557-package-b7b1cad9ec24449b9c4953fd594c8ccb/operational-resources/Rules/Block_5_Wounds.txt",
+        "beforeSha256": "08A949194D8864AC0162B81796233CBAEC5870C9E6F24DF2857E9597A9204D42",
+        "presentBefore": true,
+        "presentAfter": false,
+        "phase": "before unchanged real producer"
+      },
+      "issues": [
+        "delivery.manifest_inventory",
+        "delivery.manifest_missing_or_duplicate:Rules/Block_5_Wounds.txt",
+        "delivery.copy_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt",
+        "delivery.link_missing:../Rules/Block_5_Wounds.txt"
+      ],
+      "pipes": {
+        "stdoutBytes": 0,
+        "stderrBytes": 0,
+        "bothEof": true,
+        "errors": null
+      },
+      "strictRemovedRoots": [
+        "/tmp/boe-gm1557-package-b7b1cad9ec24449b9c4953fd594c8ccb",
+        "/tmp/boe-gm1557-session-b7b1cad9ec24449b9c4953fd594c8ccb"
+      ],
+      "generatedTemplate": null
+    }
+  ],
+  "retainedHistory": [
+    "Original two FIRST causal RED remain2FAIL/0PASS with original provenance, not erased or relabeled.",
+    "Original authoring6Valid/3Invalid and Python metadata-helper delimiter failure remain separate preserved source-authoring observations, not extra native tests.",
+    "B-S01/B-S02 and B-AS01 SOURCE closure history retained.",
+    "Accepted A255/A1/A2/F1/lifetime provenance not replayed or requalified. Shared affected-A12 are included in current78; no inflated combined global total."
+  ],
+  "nextGate": "This accepts the bounded B evidence needed for T029 disposition. Parent must persist/read back/recover the exact decision and update task metadata before claiming the milestone closed. No new runtime release, merge/main/issue close or full1557 completion follows automatically.",
+  "limits": [
+    "Local native .NET/PowerShell/source/profile validation and actual package→session documentation writer only.",
+    "No provider/WorkerRelease/backend-worker/HOT/M3/Windows/CI/browser/gameplay/full1557 qualification.",
+    "No implication that conditional docs are read by a real GM/provider; route and permission contracts are tested within this selected scope."
+  ],
+  "support": {
+    "path": "/tmp/gm1557-B-final-evidence-independent-check-20261017.json",
+    "sha256": "59497d11c6394082cfa3fde6df75ba7fe3a7a7d47f73abe6ce8448345c0aa3c8",
+    "checkerPath": "/tmp/gm1557-B-final-evidence-independent-check-20261017.py",
+    "checkerSha256": "ad07870b2c49e9e1d24bc38682659a54978ab597cf25c979c54e59987547cac7"
+  },
+  "reviewActions": {
+    "repositoryWrites": false,
+    "testsBuildExtractorProducerRuns": false,
+    "acceptedOldRawOrFullBaseReplayed": false
+  }
+}
