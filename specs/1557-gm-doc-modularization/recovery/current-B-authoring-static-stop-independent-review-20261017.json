@@ -1,0 +1,236 @@
+{
+  "kind": "INDEPENDENT_BOUNDED_AUTHORING_STATIC_CAUSAL_DIAGNOSIS",
+  "createdUtc": "2026-10-17T06:43:24.954588+00:00",
+  "reviewerRole": "independent Astra/XHigh; repository read-only",
+  "carrier": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+  "verdict": "CONFIRMED_AUTHORING_CONTEXT_CONTAMINATION",
+  "sourceAcceptance": "NOT_GRANTED",
+  "runtimeEvidence": "No new test/producer execution; two earlier causal RED remain separately accepted",
+  "finding": {
+    "id": "B-AS01",
+    "severity": "blocking authoring/source preservation",
+    "path": "Examples/E_Block_5_Units_Ids.txt:46",
+    "scenario": "BE001 bad log example moved immediately before BE019 good json example",
+    "consumer": "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs:82-110",
+    "mechanism": "Only an open type=bad example returns early. Good example falls through to preceding600 UTF16-unit substring. New adjacency places Incorrect Calculation from BE001 in that substring; unchanged ContainsInvalidMarker classifies the BE019 snippet Invalid. Original source substring has no marker.",
+    "consequence": "Required nine original extractor tuples7Valid/2Invalid become6Valid/3Invalid despite all9 exact bodies; sourceOrdinal8/physicalOrdinal4 alone differs.",
+    "notCause": [
+      "No snippet payload or good tag mutation",
+      "No parser/schema change",
+      "No manifest file/line/reason dependency in classification",
+      "No runtime or setup failure"
+    ]
+  },
+  "checks": {
+    "kind": "INDEPENDENT_STATIC_CAUSAL_SOURCE_REVIEW_NO_EXTRACTOR_OR_TEST_RERUN",
+    "createdUtc": "2026-10-17T06:42:33.601015+00:00",
+    "carrier": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+    "compiledPureReader": "324594a930dcb3aaf17aaf2441f47193f214957c",
+    "rawChains": [
+      {
+        "rawPath": "/tmp/gm1557-B-moved-existing-extractor-authoring-bindings-20261017.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-extractor-binding-20261017.json.gz",
+        "bytes": 14646,
+        "sha256": "1c628a00231610bb8e50e037529a5d290b20d59f92d04b54f88d0f632ee8362f",
+        "storedSha256": "1b05fa5a2b42700fcccd93079d51ea11b538b878f6ffbf9c0128970b5d0e28ac",
+        "compression": "gzip mtime0"
+      },
+      {
+        "rawPath": "/tmp/gm1557-B-production-authoring-static-20261017.json",
+        "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-first-production-authoring-byte-check-20261017.json.gz",
+        "bytes": 20038,
+        "sha256": "45f0dcbd7cb78ec114d3883294de3f29239390ee1ddf549d2bc32aa903752249",
+        "storedSha256": "8d72b301b96d0f23fc2c20d7dd5980bf2ca1b03ccca9a5332b1b907b6cccb7f7",
+        "compression": "gzip mtime0"
+      }
+    ],
+    "baselineRawPin": {
+      "kind": "READ_ONLY_EXISTING_UNCHANGED_EXTRACTOR_SOURCE_INVENTORY_NOT_TEST_PREPARATION_OR_RUNTIME_QUALIFICATION",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-existing-extractor-source-inventory-b6e1cdb3-20261017.json.gz",
+      "rawBytes": 15256,
+      "rawSha256": "61663a8df5dd9e0447452f9be7aa0d797daadfb3870e0c8c80f4d227ceae8b81",
+      "storedSha256": "1ab140af3a6a54c54e3e26973d0df9839f3d71deba3e015baa564cf9c488a33f",
+      "compiledSource": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+      "assemblySha256": "4d4e16292bf0843f3b1dbdc5e62ee9d5c65631af1494ea4d4102d9ade5c6d771",
+      "sourceSha256": "4248033b7a485f8c1993dea1fcf94df9367c7938ee37b0676dcedf512c60fb94",
+      "count": 9,
+      "expectedCounts": {
+        "Valid": 7,
+        "Invalid": 2
+      },
+      "qualification": "Pure read-only source inventory via unchanged existing extractor; not a build, test execution, RED, application owner or verification acceptance"
+    },
+    "sourceClassifierSha256": "4248033b7a485f8c1993dea1fcf94df9367c7938ee37b0676dcedf512c60fb94",
+    "assemblySha256": "494046e31c385497097f6d416d81e8071a677bce0beff831b7299d03feafcbd7",
+    "bindings": [
+      {
+        "sourceOrdinal": 1,
+        "physicalOrdinal": 6,
+        "destination": "Examples/E_Block_5_Wounds.txt",
+        "bodySha256": "a1fea0dc3de81b607ad412486b2064e295c3a9060337a08e9408391acb2f288c",
+        "bytes": 271,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 2,
+        "physicalOrdinal": 7,
+        "destination": "Examples/E_Block_5_Wounds.txt",
+        "bodySha256": "cecdd94cd38e862ef1ed42147786f78edbb1c48da6a0320a1b9b200fa9d13a4b",
+        "bytes": 1842,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 3,
+        "physicalOrdinal": 8,
+        "destination": "Examples/E_Block_5_Wounds.txt",
+        "bodySha256": "7f2974b2f65d31ba468a01f805652042df7ebf8d9df06b982726e54f399b6a74",
+        "bytes": 2093,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 4,
+        "physicalOrdinal": 9,
+        "destination": "Examples/E_Block_5_Wounds.txt",
+        "bodySha256": "6b4f890cebdaa71eb456dab05c8eeb1528174c8dbab6f3aa85a551a329ec7495",
+        "bytes": 1609,
+        "before": "Invalid",
+        "after": "Invalid"
+      },
+      {
+        "sourceOrdinal": 5,
+        "physicalOrdinal": 1,
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt",
+        "bodySha256": "50587fcc65827af42adc913c6cdd0623ff526062e1fa43a07cc1c7c643b4cf38",
+        "bytes": 1272,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 6,
+        "physicalOrdinal": 2,
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt",
+        "bodySha256": "d12c858f9b233dbb50a1697843a530a65dc123175f973c7a6f209eae69c11cb5",
+        "bytes": 476,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 7,
+        "physicalOrdinal": 3,
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt",
+        "bodySha256": "7e842d8c494aec94fcb5db8ed5b824bb1e58c57edc1b86e0fdcbe997760435db",
+        "bytes": 784,
+        "before": "Valid",
+        "after": "Valid"
+      },
+      {
+        "sourceOrdinal": 8,
+        "physicalOrdinal": 4,
+        "destination": "Examples/E_Block_5_Units_Ids.txt",
+        "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+        "bytes": 315,
+        "before": "Valid",
+        "after": "Invalid"
+      },
+      {
+        "sourceOrdinal": 9,
+        "physicalOrdinal": 5,
+        "destination": "Examples/E_Block_5_Units_Ids.txt",
+        "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
+        "bytes": 373,
+        "before": "Invalid",
+        "after": "Invalid"
+      }
+    ],
+    "mismatch": [
+      {
+        "sourceOrdinal": 8,
+        "physicalOrdinal": 4,
+        "destination": "Examples/E_Block_5_Units_Ids.txt",
+        "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+        "bytes": 315,
+        "before": "Valid",
+        "after": "Invalid"
+      }
+    ],
+    "contexts": {
+      "baseline": {
+        "contentUtf16Offset": 194082,
+        "line": 2729,
+        "windowUtf16Units": 600,
+        "owningTag": "<example contenttype=\"json_fragment\" type=\"good\">",
+        "preceding600": "                \"targetType\": \"cosmic_horror_gaze\", // System name\n                                    \"targetTypeDisplayName\": \"Cosmic Horror\", // Mandatory display name for custom type\n                                    \"poiseDamage\": \"25%\",\n                                    \"effectDescription\": \"Deals 15% cosmic horror damage.\" \n                                }]\n                            }\n\n                            ]]>\n   </content>\n  </example>\n </rule>\n <rule id=\"5.8.A\">\n  <example contenttype=\"json_fragment\" type=\"good\">\n   <title>\n    CORRECT: Creating a new NPC\n   </title>\n   ",
+        "invalidMarkers": [],
+        "sourceBytesSha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04"
+      },
+      "authored8daf": {
+        "contentUtf16Offset": 2430,
+        "line": 52,
+        "windowUtf16Units": 600,
+        "owningTag": "<example contenttype=\"json_fragment\" type=\"good\">",
+        "preceding600": " two types)\n   </title>\n   <content type=\"log\">\n    <![CDATA[\n\n                        - Incoming Damage: 60%\n                        - Target's Fire Resistance: 20%\n                        - Incorrect Calculation: 60% - 20% = 40% health loss. \n                        // This is wrong because it subtracts a Percentage Share from Percentage Points.\n\n                        ]]>\n   </content>\n  </example>\n </rule><!-- GM1557-B BE001 END --><!-- GM1557-B BE019 BEGIN -->\n <rule id=\"5.8.A\">\n  <example contenttype=\"json_fragment\" type=\"good\">\n   <title>\n    CORRECT: Creating a new NPC\n   </title>\n   ",
+        "invalidMarkers": [
+          "INCORRECT"
+        ],
+        "sourceBytesSha256": "89afded403a8d35c1bc8f2d0c802cc39c5a2ca0e4b64a1f7519955460643d571"
+      }
+    },
+    "twoWholePayloadsExact": [
+      {
+        "id": "BE001",
+        "originalStart": 345,
+        "originalEnd": 1548,
+        "sha256": "0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6",
+        "authoredStartCharacter": 1041,
+        "authoredEndCharacter": 2244
+      },
+      {
+        "id": "BE019",
+        "originalStart": 267586,
+        "originalEnd": 268638,
+        "sha256": "8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec",
+        "authoredStartCharacter": 2300,
+        "authoredEndCharacter": 3352
+      }
+    ],
+    "manifestUnchanged": true,
+    "delta": {
+      "path": "/tmp/gm1557-B-authoring-stop-delta-github-8daf2089-20261017.json",
+      "sha256": "67310e3e5a74060e1b97980a0a10290d463cb05375f08ed49b0de3bebe8ec727",
+      "files": 39,
+      "changedPaths": 35,
+      "exact": true
+    },
+    "noExtractorBuildTestOrProducerRun": true,
+    "repositoryWritten": false
+  },
+  "minimalAllowedCorrection": {
+    "scope": "Only new XML/comment framing at the BE001 END to BE019 BEGIN boundary, outside both pinned payloads; exact fixture generation and actual module share the inventoried framing.",
+    "neutrality": [
+      "Preserve whole payload bytes, order, original good/bad tags/titles/CDATA and ancestry.",
+      "No new rule/example/content/fence or normative gameplay/authority prose.",
+      "Use source-qualified provenance/context-isolation comment sufficient to keep prior group markers out of the preceding600 UTF16 window; the new comment itself must not introduce INVALID/INCORRECT/VIOLATION/НЕПРАВ into that window.",
+      "Keep full VerifyMoved wrapper_or_order byte equality; amend the precise CompleteFixture framing instead of weakening validation."
+    ],
+    "heldContracts": [
+      "Existing9 count/body/sourceOrdinal/classification expectations unchanged",
+      "Original50groups+5framing inverse unchanged",
+      "Only two manifest file/line locators may follow corrected actual positions; reason/other semantics unchanged",
+      "No parser, schema, arbitrary expected/count shrink or payload reorder"
+    ],
+    "requiredNextGates": "Persist diagnosis and parent release before correction. Then affected SOURCE plus fresh preparation and separately released EVIDENCE; existing actual9tuple/full-byte/full-manifest oracles retain their obligations. No new discovery cases required solely by this diagnosis."
+  },
+  "support": {
+    "path": "/tmp/gm1557-B-authoring-static-stop-independent-check-20261017.json",
+    "sha256": "7a505cfb7ea518dd13f3b5a97400af0a6df6cd49efa8aacbb12795ff07ee7a41"
+  },
+  "limits": [
+    "FIRST saved reflection invocation is a read-only static source inventory, not a test/producer result.",
+    "No corrected source exists or is accepted by this review.",
+    "No extraction rerun, test, build, process/producer launch or repository write performed.",
+    "Accepted A and previous B RED/SOURCE packages were not reopened."
+  ]
+}

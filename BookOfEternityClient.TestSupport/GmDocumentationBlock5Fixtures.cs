@@ -37,6 +37,16 @@ internal sealed partial class GmDocumentationBlock5Fixtures
     internal static string End(JsonNode row) => "<!-- GM1557-B " + S(row, "id") + " END -->";
     internal byte[] Original(JsonNode row) => Baselines[S(row, "sourcePath")][I(row, "start")..I(row, "end")];
     private string Wrapped(JsonNode row) => Start(row) + Text(Original(row)) + End(row);
+    // Keep nonadjacent source groups separated for the unchanged flat extractor context.
+    private const string NoncontiguousExampleBoundary =
+        "\n" +
+        "<!-- GM1557-B nonsemantic original-source boundary\n" +
+        "Source: Examples/E_Block_5.txt; original SHA256: c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04.\n" +
+        "Previous original group: BE001; UTF-8 interval [345,1548); 1203 bytes; SHA256: 0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6.\n" +
+        "Following original group: BE019; UTF-8 interval [267586,268638); 1052 bytes; SHA256: 8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec.\n" +
+        "The original groups were separated by 266038 UTF-8 bytes assigned to other topic owners. Their original byte slices and source order remain unchanged inside the adjacent marked regions.\n" +
+        "This comment belongs only to modularization framing and preserves textual separation between the two nonadjacent source groups. The intervening topic bodies are not copied or repeated here.\n" +
+        "-->\n";
     internal string[] ModulePaths => Topics.SelectMany(row => new[] { S(row, "rulePath"), S(row, "examplePath") }).ToArray();
     internal string[] AllPaths => Sources.Select(row => S(row, "path")).Concat(ModulePaths).ToArray();
     internal IReadOnlyList<string> VerifyBaseline()
@@ -118,7 +128,8 @@ internal sealed partial class GmDocumentationBlock5Fixtures
                 text += "<content type=\"ruleset\">\n" + string.Concat(groups.Where(row => row["inheritedAncestors"]!.AsArray().Any(a => S(a!, "tag") == "content")).Select(Wrapped)) + "\n</content>\n";
                 text += string.Concat(groups.Where(row => !row["inheritedAncestors"]!.AsArray().Any(a => S(a!, "tag") == "content")).Select(Wrapped));
             }
-            else text += string.Concat(groups.Select(Wrapped));
+            else text += string.Concat(groups.Select((row, index) =>
+                (index > 0 && S(groups[index - 1], "id") == "BE001" && S(row, "id") == "BE019" ? NoncontiguousExampleBoundary : "") + Wrapped(row)));
             docs.Add(path, Bytes(text + "\n</instructionblock>\n"));
         }
         return docs;

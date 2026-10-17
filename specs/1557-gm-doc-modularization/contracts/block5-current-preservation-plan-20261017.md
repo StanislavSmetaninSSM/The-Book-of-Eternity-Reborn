@@ -1,6 +1,6 @@
 # #1557 Block B: current source and bounded implementation contract
 
-Status: **independent contract accepted; first4ab preparation native0/0exec but SOURCE_NOT_READY; corrected tests-only WIP awaiting fresh preparation, no content implementation**. Current base `b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e` has independently accepted A; latest user authorizes T021–T029. Main, old1557 branch and accepted A1/A2 remain unchanged. [Byte map](../block5-content-map.json) is a separate B namespace; existing A map/edits/payloads remain unchanged; current B test/source/selection preparation is bound in [the concrete packet](../recovery/current-B-tests-only-source-selection-20261017.json).
+Status: **independent contract and tests-only SOURCE accepted; two FIRST causal RED accepted; production WIP authored, first static6/3 context stop retained, scoped framing correction statically binds9 exact inputs7/2 and only2 actual manifest locators; fresh preparation/full productionSOURCE/runtime pending**. Accepted A base remains `b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e`; latest user authorizes T021–T029, only T021 currently complete. Main, old1557 branch and accepted A1/A2 are unchanged. [Current source packet](../recovery/current-B-production-authoring-source-20261017.json) records the B namespace and precise shared A wrapper/after-image metadata updates; accepted contract below remains historical and unmodified.
 
 ## Exact current inventory
 

@@ -1,0 +1,365 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+  "base": "6b2d5a905022977e9ae4cd1c7b66f700ce2f5f77",
+  "directory": "/tmp/gm1557-B-authoring-stop-recovery-github-8daf2089-20261017",
+  "completedUtc": "2026-10-17T06:36:35.291368+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "A\tBookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs",
+    "M\tBookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+    "M\tBookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs",
+    "M\tBookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+    "M\tBookOfEternityClient/game_master_daemon.ps1",
+    "M\tCLI_Rules_Index.md",
+    "M\tExamples/E_Block_5.txt",
+    "A\tExamples/E_Block_5_Characteristics_Progression.txt",
+    "A\tExamples/E_Block_5_Combat_Foundations.txt",
+    "A\tExamples/E_Block_5_Items_Resources.txt",
+    "A\tExamples/E_Block_5_Narrative_Social.txt",
+    "A\tExamples/E_Block_5_Units_Ids.txt",
+    "A\tExamples/E_Block_5_World_Chronology.txt",
+    "A\tExamples/E_Block_5_Wounds.txt",
+    "M\tRules/Block_5.txt",
+    "A\tRules/Block_5_Characteristics_Progression.txt",
+    "A\tRules/Block_5_Combat_Foundations.txt",
+    "A\tRules/Block_5_Items_Resources.txt",
+    "A\tRules/Block_5_Narrative_Social.txt",
+    "A\tRules/Block_5_Units_Ids.txt",
+    "A\tRules/Block_5_World_Chronology.txt",
+    "A\tRules/Block_5_Wounds.txt",
+    "M\tspecs/1557-gm-doc-modularization/content-map.json",
+    "M\tspecs/1557-gm-doc-modularization/navigation-edits.json",
+    "M\tspecs/1557-gm-doc-modularization/plan.md",
+    "M\tspecs/1557-gm-doc-modularization/quickstart.md",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-B-first-authoring-extractor-binding-20261017.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-B-first-authoring-static-stop-20261017.json",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-B-first-production-authoring-byte-check-20261017.json.gz",
+    "A\tspecs/1557-gm-doc-modularization/recovery/current-B-production-authoring-source-20261017.json",
+    "M\tspecs/1557-gm-doc-modularization/spec.md",
+    "M\tspecs/1557-gm-doc-modularization/tasks.md",
+    "M\ttests/categories.json",
+    "M\ttests/selection.json",
+    "M\ttests/selections/1557-gm-doc-block5.json"
+  ],
+  "deletedPaths": [],
+  "fileCount": 39,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/AGENTS.md"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs",
+      "mode": "100644",
+      "git_blob": "58b4b2ef223140e7682774a5579e6662393c84eb",
+      "bytes": 2876,
+      "sha256": "854e7ba3f1657f823e624d3ea67d17917fb912b8bd0a534189b3e99f137d5235",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
+      "mode": "100644",
+      "git_blob": "a28541062ddaf845411496f48e4af1b470033105",
+      "bytes": 19273,
+      "sha256": "55b85f6a8453be93924476ad253f9f3474597d3400a47a9f75c5d511498152fe",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs",
+      "mode": "100644",
+      "git_blob": "2ad3fb063c7dc77fdb31d477903a0a98e8b45ec3",
+      "bytes": 18283,
+      "sha256": "3c5b6ad0db79d50e27d27c65d8811d250ec9fbc109e0489b1ba7c19da1e98d2d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "mode": "100644",
+      "git_blob": "2f00e7574b430f450405d84b367375479ea71623",
+      "bytes": 12101,
+      "sha256": "7fd803397638bcbca4bdf318fcd6daf7955c28ef97e1f2a5afb9a1cea6ed859e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "mode": "100644",
+      "git_blob": "87a0e0f8a43b5e3b7af6d898c4209a86b626cf97",
+      "bytes": 406653,
+      "sha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/BookOfEternityClient/game_master_daemon.ps1"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "mode": "100644",
+      "git_blob": "9ff844f59deddf0b51f876df0bff0261c97183e5",
+      "bytes": 44579,
+      "sha256": "cb8626a5765a5369134ffe1c665a79d841f48778cf3d7cba5f4513ed5fb67ab5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/CLI_Rules_Index.md"
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "mode": "100644",
+      "git_blob": "bc34fffb104b3ac7e5e63ad743fab763436addc5",
+      "bytes": 1875,
+      "sha256": "3dd3debe6cda1da72510f36ccbbe08b6359b0874fa1cca10eefb1f0fe0011fef",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Characteristics_Progression.txt",
+      "mode": "100644",
+      "git_blob": "1db50c719deb5b46a54270b311f5f64a793ab5a3",
+      "bytes": 5647,
+      "sha256": "eb694e5165c5c546c66b4ab615006a6a03df3b13431d35ab6e124a4b1b541ceb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Characteristics_Progression.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Combat_Foundations.txt",
+      "mode": "100644",
+      "git_blob": "afd7de19811cb60b180c2657d1a9c86d1cff286c",
+      "bytes": 4729,
+      "sha256": "129e3db72ff37d75f2072dce94bbd7a72da3f53e4f1c98d28e08d50e681de041",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Combat_Foundations.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Items_Resources.txt",
+      "mode": "100644",
+      "git_blob": "7f796d1a9a5f437dbd9632233b364d793c139563",
+      "bytes": 13694,
+      "sha256": "87db53269eaa0ac8be87c1cd43aed697661cec68f4095baba6ebad5c48ca6b77",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Items_Resources.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Narrative_Social.txt",
+      "mode": "100644",
+      "git_blob": "7f7d6862685f2e685eadef5dcece30827158eef4",
+      "bytes": 236797,
+      "sha256": "59893de741de13f1f5539db7302ffcb89e4de5950943cb61b348ddceeeba6f26",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Narrative_Social.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Units_Ids.txt",
+      "mode": "100644",
+      "git_blob": "5ef3eedeb7d2ba67b5d81e088684c0fddc4198c6",
+      "bytes": 3400,
+      "sha256": "89afded403a8d35c1bc8f2d0c802cc39c5a2ca0e4b64a1f7519955460643d571",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Units_Ids.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_World_Chronology.txt",
+      "mode": "100644",
+      "git_blob": "0a3be6a73a9d17abacb7e2b8049f28b97622cbc0",
+      "bytes": 5360,
+      "sha256": "b599e3a9d7fbad9186e4e8dae7055d0d6524b38125a5e367c4c0fa23c8c5638a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_World_Chronology.txt"
+    },
+    {
+      "path": "Examples/E_Block_5_Wounds.txt",
+      "mode": "100644",
+      "git_blob": "a4f2ef35b1e5d5ef8357fdea902086a3b415decb",
+      "bytes": 8683,
+      "sha256": "6cef5de3fca65095d666691f9ff370607839d0f337523045a945a4a1b2027cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Examples/E_Block_5_Wounds.txt"
+    },
+    {
+      "path": "Rules/Block_5.txt",
+      "mode": "100644",
+      "git_blob": "1bdd1fe3ac3bfdc6950d60c0fcb2d2339e90e1d1",
+      "bytes": 3579,
+      "sha256": "93cd59bcacee180907423f1089f1b5cdf33d4f587c25352941cef954eed5e239",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5.txt"
+    },
+    {
+      "path": "Rules/Block_5_Characteristics_Progression.txt",
+      "mode": "100644",
+      "git_blob": "73b3c62e81a46667eba9a1d70525c6b4210332e1",
+      "bytes": 57135,
+      "sha256": "9d29668294e62898105bf67893e699958213f6b90f84b70a4dc0b62bfd30ea74",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Characteristics_Progression.txt"
+    },
+    {
+      "path": "Rules/Block_5_Combat_Foundations.txt",
+      "mode": "100644",
+      "git_blob": "b6b0f9cc14150afba35e850bce70aaf55502c941",
+      "bytes": 64048,
+      "sha256": "ad6dd1f2b36fa0159864af82aae25f0d5009e30b64fb230c44966f2cbcf75c07",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Combat_Foundations.txt"
+    },
+    {
+      "path": "Rules/Block_5_Items_Resources.txt",
+      "mode": "100644",
+      "git_blob": "738099f1440fbb6d8fef74d28e690093da6700e3",
+      "bytes": 46895,
+      "sha256": "c32387464f9bde9a6020b9c270d6248becabf501515d9fbdc8d6682b40ed1800",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Items_Resources.txt"
+    },
+    {
+      "path": "Rules/Block_5_Narrative_Social.txt",
+      "mode": "100644",
+      "git_blob": "42b44ceb6609d4a5976e02e315e5a254cad81c81",
+      "bytes": 70298,
+      "sha256": "a6db45113aaa79987de36cd3c8d5f550edcdadadabbb564c5691df20471d3ff0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Narrative_Social.txt"
+    },
+    {
+      "path": "Rules/Block_5_Units_Ids.txt",
+      "mode": "100644",
+      "git_blob": "b100e3c75f7e004d3bb183d4548526ad38db6c74",
+      "bytes": 13465,
+      "sha256": "8810fb7148ced01d41e61ed2d29bcc0fbd5fcc8bbce544de66038eb3b4a6d252",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Units_Ids.txt"
+    },
+    {
+      "path": "Rules/Block_5_World_Chronology.txt",
+      "mode": "100644",
+      "git_blob": "cc026c6d325b0b9309c70a5510e8af6418513fbe",
+      "bytes": 12122,
+      "sha256": "dda3c17ce94b8c3056cddc14c6caac361a408d84ca3d38665536d62107518e9d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_World_Chronology.txt"
+    },
+    {
+      "path": "Rules/Block_5_Wounds.txt",
+      "mode": "100644",
+      "git_blob": "b848ae42d4a13b0a0381a0df84f5dd604d8e299b",
+      "bytes": 9406,
+      "sha256": "08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/Rules/Block_5_Wounds.txt"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/docs/testing.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/content-map.json",
+      "mode": "100644",
+      "git_blob": "9e6138713eaa32570c377c73fb8e134606f721dd",
+      "bytes": 449470,
+      "sha256": "b293eaff26a8e0c22995083ba28e8a7fa70c0c7e847929030a6e4c2272676d9c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/content-map.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "mode": "100644",
+      "git_blob": "07ffc0d6af2c868c792e64aaa462415fce9c850e",
+      "bytes": 74430,
+      "sha256": "3a629a2b671df6134bd5228c8e79af671dba29147aeb6a8bf85c319df5d9ed23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/navigation-edits.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "mode": "100644",
+      "git_blob": "67ef851e45826357a64252fcde2d420b2d0603c6",
+      "bytes": 142420,
+      "sha256": "04ac29660a2783d066ef61af3f1af4a720c35730c29c1b48d7673be6f20689e7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/plan.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/quickstart.md",
+      "mode": "100644",
+      "git_blob": "01e54b41b7dbd4b90db7f96965e1836fcfc2757e",
+      "bytes": 13401,
+      "sha256": "d0056d45835b7bddad1aa41607ed9dc5be419d58537f6e04dd210dc1376d5738",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/quickstart.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-extractor-binding-20261017.json.gz",
+      "mode": "100644",
+      "git_blob": "bfb3994c99d293790714941f66a9e697bbe320ff",
+      "bytes": 3868,
+      "sha256": "1b05fa5a2b42700fcccd93079d51ea11b538b878f6ffbf9c0128970b5d0e28ac",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-extractor-binding-20261017.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-static-stop-20261017.json",
+      "mode": "100644",
+      "git_blob": "12bf455174c808cad1ab22f2666f073185b1a75f",
+      "bytes": 17152,
+      "sha256": "a7a3fa3ef68d97c3d5b9978137851969663323cd08da481b45cf767ca19c17f7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/recovery/current-B-first-authoring-static-stop-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-B-first-production-authoring-byte-check-20261017.json.gz",
+      "mode": "100644",
+      "git_blob": "63a64eac0501fdf832e682f8c9df9432ab935e4e",
+      "bytes": 5789,
+      "sha256": "8d72b301b96d0f23fc2c20d7dd5980bf2ca1b03ccca9a5332b1b907b6cccb7f7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/recovery/current-B-first-production-authoring-byte-check-20261017.json.gz"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/current-B-production-authoring-source-20261017.json",
+      "mode": "100644",
+      "git_blob": "7291ce9a62b3e002767346f53a2b4b30db4f45a3",
+      "bytes": 14824,
+      "sha256": "6678938b5708daac1fced0503f579e5e0d1f1c982894243a91a7904b613a318f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/recovery/current-B-production-authoring-source-20261017.json"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "mode": "100644",
+      "git_blob": "3a64e5942012dcc8c38e999a704c311d27505484",
+      "bytes": 84013,
+      "sha256": "6e3c31539ea5c36024c6784c5be9c7c7fc8c34d071db1a5ffbd322a7b604cd72",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/spec.md"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "mode": "100644",
+      "git_blob": "f97b79084f76eb7ef272e8ff911e6d61f0867d8b",
+      "bytes": 135705,
+      "sha256": "8bf51b501dce16a88da88b1daad691b4345fbbfa6300f49f05788f4594dfc1dd",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/specs/1557-gm-doc-modularization/tasks.md"
+    },
+    {
+      "path": "tests/categories.json",
+      "mode": "100644",
+      "git_blob": "6e7842f3f726113078767910291743ad80564789",
+      "bytes": 2037568,
+      "sha256": "716ec4703a50ef4ead047f7731cc4148778c015f009d3f2fe615bc498ef75884",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/tests/categories.json"
+    },
+    {
+      "path": "tests/selection.json",
+      "mode": "100644",
+      "git_blob": "2d83cf255d148055a4d77f3bc6cc2e9a20b0c5cb",
+      "bytes": 4733,
+      "sha256": "70b08eaf0915fe9687d2e959b6371e6274ad8087c63dca6a4ba0153705f688f0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/tests/selection.json"
+    },
+    {
+      "path": "tests/selections/1557-gm-doc-block5.json",
+      "mode": "100644",
+      "git_blob": "2d83cf255d148055a4d77f3bc6cc2e9a20b0c5cb",
+      "bytes": 4733,
+      "sha256": "70b08eaf0915fe9687d2e959b6371e6274ad8087c63dca6a4ba0153705f688f0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/8daf2089206d756a3078f6d1903a4f9d7ca0a575/tests/selections/1557-gm-doc-block5.json"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "8daf2089206d756a3078f6d1903a4f9d7ca0a575\trefs/heads/1557-gm-doc-modularization-continuation-20261017\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn-1557')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nchanged=git('diff','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1557-gm-doc-modularization-continuation-20261017','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

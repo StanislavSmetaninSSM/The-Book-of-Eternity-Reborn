@@ -1,5 +1,13 @@
 # Bounded Verification Guide
 
+## Block B corrected authoring static binding; production SOURCE still pending (2026-10-17)
+
+The FIRST6Valid/3Invalid source-authoring stop remains immutable at `8daf2089`. [Independent B-AS01 causal review](recovery/current-B-authoring-static-stop-independent-review-20261017.md) confirms the bounded source cause; this is not productionSOURCE acceptance. Independent source diagnosis confirmed only foreign preceding-context leakage between newly neighboring BE001/BE019; manifest never controls the extractor classification. Root released only neutral provenance XML framing at that boundary, canonical fixture generation/inventory and two actual locator edits. The added843UTF-8-byte comment is outside all original markers and contains no example, gameplay rule or classifier trigger. All55rawparts/source order and both reconstructed originals remain byte-exact; all14modules retain144+19IDs/51examples. The unchanged actual extractor now binds all9exact bodies as7Valid/2Invalid, using original source ordinals rather than changed physical filename order.
+
+[Updated source packet](recovery/current-B-production-authoring-source-20261017.json) pins the exact framing and [corrected static raw/helper proof](recovery/current-B-corrected-production-authoring-static-binding-20261017.json.gz). Only syntaxExemptions11/12 file/line became `E_Block_5_Units_Ids.txt:60` and `:78`; complete192331-byte baseline is restored by inverting exactly those four fields, with full semantic/array-order equality. No parser, original payload, Expected value, assertion, category count or gameplay change; current9categories/28methods/78cases remain unobserved native proposal.
+
+**Uncompiled / no fresh prep or GREEN runtime:** publish/readback/complete immediate recovery first; root source/recovery check precedes fresh preparation and independent full productionSOURCE. Old2FIRST causal expectedFAIL, originalNOT_READY/prep and FIRSTstatic6/3 history retained. T021 only checked; T022–T029 pending.
+
 ## Current uncompiled B production WIP — FIRST static binding stop
 
 [Source/selection packet](recovery/current-B-production-authoring-source-20261017.json) records14wholemodules/2compactIDnavigators,52docSpecs/fiveReadPaths-onlyprofiles, exactsharedAafterimages and B-S03 lookupcontrols; proposed9categories/28methods/78cases. [FIRST static stop](recovery/current-B-first-authoring-static-stop-20261017.json): all9movedJSONbodies exact but classes6Valid3Invalid vs7/2; manifestunchanged/2locatorspending. No tests/producer or freshbuild after authoring. Publish/recover before diagnosis/fix; all runtime held. Old causal2FAIL remain accepted separately, not currentGREEN.

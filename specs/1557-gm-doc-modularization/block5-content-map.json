@@ -4984,7 +4984,14 @@
         "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
       },
       "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
-      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged"
+      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged",
+      "locatorBinding": {
+        "file": "E_Block_5_Units_Ids.txt",
+        "line": 60,
+        "expected": "Valid",
+        "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9"
+      },
+      "status": "Applied exact two-field binding after corrected actual unchanged extractor; semantic row unchanged."
     },
     {
       "family": "syntaxExemptions",
@@ -4995,7 +5002,14 @@
         "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
       },
       "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
-      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged"
+      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged",
+      "locatorBinding": {
+        "file": "E_Block_5_Units_Ids.txt",
+        "line": 78,
+        "expected": "Invalid",
+        "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323"
+      },
+      "status": "Applied exact two-field binding after corrected actual unchanged extractor; semantic row unchanged."
     }
   ],
   "preservedExistingFinding": {
@@ -5204,5 +5218,35 @@
     "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-baseline-complete-manifest-b6e1cdb3-20261017.json.gz",
     "storedSha256": "654697df3fb6c6a4ad3c3f671cfde6ea5463d538f4f1ae1dd252e67cfa8609aa",
     "normalization": "Only the two admitted file/line fields in syntaxExemptions[11]/[12]; complete remaining semantics and array order must equal this frozen baseline."
+  },
+  "addedWrapperFraming": [
+    {
+      "kind": "nonsemantic_original_source_context_boundary",
+      "path": "Examples/E_Block_5_Units_Ids.txt",
+      "between": [
+        "BE001",
+        "BE019"
+      ],
+      "outsideOriginalMarkers": true,
+      "utf8Bytes": 843,
+      "sha256": "7d880751762280d003087da978c7b5fd61cf2befc003ed513e0f773ccdbd7816",
+      "text": "\n<!-- GM1557-B nonsemantic original-source boundary\nSource: Examples/E_Block_5.txt; original SHA256: c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04.\nPrevious original group: BE001; UTF-8 interval [345,1548); 1203 bytes; SHA256: 0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6.\nFollowing original group: BE019; UTF-8 interval [267586,268638); 1052 bytes; SHA256: 8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec.\nThe original groups were separated by 266038 UTF-8 bytes assigned to other topic owners. Their original byte slices and source order remain unchanged inside the adjacent marked regions.\nThis comment belongs only to modularization framing and preserves textual separation between the two nonadjacent source groups. The intervening topic bodies are not copied or repeated here.\n-->\n",
+      "sourcePath": "Examples/E_Block_5.txt",
+      "sourceSha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "originalGapBytes": 266038,
+      "purpose": "Preserve lexical separation after nonadjacent original groups become neighboring topic groups; no original payload, XML hierarchy, order or parser change."
+    }
+  ],
+  "implementationState": {
+    "status": "CORRECTED_AUTHORING_STATIC_BINDING_COMPLETE_UNCOMPILED_SOURCE_NOT_YET_ACCEPTED",
+    "firstStaticStop": "recovery/current-B-first-authoring-static-stop-20261017.json",
+    "framingBoundary": "BE001->BE019 only; outside all originalmarkers",
+    "actualInputCounts": {
+      "total": 9,
+      "Valid": 7,
+      "Invalid": 2
+    },
+    "manifest": "Only syntaxExemptions11/12 file/line changed, inverse rawbytes and entire semantic tree exact",
+    "runtime": "No build/preparation/GREEN after productionauthoring; native FIRST2expectedRED retained."
   }
 }

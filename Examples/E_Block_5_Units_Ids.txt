@@ -43,7 +43,15 @@ Worked examples: [paired examples](E_Block_5_Units_Ids.txt); [paired rules](../R
                         ]]>
    </content>
   </example>
- </rule><!-- GM1557-B BE001 END --><!-- GM1557-B BE019 BEGIN -->
+ </rule><!-- GM1557-B BE001 END -->
+<!-- GM1557-B nonsemantic original-source boundary
+Source: Examples/E_Block_5.txt; original SHA256: c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04.
+Previous original group: BE001; UTF-8 interval [345,1548); 1203 bytes; SHA256: 0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6.
+Following original group: BE019; UTF-8 interval [267586,268638); 1052 bytes; SHA256: 8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec.
+The original groups were separated by 266038 UTF-8 bytes assigned to other topic owners. Their original byte slices and source order remain unchanged inside the adjacent marked regions.
+This comment belongs only to modularization framing and preserves textual separation between the two nonadjacent source groups. The intervening topic bodies are not copied or repeated here.
+-->
+<!-- GM1557-B BE019 BEGIN -->
  <rule id="5.8.A">
   <example contenttype="json_fragment" type="good">
    <title>

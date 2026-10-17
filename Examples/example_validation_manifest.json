@@ -2112,13 +2112,13 @@
       "reason": "Legacy invalid quoting example intentionally demonstrates broken JSON string escaping."
     },
     {
-      "file": "E_Block_5.txt",
-      "line": 2729,
+      "file": "E_Block_5_Units_Ids.txt",
+      "line": 60,
       "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
     },
     {
-      "file": "E_Block_5.txt",
-      "line": 2747,
+      "file": "E_Block_5_Units_Ids.txt",
+      "line": 78,
       "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
     }
   ],

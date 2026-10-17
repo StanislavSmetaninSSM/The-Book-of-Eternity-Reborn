@@ -177,7 +177,7 @@
       }
     ]
   },
-  "currentBlocker": "FIRSTstatic source binding:9bodies exact but6Valid3Invalid vs7/2; oneoriginalordinal8 differs. No manifestlocator update or diagnosis yet. Raw preserved in current-B-first-authoring-static-stop-20261017.json.",
+  "currentBlocker": "Prior FIRST6/3 static qualification corrected by scoped neutral843byte provenance framing only; all9exactbodies/7Valid2Invalid and twoactual locators60/78 now statically bound. FullproductionSOURCE/freshprep/runtime remain pending.",
   "uncompiledChangedSourcePins": [
     {
       "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.Navigation.cs",
@@ -186,8 +186,8 @@
     },
     {
       "path": "BookOfEternityClient.TestSupport/GmDocumentationBlock5Fixtures.cs",
-      "bytes": 19273,
-      "sha256": "55b85f6a8453be93924476ad253f9f3474597d3400a47a9f75c5d511498152fe"
+      "bytes": 20528,
+      "sha256": "fe21b319936b386b4776d5e2886087b10f628901a8964aa1d65e85a3f3cea6b8"
     },
     {
       "path": "BookOfEternityClient.Tests/GmDocumentationBlock5Tests.cs",
@@ -231,8 +231,8 @@
     },
     {
       "path": "Examples/E_Block_5_Units_Ids.txt",
-      "bytes": 3400,
-      "sha256": "89afded403a8d35c1bc8f2d0c802cc39c5a2ca0e4b64a1f7519955460643d571"
+      "bytes": 4243,
+      "sha256": "47bd7224ae246aaff0f8cefec43921a76616a79fb0a5eed9ea2a25077e201af1"
     },
     {
       "path": "Examples/E_Block_5_World_Chronology.txt",
@@ -283,9 +283,93 @@
       "path": "Rules/Block_5_Wounds.txt",
       "bytes": 9406,
       "sha256": "08a949194d8864ac0162b81796233cbaec5870c9e6f24df2857e9597a9204d42"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 192347,
+      "sha256": "c5ad1ce2ad7579ba2801a3a125daf5db2876de32019c018031217c5db2a18710"
     }
   ],
   "sourceAuthoringToolScope": "Approved compiled324purelayout helper exported14modulebytes/router as temporary authoringdata, no tests/producer. B-S03navigator rows generatedfrompinned allRuleIds. Pythonbyteinverse checks55pieces/2sources; actual unchangedextractor is source-only binding. Tool text retained with artifact records, not a new production framework.",
   "authoringExportHelperText": "$ErrorActionPreference = 'Stop'\n$repo = '/workspace/The-Book-of-Eternity-Reborn-1557'\n$record = Get-Content '/tmp/gm1557-implementation-tools/gm1557-B-corrected-catalog-first-324594a9-20261017/record.json' -Raw | ConvertFrom-Json\n$relative = 'BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll'\n$path = Join-Path $repo $relative\n$pin = @($record.binaryAfter | Where-Object path -CEQ $relative)\nif ($pin.Count -ne 1 -or (Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pin[0].sha256) { throw 'Compiled layout helper pin mismatch' }\n[Environment]::SetEnvironmentVariable('BOE_REPO_ROOT', $repo)\n$assembly = [Reflection.Assembly]::LoadFrom($path)\n$flags = [Reflection.BindingFlags]'Instance,NonPublic'\n$type = $assembly.GetType('BookOfEternityClient.Tests.GmDocumentationBlock5Fixtures', $true)\n$ctor = $type.GetConstructor($flags, $null, [Type[]]@([string]), $null)\n$fixture = $ctor.Invoke(@($repo))\n$docs = $type.GetMethod('CompleteFixture', $flags).Invoke($fixture, @())\n$router = $type.GetProperty('RouterAddition', $flags).GetValue($fixture)\n$encoded = [ordered]@{}\nforeach ($key in @($docs.Keys | Sort-Object)) { $encoded[$key] = [Convert]::ToBase64String($docs[$key]) }\n$output = '/tmp/gm1557-B-approved-layout-authoring-data-20261017.json'\nif (Test-Path $output) { throw 'Authoring export already exists' }\n$result = [ordered]@{ kind='SOURCE_AUTHORING_DATA_NOT_TEST_OR_PRODUCER_EXECUTION'; compiledSource=$record.sourceHead; assemblySha256=$pin[0].sha256; documents=$encoded; routerAddition=$router; limitation='14 module bytes and accepted conditional router only. Old navigator outputs are superseded by approved B-S03 complete-ID lookup in current source.'; helperText=[IO.File]::ReadAllText($PSCommandPath) }\n[IO.File]::WriteAllText($output, ($result | ConvertTo-Json -Depth 12))\nWrite-Output ('SOURCE_AUTHORING_EXPORT ' + $docs.Count + ' documents; no test/producer; ' + $output)\n",
-  "sourceRuntime": "No prep/build/actual after productionauthoring; old2expectedRED retain exact provenance. Publish/recover WIP beforediagnosis; SOURCE notready."
+  "sourceRuntime": "No build or test/producer after production authoring. Corrected readonly authoring binding is7/2; prior FIRST6/3 immutable. Publish/readback/recover correction before Root source/recovery check, then fresh catalog and full independent productionSOURCE.",
+  "status": "CORRECTED_AUTHORING_STATIC_COMPLETE_UNCOMPILED_FULL_PRODUCTION_SOURCE_PENDING",
+  "correction": {
+    "firstWip": "8daf2089206d756a3078f6d1903a4f9d7ca0a575",
+    "framing": {
+      "kind": "nonsemantic_original_source_context_boundary",
+      "path": "Examples/E_Block_5_Units_Ids.txt",
+      "between": [
+        "BE001",
+        "BE019"
+      ],
+      "outsideOriginalMarkers": true,
+      "utf8Bytes": 843,
+      "sha256": "7d880751762280d003087da978c7b5fd61cf2befc003ed513e0f773ccdbd7816",
+      "text": "\n<!-- GM1557-B nonsemantic original-source boundary\nSource: Examples/E_Block_5.txt; original SHA256: c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04.\nPrevious original group: BE001; UTF-8 interval [345,1548); 1203 bytes; SHA256: 0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6.\nFollowing original group: BE019; UTF-8 interval [267586,268638); 1052 bytes; SHA256: 8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec.\nThe original groups were separated by 266038 UTF-8 bytes assigned to other topic owners. Their original byte slices and source order remain unchanged inside the adjacent marked regions.\nThis comment belongs only to modularization framing and preserves textual separation between the two nonadjacent source groups. The intervening topic bodies are not copied or repeated here.\n-->\n",
+      "sourcePath": "Examples/E_Block_5.txt",
+      "sourceSha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "originalGapBytes": 266038,
+      "purpose": "Preserve lexical separation after nonadjacent original groups become neighboring topic groups; no original payload, XML hierarchy, order or parser change."
+    },
+    "storedProof": "specs/1557-gm-doc-modularization/recovery/current-B-corrected-production-authoring-static-binding-20261017.json.gz",
+    "rawBytes": 64827,
+    "rawSha256": "6cad31e866086ef4e2ef3f8b52db917b25b78ab892ffbf39e88c262584d57e7f",
+    "storedSha256": "39720a598046564a119e93fadb0ae4e9302380abba448c7541c4978043cb9f4e",
+    "firstRawImmutable": true,
+    "manifest": {
+      "beforeBytes": 192331,
+      "beforeSha256": "d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f",
+      "afterBytes": 192347,
+      "afterSha256": "c5ad1ce2ad7579ba2801a3a125daf5db2876de32019c018031217c5db2a18710",
+      "locatorEdits": [
+        {
+          "family": "syntaxExemptions",
+          "index": 11,
+          "before": {
+            "file": "E_Block_5.txt",
+            "line": 2729,
+            "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
+          },
+          "after": {
+            "file": "E_Block_5_Units_Ids.txt",
+            "line": 60,
+            "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
+          },
+          "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+          "expected": "Valid"
+        },
+        {
+          "family": "syntaxExemptions",
+          "index": 12,
+          "before": {
+            "file": "E_Block_5.txt",
+            "line": 2747,
+            "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
+          },
+          "after": {
+            "file": "E_Block_5_Units_Ids.txt",
+            "line": 78,
+            "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
+          },
+          "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
+          "expected": "Invalid"
+        }
+      ],
+      "inverseBytesExact": true,
+      "completeSemanticsAndArrayOrderExact": true
+    },
+    "methodCountUnchanged": 28,
+    "casesProposalUnchanged": 78,
+    "sourceReady": false
+  },
+  "authoringCausalReview": {
+    "verdict": "CONFIRMED_AUTHORING_CONTEXT_CONTAMINATION_B_AS01_NOT_PRODUCTION_SOURCE_ACCEPTANCE",
+    "md": "current-B-authoring-static-stop-independent-review-20261017.md",
+    "mdSha256": "6408fe9660ba686cd73e0dd9ecab6bd72cc0e3efc535211b7bcb1e2f7a6cb89b",
+    "json": "current-B-authoring-static-stop-independent-review-20261017.json",
+    "jsonSha256": "ae2a6c1533e429c74b0a65e483e642fca72a46b094fdeeee7124e92f33f03c3e",
+    "rootReleased": "Only neutral BE001->BE019 provenance framing/canonical generation and2actualfile-line locators, staticauthoringbinding and WIPpublication/recovery; freshprep waitsrootrecovery.",
+    "firstDiagnosticHelperFailure": "Preserved exact first helper/slice AssertionError inside corrected static proof, distinct from product/runtime; fixed metadata slice delimiter only; actual extractor not replayed."
+  }
 }
