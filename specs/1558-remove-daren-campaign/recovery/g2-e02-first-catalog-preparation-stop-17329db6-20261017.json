@@ -1,0 +1,153 @@
+{
+  "kind": "FIRST_E02_PREPARATION_STOP_NATIVE_RAW_PENDING_CAUSAL_REVIEW",
+  "utc": "2026-10-17T11:45:25.300933+00:00",
+  "actualSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "previousCompiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "commands": [
+    {
+      "mode": "frontend",
+      "nativeExit": 0,
+      "wallSeconds": 2.935344375000568,
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json",
+      "recordSha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf"
+    },
+    {
+      "mode": "catalog",
+      "nativeExit": 1,
+      "wallSeconds": 0.6647165329995914,
+      "argv": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-ValidateCatalog"
+      ],
+      "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/record.json",
+      "recordSha256": "d5c8adef1021a91adc5350cb50b45168cc9b23eae63164c919781e03be28d7c5"
+    }
+  ],
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/record.json.gz",
+      "bytes": 56738,
+      "sha256": "5fb7204a791e26e2a836e07962e6b4e09312c1059bc59f969fc8f1499f5b7baf",
+      "storedSha256": "530f4a5a428e3094d887cd02c93214ae47214dbd775e20f244432c3542fe2ed4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/stdout.log.gz",
+      "bytes": 9070,
+      "sha256": "6791375c801a5c66d0ea3d7aa37b1972693278f80d08225684e574b6cc57cf83",
+      "storedSha256": "2ae6afbbf7f3b86f1b3d81dc619aca0dfdec3c49111b6bfa15190a48febf3cb5",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/process.json.gz",
+      "bytes": 212,
+      "sha256": "ce365fa15343bb79c6ccf0d0915f0a2d19ecda0fa48dd3ee965831f9b2fba509",
+      "storedSha256": "56157a094ba873849a78a465fd95cc3114d2278f858452763bff48ba8ab67800",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/17329db678313999b77ef53660d7ffb8291bcff8-g2-e02-frontend.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/sentinel.json.gz",
+      "bytes": 373,
+      "sha256": "827763a99f4f483a5a6a1fc4aa22bdb737364076eb89e5e6a3e84c08c71a871e",
+      "storedSha256": "474f09162c1af8ce20e68487bfb83f55db8a8a02e5f14502d4f72550e670778e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/source-binding-before.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/0/source-binding-before.json.gz",
+      "bytes": 134188,
+      "sha256": "de31877260d5ecdbe96dccd5f31a4576093e523aa24882fcc3e43fcc7b368271",
+      "storedSha256": "980f392b29dde556883c4af4d80f164ba0af3d8a4f260cf8226702ba4f090e77",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/record.json.gz",
+      "bytes": 56875,
+      "sha256": "d5c8adef1021a91adc5350cb50b45168cc9b23eae63164c919781e03be28d7c5",
+      "storedSha256": "85f18d903db7d1c2e4e84493fa223f75bfb17f189aa1a20e7a0164d93edfb479",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/stdout.log.gz",
+      "bytes": 367,
+      "sha256": "b9ad83ad94c9eecf3261c546e6c2c0286472fbf889c0c2edd527fcbb5566f83e",
+      "storedSha256": "c1d3fe301b0bc2dcc80e7598b30650556f0ad190221c79dcb3fd03e83d430abb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/process.json.gz",
+      "bytes": 257,
+      "sha256": "ac7d2b622d09460346ac4d777ab42d47ea8d8517d3b653fed4e02b613ec6faa0",
+      "storedSha256": "23faa95b08418d45742098d874034464e112ce60e62b46ab665810bda23141e5",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/17329db678313999b77ef53660d7ffb8291bcff8-g2-e02-catalog.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/sentinel.json.gz",
+      "bytes": 370,
+      "sha256": "1ecf4f8e7f6c9829497fd57e87081fd0afab74550d2782b41303a2b46331cbc3",
+      "storedSha256": "72b44e645548566f9b4e83517316b7a815411882c380b3724e42de4353e424d2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/source-binding-before.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/1/source-binding-before.json.gz",
+      "bytes": 134188,
+      "sha256": "de31877260d5ecdbe96dccd5f31a4576093e523aa24882fcc3e43fcc7b368271",
+      "storedSha256": "980f392b29dde556883c4af4d80f164ba0af3d8a4f260cf8226702ba4f090e77",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-e02-preparation-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/first-preparation-helper.py.gz",
+      "bytes": 5916,
+      "sha256": "a8064f721f275fe7de0416f6d1f58ca5ee8003792afd759cefcb958421bf7af2",
+      "storedSha256": "a3dcbe82542458ef9201c6644bb2e47cad20e6ca269ae76e427d8648a8460e30",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-freeze-e02-first-catalog-stop.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/freeze-helper.py.gz",
+      "bytes": 6319,
+      "sha256": "292772457b4c65e6253e809686ff107f1575bb736d86c7e29ff72f84d0b6b5d0",
+      "storedSha256": "104cb0814e108f8f20610c72266f6d570b9e4c99eed1d383af8a1e8a7e7a9b5e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/fresh-dist-manifest.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017-files/fresh-dist-manifest.json.gz",
+      "bytes": 21659,
+      "sha256": "04b0b2933d33705c7e57e871e1ed416c085ed5d3bba4f3fd6d033e72a92847b0",
+      "storedSha256": "b2475fbadfba60a182145483ba0b4f26a875538e5ac35cc6523f5c713dd5c69c",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "rawChains": 13,
+  "frontendDistFiles": 113,
+  "nativeTestsExecuted": 0,
+  "managedBuild": "NOT_STARTED_CATALOG_LOAD_FAILED",
+  "fullPlan": "NOT_STARTED",
+  "remainingPlan": "NOT_STARTED",
+  "literalError": "Read-TestCategoryCatalog: /workspace/The-Book-of-Eternity-Reborn-1558/scripts/test-csharp.ps1:57\nLine |\n  57 |  \u2026  $catalog = Read-TestCategoryCatalog -Path (Join-Path $repoRoot 'test \u2026\n     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | The property 'id' cannot be found on this object. Verify that the\n     | property exists.\n",
+  "source277AndPriorSevenDllStable": true,
+  "namespaceContinuous": true,
+  "nativeProcessesSettled": true,
+  "qualification": "First frontend0/catalog1 before managed build/discovery. Independent causal qualification pending; preserve no retry. No actual GREEN/producer/browser or task completion.",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime\nR=Path('/workspace/The-Book-of-Eternity-Reborn-1558');F=R/'specs/1558-remove-daren-campaign';REC=F/'recovery';source='17329db678313999b77ef53660d7ffb8291bcff8';paths=[Path('/tmp/gm1558-implementation-tools/gm1558-g2-e02-frontend-first-17329db6-20261017t1143z/record.json'),Path('/tmp/gm1558-implementation-tools/gm1558-g2-e02-catalog-first-17329db6-20261017t1144z/record.json')];commands=[json.loads(p.read_text())for p in paths]\ndef h(b):return hashlib.sha256(b).hexdigest()\nassert [j['nativeExit']for j in commands]==[0,1]and all(j['sourceHead']==source and j['nativeProcessSettled']and not j['resultDirectories']and j['binaryBefore']==j['binaryAfter']and j['ownedPrefixesBefore']==j['ownedPrefixesAfter']and not j['statusAfter']for j in commands)\nfolder=REC/'g2-e02-first-catalog-preparation-stop-17329db6-20261017-files';assert not folder.exists();folder.mkdir();rows=[]\ndef freeze(p,name):\n b=p.read_bytes();z=gzip.compress(b,mtime=0);target=folder/(name+'.gz');target.parent.mkdir(parents=True,exist_ok=True);assert not target.exists();target.write_bytes(z);assert gzip.decompress(target.read_bytes())==b;rows.append(dict(rawPath=str(p),storedPath=str(target.relative_to(R)),bytes=len(b),sha256=h(b),storedSha256=h(z),compression='gzip mtime0'))\nfor n,(p,j)in enumerate(zip(paths,commands)):\n for q,name in [(p,'record.json'),(Path(j['stdoutPath']),'stdout.log'),(p.parent/'process.json','process.json'),(Path(j['firstLaunchSentinel']),'sentinel.json'),(p.parent/'source-binding-before.json','source-binding-before.json')]:freeze(q,str(n)+'/'+name)\nfreeze(Path('/tmp/gm1558-g2-e02-preparation-run.py'),'first-preparation-helper.py');freeze(Path(__file__),'freeze-helper.py')\nmanifest=paths[0].parent/'fresh-dist-manifest.json';dist=R/'BookOfEternityClient.WebFrontend/dist';actual=[dict(path=str(p.relative_to(dist)),bytes=p.stat().st_size,sha256=h(p.read_bytes()))for p in sorted(dist.rglob('*'))if p.is_file()];assert actual==commands[0]['distAfter']==commands[1]['distBefore']==commands[1]['distAfter'];manifest.write_text(json.dumps(dict(kind='FIRST_E02_FRONTEND_BUILD_NATIVE0_DIST_RAW_ONLY',sourceHead=source,frontendGitTree=commands[0]['frontendGitTree'],files=actual,scope='App/node typechecks and Vite success only; no managed build/test/frontend test adapter/served browser/session proof'),indent=2)+'\\n');freeze(manifest,'fresh-dist-manifest.json')\nfor name,digest in [('gm1558-g2-e02-source-delta-github-17329db6-20261017.json',None),('gm1558-root-recovery-composition-17329db6-20261017.json',None),('gm1558-root-e02-source-readback-17329db6-20261017.json','7a0c951c4b8142457850778d0e43891eeb36962d2bf5e009d7f59815afebbf6e')]:\n p=Path('/tmp')/name;b=p.read_bytes();assert digest is None or h(b)==digest;target=REC/name;assert not target.exists();target.write_bytes(b)\npacket=dict(kind='FIRST_E02_PREPARATION_STOP_NATIVE_RAW_PENDING_CAUSAL_REVIEW',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=source,previousCompiledSource='f07643a8bf611391caffb5bf21afe2ea1b4db88f',commands=[dict(mode=j['mode'],nativeExit=j['nativeExit'],wallSeconds=j['wallSeconds'],argv=j['argv'],recordPath=str(p),recordSha256=h(p.read_bytes()))for p,j in zip(paths,commands)],files=rows,rawChains=len(rows),frontendDistFiles=len(actual),nativeTestsExecuted=0,managedBuild='NOT_STARTED_CATALOG_LOAD_FAILED',fullPlan='NOT_STARTED',remainingPlan='NOT_STARTED',literalError=Path(commands[1]['stdoutPath']).read_text(),source277AndPriorSevenDllStable=True,namespaceContinuous=True,nativeProcessesSettled=True,qualification='First frontend0/catalog1 before managed build/discovery. Independent causal qualification pending; preserve no retry. No actual GREEN/producer/browser or task completion.',helperText=Path(__file__).read_text());pkt=REC/'g2-e02-first-catalog-preparation-stop-17329db6-20261017.json';pkt.write_text(json.dumps(packet,indent=2)+'\\n')\nstatus='FIRST E02 preparation STOP: freshfrontend0/2.935s then catalog1/0.665s during Read-TestCategoryCatalog property id lookup before compiler/discovery;0tests, full+remainingPlan NOT_STARTED. Exact13raw/dist/helperchains frozen; priorf076sevenDLL/source277/namespaces unchanged. Independent causal review pending; no correction/retry/actual/RootChromium/task completion.'\nfor name,marker in [('plan.md','**Current status**:'),('spec.md','**Status**:'),('tasks.md','**Current phase**:')]:\n p=F/name;s=p.read_text();a=s.index(marker);b=s.index('\\n',a);p.write_text(s[:a]+marker+' '+status+s[b:])\np=F/'g2-implementation-source-packet-20261017.json';j=json.loads(p.read_text());j['status']=status;j['e02FirstPreparationOutcome']=dict(packet=str(pkt.relative_to(F)),frontendNativeExit=0,catalogNativeExit=1,managedBuild='NOT_STARTED',fullPlan='NOT_STARTED',remainingPlan='NOT_STARTED',nativeTestsExecuted=0,causalVerdict='PENDING',allRuntime='HELD_NO_RETRY');p.write_text(json.dumps(j,indent=2)+'\\n')\np=F/'plan.md';s=p.read_text();s+='''\\n## FIRST E02 preparation STOP before compiler\\n\\n[Exact FIRST preparation packet](recovery/g2-e02-first-catalog-preparation-stop-17329db6-20261017.json) retains13native/stdout/process/sentinel/sourcebinding/helper/currentfreshdist chains. Fresh `npm run build` returned0/2.935s; following canonical `-ValidateCatalog` returned1/0.664717s while loading catalog (`property id cannot be found`), before managed build/discovery. Full and remaining PlanOnly were NOT_STARTED;0tests. Both native processes settled; priorf076sevenDLLs,277sourcepins and namespaces unchanged. Frontend app/node compiler+Vite success is not frontend test-adapter/interactive browser proof.\\n\\n[17329 source delta](recovery/gm1558-g2-e02-source-delta-github-17329db6-20261017.json), [113-delta composition](recovery/gm1558-root-recovery-composition-17329db6-20261017.json) and [Root source readback](recovery/gm1558-root-e02-source-readback-17329db6-20261017.json) are retained as source observations, not catalog/preparation acceptance. Publish/recover this FIRST outcome before causal review/correction; no retry, further preparation, actual, RootChromium or task completion. Earlier original555/f076STOP, G1baseline and all first failures remain separate immutable history.\\n''';p.write_text(s);print('FIRST_E02_PREPSTOP_FROZEN',len(rows),'chains',len(actual),'distfiles0tests')\n"
+}

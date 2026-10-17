@@ -1,0 +1,20 @@
+{
+  "kind": "ROOT_E02_CONCRETE_SOURCE_SCOPE_AND_REMOTE_RECOVERY_CHECK_NO_RUNTIME",
+  "utc": "2026-10-17T11:42:34.434339+00:00",
+  "source": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "base": "386ca3c206d4ea7564374470acdb5624e848b269",
+  "twoJSONNullsInverseToExactParent": true,
+  "ReactFact": "Rootreadfull26linediff; singleFact sourceacquisition/corewrapper/hooksimport/delegationchecks; sevenexistinggetters/assertions preservedonactualmodule. No production/DTO/serializer/generatorchanges.",
+  "catalog": "815oldownersidentical; affectedguards splitsonly2methods into1newowner; nootherownershipchange",
+  "fullSelectionOwners": 18,
+  "remainingSelectionOwners": 17,
+  "remainingExclusionExactlyRetainedFiveOwner": true,
+  "sourcePinCount": 277,
+  "sourcePinsDigest": "b9264d21b9f5592275efd672651188d58dc4f0ac40e484ad2f2920d6080e8fd9",
+  "ledgerPointerExact": true,
+  "GitHubRecovery": "/tmp/gm1558-g2-e02-source-delta-github-17329db6-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-17329db6-20261017.json",
+  "deltaFiles": 23,
+  "deltaAllChangedPaths": 19,
+  "actual": "UNRUN; authorized4phasezeroexecpreponly; targetedSourcePREPnext"
+}
