@@ -1,0 +1,59 @@
+{
+  "kind": "ROOT_ACCEPTED_BOUNDED_PD3D_PRODUCT_SOURCE_AND_SEPARATE_ORDINARY52_PROTECTED2_EVIDENCE",
+  "carrier": "60400613151cfd3b4b542173f3e7d9b833a0a085",
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "actualOrdinary52": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+  "acceptedExactArtifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.md",
+      "bytes": 3598,
+      "sha256": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.json",
+      "bytes": 5482,
+      "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-check-20261017.json",
+      "bytes": 67675,
+      "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+      "bytes": 2568,
+      "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+      "bytes": 5601,
+      "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+      "bytes": 24128,
+      "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+      "bytes": 3536,
+      "sha256": "e88c7e1d95a48dc78b0b1b81e937377531b6b7c59f0b1418e40ed264a40eebee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+      "bytes": 8099,
+      "sha256": "1f91c863a67043d2aa579fa9ee42926a121d51bafe847c646e50346388c5a82d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+      "bytes": 92183,
+      "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48"
+    }
+  ],
+  "decision": "Bounded ordinary kernels and actual ordinary consumers qualified:52PASS/29methods, plus separately accepted protected2PASS/2methods on same compiled0f. No single54nativeclaim. No material blocker.",
+  "lowFindingDisposition": "NI-EVIDENCE-L01: writer authorized normal final metadata-only phase reconciliation, preserve initialRED/NI-S01/WorldFence and immutable reports/raw. Root checks final metadata/readback; no new runtime/rebuild.",
+  "finalCheckpointRequirements": "Save exact reports/support/Rootacceptance, current plan/tasks/ledger67pins and recovery604, commit/push nonforce; verify exact remote/clean/mainunchanged and complete newGitHubdelta. No implementation/test/selection/controller/raw/binary change after compiled0f.",
+  "proofLimits": "35new strict unique physicallyabsentroots; legacy13unit+3SPnamespace-only; source1N/A. Deleted fixture payloads/mtimes only reached source-boundassertions, no invented separate frozenbody.",
+  "held": "FullPd3d/HOT-B/history/F1/M3/T197/A3/oldWorld/platformWindows/ZIPCI/newQTE/main/merge/force/delete/issues/credentials/security.",
+  "utc": "2026-10-17T17:20:48.541104+00:00"
+}

@@ -1,0 +1,146 @@
+{
+  "kind": "INDEPENDENT_FINAL_FIRST_PRODUCT_ORDINARY52_EVIDENCE",
+  "createdUtc": "2026-10-17T17:20:09.970270+00:00",
+  "verdict": "ACCEPT_BOUNDED_ORDINARY52_EVIDENCE_WITH_SEPARATELY_ACCEPTED_PROTECTED_LATE2",
+  "materialFindings": [],
+  "lowFindings": [
+    {
+      "id": "NI-EVIDENCE-L01",
+      "severity": "LOW",
+      "scope": "Derived phase metadata only; no source/runtime defect",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-packet-20261017.json",
+      "fields": [
+        "futureProductionQualification.ordinarySelection",
+        "futureProductionQualification.protectedLate2",
+        "futureChecks.remaining",
+        "counts.discovery",
+        "counts.currentActuals"
+      ],
+      "fact": "Old UNRUN/held/ZEROpost-product/currentRED descriptions coexist with accurate firstOrdinary52 and counts.postProductActuals.",
+      "requiredDisposition": "In normal final metadata checkpoint, mark old PREP/RED descriptions explicitly historical and project current ordinary52+separately accepted protected2 accurately; preserve original raw/verdicts. No rerun/rebuild or new evidence gate."
+    }
+  ],
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+  "frozenCarrier": "60400613151cfd3b4b542173f3e7d9b833a0a085",
+  "sourceVerdict": "Retain accepted product SOURCE/FIXTURE/SELECTION/PREP e381/176f; no new source review or change inferred.",
+  "evidenceVerdict": "QUALIFIED_FIRST_52_PASS: exact29 methods/52 case identities across5 completed descriptors; source-bound prerequisites and final oracles reached.",
+  "native": {
+    "exitCode": 0,
+    "wallSeconds": 17.11551696099923,
+    "descriptors": 5,
+    "plannedCases": 52,
+    "executedCases": 52,
+    "passed": 52,
+    "failed": 0,
+    "uniqueMethods": 29,
+    "literalTheoryRows": 33,
+    "factRows": 19,
+    "underfilled": [],
+    "duplicates": [],
+    "timedOut": false,
+    "runnerCleanupComplete": true
+  },
+  "reachedOracles": [
+    {
+      "scope": "Boundary2",
+      "evidence": "Both real public validators return no issues and both seed byte assertions pass; prefix and tail methods exist and actual owner source orders prefix < unchanged timestamp < tail. These assertions are now reached, unlike the earlier missing-prefix RED."
+    },
+    {
+      "scope": "Source parity1",
+      "evidence": "Native Fact passed exact canonical four-stage text and whole-original-A inverse SHA2566a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936, with each adapter appearing once."
+    },
+    {
+      "scope": "Ordinary regression33",
+      "evidence": "Passed full ordered diagnostic fields/case-sensitive lookup/enumeration; root/null/wrong-kind policies; current read sequence and IOException/JsonException boundaries; useful blank/null timestamp fallback and second-call no-rewrite; valid/malformed UTF8/UTF16 no-write bytes+mtime; Changed real public write/BOM/single-pass; actual write-cut and owning-close-cut; read-only narrative projection refusal."
+    },
+    {
+      "scope": "NI-S01 owning close1, included in33",
+      "evidence": "Public owner returned while overall operation did not; MainOperationContinuationException<int> retained17/Completed callback outcome, exact inner exception and SessionFinalizationFailure data; one close and matching afterimage did not coerce success."
+    },
+    {
+      "scope": "Existing unit13 and SP3",
+      "evidence": "Actual direct ordinary validators passed existing narrative/prose/normalization assertions and original-context changed/no-write/stale-warning/timestamp-severity assertions. No spiritual family qualification inferred."
+    }
+  ],
+  "proofBindings": {
+    "record": {
+      "path": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-ordinary52-first-31fe14fa-20261017/record.json",
+      "bytes": 27288,
+      "sha256": "fecb2938c1dd63c82eb9ffa302ceaced5528ba6faf4845afa87faf7511588094"
+    },
+    "archive": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/archive.json",
+      "bytes": 8343,
+      "sha256": "0d21b8b01b7afe2c9be6807e730cebe807c2e83bd43b01185a66a815fb5ac426"
+    },
+    "frozenRawChains": 13,
+    "sourceContextSha256": "fb05d7fdc839b9ecdf7d77b367f440655d9196f17890b63eaaf26baf3d30caf2",
+    "sourcePins": 67,
+    "freshManagedBinaryCopies": 9,
+    "compiledToCurrentMetadataOnly": true,
+    "newGitHub": {
+      "path": "/tmp/t179pd3d-first-ordinary52-delta-github-60400613-20261017.json",
+      "bytes": 21002,
+      "sha256": "2b9e8fa2fe571f9bc043d6d61113f10c81e4d87c06fb1e8b58ff9238ca96d9fa",
+      "files": 26,
+      "changedPaths": 22,
+      "allBytesBlobModeGitShowExact": true
+    }
+  },
+  "cleanup": {
+    "newStrictUniqueRemovedAndPhysicallyAbsent": 35,
+    "legacyUnitRowsNamespaceOnly": 13,
+    "spRowsNamespaceOnly": 3,
+    "sourceOnlyRowsNoRoot": 1,
+    "namespacesEmptyBeforeAfter": true,
+    "limit": "No invented legacy/SP per-case roots or strict receipts. Deleted fixture bodies/mtimes are not separately frozen; evidence is the reached source-bound assertions."
+  },
+  "boundedComposition": {
+    "ordinary52": {
+      "actual": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+      "compiled": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "passed": 52,
+      "methods": 29
+    },
+    "separateProtected2": {
+      "actual": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+      "compiled": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "passed": 2,
+      "methods": 2,
+      "acceptedEvidence": {
+        "path": "/tmp/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+        "bytes": 5601,
+        "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+      }
+    },
+    "qualification": "Bounded ordinary52 plus separately accepted protected2 =54 distinct selected PASS across31 methods; separate runs/provenance retained, not a single54-case native command or wider qualification."
+  },
+  "historyRetained": [
+    "NI-PREFLIGHT-01: unchanged held World33 fence with9 pre-existing stale pins; no auto-current bless or old-family replay.",
+    "NI-S01: initial SOURCE_NOT_READY and corrected tests-only source decision retained; current close-fault row now actually PASS.",
+    "Original structural boundary2:0PASS/2FAIL at missing-prefix NotNull after valid public prerequisites; tail/delegation assertions were unreached then. Historical failure is not overwritten by current PASS.",
+    "Accepted minimal-product SOURCE and separate new protected Late2 EVIDENCE remain exact; no repeated old raw/source family audit."
+  ],
+  "remainingActions": [
+    "Root may accept/persist this exact evidence and reconcile only derived phase/task metadata, including NI-EVIDENCE-L01, then verify final remote/recovery checkpoint.",
+    "No additional native run is required by this review. No runtime or implementation authorization is conferred by this report."
+  ],
+  "limits": [
+    "Only shared narrative/interface kernels and real ordinary-A consumers with actual protected committed-joint edge. Not full T179-Pd.3d HOT qualification or full wounds completion.",
+    "No HOT-B/history/M3/T197/A3 re-open, full F1, Windows, platform, ZIP or CI claim.",
+    "No separately frozen deleted fixture payload/mtime bytes; raw proves the exact compiled test assertions passed.",
+    "Legacy13unit+3SP cleanup only by observed empty namespace and runner cleanup; original SP disposal remains best-effort.",
+    "Reviewer performed no repository writes, native tests, build, producer, browser, or runtime replay."
+  ],
+  "retainedSource": {
+    "path": "/tmp/t179pd3d-minimal-product-source-independent-review-20261017.json",
+    "bytes": 5482,
+    "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a"
+  },
+  "support": {
+    "path": "/tmp/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+    "bytes": 92183,
+    "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48"
+  }
+}

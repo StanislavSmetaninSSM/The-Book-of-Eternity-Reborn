@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "FIRST_ORDINARY52_NATIVE0_52PASS_RAW_FROZEN_FINAL_EVIDENCE_PENDING",
+  "status": "BOUNDED_ORDINARY_KERNELS_REAL_CONSUMERS_SOURCE_EVIDENCE_ACCEPTED_FINAL_CARRIER_CHECK_REQUIRED",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1578231,
-      "sha256": "18fdf1b249fe1c7afbad817aea285a5c2325f8a21e9bfb4719bfb7d3534fa1c4",
-      "gitBlob": "802b0d89ab18685cfe10de40fae27cbeb29c9556",
+      "bytes": 1578349,
+      "sha256": "ffd068d1330497756b74f406ff47170ec157bf62068598d777be92fcf3560263",
+      "gitBlob": "04175d57e4ce31186b6d1e9cc91f98eb8415f343",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -551,7 +551,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "b34e55d877cede8afce8b919da804350dabff2231be2cf6804671f033cc1412a"
+    "sha256": "221f252f69cefb3ac06171cc78d165e9014e93af2ce5f4fed6797fc55b3bd613"
   },
   "preflightReferences": [
     {
@@ -630,33 +630,16 @@
     "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
     "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs"
   ],
-  "futureProductFrontier": [
-    "One NarrativeInterfacePolicy partial with four value-only prefix/tail methods.",
-    "Only four adapter segments in original A; inverse full hash preserves timestamp/catches/IO and entire remainder.",
-    "Projector/text/tag/serializer/writer/engine/common timestamp leaf byte unchanged."
-  ],
   "futureChecks": {
-    "first": "Product BOTH/Plan0 and affected SOURCE/PREP accepted on0f/a06. Publish/readback/recover SOURCE decision; Root names FIRST protectedLate2 exact successor. No new preparation/rebuild.",
-    "actual": "FIRST ordinary52 completed native0/exact52PASS; raw13chains frozen for final independent EVIDENCE after publication/recovery. Protected2 separately accepted, no repeat/new native.",
-    "remaining": "Ordinary52 and separateprotected2 require genuine affected post-product execution; retained structural2RED remains historical, not GREEN."
+    "first": "COMPLETE: source WIP/exact recovery, fresh selected BOTH/PlanOnly0 and affected product SOURCE/PREP accepted; no further preparation.",
+    "actual": "COMPLETE_BOUNDED: independently qualified ordinary52 plus separately qualified protected2. Original causalRED2 retained historically, no further native.",
+    "remaining": "No bounded runtime/source work remains. Final metadata carrier publication/exactremote/newcomplete GitHubdelta and Root readback only; fullPd3d/HOT/history/F1/World/Windows/A3 and prior broader gates remain open/held."
   },
   "counts": {
     "categoryOwners": 6,
     "declaredMethods": 31,
     "declaredRows": 54,
-    "discovery": "Current fresh0f00 product selected BOTH/Plan0 confirms6owners6descriptors31methods54planned, ZEROpost-product cases. Ordinary52 and protected2 are distinct scopes; initial catalog unchanged.",
-    "currentActuals": {
-      "executed": 2,
-      "passed": 0,
-      "failed": 2,
-      "distinctOwnersObserved": [
-        "Narrative",
-        "Interface"
-      ],
-      "independentCausalEvidence": "ACCEPTED_STRUCTURAL_RED2_NOT_GREEN",
-      "otherOrdinaryCasesUnrun": 50,
-      "protectedLate2Unrun": 2
-    },
+    "discovery": "Fresh0f BOTH/PlanOnly confirmed6owners6descriptors31methods54planned; ZERO executions during preparation. Subsequent qualified ordinary52 and separate protected2 actuals are currentActuals, not UNRUN.",
     "postProductActuals": {
       "protectedLate2": [
         {
@@ -756,10 +739,76 @@
         "executed": 52,
         "passed": 52,
         "failed": 0,
-        "independentEvidence": "PENDING_FINAL",
+        "independentEvidence": "ACCEPTED_FINAL_e88c/1f91/58b4_ROOTedf1",
         "protected2Excluded": true
       },
       "protectedLate2Evidence": "ACCEPTED_NEW2PASS_SEPARATE_FROM_ORDINARY52"
+    },
+    "historicalTestsOnlyActuals": {
+      "executed": 2,
+      "passed": 0,
+      "failed": 2,
+      "distinctOwnersObserved": [
+        "Narrative",
+        "Interface"
+      ],
+      "independentCausalEvidence": "ACCEPTED_STRUCTURAL_RED2_NOT_GREEN",
+      "otherOrdinaryCasesUnrun": 50,
+      "protectedLate2Unrun": 2,
+      "phase": "Historical FIRST structuralRED2 on unchanged product, not current accepted runtime. Raw2FAIL unchanged."
+    },
+    "currentActuals": {
+      "ordinary52": {
+        "executed": 52,
+        "passed": 52,
+        "failed": 0,
+        "methods": 29,
+        "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+            "bytes": 3536,
+            "sha256": "e88c7e1d95a48dc78b0b1b81e937377531b6b7c59f0b1418e40ed264a40eebee"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+            "bytes": 8099,
+            "sha256": "1f91c863a67043d2aa579fa9ee42926a121d51bafe847c646e50346388c5a82d"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+            "bytes": 92183,
+            "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48"
+          }
+        ]
+      },
+      "separateProtectedLate2": {
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "methods": 2,
+        "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+            "bytes": 2568,
+            "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+            "bytes": 5601,
+            "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+            "bytes": 24128,
+            "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119"
+          }
+        ]
+      },
+      "boundedDistinctCases": 54,
+      "boundedMethods": 31,
+      "scope": "Two separately named/accepted native runs on compiled0f; not one54-case command or full Pd3d acceptance."
     }
   },
   "docsDisposition": "Internal semantics-preserving extraction; no GM-authored or Mortal/afterlife rule/pending/schema/normalizer contract change. Existing projector/text/tag/clock/writers remain byte-identical. No gameplay/docs/example/manifest change intended; reassess only if actual production scope changes.",
@@ -770,7 +819,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "483e3de2102d3da073fbe8715461341932afa3807d7fcf3792aab31730c37231",
+  "sourcePinDigest": "85b3152804122b24616869fc5ae1fb43528893eac82e6ef3b65f5f7eb5a1b1b9",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -1105,20 +1154,20 @@
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-product-first-run.py",
         "bytes": 7269,
         "sha256": "0da9cbbb4845ce3efc6971a2e52a4aeb1c44eeb7b54a1f14c8fb9cac44e39846",
-        "usage": "UNRUN_REQUIRES_ACCEPTED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_ROOT_ACTIVATIONS"
+        "usage": "EXECUTED_ONCE_EACH_SEPARATELY_NAMED_PROTECTED2_AND_ORDINARY52_NO_RETRY"
       },
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-product-first.py",
         "bytes": 1793,
         "sha256": "136d707d1ac5284935b3758adf9ad788ba93f0c680628a0dd4f7e01fc3b66ee3",
-        "usage": "UNRUN_READ_ONLY_FUTURE_ORIGINAL_RAW_ARCHIVE"
+        "usage": "READ_ONLY_FROZE_PROTECTED9_AND_ORDINARY13_ARCHIVES_NO_TEST_EXECUTION"
       }
     ],
-    "scope": "One fresh selected BOTH build+PlanOnly without NoBuild, no catalog replay; exact ordinary52+protected2 union6/31/54. No actual cases; product SOURCE/PREP pending."
+    "scope": "COMPLETED fresh0f selected BOTH build+PlanOnly without NoBuild, no catalog replay; ordinary52+protected2 union6/31/54 planned, ZERO case executions during preparation. ProductSOURCE/PREP and subsequent separately gated actualEVIDENCE are accepted in finalAcceptance."
   },
   "futureProductionQualification": {
-    "ordinarySelection": "Current fresh productPlan confirms5ordinaryowners29methods52cases; post-product actual UNRUN.",
-    "protectedLate2": "Current fresh productPlan confirms exact2 unchanged protected methods/cases, distinct from ordinary52. Actual committed-joint edge and retained a4 source closure proven. Separately named FIRSTLate2 and separate EVIDENCE required before ordinary52 GREEN; all post-product actuals held.",
+    "ordinarySelection": "COMPLETE_BOUNDED: current5ordinaryowners29methods52cases actually PASS and independently EVIDENCE acceptede88c/1f91/58b4.",
+    "protectedLate2": "COMPLETE_SEPARATE: actual committed-joint dependency2methods2cases PASS and separately EVIDENCE accepted95dc/328a/c1b6 before ordinary52. Unchanged fixture provenance retained; final computed raw body absent/digest-inert proof only.",
     "limits": "Concrete actual caller dependency, not DLL/file adjacency; no source-aware HOT adapter/history/fullF1/Windows or wider family claim.",
     "protectedLate2Receipt": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-protected-late2-dependency-b501b2b7-20261017.json",
@@ -1168,7 +1217,8 @@
       "status": "READ_ONLY_FROZE_FIRST_BOUNDARY9_NO_TEST_EXECUTION"
     },
     "actualPhaseDisposition": "SOURCE decision itself had zero actuals; distinct subsequent Root5b13 named execution2 is recorded only under firstBoundaryOutcome.",
-    "scope": "HISTORICAL accepted b501 tests-only/source-boundary eligibility, not current extracted-product acceptance; immutable reports preserved."
+    "scope": "HISTORICAL accepted b501 tests-only/source-boundary eligibility, not current extracted-product acceptance; immutable reports preserved.",
+    "phase": "HISTORICAL b501 tests-only SOURCE gate before structuralRED2; current extracted-product acceptance is finalAcceptance."
   },
   "firstBoundaryOutcome": {
     "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
@@ -1387,7 +1437,8 @@
       "role": "Credited Root literal FIRST raw inspector; no runtime or independent-authority substitution."
     },
     "implementationNotYetActivated": "HISTORICAL conditional decisione982; superseded by separately named Root60b0 activation persisted in productionImplementation. No causal raw/report changed.",
-    "allowedAfterNamedActivation": "Only new four-stage value-only partial and exact four A replacements; timestamp/catch/IO/projectors/writers/engine unchanged. Stable ordinary52 + distinctprotectedLate2 selection futureunion54; fresh BOTH/PlanOnly0/productSOURCE before any actual."
+    "allowedAfterNamedActivation": "Only new four-stage value-only partial and exact four A replacements; timestamp/catch/IO/projectors/writers/engine unchanged. Stable ordinary52 + distinctprotectedLate2 selection futureunion54; fresh BOTH/PlanOnly0/productSOURCE before any actual.",
+    "phase": "HISTORICAL structuralRED2 decision before named minimal product activation; original0PASS2FAIL report/raw unchanged."
   },
   "productionImplementation": {
     "activation": {
@@ -1417,9 +1468,9 @@
       "bytes": 922,
       "sha256": "ffece214f60343b5ffb27955fab16b6bf8ec5c2d81eb8ed8e7cf10c61a792761"
     },
-    "status": "AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; ALL_ACTUALS_UNRUN",
+    "status": "COMPLETE_BOUNDED_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED",
     "scope": "Only exact four frozen A adapter replacements + canonical four value-only stages; timestamp leaves/IO/catch/awaits/remainder byte-exact. No testbody/snapshot/catalog change.",
-    "postProductActualGate": "Named FIRST protectedLate2 then separateEVIDENCE before ordinary52 GREEN; all actuals held",
+    "postProductActualGate": "COMPLETED_IN_ORDER: protectedLate2 FIRST/separateEVIDENCE then ordinary52 FIRST/finalEVIDENCE. No more actual or code authorized.",
     "rootStaticInverse": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-minimal-product-inverse-e9823e84-20261017.json",
       "sha256": "e4143453f6dfc4d13fa477654c70071e642c7b9f7575931162cada58153d3524",
@@ -1599,7 +1650,7 @@
       }
     ],
     "materialBlockers": 0,
-    "scope": "Bounded source/fixture/selection/prep accepted on0f/a06 only; not GREEN/runtime. Root names FIRST protectedLate2 only after decision publication/readback; separate EVIDENCE before ordinary52 release."
+    "scope": "Accepted product SOURCE/PREP on0f/a06 retained; its historical conditional runtime eligibility has since been followed by separately accepted protected2 and ordinary52 EVIDENCE."
   },
   "firstProtectedLate2": {
     "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
@@ -1913,7 +1964,7 @@
       "sha256": "3804e0bd3e4219c42be0e3b431be4567804c333e26a80aa476d054db472de258",
       "scope": "Credited Root read-only new-Late2 raw inspector; retained semantic predicate recovery mapping above, no old runtime/raw replay."
     },
-    "scope": "Exactly new2PASS accepted; no material blocker. Final computed raw body absent, digest/inert equality only. Ordinary52 still unrun pending exact saveddecision/readback and named activation."
+    "scope": "Separate new2PASS acceptance preceded ordinary52; both current scopes now accepted in finalAcceptance. Final computed raw body remains absent, digest/inert equality only."
   },
   "firstOrdinary52": {
     "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
@@ -2145,11 +2196,122 @@
       }
     ],
     "rootInspectorReproducibility": "Exact checkerSource is embedded in the copied Root3b18 raw inspection; Root literal observation is not independent final EVIDENCE.",
-    "independentEvidence": "PENDING final ordinary52 qualification; no more native required/released.",
+    "independentEvidence": "ACCEPTED_FINAL_ORDINARY52_e88c/1f91/58b4_and_ROOTedf1; exact52PASS only, separate protected2 accepted95dc/328a/c1b6.",
     "proofLimits": "Structural/delegation/source-parity/diagnostic-order/NI-D01 encoding+mtime/fault and existing public/SP assertions now executed with PASS. Exact reached source-bound assertions do not invent separate raw post-cleanup payload bodies. Protected2 separately accepted, excluded from52. No World/HOT/history/fullF1/Windows claim."
   },
   "productRecorderUsage": {
-    "recorder": "Executed once in separately named protected-late2 mode and once in ordinary52 mode; no repeat of either invocation.",
-    "archiver": "Read-only froze protected9chains and ordinary13chains; not a test runner or single-call claim."
-  }
+    "preparation": "One fresh selected BOTH+PlanOnly0 on0f, native0/91.202518280s; no test cases.",
+    "recorder": "One named protected-late2 invocation122.811648773s/2PASS and one named ordinary52 invocation17.115516961s/52PASS; no retries.",
+    "archiver": "Read-only froze prep10chains and actual protected9/ordinary13 with distinct archive tools; actual archiver invoked for both raw archives, not a single-call claim."
+  },
+  "finalAcceptance": {
+    "status": "BOUNDED_ORDINARY_KERNELS_REAL_CONSUMERS_SOURCE_EVIDENCE_ACCEPTED_FINAL_CARRIER_CHECK_REQUIRED",
+    "scope": "COMPLETE bounded ordinary-A four-stage shared narrative/interface kernels and real ordinary/sealed consumers only. No full Pd3d/HOT/history/F1/World/Windows/A3 completion.",
+    "ordinary52": {
+      "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+      "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "methods": 29,
+      "cases": 52,
+      "passed": 52,
+      "evidence": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+          "bytes": 3536,
+          "sha256": "e88c7e1d95a48dc78b0b1b81e937377531b6b7c59f0b1418e40ed264a40eebee"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+          "bytes": 8099,
+          "sha256": "1f91c863a67043d2aa579fa9ee42926a121d51bafe847c646e50346388c5a82d"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+          "bytes": 92183,
+          "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48"
+        }
+      ]
+    },
+    "protectedLate2": {
+      "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+      "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "methods": 2,
+      "cases": 2,
+      "passed": 2,
+      "evidence": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+          "bytes": 2568,
+          "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+          "bytes": 5601,
+          "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+          "bytes": 24128,
+          "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119"
+        }
+      ],
+      "limit": "Final computed raw body absent; digest/inert equality only."
+    },
+    "boundedUnion": {
+      "distinctCases": 54,
+      "methods": 31,
+      "qualification": "52 ordinary + separately accepted protected2; two separately named native runs, not one54-case command."
+    },
+    "sourceEvidence": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.md",
+        "bytes": 3598,
+        "sha256": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.json",
+        "bytes": 5482,
+        "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-check-20261017.json",
+        "bytes": 67675,
+        "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d"
+      }
+    ],
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-final-bounded-evidence-acceptance-60400613-20261017.json",
+        "bytes": 3766,
+        "sha256": "edf1b12165c3189b526bd010d8fd05e17f20eb22ed92833804f9400231ff26d9"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-delta-github-60400613-20261017.json",
+        "bytes": 21002,
+        "sha256": "2b9e8fa2fe571f9bc043d6d61113f10c81e4d87c06fb1e8b58ff9238ca96d9fa"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-60400613-20261017.json",
+        "bytes": 16194,
+        "sha256": "0c2db70afd5978753f61986070e23a6398ac66cd0b30c0b299e16b1bada30d0b"
+      }
+    ],
+    "materialBlockers": 0,
+    "lowFindingDisposition": "NI-EVIDENCE-L01 CLOSED in derived current/historical phase labels only; immutable reports/raw unchanged.",
+    "cleanupProof": "35ordinary new strict unique physicallyabsent roots plus2 separate protected strict roots. Existing13unit+3SP namespace-only; source1 no root. Deleted bodies/mtimes only reached compiled assertions, no separately frozen afterimages.",
+    "finalPersistence": "Technical bounded source/EVIDENCE accepted. This final carrier still requires nonforce publication/exactremote/complete newGitHubdelta and Root final readback; no claim that those future gates have already passed.",
+    "holds": "FullPd3d/HOT-B/history/F1/S/B/M3/T197/A3/oldWorld/platformWindows/ZIPCI/newQTE/main/merge/issueclose remain held; no further runtime released."
+  },
+  "historicalProductionFrontier": [
+    "One NarrativeInterfacePolicy partial with four value-only prefix/tail methods.",
+    "Only four adapter segments in original A; inverse full hash preserves timestamp/catches/IO and entire remainder.",
+    "Projector/text/tag/serializer/writer/engine/common timestamp leaf byte unchanged."
+  ],
+  "futureProductFrontier": [],
+  "metadataCorrections": [
+    {
+      "id": "NI-EVIDENCE-L01",
+      "status": "CLOSED_DERIVED_PHASE_LABELS_ONLY",
+      "scope": "Current actuals ordinary52+separateprotected2; old tests-onlyRED/zero-executionPREP explicitly historical. No raw/report/source/test/selection/controller/binary edit or native replay."
+    }
+  ]
 }
