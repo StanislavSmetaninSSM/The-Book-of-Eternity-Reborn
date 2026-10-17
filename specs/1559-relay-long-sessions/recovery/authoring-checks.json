@@ -1,0 +1,75 @@
+{
+  "kind": "AUTHORING_METADATA_CHECKS_NOT_PRODUCT_TEST_OR_RUNTIME",
+  "utc": "2026-10-17T12:41:24.635662+00:00",
+  "firstSetupAttempt": {
+    "command": "pwsh -NoLogo -NoProfile -File .specify/scripts/powershell/setup-plan.ps1 -Json",
+    "nativeExitCode": 127,
+    "stdoutOrStderr": "/bin/bash: line 1: pwsh: command not found",
+    "classification": "AUTHORING_PATH_PREREQUISITE; PowerShell/script body was not invoked; not compiler/test/PREP or causal RED"
+  },
+  "resolution": "source /workspace/.onboarding/activate.sh; existing installed tools only; no installation/settings changes",
+  "metadataWorkflowAfterActivation": {
+    "setup-plan.ps1 -Json": {
+      "nativeExitCode": 0,
+      "existingPlanPreserved": true
+    },
+    "setup-tasks.ps1 -Json": {
+      "nativeExitCode": 0,
+      "feature": "specs/1559-relay-long-sessions"
+    },
+    "check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks": {
+      "nativeExitCode": 0,
+      "feature": "specs/1559-relay-long-sessions"
+    }
+  },
+  "equivalentReadOnlySpecKitAnalysis": {
+    "functionalRequirements": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "FR-010",
+      "FR-011",
+      "FR-012"
+    ],
+    "successCriteria": [
+      "SC-001",
+      "SC-002",
+      "SC-003",
+      "SC-004",
+      "SC-005",
+      "SC-006"
+    ],
+    "uniqueTasks": [
+      "T001",
+      "T002",
+      "T003",
+      "T004",
+      "T005",
+      "T006",
+      "T007",
+      "T008",
+      "T009",
+      "T010",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T017",
+      "T018"
+    ],
+    "allTasksUnchecked": true,
+    "coverage": "FR001\u2013012/SC001\u2013006 mapped by task references and plan verification table; no uncovered requirement found",
+    "constitution": "2.1.0; no amendment or conflict required",
+    "architectureDecision": "PENDING independent review, not self-accepted",
+    "scope": "One spec/plan/tasks plus audit/pins; no duplicate implementation/design tree",
+    "nativeTestsBuildsDependenciesOrRelayRuns": 0
+  }
+}

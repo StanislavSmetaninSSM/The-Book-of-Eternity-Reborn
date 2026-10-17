@@ -1,0 +1,1094 @@
+{
+  "kind": "SOURCE_AUDIT_AND_PLANNING_ONLY_NOT_SOURCE_ACCEPTANCE_OR_RUNTIME",
+  "base": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "createdUtc": "2026-10-17T12:40:40.631851+00:00",
+  "pinCount": 78,
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "b2a17d32279219977280fa1e9936c5af2ff30575",
+      "bytes": 11661,
+      "sha256": "8bedaee7fd91504b6cd20dddf08fe03c1b987381cbba9792f45485b70dce45f2"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": ".agents/skills/speckit-specify/SKILL.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "36aff898bba6b26f07b5241623f371a7523c1215",
+      "bytes": 17181,
+      "sha256": "a6574a1f7feaf69c468cee13e5b869e3f47a736abe3ad60eab43c6be7c436477"
+    },
+    {
+      "path": ".agents/skills/speckit-clarify/SKILL.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "0e99c5896f501b8cf98e005b9bcdd692d4cffbdf",
+      "bytes": 17310,
+      "sha256": "2c184d847f288f9308593764c799978c81238ff61e223e66ebbcac5264e3b45c"
+    },
+    {
+      "path": ".agents/skills/speckit-plan/SKILL.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "a2cf680c643792ac2116045dd936738d098318a5",
+      "bytes": 7411,
+      "sha256": "b92428f869e93676fc0b77232dd4fecb610294b68bee677d940a239c43766a3d"
+    },
+    {
+      "path": ".agents/skills/speckit-tasks/SKILL.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "04f13518304820c6e0716ea8d5cf914b3add524d",
+      "bytes": 10463,
+      "sha256": "460eddac0fd7521bed8ac2d5821c98fc0dd4ab3ced4a6d94eb04bc155b021ac9"
+    },
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "77fb9bdbc1139368f5f87169332fa48424bc3ed6",
+      "bytes": 10866,
+      "sha256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6"
+    },
+    {
+      "path": ".specify/templates/spec-template.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "4eca3d616e5abda82d35ab534cb0ef0139282ffc",
+      "bytes": 6157,
+      "sha256": "d7105c302ba1f9c41b50fd3609074886ec3eef27c116bdb3acd3eaa699333b40"
+    },
+    {
+      "path": ".specify/templates/plan-template.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "1b8c0f8cc0c616a68167f228b74973c5da76a71c",
+      "bytes": 5176,
+      "sha256": "9e30f2f4f60da82326844fe2d0799038f66dbf34ace95f6d69c39672c9706e68"
+    },
+    {
+      "path": ".specify/templates/tasks-template.md",
+      "role": "governance",
+      "mode": "100644",
+      "gitBlob": "720e57f32685c434297008c3aca4818bb18ddb7a",
+      "bytes": 10542,
+      "sha256": "fc061a22f6b52a46e3e12e5d006110e5cfda935824b4eb69b1dac9fbc158435e"
+    },
+    {
+      "path": "tools/gm-relay/relay_cli.py",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "27cca4e6e2627cece5696bcfaf47e8ae0712c5ff",
+      "bytes": 9599,
+      "sha256": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606"
+    },
+    {
+      "path": "tools/gm-relay/relay_contract.py",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "f4185b15104829dd2f6af42a8547c8ef92ee0d94",
+      "bytes": 9311,
+      "sha256": "9d233029aba0777b279b32e2fc0ca531f6b0f11f360090a1b8a9ed8deb9913ba"
+    },
+    {
+      "path": "tools/gm-relay/relay_worker.py",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "9e5111c55b59644e7ae4cae587b014da6ed7a2c0",
+      "bytes": 2133,
+      "sha256": "0b3d570d228281060c2586bf4a258ffea74f4f2e25a5a0547d25566f95ed4870"
+    },
+    {
+      "path": "tools/gm-relay/relay_platform.py",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "1f426dc3208052cad4188dfe3c8e27199d73714d",
+      "bytes": 8320,
+      "sha256": "3090305caa50c9458d1dedc4831f073f367883913336be614f2e1aaae50eb124"
+    },
+    {
+      "path": "tools/gm-relay/relay-apply-response.ps1",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "835eb772fd61937e0df87d88209b0af4b275e006",
+      "bytes": 2353,
+      "sha256": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859"
+    },
+    {
+      "path": "tools/gm-relay/README.md",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "b2206fdab8dcdf46e59a8ae50c395e3c6af227a5",
+      "bytes": 10674,
+      "sha256": "7aeb991a6659f71b754504adc941eba38e10ad5daaf5f78576846c384e51d388"
+    },
+    {
+      "path": "tools/gm-relay/input-profile.json",
+      "role": "primary-relay",
+      "mode": "100644",
+      "gitBlob": "0c2e3c2fc6dc165dcb13f7381700e7ee4ac98ab7",
+      "bytes": 183,
+      "sha256": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7"
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "bytes": 91410,
+      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "a42082ae86d2f1773d157d734471ba1cec7209c7",
+      "bytes": 20668,
+      "sha256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "5f353743b0bf5a9937654fa961a64dd616b24bcc",
+      "bytes": 8337,
+      "sha256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "394edc5ff99ffa30d4d7f6d363d005b7395bf38d",
+      "bytes": 6039,
+      "sha256": "9a4b02645433732c059f1a5ffb9329827999a53f39fff56cd7b577437ae97b66"
+    },
+    {
+      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "664795caf6a400235a65fb62636f9664e7310605",
+      "bytes": 4389,
+      "sha256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c"
+    },
+    {
+      "path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "2e733e167b0a979c3548e3e6cb8907e9881f6125",
+      "bytes": 10650,
+      "sha256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    {
+      "path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "be0ae365a1e0b9f685e998864774da467343c0ff",
+      "bytes": 8385,
+      "sha256": "3ca0e90475c150efb5e5d92aaf8c5955def8683b3eba9d3d9a4ba4fcc6eaffc1"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "87a0e0f8a43b5e3b7af6d898c4209a86b626cf97",
+      "bytes": 406653,
+      "sha256": "47ca6f0a278ec0265457a74a738e1b4ced4a62ab28a4b371d8a30ae31e55082d"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "cf04a81c0de629cd345ae0a5956076f12c3db648",
+      "bytes": 42854,
+      "sha256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "role": "prompt-authority-and-retention",
+      "mode": "100644",
+      "gitBlob": "fa5345ff9a13726d955dc0a1b48377613e05db7b",
+      "bytes": 2895,
+      "sha256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "1d935b485cc252904be6ce23b197c65d1b56cd72",
+      "bytes": 121313,
+      "sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "bf8a7a74001461c28e4bd86f7750152c8a14b7b1",
+      "bytes": 14265,
+      "sha256": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "a175c87e3d3fd71144c100c7afcb6c9a473c0653",
+      "bytes": 25591,
+      "sha256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "1b0b9ba1ebe194c8d7bfb08f8f035d185c936dfd",
+      "bytes": 20988,
+      "sha256": "b3b0ec413b54e217cd8cc31bf94e1caf7963761dc13c347ecaae5f9bd7de6233"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
+      "bytes": 2993,
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "64d8caddb198b86e7a4d43dd1b2540d2606c34b8",
+      "bytes": 5624,
+      "sha256": "558999c2b6ca8da75e9518b4ef70a73674a251d4ba3933fe2be6751ef2e3593f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "bytes": 23072,
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "6ce52bc21ed560d48992153f2a9a778c702b620f",
+      "bytes": 18221,
+      "sha256": "d84bb86420aafd0bee2184fb64b465959ff8958249944953b046a081ae95479f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "e934fbca58256b1d0ebb57416450978ff644fe48",
+      "bytes": 3674,
+      "sha256": "7a857ec50550365f6576b8e2ccc056e662c87622e1a32f652952760761d3e753"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "3e5c3cbd48ca21d3271bb42109dd8b8d8be7989e",
+      "bytes": 35867,
+      "sha256": "739ad506b373871ed91cc2be7ec9098429129b0ead8e181da3bb9b80e8005143"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "role": "existing-helper-publication-dependency",
+      "mode": "100644",
+      "gitBlob": "cd6ce2bbca439845e0c39e9298d72c773cdfaa3b",
+      "bytes": 8177,
+      "sha256": "0a3c3fb2af6c0749bef1089b788b8227b45877337804abec695de2523a139ce1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayReusableTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "8c328bfce36ebcd20b0864e128b25580f3e80dd1",
+      "bytes": 2021,
+      "sha256": "3d81e6c272e3ed215f18038b7511a3505f66cee9e8c7f80f6f8b3e9407432eab"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayTransportTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "2e33d08fdf4f8572b5b5b26ccfbff647cd372ea7",
+      "bytes": 2874,
+      "sha256": "cb23d753f6386f0ee4d4fd976ac3fd319e73c248a16ecf6e47b79cce4dac821e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayRepairTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "a6f06714366d2ad36475d2d849c9fc7432dfcde7",
+      "bytes": 1922,
+      "sha256": "eec9dff7e313249350d382d524bbad6fd0e900efb15c071e805665b95804d76e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayWindowsTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "03ac5056c2713b12b88e0f1718b527c60ce02705",
+      "bytes": 12265,
+      "sha256": "22d02b8073d286f85d708cab737d71a0e301369853b4f8c008f39d6248cc573f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayAcceptanceTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "f85442b6c48e1de57ddc13511239924bb23a2f02",
+      "bytes": 1005,
+      "sha256": "15d1c2fd949bf0279fc746f224bd2c32b3fcfd448ce7fd76e149c01e5c512b41"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "00fc9cb0411591a36a79bf015ab9cfac00c1d67e",
+      "bytes": 24832,
+      "sha256": "ba1320a2d2267e278a86d04b5e89172246be03934813f62597a44be82217e6f7"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "c4cadcc09489012e5e2a65c626862aabc2e7af89",
+      "bytes": 23789,
+      "sha256": "2453aa7670ee885052c318361ac7f794835bd4bed2c26c3082770d891381a980"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "8dd741d3c0c2deda022c930de70f9e8aa398c527",
+      "bytes": 11599,
+      "sha256": "a04b96fa53ad983f0277ee60dc7101214e5a8c926e0b87dae042bcf22673b028"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmTurnHelperCurrentTests.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "c3e2abe5b0d39f51af132e72f24fc83e82119be0",
+      "bytes": 2221,
+      "sha256": "de3c3e326b89d8d624a0213041e593aef90adb1c21a66fc8f03c6050a2787ec4"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "c3d0a56432ff30c4f68ad99b56bf26c6d3f60782",
+      "bytes": 20573,
+      "sha256": "506a5649e099d98733f1e27acad8dd51fe332fbce8301dc6a3f82d9cb22f3c1c"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "cb1e6a1e9069be0e5dfa1c72a06087dfe680d4cc",
+      "bytes": 7453,
+      "sha256": "f23be2bd721853a1f53fcb77ba941585c72aafc93c2886d233a0de82894ce3bd"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-reusable-checks.py",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "b9fa61280ff7419a1f9ca61050a0918a0bc0a952",
+      "bytes": 6334,
+      "sha256": "e6e115e98c3848741c1ba1c6cb0572605d007d8f4cad684effd82af233ce09e6"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-transport-checks.py",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "b0b6308f503647037e174b0ad5c0efeb6474f5d0",
+      "bytes": 8307,
+      "sha256": "e357f27b384d7a5318e49307efbdcffe2a9ee06bb153bf71e76d8de371ab6410"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-repair-checks.py",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "86fd08d7744ef55759591b4103b052eac2944b5d",
+      "bytes": 5623,
+      "sha256": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-windows-checks.py",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "cf77c3ab22b700247004124fc673cb747740171a",
+      "bytes": 7438,
+      "sha256": "42a98c598e6bb867049aa8a0061bf6957a784f0fe42546eed50afe498ae5c4ac"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "4e23dd9fb0cd5708b3c0c37b4d33ccd3c38791f4",
+      "bytes": 374,
+      "sha256": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a"
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "role": "affected-test-fixture-contract",
+      "mode": "100644",
+      "gitBlob": "084f49c37054b1e5ff6db94fb2e2cb69e72f4875",
+      "bytes": 392,
+      "sha256": "1fe960625a0d6bf5198441217fc976ec66aeab1e2da309d149716c42b55aeff8"
+    },
+    {
+      "path": "tests/categories.json",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "16ca51b0423629e8921ce1f7e05d01be1bde84e5",
+      "bytes": 2071690,
+      "sha256": "b709e94237c85b303f86f7c71889dcf32299460293d6f9a6fe227d51827a9e96"
+    },
+    {
+      "path": "tests/selection.json",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "a3ff80366b2f989b9d222f459a57d445017bc270",
+      "bytes": 7824,
+      "sha256": "b4f5b83cd46317c0febbb046ee0f4c5ea2cae6698bc1ce16de01e01d7e366706"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "643dbf5698654c1ae0833c97ad72e2fff12a74c5",
+      "bytes": 29551,
+      "sha256": "45ef04d367a754510a3a04a19c1a278b60f747d1556343b9a4d8cc4db3b39d2f"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "26929cc9346f1f3d08c850f95c6169766a6e6365",
+      "bytes": 21943,
+      "sha256": "a95d25a23a5e43252e6d04b4f6523cf969d3db46c6ba0194490945b5f6132c30"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "a6e72c90bc4297d9d4edffd9938fac60d4f3ea08",
+      "bytes": 17378,
+      "sha256": "2d9829541ec3f2e67150a32ab9186786a56c7cc53578955318cf7249b8688e98"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "16d15edfe146d0dd8b18cfdeafd637a66eb395f1",
+      "bytes": 35987,
+      "sha256": "30d9d5ba048009bedd7be216508a18008e980196c46692592716bd10bf6264c2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "1f618cea59ab5f93f3940e2d8d1e7a312d8e0d7f",
+      "bytes": 20217,
+      "sha256": "8bd0dd62f758b6a39c52c8464330d371c8ef224e0db799a305bb785d366c7035"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.Block5.cs",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "e215784944c47de36f7eaebcd5c1207a2a41d86c",
+      "bytes": 2315,
+      "sha256": "21edd2c707a5ec90a50bfecbd6e2a6176bdee65d4fcb462c4ea71e8b9a25fe4a"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "ce73cf4d532f21cb629c4fc7fae6864791f1448f",
+      "bytes": 79262,
+      "sha256": "6e862f685e6127aa0a400b75461b16ac4e90dc9811f03f4ee12c809bd59e3606"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "96f3c02946a8643c11027299912d44c948498f1a",
+      "bytes": 13826,
+      "sha256": "912ac2c005a01a165904b198045108f2f3729e998bd912b664da09c2fde69933"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "d4594f6b45086b9b40a805cf7a7a718c3658be41",
+      "bytes": 470,
+      "sha256": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryAdapters.ps1",
+      "role": "selection-and-shared-doc-consumer",
+      "mode": "100644",
+      "gitBlob": "b8810e823e0100e417a9c9a044f34bad4d21dfd8",
+      "bytes": 7006,
+      "sha256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/actual-turn-request.json.gz",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "7ad22f46d21a5b5571ce8f09a00d0c7b86eadad1",
+      "bytes": 17935,
+      "sha256": "37c8078fcde5942142fc7aae6054e935f4ec03a656c4e9abfd00b7e8b26e55cb"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/queue__request-1-99eed1e6a4044809a152df7c49fbdf1c__prompt.txt.gz",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "c8ffb0d0472167886d66147a5a10a69828087f40",
+      "bytes": 12550,
+      "sha256": "1a4652e1dfb7bb7e222115c30b240f17f924e778c2cf6089e047253784d50902"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/queue__request-1-99eed1e6a4044809a152df7c49fbdf1c__response.json.gz",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "930814c7755cf7008678438f1d5ece634d528ab8",
+      "bytes": 5341,
+      "sha256": "a8d6403483362da3a2fac8c67e1040c24db3457e022a7b5f57a77ac03fa4b4de"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/qte-story-append-receipt-correction-first-blocker-20261012/live-validation_repair_request.json",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "6a585d7d9435dd886ae87d971f10f82c25a096ca",
+      "bytes": 5476,
+      "sha256": "29a6fb16a5798721861a56a80575573c06e505177038652ce52fae4dccf2c7d1"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c1-actor-contract-fail/state/game_session/game_state/control/validation_repair_request.json.gz",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "525b20b12494f63c48b318d42e05fc2c0cef90e6",
+      "bytes": 5208,
+      "sha256": "b4bf68a83c93327b8e89e73b4f70aa20caf2b32b40f793d582f1265d1789589f"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "ca16bef49c58c33e4768581c90b60fefc6f1d751",
+      "bytes": 73375,
+      "sha256": "e55e0186808b887582f36cd157bc7d69c4ed711833ea4e1b53471a85e8b6f4b0"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "role": "public-measurement-source",
+      "mode": "100644",
+      "gitBlob": "45861a3ca126d4b9f76dd7d2922542caa215de9d",
+      "bytes": 101141,
+      "sha256": "f0db4343161727ec0b62b160bbf178fe828a7e72b94a93c78266ff7580acd1dd"
+    }
+  ],
+  "publicPacketMeasurements": [
+    {
+      "source": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/actual-turn-request.json.gz",
+      "classification": "HISTORICAL_REAL_ACCEPTED_R3_TURN_REQUEST",
+      "rawBytes": 59172,
+      "unicodeScalars": 58675,
+      "utf16CodeUnits": 58675,
+      "lines": 150,
+      "rawSha256": "68f3c93284f67edac6c1dbade5d96b82d3ea35b9d88222442fb1312950f8c1d6",
+      "writeCount": null
+    },
+    {
+      "source": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/queue__request-1-99eed1e6a4044809a152df7c49fbdf1c__prompt.txt.gz",
+      "classification": "HISTORICAL_REAL_ACCEPTED_R3_PROMPT",
+      "rawBytes": 40139,
+      "unicodeScalars": 40117,
+      "utf16CodeUnits": 40117,
+      "lines": 1,
+      "rawSha256": "8b5db25063cd4eb7abe4e97f451ab6424a3b624f41aeb2d6a63d1cc72404cf12",
+      "writeCount": null
+    },
+    {
+      "source": "specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r3/queue__request-1-99eed1e6a4044809a152df7c49fbdf1c__response.json.gz",
+      "classification": "HISTORICAL_REAL_ACCEPTED_R3_RESPONSE",
+      "rawBytes": 16257,
+      "unicodeScalars": 11462,
+      "utf16CodeUnits": 11462,
+      "lines": 121,
+      "rawSha256": "00d1e5f256755b864d2b3e8ea15860252d7eaf3bdedb429cb092df240aa1e7d1",
+      "writeCount": 6
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/qte-story-append-receipt-correction-first-blocker-20261012/live-validation_repair_request.json",
+      "classification": "HISTORICAL_REAL_CLIENT_REPAIR_ARTIFACT_NOT_CURRENT_ACCEPTANCE",
+      "rawBytes": 5476,
+      "unicodeScalars": 4480,
+      "utf16CodeUnits": 4480,
+      "lines": 73,
+      "rawSha256": "29a6fb16a5798721861a56a80575573c06e505177038652ce52fae4dccf2c7d1"
+    },
+    {
+      "source": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c1-actor-contract-fail/state/game_session/game_state/control/validation_repair_request.json.gz",
+      "classification": "HISTORICAL_REAL_CLIENT_REPAIR_ARTIFACT_NOT_CURRENT_ACCEPTANCE",
+      "rawBytes": 15683,
+      "unicodeScalars": 13831,
+      "utf16CodeUnits": 13831,
+      "lines": 156,
+      "rawSha256": "efc8bee97f6cb071b7acf1db9301907c6cf1c49614a8dab7c58ad672f2baf918"
+    },
+    {
+      "source": "Examples/E_CLI_Afterlife_Actor_Profiles.txt",
+      "classification": "CURRENT_DOCUMENTED_JSON_EXAMPLE_NOT_RUNTIME_PACKET",
+      "extraction": "literal json Markdown fence regex then json.loads; not native extractor/validator",
+      "fenceOrdinal": 3,
+      "sourceLine": 265,
+      "rawBytes": 26797,
+      "unicodeScalars": 22202,
+      "utf16CodeUnits": 22202,
+      "lines": 605,
+      "rawSha256": "7c18c67f7d46becd4d02fe827d6be5682a87ce30865421bd5a392538138c3c13"
+    },
+    {
+      "source": "Examples/E_CLI_Wound_Materialization.txt",
+      "classification": "CURRENT_DOCUMENTED_JSON_EXAMPLE_NOT_RUNTIME_PACKET",
+      "extraction": "literal json Markdown fence regex then json.loads; not native extractor/validator",
+      "fenceOrdinal": 3,
+      "sourceLine": 285,
+      "rawBytes": 10972,
+      "unicodeScalars": 10212,
+      "utf16CodeUnits": 10212,
+      "lines": 272,
+      "rawSha256": "b1ed52758604d4b989d5f054f4f1216fc2dec3cab193cce6f2e40e1c971f5693"
+    }
+  ],
+  "existingOwnerCandidates": [
+    {
+      "id": "gm-bridge-prompt-operation",
+      "responsibility": "Actual live-owner bridge prompt operation, immutable identity, profile evidence, manual arbitration and responsive pipe control with controlled streams/screens.",
+      "excludes": "Cold durable delivery, main/native PTY, systemd, production GM/worker Release, real saves and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.*",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-daemon-prompt-delivery",
+      "responsibility": "Typed immutable prompt delivery through real inert PowerShell launcher/daemon/QTE/repair consumers; no ambiguous automatic replay.",
+      "excludes": "Cold durable delivery, main/native PTY, systemd, production GM/worker Release, real saves and unrelated accepted cohorts.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+            "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_StopsWhenClientClosedPendingSnapshotContext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-transport",
+      "responsibility": "T043 controlled real persistent relay PTY immutable paste/submit queue, stale/wrong reply, single execution and close child/I/O before rollback; guardian relay-only budget boundaries",
+      "excludes": "Inert helper payloads only; no live model/game acceptance, OpenCode/network/auth, production systemd/Windows",
+      "changeHints": [
+        "tools/gm-relay",
+        "tests/fixtures/ProductionMain/codex-gm-relay.py",
+        "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+        "tests/fixtures/LinuxHost/host-guardian.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure",
+            "BookOfEternityClient.Tests.GmRelayTransportTests.ActualDriver_RetainsTurnReceiptAndRefusesUnclosedRollback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-view-driver",
+      "responsibility": "Neutral transcript long exact draft bound and directly affected driver current failure/cleanup regressions; no native owner change",
+      "excludes": "No unchanged full terminal cohorts, provider calls, live GM/Windows/systemd",
+      "changeHints": [
+        "BookOfEternityGMBridge/TerminalScreen.cs",
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualNeutralView_LongDaemonDraftIsExactAndBounded",
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_CurrentFailureAndCleanup",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_ReviewPhaseBoundaries"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-repair",
+      "responsibility": "T043 real daemon repair-shaped terminal submit, exact current control authority and original turn correlation, real ordinary GM helper completion and stale repair refusal",
+      "excludes": "No provider/live model/gameplay acceptance, unrelated old transport cohorts, systemd or Windows",
+      "changeHints": [
+        "tools/gm-relay",
+        "tests/fixtures/ProductionMain/codex-gm-relay.py",
+        "tests/fixtures/ProductionMain/relay-apply-response.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayRepairTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-reusable-contract",
+      "responsibility": "T043 shared relay worker exact bytes/request identity, bounded atomic once-only response publication and queue-close/refusal under isolated synthetic data",
+      "excludes": "No model calls, game acceptance, terminal/manager/device integration; local worker/gate is cross-platform",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.Tests/GmRelayReusableTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-reusable-main",
+      "responsibility": "T043 relocated shared relay/worker/fixed real helper through original production Bridge pipe dispatch and original stop/I-O/ACK, success and consumer-error synthetic packets",
+      "excludes": "No genuine new model/gameplay claim, provider/auth, S2/S3 or native Windows",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs",
+        "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-relay-transport",
+          "when": "Shared persistent transport or forwarding path changes"
+        },
+        {
+          "id": "gm-relay-repair",
+          "when": "Shared fixed consumer/helper forwarding changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-native-windows",
+      "responsibility": "Native Windows developer relay Unicode bracketed paste/submit, exact worker bytes, real helper success/error, close child/EOF and original ConPTY Job cleanup; independent-process gate and console restoration; component console streams explicitly prepared, ordinary untouched Bridge separately verified",
+      "excludes": "No Linux/systemd, model requests, gameplay or automatic profile readiness",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.Tests/GmRelayWindowsTests.cs",
+        "tests/fixtures/ProductionMain/relay-windows-checks.py"
+      ],
+      "related": [
+        {
+          "id": "gm-relay-reusable-contract",
+          "when": "Shared worker contract or native gate changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayWindowsTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-current-linux",
+      "responsibility": "F13 exact17 current-role controls (nested-default separately owned): bounded chunks/large UTF8, actual wait cancellation and original closing fence, partial transfer close, publication outcomes, role/path/baseline/parse semantics; owned processes and original-main retirement.",
+      "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+        "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+        "tests/fixtures/GmTurnHelper/current.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-original-contracts-linux",
+      "responsibility": "F13 exact19 original public methods/21 rows (stale-RMW is separately owned): completion/QTE, serialization, mutable/stale read, NPC/Guardian/training, snapshot policy and actual spiritual publication/read witnesses. Original business assertions with genuine bootstrap and owned Linux pwsh/helper execution.",
+      "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient.TestSupport/GmHelperContractScenario.cs",
+        "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "tests/fixtures/GmTurnHelper/contract-bootstrap.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-stale-read-diagnostic-linux",
+      "responsibility": "Original stale read-modify-write refusal and established changed-since-Read-BoeJson diagnostic through the owned dedicated helper.",
+      "excludes": "No broad helper cohort or native Windows/PowerShell5.1 execution.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"
+          ]
+        }
+      ]
+    }
+  ],
+  "existingOwnerNote": "Candidate dependencies only, no execution/discovery/membership total claimed. Narrow selectors/new owners finalized after ARCH and concrete tests-only source review.",
+  "currentSelection": "tests/selection.json is unchanged #1558 historical selection; not accepted for #1559",
+  "sourcePinDigest": "4a8238ea4b4801d502e469087f03e1406096f1fbdc2e4b19ccaa2b484dfa0766",
+  "limitations": [
+    "No new product/test/dependency/build/native execution",
+    "No private/user savedata inspected",
+    "No measured real >1MiB response or >32-write accepted turn; controlled growth must be labelled synthetic",
+    "Historical runtime packets do not establish current gameplay or platform qualification",
+    "Native Windows #1559 acceptance open until its own authorized execution"
+  ],
+  "readMethod": "Exact Git show at baseline; sparse historical measurement blobs read without materializing/full clone. Current source reads were targeted; pins include declared affected consumers/dependencies, not a claim every line is reviewed."
+}

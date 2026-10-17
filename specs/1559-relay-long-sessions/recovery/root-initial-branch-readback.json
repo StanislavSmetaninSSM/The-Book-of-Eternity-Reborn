@@ -1,0 +1,17 @@
+{
+  "kind": "ROOT_NEW_1559_BRANCH_INITIAL_GITHUB_RECOVERY_READBACK",
+  "utc": "2026-10-17T12:33:12.093133+00:00",
+  "branch": "1559-relay-long-sessions-20261017",
+  "sha": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "initialReceipt": "/tmp/gm1559-initial-branch-delta-github-a82b3d84-20261017.json",
+  "initialReceiptSha256": "3fb425e0f6044ca57aaaabdb3e28d25e2e7368edbcd13d023156de81f0dfd597",
+  "newCleanGithubDirectory": "/tmp/gm1559-initial-branch-recovered-a82b3d84-20261017",
+  "governanceFilesByteHashBlobModeGitshowChecked": 4,
+  "changedPaths": 0,
+  "retainedFullSourceBaseComposition": "/tmp/gm1558-root-recovery-composition-a82b3d84-20261017.json",
+  "retainedFullSourceBaseCompositionSha256": "fe1bd39264717d644729e4940f36344aa77ce5908f2d96ae90bf5465bf2f5476",
+  "completeConsecutiveSourceDeltas": 120,
+  "trackedPaths": 56225,
+  "aliasDoesNotAddSourceDeltaCount": true,
+  "verificationLimit": "Fresh scoped initial branch readback plus retained full-base/120complete-delta tree; no new fullclone/build/test/runtime. Audited newly relevant source dependencies require source inventory/recovery binding in candidate."
+}
