@@ -1,0 +1,13 @@
+{
+  "kind": "EXACT_ACTUAL328_SOURCE_CONTEXT_SUPPORT",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1559-lifecycle-source-context-328da15f-20261017.json",
+      "storedPath": "recovery/lifecycle-green47-first-files/actual328-source-context.json.gz",
+      "bytes": 78269,
+      "sha256": "6b6b2e1e524c10b9c42f2709e77943ac9faad13b781f6f8a36982bbafd71a804",
+      "storedBytes": 21284,
+      "storedSha256": "b941007fede0ddd16b36648cc50fe661aa795e6517e931790de1eab54fd587f2"
+    }
+  ]
+}

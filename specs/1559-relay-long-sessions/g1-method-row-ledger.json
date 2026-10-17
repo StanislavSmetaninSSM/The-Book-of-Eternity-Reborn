@@ -460,7 +460,7 @@
     "rawPlanPath": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/test-categories/20261017-132954-317-120302-c7458eed8bb048198fe0ea2d0b8fe68f-categories/plan.json",
     "rawPlanSha256": "d45114f0ed5910b4baa1f7431dadc63047c14b76c90d8cff9d2663b12da854da"
   },
-  "currentGate": "INACTIVE_LIFECYCLE_PRODUCTION_SOURCE_FIXTURE_SELECTION_PREP_ACCEPTED; GREEN47_UNRUN_HELD_PENDING_NAMED_ROOT_ACTIVATION",
+  "currentGate": "INACTIVE_LIFECYCLE_GREEN47_FIRST_NATIVE0_47PASS; FINAL_INDEPENDENT_EVIDENCE_AND_HANDOFF_PENDING; FULL_RELAY_DEFERRED",
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
     "actualSource": "360b3a39f725f391e96d73c29457d9a32fd73596",
@@ -501,7 +501,7 @@
   },
   "lifecycleStage": {
     "scope": "INACTIVE_EXACT_TWO_NAME_OPERATIONAL_LIFECYCLE_ONLY_THEN_WOUNDS_HANDOFF",
-    "status": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
+    "status": "CURRENT47_FIRST_RAW_ALLPASS_FINAL_EVIDENCE_PENDING",
     "historicalBaseline": {
       "engine2Accepted": 2,
       "remaining6Accepted": {
@@ -606,7 +606,7 @@
           }
         ],
         "staticCount": 16,
-        "status": "ACTUAL_CURRENT_CAUSAL_BASELINE_ACCEPTED; correspondingproductWIPuncompiled/noGREENclaim",
+        "status": "CAUSAL_BASELINE_ACCEPTED_AND_CURRENT_PRODUCT_GREEN_PASS; FINAL_EVIDENCE_PENDING",
         "oracle": "Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
@@ -640,7 +640,7 @@
           }
         ],
         "staticCount": 4,
-        "status": "ACTUAL_CURRENT_CAUSAL_BASELINE_ACCEPTED; correspondingproductWIPuncompiled/noGREENclaim",
+        "status": "CAUSAL_BASELINE_ACCEPTED_AND_CURRENT_PRODUCT_GREEN_PASS; FINAL_EVIDENCE_PENDING",
         "oracle": "Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
@@ -674,7 +674,7 @@
           }
         ],
         "staticCount": 4,
-        "status": "ACTUAL_CURRENT_CAUSAL_BASELINE_ACCEPTED; correspondingproductWIPuncompiled/noGREENclaim",
+        "status": "CAUSAL_BASELINE_ACCEPTED_AND_CURRENT_PRODUCT_GREEN_PASS; FINAL_EVIDENCE_PENDING",
         "oracle": "Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "No relay writer/reader/authority; original opaque images and real owners only.",
@@ -732,7 +732,7 @@
           }
         ],
         "staticCount": 8,
-        "status": "ACTUAL_CURRENT_CAUSAL_BASELINE_ACCEPTED; correspondingproductWIPuncompiled/noGREENclaim",
+        "status": "CAUSAL_BASELINE_ACCEPTED_AND_CURRENT_PRODUCT_GREEN_PASS; FINAL_EVIDENCE_PENDING",
         "oracle": "Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed.",
         "requiredPrerequisites": "Actual method signature/producer/current helper READ reaches the real operation; original source output/ownership before final oracle. No compile/setup/platform failure can qualify.",
         "limits": "Actual FilesModified policy consumer called first by Complete-BoeTurn; no Complete/client acceptance or terminal writer exercised. Read/writer children, original guardian.json driverExitCode0, scenario/helper-child/joined originals retained.",
@@ -815,7 +815,7 @@
       "actualTestsExecuted": 0,
       "packet": "recovery/lifecycle-guard-first-preparation.json"
     },
-    "production": "CONCRETE8OWNER_SOURCE_ACCEPTED; GREEN47_UNRUN",
+    "production": "PRODUCTION47FIRSTPASS_UNDER_SOURCE_ACCEPTANCE; FINAL_EVIDENCE_PENDING",
     "metadataUtilityObservation": "The first authoring-only helper assertion incorrectly assumed globally unique catalog ownership; existing turn-lifecycle-core class wildcard also covers the new Live partial. Corrected the check to current finite selected-owner uniqueness, restored only generated catalog/selection bytes from clean HEAD and regenerated. Unselected preexisting family entries stayed byte-identical. No compiler/native/PREP/test execution or failure.",
     "sourceDecision": {
       "reports": [
@@ -927,7 +927,7 @@
       "classification": "ACCEPTED_CURRENT32_16CAUSAL_RED16POSITIVE; original0771notdoublecounted"
     },
     "productionWip": {
-      "status": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
+      "status": "PRODUCTION47FIRSTPASS_UNDER_SOURCE_ACCEPTANCE; FINAL_EVIDENCE_PENDING",
       "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
       "changedProductionPaths": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -991,7 +991,7 @@
         }
       ],
       "preparation": "FIRSTd8ebothbuildPlan47native0/0exec; coherentSource/Fixture/Selection/Prep accepted, reports persisted. No repetition required.",
-      "green": "ALL47UNRUN; separate named exactRootactivation after successorpublication/recovery required.",
+      "green": "FIRSTcurrent47passednative0/exact10descriptors/15methods, localrawqualified; finalindependentEVIDENCEpending. No newruntime.",
       "documentation": "README only: inactiveclient-ownednames; notGM-authorable,noMortal/afterlifepending/gameplay/schema/statecontract change. ExistingD01/sourceban,52readingdocs/daemon/CLI/sixinverseentrypoints unchanged. NoGMworkedexample/manifest/matrix/categoryreplaytriggered. Actualhelperpackageinputchanged=>exactgenuinepublisher1selected.",
       "handoff": "AfterboundedlifecycleGREEN/independentacceptance/remotecheckpoint STOPfullrelaybacklog; handoffwoundsT179-Pd.3d acceptedNI-D01implementation in preserved1536worktree, no repeatdesign. WindowsZIPblock/openWindowsunchanged,noCIretry."
     },
@@ -1035,6 +1035,15 @@
         "rootComposition": "recovery/2c51-recovery-composition.json",
         "retainedDeltas": 142
       }
+    },
+    "greenRaw": {
+      "packet": "recovery/lifecycle-green47-first.json",
+      "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+      "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+      "executed": 47,
+      "passed": 47,
+      "failed": 0,
+      "independentEvidenceAccepted": false
     }
   }
 }

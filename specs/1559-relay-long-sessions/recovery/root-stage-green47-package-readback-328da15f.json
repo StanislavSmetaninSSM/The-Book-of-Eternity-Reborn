@@ -1,0 +1,77 @@
+{
+  "kind": "ROOT_ACTUAL_FRESH_PACKAGE_HELPER_INPUT_AND_PUBLISHER_LITERAL_READBACK",
+  "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "outcomePath": "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/outcome.json",
+  "outcomeSha256": "041b0456efaf341c499e3db2f13d8af7421298e262031379d70cfb025aba99c9",
+  "astSha256": "7556b9e8abcfa3a8a8000fdce1308cb60cd32bcb197cc0a65314a86bce1b2861",
+  "nativeExit": 0,
+  "astCompleted": true,
+  "runtimeExecuted": true,
+  "packagedInventoryExactFreshManagedFiles": 258,
+  "repoManagedPackageHelperSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
+  "packagedProductSha256": "27fd580aa276fc323ad5e24b3df298dcf0b72e068633e4fb6243e31329574e58",
+  "copiedDocsExactCurrent52": true,
+  "actualGenuinePublisherIdentities": [
+    {
+      "Pid": 140684,
+      "BirthTicks": 5412913,
+      "ParentPid": 140659,
+      "Args": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/inspect-and-publish.ps1",
+        "-DaemonPath",
+        "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/game_master_daemon.ps1",
+        "-SessionPath",
+        "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a/game_session",
+        "-ReportPath",
+        "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a/ast-and-publication.json",
+        "-Mode",
+        "publish"
+      ],
+      "Role": "pwsh",
+      "State": "R"
+    },
+    {
+      "Pid": 140706,
+      "BirthTicks": 5413077,
+      "ParentPid": 140684,
+      "Args": [
+        "dotnet",
+        "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/BookOfEternityClient.dll",
+        "--gm-main-operation",
+        "--root",
+        "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a"
+      ],
+      "Role": "helper",
+      "State": "R"
+    },
+    {
+      "Pid": 140719,
+      "BirthTicks": 5413107,
+      "ParentPid": 140684,
+      "Args": [
+        "dotnet",
+        "/tmp/boe-gm1557-package-37c5d8bae26c41cb97868c64626e7f5a/BookOfEternityClient.dll",
+        "--gm-main-operation",
+        "--root",
+        "/tmp/boe-gm1557-session-37c5d8bae26c41cb97868c64626e7f5a"
+      ],
+      "Role": "helper",
+      "State": "R"
+    }
+  ],
+  "allThreeTerminalBeforeCleanup": true,
+  "pipeEofBoth": true,
+  "packageAndSessionRootsPhysicallyAbsent": true,
+  "noRemainingUnknownOrCleanupDebt": true,
+  "workElapsedSeconds": 3.3981637,
+  "totalElapsedSeconds": 3.424639,
+  "generatedTemplateBytes": 12977,
+  "generatedTemplateSha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+  "scope": "Actualchangedhelperpackageinput+genuinepackagepublisher/sessionclosure. Does not claim PowerShellhelperexecutionfromsessionbootstrap or retainedsessionbootstrapbody/hash; separate8actualhelperpolicycontrols prove currentrepohelperbehavior. No new52documentfamilyrun, realGM/relayacceptance or Windowsclaim."
+}

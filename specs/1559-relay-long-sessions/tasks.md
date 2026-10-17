@@ -2,7 +2,7 @@
 
 Source: [#1559](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1559). Inputs: [spec.md](spec.md), [plan.md](plan.md), [audit.md](audit.md), [source-inventory.json](source-inventory.json). Branch `1559-relay-long-sessions-20261017`, base `a82b3d8439f76f83baade6df8516e78eea86e546`.
 
-Current phase: independent current32causalEVIDENCEaccepted16RED16PASS; retainedbaseline8 =>40distinct18positive22RED withoutoriginal0771doublecount. Rootreleasedonlyinactive8existingpolicyfiles+README; productionfreshd8ebothbuildPlan47passednative0/0exec withupdated136pins/new9managedcopies, unchanged47membership. ProductionSOURCE/FIXTURE/SELECTION/PREPaccepted→publish/readexactsuccessor/newdelta→separatelynamedGREEN47(ALL47UNRUN)→independentEVIDENCE/durablecheckpoint, then woundsT179-Pd.3d acceptedNI-D01 handoff. FullrelayC01-C06/backlog/original41 remain deferred; Windowsopen/noCIretry. T001-T003alonechecked, no fullissuecompletion.
+Current phase: one approvedinactive-lifecycleSelection47FIRSTactual328/compiledd8e native0/exact47PASS (32guards+8lifecycle+6ordinary+1genuinepublisher), allraw135chains+sourcecontext/strictcleanup/packagehelperproofsaved. FinalindependentEVIDENCE/durablehandoffpending; no furthernative. Originalcausal40/F01 retainedwithoutdoublecount. This boundedstageonly, then woundsT179-Pd.3dacceptedNI-D01; fullrelayC01-C06/backlog/Windowsopen. T001-T003alonecheckeduntilfinaldisposition, no fullissuecompletion.
 
 ## Foundation / architecture
 

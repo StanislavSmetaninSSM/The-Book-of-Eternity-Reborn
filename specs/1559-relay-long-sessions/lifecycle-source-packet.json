@@ -3,7 +3,7 @@
   "createdUtc": "2026-10-17T14:14:21.064399+00:00",
   "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
-  "stage": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
+  "stage": "CURRENT47_FIRST_RAW_ALLPASS_FINAL_EVIDENCE_PENDING",
   "sourcePinCount": 136,
   "sourcePinDigest": "d5d03639c16d1e0bbea1ab3f9538bb9b44c33dd2aac3394db399e1cc57251723",
   "sourcePins": [
@@ -1121,7 +1121,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "2112bc50e88fee1d2428a7183b346476c10267edbbf7cd221246a5b33ea54006"
+    "sha256": "29f71b61288d067d384bcde1bfccce35cbf8c1ee936862629231367ea52a89dd"
   },
   "currentSelection": {
     "path": "tests/selection.json",
@@ -1401,7 +1401,7 @@
       "repoSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
       "managedSha256": "e8bfdcb731b1e93079273bbcf2f42e4b0bd8d2f5ad174a6fe876b37a81b6bf49",
       "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
-      "actualPublisher": "UNRUN_REQUIRED_GREEN1"
+      "actualPublisher": "FIRSTgenuinePASS; newhelperE8BFpinnedsource\u2192managed\u2192package,52readingcopied; finalEVIDENCEpending"
     }
   },
   "runtimePolicy": "ProductionSOURCE/FIXTURE/SELECTION/PREPaccepted only; all47GREENUNRUN. No build/catalog/Planrepeat. Exactsuccessorremote/newGitHubrecovery and separately namedRootaa15Selection47-NoBuild activation required. AllFIRSThistoriesimmutable; unexpectedSTOP/no retries.",
@@ -1632,7 +1632,7 @@
     "classification": "ACCEPTED_CURRENT32_16CAUSAL_RED16POSITIVE; original0771notdoublecounted"
   },
   "productionWip": {
-    "status": "PRODUCTION_SOURCE_PREP_ACCEPTED_GREEN47_UNRUN",
+    "status": "PRODUCTION47FIRSTPASS_UNDER_SOURCE_ACCEPTANCE; FINAL_EVIDENCE_PENDING",
     "sourceParent": "1630c4e8fa88cff89eb848c089e7a81544b170ce",
     "changedProductionPaths": [
       "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -1696,7 +1696,7 @@
       }
     ],
     "preparation": "FIRSTd8ebothbuildPlan47native0/0exec; coherentSource/Fixture/Selection/Prep accepted, reports persisted. No repetition required.",
-    "green": "ALL47UNRUN; separate named exactRootactivation after successorpublication/recovery required.",
+    "green": "FIRSTcurrent47passednative0/exact10descriptors/15methods, localrawqualified; finalindependentEVIDENCEpending. No newruntime.",
     "documentation": "README only: inactiveclient-ownednames; notGM-authorable,noMortal/afterlifepending/gameplay/schema/statecontract change. ExistingD01/sourceban,52readingdocs/daemon/CLI/sixinverseentrypoints unchanged. NoGMworkedexample/manifest/matrix/categoryreplaytriggered. Actualhelperpackageinputchanged=>exactgenuinepublisher1selected.",
     "handoff": "AfterboundedlifecycleGREEN/independentacceptance/remotecheckpoint STOPfullrelaybacklog; handoffwoundsT179-Pd.3d acceptedNI-D01implementation in preserved1536worktree, no repeatdesign. WindowsZIPblock/openWindowsunchanged,noCIretry."
   },
@@ -1740,5 +1740,14 @@
       "rootComposition": "recovery/2c51-recovery-composition.json",
       "retainedDeltas": 142
     }
+  },
+  "greenRaw": {
+    "packet": "recovery/lifecycle-green47-first.json",
+    "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+    "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+    "executed": 47,
+    "passed": 47,
+    "failed": 0,
+    "independentEvidenceAccepted": false
   }
 }

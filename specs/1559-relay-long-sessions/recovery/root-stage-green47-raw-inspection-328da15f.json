@@ -1,0 +1,418 @@
+{
+  "kind": "ROOT_LITERAL_BOUNDED_STAGE_GREEN47_INSPECTION",
+  "record": "/tmp/gm1559-implementation-tools/gm1559-lifecycle-stage-green-first-328da15f-20261017/record.json",
+  "recordSha256": "a0b6919a059cbe627c84077f6a4d957744524b5c9af42a017b0b8501d75f1719",
+  "archive": "/tmp/gm1559-lifecycle-green47-first-archive-328da15f-20261017/archive.json",
+  "archiveSha256": "ac11b265c475aab09c0eb1599f8a09506864934b5d9ad53f79a761fb6bf4c3f6",
+  "archiveChains": 135,
+  "actualSource": "328da15f1fa91cf935c044206923717cc8a4fe22",
+  "compiledSource": "d8e53413483e434752651e7e7b5b4f2dc392a6cf",
+  "nativeExit": 0,
+  "wallSeconds": 44.97535421700013,
+  "tests": {
+    "Total": 47,
+    "Executed": 47,
+    "Passed": 47,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 10,
+    "CompletedDescriptors": 10,
+    "PlannedCases": 47,
+    "CompletedCases": 47,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "methods": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealRollbackPreservesLatestRecordsAndRestoresOrdinaryNeighbors": 2,
+    "BookOfEternityClient.Tests.SaveLoadServiceTests.RelayOperationalRecords_ActualSaveLoadExcludesOperationalAuthorityAndReplacesGeneration": 1,
+    "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedProductionWriterPublishesExactRequiredReadingClosure": 1,
+    "BookOfEternityClient.Tests.GmRelayPublicationFoundationTests.OperationalDraftExclusion_IsExactAndPreservesOrdinarySuffixNeighbors": 4,
+    "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePreparationExcludesOnlyOperationalSnapshotMembers": 1,
+    "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication": 4,
+    "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact": 16,
+    "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes": 1,
+    "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets": 8,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication": 4,
+    "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload": 1,
+    "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts": 1,
+    "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts": 1
+  },
+  "privateWitnesses": [
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsClientOwnedRepairResubmissionPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsRecoverableFilesModifiedPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsRecoverableFilesModifiedPath",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationIssue",
+      "Method": "IsClientOwnedSurfacePath",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsClientOwnedRepairResubmissionPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsRecoverableFilesModifiedPath",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationService",
+      "Method": "IsClientOwnedSurfaceValidationPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsRecoverableFilesModifiedPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationIssue",
+      "Method": "IsClientOwnedSurfacePath",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationService",
+      "Method": "IsClientOwnedSurfaceValidationPath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsClientOwnedRepairResubmissionPath",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationService",
+      "Method": "IsClientOwnedSurfaceValidationPath",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationService",
+      "Method": "IsClientOwnedSurfaceValidationPath",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Core.GameEngine",
+      "Method": "IsClientOwnedRepairResubmissionPath",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationIssue",
+      "Method": "IsClientOwnedSurfacePath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "Expected": true,
+      "Actual": true
+    },
+    {
+      "Owner": "BookOfEternityClient.Services.ValidationIssue",
+      "Method": "IsClientOwnedSurfacePath",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "Expected": false,
+      "Actual": false
+    }
+  ],
+  "engineAliasWitnesses": [
+    {
+      "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "Mutations": [
+        "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+        "game_state/control/gm_relay_apply_receipt.json.neighbor.rollback.relay-physical-alias"
+      ],
+      "BackupCount": 2,
+      "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+      "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+    },
+    {
+      "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "Mutations": [
+        "game_state/inventory/item_identity_index.json.rollback.relay-physical-alias",
+        "game_state/control/gm_prompt_delivery.json.neighbor.rollback.relay-physical-alias"
+      ],
+      "BackupCount": 2,
+      "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+      "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+    },
+    {
+      "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+      "Path": "game_state/control/GM_prompt_delivery.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_prompt_delivery.json' and 'game_state/control/gm_prompt_delivery.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventoryCore(String[] physicalInventory, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1901\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventory(CanonicalWriteLease writeLease, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1893\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(CanonicalWriteLease writeLease, String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2013\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2004\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2006\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11390\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "Mutations": [],
+      "BackupCount": 0,
+      "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+      "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+    },
+    {
+      "Owner": "ACTUAL_ENGINE_CREATE_PRE_TURN_BACKUP",
+      "Path": "game_state/control/GM_relay_apply_receipt.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_relay_apply_receipt.json' and 'game_state/control/gm_relay_apply_receipt.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventoryCore(String[] physicalInventory, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1901\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventory(CanonicalWriteLease writeLease, RollbackSnapshot rollbackSnapshot) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1893\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(CanonicalWriteLease writeLease, String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2013\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2004\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 2006\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11390\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "Mutations": [],
+      "BackupCount": 0,
+      "BeforeSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4",
+      "AfterSha256": "07FBDE7ADEBFB1F763D83D9F3C36798098891D32F2741AE5A5903701151857D4"
+    }
+  ],
+  "liveAliasWitnesses": [
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "PublicationWitnessCount": 1,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 25,
+      "ChangedPhysicalImages": [
+        "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+        "game_state/control/pending_turn_snapshot.authority.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/pending_turn_snapshot/game_state/control/gm_prompt_delivery.json.neighbor",
+        "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+        "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+        "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+        "input/turn_request.json"
+      ]
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/GM_prompt_delivery.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_prompt_delivery.json' and 'game_state/control/gm_prompt_delivery.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "PublicationWitnessCount": 0,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 15,
+      "ChangedPhysicalImages": []
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "ExpectedRefusal": false,
+      "Failure": null,
+      "PublicationWitnessCount": 1,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 25,
+      "ChangedPhysicalImages": [
+        "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+        "game_state/control/pending_turn_snapshot.authority.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/pending_turn_snapshot/game_state/control/gm_relay_apply_receipt.json.neighbor",
+        "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+        "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+        "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+        "input/turn_request.json"
+      ]
+    },
+    {
+      "Owner": "ACTUAL_LIVE_PREPARE",
+      "Path": "game_state/control/GM_relay_apply_receipt.json",
+      "ExpectedRefusal": true,
+      "Failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'game_state/control/GM_relay_apply_receipt.json' and 'game_state/control/gm_relay_apply_receipt.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Services.LiveTurnPreparationService.ReadSignedSnapshotInventory(CanonicalWriteLease writeLease) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 247\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareUnderLeaseAsync(CanonicalWriteLease writeLease, LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 90\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 82\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 84\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 142\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 384\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 233\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 310\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 141\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 74\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+      "PublicationWitnessCount": 0,
+      "BeforeFileCount": 15,
+      "AfterFileCount": 15,
+      "ChangedPhysicalImages": []
+    }
+  ],
+  "helperWitnesses": [
+    {
+      "Operation": "write",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "ExpectedDenied": false,
+      "ExitCode": 0,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+      "StdErr": "",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+      "BeforeBytes": 25,
+      "AfterBytes": 27,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "files-modified",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "ExpectedDenied": true,
+      "ExitCode": 1,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+      "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1673\nLine |\n1673 |              throw \"filesModified contains client-owned runtime state. …\n     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | filesModified contains client-owned runtime state. Remove this entry and\n     | let the client maintain it:\n     | game_state/control/gm_relay_apply_receipt.json (requested:\n     | game_state/control/gm_relay_apply_receipt.json)\n",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "write",
+      "Path": "game_state/control/gm_relay_apply_receipt.json",
+      "ExpectedDenied": true,
+      "ExitCode": 1,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+      "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1653\nLine |\n1653 |          throw \"Path is client-owned runtime state and must not be wri …\n     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | Path is client-owned runtime state and must not be written by the GM\n     | helper: game_state/control/gm_relay_apply_receipt.json (requested:\n     | game_state/control/gm_relay_apply_receipt.json)\n",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "files-modified",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "ExpectedDenied": false,
+      "ExitCode": 0,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+      "StdErr": "",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "files-modified",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "ExpectedDenied": true,
+      "ExitCode": 1,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+      "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1673\nLine |\n1673 |              throw \"filesModified contains client-owned runtime state. …\n     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | filesModified contains client-owned runtime state. Remove this entry and\n     | let the client maintain it: game_state/control/gm_prompt_delivery.json\n     | (requested: game_state/control/gm_prompt_delivery.json)\n",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "files-modified",
+      "Path": "game_state/control/gm_relay_apply_receipt.json.neighbor",
+      "ExpectedDenied": false,
+      "ExitCode": 0,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+      "StdErr": "",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "write",
+      "Path": "game_state/control/gm_prompt_delivery.json.neighbor",
+      "ExpectedDenied": false,
+      "ExitCode": 0,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\nGM1559_REAL_HELPER_OPERATION_RETURNED\n",
+      "StdErr": "",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "03EBAE7EC37B34C88BD1F43BB815656067014011C8B509C02C81CF1796864E64",
+      "BeforeBytes": 25,
+      "AfterBytes": 27,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    },
+    {
+      "Operation": "write",
+      "Path": "game_state/control/gm_prompt_delivery.json",
+      "ExpectedDenied": true,
+      "ExitCode": 1,
+      "StdOut": "GM1559_REAL_HELPER_READ_PREREQUISITE_COMPLETE\n",
+      "StdErr": "Exception: /workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1:1653\nLine |\n1653 |          throw \"Path is client-owned runtime state and must not be wri …\n     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | Path is client-owned runtime state and must not be written by the GM\n     | helper: game_state/control/gm_prompt_delivery.json (requested:\n     | game_state/control/gm_prompt_delivery.json)\n",
+      "ArtifactDirectory": "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+      "RepoHelperPath": "/workspace/The-Book-of-Eternity-Reborn-1559/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "RepoHelperSha256": "E8BFDCB731B1E93079273BBCF2F42E4B0BD8D2F5AD174A6FE876B37A81B6BF49",
+      "BeforeSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "AfterSha256": "A03490F3932848E4AEC12CC05F9CBAFBA3DFFFD460C7AAAC9BF069FF1E56292D",
+      "BeforeBytes": 25,
+      "AfterBytes": 25,
+      "Scope": "ACTUAL_CURRENT_HELPER_WRITE_OR_FILESMODIFIED_POLICY_CONSUMER; NOT_COMPLETE_TURN_OR_CLIENT_ACCEPTANCE"
+    }
+  ],
+  "naturalHelperChildCount": 24,
+  "strictRootReceiptCount": 20,
+  "strictRootsPhysicallyAbsent": true,
+  "binariesNamespacesStable": true,
+  "retainedArtifactDirectories": [
+    "/tmp/boe-gm1557-evidence-37c5d8bae26c41cb97868c64626e7f5a",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/3caa946f53314f1a8aebe5022634c94c",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/44d0a6bcf8cf49908e8d078499acb6e7",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/53d585f4fdb04489be96c92f453e3592",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/69ce742b57e24f9d8965dd0a7f367627",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/7ed648c95b9a4b1ba94b4ad4b749a68f",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/9f44c25121be49bdb14f1da53a6d8d49",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/bb08559fb911469ebc151c7dc0381653",
+    "/workspace/The-Book-of-Eternity-Reborn-1559/TestResults/native-terminal/d265a6805f74430fb55b2bb8db315854"
+  ],
+  "retainedArtifactFiles": 118,
+  "scope": "Literal raw47success, no skip/underfill/duplicate; independentEVIDENCE stillpending. Packageoriginalreceipts additionallyrequireliteralinspection, nofullrelay/Windows claim."
+}
