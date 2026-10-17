@@ -1,0 +1,13 @@
+{
+  "kind": "ROOT_NAMED_FIRST_ORDINARY45_PRODUCT_ACTUAL_ACTIVATION",
+  "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "late2AcceptedSavedReadBack": true,
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-406ac844-20261017.json",
+  "mode": "ordinary45",
+  "controller": "/tmp/t179pd3e-product-first-run.py",
+  "controllerSha256": "a679cb0016abd5aa4f756d3cc904901c5aba14a9ebd42a61ea38d59de4bcf4e7",
+  "prepRecord": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-prep-first-build-plan-f766d9d0-20261017/record.json",
+  "scope": "Exactly one FIRST -SelectionFile tests/selections/1536-pd3e-reasoning-prefix.json -NoBuild,5owners18methods45cases. All4namespaces empty and55sourcepins/new9 unchanged preflight. Preserve original failure/no retry/build/Late2replay/otherselection. Archive original then Root literalreader and independent ordinary EVIDENCE;41new strict roots,2legacy namespace only,2source N/A. S02 runtimequalified only if actual3mode rows PASS underfull ordered assertions.",
+  "utc": "2026-10-17T18:37:46.492547+00:00"
+}

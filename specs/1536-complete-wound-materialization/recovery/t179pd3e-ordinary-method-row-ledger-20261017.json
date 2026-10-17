@@ -1,20 +1,26 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ACCEPTED_ORDINARY45_UNRUN_HELD",
+  "status": "FIRST_NEW_ORDINARY45_RAW_PASS_INDEPENDENT_EVIDENCE_PENDING_SEPARATE_PROTECTED2_ACCEPTED",
   "counts": {
     "categories": 6,
     "methods": 20,
     "declaredRows": 47,
     "ordinaryRows": 45,
     "protectedRows": 2,
-    "actualExecutedOnCurrentProduct": 2
+    "actualExecutedOnCurrentProduct": 47,
+    "separateActualScopes": {
+      "ordinaryRawPassed": 45,
+      "ordinaryIndependentEvidence": "PENDING",
+      "protectedQualifiedPassed": 2,
+      "aggregate47NativeExecution": false
+    }
   },
   "methods": [
     {
       "category": "fr063-reasoning-prefix-boundary",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 17,
@@ -25,7 +31,7 @@
     {
       "category": "fr063-reasoning-prefix-source",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 50,
@@ -36,7 +42,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 17,
@@ -60,7 +66,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 58,
@@ -71,7 +77,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 90,
@@ -82,7 +88,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 101,
@@ -97,7 +103,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 124,
@@ -116,7 +122,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 151,
@@ -130,7 +136,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 167,
@@ -144,7 +150,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 191,
@@ -155,7 +161,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 209,
@@ -166,7 +172,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 219,
@@ -182,7 +188,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 253,
@@ -196,7 +202,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 267,
@@ -211,7 +217,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 297,
@@ -222,7 +228,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
       "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
       "declaredRows": 1,
@@ -231,7 +237,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION",
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
       "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
       "declaredRows": 1,
@@ -244,7 +250,7 @@
       "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
       "declaredRows": 1,
       "kind": "Fact",
-      "status": "AFFECTED_SOURCE_PREP_ACCEPTED_UNRUN_AWAIT_SEPARATE_ROOT_ACTIVATION"
+      "status": "FIRST_NEW_PRODUCT_ORDINARY_PASS_OBSERVED_INDEPENDENT_EVIDENCE_PENDING"
     },
     {
       "category": "fr063-joint-late-completion",
@@ -578,5 +584,56 @@
         "bytes": 20265
       }
     ]
+  },
+  "firstOrdinary45": {
+    "status": "FIRST_NEW_RAW45PASS_ROOT_LITERAL_PREQUALIFIED_INDEPENDENT_EVIDENCE_PENDING",
+    "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "wallSeconds": 18.01654913800303,
+    "runnerWallTime": "00:00:17.3104676",
+    "tests": {
+      "Total": 45,
+      "Executed": 45,
+      "Passed": 45,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 5,
+      "PlannedCases": 45,
+      "CompletedCases": 45,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/archive.json",
+      "sha256": "b0f6a1768ba3409b4b8133175b494e34e4532fddfb567609a5f7c45fb839efbc",
+      "rawChains": 13
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-activation-406ac844-20261017.json",
+        "sha256": "7217472e933bdbbf07bb6bf576d9b5084e263262f48a46040aa4e2480c5230db",
+        "bytes": 1123
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-inspection-406ac844-20261017.json",
+        "sha256": "58ee00b94b78458d22bff43954ad12375eb7043d9825b1a2ca8082ad92e84a47",
+        "bytes": 64459
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-late2-evidence-decision-delta-github-406ac844-20261017.json",
+        "sha256": "e845b8a3074fa75b768d14881e335a608c10e9f183a1943778464abfe04b70dd",
+        "bytes": 11841
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-406ac844-20261017.json",
+        "sha256": "16785d111f557ca83b98ce3c8c6ed683fd0c8c6051455441bd07aae682964d41",
+        "bytes": 20627
+      }
+    ],
+    "proofLimits": "41new strict distinct physically absent roots; unchanged legacy2 callers namespace-only cleanup, source2 N/A. No deleted fixture raw bodies are invented. All45 including3S02mode rows observed PASS; independent semantic EVIDENCE still pending. Separate protected2 already independently accepted, no aggregate47 native run or oldPASS replay.",
+    "S02": "SOURCE_CLOSED_THREE_MODE_ROWS_OBSERVED_PASS_INDEPENDENT_EVIDENCE_PENDING"
   }
 }
