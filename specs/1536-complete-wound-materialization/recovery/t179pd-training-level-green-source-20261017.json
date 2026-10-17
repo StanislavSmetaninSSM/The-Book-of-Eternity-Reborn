@@ -1,0 +1,252 @@
+{
+  "kind": "A1_CONCRETE_GREEN_SOURCE_FIXTURE_SELECTION_PACKET",
+  "preparedBy": "/root/a1_writer; independent gate pending",
+  "createdUtc": "2026-10-17T00:53:40.015543+00:00",
+  "issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536",
+  "baseline": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+  "acceptedRedCarrier": "36ee5b014cee46b852b156971e396231f5e60922",
+  "actualRedSource": "693b33941edecda1ffad5d9944630a091b4ece3e",
+  "compiledRedSource": "c032138834ff35206c07ff673e06ab3dc40ab128",
+  "sourceHead": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+  "compiledSource": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "a9c26907731515c8e2b00c06fea2b6624a82cc06",
+      "bytes": 793,
+      "sha256": "4efa091f457d47594b6eb6b87992f1f503746dcdd4dbd334618386adcc68928d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "df634337ba827c1942a348bc392affbd0b4c99f6",
+      "bytes": 38509,
+      "sha256": "3dd1c53ac0bc7c6a7c801689178a12cc338b89ec01c5a882f9cdc94e8e1234bb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95",
+      "bytes": 11487,
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "c71d4571b841a3edb2baf99149c8e68f1c9de8e1",
+      "bytes": 9772,
+      "sha256": "6e3a32344244d3590da0d63d655767257e244acae2f17ba0fde3405420300fd9"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "aadf31f92b8df81b37087a0fabfc1b5a9d6c2de8",
+      "bytes": 12668,
+      "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "bytes": 83808,
+      "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "6be846cbdf5957622bac6fc3d0e721fc3ec6fb23",
+      "bytes": 584594,
+      "sha256": "73bd4db24c1294392f8e5f4ccc074095c2ec8696b1e69aae1066fb393a1608db"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "path": "tests/categories.json",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "8f4882753a0c0a368de4db706ec1a61395c887d8",
+      "bytes": 1972463,
+      "sha256": "7ad8409f03a1894c8af291fa46af46d5fcb159d42ccf5f50da5c73a5fda11c9c"
+    },
+    {
+      "path": "tests/selection.json",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "655d15d297b5ab1997fdb760581ed8c1be524ffc",
+      "bytes": 2854,
+      "sha256": "4cb167d336407ce52ff5a2203200f13685be515a68ad338ce29697d75eeb3bcc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "source": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+      "gitBlob": "6145ee52e26e72e701b1cc0f181310f749de4b1e",
+      "bytes": 169526,
+      "sha256": "19a0a81294befe1b28113d0f0c0f4f370840f80bf12d61647e273773df751a35"
+    }
+  ],
+  "productionNameStatus": "A\tBookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs\nM\tBookOfEternityClient/Services/CharacteristicsService.cs\n",
+  "productionDiff": "diff --git a/BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs b/BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs\nnew file mode 100644\nindex 000000000..a9c269077\n--- /dev/null\n+++ b/BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs\n@@ -0,0 +1,27 @@\n+using System.Text.Json;\n+\n+namespace BookOfEternityClient.Services;\n+\n+public partial class CharacteristicsService\n+{\n+    internal static int? ReadTrainingExperienceLevel(JsonElement root)\n+    {\n+        if (root.TryGetProperty(\"level\", out var level) &&\n+            level.ValueKind == JsonValueKind.Number)\n+            return level.GetInt32();\n+        if (root.TryGetProperty(\"playerLevel\", out var playerLevel) &&\n+            playerLevel.ValueKind == JsonValueKind.Number)\n+            return playerLevel.GetInt32();\n+\n+        return null;\n+    }\n+\n+    internal static int? ReadTrainingSingleLevel(JsonElement root)\n+    {\n+        if (root.TryGetProperty(\"level\", out var level) &&\n+            level.ValueKind == JsonValueKind.Number)\n+            return level.GetInt32();\n+\n+        return null;\n+    }\n+}\ndiff --git a/BookOfEternityClient/Services/CharacteristicsService.cs b/BookOfEternityClient/Services/CharacteristicsService.cs\nindex 3c88d046f..df634337b 100644\n--- a/BookOfEternityClient/Services/CharacteristicsService.cs\n+++ b/BookOfEternityClient/Services/CharacteristicsService.cs\n@@ -289,12 +289,8 @@ public partial class CharacteristicsService\n             try\n             {\n                 using var doc = JsonDocument.Parse(json);\n-                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n-                    lvl.ValueKind == JsonValueKind.Number)\n-                    return lvl.GetInt32();\n-                if (doc.RootElement.TryGetProperty(\"playerLevel\", out var playerLvl) &&\n-                    playerLvl.ValueKind == JsonValueKind.Number)\n-                    return playerLvl.GetInt32();\n+                if (ReadTrainingExperienceLevel(doc.RootElement) is { } level)\n+                    return level;\n             }\n             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n         }\n@@ -306,9 +302,8 @@ public partial class CharacteristicsService\n             try\n             {\n                 using var doc = JsonDocument.Parse(json);\n-                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n-                    lvl.ValueKind == JsonValueKind.Number)\n-                    return lvl.GetInt32();\n+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)\n+                    return level;\n             }\n             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n         }\n@@ -320,9 +315,8 @@ public partial class CharacteristicsService\n             try\n             {\n                 using var doc = JsonDocument.Parse(json);\n-                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n-                    lvl.ValueKind == JsonValueKind.Number)\n-                    return lvl.GetInt32();\n+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)\n+                    return level;\n             }\n             catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n         }\n",
+  "unchangedScopes": [
+    "BookOfEternityClient.Tests",
+    "BookOfEternityClient.IntegrationTests",
+    "scripts",
+    "tests/categories.json",
+    ".github"
+  ],
+  "unchangedScopeDiff": "",
+  "tests": "Existing accepted tests unchanged; A1=boundary2+pure33+ordinary17. Preparation executes ZERO tests.",
+  "selection": {
+    "schemaVersion": 1,
+    "selections": [
+      {
+        "category": "fr063-training-level-policy-boundary",
+        "reason": "A1 two real ordinary ComputeAsync controls now exercise both extracted pure signatures; retain prior qualified structural RED provenance and verify the same ordinary context after extraction.",
+        "contracts": [
+          "#1536 T179-Pd.3c-A1 behavior-preserving parsed-value extraction. Fresh BOTH/catalog/exact PlanOnly0 and independent affected SOURCE precede FIRST protected Late2; freeze/persist/separate EVIDENCE before each explicitly released A1 owner actual. Local Linux only; no Windows CI/worker/ZIP/settings or HOT/S/B/M3/F1/T197/new-QTE activation."
+        ]
+      },
+      {
+        "category": "fr063-training-level-policy",
+        "reason": "A1 exact parsed JsonElement outcomes and negative root/conversion behavior: numeric level precedes alias and throws before alias on failed Int32 conversion; wrong-kind level permits alias, duplicates and numeric low/endpoints retain existing semantics.",
+        "contracts": [
+          "#1536 T179-Pd.3c-A1 behavior-preserving parsed-value extraction. Fresh BOTH/catalog/exact PlanOnly0 and independent affected SOURCE precede FIRST protected Late2; freeze/persist/separate EVIDENCE before each explicitly released A1 owner actual. Local Linux only; no Windows CI/worker/ZIP/settings or HOT/S/B/M3/F1/T197/new-QTE activation."
+        ]
+      },
+      {
+        "category": "fr063-training-level-ordinary",
+        "reason": "A1 actual GetPlayerLevel source priority/default/read order, exact source presence/bytes and pre-parse IO fault; include only the two existing real training cap/write controls, with documented category ownership overlap.",
+        "contracts": [
+          "#1536 T179-Pd.3c-A1 behavior-preserving parsed-value extraction. Fresh BOTH/catalog/exact PlanOnly0 and independent affected SOURCE precede FIRST protected Late2; freeze/persist/separate EVIDENCE before each explicitly released A1 owner actual. Local Linux only; no Windows CI/worker/ZIP/settings or HOT/S/B/M3/F1/T197/new-QTE activation."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "FIRST affected shared-consumer regression: existing joint derived projection invokes changed GetPlayerLevel. Its unchanged two protected bodies/budget must complete and receive separate EVIDENCE acceptance before A1 GREEN owners; provenance/header/worker owners are unchanged and not selected.",
+        "contracts": [
+          "#1536 T179-Pd.3c-A1 behavior-preserving parsed-value extraction. Fresh BOTH/catalog/exact PlanOnly0 and independent affected SOURCE precede FIRST protected Late2; freeze/persist/separate EVIDENCE before each explicitly released A1 owner actual. Local Linux only; no Windows CI/worker/ZIP/settings or HOT/S/B/M3/F1/T197/new-QTE activation."
+        ]
+      }
+    ]
+  },
+  "preparation": "t179pd-training-level-green-preparation-20261017.json",
+  "preparationInspection": "t179pd-training-level-green-preparation-writer-inspection-20261017.json",
+  "plannedCounts": {
+    "fr063-joint-late-completion": 2,
+    "fr063-training-level-ordinary": 17,
+    "fr063-training-level-policy": 33,
+    "fr063-training-level-policy-boundary": 2
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "0816ddb12ab8eb434b4c39ddb8a10e321906ea727af3305840e4932b10b043d6",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f3227ead87bffc76734cf9ee810bb35b0b76fbf5633fcb9fd8cf915eba9aeb1b",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "0816ddb12ab8eb434b4c39ddb8a10e321906ea727af3305840e4932b10b043d6",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "abae9956053e461f87c03eabb2d6cbfcee891f983810118a0ceb8cc1b112d2f8",
+      "bytes": 29163520
+    }
+  ],
+  "sourceDependencies": [
+    {
+      "owner": "GetPlayerLevel",
+      "change": "Three parsed leaves only; source awaits, each JsonDocument lifetime, independent catch/joint rethrow, priority and final1 unchanged."
+    },
+    {
+      "owner": "ReadTrainingExperienceLevel",
+      "change": "Exact Number level then Number playerLevel; first numeric conversion failure throws before alias; no parse/catch/clamp/IO/write/clock/ID/authority."
+    },
+    {
+      "owner": "ReadTrainingSingleLevel",
+      "change": "Exact Number level or nullable null; root and GetInt32 failures remain exposed to unchanged owner catch."
+    },
+    {
+      "owner": "ordinary ComputeAsync/GetTrainingStateAsync/TrainAsync",
+      "change": "Actual ordinary computation/training consume GetPlayerLevel immediately; two existing cap/write cases intentionally overlap category ownership."
+    },
+    {
+      "owner": "existing joint derived projection",
+      "change": "ComputeAsync invokes same GetPlayerLevel through unchanged stricter read adapter; FIRST protected Late2 required for changed shared body. No HOT/S/B/M3 integration."
+    },
+    {
+      "owner": "related provenance/header/worker families",
+      "change": "No private original/source/checkpoint/generation/header/worker owner or protocol changed; their related.when conditions are not activated. Prior passing packets are retained with original provenance, not rerun."
+    }
+  ],
+  "recovery": {
+    "base": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "fullStatus": "ONE exact GitHub codeload archive transport IN_PROGRESS; complete raw/blob/mode/path verification required before ANY actual",
+    "currentDeltaReceipt": "t179pd-training-level-source-wip-delta-recovery-20261017.json",
+    "coverage": "All10 changed/new source/checkpoint/report paths+4 mandatory governance files recovered exact from GitHub; does not alone constitute complete sourcebase recovery."
+  },
+  "sourceGate": "PENDING independent affected SOURCE/FIXTURE/SELECTION. No actual release from writer packet.",
+  "nextActual": "Only FIRST fr063-joint-late-completion after accepted saved/readback SOURCE and verified complete source recovery; freeze/persist/separate EVIDENCE before each specifically released A1 owner actual.",
+  "actualCurrentSource": "UNRUN: Late2 and all52A1; no runtime PASS claim",
+  "platform": "Debian13 linux-x64 / SDK10.0.401 / .NET8.0.31 / PowerShell7.5.4",
+  "gmUpdateRationale": "Behavior-preserving internal extraction; no changed game capability, emitted schema or GM-authored contract, so Mortal/afterlife prompts/docs/examples/manifests/guards need no update.",
+  "holds": "No CI/Windows/worker/denied-artifact workaround/settings/newQTE/HOT/S/B/M3/F1/T197 activation; D4/guidedUS5/actualDOM+visual/Windows/D8 remainOPEN; main/merge/force/deletion/credentials/issues untouched."
+}
