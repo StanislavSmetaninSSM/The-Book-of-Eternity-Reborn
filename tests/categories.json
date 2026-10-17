@@ -19070,43 +19070,41 @@
             ]
         },
         {
-            "id": "frontend-shell-input",
-            "responsibility": "Frontend shell state, navigation, composer, launcher, and input contracts.",
-            "excludes": "C# host, canonical state writes, and gameplay validation.",
-            "changeHints": [
-                "BookOfEternityClient.WebFrontend/src/**"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
+          "id": "frontend-shell-input",
+          "responsibility": "Frontend shell state, navigation, composer, launcher, and input contracts.",
+          "excludes": "C# host, canonical state writes, and gameplay validation.",
+          "changeHints": [
+            "BookOfEternityClient.WebFrontend/src/**"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false
+          },
+          "timeoutMinutes": 5,
+          "expectedSeconds": 12.68,
+          "selectors": [
+            {
+              "project": "frontend",
+              "tests": [
+                "BookOfEternityClient.WebFrontend/test/connectionBanner.test.ts",
+                "BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts",
+                "BookOfEternityClient.WebFrontend/test/promptFormSanitization.test.ts",
+                "BookOfEternityClient.WebFrontend/test/tabBarShortcuts.test.ts",
+                "BookOfEternityClient.WebFrontend/test/unifiedInputSubmitRace.test.ts",
+                "BookOfEternityClient.WebFrontend/test/useShellStateSettled.test.ts"
+              ],
+              "runner": "node"
             },
-            "timeoutMinutes": 5,
-            "expectedSeconds": 12.68,
-            "selectors": [
-                {
-                    "project": "frontend",
-                    "tests": [
-                        "BookOfEternityClient.WebFrontend/test/connectionBanner.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/gameLauncherMenuLayout.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/promptFormSanitization.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/tabBarShortcuts.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/uiStructure.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/unifiedInputSubmitRace.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/useShellStateSettled.test.ts"
-                    ],
-                    "runner": "node"
-                },
-                {
-                    "project": "frontend",
-                    "tests": [
-                        "BookOfEternityClient.WebFrontend/test/commandAutocompleteLogic.test.ts",
-                        "BookOfEternityClient.WebFrontend/test/sidebarNavigation.test.ts"
-                    ],
-                    "runner": "vitest"
-                }
-            ]
+            {
+              "project": "frontend",
+              "tests": [
+                "BookOfEternityClient.WebFrontend/test/commandAutocompleteLogic.test.ts",
+                "BookOfEternityClient.WebFrontend/test/sidebarNavigation.test.ts"
+              ],
+              "runner": "vitest"
+            }
+          ]
         },
         {
             "id": "frontend-shell-types",
@@ -28715,6 +28713,33 @@
           "tests": [
             "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RetiringDarenPublishersPreserveHistoricalCloseRows"
           ]
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-frontend-shell",
+      "responsibility": "1558 only two actual changed launcher/ui source-structure Node consumers; other shell-input files remain with original owner and are not replayed.",
+      "excludes": "Other shell input/command/frontend families; interactive Chromium is a separate Root-owned sample.",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+        "BookOfEternityClient.WebFrontend/src/App.tsx"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/gameLauncherMenuLayout.test.ts",
+            "BookOfEternityClient.WebFrontend/test/uiStructure.test.ts"
+          ],
+          "runner": "node"
         }
       ]
     }

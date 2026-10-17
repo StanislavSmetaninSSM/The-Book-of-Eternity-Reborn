@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G0 and targeted CLI API scope addendum accepted independently/by Root. Tests-only G1 authoring is released after the persistedcffc decision checkpoint publication/readback, now satisfied; no production/removal/prompt, producer/native/browser execution or GREEN is released.
+**Status**: G0+A01 accepted/persisted; G1 concrete tests-only candidate, static ledger and16-owner selection authored, uncompiled/unrun. Fresh zero-execution prep follows publication; independent SOURCE and separate capture2 release pending. T001–T003 complete; T004–T020 unchecked. No production/prompts/native/browser release.
 
 ## Source issues and scope
 

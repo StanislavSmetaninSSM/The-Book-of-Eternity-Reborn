@@ -86,24 +86,35 @@ internal static class DarenRetirementEvidenceFixtures
         Assert.NotEqual(packet.OriginalRoot, root);
         var bootstrap = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         await new StateManager(bootstrap, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
+        var targetGeneration = JsonNode.Parse(File.ReadAllBytes(bootstrap.SessionGenerationPath))!["generationId"]!.GetValue<string>();
         var transformations = new List<object>();
         foreach (var (relative, encoded) in packet.FilesBase64)
         {
             var before = Convert.FromBase64String(encoded);
             var after = before;
             var replacements = 0;
-            if (relative.EndsWith(".json", StringComparison.Ordinal))
+            var generationReplacements = 0;
+            // Only the captured authority metadata carries absolute roots/generations.
+            // Profile and backup bodies are arbitrary bytes even when named *.json.
+            var metadata = relative == packet.EvidencePath || relative == packet.GenerationPath;
+            Assert.False(metadata && relative == Profile);
+            if (metadata)
             {
                 var text = new UTF8Encoding(false, true).GetString(before);
                 replacements = text.Split(packet.OriginalRoot, StringSplitOptions.None).Length - 1;
-                after = Encoding.UTF8.GetBytes(text.Replace(packet.OriginalRoot, root, StringComparison.Ordinal));
+                generationReplacements = text.Split(packet.Generation, StringSplitOptions.None).Length - 1;
+                after = Encoding.UTF8.GetBytes(text.Replace(packet.OriginalRoot, root, StringComparison.Ordinal)
+                    .Replace(packet.Generation, targetGeneration, StringComparison.Ordinal));
             }
             Put(root, relative, after);
-            transformations.Add(new { Relative = relative, Before = Hash(before), After = Hash(after), RootReplacements = replacements });
+            if (!metadata) Assert.Equal(before, after);
+            transformations.Add(new { Relative = relative, MetadataTransform = metadata,
+                Before = Hash(before), After = Hash(after), RootReplacements = replacements, GenerationReplacements = generationReplacements });
         }
         output.WriteLine(JsonSerializer.Serialize(new { Provenance = "SOURCE_DERIVED_INSTANTIATION_NOT_AUTHENTIC_SAME_ROOT",
             packet.Kind, OriginalRoot = packet.OriginalRoot, InstantiatedRoot = root,
-            Generation = packet.Generation, GenerationTransform = "NONE; independent root retains exact original template generation bytes",
+            OriginalGeneration = packet.Generation, InstantiatedGeneration = targetGeneration,
+            GenerationTransform = "EXPLICIT original template generation -> actual fresh-root bootstrap generation only in EvidencePath and GenerationPath metadata; profile/backups stay raw byte-exact; original packet bytes/hashes remain unchanged",
             Transformations = transformations }));
         return new(root, NullLogger<FileSystemManager>.Instance);
     }

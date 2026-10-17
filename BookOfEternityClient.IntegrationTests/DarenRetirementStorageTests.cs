@@ -24,12 +24,13 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
         var manifest = JsonNode.Parse(File.ReadAllBytes(manifestPath))!.AsObject();
         Assert.Equal(7, manifest["schemaVersion"]!.GetValue<int>());
         Assert.Equal("staged", manifest["status"]!.GetValue<string>());
-        Assert.Equal(packet.Generation, manifest["generation"]!.GetValue<string>());
+        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        Assert.Equal(generation, manifest["generation"]!.GetValue<string>());
         Assert.Equal("daren_reward_profile", manifest["externalEntries"]![0]!["fileId"]!.GetValue<string>());
         Assert.Equal(DarenRetirementEvidenceFixtures.After, File.ReadAllBytes(Path.Combine(root, DarenRetirementEvidenceFixtures.Profile)));
         Assert.Equal(DarenRetirementEvidenceFixtures.After, File.ReadAllBytes(files.ResolvePath(DarenRetirementEvidenceFixtures.Member)));
         if (coexistingOrdinaryJournal)
-            WriteSyntheticSharedJournal(files, packet.Generation, "game_state/meta/retirement-coexisting.bin", includeProfile: false);
+            WriteSyntheticSharedJournal(files, generation, "game_state/meta/retirement-coexisting.bin", includeProfile: false);
         output.WriteLine("RetirementFixturePrerequisites=VALID_CAPTURE_DERIVED_CURRENT_BROWSER; coexisting=" + coexistingOrdinaryJournal);
         await InspectRefusalAsync(root);
     }
@@ -49,8 +50,9 @@ public sealed class DarenRetirementStorageTests(ITestOutputHelper output)
             Assert.Equal(Path.Combine(root, DarenRetirementEvidenceFixtures.Profile),
                 actual.RootElement.GetProperty("Members")[0].GetProperty("Path").GetString());
         }
+        var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
         if (ordinaryFirstMixedJournal)
-            WriteSyntheticSharedJournal(files, packet.Generation, "game_state/meta/retirement-mixed.bin", includeProfile: true);
+            WriteSyntheticSharedJournal(files, generation, "game_state/meta/retirement-mixed.bin", includeProfile: true);
         output.WriteLine("RetirementFixturePrerequisites=VALID_CAPTURE_DERIVED_PROFILE; mixed=" + ordinaryFirstMixedJournal);
         await InspectRefusalAsync(root);
     }

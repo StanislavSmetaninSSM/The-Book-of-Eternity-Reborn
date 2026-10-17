@@ -1,7 +1,7 @@
 # Implementation Plan: #1558 Daren campaign removal
 
 **Issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). **Spec**: [spec.md](spec.md). **Date**: 2026-10-17.
-**Current status**: G0 + targeted CLI API scope accepted independently and by Root. Tests-only G1 authoring activates after this release checkpoint publication/readback; fresh zero-execution preparation is allowed after tests WIP publication. Production/removal/prompts, producer capture/native/browser execution and GREEN remain held. No G1 tests/build/discovery have executed.
+**Current status**: G0+A01 accepted and persisted; tests-only G1 concrete candidate authored. Full static method/row ledger and16-owner selection are ready for fresh zero-execution preparation after this candidate publication/readback. Concrete SOURCE/preparation and separate capture2 release are pending. Product/prompts/removal, producer/native/browser actual and GREEN remain held; no build/discovery/actual has executed.
 
 ## Isolation, instructions and recovery
 
@@ -97,7 +97,7 @@ The [c833 immediate delta](recovery/gm1558-g0-accepted-delta-github-c83396d2-202
 Execution method: inline executing-plans/TDD, with this tracked plan/task ledger instead of a parallel report tree. Project/category-only rules and explicit current authorization override skill full-suite/workspace deletion/extra-user-approval defaults. Independent reviewer is the existing Astra agent; no additional agents. Current T004–T009 remain authored/pending until their concrete source/preparation/actual evidence exists. No product or runtime action has occurred at this decision checkpoint.
 
 
-## G1 partial tests-only WIP (current)
+## Historical G1 partial tests-only WIP at3c574848
 
 Authoring includes original producer capture2, derived/synthetic retired-evidence refusal+ordinary recovery, real console menu/new-soul/save-load/host11/console11, active source/guidance and frontend guards. Existing owning-close method partitions unchanged8 common rows from4 unselected temporary Daren rows through the same core. Two obsolete positive Daren/#919 practice-doc requirements are removed while all practice/no-reward/scoring assertions stay. Production, prompts, resources and old immutable reports are unchanged.
 
@@ -106,3 +106,19 @@ Authoring includes original producer capture2, derived/synthetic retired-evidenc
 Three metadata-helper selfchecks stopped catalog generation: closing whitespace, terminal newline and a nested `related.id` match. The generated catalog was restored from exactHEAD; corrected generation decodes only actual top-level category spans and verifies every unaffected semantic row before write. First helpers are retained in `/tmp/gm1558-g1-categories-{first,second,third}.py`. These are authoring utility errors, not product/PREP/test failures, and no native command was retried.
 
 This partial WIP saves all drafts before continued ledger/binding work. Next: finish static bindings and full row ledger, publish concrete G1 candidate before fresh BOTH/catalog/PlanOnly0. No production/removal/prompt or runtime release.
+
+
+## Current G1 concrete candidate
+
+[Concrete SOURCE packet](g1-source-packet-20261017.md) and [exact dependency pins](g1-source-packet-20261017.json) bind the completed static [method/row ledger](g1-method-row-ledger.json),16-owner canonical selection and original-product capture-only first gate. Root verified [partial3c readback](recovery/gm1558-root-partial-g1-readback-3c574848-20261017.json), [complete immediate delta](recovery/gm1558-g1-partial-delta-github-3c574848-20261017.json) and [82-delta composition](recovery/gm1558-root-recovery-composition-3c574848-20261017.json): zero production paths, exactly9 existing catalog owners modified/799 others raw+semantic identical at that historical carrier. This next candidate additionally narrows two frontend-shell files into a separate owner;821 total catalog rows and16 selected owners are static proposals until native discovery. Five unchanged ordinary Linux protocol admission rows are an affected early-admission/pending-precedence dependency, not historical count replay.
+
+Before native, static bindings corrected the profile-byte transport (only authority metadata decodes), explicit fresh-root generation transformation, actual UI namespace/AudioService constructor, and canonical `selections` request property. These were source-authoring corrections, not product/PREP/native failures. Original capture packets remain absent; only capture2 can be released after concrete SOURCE, then frozen-data review precedes consumer causal RED. Build/discovery/actual remain UNRUN at this source checkpoint. Existing helper selfcheck stops and partial history remain above; no previous native command was retried. T004–T020 remain unchecked.
+
+
+## Current G1 concrete candidate
+
+[Concrete SOURCE packet](g1-source-packet-20261017.md) and [exact dependency pins](g1-source-packet-20261017.json) bind the completed static [method/row ledger](g1-method-row-ledger.json),16-owner canonical selection and original-product capture-only first gate. Root verified [partial3c readback](recovery/gm1558-root-partial-g1-readback-3c574848-20261017.json), [complete immediate delta](recovery/gm1558-g1-partial-delta-github-3c574848-20261017.json) and [82-delta composition](recovery/gm1558-root-recovery-composition-3c574848-20261017.json): zero production paths, exactly9 existing catalog owners modified/799 others raw+semantic identical at that historical carrier. This next candidate additionally narrows two frontend-shell files into a separate owner;821 total catalog rows and16 selected owners are static proposals until native discovery. Five unchanged ordinary Linux protocol admission rows are an affected early-admission/pending-precedence dependency, not historical count replay.
+
+Before native, static bindings corrected the profile-byte transport (only authority metadata decodes), explicit fresh-root generation transformation, actual UI namespace/AudioService constructor, and canonical `selections` request property. These were source-authoring corrections, not product/PREP/native failures. Original capture packets remain absent; only capture2 can be released after concrete SOURCE, then frozen-data review precedes consumer causal RED. Build/discovery/actual remain UNRUN at this source checkpoint. Existing helper selfcheck stops and partial history remain above; no previous native command was retried. T004–T020 remain unchecked.
+
+Static packet assembly encountered one Python closing-delimiter SyntaxError before execution and one missing-file assertion from guessed historical test-support paths; actual filenames were resolved with rg and the bounded assembly completed. No native preparation, producer or test ran. These metadata utility outcomes are separate from causal RED/PREP/product results. Final static catalog comparison:821 rows,13 new owners,10 existing modified,798 existing raw+semantic unchanged, no deleted owner; native inventory remains pending.

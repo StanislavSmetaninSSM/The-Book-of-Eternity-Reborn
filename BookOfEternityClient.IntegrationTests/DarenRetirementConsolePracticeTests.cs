@@ -3,6 +3,7 @@ using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +32,7 @@ public sealed class DarenRetirementConsolePracticeTests(ITestOutputHelper output
         var service = new QteSceneService(files, state.Settings,
             new CharacteristicsService(files, state, NullLogger<CharacteristicsService>.Instance),
             new ImageService(files, state.Settings, loc, NullLogger<ImageService>.Instance),
-            new AudioService(files, state.Settings, loc, NullLogger<AudioService>.Instance),
+            new AudioService(files, state.Settings, NullLogger<AudioService>.Instance),
             null!, null!, null!, state, NullLogger<QteSceneService>.Instance, input);
         var types = QteSceneService.GetPracticeCatalog().Select(x => x.TypeId).ToArray();
         var index = Array.IndexOf(types, type); Assert.True(index >= 0);

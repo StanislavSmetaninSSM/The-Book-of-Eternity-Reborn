@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "entries": [
+  "selections": [
     {
       "category": "daren-retirement-producer-capture",
       "reason": "1558 pre-removal two original-producer capture Facts only. Freeze current schema7 declared external and standalone committed journal bytes/lineage in owned roots; strict cleanup. No consumer or production release. Temporary owner retires after frozen captures.",
@@ -98,8 +98,8 @@
       ]
     },
     {
-      "category": "frontend-shell-input",
-      "reason": "Changed launcher/ui source structures require their actual node assertions; source updates preserve other shell semantics.",
+      "category": "daren-retirement-frontend-shell",
+      "reason": "1558 only two actual changed launcher/ui source-structure Node consumers; other shell-input files remain with original owner and are not replayed.",
       "contracts": [
         "#1558",
         "accepted G0+A01 removal/data-safety/client/common-regression contract"
@@ -115,10 +115,18 @@
     },
     {
       "category": "gm-doc-afterlife-package-delivery",
-      "reason": "One existing genuine publisher is an actual changed StepMain source→package→session dependency after G2; other51 fixed-sessiondocs retained; CLIAPI is not a session53rd member. No old physical-negative/lifetime replay.",
+      "reason": "One existing genuine publisher is an actual changed StepMain source\u2192package\u2192session dependency after G2; other51 fixed-sessiondocs retained; CLIAPI is not a session53rd member. No old physical-negative/lifetime replay.",
       "contracts": [
         "#1558",
         "accepted G0+A01 removal/data-safety/client/common-regression contract"
+      ]
+    },
+    {
+      "category": "portable-browser-protocol-admission-linux",
+      "reason": "1558 changes the actual shared preclassification/whole-journal admission order. Retain five existing Linux ordinary pending-decision/neutral-backup controls; their bodies already use ordinary Member, not the retired profile. No Windows counterpart or broad browser replay.",
+      "contracts": [
+        "#1558",
+        "ordinary pending recovery before browser rollback; unknown evidence refuses before mutation"
       ]
     }
   ]
