@@ -1,5 +1,11 @@
 # Feature Specification: GM Documentation Modularization
 
+## Current final handoff — exact independent decision persisted; targeted readback pending
+
+Root read the exact [final independent handoff MD/JSON decision](recovery/current-final-handoff-independent-review-20261017.md) and accepts `ACCEPTED_FINAL_HANDOFF_SUBJECT_TO_PUBLICATION_AND_EDITORIAL_READBACK` on9fca: no material blockers, H-L01LOW only. The [supporting check](recovery/current-final-handoff-independent-check-20261017.json) is persisted unchanged. The two T006/T018 A-selection phrases now say “at the accepted A checkpoint; retained A mirror”; current canonical remains B9, with no selector/criterion/source/raw change.
+
+**T030–T032 remain unchecked.** Targeted wording confirmation and Root's exact newremote/recovery verification have not yet happened. Only after those gates may the final task-completion checkpoint be made. [Reviewed9fca delta](recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json) and [Root75-delta composition](recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json) retain the verified prior checkpoint. No new runtime/build/CI or broader qualification.
+
 ## Current final handoff WIP — T030–T032 (2026-10-17)
 
 Authoritative current coverage and dispositions are in [analysis.md](analysis.md):13FR/6SC mapped to accepted source/runtime evidence. A255 qualified cases are a retained mixed-source union; B78 are current actuala8e/compiled69dc with12shared-A cases, so no333unique count. A source/evidence chain and [final B verdict](recovery/current-B-final-evidence-independent-review-20261017.md) are accepted; f458 remote/recovery is verified. Real current52 delivery/physical negatives/strict cleanup are qualified, while logical profile paths do not prove backend execution.

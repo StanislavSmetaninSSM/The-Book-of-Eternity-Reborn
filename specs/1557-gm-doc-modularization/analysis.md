@@ -1,8 +1,14 @@
 # #1557 — current requirements, evidence and handoff analysis
 
-**2026-10-17; T030–T032 metadata WIP, independent final review/publication pending.** Source issue [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557) remains open. Accepted implementation baseline is `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423` on `1557-gm-doc-modularization-continuation-20261017`; main remains `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. This handoff changes feature metadata only. T001–T029 are accepted; T030–T032 remain unchecked until the final independent review and recoverable checkpoint.
+**2026-10-17; T030–T032 independent final review accepted subject to targeted editorial readback/publication; tasks still open.** Source issue [#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557) remains open. Accepted implementation baseline is `f458631e15cb49bebdb7b1fefe72ae5b1fc6d423` on `1557-gm-doc-modularization-continuation-20261017`; main remains `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. This handoff changes feature metadata only. T001–T029 are accepted; T030–T032 remain unchecked until the final independent review and recoverable checkpoint.
 
 This analysis and the current sections of [spec](spec.md), [plan](plan.md), [tasks](tasks.md) and [quickstart](quickstart.md) govern current status. Earlier dated planning/execution records, immutable review reports and their then-pending statements are historical snapshots. They do not reopen accepted A/B or grant runtime release.
+
+## Current final handoff — exact independent decision persisted; targeted readback pending
+
+Root read the exact [final independent handoff MD/JSON decision](recovery/current-final-handoff-independent-review-20261017.md) and accepts `ACCEPTED_FINAL_HANDOFF_SUBJECT_TO_PUBLICATION_AND_EDITORIAL_READBACK` on9fca: no material blockers, H-L01LOW only. The [supporting check](recovery/current-final-handoff-independent-check-20261017.json) is persisted unchanged. The two T006/T018 A-selection phrases now say “at the accepted A checkpoint; retained A mirror”; current canonical remains B9, with no selector/criterion/source/raw change.
+
+**T030–T032 remain unchecked.** Targeted wording confirmation and Root's exact newremote/recovery verification have not yet happened. Only after those gates may the final task-completion checkpoint be made. [Reviewed9fca delta](recovery/current-final-handoff-reviewed-github-delta-9fcab07b-20261017.json) and [Root75-delta composition](recovery/current-final-handoff-reviewed-root-recovery-9fcab07b-20261017.json) retain the verified prior checkpoint. No new runtime/build/CI or broader qualification.
 
 ## Evidence and version boundaries
 
@@ -81,7 +87,7 @@ Root accepted source/evidence/remote/readback/metadata of f458: retained full7a 
 
 Writer metadata consistency checked13FR/6SC rows, all32unique tasks with29checked/3open, all32tasks mapped to requirements/criteria, unchanged exact13FR/6SC specification bullets and resolving current local evidence links. The writer ran no build/discovery/test/API/provider; Root separately performed the credited harmless issue read. [Baseline complete GitHub delta](recovery/current-final-handoff-baseline-github-delta-f458631e-20261017.json) and [Root composition](recovery/current-final-handoff-baseline-root-recovery-f458631e-20261017.json) retain exact accepted f458 recovery.
 
-T030–T032 are deliberately still unchecked while this handoff WIP is prepared. Required remaining work is metadata consistency/diff-scope review, exact WIP publication/readback/new clean GitHub delta, independent final coherent review, then final accepted metadata publication/recovery. No source/selection/raw changes or runtime/build/CI are needed for this metadata-only closure.
+T030–T032 are deliberately still unchecked while this handoff WIP is prepared. Independent coherent metadata review is now accepted conditionally. Remaining gates are the exact newcheckpoint publication/readback/recovery, targeted H-L01 confirmation and final task-completion publication; they are not claimed already complete. No source/selection/raw changes or runtime/build/CI are needed for this metadata-only closure.
 
 Accepted GM-facing changes are the explicit thematic documents/examples, conditional references/headers/router, bounded read availability, manifests/guards and real delivery inventory. Game mechanics/canonical schemas/write authority are unchanged, so no additional GM contract/gameplay example update is needed for this handoff.
 
