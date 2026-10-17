@@ -325,6 +325,45 @@
       "afterBase64": "VGhpcyBpcyBhIGJvdW5kZWQgYm9vdHN0cmFwIHRhc2sgcGFja2V0OiBkbyBub3Qgb3BlbiBicm9hZCBleGFtcGxlcywgYWZ0ZXJsaWZlIGRpcmVjdGl2ZXMsIHdlYXRoZXIgZ3VpZGFuY2UsIGNvbWJhdCBndWlkYW5jZSwgZmFjdGlvbi9sb2NhdGlvbi9OUEMvc2tpbGwgdGVtcGxhdGVzLCBvciByZXBvc2l0b3J5IHNvdXJjZS4=",
       "authority": "approved D01 ban; independent first-current source.bootstrap_source_exception causal finding",
       "applied": true
+    },
+    {
+      "id": "N026",
+      "source": "CLI_API_Specification.md",
+      "start": 164607,
+      "end": 165661,
+      "kind": "1558 campaign retirement; ordinary QTE/practice and D01 unchanged",
+      "beforeSha256": "40cf533b4ba7fa732157ef709fdf35224c7989ceff0e661ce0c3a2db97b5b2e5",
+      "afterSha256": "1d7d5e42daec9b80e17d7791c64c9a0bc31a61c222b4eb783e76fc4525a7608b",
+      "beforeBase64": "LSBQcmFjdGljZSBoYXMgbm8gcmV3YXJkczogbm8gWFAsIGFjaGlldmVtZW50cywgSW5rIEZlYXRoZXJzLCBpbnZlbnRvcnksIHF1ZXN0IHByb2dyZXNzLCBEYXJlbiByZXdhcmRzLCBvciBvdGhlciBwZXJtYW5lbnQgYmVuZWZpdHMuCi0gUHJhY3RpY2UgaGFzIG5vIEdNLWF1dGhvcmVkIHByYWN0aWNlIHNjZW5lczsgdGhlIEdNIG11c3Qgbm90IGF1dGhvciBwcmFjdGljZSBvZmZlcnMsIGFjdGlvbiB0eXBlcywgcmVzcG9uc2UgZmllbGRzLCBvciBmb2xsb3ctdXAgdHVybnMuCi0gUHJhY3RpY2UgZG9lcyBub3QgbXV0YXRlIGNhbXBhaWduIHN0YXRlLCBwZW5kaW5nIGNhbXBhaWduIGFjdGlvbnMsIG9yZGluYXJ5IHR1cm4gc3RhdGUsIG9yIHBlcm1hbmVudCByZXdhcmQgc3RhdGUuCi0gRGFyZW4gc2hvd2Nhc2Ugd29yayBpbiAjOTE5IG1heSBwb2ludCBwbGF5ZXJzIHRvd2FyZCBwcmFjdGljZSwgYnV0IERhcmVuIHJld2FyZHMvZW5kaW5ncy9hZHZlbnR1cmUgY29udGVudCBhcmUgb3V0c2lkZSB0aGUgUVRFIFByYWN0aWNlIE1vZGUgY29udHJhY3QuCi0gRGFyZW4gc2hvd2Nhc2UgaXMgY2xpZW50LW93bmVkIGF1dGhvcmVkIGNvbnRlbnQgYW5kIGlzIG5vdCBhIEdNLWF1dGhvcmVkIFFURSBvZmZlci4gSXQgdXNlcyBRVEUgbWVjaGFuaWNzIHRvIHRlbGwgdGhlIGZpeGVkIERhcmVuIG1hbm9yIHRoZWZ0IHJvdXRlLCBzdG9yZXMgb25seSB0aGUgYmVzdCBwZXJtYW5lbnQgRGFyZW4gdGllciBvdXRzaWRlIG9yZGluYXJ5IGBnYW1lX3N0YXRlYCwgYW5kIG1heSBncmFudCBhIE5ldyBHYW1lIEluayBGZWF0aGVyIGJvbnVzIGZyb20gdGhhdCBzdG9yZWQgYmVzdCB0aWVyLgotIFFURSBQcmFjdGljZSBNb2RlIG11c3Qgbm90IGdyYW50IERhcmVuIHJld2FyZHMsIGFuZCBvcmRpbmFyeSBHTS1hdXRob3JlZCBjYW1wYWlnbiBRVEUgb2ZmZXJzIG11c3Qgbm90IHdyaXRlIERhcmVuIHNob3djYXNlIHRpZXJzLCBEYXJlbiBwcm9maWxlIHJlY29yZHMsIE5ldyBHYW1lIGdyYW50IG1hcmtlcnMsIG9yIHBlcm1hbmVudCBJbmsgRmVhdGhlciByZXdhcmQgc3RhdGUuCg==",
+      "afterBase64": "LSBQcmFjdGljZSBoYXMgbm8gcmV3YXJkczogbm8gWFAsIGFjaGlldmVtZW50cywgSW5rIEZlYXRoZXJzLCBpbnZlbnRvcnksIHF1ZXN0IHByb2dyZXNzLCBvciBvdGhlciBwZXJtYW5lbnQgYmVuZWZpdHMuCi0gUHJhY3RpY2UgaGFzIG5vIEdNLWF1dGhvcmVkIHByYWN0aWNlIHNjZW5lczsgdGhlIEdNIG11c3Qgbm90IGF1dGhvciBwcmFjdGljZSBvZmZlcnMsIGFjdGlvbiB0eXBlcywgcmVzcG9uc2UgZmllbGRzLCBvciBmb2xsb3ctdXAgdHVybnMuCi0gUHJhY3RpY2UgZG9lcyBub3QgbXV0YXRlIGNhbXBhaWduIHN0YXRlLCBwZW5kaW5nIGNhbXBhaWduIGFjdGlvbnMsIG9yZGluYXJ5IHR1cm4gc3RhdGUsIG9yIHBlcm1hbmVudCByZXdhcmQgc3RhdGUuCgoKLSBPcmRpbmFyeSBHTS1hdXRob3JlZCBRVEUgb2ZmZXJzIG11c3Qgbm90IHdyaXRlIGNsaWVudC1vd25lZCBOZXcgR2FtZSBncmFudCBtYXJrZXJzIG9yIHBlcm1hbmVudCBJbmsgRmVhdGhlciByZXdhcmQgc3RhdGUuCg==",
+      "authority": "specs/1558-remove-daren-campaign/spec.md; acceptedG0/G1 causalEVIDENCE and RootG2release",
+      "applied": true
+    },
+    {
+      "id": "N027",
+      "source": "CLI_API_Specification.md",
+      "start": 166930,
+      "end": 167137,
+      "kind": "1558 campaign retirement; ordinary QTE/practice and D01 unchanged",
+      "beforeSha256": "623ee2c95f65ed76212bf8c80fbea6c44057012c377970722bf6b49f115c1b35",
+      "afterSha256": "e2e50601912b19bd07304bd47a1453807ff8eb0fb8bc852ec4f3349151dad38a",
+      "beforeBase64": "ICAtIGBzY29yZU1vZGVsYCBtYXkgYmUgdXNlZCBieSBvcmRpbmFyeSBHTS1hdXRob3JlZCBRVEUgb2ZmZXJzIHRvIHRyYWNrIHNjZW5lLWxvY2FsIHNjb3Jpbmcgd2l0aG91dCBEYXJlbiBtb2RlLCBwcmFjdGljZSBtb2RlIHJld2FyZHMsIGFjaGlldmVtZW50cywgaW52ZW50b3J5LCByZXNvdXJjZXMsIG9yIG90aGVyIHBlcm1hbmVudCByZXdhcmQgc3lzdGVtcy4K",
+      "afterBase64": "ICAtIGBzY29yZU1vZGVsYCBtYXkgYmUgdXNlZCBieSBvcmRpbmFyeSBHTS1hdXRob3JlZCBRVEUgb2ZmZXJzIHRvIHRyYWNrIHNjZW5lLWxvY2FsIHNjb3Jpbmcgd2l0aG91dCBwcmFjdGljZSBtb2RlIHJld2FyZHMsIGFjaGlldmVtZW50cywgaW52ZW50b3J5LCByZXNvdXJjZXMsIG9yIG90aGVyIHBlcm1hbmVudCByZXdhcmQgc3lzdGVtcy4K",
+      "authority": "specs/1558-remove-daren-campaign/spec.md; acceptedG0/G1 causalEVIDENCE and RootG2release",
+      "applied": true
+    },
+    {
+      "id": "N028",
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 40135,
+      "end": 40297,
+      "kind": "1558 campaign retirement; ordinary QTE/practice and D01 unchanged",
+      "beforeSha256": "d9b4d9829753fde0092b978786625e88687ea55f14e58beafdc184c8a15ff00f",
+      "afterSha256": "f6a6f49f2722e5bb32dc7739b3e8c738f93374df6f057b18e11adf0dafbb1439",
+      "beforeBase64": "ICAgICAgICAgICAgICAgLSBQcmFjdGljZSBtYXkgdGVhY2ggUVRFIG1lY2hhbmljcyBvdXRzaWRlIGEgY2FtcGFpZ247IGRvIG5vdCBhdXRob3IgcHJhY3RpY2Ugb2ZmZXJzLCBwcmFjdGljZSByZXdhcmRzLCBEYXJlbiByZXdhcmRzLCBvciBmb2xsb3ctdXAgcHJhY3RpY2UgdHVybnMK",
+      "afterBase64": "ICAgICAgICAgICAgICAgLSBQcmFjdGljZSBtYXkgdGVhY2ggUVRFIG1lY2hhbmljcyBvdXRzaWRlIGEgY2FtcGFpZ247IGRvIG5vdCBhdXRob3IgcHJhY3RpY2Ugb2ZmZXJzLCBwcmFjdGljZSByZXdhcmRzLCBvciBmb2xsb3ctdXAgcHJhY3RpY2UgdHVybnMK",
+      "authority": "specs/1558-remove-daren-campaign/spec.md; acceptedG0/G1 causalEVIDENCE and RootG2release",
+      "applied": true
     }
   ],
   "stableReferenceInventory": [
@@ -674,5 +713,5 @@
   ],
   "D01": "RESOLVED: existing normal/repair implementation-code ban; no new exception",
   "newWrapperContract": "Every destination has exactly its declared header plus per-block start/end marker. No unlisted wrapper bytes or whitespace normalization. Contextual table columns inherit the complete original source section; module-specific applicability must be explicit before moves.",
-  "status": "Accepted A navigation edits retained. B extends only N006/N007/N009/N010 after-images against unchanged original a5 before spans; current conditional copy/read additions do not alter gameplay or write authority."
+  "status": "Accepted A navigation edits retained. B extends only N006/N007/N009/N010 after-images against unchanged original a5 before spans; current conditional copy/read additions do not alter gameplay or write authority.; #1558 adds exact reversible campaign-retirement entries N026–N028; original25/D01/payloads unchanged."
 }

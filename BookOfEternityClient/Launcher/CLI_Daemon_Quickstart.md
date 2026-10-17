@@ -90,8 +90,9 @@ Confirmed scoped stop/disposal/Stopped ACK must precede restart. Uncertain owner
 worker inventory or storage debt keeps refusal. Accepted bounded Load UX requires
 confirmed original stop + successful Load + current-owner refresh before a fresh
 configured launch; uncertain/failed decisions pause without old-session continuation.
-Linux browser rollback/gacha/Daren portability is accepted in isolated automated
-checks. Full native Windows validation is scheduled after merge in the existing
+Linux ordinary browser rollback/gacha portability has scoped automated evidence.
+The Daren campaign is retired; existing profile bytes stay inert, and interrupted
+retired-campaign evidence is retained with read-only refusal, never automatic cleanup. Full native Windows validation is scheduled after merge in the existing
 desktop task; it is not a Linux launch prerequisite. Actual hardware/desktop
 capabilities and generated gameplay through Load/fresh continuation remain separate.
 Windows instructions below retain their existing route.
@@ -209,7 +210,7 @@ pwsh -NoProfile -File "C:\Games\BOE\BookOfEternityClient\Launcher\bookofeternity
 и исключения служебных bridge/daemon/harness артефактов. Load/New Game не получает
 артефакты старой generation; не собирайте и не очищайте эти файлы вручную.
 
-Действующие bounded Load/browser/clipboard/audio результаты и ограничения — в
+Исторические bounded Load/browser/clipboard/audio результаты и ограничения #1553 — в
 [repository roadmap](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/roadmap-after-daren.md) и
 [repository auxiliary plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/auxiliary-launcher-portable-plan.md).
 Load UX принят отдельным срезом: подтверждённые stop + Load + refresh предшествуют

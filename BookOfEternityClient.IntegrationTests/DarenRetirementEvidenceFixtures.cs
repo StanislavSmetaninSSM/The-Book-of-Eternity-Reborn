@@ -42,35 +42,7 @@ internal static class DarenRetirementEvidenceFixtures
         File.WriteAllBytes(path, bytes);
     }
 
-    internal static Packet Capture(string kind, string producer, FileSystemManager files, string evidencePath)
-    {
-        var root = files.BasePath;
-        var relativeEvidence = Path.GetRelativePath(root, evidencePath).Replace('\\', '/');
-        var selected = new List<string> { Path.Combine(root, Profile), files.ResolvePath(Member), files.SessionGenerationPath };
-        selected.AddRange(Directory.GetFiles(Path.GetDirectoryName(evidencePath)!, "*", SearchOption.AllDirectories));
-        var images = selected.Distinct(StringComparer.Ordinal).ToDictionary(
-            path => Path.GetRelativePath(root, path).Replace('\\', '/'), File.ReadAllBytes, StringComparer.Ordinal);
-        Assert.All(images.Keys, path => Assert.DoesNotContain("..", path, StringComparison.Ordinal));
-        var generation = ReadCurrentGeneration(images[Path.GetRelativePath(root, files.SessionGenerationPath).Replace('\\', '/')]);
-        return new(kind, OriginalProductSource, producer, root,
-            Path.GetRelativePath(root, files.SessionGenerationPath).Replace('\\', '/'), generation,
-            relativeEvidence, images.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
-            images.ToDictionary(p => p.Key, p => Hash(p.Value)));
-    }
-
-    internal static void Freeze(Packet packet, ITestOutputHelper output)
-    {
-        var directory = Path.Combine(Path.GetTempPath(), "boe-daren-retirement-artifacts-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(directory);
-        var path = Path.Combine(directory, packet.Kind + ".json");
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(packet, Json);
-        File.WriteAllBytes(path, bytes);
-        output.WriteLine(JsonSerializer.Serialize(new { RetirementCapture = path, Sha256 = Hash(bytes),
-            packet.Kind, packet.Producer, packet.OriginalRoot, packet.Generation, Files = packet.FilesBase64.Count,
-            Provenance = "AUTHENTIC_ORIGINAL_PRODUCER_BYTES; original owned root is strictly removed after this capture" }));
-    }
-
-    // Frozen captures are added only after separately reviewed/released native captures.
+    // Exact original-producer packets were frozen and accepted before producer retirement.
     // Missing data is a fixture error, never a synthetic fallback or a passing skip.
     internal static Packet Load(string kind)
     {

@@ -47,16 +47,16 @@
 
                     QTE Practice Mode:
                     - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics.
-                    - It has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
+                    - It has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, or other permanent benefits.
                     - It has no GM-authored practice scenes; the GM must not create offers, action types, response fields, or follow-up turns for practice.
                     - Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
-                    - Daren showcase work in #919 may point players toward practice, but #919 rewards/endings/adventure content are outside this QTE Practice Mode contract.
 
-                    Daren showcase boundary:
-                    - Daren showcase is client-owned authored content and is not a GM-authored QTE offer.
-                    - It tells the fixed Daren manor theft route, stores only the best permanent Daren tier outside ordinary `game_state`, and may grant a New Game Ink Feather bonus from that stored best tier.
-                    - QTE Practice Mode must not grant Daren rewards.
-                    - Ordinary GM-authored campaign QTE offers MUST NOT write Daren showcase tiers, Daren profile records, New Game grant markers, or permanent Ink Feather reward state.
+
+
+
+
+
+                    - Ordinary GM-authored QTE offers MUST NOT write client-owned New Game grant markers or permanent Ink Feather reward state.
 
                     GM authoring responsibility:
                     - A valid `qte_offer.json` MUST contain these top-level fields:
@@ -111,7 +111,7 @@
                       - `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `faith`, `attractiveness`, `trade`, `persuasion`, `perception`, `luck`, `speed`
                     - Optional scoring for long QTE scenes:
                       - `scoreModel` MAY be used by ordinary GM-authored QTE offers.
-                      - `scoreModel` is generic QTE scoring; it is NOT Daren mode, practice-mode rewards, achievements, Ink Feathers, inventory, gadgets, resources, or any permanent reward system.
+                      - `scoreModel` is generic QTE scoring; it is NOT practice-mode rewards, achievements, Ink Feathers, inventory, gadgets, resources, or any permanent reward system.
                       - `scoreModel.metrics[]` defines stable lowercase metric ids, player-facing labels, numeric `initial`, `min`, and `max` values, and `visibility`.
                       - Supported metric `visibility` values are `always`, `final`, and `hidden`.
                       - `always` metrics may be shown during active play and in the final score summary.

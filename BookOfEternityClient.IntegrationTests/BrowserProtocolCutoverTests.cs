@@ -20,7 +20,8 @@ public sealed partial class BrowserProtocolCutoverTests(ITestOutputHelper output
     private Func<string, Task>? _mutation;
     private Action<TrustedLocalPublicationPhase, int>? _publication;
     private string ConfiguredRoot = null!;
-    private string ProfilePath => Path.Combine(_root, DarenQteRewardProfileService.ProfileRelativePath.Replace('/', Path.DirectorySeparatorChar));
+    private const string Companion = "game_state/meta/ProtocolCompanion.bin";
+    private string CompanionPath => _files.ResolvePath(Companion);
     private string JournalPath => Path.Combine(_root, ".boe_runtime/trusted-local-publication-v1/active.json");
 
     private async Task InitializeAsync(bool extended = false)

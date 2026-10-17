@@ -974,7 +974,7 @@
       ]
     }
   ]
-} ,
+},
     {
       "id": "fr063-automatic-calculation",
       "responsibility": "T179-Pa/T180a complete detached pure automatic training/level-award calculation required before M3 common sealing; exact three after-images and one real existing training-owner semantic control.",
@@ -5288,7 +5288,6 @@
           "changeHints": [
             "BookOfEternityClient/Core/StateManager.cs",
             "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
-            "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
             "BookOfEternityClient/Services/QteSceneService.Daren.cs",
             "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
             "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs"
@@ -7977,82 +7976,6 @@
             ]
         },
         {
-            "id": "daren-standalone-linux",
-            "responsibility": "#1553 T031 real Linux standalone Daren profile lifecycle, original public console QTE, exact rollback/read/normalization/no-op/pre-cancel; isolated original leases and publisher.",
-            "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
-            "changeHints": [
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
-                "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects"
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "daren-standalone-linux-boundaries",
-            "responsibility": "#1553 T031 exact real standalone profile cuts, original Committed debt/recovery and retained Uncertain at conflict/generation loss. Original main/worker/generation/lease and declared browser refusal.",
-            "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
-            "changeHints": [
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
-                "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.*"
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "daren-standalone-browser-dispatch",
-            "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
-            "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
-            "changeHints": [
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
-                "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline"
-                    ]
-                }
-            ]
-        },
-        {
             "id": "browser-direct-gacha-linux",
             "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal. Known original publication rollback and typed closing outcomes. Qualified exact raw authority and main/worker/generation/UI/debt/refusal boundaries.",
             "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
@@ -8661,47 +8584,46 @@
             ]
         },
         {
-            "id": "browser-rollback-linux-boundaries",
-            "responsibility": "#1553 T031 real browser cumulative intent/recovery/typed closing debt, external QTE participant and main-worker-generation conjunction in isolated Linux roots; exact affected publication/admission/finalization and both browser Load bundle regressions",
-            "excludes": "No historical F2 four reruns/native Windows/live browser/providers/real saves/Load UX or unrelated cohorts.",
-            "changeHints": [
-                "BookOfEternityClient/Core/FileSystemManager",
-                "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore",
-                "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator",
-                "BookOfEternityClient/WebUi/QteWebInteractionService"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
+          "id": "browser-rollback-linux-boundaries",
+          "responsibility": "#1553 T031 real browser cumulative intent/recovery/typed closing debt, external QTE participant and main-worker-generation conjunction in isolated Linux roots; exact affected publication/admission/finalization and both browser Load bundle regressions",
+          "excludes": "No historical F2 four reruns/native Windows/live browser/providers/real saves/Load UX or unrelated cohorts.",
+          "changeHints": [
+            "BookOfEternityClient/Core/FileSystemManager",
+            "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+            "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator",
+            "BookOfEternityClient/WebUi/QteWebInteractionService"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": false
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.*",
+                "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+                "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads"
+              ]
             },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.*",
-                        "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
-                        "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads"
-                    ]
-                },
-                {
-                    "project": "unit",
-                    "tests": [
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation",
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux",
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
-                        "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
-                        "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
-                        "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
-                        "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
-                    ]
-                }
-            ]
+            {
+              "project": "unit",
+              "tests": [
+                "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+                "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation",
+                "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+                "BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux",
+                "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+                "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+                "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+                "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+                "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
+              ]
+            }
+          ]
         },
         {
             "id": "gm-main-production-admission",
@@ -12248,7 +12170,6 @@
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RejectsSharedExecutionRoot",
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplayPreparedTemplateContract_RequiresSourceAndPreparedLoadAssertions",
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CommandDisplaySaveSources_UseLazyPreparedTemplatesAndPreserveTheoryManifests",
-                "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.DarenQteSources_AreSemanticallySplitAcrossTestAssemblies",
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExactTestInventory_RejectsMissingChangedAndDuplicateRows",
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExplorerWebCommandAudit_ReusesPreparedSeedProfilesWithIsolatedCases",
                 "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.ExplorerWebCommandSeedTemplateFixture_CachesSeedsAndIsolatesCaseRoots",
@@ -14186,18 +14107,6 @@
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_BoundedEffectReturnsAwaitingStateWithoutFalseCompletionOrRetryAuthority",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_LatePersistenceFailureRollsBackOutcomeHistoryAndRuntime",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.CompleteAction_ResourcePenaltyLateFailureRollsBackCanonicalQuartet",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenAttempt_CannotContinueAfterSessionGenerationChanges",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_LateFailureRetainsPostImageAndRestoresExactBaselineIdentity",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_LateProfileFailureRollsBackProfileAndAttempt",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_PostImageHardLinkRestoresExactBaselineAndRetainsEvidence",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ProfileParentReplacedWithJunction_DoesNotWriteOutsideAuthority",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_StagesExternalProfileRollbackBeforeProfileWriteCompletes",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenExit_ConcurrentFailedResolveDoesNotResurrectAttempt",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenMutations_StaleInteractionTokenCannotAdoptReplacementAttempt",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileDirectWrite_MissingPublicationBackendsFailBeforeProfileStaging",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileRollback_HardLinkedProfileIsRejectedWithoutChangingExternalBytes",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenProfileRollback_RestoresAndReadsExactBytesThenDeletes",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.FailedPracticeStart_AfterSessionReplacementDoesNotExposePreviousAttempt",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.LeaseBoundNormalizer_ReadsRelativeQteBackupFromCanonicalSession",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.OfferDecision_MissingOrNonPositiveSourceTurnFailsWithoutMutation",
@@ -14206,8 +14115,7 @@
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeAttempt_CannotContinueAfterSessionGenerationChanges",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeMutation_OldRevisionTokenCannotMutateCompletedAttempt",
                 "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveAction_NewGameWinsBeforeQteLease_DoesNotRestoreOldBytesIntoReplacementSession",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite"
+                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime"
               ]
             },
             {
@@ -14240,7 +14148,6 @@
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.LocalInteractionScopeResolvers_MustImplementLeaseAwareReadsExplicitly",
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPromptSessionsAndLocalUiLocks_UseGenerationBoundCanonicalAuthority",
-                "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo",
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.CanonicalMutationObservation_UsesAtomicTransitionsAndSnapshots",
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.Phase43AuthorityBoundaries_KeepOwnedPostImagesManifestedSavesAndAncestorFencing",
                 "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserQteTurnAuthority_UsesPersistedOfferAndRuntimeInsteadOfTurnRequest",
@@ -14708,7 +14615,7 @@
         },
         {
           "id": "qte-rules",
-          "responsibility": "Deterministic QTE grading, practice, Daren, and deferred effect consequences.",
+          "responsibility": "Deterministic QTE grading, practice, and deferred effect consequences.",
           "excludes": "Browser shell styling and unrelated command grammar.",
           "changeHints": [
             "BookOfEternityClient/Services/*Qte*",
@@ -14725,7 +14632,6 @@
             {
               "project": "integration",
               "tests": [
-                "BookOfEternityClient.Tests.DarenQteShowcaseTests.*",
                 "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.*",
                 "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
                 "BookOfEternityClient.Tests.QteSceneServiceTests.ActualPostRestorationMirrorPublicationRetainsQteUncertaintyAndPrimaryCause",
@@ -14771,7 +14677,6 @@
             {
               "project": "unit",
               "tests": [
-                "BookOfEternityClient.Tests.DarenQteDeterministicLogicTests.*",
                 "BookOfEternityClient.Tests.QteDeterministicLogicTests.*",
                 "BookOfEternityClient.Tests.QteLivePlayabilityTests.*",
                 "BookOfEternityClient.Tests.QtePracticeModeTests.PracticeAttempt_BranchChoiceUsesAuthoredChoiceGradeWhenBrowserGradeOmitted",
@@ -25000,30 +24905,28 @@
             ]
         },
         {
-            "id": "portable-ordinary-outcome-recovery-neighbors",
-            "responsibility": "Existing actual browser scratch/member and standalone profile uncertainty consumers preserve typed publication outcome, cold refusal and committed/rolledback recovery controls.",
-            "excludes": "Admission/path refusal assertions stay InvalidData; no whole browser or standalone profile aggregate.",
-            "changeHints": [
-                "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true
-            },
-            "timeoutMinutes": 5,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward"
-                    ]
-                }
-            ]
+          "id": "portable-ordinary-outcome-recovery-neighbors",
+          "responsibility": "Existing actual browser scratch/member and standalone profile uncertainty consumers preserve typed publication outcome, cold refusal and committed/rolledback recovery controls.",
+          "excludes": "Admission/path refusal assertions stay InvalidData; no whole browser or standalone profile aggregate.",
+          "changeHints": [
+            "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true
+          },
+          "timeoutMinutes": 5,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery"
+              ]
+            }
+          ]
         },
         {
             "id": "portable-accepted-normalization-outcomes",
@@ -25704,78 +25607,39 @@
             ]
         },
         {
-            "id": "portable-browser-protocol-consumers-linux",
-            "responsibility": "F04/F05 exact23 existing original browser coordinator, cumulative intent, pending/common recovery ordering, refusal/cleanup-only evidence, dynamic directory rollback and declared external/public QTE consumers.",
-            "excludes": "Broad browser/Load/main-owner suites, direct-gacha neighbors unless separately selected, native Windows execution, schema7 rewritten as6 as proof of authentic old recovery, whole-operation atomic restoration.",
-            "changeHints": [
-                "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
-                "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
-                "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
-                "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true,
-                "ciRunner": "ubuntu-24.04"
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
-                        "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant"
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "portable-daren-protocol-consumers-linux",
-            "responsibility": "F05 exact23 existing original standalone profile/public console QTE, byte/absence/read/no-op/cancellation, actual publication rollback, committed debt and uncertainty controls.",
-            "excludes": "Broad browser/Load/main-owner suites, direct-gacha neighbors unless separately selected, native Windows execution, schema7 rewritten as6 as proof of authentic old recovery, whole-operation atomic restoration.",
-            "changeHints": [
-                "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
-                "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
-                "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
-                "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
-                "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true,
-                "ciRunner": "ubuntu-24.04"
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
-                        "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery"
-                    ]
-                }
-            ]
+          "id": "portable-browser-protocol-consumers-linux",
+          "responsibility": "F04/F05 exact23 existing original browser coordinator, cumulative intent, pending/common recovery ordering, refusal/cleanup-only evidence, dynamic directory rollback and declared external/public QTE consumers.",
+          "excludes": "Broad browser/Load/main-owner suites, direct-gacha neighbors unless separately selected, native Windows execution, schema7 rewritten as6 as proof of authentic old recovery, whole-operation atomic restoration.",
+          "changeHints": [
+            "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+            "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+            "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true,
+            "ciRunner": "ubuntu-24.04"
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
+                "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery"
+              ]
+            }
+          ]
         },
         {
             "id": "portable-browser-protocol-admission-linux",
@@ -25831,37 +25695,37 @@
             ]
         },
         {
-            "id": "portable-browser-protocol-native-windows",
-            "responsibility": "F04/F05 native30 body-required ordinary/extended path recipes: fresh schema7 ordinary and external members8, case-alias2, standalone/declared pending external4, cleanup protocols4, authentic unchanged original6 recovery2, whole-protocol order8. Neutral-only pending backup ordinary/extended2 proves recovery without a schema7 transaction.",
-            "excludes": "Native Windows qualification from Linux compile/discovery; signed direct-gacha adoption (separate exact consumers); whole-operation atomic restoration; arbitrary case-sensitive Windows destination semantics. Synthetic edited6 is only refusal metadata, never authentic legacy evidence.",
-            "changeHints": [
-                "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
-                "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
-                "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
-                "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": true,
-                "ciRunner": "windows-latest"
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
-                        "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest"
-                    ]
-                }
-            ]
+          "id": "portable-browser-protocol-native-windows",
+          "responsibility": "F04/F05 native30 body-required ordinary/extended path recipes: fresh schema7 ordinary and external members8, case-alias2, standalone/declared pending external4, cleanup protocols4, authentic unchanged original6 recovery2, whole-protocol order8. Neutral-only pending backup ordinary/extended2 proves recovery without a schema7 transaction.",
+          "excludes": "Native Windows qualification from Linux compile/discovery; signed direct-gacha adoption (separate exact consumers); whole-operation atomic restoration; arbitrary case-sensitive Windows destination semantics. Synthetic edited6 is only refusal metadata, never authentic legacy evidence.",
+          "changeHints": [
+            "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
+            "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
+            "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+            "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs"
+          ],
+          "related": [],
+          "requirements": {
+            "frontendBuild": false,
+            "exclusive": true,
+            "ciRunner": "windows-latest"
+          },
+          "timeoutMinutes": 3,
+          "expectedSeconds": null,
+          "selectors": [
+            {
+              "project": "integration",
+              "tests": [
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingMember_RecoversStandaloneOrDeclaredBytesOrAbsence",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+                "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest"
+              ]
+            }
+          ]
         },
         {
             "id": "portable-browser-direct-gacha-adoption-linux",
@@ -26648,8 +26512,7 @@
               "tests": [
                 "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
                 "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
-                "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
-                "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit"
+                "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction"
               ]
             }
           ]
@@ -28397,30 +28260,6 @@
             ]
         },
     {
-      "id": "daren-retirement-producer-capture",
-      "responsibility": "1558 pre-removal two original-producer capture Facts only. Freeze current schema7 declared external and standalone committed journal bytes/lineage in owned roots; strict cleanup. No consumer or production release. Temporary owner retires after frozen captures.",
-      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
-      "changeHints": [
-        "specs/1558-remove-daren-campaign/spec.md"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true,
-        "ciRunner": "ubuntu-24.04"
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.*"
-          ]
-        }
-      ]
-    },
-    {
       "id": "daren-retirement-console-menu",
       "responsibility": "1558 one real constructed console menu boundary: actual options retain practice/newgame and no campaign dispatch; no fake/uninitialized owner.",
       "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
@@ -28633,7 +28472,7 @@
     },
     {
       "id": "daren-retirement-affected-guards",
-      "responsibility": "1558 exact affected API fixture/interface, shell/QTE lease, source inventory and generic boundary guards. Obsolete Daren positive fixture row/assertions retire only with subject in G2; retain remaining row semantics. No aggregate API or source suite.",
+      "responsibility": "1558 exact affected API fixture/interface, shell/QTE lease, source inventory and generic boundary guards. Campaign-only fixture row/assertions are retired; all remaining row semantics retained. No aggregate API or source suite.",
       "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
       "changeHints": [
         "specs/1558-remove-daren-campaign/spec.md"
@@ -28661,56 +28500,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteAndDarenSplitSources_PreserveReviewedExecutableInventories"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "daren-retirement-legacy-view-pending-removal",
-      "responsibility": "Temporary unselected original Daren-view fixture owner until G2 source/view removal. No current1558 actual executes it.",
-      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
-      "changeHints": [
-        "specs/1558-remove-daren-campaign/spec.md"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": false,
-        "ciRunner": "ubuntu-24.04"
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "frontend",
-          "tests": [
-            "BookOfEternityClient.WebFrontend/test/darenShowcase.test.tsx"
-          ],
-          "runner": "vitest"
-        }
-      ]
-    },
-    {
-      "id": "daren-retirement-legacy-close-pending-removal",
-      "responsibility": "Temporary unselected exactfour original Daren owning-close rows split without corebody change; retire with removed profile/terminal publishers in G2.",
-      "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
-      "changeHints": [
-        "specs/1558-remove-daren-campaign/spec.md"
-      ],
-      "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true,
-        "ciRunner": "ubuntu-24.04"
-      },
-      "timeoutMinutes": 3,
-      "expectedSeconds": null,
-      "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.RetiringDarenPublishersPreserveHistoricalCloseRows"
+            "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.QteSplitSources_PreserveReviewedExecutableInventories"
           ]
         }
       ]

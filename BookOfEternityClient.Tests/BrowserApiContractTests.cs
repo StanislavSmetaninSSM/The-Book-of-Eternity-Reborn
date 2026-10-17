@@ -65,8 +65,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface QteWebStateDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface QtePracticeWebStateDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface QtePracticeCatalogEntryDto", contracts, StringComparison.Ordinal);
-        Assert.Contains("export interface DarenShowcaseWebStateDto", contracts, StringComparison.Ordinal);
-        Assert.Contains("export interface DarenShowcaseActionRequest", contracts, StringComparison.Ordinal);
+        Assert.DoesNotContain("export interface DarenShowcaseWebStateDto", contracts, StringComparison.Ordinal);
+        Assert.DoesNotContain("export interface DarenShowcaseActionRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsUpdateRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserClientSettingsDto", contracts, StringComparison.Ordinal);
@@ -97,8 +97,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("resolveQtePracticeAction", client, StringComparison.Ordinal);
         Assert.Contains("retryQtePractice", client, StringComparison.Ordinal);
         Assert.Contains("exitQtePractice", client, StringComparison.Ordinal);
-        Assert.Contains("getDarenShowcase", client, StringComparison.Ordinal);
-        Assert.Contains("resolveDarenShowcaseAction", client, StringComparison.Ordinal);
+        Assert.DoesNotContain("getDarenShowcase", client, StringComparison.Ordinal);
+        Assert.DoesNotContain("resolveDarenShowcaseAction", client, StringComparison.Ordinal);
         Assert.Contains("resolveQteAction", client, StringComparison.Ordinal);
         Assert.Contains("getAudioSettings", client, StringComparison.Ordinal);
         Assert.Contains("updateAudioSettings", client, StringComparison.Ordinal);
@@ -114,8 +114,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("qte-practice-state", client, StringComparison.Ordinal);
         Assert.Contains("qte-practice-start", client, StringComparison.Ordinal);
         Assert.Contains("qte-practice-action", client, StringComparison.Ordinal);
-        Assert.Contains("qte-daren-state", client, StringComparison.Ordinal);
-        Assert.Contains("/api/qte/daren", client, StringComparison.Ordinal);
+        Assert.DoesNotContain("qte-daren-state", client, StringComparison.Ordinal);
+        Assert.DoesNotContain("/api/qte/daren", client, StringComparison.Ordinal);
         Assert.DoesNotContain("any", client, StringComparison.Ordinal);
     }
 
@@ -149,7 +149,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("satisfies ExplorerCommandResult", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QteWebStateDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QtePracticeWebStateDto", fixtureChecks, StringComparison.Ordinal);
-        Assert.Contains("satisfies DarenShowcaseWebStateDto", fixtureChecks, StringComparison.Ordinal);
+        Assert.DoesNotContain("satisfies DarenShowcaseWebStateDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserAudioSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserClientSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserCommandCoverageDto", fixtureChecks, StringComparison.Ordinal);
@@ -757,7 +757,6 @@ public sealed class BrowserApiContractTests
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
         yield return ["qte-state.json", BuildQteStateFixture()];
         yield return ["qte-practice-state.json", BuildQtePracticeStateFixture()];
-        yield return ["qte-daren-state.json", BuildDarenShowcaseStateFixture()];
         yield return ["audio-settings.json", BuildAudioSettings()];
         yield return ["client-settings.json", BuildClientSettings()];
         yield return ["command-coverage.json", BuildCommandCoverage()];
@@ -904,16 +903,7 @@ public sealed class BrowserApiContractTests
                     DisabledReason: string.Empty,
                     Kind: "client-panel",
                     Command: string.Empty,
-                    TargetPanel: "practice-panel"),
-                new BrowserMainMenuActionDto(
-                    Id: "daren-showcase",
-                    Label: "Вылазка Дарена",
-                    Description: "Отдельное QTE-ограбление поместья с постоянным лучшим итогом для будущей новой игры.",
-                    Enabled: true,
-                    DisabledReason: string.Empty,
-                    Kind: "client-panel",
-                    Command: string.Empty,
-                    TargetPanel: "daren-showcase-panel")
+                    TargetPanel: "practice-panel")
             ],
             Saves:
             [
@@ -1353,33 +1343,6 @@ public sealed class BrowserApiContractTests
             LocalScoreNotice = "Тренировочный счёт остаётся только на этой тренировке: без наград, опыта, предметов и прогресса.",
             AvailableOperations = ["startAttempt", "exit"],
             InteractionToken = "fixture-practice-interaction-token",
-            Notification = null,
-            Error = null
-        };
-
-    private static DarenShowcaseWebStateDto BuildDarenShowcaseStateFixture() =>
-        new()
-        {
-            State = "Intro",
-            IntroTitle = "Ограбление поместья Дареном",
-            IntroText = "Хитрый вор Дарен проникает в запертое поместье, крадёт магический посох, уходит от погони и возвращается в убежище.",
-            BoundaryNotice = DarenShowcaseWebStateDto.DefaultBoundaryNotice,
-            RewardNotice = DarenShowcaseWebStateDto.DefaultRewardNotice,
-            BestReward = new DarenRewardProfileDto
-            {
-                TierId = "clean_heist",
-                TierName = "Чистая кража",
-                InkFeatherBonus = 4,
-                BestScore = 82,
-                CompletedAtUtc = SampleUtc,
-                Summary = "Постоянный итог Дарена: Чистая кража, счёт 82/100. Будущая новая игра получит 4 Чернильных Пера один раз при создании новой игры; повторные вылазки не складывают перья и не заменяют лучший итог более слабым."
-            },
-            ActiveScene = null,
-            Resolution = null,
-            Completion = null,
-            Ending = null,
-            AvailableOperations = ["start", "exit"],
-            InteractionToken = "fixture-daren-interaction-token",
             Notification = null,
             Error = null
         };

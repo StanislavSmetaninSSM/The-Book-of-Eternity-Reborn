@@ -193,7 +193,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("{!isLauncherRoute && <TabBar />}", app, StringComparison.Ordinal);
         Assert.Contains("<section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live=\"polite\">", app, StringComparison.Ordinal);
         Assert.Contains("<GameLauncher menu={menu} />", app, StringComparison.Ordinal);
-        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
         Assert.Contains("case 'scene': return <SceneView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'practice': return <QtePracticeView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'status': return <StatusView />;", app, StringComparison.Ordinal);

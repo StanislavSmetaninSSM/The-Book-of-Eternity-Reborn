@@ -262,62 +262,6 @@ public sealed class BrowserGenerationFencingSourceTests
     }
 
     [Fact]
-    public void DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo()
-    {
-        var rewardSource = File.ReadAllText(SourcePath(
-            "BookOfEternityClient",
-            "Services",
-            "DarenQteRewardProfileService.cs"));
-        var qteSource = File.ReadAllText(SourcePath(
-            "BookOfEternityClient",
-            "Services",
-            "QteSceneService.cs"));
-        var storeSource = File.ReadAllText(SourcePath(
-            "BookOfEternityClient",
-            "Services",
-            "DarenRewardProfileFileStore.cs"));
-
-        Assert.Contains("DarenRewardProfileFileStore", rewardSource, StringComparison.Ordinal);
-        Assert.Contains("DarenRewardProfileFileStore", qteSource, StringComparison.Ordinal);
-        foreach (var prohibited in new[]
-                 {
-                     "File.Exists(",
-                     "File.ReadAllTextAsync(",
-                     "File.ReadAllBytes(",
-                     "File.WriteAllTextAsync(",
-                     "File.WriteAllBytes(",
-                     "File.Move(",
-                     "File.Delete("
-                 })
-        {
-            Assert.DoesNotContain(prohibited, rewardSource, StringComparison.Ordinal);
-        }
-
-        var profileRead = ExtractMethod(
-            qteSource,
-            "ReadDarenRewardProfileAsync",
-            "internal async Task<DarenRewardProfileState>");
-        Assert.DoesNotContain("File.", profileRead, StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "WriteExternalFileAtomic",
-            qteSource,
-            StringComparison.Ordinal);
-        foreach (var prohibited in new[]
-                 {
-                     "File.Exists(",
-                     "Directory.Exists(",
-                     "File.Move(",
-                     "Directory.Move("
-                 })
-        {
-            Assert.DoesNotContain(
-                prohibited,
-                storeSource,
-                StringComparison.Ordinal);
-        }
-    }
-
-    [Fact]
     public void BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback()
     {
         var inspectorSource = File.ReadAllText(SourcePath(
@@ -917,7 +861,7 @@ public sealed class BrowserGenerationFencingSourceTests
             "ResolveActionBoundAsync",
             source,
             StringComparison.Ordinal);
-        Assert.Contains(
+        Assert.DoesNotContain(
             "ResolveDarenShowcaseActionBoundAsync",
             source,
             StringComparison.Ordinal);

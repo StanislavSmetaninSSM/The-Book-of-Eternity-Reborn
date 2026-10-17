@@ -1277,12 +1277,12 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   `mortal_qte_deferred_effect_receipt_waves_v1` in
   `Examples/E_CLI_QTE_Offer.txt`.
 - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics before or outside a normal campaign.
-- Practice has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
+- Practice has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, or other permanent benefits.
 - Practice has no GM-authored practice scenes; the GM must not author practice offers, action types, response fields, or follow-up turns.
 - Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
-- Daren showcase work in #919 may point players toward practice, but Daren rewards/endings/adventure content are outside the QTE Practice Mode contract.
-- Daren showcase is client-owned authored content and is not a GM-authored QTE offer. It uses QTE mechanics to tell the fixed Daren manor theft route, stores only the best permanent Daren tier outside ordinary `game_state`, and may grant a New Game Ink Feather bonus from that stored best tier.
-- QTE Practice Mode must not grant Daren rewards, and ordinary GM-authored campaign QTE offers must not write Daren showcase tiers, Daren profile records, New Game grant markers, or permanent Ink Feather reward state.
+
+
+- Ordinary GM-authored QTE offers must not write client-owned New Game grant markers or permanent Ink Feather reward state.
 - A valid `qte_offer.json` must contain these top-level fields:
   - `qteId`
   - `title`
@@ -1310,7 +1310,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - every chapter must be reachable from `startChapterId`
   - at least one success-reachable terminal outcome must exist
 - Optional QTE scoring:
-  - `scoreModel` may be used by ordinary GM-authored QTE offers to track scene-local scoring without Daren mode, practice mode rewards, achievements, inventory, resources, or other permanent reward systems.
+  - `scoreModel` may be used by ordinary GM-authored QTE offers to track scene-local scoring without practice mode rewards, achievements, inventory, resources, or other permanent reward systems.
   - `scoreModel.metrics[]` defines stable lowercase metric ids, player-facing labels, numeric `initial`, `min`, and `max` values, and `visibility`.
   - Supported metric `visibility` values are `always`, `final`, and `hidden`: `always` may be shown during active play and in the final score summary, `final` is shown only in the final score summary, and `hidden` is not shown in default player UI.
   - `scoreModel.ranks[]` defines ending ranks. Non-fallback ranks use `allOf` threshold rules with `metric`, `op`, and `value`; one rank must use `fallback: true`.

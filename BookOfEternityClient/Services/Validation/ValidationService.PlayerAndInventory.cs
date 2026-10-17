@@ -1420,7 +1420,7 @@ public partial class ValidationService
             section: "QTE",
             expected: expected,
             actual: actual,
-            repairHint: "Исправь scoreModel/scoreDeltas в output/qte_offer.json; это generic QTE scoring contract без Daren/practice reward fields."));
+            repairHint: "Исправь scoreModel/scoreDeltas в output/qte_offer.json; это generic QTE scoring contract без practice/permanent reward fields."));
     }
 
     private static void ValidateMashInputConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)

@@ -72,7 +72,6 @@ public sealed class FastTestBoundaryTests
         "GuardianCorrectionServiceTests.cs",
         "ShiningBlessingEffectStateTests.cs",
         "AfterlifeNotificationStateTests.cs",
-        "DarenQteShowcaseTests.cs",
         "ShiningTradeRequestStateTests.cs",
         "BrowserLocalWriteCoordinatorTests.cs",
         "TrainingServiceTests.cs",

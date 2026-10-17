@@ -22,35 +22,34 @@ public sealed partial class BrowserProtocolCutoverTests
         if (existed)
         {
             await _files.WriteFileAtomicBytesAsync(Member, Before);
-            Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath)!); File.WriteAllBytes(ProfilePath, Before);
+            Directory.CreateDirectory(Path.GetDirectoryName(CompanionPath)!); File.WriteAllBytes(CompanionPath, Before);
         }
-        var memberCuts = 0; var profileCuts = 0; var profileBoundaries = 0; var ran = false;
-        _mutation = path => { if (path == "@daren_reward_profile") profileBoundaries++; return Task.CompletedTask; };
+        var memberCuts = 0; var companionCuts = 0; var companionBoundaries = 0; var ran = false;
+        _mutation = path => { if (path == Companion) companionBoundaries++; return Task.CompletedTask; };
         _publication = (phase, index) => {
             if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
             var member = CurrentMember(index);
             if (SamePath(member, _files.ResolvePath(Member))) memberCuts++;
-            if (SamePath(member, ProfilePath)) profileCuts++;
+            if (SamePath(member, CompanionPath)) companionCuts++;
         };
         var coordinator = new BrowserLocalWriteCoordinator(_files, new LocalUiSessionLockService(_files));
-        var result = await coordinator.ExecuteAtomicAsync(new("native-protocol", "Fixture", "exact"), [Member], async lease =>
+        var result = await coordinator.ExecuteAtomicAsync(new("native-protocol", "Fixture", "exact"), [Member, Companion], async lease =>
         {
             ran = true; Assert.Null(lease.MutationIntentRecorder);
             var local = Assert.IsType<ExplorerLocalTurnRollbackArtifacts.LocalBrowserTransaction>(lease.ExternalPublicationContext);
             Assert.Equal(7, local.Document.SchemaVersion);
-            var store = new DarenRewardProfileFileStore(_files);
-            Assert.Equal(existed ? Before : null, await store.ReadExactBytesAsync(lease));
-            await store.WriteExactBytesAtomicAsync(lease, After);
+            Assert.Equal(existed ? Before : null, await _files.ReadLocalFileBytesAsync(lease, Companion));
+            await _files.WriteFileAtomicBytesAsync(lease, Companion, After);
             await _files.WriteFileAtomicBytesAsync(lease, Member, After);
-            Assert.Equal(1, profileCuts); Assert.Equal(1, memberCuts);
+            Assert.Equal(1, companionCuts); Assert.Equal(1, memberCuts);
             if (rollback) throw new InvalidOperationException("Original callback after both current members published.");
-        }, rollbackExternalFileIds: [ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId]);
-        Assert.True(ran, result.Message); Assert.True(profileBoundaries > 0);
+        });
+        Assert.True(ran, result.Message); Assert.True(companionBoundaries > 0);
         Assert.Equal(rollback ? BrowserPreparedWriteDisposition.RolledBack : BrowserPreparedWriteDisposition.Committed, result.Disposition);
         Assert.Equal(!rollback, result.Success);
         var expected = rollback ? existed ? Before : null : After;
         Assert.Equal(expected, File.Exists(_files.ResolvePath(Member)) ? File.ReadAllBytes(_files.ResolvePath(Member)) : null);
-        Assert.Equal(expected, File.Exists(ProfilePath) ? File.ReadAllBytes(ProfilePath) : null);
+        Assert.Equal(expected, File.Exists(CompanionPath) ? File.ReadAllBytes(CompanionPath) : null);
         AssertCleanBrowser();
     }
 
@@ -84,44 +83,42 @@ public sealed partial class BrowserProtocolCutoverTests
     [Theory]
     [InlineData(false, false)] [InlineData(true, false)]
     [InlineData(false, true)] [InlineData(true, true)]
-    public async Task WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(bool existed, bool extended)
+    public async Task WindowsPendingMember_RecoversStandaloneOrDeclaredBytesOrAbsence(bool existed, bool extended)
     {
-        Assert.True(OperatingSystem.IsWindows(), "Native Windows external pending recovery body required.");
+        Assert.True(OperatingSystem.IsWindows(), "Native Windows ordinary member pending recovery body required.");
         await InitializeAsync(extended);
-        if (existed) { Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath)!); File.WriteAllBytes(ProfilePath, Before); }
+        if (existed) { Directory.CreateDirectory(Path.GetDirectoryName(CompanionPath)!); File.WriteAllBytes(CompanionPath, Before); }
         await _files.WriteFileAtomicBytesAsync(Member, Before);
         var cuts = 0; var boundaries = 0;
-        _mutation = path => { if (path == "@daren_reward_profile") boundaries++; return Task.CompletedTask; };
+        _mutation = path => { if (path == Companion) boundaries++; return Task.CompletedTask; };
         _publication = (phase, index) => {
-            if (phase != TrustedLocalPublicationPhase.MemberPublished || !SamePath(CurrentMember(index), ProfilePath)) return;
-            Assert.Equal(0, index); Assert.Equal(After, File.ReadAllBytes(ProfilePath));
-            cuts++; File.WriteAllBytes(ProfilePath, [99]); throw new InvalidOperationException("Actual external member cut.");
+            if (phase != TrustedLocalPublicationPhase.MemberPublished || !SamePath(CurrentMember(index), CompanionPath)) return;
+            Assert.Equal(0, index); Assert.Equal(After, File.ReadAllBytes(CompanionPath));
+            cuts++; File.WriteAllBytes(CompanionPath, [99]); throw new InvalidOperationException("Actual ordinary member cut.");
         };
         await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
         {
             // Extended-root rows include a declared browser transaction so its
-            // preflight must filter external profile scratch BEFORE deriving
+            // preflight must validate ordinary ordinary companion scratch BEFORE deriving
             // GameSession-relative browser scratch. Ordinary rows are standalone.
             if (extended)
             {
                 var transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
-                    _files, lease, [Member], "external_pending",
-                    rollbackExternalFileIds: [ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId]);
+                    _files, lease, [Member, Companion], "ordinary_pending");
                 Assert.Equal(7, transaction.SchemaVersion); Assert.NotNull(transaction.LocalTransaction);
                 lease.ExternalPublicationContext = transaction.LocalTransaction;
                 Assert.Same(transaction.LocalTransaction, lease.ExternalPublicationContext);
             }
-            var store = new DarenRewardProfileFileStore(_files); store.EnsureWriteSupported(lease);
-            Assert.Equal(existed ? Before : null, await store.ReadExactBytesAsync(lease));
-            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => store.WriteExactBytesAtomicAsync(lease, After));
+            Assert.Equal(existed ? Before : null, await _files.ReadLocalFileBytesAsync(lease, Companion));
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => _files.WriteFileAtomicBytesAsync(lease, Companion, After));
             Assert.Equal(1, cuts); Assert.Equal(1, boundaries); Assert.True(File.Exists(JournalPath));
-            File.WriteAllBytes(ProfilePath, After); // Exact known image, controlled recovery continuation.
+            File.WriteAllBytes(CompanionPath, After); // Exact known image, controlled recovery continuation.
         }
         _publication = null; _mutation = null;
         var recovery = 0;
         var fresh = Fresh(new() { LocalPublicationRecoveryObserver = (_, _) => recovery++ });
         await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync())
-            Assert.Equal(existed ? Before : null, await new DarenRewardProfileFileStore(fresh).ReadExactBytesAsync(lease));
+            Assert.Equal(existed ? Before : null, await fresh.ReadLocalFileBytesAsync(lease, Companion));
         Assert.True(recovery > 0); Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member)));
         AssertCleanBrowser();
     }
@@ -175,25 +172,24 @@ public sealed partial class BrowserProtocolCutoverTests
         AssertPhysicalManifestParserControls();
         AssertNativePublicationPathEquivalenceControls();
         await _files.WriteFileAtomicBytesAsync(Member, Before);
-        Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath)!); File.WriteAllBytes(ProfilePath, Before);
+        Directory.CreateDirectory(Path.GetDirectoryName(CompanionPath)!); File.WriteAllBytes(CompanionPath, Before);
         var commonMembers = 0;
         _publication = (phase, index) => {
             if (phase == TrustedLocalPublicationPhase.MemberPublished &&
-                (SamePath(CurrentMember(index), ProfilePath) || SamePath(CurrentMember(index), _files.ResolvePath(Member)))) commonMembers++;
+                (SamePath(CurrentMember(index), CompanionPath) || SamePath(CurrentMember(index), _files.ResolvePath(Member)))) commonMembers++;
         };
         string neutral;
         await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
         {
             var transaction = await ExplorerLocalTurnRollbackArtifacts.StageOriginalBrowserWriteTransactionAsync(_files, lease,
-                [Member], "authentic_original", rollbackExternalFileIds: [ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId]);
+                [Member, Companion], "authentic_original");
             Assert.Equal(6, transaction.SchemaVersion); Assert.Null(transaction.LocalTransaction); Assert.NotNull(lease.MutationIntentRecorder);
-            Assert.IsType<DarenRewardProfileRollbackTransaction>(lease.ExternalPublicationContext);
-            var store = new DarenRewardProfileFileStore(_files);
-            Assert.Equal(Before, await store.ReadExactBytesAsync(lease));
-            await store.WriteExactBytesAtomicAsync(lease, After);
+            Assert.Null(lease.ExternalPublicationContext);
+            Assert.Equal(Before, await _files.ReadOriginalFileBytesAsync(lease, Companion));
+            await _files.WriteFileAtomicBytesAsync(lease, Companion, After);
             await _files.WriteFileAtomicBytesAsync(lease, Member, After);
             Assert.Equal(0, commonMembers);
-            using (var reader = new FileStream(ProfilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+            using (var reader = new FileStream(CompanionPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             using (var image = new MemoryStream())
             {
                 reader.CopyTo(image);
@@ -202,11 +198,12 @@ public sealed partial class BrowserProtocolCutoverTests
             var manifest = ParsePhysicalManifestForTest(_files.ResolvePath(transaction.ManifestPath));
             Assert.Equal(6, manifest["schemaVersion"]!.GetValue<int>());
             Assert.NotNull(manifest["entries"]![0]!["publicationReceipt"]);
-            Assert.NotNull(manifest["externalEntries"]![0]!["publishedIdentity"]);
+            Assert.NotNull(manifest["entries"]![1]!["publicationReceipt"]);
+            Assert.Empty(manifest["externalEntries"]!.AsArray());
             neutral = AddNeutralBackup();
         }
         await using (var lease = await Fresh().AcquireCanonicalWriteLeaseAsync()) { }
-        Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member))); Assert.Equal(Before, File.ReadAllBytes(ProfilePath));
+        Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member))); Assert.Equal(Before, File.ReadAllBytes(CompanionPath));
         Assert.Equal(Before, File.ReadAllBytes(neutral)); Assert.False(File.Exists(JournalPath));
         Assert.Empty(Directory.GetFiles(_files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
     }

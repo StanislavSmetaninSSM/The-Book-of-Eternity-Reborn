@@ -1353,7 +1353,7 @@ public sealed partial class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void QteAndDarenSplitSources_PreserveReviewedExecutableInventories()
+    public void QteSplitSources_PreserveReviewedExecutableInventories()
     {
         var contracts = new[]
         {
@@ -1366,17 +1366,7 @@ public sealed partial class IntegrationTestBoundaryTests
                 Directory: IntegrationTestsDirectory,
                 FileName: "QteSceneServiceTests.cs",
                 ClassName: "QteSceneServiceTests",
-                Manifest: FastBoundaryTestInventories.QteSceneService),
-            (
-                Directory: FastTestsDirectory,
-                FileName: "DarenQteDeterministicLogicTests.cs",
-                ClassName: "DarenQteDeterministicLogicTests",
-                Manifest: FastBoundaryTestInventories.DarenDeterministicLogic),
-            (
-                Directory: IntegrationTestsDirectory,
-                FileName: "DarenQteShowcaseTests.cs",
-                ClassName: "DarenQteShowcaseTests",
-                Manifest: FastBoundaryTestInventories.DarenQteShowcase)
+                Manifest: FastBoundaryTestInventories.QteSceneService)
         };
 
         foreach (var contract in contracts)
@@ -1431,50 +1421,6 @@ public sealed partial class IntegrationTestBoundaryTests
         Assert.Contains("missing (1x): Theory|Rows|literal:2", violations, StringComparer.Ordinal);
         Assert.Contains("unexpected (1x): Theory|ChangedKind|literal:2", violations, StringComparer.Ordinal);
         Assert.Contains("unexpected (1x): Theory|Rows|literal:1", violations, StringComparer.Ordinal);
-    }
-
-    [Fact]
-    public void DarenQteSources_AreSemanticallySplitAcrossTestAssemblies()
-    {
-        var fastPath = SourcePath(FastTestsDirectory, "DarenQteDeterministicLogicTests.cs");
-        var integrationPath = SourcePath(IntegrationTestsDirectory, "DarenQteShowcaseTests.cs");
-
-        Assert.True(File.Exists(fastPath), "The fixture-free Daren QTE source must exist in Fast.");
-        Assert.True(File.Exists(integrationPath), "The file-backed Daren QTE source must remain in Integration.");
-
-        var fastRoot = CSharpSyntaxTree.ParseText(File.ReadAllText(fastPath)).GetCompilationUnitRoot();
-        var fastClass = Assert.Single(
-            fastRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
-            declaration => declaration.Identifier.ValueText == "DarenQteDeterministicLogicTests");
-        Assert.DoesNotContain(
-            fastClass.BaseList?.Types ?? [],
-            type => type.Type.ToString() == "IDisposable");
-        Assert.Empty(fastClass.Members.OfType<ConstructorDeclarationSyntax>());
-        Assert.DoesNotContain(
-            fastClass.Members.OfType<FieldDeclarationSyntax>(),
-            field =>
-                !field.Modifiers.Any(SyntaxKind.StaticKeyword) &&
-                !field.Modifiers.Any(SyntaxKind.ConstKeyword));
-
-        var forbiddenFastTypes = new[]
-        {
-            "FileSystemManager",
-            "StateManager",
-            "QteWebInteractionService",
-            "LocalUiSessionLockService"
-        };
-        var fastTypes = fastClass.DescendantNodes()
-            .OfType<TypeSyntax>()
-            .Select(type => type.ToString())
-            .ToArray();
-        Assert.All(
-            forbiddenFastTypes,
-            forbidden => Assert.DoesNotContain(forbidden, fastTypes, StringComparer.Ordinal));
-        Assert.DoesNotContain(
-            fastClass.DescendantNodes().OfType<ObjectCreationExpressionSyntax>(),
-            creation => creation.Type.ToString() == "DarenQteRewardProfileService");
-        Assert.DoesNotContain("Path.GetTempPath", fastClass.ToString(), StringComparison.Ordinal);
-
     }
 
     [Fact]

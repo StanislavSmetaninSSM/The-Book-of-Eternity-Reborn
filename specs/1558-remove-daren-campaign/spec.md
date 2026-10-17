@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G1causalbaseline accepted28distinct14PASS14RED; RootactivatedG2at023. PARTIAL G2sourceWIP: retiredjournal admission/externalwriter removal and campaignCLI/host/React/services/resources authored. UNCOMPILED/UNRUN; testledger/docs/catalog/currentGREENselection reconciliation stillinprogress, no newbuild/runtime or productionSOURCE acceptance. Existingdata/raw/evidence unchanged;T004–T020 unchecked.
+**Status**: G2 coherent implementation candidate authored afteraccepted28baseline/Root023activation: campaignremoved and retiredjournal refusal/testmigration/docs/catalog complete atsource; UNCOMPILED/UNRUN. Current815catalog/static16selectedowners; freshfrontendbuild→freshmanagedBOTH/catalog→exactGREENPlan0 next afterWIPpublication/recovery. IndependentimplementationSOURCE and separateRootruntime release remain; nofullGREEN/FRSC/task completion.
 
 ## Source issues and scope
 

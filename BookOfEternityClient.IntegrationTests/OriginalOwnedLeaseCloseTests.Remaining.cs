@@ -9,8 +9,6 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
-using DarenShowcaseAttemptState = BookOfEternityClient.Services.QteSceneService.DarenShowcaseAttemptState;
-using QteActionResolution = BookOfEternityClient.Services.QteSceneService.QteActionResolution;
 
 namespace BookOfEternityClient.Tests;
 
@@ -28,16 +26,6 @@ public sealed partial class OriginalOwnedLeaseCloseTests
     public Task RemainingOriginalOwningPublishersPreserveActualUncertaintyOnClose(string mode, bool uncertain) =>
         RemainingOriginalOwningPublisherCoreAsync(mode, uncertain);
 
-    // Exact four old publisher rows retained only until #1558 removes their subject.
-    // They are owned separately and are never part of the new current actual selection.
-    [Theory]
-    [InlineData("profile", false)]
-    [InlineData("profile", true)]
-    [InlineData("qte_terminal", false)]
-    [InlineData("qte_terminal", true)]
-    public Task RetiringDarenPublishersPreserveHistoricalCloseRows(string mode, bool uncertain) =>
-        RemainingOriginalOwningPublisherCoreAsync(mode, uncertain);
-
     private async Task RemainingOriginalOwningPublisherCoreAsync(string mode, bool uncertain)
     {
         Assert.True(OperatingSystem.IsLinux());
@@ -50,8 +38,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var allow = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var launchArmed = false; var acquisitionPauses = 0; var publicationPauses = 0;
         FileSystemManager? files = null;
-        string? target = null; string? qteAtPause = null;
-        DarenShowcaseAttemptState? attempt = null;
+        string? target = null;
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
@@ -63,7 +50,6 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                         if (actual.RootElement.GetProperty("Members").EnumerateArray().Any(m => m.GetProperty("Path").GetString() == target))
                         {
                             publicationPauses++;
-                            qteAtPause = attempt == null ? null : JsonSerializer.Serialize(attempt);
                             entered.TrySetResult(); allow.Task.GetAwaiter().GetResult();
                         }
                     }
@@ -86,32 +72,10 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var manager = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
         var lockService = new LocalUiSessionLockService(files);
         var promptService = new ExplorerWebPromptSessionService(files, manager, lockService);
-        var profile = new DarenQteRewardProfileService(files);
-        QteSceneService? qte = null; string? terminalAction = null;
-        if (mode == "qte_terminal")
-        {
-            var characteristics = new CharacteristicsService(files, manager, NullLogger<CharacteristicsService>.Instance);
-            qte = new QteSceneService(files, manager.Settings, characteristics,
-                null!, null!, null!, null!, null!, manager, NullLogger<QteSceneService>.Instance);
-            attempt = qte.StartDarenShowcaseAttempt();
-            for (var count = 0; count < 64; count++)
-            {
-                var scene = attempt.ActiveScene!;
-                var chapter = Assert.Single(scene.Offer!.Chapters.Where(item => item.ChapterId == scene.CurrentChapterId));
-                var action = Assert.Single(chapter.Actions);
-                if (!string.IsNullOrWhiteSpace(action.Routing.Success.TerminalOutcomeId))
-                { terminalAction = action.ActionId; break; }
-                await qte.ResolveDarenShowcaseActionAsync(attempt, action.ActionId, "success");
-                Assert.Equal("Active", attempt.State);
-            }
-            Assert.NotNull(terminalAction); Assert.Equal("Active", attempt.State);
-            Assert.Null(attempt.LastCompletion); Assert.Null(attempt.Ending);
-        }
         target = mode switch
         {
             "bootstrap" => files.ResolvePath("config.json"),
             "prompt_generation" => files.SessionGenerationPath,
-            "profile" or "qte_terminal" => Path.Combine(root, DarenQteRewardProfileService.ProfileRelativePath),
             _ => files.ResolvePath(LocalUiSessionLockService.LockPath)
         };
         Assert.False(File.Exists(target));
@@ -135,8 +99,6 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         {
             "bootstrap" => "StateManager+<BootstrapLocalStorageCoreAsync>",
             "ui_lock" => "LocalUiSessionLockService+<RunCanonicalAsync>",
-            "profile" => "DarenQteRewardProfileService+<RunCanonicalAsync>",
-            "qte_terminal" => "QteSceneService+<ResolveDarenShowcaseActionAsync>",
             _ => "ExplorerWebPromptSessionService+<AttachSessionIfNeededAsync>"
         };
         Task? operation = null; Exception? failure = null; string? actualOwnerState = null;
@@ -147,8 +109,6 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             {
                 "bootstrap" => manager.BootstrapLocalStorageAsync(),
                 "ui_lock" => lockService.AcquireOrRefreshAsync(new("owned-close", "test", "Original lock", TimeSpan.FromSeconds(120)), "Original acquire"),
-                "profile" => profile.RecordCompletionAsync(DarenQteRewardProfileService.ResolveEnding(true, 90), DateTime.UtcNow),
-                "qte_terminal" => qte!.ResolveDarenShowcaseActionAsync(attempt!, terminalAction!, "success"),
                 "prompt_generation" => promptService.AttachSessionIfNeededAsync(noPrompt, new("/inspect")),
                 _ => promptService.AttachSessionIfNeededAsync(prompt, new("/world_setup"),
                     JsonDocument.Parse(generationBefore!).RootElement.GetProperty("GenerationId").GetString()!)
@@ -178,8 +138,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             sameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], releaseFailure),
             lockAvailable, activeAfter = original!.IsActive, ambientClosed = original.AmbientRegistration == null,
             mainClosed = original.MainAdmission == null, contextClosed = original.ExternalPublicationContext == null,
-            generationBefore, generationAfter, targetAfter, qteAtPause,
-            qteAfter = attempt == null ? null : JsonSerializer.Serialize(attempt), Cut = cut.Evidence() }));
+            generationBefore, generationAfter, targetAfter, Cut = cut.Evidence() }));
         Assert.Equal(1, acquisitionPauses); Assert.Equal(1, publicationPauses);
         Assert.False(original.IsActive); Assert.Null(original.AmbientRegistration); Assert.Null(original.MainAdmission);
         Assert.Null(original.ExternalPublicationContext); Assert.True(lockAvailable);
@@ -191,8 +150,6 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             Assert.Same(releaseFailure, failure!.Data["CoordinatedLeaseReleaseFailure"]);
             cut.AssertReachedAndStopped();
             if (mode != "prompt_generation") Assert.Equal(generationBefore, generationAfter);
-            if (attempt != null)
-            { Assert.Equal("Active", attempt.State); Assert.Null(attempt.LastCompletion); Assert.Null(attempt.Ending); Assert.Equal(qteAtPause, JsonSerializer.Serialize(attempt)); }
             var sessions = promptService.GetType().GetField("_sessions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(promptService)!;
             Assert.Equal(0, sessions.GetType().GetProperty("Count")!.GetValue(sessions));
         }
@@ -222,28 +179,12 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                 Assert.Equal(acquired.Lease.LeaseToken, persisted.RootElement.GetProperty("leaseToken").GetString());
                 Assert.Equal(acquired.ActiveLock.OwnerId, persisted.RootElement.GetProperty("ownerId").GetString());
             }
-            if (mode == "profile")
-            {
-                var recorded = Assert.IsType<DarenRewardProfileWriteResult>(returned);
-                Assert.True(recorded.Updated); Assert.NotNull(recorded.Profile.DarenShowcase);
-                Assert.Equal("perfect_shadow", recorded.Profile.DarenShowcase.BestTierId);
-                Assert.Equal(90, recorded.Profile.DarenShowcase.BestScore);
-                var persisted = JsonSerializer.Deserialize<DarenRewardProfileState>(LocalSettingsPreparation.DecodeText(targetAfter))!;
-                Assert.Equal(recorded.Profile.DarenShowcase.BestTierId, persisted.DarenShowcase!.BestTierId);
-                Assert.Equal(recorded.Profile.DarenShowcase.BestScore, persisted.DarenShowcase.BestScore);
-            }
             if (mode == "prompt_generation")
             {
                 Assert.Same(noPrompt, returned); Assert.Equal(CommandExecutionState.Completed, noPrompt.State);
                 Assert.Null(noPrompt.InteractiveSession);
                 var sessions = promptService.GetType().GetField("_sessions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(promptService)!;
                 Assert.Equal(0, sessions.GetType().GetProperty("Count")!.GetValue(sessions));
-            }
-            if (attempt != null)
-            {
-                var completed = Assert.IsType<QteActionResolution>(returned);
-                Assert.Equal("Completed", completed.State); Assert.Equal("Completed", attempt.State);
-                Assert.Same(completed.Completion, attempt.LastCompletion); Assert.NotNull(attempt.Ending);
             }
             if (mode == "prompt_lock")
             {
