@@ -1,5 +1,9 @@
 # Bounded Verification Guide
 
+## Current B SOURCE accepted; actual still gated — 2026-10-17
+
+[Exact corrected independent SOURCE](recovery/current-B-corrected-tests-source-independent-review-20261017.md) binds compiled324/freshcatalog and carrier8207. Native full membership9categories/9descriptors/26methods/75cases has0executions. Persist/recover the decision, then only separately root-released canonical content-boundary1/-NoBuild; first outcome inspection precedes a separate genuinepublisher1 release. No B content/daemon/profile implementation or other actual until causal EVIDENCE/release. Original SOURCE_NOT_READY and all old accepted evidence stay unchanged.
+
 ## Current corrected B preparation — 2026-10-17
 
 Canonical global/mirror selection is9categories/9native descriptors/26unique methods/75cases, confirmed by first corrected324freshcatalog/PlanOnly with0executions. [Exact preparation and pins](recovery/current-B-corrected-tests-fresh-preparation-20261017.json) and [inspection/package binding](recovery/current-B-corrected-tests-preparation-writer-inspection-20261017.json) are preparation only. Final affected SOURCE/persistence/recovery then separate rootrelease are required. First actuals are only content-boundary1, then separately genuinepublisher1 after first-boundary inspection; other groups/physical negatives/content authoring stay held. Prior4ab native67/SOURCE_NOT_READY remains history; no B test has executed.
