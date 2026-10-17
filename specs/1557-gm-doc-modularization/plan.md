@@ -1,5 +1,16 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Corrected fresh preparation frozen — affected SOURCE pending (2026-10-17)
+
+Source `06a0d4a50d9aa1b35afe01e8881418f8c275be6c` is [fully recovered from GitHub](recovery/current-correction-complete-delta-recovery-06a0d4a5-20261017.json), all47files/all43changedpaths; retained full7a+38complete consecutive deltas composes55090trackedpaths without another full clone/base rehash. Root independently rechecked both actual clipped views against exact a5 and all23sections/135orderedinputs (42five-kinds/38projection), unchanged golden data and single physical payload ownership.
+
+[Immutable FIRST corrected preparation](recovery/current-A-corrected-fresh-preparation-20261017.json) freezes12native/raw/gzip chains: catalog/BOTH native0 **90.161809839s**, both selected projects built (integration71.5134102s/unit12.5221809s), valid795categories/11771discovered methods, no stale/unmapped selectors, **0test executions**. Exact `-SelectionFile tests/selection.json -PlanOnly -NoBuild` native0 **6.059463394s**; [writer raw inspection](recovery/current-A-corrected-preparation-writer-inspection-20261017.json) confirms **10categories /12native descriptors /165unique methods /253cases**. Actual body guards split60/60/2; earlier static10-descriptor language was a proposal conflating categories with descriptors and is superseded by this native plan. Plan SHA25601ce1531bc479952a57f5077feee36f58146f19e67ef3974965145a701bdfad6. Completed descriptors/cases remain0 because PlanOnly; there are no test PASS claims.
+
+All7critical fresh DLL copies are identical catalog→Plan/current: product058e63f3… (unit/integration/package), unit a2756a7b…, integration c6588d78…, TestSupport56137634… (both test outputs). [Exact physical package pin chain](recovery/current-A-fresh-package-pins-06a0d4a5-20261017.json.gz) covers244files/45038591bytes and all36source→package document equalities, plus current daemon/launcher bytes; actual session publication remains UNRUN. Root independently checked12rawchains/sevenpins/source cleanliness/ownedprefix invariance/0tests. No source/test/selection/package change follows this compilation; this checkpoint is docs/evidence-only.
+
+Affected independent SOURCE/FIXTURE/SELECTION is still pending and **all actuals remain HELD**. First PREPFAIL0tests and first SOURCE_NOT_READY pair stay immutable; none is relabeled RED or erased. No source/base/prep repeats after this docs-only checkpoint; future NoBuild must bind compiled06a and this exact fresh catalog record. No historical RED/A1/A2/Late2/gameplay/Block5/provider/Windows/CI replay or broad A/B completion.
+
+
 ## Coherent A source correction — independent acceptance and fresh preparation pending (2026-10-17)
 
 The [exact independent first SOURCE report](recovery/current-A-first-source-independent-review-20261017.md), MD83c4aee6…/JSON3ec72d46…, is retained unchanged as **SOURCE_NOT_READY** for b592, with A-S01..04 and genuine compile FAIL A-P01. [First FAIL recovery](recovery/current-first-prepfail-complete-delta-recovery-aadd4222-20261017.json) is all13/all9; [root compositional proof](recovery/current-root-recovery-composition-aadd4222-20261017.json) retains exact full7a+37complete deltas/55083paths. No first outcome or original history is erased.

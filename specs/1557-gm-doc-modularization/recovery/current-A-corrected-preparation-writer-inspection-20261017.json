@@ -1,0 +1,94 @@
+{
+  "kind": "WRITER_PREPARATION_RAW_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "createdUtc": "2026-10-17T04:13:17.891810+00:00",
+  "compiledSource": "06a0d4a50d9aa1b35afe01e8881418f8c275be6c",
+  "nativeCatalog": {
+    "exit": 0,
+    "seconds": 90.16180983899903,
+    "categories": 795,
+    "discoveredMethods": 11771,
+    "testExecutions": 0
+  },
+  "exactPlan": {
+    "exit": 0,
+    "seconds": 6.059463393999977,
+    "categories": 10,
+    "descriptors": 12,
+    "uniqueMethods": 165,
+    "cases": 253,
+    "testExecutions": 0,
+    "bodyGuardSplit": [
+      60,
+      60,
+      2
+    ],
+    "planRawSha256": "01ce1531bc479952a57f5077feee36f58146f19e67ef3974965145a701bdfad6"
+  },
+  "proposalCorrection": "Earlier static10-descriptor proposal meant10categories; nativeplan has12descriptors. Accepted actual premise is10categories/12descriptors/165methods/253cases; no test PASS inferred from PlanOnly.",
+  "rawChainsVerified": 12,
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "a2756a7b57ad850b8c212f413f7fd69dec6b6b64c24cfb084b289234c4d29417",
+      "bytes": 9532416
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "c6588d786f944bc13a269614ff795d0272c5b50c2f19f9b40cd8bf6e37be97ed",
+      "bytes": 29214720
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561376349e8056fa1407c5823651104fe6f55d2e8caddd64743bdd72e20b5e55",
+      "bytes": 1935872
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "561376349e8056fa1407c5823651104fe6f55d2e8caddd64743bdd72e20b5e55",
+      "bytes": 1935872
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "058e63f38458123eadb1aa4a21e7559cb0f05722912d3e898f1a3fbaa5f6908b",
+      "bytes": 26181632
+    }
+  ],
+  "packagePinChain": {
+    "rawPath": "/tmp/gm1557-fresh-package-pins-06a0d4a5-20261017.json",
+    "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-fresh-package-pins-06a0d4a5-20261017.json.gz",
+    "bytes": 81783,
+    "sha256": "638b7315282933694fde3d77cf83edb7170495cae32e9a1d0575a2b676316fa5",
+    "storedSha256": "9537eb441496799e8aec780736a926dbf06651a2767446911eb1f9de3c85b059",
+    "compression": "gzip mtime0",
+    "files": 244,
+    "totalBytes": 45038591,
+    "all36SourcePackageDocsEqual": true
+  },
+  "ownedPrepPrefixesUnchanged": true,
+  "actual": "HELD: no current test execution; affected independent SOURCE/FIXTURE/SELECTION acceptance and separate release required",
+  "retainedFailure": "current-A-first-preparation-fail-20261017.json A-P01native1/0tests retained; no failed-source retry",
+  "fullRecovery": "retainedfull7a+38completeconsecutiveGitHubdeltas covers06a0all55090trackedpaths; onlynewmetadata/sourcechanges needfuturecomplete delta",
+  "freshBothBuildPhases": [
+    {
+      "name": "Build-integration",
+      "completed": true,
+      "seconds": 71.5134102
+    },
+    {
+      "name": "Build-unit",
+      "completed": true,
+      "seconds": 12.5221809
+    }
+  ],
+  "rootReadback": "Root independently verified12gzip/raw/live chains, catalog\u2192Plan sevenpins/currentDLLs, clean06a, ownedprefix unchanged and0tests; this is not final independent SOURCE acceptance."
+}
