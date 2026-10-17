@@ -1,0 +1,242 @@
+{
+  "kind": "READ_ONLY_CAPTURE_RAW_INSPECTION_NOT_INDEPENDENT_VERDICT",
+  "utc": "2026-10-17T09:16:29.197852+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-corrected-first-b2e51273-20261017T0916Z/record.json",
+  "recordSha256": "3407ea2e49407bff5f730194b8812744d99e628525954c5b67e88b93c4cf1f91",
+  "actualSource": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 0,
+  "issues": [],
+  "status": "RAW_CHECKS_PASSED_NOT_INDEPENDENT_ACCEPTANCE",
+  "packets": [
+    {
+      "path": "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082/browser7.json",
+      "sha256": "05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7",
+      "bytes": 4267,
+      "kind": "browser7",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "physicalRootAbsent": true,
+      "generation": "5fc5544e2a9c45b8a0adf0c7b0e52772",
+      "evidencePath": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+      "imagePins": [
+        {
+          "path": "client_profile/qte_showcase_rewards.json",
+          "bytes": 5,
+          "sha256": "691350e9d6ae37af790d7361cb86622b28f54a9b5c7c0b6b1a910d681cbf0c51"
+        },
+        {
+          "path": "game_session/game_state/meta/retirement-ordinary-member.bin",
+          "bytes": 5,
+          "sha256": "691350e9d6ae37af790d7361cb86622b28f54a9b5c7c0b6b1a910d681cbf0c51"
+        },
+        {
+          "path": ".boe_runtime/session-generation/current.json",
+          "bytes": 69,
+          "sha256": "861292c24e7c2fe0c98c1419b5f43056e7ec7da333d6250848efd8d8ac22fda0"
+        },
+        {
+          "path": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json",
+          "bytes": 1291,
+          "sha256": "4d34b359e3621b06f1d5ff38af392c876c0da11cdc83639ef8d53efdd7dfae26"
+        },
+        {
+          "path": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/external.daren.rollback",
+          "bytes": 6,
+          "sha256": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd"
+        },
+        {
+          "path": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/0000.rollback",
+          "bytes": 6,
+          "sha256": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd"
+        }
+      ],
+      "details": {
+        "schema": 7,
+        "status": "staged",
+        "externalId": "daren_reward_profile",
+        "memberCount": 1,
+        "externalCount": 1,
+        "actualOrdinaryAndProfileBefore": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd",
+        "physicalOrdinaryAndProfileAfter": "691350e9d6ae37af790d7361cb86622b28f54a9b5c7c0b6b1a910d681cbf0c51"
+      },
+      "provenance": "ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync + declared actual DarenRewardProfileFileStore; staged transaction not resolved"
+    },
+    {
+      "path": "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c/standalone1.json",
+      "sha256": "06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53",
+      "bytes": 2209,
+      "kind": "standalone1",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "physicalRootAbsent": true,
+      "generation": "4578ba8a389a4d29a56e8b4123a9edf5",
+      "evidencePath": ".boe_runtime/trusted-local-publication-v1/active.json",
+      "imagePins": [
+        {
+          "path": "client_profile/qte_showcase_rewards.json",
+          "bytes": 5,
+          "sha256": "691350e9d6ae37af790d7361cb86622b28f54a9b5c7c0b6b1a910d681cbf0c51"
+        },
+        {
+          "path": "game_session/game_state/meta/retirement-ordinary-member.bin",
+          "bytes": 6,
+          "sha256": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd"
+        },
+        {
+          "path": ".boe_runtime/session-generation/current.json",
+          "bytes": 69,
+          "sha256": "c5596d8594671eb6b21777dd55e9c6376f89b985209ac5c5198f3cb1f5f6e908"
+        },
+        {
+          "path": ".boe_runtime/trusted-local-publication-v1/active.json",
+          "bytes": 599,
+          "sha256": "ed1eaaf34deb3a1b98a5387010c6835a99d8f81ec964bb6b26f58fc66d67653b"
+        }
+      ],
+      "details": {
+        "format": 1,
+        "committed": true,
+        "members": 1,
+        "actualPath": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa/client_profile/qte_showcase_rewards.json",
+        "before": "55fb5fc9bf66f74ab299e8e6d7cf075d59543951ffc4bd356af611a6652aa0fd",
+        "after": "691350e9d6ae37af790d7361cb86622b28f54a9b5c7c0b6b1a910d681cbf0c51"
+      },
+      "provenance": "DarenRewardProfileFileStore.WriteExactBytesAtomicAsync / original standalone publisher; actual Committed observer cleanup cut"
+    }
+  ],
+  "caseNames": [
+    "OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+    "OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null,
+      "TestMethod": "OriginalCurrentBrowserProducer_CapturesPendingExternalMember"
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null,
+      "TestMethod": "OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+    }
+  ],
+  "resultPaths": [
+    "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-091615-331-83286-1e1153987fee408eac8cabe39e0bcf3b-categories"
+  ],
+  "observedSummaryAndPlan": {
+    "summary": {
+      "Categories": [
+        "daren-retirement-producer-capture"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "daren-retirement-producer-capture",
+          "Seconds": 2.2330618,
+          "BudgetMinutes": 3,
+          "Completed": true
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0440201,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0373309,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0924668,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0019429,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 8,
+      "WallTime": "00:00:05.0146386",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "plan": {
+      "Categories": [
+        "daren-retirement-producer-capture"
+      ],
+      "Reasons": [],
+      "Revision": {
+        "Head": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 2.5097872,
+      "Descriptors": [
+        {
+          "Name": "daren-retirement-producer-capture-integration-001",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "daren-retirement-producer-capture",
+          "Categories": [
+            "daren-retirement-producer-capture"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember|FullyQualifiedName=BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 3,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "helperText": "\"\"\"Read-only actual capture inspector, prepared only. Writes a new /tmp report.\nNever executes a producer/test, installs a fixture, transforms/rebases captured bytes,\nor removes an original/artifact root. Passing checks are not independent acceptance.\n\"\"\"\nfrom pathlib import Path,PurePosixPath\nimport sys,json,hashlib,base64,xml.etree.ElementTree as ET,re,datetime\nCOMPILED='0b721c7c37207f1f1622172351fd515150eaf18d';PRODUCT='46ff637a01390a27c45a7fc36dc30e31d688e499'\nPROFILE='client_profile/qte_showcase_rewards.json';MEMBER='game_session/game_state/meta/retirement-ordinary-member.bin'\nBEFORE=bytes([0xEF,0xBB,0xBF,0,0xFF,41]);AFTER=bytes([0xD0,0x94,0,0xFF,42]);NS={'t':'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}\nEXPECTED={'OriginalCurrentBrowserProducer_CapturesPendingExternalMember':'browser7','OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt':'standalone1'}\ndef sha(b):return hashlib.sha256(b).hexdigest()\ndef main():\n assert len(sys.argv)==3,'actual record and NEW /tmp inspection-report path required'\n record_path,report_path=map(Path,sys.argv[1:]);assert report_path.is_absolute() and str(report_path).startswith('/tmp/') and not report_path.exists()\n record_bytes=record_path.read_bytes();r=json.loads(record_bytes);issues=[];observed={};packets=[]\n def check(ok,label):\n  if not ok:issues.append(label)\n def jlines(text):\n  for line in text.splitlines():\n   line=line.strip()\n   if line.startswith('{'):\n    try:yield json.loads(line)\n    except json.JSONDecodeError:pass\n check(r['category']=='daren-retirement-producer-capture','wrong-category');check(r['compiledSource']==COMPILED and r['productSource']==PRODUCT,'wrong-source-binding')\n check(r['argv']==['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-Category',r['category'],'-NoBuild'],'wrong-argv')\n check(r['nativeExit']==0 and r['launchError'] is None,'native-or-launch-failure');check(r['headAfter']==r['actualSource'] and not r['statusAfter'],'head-or-clean-status-changed')\n check(len(r['binaryBefore'])==7 and r['binaryBefore']==r['binaryAfter'],'seven-binary-continuity')\n root=Path(r['cwd'])\n for pin in r['binaryAfter']:check(sha((root/pin['path']).read_bytes())==pin['sha256'],'live-binary:'+pin['path'])\n for pin in r['resultFiles']+r['fixtureArtifactFiles']:\n  b=Path(pin['path']).read_bytes();check(len(b)==pin['bytes'] and sha(b)==pin['sha256'],'raw-chain:'+pin['path'])\n check(sha(Path(r['stdoutPath']).read_bytes())==r['stdoutSha256'],'native-stdout-hash')\n check(len(r['resultDirectories'])==1,'result-directory-count');declarations=[];cleanups=[];case_names=[]\n for directory in r['resultDirectories']:\n  directory=Path(directory);s=json.loads((directory/'summary.json').read_text(encoding='utf-8-sig'));p=json.loads((directory/'plan.json').read_text(encoding='utf-8-sig'));observed['summary']=s;observed['plan']=p\n  check(s['Tests']==dict(Total=2,Executed=2,Passed=2,Failed=0),'summary-counts');sel=s['Selection'];check(sel['PlannedDescriptors']==sel['CompletedDescriptors']==1 and sel['PlannedCases']==sel['CompletedCases']==2 and sel['Complete'] and not sel['UnderfilledDescriptors'],'planned-completed-exact')\n  check(not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and not s['DuplicateTests'],'runner-cleanup-timeout-duplicates')\n  check(p['Categories']==[r['category']] and len(p['Descriptors'])==1,'singleton-plan')\n  desc=p['Descriptors'][0];check(desc['EstimatedCases']==2 and {m['Name'].rsplit('.',1)[-1] for m in desc['ExpectedMethodCounts']}==set(EXPECTED),'exact-two-planned-methods')\n  trxs=sorted(directory.rglob('*.trx'));check(len(trxs)==1,'trx-count')\n  for trx in trxs:\n   t=ET.parse(trx).getroot();counter=t.find('t:ResultSummary/t:Counters',NS);check(counter is not None and all(int(counter.get(k,'-1'))==v for k,v in dict(total=2,executed=2,passed=2,failed=0).items()),'trx-counters')\n   definitions={u.attrib['id']:u.find('t:TestMethod',NS) for u in t.findall('t:TestDefinitions/t:UnitTest',NS)}\n   results=t.findall('t:Results/t:UnitTestResult',NS);check(len(results)==2 and len({x.get('testId') for x in results})==2,'trx-unique-two-results')\n   for result in results:\n    method=definitions.get(result.get('testId'));name=method.get('name') if method is not None else result.get('testName','').rsplit('.',1)[-1];case_names.append(name);check(name in EXPECTED and result.get('outcome')=='Passed','trx-case:'+str(name))\n    stdout=result.findtext('t:Output/t:StdOut','',NS)\n    for row in jlines(stdout):\n     if 'RetirementCapture' in row:declarations.append(dict(row,TestMethod=name))\n     if 'CleanupOwnedRoot' in row:cleanups.append(dict(row,TestMethod=name))\n check(sorted(case_names)==sorted(EXPECTED),'case-identity-set');check(len(declarations)==len(cleanups)==2,'capture-cleanup-declarations')\n check(len({x['OriginalRoot'] for x in declarations})==2,'unique-original-roots')\n for decl in declarations:\n  path=Path(decl['RetirementCapture']);check(path.parent.name.startswith('boe-daren-retirement-artifacts-') and str(path.parent) in r['newRetainedArtifactDirectories'],'artifact-path-ownership')\n  check(any(x['path']==str(path) for x in r['fixtureArtifactFiles']),'artifact-recorded');raw=path.read_bytes();check(sha(raw)==decl['Sha256'].lower(),'declared-packet-sha')\n  packet=json.loads(raw);kind=packet['Kind'];check(kind==EXPECTED.get(decl['TestMethod'])==decl['Kind'],'packet-kind-lineage');check(packet['ProductSource']==PRODUCT,'original-product-source')\n  original=packet['OriginalRoot'];check(original==decl['OriginalRoot'] and Path(original).parent==Path('/tmp') and Path(original).name.startswith('boe-daren-retirement-capture-'),'original-root-lineage');check(not Path(original).exists(),'original-root-still-present')\n  receipt=[x for x in cleanups if x['CleanupOwnedRoot']==original and x['TestMethod']==decl['TestMethod']];check(len(receipt)==1 and receipt[0]['OwnedFixtureRemoved'] and receipt[0]['CleanupFailure'] is None,'strict-root-cleanup:'+kind)\n  generation=packet['Generation'];check(re.fullmatch('[0-9a-f]{32}',generation) is not None and generation==decl['Generation'],'generation-lineage')\n  images={}\n  check(set(packet['FilesBase64'])==set(packet['Sha256']),'image-key-hash-set')\n  for relative,encoded in packet['FilesBase64'].items():\n   pp=PurePosixPath(relative);check(not pp.is_absolute() and '..' not in pp.parts,'relative-image-path:'+relative);body=base64.b64decode(encoded,validate=True);check(sha(body)==packet['Sha256'][relative].lower(),'image-hash:'+relative);images[relative]=body\n  check(PROFILE in images and images[PROFILE]==AFTER,'raw-profile-after-nonutf8:'+kind)\n  check(MEMBER in images and images[MEMBER]==(AFTER if kind=='browser7' else BEFORE),'actual-ordinary-member-image:'+kind)\n  check(packet['GenerationPath']=='.boe_runtime/session-generation/current.json','actual-generation-path');gen=json.loads(images[packet['GenerationPath']]);check(set(gen)=={'SchemaVersion','GenerationId'} and gen['SchemaVersion']==1 and gen['GenerationId']==generation,'physical-current-generation-binding')\n  evidence=packet['EvidencePath'];body=json.loads(images[evidence]);details={}\n  if kind=='browser7':\n   check(evidence.endswith('/browser_write_manifest.json') and evidence.startswith('game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/'),'browser-evidence-path')\n   check(body['schemaVersion']==7 and body['transactionKind']=='browser_local_write' and body['status']=='staged' and body['generation']==generation,'browser7-real-staged-binding')\n   check(len(body['entries'])==len(body['externalEntries'])==1,'actual-browser-member-counts')\n   member=body['entries'][0];ext=body['externalEntries'][0];check(member['trackedFile']=='game_state/meta/retirement-ordinary-member.bin' and ext['fileId']=='daren_reward_profile','browser-registered-members')\n   for entry,label in [(member,'ordinary'),(ext,'profile')]:\n    check(entry['existed'] is True,'browser-before-existed:'+label);backup='game_session/'+entry['backupPath'];check(images.get(backup)==BEFORE and entry['sha256'].lower()==sha(BEFORE),'raw-original-backup:'+label)\n   details=dict(schema=body['schemaVersion'],status=body['status'],externalId=ext['fileId'],memberCount=1,externalCount=1,actualOrdinaryAndProfileBefore=sha(BEFORE),physicalOrdinaryAndProfileAfter=sha(AFTER))\n  elif kind=='standalone1':\n   check(evidence=='.boe_runtime/trusted-local-publication-v1/active.json','standalone-evidence-path');check(body['Format'] in [1,2] and body['Committed'] is True,'actual-standalone-committed-journal')\n   check(len(body['Members'])==1,'standalone-single-profile-member');member=body['Members'][0];check(member['Path']==str(Path(original)/PROFILE),'standalone-actual-absolute-profile')\n   for key,expected in [('Before',BEFORE),('After',AFTER)]:\n    image=member[key];check(image['Exists'] is True and base64.b64decode(image['Bytes'],validate=True)==expected and image['Sha256'].lower()==sha(expected),'standalone-image:'+key)\n   check(all(body[key]['Exists'] is True and body[key]['Id']==generation for key in ['GenerationBefore','GenerationAfter']),'standalone-original-generation-binding')\n   details=dict(format=body['Format'],committed=body['Committed'],members=1,actualPath=member['Path'],before=sha(BEFORE),after=sha(AFTER))\n  packets.append(dict(path=str(path),sha256=sha(raw),bytes=len(raw),kind=kind,originalRoot=original,physicalRootAbsent=not Path(original).exists(),generation=generation,evidencePath=evidence,imagePins=[dict(path=k,bytes=len(v),sha256=sha(v)) for k,v in images.items()],details=details,provenance=packet['Producer']))\n allowed=set(r['newRetainedArtifactDirectories']);check(len(allowed)==2,'retained-diagnostic-count');check(set(r['ownedPrefixesAfter'])-set(r['ownedPrefixesBefore'])==allowed,'only-expected-new-diagnostics');check(set(r['ownedPrefixesBefore'])<=set(r['ownedPrefixesAfter']),'preexisting-namespace-changed')\n report=dict(kind='READ_ONLY_CAPTURE_RAW_INSPECTION_NOT_INDEPENDENT_VERDICT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),recordPath=str(record_path),recordSha256=sha(record_bytes),actualSource=r['actualSource'],compiledSource=COMPILED,productSource=PRODUCT,nativeExit=r['nativeExit'],issues=issues,status='RAW_CHECKS_PASSED_NOT_INDEPENDENT_ACCEPTANCE' if not issues else 'FIRST_OUTCOME_REQUIRES_CAUSAL_OR_FIXTURE_CLASSIFICATION',packets=packets,caseNames=case_names,strictCleanupReceipts=cleanups,resultPaths=r['resultDirectories'],observedSummaryAndPlan=observed,helperText=Path(__file__).read_text(),limits=['No consumer recovery, data rebasing/transformation or fixture installation was executed by this inspector.','Exact original-root packet bytes are preserved; deleted test root is not a reusable live authority.','Shared mixed/synthetic schema6 controls are distinct future provenance, never these authentic original packets.'])\n with report_path.open('x') as f:json.dump(report,f,indent=2);f.write('\\n')\n print('CAPTURE_RAW_INSPECTION',report['status'],'issues',len(issues),'report',report_path)\n if issues:sys.exit(1)\nif __name__=='__main__':main()\n",
+  "limits": [
+    "No consumer recovery, data rebasing/transformation or fixture installation was executed by this inspector.",
+    "Exact original-root packet bytes are preserved; deleted test root is not a reusable live authority.",
+    "Shared mixed/synthetic schema6 controls are distinct future provenance, never these authentic original packets."
+  ]
+}

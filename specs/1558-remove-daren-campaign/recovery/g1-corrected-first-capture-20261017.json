@@ -1,0 +1,159 @@
+{
+  "kind": "FIRST_CORRECTED_ORIGINAL_PRODUCER_CAPTURE_RAW_NOT_INDEPENDENT_EVIDENCE_ACCEPTANCE",
+  "utc": "2026-10-17T09:17:36.271497+00:00",
+  "actualSource": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-corrected-first-b2e51273-20261017T0916Z/record.json",
+  "recordSha256": "3407ea2e49407bff5f730194b8812744d99e628525954c5b67e88b93c4cf1f91",
+  "archive": "specs/1558-remove-daren-campaign/recovery/g1-corrected-first-capture-20261017-files/archive.json",
+  "archiveSha256": "70bdad64017de0b6d3cc6551b1dfbe969b8d0ac2f10a2229fb8dbdb361d13fef",
+  "rawChains": 10,
+  "packetChains": 2,
+  "nativeExit": 0,
+  "wallSeconds": 5.612338406997878,
+  "startedUtc": "2026-10-17T09:16:14.773969+00:00",
+  "finishedUtc": "2026-10-17T09:16:20.454346+00:00",
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": {
+    "timedOut": false,
+    "ownedTree": true,
+    "runtime": true
+  },
+  "caseNames": [
+    "OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+    "OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null,
+      "TestMethod": "OriginalCurrentBrowserProducer_CapturesPendingExternalMember"
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null,
+      "TestMethod": "OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+    }
+  ],
+  "originalPackets": [
+    {
+      "kind": "browser7",
+      "path": "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082/browser7.json",
+      "sha256": "05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7",
+      "bytes": 4267,
+      "originalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "physicalRootAbsent": true,
+      "generation": "5fc5544e2a9c45b8a0adf0c7b0e52772",
+      "evidencePath": "game_session/game_state/control/explorer_local_turn_rollback/retirement_capture/639278253799490307_92837dd42d394fee9fe67f85265f09e3/browser_write_manifest.json"
+    },
+    {
+      "kind": "standalone1",
+      "path": "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c/standalone1.json",
+      "sha256": "06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53",
+      "bytes": 2209,
+      "originalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "physicalRootAbsent": true,
+      "generation": "4578ba8a389a4d29a56e8b4123a9edf5",
+      "evidencePath": ".boe_runtime/trusted-local-publication-v1/active.json"
+    }
+  ],
+  "sourceBinding": {
+    "path": "specs/1558-remove-daren-campaign/g1-correction-source-packet-20261017.json",
+    "sha256": "210fb9b2a1335f6e036e10a7662bcbe023899e5b9d4688d72cba168f2e56eefb",
+    "pins": 60
+  },
+  "binaryContinuity": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "f8f9660806e43612aed5fd723c10280892d42a7d776f726481369361d239d71d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29326848,
+      "sha256": "6705066ce4b0ce40da308c45ec3264df3678168b8867313c285e064a7a9a53d8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "cba8623093ab8721dadfb70d46b2ba357fe7bec528ce9acc8e3935c8cdaaa441"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "9155a6bcc96cecee654700e3275754ffd2edf51b051ea4e56c8a2439d920928c"
+    }
+  ],
+  "preservedSupport": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-corrected-first-capture-inspection-20261017.json",
+      "bytes": 21148,
+      "sha256": "c716a865ab34a690d537a1a63115511d0740d34b1c8b1538302594e2fcf14406"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-activated-corrected-capture2-b2e51273-20261017.json",
+      "bytes": 4126,
+      "sha256": "18994ecfbdc4dfe73d659a5ea43626ae568d03332e5ab99e4379d66b1a59e881"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-first-corrected-capture-readback-b2e51273-20261017.json",
+      "bytes": 1995,
+      "sha256": "d7b8f3b4cc104cdcb77f1f06ad38203a9def23802479795b245cd4227c096ce5"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-corrected-source-decision-delta-github-b2e51273-20261017.json",
+      "bytes": 11368,
+      "sha256": "9c207ed02ab8fa3a731216946f0d531da1a35ab402f01586188eaeb0835375c3"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-recovery-composition-b2e51273-20261017.json",
+      "bytes": 30809,
+      "sha256": "5443b30dec2803afa067872c9927f71ec368297324f0c818ba69d53d253f6599"
+    }
+  ],
+  "history": {
+    "firstFailedCompiledSource": "05d481d684fe0831ea060a1e9853e91f6b9749a0",
+    "firstFailedActualSource": "fdf9ddc664f844a3e89263956fd9065e1e706872",
+    "firstFailedResult": "2FAIL before Freeze; no original packets and not retirement RED",
+    "eightOldRawChainsUnchanged": true,
+    "original05dHelpersAndSentinelUnchanged": true
+  },
+  "limits": [
+    "2 observed native PASS and read-only raw checks are not independent packet/transport acceptance.",
+    "Original packets preserve original absolute roots/generations/raw images; original roots are strictly removed and cannot be reused as live authority.",
+    "No TestData installation/root or generation transformation/consumer recovery/retirement RED ran.",
+    "Shared mixed journal and schema6 synthetic controls remain distinct future fixtures, not authentic Daren-produced data.",
+    "No console/frontend/host/browser or production/removal/prompt actual; T006/T009 remain incomplete."
+  ]
+}

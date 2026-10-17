@@ -1,0 +1,69 @@
+{
+  "kind": "ROOT_ACTIVATED_EXACT_SOURCE_CORRECTED_FIRST_CAPTURE2_ONLY_RELEASE",
+  "createdUtc": "2026-10-17T09:15:55.874959+00:00",
+  "status": "ACTIVATED_CORRECTED_CAPTURE2_ONLY",
+  "actualSource": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "persistedDecisionSha256": "2a8f4b9c4beda4cfb011e00ea1c85222d94f9648b557e204fbfe7857c060e449",
+  "independentDecisionSha256": "74113abf587d9900f57608b715f43e8418d05c6ac3371fd742d9b46f6d77228a",
+  "verifiedRemoteHead": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "recoveryComposition": "/tmp/gm1558-root-recovery-composition-b2e51273-20261017.json",
+  "completeDeltas": 89,
+  "trackedPaths": 55765,
+  "persistedChecks": [
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-corrected-capture2-only-release-230d5980-20261017.json",
+      "sha256": "2a8f4b9c4beda4cfb011e00ea1c85222d94f9648b557e204fbfe7857c060e449"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-corrected-source-independent-20261017.md",
+      "sha256": "b95d4e0114c906cf49072d753b6a49a0a7361cf11761b391cd1002344a857cca"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-corrected-source-independent-20261017.json",
+      "sha256": "74113abf587d9900f57608b715f43e8418d05c6ac3371fd742d9b46f6d77228a"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-g1-corrected-source-independent-check-20261017.json",
+      "sha256": "79e61037feebeb8f621475f212ce7c336746dab693b09cf6c99bd4d86b59ebe3"
+    },
+    {
+      "path": "specs/1558-remove-daren-campaign/recovery/gm1558-root-corrected-prep-carrier-readback-230d5980-20261017.json",
+      "sha256": "1e60f2b6366e96153b248cb6be04c00fa0743739d0d4b5fbbac74b0c830452ce"
+    }
+  ],
+  "scope": {
+    "category": "daren-retirement-producer-capture",
+    "methods": [
+      "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalCurrentBrowserProducer_CapturesPendingExternalMember",
+      "BookOfEternityClient.Tests.DarenRetirementProducerCaptureTests.OriginalStandaloneProfileProducer_CapturesCommittedCleanupDebt"
+    ],
+    "cases": 2,
+    "budgetMinutes": 3,
+    "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-retirement-producer-capture -NoBuild",
+    "conditions": [
+      "Exact review persisted and independently read back; Root explicitly releases a clean metadata descendant bound to compiled0b and the seven fresh pins.",
+      "Use corrected distinct first-launch recording; reconcile any interrupted/failed outcome without silent retry.",
+      "Freeze full original packet/raw/provenance and strict original-root cleanup before any consumer fixture installation."
+    ]
+  },
+  "launcher": {
+    "path": "/tmp/gm1558-capture-corrected-run.py",
+    "sha256": "ab99a53cd4c7b3c442501a0666d62f47d567156862d0787404a4c244d71187da",
+    "bytes": 6993
+  },
+  "afterFirstActual": [
+    "Exactly one corrected canonical capture2 NoBuild invocation using distinct0b sentinel and helper. Keep original05d sentinel/raw/helper unchanged. Preserve FIRST result including unexpected failure; never silent retry.",
+    "Read-only corrected inspector and unchanged generic archiver into new owned tmp directories. Preserve native/stdout/process/TRX/summary/plan/packets/cleanup/binary/source provenance before classification. No fixture installation or transport.",
+    "Publish evidence-only carrier and exact remote/recovery before independent EVIDENCE. Authentic packet and derived transport require distinct acceptance before meaningful consumerRED."
+  ],
+  "held": [
+    "All noncapture actuals including console11,frontend,host,consumerRED,RootChromium",
+    "TestData installation or root/generation transformation before frozen capture evidence acceptance",
+    "Production/API/UI/content/prompts/removal/G2",
+    "Windows artifact transfer retries,alternate routes or CI; historical family replays"
+  ],
+  "old05dSentinelUnchanged": true,
+  "runtimeExecutedByThisReceipt": false
+}

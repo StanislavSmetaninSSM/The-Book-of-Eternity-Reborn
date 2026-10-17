@@ -1,0 +1,51 @@
+{
+  "kind": "ROOT_FIRST_CORRECTED_CAPTURE_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-17T09:16:39.722991+00:00",
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g1-capture-corrected-first-b2e51273-20261017T0916Z/record.json",
+  "recordSha256": "3407ea2e49407bff5f730194b8812744d99e628525954c5b67e88b93c4cf1f91",
+  "actualSource": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "nativeExit": 0,
+  "wallSeconds": 5.612338406997878,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "runnerCleanup": [
+    true,
+    true
+  ],
+  "rawFilesHashChecked": 4,
+  "packets": [
+    {
+      "path": "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c/standalone1.json",
+      "sha256": "06e160d98fd1628ad2625eacb751fbdf87be2a31ace6e2a6feb19a627a1aca53",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+      "originalRootPhysicallyAbsent": true,
+      "kind": "standalone1",
+      "images": 4
+    },
+    {
+      "path": "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082/browser7.json",
+      "sha256": "05872413fc85972008f1ccd606d7839677bbad816650d39a7a0f9ec03475cdb7",
+      "originalRoot": "/tmp/boe-daren-retirement-capture-056c6bd88e6844279af7fabb1ecf55b5",
+      "originalRootPhysicallyAbsent": true,
+      "kind": "browser7",
+      "images": 6
+    }
+  ],
+  "binaryContinuity": true,
+  "evidenceVerdict": "PENDING_INDEPENDENT_FROZEN_DATA_AND_DERIVED_TRANSPORT_REVIEW",
+  "limits": "Raw occurrence/completeness/hashes and physically absent owned roots only. No consumer execution, rebasing or product change. First05d fixturefail retained."
+}
