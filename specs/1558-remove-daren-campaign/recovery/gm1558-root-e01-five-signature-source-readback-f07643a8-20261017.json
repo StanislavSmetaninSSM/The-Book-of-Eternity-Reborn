@@ -1,0 +1,16 @@
+{
+  "kind": "ROOT_E01_TARGETED_FIVE_SIGNATURE_DIFF_AND_GITHUB_READBACK_NO_RUNTIME",
+  "utc": "2026-10-17T11:24:23.067806+00:00",
+  "source": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "base": "db749e462e88edbdc0690f57e68efefa0078e262",
+  "exactFiveCausalMappingsReconstructParentManifest": true,
+  "allOtherManifestBytesUnchanged": true,
+  "other273SourcePinsUnchanged": true,
+  "current274PinsDigest": "7d3d498b298a5f2ec97efac5782cfebdc9c8e9eed1e7f31ac44bf8b0be0be55f",
+  "nativeCasesOrSelectorsOrAssertionsChanged": false,
+  "recovery": "/tmp/gm1558-g2-e01-source-delta-github-f07643a8-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-f07643a8-20261017.json",
+  "deltaFiles": 15,
+  "deltaChangedPaths": 11,
+  "runtime": "UNRUN; zeroexecfreshselectedbuildPlanOnly separatelyauthorized; targetedindependentSourcePREPrequired"
+}

@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "G2-E01 causal EVIDENCE accepted: FIRST guard failure is five CRLF-pinned expectations against unchanged LF source, not retirement RED or product regression. Exact five existing signature literals corrected; 1of274 sourcepins updated, other273 and all source literals/oracles/rows/selectors unchanged. Fresh selected build/PlanOnly0 pending; managed GREEN and RootChromium held, original1FAIL/18UNRUN immutable.",
+  "status": "Exact E01 five-signature repair published; FIRST fresh current SelectionFile build/PlanOnly returned native0 with17owners/19descriptors/42C#methods98cases+8frontendfileestimates/0executions. New seven managed DLLs,370packagefiles/source\u2192package52 and retained frontend110/113 pinned; targeted independent SOURCE/PREP and named Root GREEN release pending. Originald09 one inventoryFAIL/18UNRUN and all prior history unchanged; actual/browser held.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2486,8 +2486,8 @@
   },
   "preparation": {
     "frontend": "FIRST_AFTER_SETUP_NATIVE0_AT110E_APP_NODE_AND_VITE;113freshfiles retained by unchanged frontend/package/lock dependency hashes; exact partial packet links next current managed source",
-    "managed": "FIRST_NATIVE0_AT555_BOTH_CATALOG816_11686_ZERO_TESTS",
-    "plan": "FIRST_NATIVE0_AT555_EXACT17_19_50_106ESTIMATED_ZEROEXEC;98CSharpCases+8FrontendFileEstimates",
+    "managed": "FIRST_E01_CURRENT_SELECTION_BUILD_PLAN_NATIVE0_ATf07643a8_ZEROEXEC_NO_CATALOG_REPLAY",
+    "plan": "FIRST_E01_EXACT17_19_42CSHARP_98CASES_8FEFILEESTIMATES_ZEROEXEC",
     "stop": "FIRSTunexpected source/compiler/catalog/plan/cleanup outcome frozen/published, no automaticretry",
     "typecheck": "frontend-shell-types is separate actual selected-test tsconfig compiler contract, retained; not synonymous with npm app/node typechecks",
     "firstFrontendOutcome": {
@@ -2554,44 +2554,44 @@
       "status": "APPROVED_SOURCE_ONLY_UNRUN_ROOT_OWNS_ACTUAL"
     }
   ],
-  "compiledSource": "555ceae66e10300d3cf76ff849fb110b79b15549",
-  "freshPreparation": "recovery/g2-first-managed-preparation-555ceae6-20261017.json",
-  "preparationInspection": "recovery/g2-first-managed-preparation-inspection-555ceae6-20261017.json",
+  "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+  "freshPreparation": "recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017.json",
+  "preparationInspection": "recovery/g2-e01-first-build-plan-inspection-f07643a8-20261017.json",
   "sevenFreshBinaries": [
     {
       "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
       "bytes": 25790464,
-      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      "sha256": "105f715e564cb95e276a6bac86893b373ee3f2911328ed89115318a26e09c7ba"
     },
     {
       "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
       "bytes": 9309696,
-      "sha256": "92acbd4a828662f01a98468a1678bdaf8b7659f669bc2148b9af22d9305399fd"
+      "sha256": "b110ef0d11bfc28e3dc4929286edd1ef95c65557a5f7ab2cea48949ef1874c66"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
       "bytes": 25790464,
-      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      "sha256": "105f715e564cb95e276a6bac86893b373ee3f2911328ed89115318a26e09c7ba"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
       "bytes": 29126144,
-      "sha256": "8a21ae30dcb0f020bc10466d5c606b187b9a21ad85f93e2bf26774ee7bc0f556"
+      "sha256": "0524e4b9ac366d780a25d56caa96d436b880af58588c1a25b8ed9e5b7f0195eb"
     },
     {
       "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
       "bytes": 1992192,
-      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+      "sha256": "5e401fa8de08a35444752487eb7c41603efa953cc4d522f19fb48698a5aca77b"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
       "bytes": 1992192,
-      "sha256": "3f26f9243f339945654f0be385964abbf08316ca3d0a74f2496e5d250f9564fd"
+      "sha256": "5e401fa8de08a35444752487eb7c41603efa953cc4d522f19fb48698a5aca77b"
     },
     {
       "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
       "bytes": 25790464,
-      "sha256": "9d5a6eed89661cc3098c711ba6374b63db96f3fbae2415e570ce2a613f8f85dc"
+      "sha256": "105f715e564cb95e276a6bac86893b373ee3f2911328ed89115318a26e09c7ba"
     }
   ],
   "finalSourceAcceptance": {
@@ -2652,7 +2652,36 @@
     "sourcePinsBeforeSha256": "d55042795f174f07f2dc9d382b4556c07d5d959218d7d07f1fb97515eb5cc2eb",
     "sourcePinsAfterSha256": "7d3d498b298a5f2ec97efac5782cfebdc9c8e9eed1e7f31ac44bf8b0be0be55f",
     "preserved": "All other273pins, raw literal source/parser/multiset/assertions/other rows/category/membership/counts/budgets; original first actual/sentinel/raw and all earlier failures immutable.",
-    "preparation": "PENDING_ONE_CURRENT_SELECTIONFILE_PLANONLY_WITH_FRESH_SELECTED_BUILDS_ZEROEXEC_NO_CATALOG_OR_FRONTEND_REPLAY",
-    "runtime": "HELD_UNTIL_TARGETED_SOURCE_PREP_ACCEPTANCE_AND_SEPARATE_ROOT_ACTIVATION"
+    "preparation": {
+      "packet": "recovery/g2-e01-first-build-plan-preparation-f07643a8-20261017.json",
+      "inspection": "recovery/g2-e01-first-build-plan-inspection-f07643a8-20261017.json",
+      "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+      "nativeExit": 0,
+      "observedPlan": {
+        "categories": 17,
+        "descriptors": 19,
+        "csharpMethods": 42,
+        "csharpCases": 98,
+        "frontendFiles": 8,
+        "frontendFileEstimates": 8,
+        "totalAdapterEstimates": 106,
+        "executed": 0
+      },
+      "packageManifestSha256": "565f5295472b94951ea38db29d82ad2bd82d0b62d4a088d6ed1af34ec03069b0",
+      "targetedSourceAcceptance": "PENDING",
+      "rootLiveBinding": "recovery/gm1558-root-e01-prep-live-binding-f07643a8-20261017.json",
+      "metadataUtilityOutcome": "Post-freeze KeyError Adapter corrected in continuation using constructed lowercase adapter and unit/integration descriptor kinds; original11chains retained plus exact outcome/continuation/package=14chains. Native0/zeroexec not repeated."
+    },
+    "runtime": "HELD_UNTIL_TARGETED_SOURCE_PREP_ACCEPTANCE_AND_SEPARATE_ROOT_ACTIVATION",
+    "futureRecorder": {
+      "path": "specs/1558-remove-daren-campaign/recovery/tools/gm1558-g2-e01-green-first-run.py",
+      "sha256": "ef4e77f999be7d6f08d85a7642cc5e9698ed0576d7a9a205a023e895159c52b0",
+      "status": "UNRUN_DISTINCT_FIRST_REQUIRES_TARGETED_SOURCE_AND_NAMED_ROOT_ACTIVATION",
+      "compiledSource": "f07643a8bf611391caffb5bf21afe2ea1b4db88f",
+      "preparedPlanRecord": "/tmp/gm1558-implementation-tools/gm1558-g2-e01-plan-first-f07643a8-20261017t1125z/record.json",
+      "preparedPlanRecordSha256": "08a4a632f77536ea497db4348d2202b038d1b80f6469d62aecaec82d85555b37",
+      "packageManifestSha256": "565f5295472b94951ea38db29d82ad2bd82d0b62d4a088d6ed1af34ec03069b0",
+      "original555Sentinel": "UNCHANGED"
+    }
   }
 }

@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2-E01 causal EVIDENCE accepted: FIRST guard failure is five CRLF-pinned expectations against unchanged LF source, not retirement RED or product regression. Exact five existing signature literals corrected; 1of274 sourcepins updated, other273 and all source literals/oracles/rows/selectors unchanged. Fresh selected build/PlanOnly0 pending; managed GREEN and RootChromium held, original1FAIL/18UNRUN immutable.
+**Status**: Exact E01 five-signature repair published; FIRST fresh current SelectionFile build/PlanOnly returned native0 with17owners/19descriptors/42C#methods98cases+8frontendfileestimates/0executions. New seven managed DLLs,370packagefiles/source→package52 and retained frontend110/113 pinned; targeted independent SOURCE/PREP and named Root GREEN release pending. Originald09 one inventoryFAIL/18UNRUN and all prior history unchanged; actual/browser held.
 
 ## Source issues and scope
 
