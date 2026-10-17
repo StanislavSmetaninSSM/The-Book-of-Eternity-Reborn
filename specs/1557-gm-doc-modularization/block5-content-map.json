@@ -1,0 +1,5190 @@
+{
+  "kind": "CURRENT_BLOCK5_SOURCE_AND_DRAFT_BYTE_PARTITION_NOT_IMPLEMENTATION_OR_RUNTIME",
+  "sourceHead": "b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e",
+  "createdUtc": "2026-10-17T05:30:05.052525+00:00",
+  "topics": [
+    {
+      "topic": "Units_Ids",
+      "rulePath": "Rules/Block_5_Units_Ids.txt",
+      "examplePath": "Examples/E_Block_5_Units_Ids.txt",
+      "approvedTopComponents": [
+        "5.0",
+        "5.8"
+      ]
+    },
+    {
+      "topic": "Characteristics_Progression",
+      "rulePath": "Rules/Block_5_Characteristics_Progression.txt",
+      "examplePath": "Examples/E_Block_5_Characteristics_Progression.txt",
+      "approvedTopComponents": [
+        "5.1",
+        "5.7",
+        "5.10",
+        "5.24"
+      ]
+    },
+    {
+      "topic": "Combat_Foundations",
+      "rulePath": "Rules/Block_5_Combat_Foundations.txt",
+      "examplePath": "Examples/E_Block_5_Combat_Foundations.txt",
+      "approvedTopComponents": [
+        "5.2",
+        "5.3",
+        "5.4",
+        "5.5",
+        "5.6",
+        "5.16",
+        "5.19"
+      ]
+    },
+    {
+      "topic": "Items_Resources",
+      "rulePath": "Rules/Block_5_Items_Resources.txt",
+      "examplePath": "Examples/E_Block_5_Items_Resources.txt",
+      "approvedTopComponents": [
+        "5.9",
+        "5.11",
+        "5.13",
+        "5.14",
+        "5.15",
+        "5.23",
+        "5.mortal_item_materialization_v1"
+      ]
+    },
+    {
+      "topic": "Narrative_Social",
+      "rulePath": "Rules/Block_5_Narrative_Social.txt",
+      "examplePath": "Examples/E_Block_5_Narrative_Social.txt",
+      "approvedTopComponents": [
+        "5.12",
+        "5.17",
+        "5.18"
+      ]
+    },
+    {
+      "topic": "Wounds",
+      "rulePath": "Rules/Block_5_Wounds.txt",
+      "examplePath": "Examples/E_Block_5_Wounds.txt",
+      "approvedTopComponents": [
+        "5.20"
+      ]
+    },
+    {
+      "topic": "World_Chronology",
+      "rulePath": "Rules/Block_5_World_Chronology.txt",
+      "examplePath": "Examples/E_Block_5_World_Chronology.txt",
+      "approvedTopComponents": [
+        "5.21",
+        "5.22",
+        "5.25"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 262995,
+      "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "gitBlob": "7cd9650034c2439cd7bb39d280f29688c81e3e8c",
+      "mode": "100644",
+      "lines": 3881,
+      "xmlRoot": "instructionblock",
+      "xmlRootId": "5",
+      "topLevelRuleGroups": 31,
+      "ruleNodes": 144,
+      "ruleIds": [
+        "5.0",
+        "5.1",
+        "5.1.1",
+        "5.1.2",
+        "5.2",
+        "5.2.1",
+        "5.2.2",
+        "5.3",
+        "5.3.1",
+        "5.3.2",
+        "5.3.3",
+        "5.4",
+        "5.4.1",
+        "5.4.2",
+        "5.5",
+        "5.5.1",
+        "5.5.2",
+        "5.6",
+        "5.6.1",
+        "5.6.2",
+        "5.7",
+        "5.7.1",
+        "5.7.2",
+        "5.7.3",
+        "5.7.4",
+        "5.7.5",
+        "5.7.6",
+        "5.8",
+        "5.8.1",
+        "5.8.2",
+        "5.8.3",
+        "5.8.4",
+        "5.8.A",
+        "5.8.A.1",
+        "5.9",
+        "5.9.1",
+        "5.10",
+        "5.10.1",
+        "5.10.2",
+        "5.10.3",
+        "5.10.A",
+        "5.10.A.1",
+        "5.10.A.2",
+        "5.11",
+        "5.11.1",
+        "5.11.2",
+        "5.11.2.1",
+        "5.11.2.2",
+        "5.11.2.3",
+        "5.11.2.4",
+        "5.11.3",
+        "5.12",
+        "5.12.1",
+        "5.12.2",
+        "5.12.3",
+        "5.12.4",
+        "5.12.5",
+        "5.12.5.1",
+        "5.12.5.2",
+        "5.12.5.3",
+        "5.12.6",
+        "5.13",
+        "5.13.1",
+        "5.13.2",
+        "5.13.3",
+        "5.13.4",
+        "5.13.5",
+        "5.13.6",
+        "5.14",
+        "5.14.1",
+        "5.14.2",
+        "5.14.3",
+        "5.14.4",
+        "5.14.4.1",
+        "5.14.4.2",
+        "5.14.5",
+        "5.15",
+        "5.15.1",
+        "5.15.2",
+        "5.15.2.1",
+        "5.15.2.2",
+        "5.15.3",
+        "5.15.4",
+        "5.16",
+        "5.16.1",
+        "5.16.2",
+        "5.16.3",
+        "5.16.4",
+        "5.16.5",
+        "5.17",
+        "5.17.1",
+        "5.17.2",
+        "5.17.3",
+        "5.17.4",
+        "5.17.5",
+        "5.17.6",
+        "5.18",
+        "5.18.0",
+        "5.18.1",
+        "5.18.2",
+        "5.18.3",
+        "5.18.4",
+        "5.18.5",
+        "5.18.6",
+        "5.18.B",
+        "5.18.B.pre-check-0",
+        "19.D.0",
+        "5.18.B.pre-check-2",
+        "LAW.14.B.2.pre-check-3",
+        "5.18.B.0",
+        "5.18.B.0.A",
+        "5.18.B.0.B",
+        "5.18.B.1",
+        "5.18.B.2",
+        "5.18.B.3",
+        "5.18.B.3.0",
+        "5.18.B.3.1",
+        "5.18.B.3.2",
+        "5.18.B.3.3",
+        "5.18.B.3.A",
+        "5.18.B.4",
+        "5.19",
+        "5.19.1",
+        "5.19.2",
+        "5.19.2.1",
+        "5.19.2.2",
+        "5.19.2.3",
+        "5.19.2.3.A",
+        "5.19.2.3.B",
+        "5.19.3",
+        "5.19.4",
+        "5.20",
+        "5.20.1",
+        "5.20.2",
+        "5.20.3",
+        "5.20.4",
+        "5.21",
+        "5.21.1",
+        "5.21.2",
+        "5.22",
+        "5.23",
+        "5.24",
+        "5.25",
+        "5.mortal_item_materialization_v1"
+      ],
+      "examples": 0,
+      "orderedExampleNodes": [],
+      "exampleTypeCounts": {},
+      "cdataSections": 126,
+      "cdataRanges": [
+        {
+          "start": 1054,
+          "end": 3964,
+          "bytes": 2910,
+          "sha256": "526196f3843833ad95ea230985230b69e7c24fd0a08d2a9a13f3673374b38a06"
+        },
+        {
+          "start": 4535,
+          "end": 5544,
+          "bytes": 1009,
+          "sha256": "726aa078c2f3933b8ea8227015ef8a1a5c804a1a8e84021225d57af67cace1d2"
+        },
+        {
+          "start": 5707,
+          "end": 28507,
+          "bytes": 22800,
+          "sha256": "053230339dade3ed7d74635b68535931e43a8c80539f0a5e3328e5dd78c58e6c"
+        },
+        {
+          "start": 29496,
+          "end": 33709,
+          "bytes": 4213,
+          "sha256": "ed59844bed53715c7be18f74706f35083d4e8559fa9bfc6b538494e8a2a423c3"
+        },
+        {
+          "start": 33858,
+          "end": 35256,
+          "bytes": 1398,
+          "sha256": "96445a7c66cb9391802de33ff6a7a09e6e3bc17c515bb8d7b7392a51d8aa8cea"
+        },
+        {
+          "start": 35993,
+          "end": 39877,
+          "bytes": 3884,
+          "sha256": "e1071c159b285a3bf7c11632d8bd6d516519d145d1c576174e1c7d10b13ed19b"
+        },
+        {
+          "start": 40144,
+          "end": 43574,
+          "bytes": 3430,
+          "sha256": "aaeea4f130795f32aa0db8e896a04237c276093ad18b0b5a58b18eff8a203b42"
+        },
+        {
+          "start": 43710,
+          "end": 43932,
+          "bytes": 222,
+          "sha256": "397036bc8450d6df0fac214111313479153497529da85953ddc497c057db116d"
+        },
+        {
+          "start": 45059,
+          "end": 50258,
+          "bytes": 5199,
+          "sha256": "e33619a5ed454e82f95fdd2a87b50b47a3c60c79ba8389d9465685995111ae7a"
+        },
+        {
+          "start": 50403,
+          "end": 50968,
+          "bytes": 565,
+          "sha256": "f45a18d7641db0dc7bb2905440ee35708e0cbc8a7edf62e633ec3cd36bc9de67"
+        },
+        {
+          "start": 51852,
+          "end": 53509,
+          "bytes": 1657,
+          "sha256": "c3ce63d321f470b098e45684fde4bad64abc3be8e64ed362aef75f67d257b5db"
+        },
+        {
+          "start": 53674,
+          "end": 64071,
+          "bytes": 10397,
+          "sha256": "ff80e937ec794b37ce5a4607abc19b26fe58d8934eb4b99171f10be1565ccf09"
+        },
+        {
+          "start": 64888,
+          "end": 69260,
+          "bytes": 4372,
+          "sha256": "dd530867ed7eb9fbe92287558f30cb64b46bcf43c87efc0e2a337f4887a6e1ec"
+        },
+        {
+          "start": 69413,
+          "end": 69837,
+          "bytes": 424,
+          "sha256": "eea7cfb0f8f5675a3466352a3fd5c4131c325c01f1834b050ac64e116b98d765"
+        },
+        {
+          "start": 70532,
+          "end": 72947,
+          "bytes": 2415,
+          "sha256": "62958b0c9a745d2cd94a866ee50096ca6bd39d71d37b8090eba50f46ca581d7e"
+        },
+        {
+          "start": 73099,
+          "end": 74468,
+          "bytes": 1369,
+          "sha256": "33f773c812b72f7d61edd3fa5212309e281a8604a707cd354219cfcec2bccdb6"
+        },
+        {
+          "start": 74651,
+          "end": 80193,
+          "bytes": 5542,
+          "sha256": "e1501bbcf8af0585d3c0373617700eeddec1034ac3bdfac3a5f97dac6a5aa86d"
+        },
+        {
+          "start": 80364,
+          "end": 83444,
+          "bytes": 3080,
+          "sha256": "8e400cdbcfb6f56a03f5a6809e0111ed4a8caebe3f155da7a21247f5846bc5a4"
+        },
+        {
+          "start": 83589,
+          "end": 83935,
+          "bytes": 346,
+          "sha256": "99e55210b81aad198c1518952d9dbd6502f168c23cd18640f420ed5cf7077034"
+        },
+        {
+          "start": 84075,
+          "end": 84481,
+          "bytes": 406,
+          "sha256": "e8a761b5d8be6399247ff1733e9ca4f458c5c675f6ecab0c7ccd9a852ece533c"
+        },
+        {
+          "start": 84959,
+          "end": 85611,
+          "bytes": 652,
+          "sha256": "db2ef0f27df4c42a551958d4a6c7321dff84378f73ab28c5be59923944f1cf5b"
+        },
+        {
+          "start": 85771,
+          "end": 86573,
+          "bytes": 802,
+          "sha256": "0da2b4c39f0d0c23fa21b409fe690f05cddc0de4dbc65b0f380b82a6faed6b79"
+        },
+        {
+          "start": 86725,
+          "end": 88839,
+          "bytes": 2114,
+          "sha256": "11964cb8f92eb1bcbea84c2193a0d0fd143cf577d2be9928aeb79d1ff81a5c78"
+        },
+        {
+          "start": 88983,
+          "end": 89296,
+          "bytes": 313,
+          "sha256": "b1922cad9002f17c19e015881946d45b6a284fd2ce9f1275b72b49e7b6ace65f"
+        },
+        {
+          "start": 89848,
+          "end": 91469,
+          "bytes": 1621,
+          "sha256": "851b5235fd8e1454a7572115a33e527192c38b9d9254397fe100554a2760f7e3"
+        },
+        {
+          "start": 91869,
+          "end": 93303,
+          "bytes": 1434,
+          "sha256": "1f83df5a0e2d80c4da41c9c3df4e2abbd85e3fbd55be90f0ea31262b2f0b640b"
+        },
+        {
+          "start": 93821,
+          "end": 94341,
+          "bytes": 520,
+          "sha256": "6dbb8e9db5c0e3d9c8eede0ee7e56d03adc67618f52f1fa0038e7dcacdab5a27"
+        },
+        {
+          "start": 94404,
+          "end": 100643,
+          "bytes": 6239,
+          "sha256": "d1b7300a8ea291f241b455be328dcd6b3b48308b551e5b57e21cd54f859116f4"
+        },
+        {
+          "start": 101091,
+          "end": 101723,
+          "bytes": 632,
+          "sha256": "ec5a40fa628db88f6e3f7eb267146ce993054ae23a8623831403ba4f1459dfca"
+        },
+        {
+          "start": 101891,
+          "end": 103708,
+          "bytes": 1817,
+          "sha256": "e520c6a550e6489f799e035868e744e5cf7e76ce15609265d5edad548dac7cf6"
+        },
+        {
+          "start": 103911,
+          "end": 108574,
+          "bytes": 4663,
+          "sha256": "987ef98c71ec2d43e152ff67b4d44fd9f5cd7a1b283bff0dc4c5c88086d3572b"
+        },
+        {
+          "start": 109066,
+          "end": 109440,
+          "bytes": 374,
+          "sha256": "4f13219a67b83671d99f42890c8209bdeeeddfc57784857ae6992e45d2b40003"
+        },
+        {
+          "start": 109503,
+          "end": 110432,
+          "bytes": 929,
+          "sha256": "e1c2a1cb82cd58a31c3db72cbf381dbd6c6a38e5b47e78c1b3527b56c2a4135d"
+        },
+        {
+          "start": 110578,
+          "end": 111243,
+          "bytes": 665,
+          "sha256": "ff2955ddcbb343ccbea0e02449406f7ca7e351103765ffc22905f2b7b1236873"
+        },
+        {
+          "start": 111763,
+          "end": 112251,
+          "bytes": 488,
+          "sha256": "a67117eb9737d9fc0e2b9ea232cfaaef0ff16f14b41221d654e67feaac4e4ced"
+        },
+        {
+          "start": 112432,
+          "end": 113185,
+          "bytes": 753,
+          "sha256": "4a82693bb84cb8b28bd82fab0029cc04dfdec06e1c57d80adc7ec8b02fdf8c00"
+        },
+        {
+          "start": 113597,
+          "end": 116798,
+          "bytes": 3201,
+          "sha256": "ac810d1daf9dff317d34e10b14f67599d27a373082c485f342913b6e5dac0689"
+        },
+        {
+          "start": 117309,
+          "end": 119790,
+          "bytes": 2481,
+          "sha256": "5f16a5c97bec065bca3c32619137ce0021a2d40fd60a617c774f01be0a2acdf2"
+        },
+        {
+          "start": 119977,
+          "end": 121262,
+          "bytes": 1285,
+          "sha256": "f8fb4efe6d7ec778c53e6ccd30e9d657efcda7a4640d906b84f247fcfbe25964"
+        },
+        {
+          "start": 121460,
+          "end": 122683,
+          "bytes": 1223,
+          "sha256": "fa004477d8aa77a645c96690a3e3eeb4576219a3d5091d85347ade32316b1002"
+        },
+        {
+          "start": 122885,
+          "end": 123355,
+          "bytes": 470,
+          "sha256": "043281e04df4630ec21f533cb38789298624fb944c21e7f8f0c60e85d931e2d4"
+        },
+        {
+          "start": 124072,
+          "end": 124676,
+          "bytes": 604,
+          "sha256": "a5b94dd1e5e3eced22a6ca3136402a6b32616e5ba53d6b9b29bf1136f8dcab3f"
+        },
+        {
+          "start": 124825,
+          "end": 126026,
+          "bytes": 1201,
+          "sha256": "1def4488fae1f7553904e2a1e7632f6656eb045dc6aabdbb1f81e55fe120b9f2"
+        },
+        {
+          "start": 126192,
+          "end": 127627,
+          "bytes": 1435,
+          "sha256": "b595a5a580b5b49cb92ff02deccd5de8e11b12f1b52c2a3b0c229bed276407f7"
+        },
+        {
+          "start": 127823,
+          "end": 129935,
+          "bytes": 2112,
+          "sha256": "fef45050e8f2da2c9de9c296990d9766a285ab2fc1a98bca5952641825007a0d"
+        },
+        {
+          "start": 130110,
+          "end": 130463,
+          "bytes": 353,
+          "sha256": "e3c27af9d17c3f47cda99f5f7621a37de24dd1069c812a0549d0c5a2ee846f06"
+        },
+        {
+          "start": 130654,
+          "end": 131411,
+          "bytes": 757,
+          "sha256": "3e55ec88d9bd48b18577bb5f394561025242ca13cc83e15fd86c667a582720b9"
+        },
+        {
+          "start": 131576,
+          "end": 132180,
+          "bytes": 604,
+          "sha256": "334ef75dd5ef5deb8f82ab2c112c704dad09c0463f210e21bf3b13abf6125373"
+        },
+        {
+          "start": 132405,
+          "end": 133344,
+          "bytes": 939,
+          "sha256": "50a2da482604d417633a13c952e75c8857762995a839103b2f591dc888e737d0"
+        },
+        {
+          "start": 133571,
+          "end": 134551,
+          "bytes": 980,
+          "sha256": "e90eebfa2cfbf3404e703a050a3c516c88d1c539cca42d5b9ec6abcd3e658e87"
+        },
+        {
+          "start": 135088,
+          "end": 135516,
+          "bytes": 428,
+          "sha256": "83ecb41cb9391d7d269d2262e325ba7227aee7a99ad34977f23637b52a41c60a"
+        },
+        {
+          "start": 135682,
+          "end": 137567,
+          "bytes": 1885,
+          "sha256": "0afa112360ab7a9b28daf4234b946d1caf4fb6584f5fb3dd78baa0985138b3d1"
+        },
+        {
+          "start": 137742,
+          "end": 139340,
+          "bytes": 1598,
+          "sha256": "4a12b8f307552fb897b3557e287fb7ea7b74e24ab6a75157348a7c8d47db83e0"
+        },
+        {
+          "start": 139499,
+          "end": 140028,
+          "bytes": 529,
+          "sha256": "b7896d8fb9f25944a73fb26b1582824a02557bf0838905ab167b3f1905f34328"
+        },
+        {
+          "start": 140186,
+          "end": 140781,
+          "bytes": 595,
+          "sha256": "c6e91862102c5740d86360d4ea885fbe332aeb1ff8464dcc85b0ec067ebb5d54"
+        },
+        {
+          "start": 140928,
+          "end": 141895,
+          "bytes": 967,
+          "sha256": "ac022ba795a680deacd2dde9512fccc7174d87c249e03729c4b72fd46462fe19"
+        },
+        {
+          "start": 142799,
+          "end": 143855,
+          "bytes": 1056,
+          "sha256": "1bd16feefe81390fa5a23b5e8f60aef0361c840dcaf5a524cff5e3b44ab7caa6"
+        },
+        {
+          "start": 144007,
+          "end": 144472,
+          "bytes": 465,
+          "sha256": "5a107d88b9c7e9f03dc8b05d04cd00ff301838b89cc8cf4fd165b37d004cf03c"
+        },
+        {
+          "start": 144554,
+          "end": 145329,
+          "bytes": 775,
+          "sha256": "387d0cbb1b8c9550c716db3f8d08d5ab021eb622d138366ffd975b4f82acc702"
+        },
+        {
+          "start": 145493,
+          "end": 147960,
+          "bytes": 2467,
+          "sha256": "ee0e3d670e3d0d45a9b97ef6c3ca773a703f9179f1f4f6105c72e261e0130e35"
+        },
+        {
+          "start": 148247,
+          "end": 148961,
+          "bytes": 714,
+          "sha256": "93666e81a23722e8f49c3848f0ae0529a9b855d6fb1c13252fe26b5b90de0bb7"
+        },
+        {
+          "start": 149156,
+          "end": 149749,
+          "bytes": 593,
+          "sha256": "ef79e340addafaf4428ec8203b2928163c56a5ad6f9768af923dd869341c3b45"
+        },
+        {
+          "start": 149929,
+          "end": 150221,
+          "bytes": 292,
+          "sha256": "d3b6438c398510bd2fe7acba2dae12b62724ec71c093060aae3a9b35d5477e42"
+        },
+        {
+          "start": 150694,
+          "end": 151982,
+          "bytes": 1288,
+          "sha256": "76c57c185df81eb2f65b4188e40876bda091e4f9096ff2efd0f69a8015982a24"
+        },
+        {
+          "start": 152112,
+          "end": 152486,
+          "bytes": 374,
+          "sha256": "6a339f70e56229e5c9928e401b074926801f238208e9a7f5dcdd451913ebeb32"
+        },
+        {
+          "start": 152682,
+          "end": 153592,
+          "bytes": 910,
+          "sha256": "dcf59f805d0d95253bdaf6c1cfe38831f7fe9e0a6e1e2b123cb48960c35cd220"
+        },
+        {
+          "start": 153783,
+          "end": 156092,
+          "bytes": 2309,
+          "sha256": "bd29c5c7da8de1747cb8f599261f50f01441689b1e745f5a2aad5af890e8ad8b"
+        },
+        {
+          "start": 156263,
+          "end": 156774,
+          "bytes": 511,
+          "sha256": "e66a64696268c11d2a26392f1c4dbdb27db038e510f2e7bc106c0a1e9fe238b3"
+        },
+        {
+          "start": 156926,
+          "end": 157317,
+          "bytes": 391,
+          "sha256": "a26a29ef1a2a8665de947c19ca7042342f73092a73d8df4ae2b7be995dd003cc"
+        },
+        {
+          "start": 157843,
+          "end": 158575,
+          "bytes": 732,
+          "sha256": "e8b9a6db8aa31385962041cf289bf39ed69f99cfb2e7904a296f3be9087ff9f8"
+        },
+        {
+          "start": 158735,
+          "end": 160288,
+          "bytes": 1553,
+          "sha256": "e5abc3780f2126ca5458eb7abbc6c1f4affd1df58d0a5d952a5520992d42a0cb"
+        },
+        {
+          "start": 160449,
+          "end": 162509,
+          "bytes": 2060,
+          "sha256": "fc6cdc3777e55399fad9b453e386ecbcd0010ae8d153d318f226785db71a819f"
+        },
+        {
+          "start": 162669,
+          "end": 163490,
+          "bytes": 821,
+          "sha256": "0c0711c3d46fa9b75b8400e79ad05e1d8fca7d98a1b93b770531897bfff74a7c"
+        },
+        {
+          "start": 163666,
+          "end": 164212,
+          "bytes": 546,
+          "sha256": "0e03e92d2852876a3f091823afe06ac77453ed07ebe1633c62b34c35b16ab443"
+        },
+        {
+          "start": 164804,
+          "end": 165692,
+          "bytes": 888,
+          "sha256": "ae60302e0bfccf9aa2c5f9ea750ae6b49b16477589d4fccc66d7613f84cfe916"
+        },
+        {
+          "start": 165834,
+          "end": 166459,
+          "bytes": 625,
+          "sha256": "52bdb22b0fc2f8ce930f458a3ad3e4c85641fcf07b2dbacfd8aa521a7f9d64ed"
+        },
+        {
+          "start": 166604,
+          "end": 167543,
+          "bytes": 939,
+          "sha256": "1c683507110e96748e90ca7945fdfea5e5751647203d4b68b79aca886fe0233a"
+        },
+        {
+          "start": 167686,
+          "end": 168551,
+          "bytes": 865,
+          "sha256": "889125cbef76023e7fa74f963b77ea8f21206ff0d158fe9ac79abd53f49adaf9"
+        },
+        {
+          "start": 168696,
+          "end": 169887,
+          "bytes": 1191,
+          "sha256": "dc04cdc1a0f90c8285a5f7939467695ddaa50c15c402e5990fe1b1e7772a639e"
+        },
+        {
+          "start": 170033,
+          "end": 171141,
+          "bytes": 1108,
+          "sha256": "a1ebcc14f330eb7c3fd947449b8f834ca2243ed0b0c57470c1f1cb6244f081d1"
+        },
+        {
+          "start": 171978,
+          "end": 172519,
+          "bytes": 541,
+          "sha256": "a8dfc02c0d33259059dfe5cc32c50df2f568de201a2259e25f41cb2a5967b60d"
+        },
+        {
+          "start": 172677,
+          "end": 173613,
+          "bytes": 936,
+          "sha256": "64f70b1dae8f90b94870aee3b97eb129077390591f56da99199b75775f5ccfbe"
+        },
+        {
+          "start": 173767,
+          "end": 174464,
+          "bytes": 697,
+          "sha256": "f31e8c11b5b158739a3c607114d1dc8fe3d4b3b08b716e39a37deff6292d1a64"
+        },
+        {
+          "start": 174621,
+          "end": 175582,
+          "bytes": 961,
+          "sha256": "bc44a591d2d08323016140268ce29b902361bde002cf71b2dc32b542361c1a84"
+        },
+        {
+          "start": 175737,
+          "end": 176606,
+          "bytes": 869,
+          "sha256": "60be054abade91dc37bacedddc76351122a38b5b5df1a2b1c03a3fa4b118fbd8"
+        },
+        {
+          "start": 176763,
+          "end": 177685,
+          "bytes": 922,
+          "sha256": "af016f693b76bc69eded39a4537f7c4524b40df5ee9cc33aa475580a09242a02"
+        },
+        {
+          "start": 177843,
+          "end": 178977,
+          "bytes": 1134,
+          "sha256": "6b7fb8df3387c2bd7bbfa9ac264b6bd860f19be65da26189bdc4d39693a713e5"
+        },
+        {
+          "start": 179630,
+          "end": 180100,
+          "bytes": 470,
+          "sha256": "76997724f1cd1ed21970005ee6ac47c2960815e1cb31579b1a5e92f3e038b7a5"
+        },
+        {
+          "start": 180558,
+          "end": 181484,
+          "bytes": 926,
+          "sha256": "55aa9fc2629cfa2eb30413759391e1a404e8277cae0bee39fbd60804676feb6a"
+        },
+        {
+          "start": 181999,
+          "end": 183195,
+          "bytes": 1196,
+          "sha256": "d12fbb2eccf9275ee0f1854f6ceeec579de9cd96ded8d54cd40a412ed95e9001"
+        },
+        {
+          "start": 183654,
+          "end": 186490,
+          "bytes": 2836,
+          "sha256": "834c75a9ead48d4815b5b21aa37fd5251657ccb4c6d3af5efea850ff65ad5308"
+        },
+        {
+          "start": 186873,
+          "end": 187642,
+          "bytes": 769,
+          "sha256": "3b629097028d248a43883f264382e2c9403b6a800686fcfdd767aabbc8b8e60a"
+        },
+        {
+          "start": 188248,
+          "end": 190843,
+          "bytes": 2595,
+          "sha256": "46e6309f63354cd281b01d312faf30c2cdc534d2f698fbdfb8378a502cbf5dc5"
+        },
+        {
+          "start": 191365,
+          "end": 193304,
+          "bytes": 1939,
+          "sha256": "4d33042dc0ca563fde783a47d643279525dd80e5c699d2a0ee5c79e780baab96"
+        },
+        {
+          "start": 193925,
+          "end": 199466,
+          "bytes": 5541,
+          "sha256": "def0add901205760d24cadfbdc1a3cfb2a89ea95ddf1df7783abb63eb31abae3"
+        },
+        {
+          "start": 199631,
+          "end": 200340,
+          "bytes": 709,
+          "sha256": "d696390f9b20ae57307a1ed1fbd04279ae4f51ee2e972606be1aa6efd45b4980"
+        },
+        {
+          "start": 200523,
+          "end": 200855,
+          "bytes": 332,
+          "sha256": "fb65f81002a319748b5ebb2b10bbc189c88f7b84448d9ab58525f0c0eb0e1684"
+        },
+        {
+          "start": 201683,
+          "end": 203074,
+          "bytes": 1391,
+          "sha256": "6f8f679d80173f131a95821afa6e1e0267f1d9629b0800b568792eac455d1bbe"
+        },
+        {
+          "start": 203269,
+          "end": 209471,
+          "bytes": 6202,
+          "sha256": "bf1859cee0d8339a68bc0949650b762467bad0d79690cacae1f7620a137a6029"
+        },
+        {
+          "start": 209662,
+          "end": 211360,
+          "bytes": 1698,
+          "sha256": "d7f1a66910585c7866cff746e8fb30026545fc07fbff43cba01cda4a8ddc00a0"
+        },
+        {
+          "start": 211540,
+          "end": 212518,
+          "bytes": 978,
+          "sha256": "3d4d40f8391952375a1228af6c401455caa55660897e5d5d035bb5daa6668a4f"
+        },
+        {
+          "start": 213399,
+          "end": 213897,
+          "bytes": 498,
+          "sha256": "4aba0b9a20746f746635ebb4bf24c3164932b3d1ffd1ea99abd74bc655a835ed"
+        },
+        {
+          "start": 213960,
+          "end": 220353,
+          "bytes": 6393,
+          "sha256": "f7eb4dd48e076f395fad6c7b9d90dc40528b36f610c9ba1c02ee21d8b63dbadf"
+        },
+        {
+          "start": 220514,
+          "end": 221617,
+          "bytes": 1103,
+          "sha256": "17d67d674061378083ad5eba389d5e850cd3a631591b78ad56e283f6fda48500"
+        },
+        {
+          "start": 222473,
+          "end": 225439,
+          "bytes": 2966,
+          "sha256": "15d16789625836c2d393121ce2041886a475a6ff0f4ea8344f4eeb0ab511ff16"
+        },
+        {
+          "start": 225879,
+          "end": 226590,
+          "bytes": 711,
+          "sha256": "ecba0bc554ba85829d5e4bc853e312bdea3a3a0d5e62aef5b4c937bc94511d0d"
+        },
+        {
+          "start": 226786,
+          "end": 227435,
+          "bytes": 649,
+          "sha256": "8812b79bf7393abad1d32689c4aaf340d9a34264b5418c6165ec9dd33541206a"
+        },
+        {
+          "start": 227611,
+          "end": 228738,
+          "bytes": 1127,
+          "sha256": "404dd225db9f2e3ca13ab882c39055f0ddacc83c6fd0fcaad991198e46c473e2"
+        },
+        {
+          "start": 229376,
+          "end": 230274,
+          "bytes": 898,
+          "sha256": "8414b68412451ee725516c79125913ee5a4af064e59e3ce219f7da0354c3d5f3"
+        },
+        {
+          "start": 230498,
+          "end": 231820,
+          "bytes": 1322,
+          "sha256": "59c86c0e5c628e51a2677e17471ebcb22949c58028a50fb81f4590b983a2c5a4"
+        },
+        {
+          "start": 232054,
+          "end": 232746,
+          "bytes": 692,
+          "sha256": "fd7a3374453db119fae2586f3932b9584510f140d0ad6d4629333db933b12254"
+        },
+        {
+          "start": 232914,
+          "end": 235401,
+          "bytes": 2487,
+          "sha256": "53fa3bb26df3c06be5881106fe25c7684ace47bcd1fc358b7408d00fe313451f"
+        },
+        {
+          "start": 235867,
+          "end": 237194,
+          "bytes": 1327,
+          "sha256": "d65c91d250401429c49673fc2a8776038731c21589e809a6a9037c85242c195c"
+        },
+        {
+          "start": 237342,
+          "end": 237670,
+          "bytes": 328,
+          "sha256": "3ab7a846e33c8be2296b1060bb0aceba88653e5755bc56ceb7f846a31b0c1124"
+        },
+        {
+          "start": 237752,
+          "end": 239914,
+          "bytes": 2162,
+          "sha256": "f6bcc40b00a7a034746ca276ad423a6ebb5ff921bbc03ee84cc88c8369458f49"
+        },
+        {
+          "start": 240084,
+          "end": 241755,
+          "bytes": 1671,
+          "sha256": "c2edd31918da1bd6e6bcc26909b35f57af43a46fe90724db97f3cd6832c75dc4"
+        },
+        {
+          "start": 241910,
+          "end": 243568,
+          "bytes": 1658,
+          "sha256": "91cb2607f533c8b200f91161fa25967a9114a63b7f40a0dba8e65a0587b6cfc0"
+        },
+        {
+          "start": 244163,
+          "end": 247097,
+          "bytes": 2934,
+          "sha256": "9f93fb01c724613f0541b2d7a091d7eb087b9c76f1119dbb9dc4bbc3ac112430"
+        },
+        {
+          "start": 247250,
+          "end": 249043,
+          "bytes": 1793,
+          "sha256": "dff63a430863e234078079a2448eeb177bc01933869ed159c1d92e7a60ccf595"
+        },
+        {
+          "start": 249483,
+          "end": 251829,
+          "bytes": 2346,
+          "sha256": "0b5568735fd535ae8cd61ae44cad677eafab7263f71e7a609cc77531f3947f91"
+        },
+        {
+          "start": 252124,
+          "end": 253540,
+          "bytes": 1416,
+          "sha256": "0bebfc3411e408f6a6ee7b6b838048abc01ed53ef85eeb42b969e654aa66f04e"
+        },
+        {
+          "start": 253929,
+          "end": 255069,
+          "bytes": 1140,
+          "sha256": "4595912e37dc7a8367787b4d02d623f8f37e78c8fe0b97a1ae7ef2a7c627fea6"
+        },
+        {
+          "start": 255126,
+          "end": 259382,
+          "bytes": 4256,
+          "sha256": "bb8f1674321ddcb6093a20a9b4feba3f0ade1ee5159c582ab1f8619c19b02906"
+        },
+        {
+          "start": 259806,
+          "end": 260091,
+          "bytes": 285,
+          "sha256": "5cef944642a94b2e5dec3485c2627afbf06bc4ba26a501e4c75dd53836cc8398"
+        },
+        {
+          "start": 260148,
+          "end": 261889,
+          "bytes": 1741,
+          "sha256": "7d3c07c7923531c2dced5cd5453adad330f6777494a0087ac3b62027e17624ea"
+        },
+        {
+          "start": 262054,
+          "end": 262955,
+          "bytes": 901,
+          "sha256": "044422124ff9f0e7596d493fdc2790568833d6f7001ac3a8360d30ce04373d25"
+        }
+      ],
+      "framing": [
+        {
+          "id": "BR-PREFIX",
+          "kind": "retained_instructionblock_context_and_open_tags",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 0,
+          "end": 617,
+          "bytes": 617,
+          "sha256": "0e6ddfec63670708d4353af6328037c297de7cd7cd1e78a82ffaf152a6ed3cfa",
+          "destination": "Rules/Block_5.txt"
+        },
+        {
+          "id": "BR-TAIL",
+          "kind": "retained_instructionblock_closing_tags",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 262974,
+          "end": 262995,
+          "bytes": 21,
+          "sha256": "69ecc4ab60782ddb200940631afcf5ac7af6acde74ccddcf6ac26614b2f51e66",
+          "destination": "Rules/Block_5.txt"
+        },
+        {
+          "id": "BR-PARENT-BOUNDARY-30",
+          "kind": "retained_original_ancestor_container_boundary",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 261913,
+          "end": 261927,
+          "bytes": 14,
+          "sha256": "5acf6054a735009b96fcc191c0f25688339f1afb50a1de94053c90a01aba358e",
+          "destination": "Rules/Block_5.txt"
+        }
+      ],
+      "blocks": [
+        {
+          "id": "BR001",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 617,
+          "end": 3988,
+          "bytes": 3371,
+          "sha256": "e04fdc125c2992660adc4c381c3e9da03d89a7c8ae87b819228e474ac3ff0819",
+          "rootRuleId": "5.0",
+          "topic": "Units_Ids",
+          "destination": "Rules/Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.0"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 11,
+          "endLine": 49
+        },
+        {
+          "id": "BR002",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 3988,
+          "end": 28559,
+          "bytes": 24571,
+          "sha256": "759ad2574e554a0d1fec198fed81dedf4154d020da3ee93578141031055fbc2a",
+          "rootRuleId": "5.1",
+          "topic": "Characteristics_Progression",
+          "destination": "Rules/Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.1",
+            "5.1.1",
+            "5.1.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 49,
+          "endLine": 321
+        },
+        {
+          "id": "BR003",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 28559,
+          "end": 35308,
+          "bytes": 6749,
+          "sha256": "a4d070c01e58e8d5456dc9cc6f3e7717d88d12f9987339a913996d678bbe3123",
+          "rootRuleId": "5.2",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.2",
+            "5.2.1",
+            "5.2.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 321,
+          "endLine": 426
+        },
+        {
+          "id": "BR004",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 35308,
+          "end": 43984,
+          "bytes": 8676,
+          "sha256": "2174bf35f013a1595db6391de6c8ebf2d62674c957772a784c54cfb1808acff3",
+          "rootRuleId": "5.3",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.3",
+            "5.3.1",
+            "5.3.2",
+            "5.3.3"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 3,
+          "startLine": 426,
+          "endLine": 557
+        },
+        {
+          "id": "BR005",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 43984,
+          "end": 51020,
+          "bytes": 7036,
+          "sha256": "f804321f5b95c7c0e4540cc82b6f2cdc75f58979d7db2fa0afe291de11500dd6",
+          "rootRuleId": "5.4",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.4",
+            "5.4.1",
+            "5.4.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 557,
+          "endLine": 663
+        },
+        {
+          "id": "BR006",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 51020,
+          "end": 64123,
+          "bytes": 13103,
+          "sha256": "bacf376fcdb9777a903e4c1d704cc1e25b18c8dac3d768a783fa824a407d19df",
+          "rootRuleId": "5.5",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.5",
+            "5.5.1",
+            "5.5.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 663,
+          "endLine": 806
+        },
+        {
+          "id": "BR007",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 64123,
+          "end": 69889,
+          "bytes": 5766,
+          "sha256": "9e58ee5456d5e5bd646bc97856b5b1a7cd7d3e4e1cd6b145629ce8942755d773",
+          "rootRuleId": "5.6",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.6",
+            "5.6.1",
+            "5.6.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 806,
+          "endLine": 879
+        },
+        {
+          "id": "BR008",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 69889,
+          "end": 84533,
+          "bytes": 14644,
+          "sha256": "ea5e2f6cc051a2fe67795218344fc39eb4c292015b112fa3f099681fabc63266",
+          "rootRuleId": "5.7",
+          "topic": "Characteristics_Progression",
+          "destination": "Rules/Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.7",
+            "5.7.1",
+            "5.7.2",
+            "5.7.3",
+            "5.7.4",
+            "5.7.5",
+            "5.7.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 6,
+          "startLine": 879,
+          "endLine": 1120
+        },
+        {
+          "id": "BR009",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 84533,
+          "end": 89348,
+          "bytes": 4815,
+          "sha256": "15d64f95eb88cfad35704549684014c82db606f581288678d5fa699a39d6f1e5",
+          "rootRuleId": "5.8",
+          "topic": "Units_Ids",
+          "destination": "Rules/Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.8",
+            "5.8.1",
+            "5.8.2",
+            "5.8.3",
+            "5.8.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 4,
+          "startLine": 1120,
+          "endLine": 1203
+        },
+        {
+          "id": "BR010",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 89348,
+          "end": 91493,
+          "bytes": 2145,
+          "sha256": "19c416ed0a40ec04cf390eea1cd0d874a5052a72f1285aa7d568c959c1afd2b1",
+          "rootRuleId": "5.8.A",
+          "topic": "Units_Ids",
+          "destination": "Rules/Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.8.A"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 1203,
+          "endLine": 1237
+        },
+        {
+          "id": "BR011",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 91493,
+          "end": 93327,
+          "bytes": 1834,
+          "sha256": "93e3f9c39f87fa5ea43291d0a04e036be890a021964b179b35ccac4ffbcbd86f",
+          "rootRuleId": "5.8.A.1",
+          "topic": "Units_Ids",
+          "destination": "Rules/Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.8.A.1"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 1237,
+          "endLine": 1267
+        },
+        {
+          "id": "BR012",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 93327,
+          "end": 100695,
+          "bytes": 7368,
+          "sha256": "5056faefa36522389ffac45939e80dc9127e04222c6d746b49d2e249066f91a3",
+          "rootRuleId": "5.9",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.9",
+            "5.9.1"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 1267,
+          "endLine": 1356
+        },
+        {
+          "id": "BR013",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 100695,
+          "end": 108626,
+          "bytes": 7931,
+          "sha256": "fdefaf80d1be34ef5f24a2ad62344eb05fecc6aa7ccf646b6ea9079eac01431a",
+          "rootRuleId": "5.10",
+          "topic": "Characteristics_Progression",
+          "destination": "Rules/Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.10",
+            "5.10.1",
+            "5.10.2",
+            "5.10.3"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 3,
+          "startLine": 1356,
+          "endLine": 1454
+        },
+        {
+          "id": "BR014",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 108626,
+          "end": 111295,
+          "bytes": 2669,
+          "sha256": "f7af00e433d6765c2d6397938fe1414012ec3c0e90594d8966ac035ec5813660",
+          "rootRuleId": "5.10.A",
+          "topic": "Characteristics_Progression",
+          "destination": "Rules/Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.10.A",
+            "5.10.A.1",
+            "5.10.A.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 3,
+          "startLine": 1454,
+          "endLine": 1512
+        },
+        {
+          "id": "BR015",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 111295,
+          "end": 123407,
+          "bytes": 12112,
+          "sha256": "bd3280121f4f19dfb3796c69e99388f68f701d968cb961e327daa268a9205a60",
+          "rootRuleId": "5.11",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.11",
+            "5.11.1",
+            "5.11.2",
+            "5.11.2.1",
+            "5.11.2.2",
+            "5.11.2.3",
+            "5.11.2.4",
+            "5.11.3"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 7,
+          "startLine": 1512,
+          "endLine": 1695
+        },
+        {
+          "id": "BR016",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 123407,
+          "end": 134603,
+          "bytes": 11196,
+          "sha256": "41292ea720caaee005ddf3444e3866ef404682baccd466a2a2a17104cf7aa3bd",
+          "rootRuleId": "5.12",
+          "topic": "Narrative_Social",
+          "destination": "Rules/Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.12",
+            "5.12.1",
+            "5.12.2",
+            "5.12.3",
+            "5.12.4",
+            "5.12.5",
+            "5.12.5.1",
+            "5.12.5.2",
+            "5.12.5.3",
+            "5.12.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 9,
+          "startLine": 1695,
+          "endLine": 1879
+        },
+        {
+          "id": "BR017",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 134603,
+          "end": 141947,
+          "bytes": 7344,
+          "sha256": "b682ab4f890aa1f5ccc4b1399a9d8c796c3e5e502f122b54094da8324f555c67",
+          "rootRuleId": "5.13",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.13",
+            "5.13.1",
+            "5.13.2",
+            "5.13.3",
+            "5.13.4",
+            "5.13.5",
+            "5.13.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 6,
+          "startLine": 1879,
+          "endLine": 2002
+        },
+        {
+          "id": "BR018",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 141947,
+          "end": 150273,
+          "bytes": 8326,
+          "sha256": "5be43720b163a7fc552c45bcdfcd96e8e633668619f48f23e804f6408df2427e",
+          "rootRuleId": "5.14",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.14",
+            "5.14.1",
+            "5.14.2",
+            "5.14.3",
+            "5.14.4",
+            "5.14.4.1",
+            "5.14.4.2",
+            "5.14.5"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 7,
+          "startLine": 2002,
+          "endLine": 2145
+        },
+        {
+          "id": "BR019",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 150273,
+          "end": 157369,
+          "bytes": 7096,
+          "sha256": "eb19f4da1bb743e20f05bdc508b6517f760563e36ff4b1673b3ad14fe666ee59",
+          "rootRuleId": "5.15",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.15",
+            "5.15.1",
+            "5.15.2",
+            "5.15.2.1",
+            "5.15.2.2",
+            "5.15.3",
+            "5.15.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 6,
+          "startLine": 2145,
+          "endLine": 2253
+        },
+        {
+          "id": "BR020",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 157369,
+          "end": 164264,
+          "bytes": 6895,
+          "sha256": "a380ab38ba4219155a538ef0c23f6385a77db407698a096be0042f0338394ea3",
+          "rootRuleId": "5.16",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.16",
+            "5.16.1",
+            "5.16.2",
+            "5.16.3",
+            "5.16.4",
+            "5.16.5"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 5,
+          "startLine": 2253,
+          "endLine": 2369
+        },
+        {
+          "id": "BR021",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 164264,
+          "end": 171193,
+          "bytes": 6929,
+          "sha256": "4b58c0c290517c003e1b2f861a79d780ad7b2401d8cb8d36effedfcdbe00d864",
+          "rootRuleId": "5.17",
+          "topic": "Narrative_Social",
+          "destination": "Rules/Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.17",
+            "5.17.1",
+            "5.17.2",
+            "5.17.3",
+            "5.17.4",
+            "5.17.5",
+            "5.17.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 6,
+          "startLine": 2369,
+          "endLine": 2493
+        },
+        {
+          "id": "BR022",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 171193,
+          "end": 179029,
+          "bytes": 7836,
+          "sha256": "a73d82d4a12b04fa91ad9191f76debbb549a381ab366d0b037653e0386759e60",
+          "rootRuleId": "5.18",
+          "topic": "Narrative_Social",
+          "destination": "Rules/Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18",
+            "5.18.0",
+            "5.18.1",
+            "5.18.2",
+            "5.18.3",
+            "5.18.4",
+            "5.18.5",
+            "5.18.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 7,
+          "startLine": 2493,
+          "endLine": 2636
+        },
+        {
+          "id": "BR023",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 179029,
+          "end": 221669,
+          "bytes": 42640,
+          "sha256": "0fd965b3d59f1447a078170e14f12d26b287c262251c51f5794811c5c08eecc8",
+          "rootRuleId": "5.18.B",
+          "topic": "Narrative_Social",
+          "destination": "Rules/Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B",
+            "5.18.B.pre-check-0",
+            "19.D.0",
+            "5.18.B.pre-check-2",
+            "LAW.14.B.2.pre-check-3",
+            "5.18.B.0",
+            "5.18.B.0.A",
+            "5.18.B.0.B",
+            "5.18.B.1",
+            "5.18.B.2",
+            "5.18.B.3",
+            "5.18.B.3.0",
+            "5.18.B.3.1",
+            "5.18.B.3.2",
+            "5.18.B.3.3",
+            "5.18.B.3.A",
+            "5.18.B.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 17,
+          "startLine": 2636,
+          "endLine": 3219
+        },
+        {
+          "id": "BR024",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 221669,
+          "end": 235453,
+          "bytes": 13784,
+          "sha256": "7dc352294ff28f04edc367d2f487497dfd55bebb4df159d0e04a4e496013957a",
+          "rootRuleId": "5.19",
+          "topic": "Combat_Foundations",
+          "destination": "Rules/Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.19",
+            "5.19.1",
+            "5.19.2",
+            "5.19.2.1",
+            "5.19.2.2",
+            "5.19.2.3",
+            "5.19.2.3.A",
+            "5.19.2.3.B",
+            "5.19.3",
+            "5.19.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 8,
+          "startLine": 3219,
+          "endLine": 3444
+        },
+        {
+          "id": "BR025",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 235453,
+          "end": 243620,
+          "bytes": 8167,
+          "sha256": "f464942958e2c93a1d89517974f4520658772d662ba9cbaff13d01426c52d240",
+          "rootRuleId": "5.20",
+          "topic": "Wounds",
+          "destination": "Rules/Block_5_Wounds.txt",
+          "allRuleIds": [
+            "5.20",
+            "5.20.1",
+            "5.20.2",
+            "5.20.3",
+            "5.20.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 5,
+          "startLine": 3444,
+          "endLine": 3590
+        },
+        {
+          "id": "BR026",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 243620,
+          "end": 249095,
+          "bytes": 5475,
+          "sha256": "c7dc1a849507e346622ac5434292420a9281cceb9c1b3c78577f939272aef22e",
+          "rootRuleId": "5.21",
+          "topic": "World_Chronology",
+          "destination": "Rules/Block_5_World_Chronology.txt",
+          "allRuleIds": [
+            "5.21",
+            "5.21.1",
+            "5.21.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 3590,
+          "endLine": 3672
+        },
+        {
+          "id": "BR027",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 249095,
+          "end": 251861,
+          "bytes": 2766,
+          "sha256": "758ff177ccbd56af20690bb08e742b838b1d665d613d3c37612e6ecf3bcc63d1",
+          "rootRuleId": "5.22",
+          "topic": "World_Chronology",
+          "destination": "Rules/Block_5_World_Chronology.txt",
+          "allRuleIds": [
+            "5.22"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 3672,
+          "endLine": 3711
+        },
+        {
+          "id": "BR028",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 251861,
+          "end": 253572,
+          "bytes": 1711,
+          "sha256": "d4085d718d16bc41525b71550e4eab08d9be06c5d45d88e8599c9c0f6ae81377",
+          "rootRuleId": "5.23",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.23"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 3711,
+          "endLine": 3741
+        },
+        {
+          "id": "BR029",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 253572,
+          "end": 259406,
+          "bytes": 5834,
+          "sha256": "b06c7bd87ecb94f7b2438e65afe406aa6373851bc7af282d185338217cb9fd0d",
+          "rootRuleId": "5.24",
+          "topic": "Characteristics_Progression",
+          "destination": "Rules/Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.24"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 3741,
+          "endLine": 3825
+        },
+        {
+          "id": "BR030",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 259406,
+          "end": 261913,
+          "bytes": 2507,
+          "sha256": "8cae8386a4a652aafbbea2eb4f46f302d4b6e2a1a02705224486d6a04fc0cff2",
+          "rootRuleId": "5.25",
+          "topic": "World_Chronology",
+          "destination": "Rules/Block_5_World_Chronology.txt",
+          "allRuleIds": [
+            "5.25"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "content",
+              "attrs": {
+                "type": "ruleset"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 2,
+          "startLine": 3825,
+          "endLine": 3870
+        },
+        {
+          "id": "BR031",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Rules/Block_5.txt",
+          "start": 261927,
+          "end": 262974,
+          "bytes": 1047,
+          "sha256": "dec13cac2d03115a47554be5664f1c951434f780718fa08419e4a79b38bfdc7e",
+          "rootRuleId": "5.mortal_item_materialization_v1",
+          "topic": "Items_Resources",
+          "destination": "Rules/Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.mortal_item_materialization_v1"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [],
+          "exampleCount": 0,
+          "cdataCount": 1,
+          "startLine": 3872,
+          "endLine": 3879
+        }
+      ],
+      "topicCounts": {
+        "Units_Ids": {
+          "groups": 4,
+          "rules": 8,
+          "examples": 0,
+          "cdata": 7
+        },
+        "Characteristics_Progression": {
+          "groups": 5,
+          "rules": 18,
+          "examples": 0,
+          "cdata": 16
+        },
+        "Combat_Foundations": {
+          "groups": 7,
+          "rules": 32,
+          "examples": 0,
+          "cdata": 24
+        },
+        "Items_Resources": {
+          "groups": 7,
+          "rules": 34,
+          "examples": 0,
+          "cdata": 30
+        },
+        "Narrative_Social": {
+          "groups": 4,
+          "rules": 42,
+          "examples": 0,
+          "cdata": 39
+        },
+        "Wounds": {
+          "groups": 1,
+          "rules": 5,
+          "examples": 0,
+          "cdata": 5
+        },
+        "World_Chronology": {
+          "groups": 3,
+          "rules": 5,
+          "examples": 0,
+          "cdata": 5
+        }
+      }
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 268659,
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "gitBlob": "627d68e9bff28c171cd96e66c0a593612f8b215f",
+      "mode": "100644",
+      "lines": 2763,
+      "xmlRoot": "instructionblock",
+      "xmlRootId": "5",
+      "topLevelRuleGroups": 19,
+      "ruleNodes": 19,
+      "ruleIds": [
+        "5.0",
+        "5.10.3",
+        "5.13.2",
+        "5.13.3",
+        "5.13.5",
+        "5.13.6",
+        "5.14",
+        "5.15.4",
+        "5.18.B",
+        "5.18.B.0",
+        "5.18.B.0.A",
+        "5.18.B.0.B",
+        "5.18.B.3.A",
+        "5.20.4",
+        "5.22",
+        "5.23",
+        "5.25",
+        "5.5",
+        "5.8.A"
+      ],
+      "examples": 51,
+      "orderedExampleNodes": [
+        {
+          "ordinal": 1,
+          "start": 363,
+          "end": 1033,
+          "bytes": 670,
+          "sha256": "8c1d2d1f07fa6c932f0a433f13ca25c0f825126ca8dddfaf4dbd22d4443c1b1a",
+          "attrs": {
+            "contenttype": "log",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.0"
+              }
+            }
+          ],
+          "ownerRuleId": "5.0",
+          "topic": "Units_Ids"
+        },
+        {
+          "ordinal": 2,
+          "start": 1036,
+          "end": 1539,
+          "bytes": 503,
+          "sha256": "57fc0d1f96aeeae1c353f20e1e7ff16c65fcb31ff1b7fa80cb09231dbc40bacd",
+          "attrs": {
+            "contenttype": "log",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.0"
+              }
+            }
+          ],
+          "ownerRuleId": "5.0",
+          "topic": "Units_Ids"
+        },
+        {
+          "ordinal": 3,
+          "start": 1571,
+          "end": 3861,
+          "bytes": 2290,
+          "sha256": "2fa950ca4c883df3a42bb42fc71817e59597f135487be951fdc07bee61362052",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.10.3"
+              }
+            }
+          ],
+          "ownerRuleId": "5.10.3",
+          "topic": "Characteristics_Progression"
+        },
+        {
+          "ordinal": 4,
+          "start": 3864,
+          "end": 5970,
+          "bytes": 2106,
+          "sha256": "4a7db4ebd9842a7895aa2067394fd66f1d1e722ccabac41da1a1f12818a1674a",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.10.3"
+              }
+            }
+          ],
+          "ownerRuleId": "5.10.3",
+          "topic": "Characteristics_Progression"
+        },
+        {
+          "ordinal": 5,
+          "start": 6002,
+          "end": 6949,
+          "bytes": 947,
+          "sha256": "cbba6e2cf46694ac85ae7cfcde543036618b524189c3d3f7203c5b91fac00e6e",
+          "attrs": {
+            "contenttype": "text",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.2"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.2",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 6,
+          "start": 6952,
+          "end": 7904,
+          "bytes": 952,
+          "sha256": "e0a7c3a27a456ff51e783f66e054ba2e4d8d8958167bac3f4aebf9214ee99198",
+          "attrs": {
+            "contenttype": "text",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.2"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.2",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 7,
+          "start": 7936,
+          "end": 8640,
+          "bytes": 704,
+          "sha256": "60d42f9d7f401ca41c170b95631179546954edd71f728e5a5f48f0daee1bd85b",
+          "attrs": {
+            "contenttype": "text",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.3"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.3",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 8,
+          "start": 8643,
+          "end": 9654,
+          "bytes": 1011,
+          "sha256": "aeb21907b4714e2de78467d6a0e2dca278385d0d57aab4c3ff18bd24e4037bad",
+          "attrs": {
+            "contenttype": "text",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.3"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.3",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 9,
+          "start": 9657,
+          "end": 10173,
+          "bytes": 516,
+          "sha256": "7ca416f87685de9679be7ad7d111602bf30254489ed36fdab355bf5e3c440ebd",
+          "attrs": {
+            "contenttype": "text",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.3"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.3",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 10,
+          "start": 10205,
+          "end": 11209,
+          "bytes": 1004,
+          "sha256": "4bfcc5ffb310b4add4abfc8948c9bb930318dbcd3db64c45f59b5706ac17a64b",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.5"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.5",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 11,
+          "start": 11241,
+          "end": 12275,
+          "bytes": 1034,
+          "sha256": "a9c774131f9057e1f3b0e594b2a95730c706df0473f9647ef0713e3b1a2813d0",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.13.6"
+              }
+            }
+          ],
+          "ownerRuleId": "5.13.6",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 12,
+          "start": 12305,
+          "end": 13039,
+          "bytes": 734,
+          "sha256": "e97f4bbd203c3583a6ee94ce55e5955db6e64c8de42c42e8b2a37c1f7a385a76",
+          "attrs": {
+            "contenttype": "json_fragment",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.14"
+              }
+            }
+          ],
+          "ownerRuleId": "5.14",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 13,
+          "start": 13042,
+          "end": 14017,
+          "bytes": 975,
+          "sha256": "2fea305e395c90a05b2c5c68f9b63f08077ccbeabe3d3d49cabc21c85ee58bd7",
+          "attrs": {
+            "contenttype": "json_fragment",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.14"
+              }
+            }
+          ],
+          "ownerRuleId": "5.14",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 14,
+          "start": 14049,
+          "end": 15364,
+          "bytes": 1315,
+          "sha256": "e8ec0985016f36ec1f413781aadd8c17514db7b45f6b0e8c1442e656578f2427",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.15.4"
+              }
+            }
+          ],
+          "ownerRuleId": "5.15.4",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 15,
+          "start": 15396,
+          "end": 24832,
+          "bytes": 9436,
+          "sha256": "5a8f3c9d2a000b4c350a615a5effa8f05090ce205bb00cd7d7e071abd05f9ecb",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 16,
+          "start": 24835,
+          "end": 34664,
+          "bytes": 9829,
+          "sha256": "7d7e999e3268dc495cb7960d31e575ad4adb4bb77d925d22e9017aa2d56696bf",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 17,
+          "start": 34667,
+          "end": 43255,
+          "bytes": 8588,
+          "sha256": "e2e15022ca61d624f010aebc3a3a3c65ca21561deec992ad234b288d22a015f8",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 18,
+          "start": 43258,
+          "end": 52021,
+          "bytes": 8763,
+          "sha256": "9bbcb3c658c6d465d0715193d1c593478e9dbc831033f59d4fd80b769451d4ff",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 19,
+          "start": 52024,
+          "end": 61653,
+          "bytes": 9629,
+          "sha256": "bad41ba748de5f8983ee9df3a7d2c523bd4f8169e0e80bcd6e77aeff60b94d8f",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 20,
+          "start": 61656,
+          "end": 71054,
+          "bytes": 9398,
+          "sha256": "72cbd123fec0391d6240e868d4770afc99bf675c49ae607614c8b97d2e7fea9f",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 21,
+          "start": 71057,
+          "end": 79508,
+          "bytes": 8451,
+          "sha256": "5792be62c8e48129799449f57fdc368278bdfc701e76e5689561745df5895c84",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 22,
+          "start": 79511,
+          "end": 89596,
+          "bytes": 10085,
+          "sha256": "1b5e660815f7debff64088f787bc2519e665c0057c679533909c94673d394870",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 23,
+          "start": 89599,
+          "end": 99078,
+          "bytes": 9479,
+          "sha256": "bd68de9777b2d1f9c685f6faae0be917c2d67bc339ec079d74bb5bb28eb6a941",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 24,
+          "start": 99081,
+          "end": 109927,
+          "bytes": 10846,
+          "sha256": "0d38fc72c7268445ef5a458cf38d6854e9e597993deb8992dc9e2e51b380b11c",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 25,
+          "start": 109930,
+          "end": 118972,
+          "bytes": 9042,
+          "sha256": "2a19013d05cb98963bfc8305d9bce29b6c7310bbdebaae1aa14a0e215162b287",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 26,
+          "start": 118975,
+          "end": 130481,
+          "bytes": 11506,
+          "sha256": "089a11f83792504fd43db847edac80fdb5367f7e16a8e082591432dab07fa143",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 27,
+          "start": 130484,
+          "end": 140516,
+          "bytes": 10032,
+          "sha256": "84cf9e94d8c73c6df382c8683912f618828e3e492f8ca9e82fafabf3590e2bbc",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 28,
+          "start": 140519,
+          "end": 152517,
+          "bytes": 11998,
+          "sha256": "c1c6608bbf63318674ffcef901fe7469ce7263432e9a90e0dcb8612676302822",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "id": "Archetype_Driven_Strategy_Example",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 29,
+          "start": 152520,
+          "end": 163836,
+          "bytes": 11316,
+          "sha256": "1ca2ce8aba7571d77d14581cbae59b9b056b9305db7aeb0cda645b438094ac80",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "id": "AttractionFilter_Example_FlusteredGuard",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 30,
+          "start": 163839,
+          "end": 175106,
+          "bytes": 11267,
+          "sha256": "2cfbe6fe940de5d9d7a1775ea234e1cb0f19ea1ab32660b3f903910cafa35246",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "id": "AttractionFilter_Example_CharmingRogue",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 31,
+          "start": 175140,
+          "end": 186800,
+          "bytes": 11660,
+          "sha256": "e51ae2faa21e1cb2db6a0a7756615d8d5ce8df457d9c445638ab755ae33bfd1d",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.0"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.0",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 32,
+          "start": 186803,
+          "end": 197614,
+          "bytes": 10811,
+          "sha256": "2f6804ed5b7614f0176b8dc06cf0537ada54595f6b38eb5306acafd157fac6e0",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.0"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.0",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 33,
+          "start": 197650,
+          "end": 209004,
+          "bytes": 11354,
+          "sha256": "d9e40424f14fe814c7d3cc92b3a6b6256ffacaefee39793a23a0fb9403cf1f14",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.0.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.0.A",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 34,
+          "start": 209007,
+          "end": 220782,
+          "bytes": 11775,
+          "sha256": "db6d06db79297f36e9fc3a7065059a9ef479c9bb5a21da036dafef3fadb8acb5",
+          "attrs": {
+            "contenttype": "narrative_scenario",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.0.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.0.A",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 35,
+          "start": 220818,
+          "end": 233348,
+          "bytes": 12530,
+          "sha256": "587a620730181e536a41da3675891ffd7d8c0d71dd9783bab660fb7c03400b01",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "id": "NPC_Interpersonal_Full_Example",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.0.B"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.0.B",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 36,
+          "start": 233384,
+          "end": 241612,
+          "bytes": 8228,
+          "sha256": "053658760b1a38afc1a5da3641a0aa5671f6a3c0a6ecd9548207510923b4d699",
+          "attrs": {
+            "id": "CulturalFilter_Example_Dissident_v2",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.3.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.3.A",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 37,
+          "start": 241615,
+          "end": 250460,
+          "bytes": 8845,
+          "sha256": "67d6d6b42b6531059dc26a616dceb90a478bd96e8bbceb9e97ec75dd85b56031",
+          "attrs": {
+            "id": "CulturalFilter_Example_Conformist_v2",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.18.B.3.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.18.B.3.A",
+          "topic": "Narrative_Social"
+        },
+        {
+          "ordinal": 38,
+          "start": 250492,
+          "end": 251119,
+          "bytes": 627,
+          "sha256": "1854699670ed2d779bf1780ce8b9204c50da9f9b86326adb168b2b0e7bd0112f",
+          "attrs": {
+            "contenttype": "strict_game_response",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.20.4"
+              }
+            }
+          ],
+          "ownerRuleId": "5.20.4",
+          "topic": "Wounds"
+        },
+        {
+          "ordinal": 39,
+          "start": 251122,
+          "end": 253342,
+          "bytes": 2220,
+          "sha256": "b2e65a5995087928fbc09882b442669322d45750990bb3e34d5c5cb44ba7daba",
+          "attrs": {
+            "contenttype": "strict_game_response",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.20.4"
+              }
+            }
+          ],
+          "ownerRuleId": "5.20.4",
+          "topic": "Wounds"
+        },
+        {
+          "ordinal": 40,
+          "start": 253345,
+          "end": 255925,
+          "bytes": 2580,
+          "sha256": "5152cb65b54c4ec26782e0db6dca24511d5108a4fecdfdcc736fddeb135daacd",
+          "attrs": {
+            "contenttype": "strict_game_response",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.20.4"
+              }
+            }
+          ],
+          "ownerRuleId": "5.20.4",
+          "topic": "Wounds"
+        },
+        {
+          "ordinal": 41,
+          "start": 255928,
+          "end": 257947,
+          "bytes": 2019,
+          "sha256": "7d4a1ec0048e64e58abe87633d64db2fed59ef25093f2006f6c4deada045a99d",
+          "attrs": {
+            "contenttype": "strict_game_response",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.20.4"
+              }
+            }
+          ],
+          "ownerRuleId": "5.20.4",
+          "topic": "Wounds"
+        },
+        {
+          "ordinal": 42,
+          "start": 257977,
+          "end": 259256,
+          "bytes": 1279,
+          "sha256": "3506e926b32308309801362b2a702679826c5858f1dd2d12a3dac6fc150bcaeb",
+          "attrs": {
+            "contenttype": "text",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.22"
+              }
+            }
+          ],
+          "ownerRuleId": "5.22",
+          "topic": "World_Chronology"
+        },
+        {
+          "ordinal": 43,
+          "start": 259259,
+          "end": 260105,
+          "bytes": 846,
+          "sha256": "20bc97d999070b8096b76ce860347d8780e54ee7283ead417d38b8b1b8e0f523",
+          "attrs": {
+            "contenttype": "text",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.22"
+              }
+            }
+          ],
+          "ownerRuleId": "5.22",
+          "topic": "World_Chronology"
+        },
+        {
+          "ordinal": 44,
+          "start": 260135,
+          "end": 261803,
+          "bytes": 1668,
+          "sha256": "a856cb1369eedd3b4bf8b6c109192566e8b3b72abbc9761e47e90585edca8f07",
+          "attrs": {
+            "contenttype": "log_and_json_snippet",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.23"
+              }
+            }
+          ],
+          "ownerRuleId": "5.23",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 45,
+          "start": 261806,
+          "end": 262566,
+          "bytes": 760,
+          "sha256": "9a98f51588246ce92a9a6bbdb7af92c1289115e6d945b7afff564d2b0da1929b",
+          "attrs": {
+            "contenttype": "text",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.23"
+              }
+            }
+          ],
+          "ownerRuleId": "5.23",
+          "topic": "Items_Resources"
+        },
+        {
+          "ordinal": 46,
+          "start": 262596,
+          "end": 264496,
+          "bytes": 1900,
+          "sha256": "61d8a87aad673debb2791d8d4cb7bc2b1e4df5412b7f181de313f5895d5ade30",
+          "attrs": {
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.25"
+              }
+            }
+          ],
+          "ownerRuleId": "5.25",
+          "topic": "World_Chronology"
+        },
+        {
+          "ordinal": 47,
+          "start": 264525,
+          "end": 265977,
+          "bytes": 1452,
+          "sha256": "64ab39aa4271588786d4be5ee84b2143195ca6c4d76a819f7e5adc93341ccdca",
+          "attrs": {
+            "contenttype": "json",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.5"
+              }
+            }
+          ],
+          "ownerRuleId": "5.5",
+          "topic": "Combat_Foundations"
+        },
+        {
+          "ordinal": 48,
+          "start": 265980,
+          "end": 266641,
+          "bytes": 661,
+          "sha256": "d0eb5754eeffb12c898751b3ac612f9df5a98968708e29ede78c7eb55d561b81",
+          "attrs": {
+            "contenttype": "json",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.5"
+              }
+            }
+          ],
+          "ownerRuleId": "5.5",
+          "topic": "Combat_Foundations"
+        },
+        {
+          "ordinal": 49,
+          "start": 266644,
+          "end": 267577,
+          "bytes": 933,
+          "sha256": "8ad0ee2c7bb945d554f07d32a5ea95000a4c375edd6bcc393d4d77a2fd742bc1",
+          "attrs": {
+            "contenttype": "json",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.5"
+              }
+            }
+          ],
+          "ownerRuleId": "5.5",
+          "topic": "Combat_Foundations"
+        },
+        {
+          "ordinal": 50,
+          "start": 267608,
+          "end": 268075,
+          "bytes": 467,
+          "sha256": "b4767d1b15ed431ba4c636eea31b25abefe1ad63a721b34b76153a70cc046c31",
+          "attrs": {
+            "contenttype": "json_fragment",
+            "type": "good"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.8.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.8.A",
+          "topic": "Units_Ids"
+        },
+        {
+          "ordinal": 51,
+          "start": 268078,
+          "end": 268629,
+          "bytes": 551,
+          "sha256": "e83f1a744a5747f23edb946e11d651f7df3c3f6f2e2478f0d1fd896b4fc05804",
+          "attrs": {
+            "contenttype": "json_fragment",
+            "type": "bad"
+          },
+          "ancestorPath": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            },
+            {
+              "tag": "rule",
+              "attrs": {
+                "id": "5.8.A"
+              }
+            }
+          ],
+          "ownerRuleId": "5.8.A",
+          "topic": "Units_Ids"
+        }
+      ],
+      "exampleTypeCounts": {
+        "good": 45,
+        "bad": 6
+      },
+      "cdataSections": 81,
+      "cdataRanges": [
+        {
+          "start": 486,
+          "end": 1006,
+          "bytes": 520,
+          "sha256": "afb5d3029ebd226650b87e3393c8a597e544f6e11c56b040e4b1c1b4ff989e19"
+        },
+        {
+          "start": 1186,
+          "end": 1512,
+          "bytes": 326,
+          "sha256": "e6fb4e90ab8af5639355850f7f9f1f5f36222f052833e8b8c8f3ca8c9b0f89d3"
+        },
+        {
+          "start": 1757,
+          "end": 3834,
+          "bytes": 2077,
+          "sha256": "274236b5d6b9285e6bab45f2acc5d8dcd2d70fde9a39d0b692489a3ca1bf6f41"
+        },
+        {
+          "start": 4063,
+          "end": 5943,
+          "bytes": 1880,
+          "sha256": "dad3e73a91dac8573f5f190aad70340e3cd29f022037d4014acadc00548c8b48"
+        },
+        {
+          "start": 6141,
+          "end": 6922,
+          "bytes": 781,
+          "sha256": "b57ad12ef14cb15217da6e589fdb15b655b41fb4ac3b6a934b4ceae32d07b57f"
+        },
+        {
+          "start": 7083,
+          "end": 7877,
+          "bytes": 794,
+          "sha256": "cef59374a4b6a523294d48b0ef7e15851fb650bc2188a90ae869d92e3f868a8c"
+        },
+        {
+          "start": 8105,
+          "end": 8613,
+          "bytes": 508,
+          "sha256": "6194da465dd41e249a251c5dbadbe8e7c58578cff35b7508df56088007ee002f"
+        },
+        {
+          "start": 8817,
+          "end": 9627,
+          "bytes": 810,
+          "sha256": "c0b40c99f8000019d872657f46b0efd33bc58132b5e4bb55b406ff6657b2ca7d"
+        },
+        {
+          "start": 9802,
+          "end": 10146,
+          "bytes": 344,
+          "sha256": "f923d88deda1eb926a2a11788c0d811ceb9d428370011f4fb078c09086153d66"
+        },
+        {
+          "start": 10358,
+          "end": 11182,
+          "bytes": 824,
+          "sha256": "022e2b85e6e0c6e00db3155aaa2796c17fbaf97ab63713c61d551274754ea0b6"
+        },
+        {
+          "start": 11394,
+          "end": 12248,
+          "bytes": 854,
+          "sha256": "bffce4102c9b6574b739fe8dbc4213cebfaaa6ef2decdcedbc1774ded393d52c"
+        },
+        {
+          "start": 12465,
+          "end": 13012,
+          "bytes": 547,
+          "sha256": "b234e167789a5413259dbfdfc5387e56dff567fbde8af5973a9400478a148fdb"
+        },
+        {
+          "start": 13195,
+          "end": 13990,
+          "bytes": 795,
+          "sha256": "95359024e2f135e106acc106ab08bcf764b87811d5902301feefb5d01c900fcb"
+        },
+        {
+          "start": 14202,
+          "end": 15337,
+          "bytes": 1135,
+          "sha256": "08f90db139bffccc2d94f0c3840aa98aedaa446b858741a642f42cc555cc8609"
+        },
+        {
+          "start": 15903,
+          "end": 23509,
+          "bytes": 7606,
+          "sha256": "111d12cfed225c38a0b82533d91280cf23eaf75ba46d9f8718cbaf95139559f5"
+        },
+        {
+          "start": 23564,
+          "end": 24784,
+          "bytes": 1220,
+          "sha256": "a7fca4194fd273c09101e587b23445a57590a260c68447c3dba713d2b41ca109"
+        },
+        {
+          "start": 25371,
+          "end": 33213,
+          "bytes": 7842,
+          "sha256": "5b0b53a2ef27f9a5d79d89b9ecc1434d6a4849df8abc239c93d57c7312105862"
+        },
+        {
+          "start": 33268,
+          "end": 34616,
+          "bytes": 1348,
+          "sha256": "ccd550b2fe2148ee97a816a47a49fbbdebf231f13183c4e9c34905f4ee275827"
+        },
+        {
+          "start": 35111,
+          "end": 42234,
+          "bytes": 7123,
+          "sha256": "69ae1596878c3894c9efbb4298ee37a3c572a016340517e6df9c4d51cabda5a2"
+        },
+        {
+          "start": 42289,
+          "end": 43207,
+          "bytes": 918,
+          "sha256": "11bb8337787f3a9af761a8a19d91378551d5b366e66ca7f1d61a1eef4b9f88ed"
+        },
+        {
+          "start": 43723,
+          "end": 50700,
+          "bytes": 6977,
+          "sha256": "4f300bc7028e041562e8dce3a9b47de0844783b206194bf6622ad90f592a8e03"
+        },
+        {
+          "start": 50755,
+          "end": 51973,
+          "bytes": 1218,
+          "sha256": "4b1e15b4d42a1044385d915510dbd8463557d209e9159a0fd7f14fbd39f88e02"
+        },
+        {
+          "start": 52467,
+          "end": 60303,
+          "bytes": 7836,
+          "sha256": "536c5b6e77144e187c67af4d0b62a157ab2c7eea16143c8b2581bd129eefd86f"
+        },
+        {
+          "start": 60358,
+          "end": 61605,
+          "bytes": 1247,
+          "sha256": "f2028bc4c0f71ef22a24791aadb62571719efbc9fe8c20364574644c3cc6446f"
+        },
+        {
+          "start": 62177,
+          "end": 69979,
+          "bytes": 7802,
+          "sha256": "88e1631b128146d084e759fe345ead1696e2f45fb0bae1fcd24cfa6a2047384c"
+        },
+        {
+          "start": 70034,
+          "end": 71006,
+          "bytes": 972,
+          "sha256": "bf05d71c7d20fd730e49a3f63fa9e742408d3d40a05ccba17b8d388238033fbf"
+        },
+        {
+          "start": 71497,
+          "end": 78698,
+          "bytes": 7201,
+          "sha256": "82510ada17f15746c55b229d3bb328447f9b19d6a0d088939de24c0c24a8f089"
+        },
+        {
+          "start": 78753,
+          "end": 79460,
+          "bytes": 707,
+          "sha256": "f2479d99c18131e80b00c578c982b649eeae3396fe3fba579d0736b993f7081a"
+        },
+        {
+          "start": 79976,
+          "end": 87470,
+          "bytes": 7494,
+          "sha256": "514c25f90d8835c9bfe4551337fdb50935d923433fd9f1e4d4e34fea4dfc90c3"
+        },
+        {
+          "start": 87525,
+          "end": 88865,
+          "bytes": 1340,
+          "sha256": "114c010466581add23925cb69a63a7cd79fa2164578760b949095deb6b04b9a4"
+        },
+        {
+          "start": 88916,
+          "end": 89534,
+          "bytes": 618,
+          "sha256": "626fa2d66660250f9def46821a416ab22e2a6c6fc5a22191182932106b906f8c"
+        },
+        {
+          "start": 90010,
+          "end": 97302,
+          "bytes": 7292,
+          "sha256": "ab79e4758d3d4e7c0ce3131de12ee905dba5cb3d4c30933e4ccf1e239a811592"
+        },
+        {
+          "start": 97357,
+          "end": 98391,
+          "bytes": 1034,
+          "sha256": "07ea831c5188501c48e503dfb064ec5dbf331f818303146c575866d3d6315ce7"
+        },
+        {
+          "start": 98442,
+          "end": 99016,
+          "bytes": 574,
+          "sha256": "031dedf713bf564f1c9ce6b71ad4e80ae55fbcf331343ab9992320646a57e01e"
+        },
+        {
+          "start": 99523,
+          "end": 107670,
+          "bytes": 8147,
+          "sha256": "25a68d76b5df144a22a593323a0d15df8f6c7fff42004bf792cdeefbc012207c"
+        },
+        {
+          "start": 107725,
+          "end": 109255,
+          "bytes": 1530,
+          "sha256": "3d0ae5d993aaca27eca7776091480d114b4b76b5c337c8f9bcd51208416d2005"
+        },
+        {
+          "start": 109306,
+          "end": 109865,
+          "bytes": 559,
+          "sha256": "7cc5caacf00c6d1bf3b608a95f441d05752a7656e479cabed1ffd73369133183"
+        },
+        {
+          "start": 110387,
+          "end": 117804,
+          "bytes": 7417,
+          "sha256": "de07abea92dba90e9c9867de604234ad26d8f86a249424d15200559eec5b7dcd"
+        },
+        {
+          "start": 117859,
+          "end": 118924,
+          "bytes": 1065,
+          "sha256": "c9b800509b38e9b1e2993d8c8be9cd8788c9b8683dfc0d651d44f6d3924ec890"
+        },
+        {
+          "start": 119492,
+          "end": 127400,
+          "bytes": 7908,
+          "sha256": "6fb4f29c1798da593f70c9ae37b3de55e19d4cb03bc80ca5505b7dec596af540"
+        },
+        {
+          "start": 127455,
+          "end": 129109,
+          "bytes": 1654,
+          "sha256": "173b4e2f12c5997fd186b83da1b92b2a013c53fdcd84767c345f3c046a5ef93f"
+        },
+        {
+          "start": 129150,
+          "end": 130429,
+          "bytes": 1279,
+          "sha256": "3a0a65a94ac882570f230a81f5f93ab0e660965d579a337f5c11128557ca89b1"
+        },
+        {
+          "start": 131066,
+          "end": 138803,
+          "bytes": 7737,
+          "sha256": "f973c78459c62e630b60fe257a2c35f0a6e3b3187c1c9f115408b5cc367de03d"
+        },
+        {
+          "start": 138858,
+          "end": 140468,
+          "bytes": 1610,
+          "sha256": "4b86a33d754d731c004598f368cb393405a823b009c8188533969fd7c46b7f1f"
+        },
+        {
+          "start": 141989,
+          "end": 149229,
+          "bytes": 7240,
+          "sha256": "574f5188a466d4e7674367bfad0aae60711a9b14a19a8cc8a25ae4b258873266"
+        },
+        {
+          "start": 149284,
+          "end": 151240,
+          "bytes": 1956,
+          "sha256": "56fad95c40a4a94e858e1ce0b01ccaeca56e4a7ef6c7e8e8c98a8c0154f5a334"
+        },
+        {
+          "start": 151291,
+          "end": 151864,
+          "bytes": 573,
+          "sha256": "79c7edbea7332f957d99115db2816b369be5f70db7c59fb34e3cb93df85e03f5"
+        },
+        {
+          "start": 151922,
+          "end": 152462,
+          "bytes": 540,
+          "sha256": "c5c1ead2af8f67aec1ff443d7344f9e873f616d2e6c5ac90ef8e6b06cc793f2d"
+        },
+        {
+          "start": 153927,
+          "end": 162356,
+          "bytes": 8429,
+          "sha256": "b3875191c94261af471ae261a13b77184256b5b20b0052e8024a8328a54cee5b"
+        },
+        {
+          "start": 162411,
+          "end": 163788,
+          "bytes": 1377,
+          "sha256": "090abf7a5f860c4d25b0dfd0dc9ec8b9801ae6deb92b4b24dcdd012e859f9df0"
+        },
+        {
+          "start": 165258,
+          "end": 173784,
+          "bytes": 8526,
+          "sha256": "b881658055db4b0824c358b6e36949d2676dc257a0ff30130d5158ed213e2430"
+        },
+        {
+          "start": 173839,
+          "end": 175058,
+          "bytes": 1219,
+          "sha256": "bf9f016abc79e63c7ea6ef78c779a9cfe6760b308d4bed1062d1a3ab7a8c4366"
+        },
+        {
+          "start": 175797,
+          "end": 185155,
+          "bytes": 9358,
+          "sha256": "955cc6909e3b924dac4e7102dadc161dc9adf0d590ff07eec8263b5a981e1ee2"
+        },
+        {
+          "start": 185210,
+          "end": 186752,
+          "bytes": 1542,
+          "sha256": "39ec97cc1f65508b165fbb55efc44e307c66802395b46eb9911ad361892caf0c"
+        },
+        {
+          "start": 187352,
+          "end": 196010,
+          "bytes": 8658,
+          "sha256": "07e19c4c655baaaf1893d5805f607a19a4a6e845900089d0b31c0da27e0b3dd1"
+        },
+        {
+          "start": 196065,
+          "end": 197566,
+          "bytes": 1501,
+          "sha256": "8fa78d357a9fa7109b7609271134f495492316197d590bb0ede46cef35cda743"
+        },
+        {
+          "start": 198356,
+          "end": 207582,
+          "bytes": 9226,
+          "sha256": "3c0be98678aa3637174e755ac1641cbaee67c3c43806d36b9d5a479579a65fb2"
+        },
+        {
+          "start": 207637,
+          "end": 208956,
+          "bytes": 1319,
+          "sha256": "093451770820be32328ce4447ef200087a56b96270276f541b8b1e93c154b785"
+        },
+        {
+          "start": 209712,
+          "end": 219396,
+          "bytes": 9684,
+          "sha256": "787220c2ce34140e3c628c86a5290afa33d54edd8822877c508ff19c27b23094"
+        },
+        {
+          "start": 219451,
+          "end": 220734,
+          "bytes": 1283,
+          "sha256": "f806b6c12f2673473c6c42544a192c0d27a66c445a61afa0c68cd357913fa02c"
+        },
+        {
+          "start": 222391,
+          "end": 231796,
+          "bytes": 9405,
+          "sha256": "15ee218bceeb8b99f14b16bf3ccc94fb01362b0b346f39ccd30184856844d9ee"
+        },
+        {
+          "start": 231851,
+          "end": 233300,
+          "bytes": 1449,
+          "sha256": "f6c207691ca69fa036883a8c3caef7663f2c156f25e34b20740fd68c4c1a3a82"
+        },
+        {
+          "start": 234113,
+          "end": 241583,
+          "bytes": 7470,
+          "sha256": "e90e9d7ff665be133690fd0c4640816bcf10f91c9c5348f7b9f3e1d576d9582e"
+        },
+        {
+          "start": 242430,
+          "end": 250431,
+          "bytes": 8001,
+          "sha256": "2733d2cdc86ad4bd3bce9bd8875a847cf508ad78cf574cc91a0912d3f332c822"
+        },
+        {
+          "start": 250830,
+          "end": 251092,
+          "bytes": 262,
+          "sha256": "c2fb941667c88d2e1ecb95773ea7d3c04916a47aa3bce1ad1a76706149a44bbd"
+        },
+        {
+          "start": 251482,
+          "end": 253315,
+          "bytes": 1833,
+          "sha256": "645aa199b037a097c377fbadd64d92ab121bcd63e45d3622442b6c34ef8c5736"
+        },
+        {
+          "start": 253814,
+          "end": 255898,
+          "bytes": 2084,
+          "sha256": "bc436fd31701717b93be70dbb27da8b1b47ce1660b5268c51a0ee5c9e9f3f925"
+        },
+        {
+          "start": 256320,
+          "end": 257920,
+          "bytes": 1600,
+          "sha256": "4c71b8a6147e66bedf00ccfa4d0fbc940de98e7eeb46c91e70e9931931ad4b97"
+        },
+        {
+          "start": 258662,
+          "end": 259219,
+          "bytes": 557,
+          "sha256": "d988a0a8f2182ebd52faa9ea2f67686545016da2a4f33f2c3b52598d81b3dc39"
+        },
+        {
+          "start": 259679,
+          "end": 260068,
+          "bytes": 389,
+          "sha256": "079499d415a35c16199096e73f8f5306be20d0ccfe49d96e9e67874ba3399a20"
+        },
+        {
+          "start": 260584,
+          "end": 260984,
+          "bytes": 400,
+          "sha256": "fee8e6bf9c150156e781f3865f9db8640542864a5bf86ccfb0c8b0cb14e88df2"
+        },
+        {
+          "start": 261039,
+          "end": 261630,
+          "bytes": 591,
+          "sha256": "733ab75b883c2f41717e1c7199dab031f413b27823d110a7b70b7a41e54d4ee5"
+        },
+        {
+          "start": 261670,
+          "end": 261752,
+          "bytes": 82,
+          "sha256": "726aa3ba29c2694d6e37b434531652d6b2f3257b45461f7faaed866672944bff"
+        },
+        {
+          "start": 262081,
+          "end": 262529,
+          "bytes": 448,
+          "sha256": "54031664b618a75a5fe7b64d5b26e5235cdcc1ddf3ac40689c7ecc64ab4911c9"
+        },
+        {
+          "start": 263108,
+          "end": 263664,
+          "bytes": 556,
+          "sha256": "00494efc93cf9cce17d9a10269d0bce634e99573fa7cf68fc05e3a5f20d2c050"
+        },
+        {
+          "start": 263708,
+          "end": 264467,
+          "bytes": 759,
+          "sha256": "beaffc8e849a7378c1d2198d322f913b2d4381818e5d319f4bdc60557a2cf477"
+        },
+        {
+          "start": 264687,
+          "end": 265950,
+          "bytes": 1263,
+          "sha256": "b895465c83b762ee2dba08fdf44e081cc059c17bcf72594979e7b107fe93d37f"
+        },
+        {
+          "start": 266147,
+          "end": 266614,
+          "bytes": 467,
+          "sha256": "a96cc5d2f459f9740622944e0f35386d8da2ea9dfd30d5cf7fbebe248b7403ac"
+        },
+        {
+          "start": 266775,
+          "end": 267550,
+          "bytes": 775,
+          "sha256": "ad85afe99d16793316e047bfe8b3b249dd22ce5671f7d4bd391a35f13370c5f9"
+        },
+        {
+          "start": 267742,
+          "end": 268048,
+          "bytes": 306,
+          "sha256": "614ff3495e11ce323812b20e8ae4607cb518a7ee742fa7e6d84a04270f32884a"
+        },
+        {
+          "start": 268238,
+          "end": 268602,
+          "bytes": 364,
+          "sha256": "41f6d55bb5a185b8f1e5430fe4a3adf94d13c77a26ce6880f74515b02c5396a0"
+        }
+      ],
+      "framing": [
+        {
+          "id": "BE-PREFIX",
+          "kind": "retained_instructionblock_context_and_open_tags",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 0,
+          "end": 345,
+          "bytes": 345,
+          "sha256": "ed2becf11ded5ab5d1afa795b103f00d41f3880ceb913e76785104c75c00e18d",
+          "destination": "Examples/E_Block_5.txt"
+        },
+        {
+          "id": "BE-TAIL",
+          "kind": "retained_instructionblock_closing_tags",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 268638,
+          "end": 268659,
+          "bytes": 21,
+          "sha256": "69ecc4ab60782ddb200940631afcf5ac7af6acde74ccddcf6ac26614b2f51e66",
+          "destination": "Examples/E_Block_5.txt"
+        }
+      ],
+      "blocks": [
+        {
+          "id": "BE001",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 345,
+          "end": 1548,
+          "bytes": 1203,
+          "sha256": "0443be92b9d5198d7f027aabebef716b9295aa7e44ff0e9e07c8455679198ad6",
+          "rootRuleId": "5.0",
+          "topic": "Units_Ids",
+          "destination": "Examples/E_Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.0"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "bad"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 8,
+          "endLine": 42
+        },
+        {
+          "id": "BE002",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 1548,
+          "end": 5979,
+          "bytes": 4431,
+          "sha256": "d91808ee91703a9c8bb61d9b8bcb0aa9220e76c69f498e4c2c8c56682b54c1fc",
+          "rootRuleId": "5.10.3",
+          "topic": "Characteristics_Progression",
+          "destination": "Examples/E_Block_5_Characteristics_Progression.txt",
+          "allRuleIds": [
+            "5.10.3"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 42,
+          "endLine": 120
+        },
+        {
+          "id": "BE003",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 5979,
+          "end": 7913,
+          "bytes": 1934,
+          "sha256": "9e252784990f09e8e36b3c3b958ac6eb759df1bd0925cfff084870b06d9d480f",
+          "rootRuleId": "5.13.2",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.13.2"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 120,
+          "endLine": 151
+        },
+        {
+          "id": "BE004",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 7913,
+          "end": 10182,
+          "bytes": 2269,
+          "sha256": "2cc2f2c44d2680beaed07f163be455cc41de01604ed41e0723e04b8b088be2ea",
+          "rootRuleId": "5.13.3",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.13.3"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good",
+            "bad"
+          ],
+          "exampleCount": 3,
+          "cdataCount": 3,
+          "startLine": 151,
+          "endLine": 206
+        },
+        {
+          "id": "BE005",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 10182,
+          "end": 11218,
+          "bytes": 1036,
+          "sha256": "cef7e247ffec9ac19833252942a45264ec606cec9e3fa4ec55b8556f83b2d2a6",
+          "rootRuleId": "5.13.5",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.13.5"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good"
+          ],
+          "exampleCount": 1,
+          "cdataCount": 1,
+          "startLine": 206,
+          "endLine": 231
+        },
+        {
+          "id": "BE006",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 11218,
+          "end": 12284,
+          "bytes": 1066,
+          "sha256": "d586ca1e0465ee735f96895a5f5de81400cbdcaba0ac9bfe456d1e136704bd0e",
+          "rootRuleId": "5.13.6",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.13.6"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good"
+          ],
+          "exampleCount": 1,
+          "cdataCount": 1,
+          "startLine": 231,
+          "endLine": 256
+        },
+        {
+          "id": "BE007",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 12284,
+          "end": 14026,
+          "bytes": 1742,
+          "sha256": "773f8ce5a39e0df271c303d1ba335a60daed35d8c7dc136d9df89d40dc6c1110",
+          "rootRuleId": "5.14",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.14"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 256,
+          "endLine": 297
+        },
+        {
+          "id": "BE008",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 14026,
+          "end": 15373,
+          "bytes": 1347,
+          "sha256": "77c0a614726184dcaf754d906cdaebfc9d04bf6ac121b41ba562a44691a04cb2",
+          "rootRuleId": "5.15.4",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.15.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good"
+          ],
+          "exampleCount": 1,
+          "cdataCount": 1,
+          "startLine": 297,
+          "endLine": 325
+        },
+        {
+          "id": "BE009",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 15373,
+          "end": 175115,
+          "bytes": 159742,
+          "sha256": "91bc14a17be4c16736c1db4f4c9453b676f7f0436e3cdc5219a83c18f2aae194",
+          "rootRuleId": "5.18.B",
+          "topic": "Narrative_Social",
+          "destination": "Examples/E_Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good",
+            "good"
+          ],
+          "exampleCount": 16,
+          "cdataCount": 38,
+          "startLine": 325,
+          "endLine": 1726
+        },
+        {
+          "id": "BE010",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 175115,
+          "end": 197623,
+          "bytes": 22508,
+          "sha256": "de36d4a61327c1ed98f0a102f2001773d2074457391a1b845f794461532bbf85",
+          "rootRuleId": "5.18.B.0",
+          "topic": "Narrative_Social",
+          "destination": "Examples/E_Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B.0"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 4,
+          "startLine": 1726,
+          "endLine": 1901
+        },
+        {
+          "id": "BE011",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 197623,
+          "end": 220791,
+          "bytes": 23168,
+          "sha256": "2540d06687d071ebee0e1d3b1507f2f11c42871e983e628076dbc63ca5eb2331",
+          "rootRuleId": "5.18.B.0.A",
+          "topic": "Narrative_Social",
+          "destination": "Examples/E_Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B.0.A"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 4,
+          "startLine": 1901,
+          "endLine": 2078
+        },
+        {
+          "id": "BE012",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 220791,
+          "end": 233357,
+          "bytes": 12566,
+          "sha256": "9721d58019ba9004c8ff55e9179cc8d5af81deb963ef9a4a7db65ee16bb4ff8b",
+          "rootRuleId": "5.18.B.0.B",
+          "topic": "Narrative_Social",
+          "destination": "Examples/E_Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B.0.B"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good"
+          ],
+          "exampleCount": 1,
+          "cdataCount": 2,
+          "startLine": 2078,
+          "endLine": 2186
+        },
+        {
+          "id": "BE013",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 233357,
+          "end": 250469,
+          "bytes": 17112,
+          "sha256": "fed3a852e8cdda0bf211b5cfda560bbf1b5008f37a702d0d897dcd46963a2657",
+          "rootRuleId": "5.18.B.3.A",
+          "topic": "Narrative_Social",
+          "destination": "Examples/E_Block_5_Narrative_Social.txt",
+          "allRuleIds": [
+            "5.18.B.3.A"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 2186,
+          "endLine": 2312
+        },
+        {
+          "id": "BE014",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 250469,
+          "end": 257956,
+          "bytes": 7487,
+          "sha256": "742cfab88132928a39abc3cff7dbd7c3bf9b63d4ffed3ac48bbf2bbed74225db",
+          "rootRuleId": "5.20.4",
+          "topic": "Wounds",
+          "destination": "Examples/E_Block_5_Wounds.txt",
+          "allRuleIds": [
+            "5.20.4"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good",
+            "good",
+            "bad"
+          ],
+          "exampleCount": 4,
+          "cdataCount": 4,
+          "startLine": 2312,
+          "endLine": 2512
+        },
+        {
+          "id": "BE015",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 257956,
+          "end": 260114,
+          "bytes": 2158,
+          "sha256": "69c6ea7338b6bd192caeaa6bdbc0d3d38930a0653e13317af3d0c9506949f45c",
+          "rootRuleId": "5.22",
+          "topic": "World_Chronology",
+          "destination": "Examples/E_Block_5_World_Chronology.txt",
+          "allRuleIds": [
+            "5.22"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "bad"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 2512,
+          "endLine": 2556
+        },
+        {
+          "id": "BE016",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 260114,
+          "end": 262575,
+          "bytes": 2461,
+          "sha256": "4b90ea7d7cdfb8b2b93fba06c1e6fd5d14c830abe883268572cd2ec943748d07",
+          "rootRuleId": "5.23",
+          "topic": "Items_Resources",
+          "destination": "Examples/E_Block_5_Items_Resources.txt",
+          "allRuleIds": [
+            "5.23"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "bad"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 4,
+          "startLine": 2556,
+          "endLine": 2615
+        },
+        {
+          "id": "BE017",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 262575,
+          "end": 264505,
+          "bytes": 1930,
+          "sha256": "ba6e691c07730b56e5f2ab1b2dd9dcf5790cc802915d3174f419ef590024f160",
+          "rootRuleId": "5.25",
+          "topic": "World_Chronology",
+          "destination": "Examples/E_Block_5_World_Chronology.txt",
+          "allRuleIds": [
+            "5.25"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good"
+          ],
+          "exampleCount": 1,
+          "cdataCount": 2,
+          "startLine": 2615,
+          "endLine": 2647
+        },
+        {
+          "id": "BE018",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 264505,
+          "end": 267586,
+          "bytes": 3081,
+          "sha256": "cc57b5454bd059da3507705c50090de3fcd05924a097cf9be46f47b641a738df",
+          "rootRuleId": "5.5",
+          "topic": "Combat_Foundations",
+          "destination": "Examples/E_Block_5_Combat_Foundations.txt",
+          "allRuleIds": [
+            "5.5"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "good",
+            "good"
+          ],
+          "exampleCount": 3,
+          "cdataCount": 3,
+          "startLine": 2647,
+          "endLine": 2723
+        },
+        {
+          "id": "BE019",
+          "kind": "whole_xml_rule_group_with_descendants",
+          "sourcePath": "Examples/E_Block_5.txt",
+          "start": 267586,
+          "end": 268638,
+          "bytes": 1052,
+          "sha256": "8b94a391c0a6219e9d3258f6b44236ced4cc641fba16b6bc07f31df013c5e8ec",
+          "rootRuleId": "5.8.A",
+          "topic": "Units_Ids",
+          "destination": "Examples/E_Block_5_Units_Ids.txt",
+          "allRuleIds": [
+            "5.8.A"
+          ],
+          "inheritedAncestors": [
+            {
+              "tag": "instructionblock",
+              "attrs": {
+                "id": "5"
+              }
+            }
+          ],
+          "exampleTypes": [
+            "good",
+            "bad"
+          ],
+          "exampleCount": 2,
+          "cdataCount": 2,
+          "startLine": 2723,
+          "endLine": 2761
+        }
+      ],
+      "topicCounts": {
+        "Units_Ids": {
+          "groups": 2,
+          "rules": 2,
+          "examples": 4,
+          "cdata": 4
+        },
+        "Characteristics_Progression": {
+          "groups": 1,
+          "rules": 1,
+          "examples": 2,
+          "cdata": 2
+        },
+        "Combat_Foundations": {
+          "groups": 1,
+          "rules": 1,
+          "examples": 3,
+          "cdata": 3
+        },
+        "Items_Resources": {
+          "groups": 7,
+          "rules": 7,
+          "examples": 12,
+          "cdata": 14
+        },
+        "Narrative_Social": {
+          "groups": 5,
+          "rules": 5,
+          "examples": 23,
+          "cdata": 50
+        },
+        "Wounds": {
+          "groups": 1,
+          "rules": 1,
+          "examples": 4,
+          "cdata": 4
+        },
+        "World_Chronology": {
+          "groups": 2,
+          "rules": 2,
+          "examples": 3,
+          "cdata": 4
+        }
+      }
+    }
+  ],
+  "status": "T021 CURRENT INVENTORY/PARTITION CONTRACT DRAFT; no module/test/product implementation",
+  "authority": "User-authorized BlockB continuation after independently accepted255-case BlockA; sourcebaseb6e1; T021-29 execution through independentcontract/SOURCE/causalTDD/EVIDENCE gates",
+  "inventoryHelperText": "from pathlib import Path\nimport xml.parsers.expat as E,json,hashlib,collections,re,subprocess,datetime\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');base='b6e1cdb37ff2f27c3dc0dc5c5da3160d0649531e';assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=r).decode().strip()==base\nowners={'Units_Ids':['5.0','5.8'],'Characteristics_Progression':['5.1','5.7','5.10','5.24'],'Combat_Foundations':['5.2','5.3','5.4','5.5','5.6','5.16','5.19'],'Items_Resources':['5.9','5.11','5.13','5.14','5.15','5.23','5.mortal_item_materialization_v1'],'Narrative_Social':['5.12','5.17','5.18'],'Wounds':['5.20'],'World_Chronology':['5.21','5.22','5.25']}\ndef owner(ruleid):\n stem='.'.join(ruleid.split('.')[:2]);found=[k for k,v in owners.items() if ruleid in v or stem in v];assert len(found)==1,(ruleid,found);return found[0]\nresult=dict(kind='CURRENT_BLOCK5_SOURCE_AND_DRAFT_BYTE_PARTITION_NOT_IMPLEMENTATION_OR_RUNTIME',sourceHead=base,createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),topics=[dict(topic=k,rulePath='Rules/Block_5_'+k+'.txt',examplePath='Examples/E_Block_5_'+k+'.txt',approvedTopComponents=v) for k,v in owners.items()],sources=[])\nfor name in ['Rules/Block_5.txt','Examples/E_Block_5.txt']:\n data=(r/name).read_bytes();p=E.ParserCreate();stack=[];allnodes=[];cdata=[]\n def start(tag,attrs):\n  node=dict(tag=tag,attrs=attrs,start=p.CurrentByteIndex,depth=len(stack)+1,parentTag=stack[-1]['tag'] if stack else None,ancestors=[dict(tag=a['tag'],attrs=a['attrs']) for a in stack])\n  if tag=='rule':\n   outer=next((a for a in stack if a['tag']=='rule'),None);node['outerRuleId']=outer['attrs']['id'] if outer else None\n  stack.append(node);allnodes.append(node)\n def end(tag):\n  node=stack.pop();assert node['tag']==tag;pos=p.CurrentByteIndex;node['end']=data.index(b'>',pos)+1\n def cdstart():cdata.append(dict(start=p.CurrentByteIndex))\n def cdend():cdata[-1]['end']=p.CurrentByteIndex+3\n p.StartElementHandler=start;p.EndElementHandler=end;p.StartCdataSectionHandler=cdstart;p.EndCdataSectionHandler=cdend;p.Parse(data,True);assert not stack\n rules=[x for x in allnodes if x['tag']=='rule'];tops=[x for x in rules if x['outerRuleId'] is None];examples=[x for x in allnodes if x['tag']=='example'];topbyrange=lambda x:next(t for t in tops if t['start']<=x['start']<t['end'])\n blocks=[];cursor=0;boundary_framing=[]\n for n,t in enumerate(tops):\n  # Delimiters/indentation between sibling groups belong to the following intact top group.\n  gap=data[cursor:t['start']];begin=cursor if n and not gap.strip() else t['start'];end=t['end'];\n  if n and gap.strip():boundary_framing.append(dict(id='BR-PARENT-BOUNDARY-'+str(n),kind='retained_original_ancestor_container_boundary',sourcePath=name,start=cursor,end=t['start'],bytes=len(gap),sha256=hashlib.sha256(gap).hexdigest(),destination=name))\n  payload=data[begin:end];topic=owner(t['attrs']['id']);nodes=[x for x in rules if t['start']<=x['start']<t['end']];ex=[x for x in examples if t['start']<=x['start']<t['end']]\n  blocks.append(dict(id=('BR' if name.startswith('Rules') else 'BE')+f'{n+1:03d}',kind='whole_xml_rule_group_with_descendants',sourcePath=name,start=begin,end=end,bytes=end-begin,sha256=hashlib.sha256(payload).hexdigest(),rootRuleId=t['attrs']['id'],topic=topic,destination=('Rules/Block_5_' if name.startswith('Rules') else 'Examples/E_Block_5_')+topic+'.txt',allRuleIds=[x['attrs']['id'] for x in nodes],inheritedAncestors=t['ancestors'],exampleTypes=[x['attrs'].get('type') for x in ex],exampleCount=len(ex),cdataCount=sum(t['start']<=x['start']<t['end'] for x in cdata),startLine=data[:begin].count(b'\\n')+1,endLine=data[:end].count(b'\\n')+1));cursor=end\n prefix=data[:tops[0]['start']];tail=data[cursor:];framing=[dict(id=('BR' if name.startswith('Rules') else 'BE')+'-PREFIX',kind='retained_instructionblock_context_and_open_tags',sourcePath=name,start=0,end=len(prefix),bytes=len(prefix),sha256=hashlib.sha256(prefix).hexdigest(),destination=name),dict(id=('BR' if name.startswith('Rules') else 'BE')+'-TAIL',kind='retained_instructionblock_closing_tags',sourcePath=name,start=cursor,end=len(data),bytes=len(tail),sha256=hashlib.sha256(tail).hexdigest(),destination=name)]\n framing+=boundary_framing;pieces=sorted(blocks+framing,key=lambda x:x['start']);assert pieces[0]['start']==0 and pieces[-1]['end']==len(data) and all(a['end']==b['start'] for a,b in zip(pieces,pieces[1:]));assert b''.join(data[x['start']:x['end']] for x in pieces)==data\n groupcounts={k:dict(groups=sum(x['topic']==k for x in blocks),rules=sum(len(x['allRuleIds']) for x in blocks if x['topic']==k),examples=sum(x['exampleCount'] for x in blocks if x['topic']==k),cdata=sum(x['cdataCount'] for x in blocks if x['topic']==k)) for k in owners}\n result['sources'].append(dict(path=name,bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),gitBlob=subprocess.check_output(['git','hash-object',name],cwd=r).decode().strip(),mode='100644',lines=data.count(b'\\n')+1,xmlRoot=allnodes[0]['tag'],xmlRootId=allnodes[0]['attrs'].get('id'),topLevelRuleGroups=len(tops),ruleNodes=len(rules),ruleIds=[x['attrs']['id'] for x in rules],examples=len(examples),orderedExampleNodes=[dict(ordinal=i+1,start=x['start'],end=x['end'],bytes=x['end']-x['start'],sha256=hashlib.sha256(data[x['start']:x['end']]).hexdigest(),attrs=x['attrs'],ancestorPath=x['ancestors'],ownerRuleId=topbyrange(x)['attrs']['id'],topic=owner(topbyrange(x)['attrs']['id'])) for i,x in enumerate(examples)],exampleTypeCounts=dict(collections.Counter(x['attrs'].get('type') for x in examples)),cdataSections=len(cdata),cdataRanges=[dict(**x,bytes=x['end']-x['start'],sha256=hashlib.sha256(data[x['start']:x['end']]).hexdigest()) for x in cdata],framing=framing,blocks=blocks,topicCounts=groupcounts))\nPath('/tmp/gm1557-B-current-source-inventory-20261017.json').write_text(json.dumps(result,indent=2)+'\\n');print(json.dumps([{k:v for k,v in s.items() if k in ['path','bytes','sha256','topLevelRuleGroups','ruleNodes','examples','exampleTypeCounts','cdataSections','topicCounts']} for s in result['sources']],indent=2))\n",
+  "baselineArtifacts": [
+    {
+      "source": "Rules/Block_5.txt",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-baseline-rules-b6e1cdb3-20261017.txt.gz",
+      "bytes": 262995,
+      "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "storedSha256": "5391914a804d39f761839cca4900c0eda48db49a955576c07c7fb9fbbb318992",
+      "compression": "gzip mtime0"
+    },
+    {
+      "source": "Examples/E_Block_5.txt",
+      "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-baseline-examples-b6e1cdb3-20261017.txt.gz",
+      "bytes": 268659,
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "storedSha256": "d86e3b305d6893c757500b8a4d627359807b1072895df020ef3e4e15f23cf02a",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "actualExistingExtractor": {
+    "kind": "READ_ONLY_EXISTING_UNCHANGED_EXTRACTOR_SOURCE_INVENTORY_NOT_TEST_PREPARATION_OR_RUNTIME_QUALIFICATION",
+    "storedPath": "specs/1557-gm-doc-modularization/recovery/current-B-existing-extractor-source-inventory-b6e1cdb3-20261017.json.gz",
+    "rawBytes": 15256,
+    "rawSha256": "61663a8df5dd9e0447452f9be7aa0d797daadfb3870e0c8c80f4d227ceae8b81",
+    "storedSha256": "1ab140af3a6a54c54e3e26973d0df9839f3d71deba3e015baa564cf9c488a33f",
+    "compiledSource": "c385a875e39a8a13c4e5738b136aa6bcdd377e37",
+    "assemblySha256": "4d4e16292bf0843f3b1dbdc5e62ee9d5c65631af1494ea4d4102d9ade5c6d771",
+    "sourceSha256": "4248033b7a485f8c1993dea1fcf94df9367c7938ee37b0676dcedf512c60fb94",
+    "count": 9,
+    "expectedCounts": {
+      "Valid": 7,
+      "Invalid": 2
+    },
+    "rows": [
+      {
+        "ordinal": 1,
+        "file": "E_Block_5.txt",
+        "line": 2321,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 271,
+        "bodySha256": "a1fea0dc3de81b607ad412486b2064e295c3a9060337a08e9408391acb2f288c",
+        "block": "BE014",
+        "topic": "Wounds",
+        "destination": "Examples/E_Block_5_Wounds.txt"
+      },
+      {
+        "ordinal": 2,
+        "file": "E_Block_5.txt",
+        "line": 2342,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 1842,
+        "bodySha256": "cecdd94cd38e862ef1ed42147786f78edbb1c48da6a0320a1b9b200fa9d13a4b",
+        "block": "BE014",
+        "topic": "Wounds",
+        "destination": "Examples/E_Block_5_Wounds.txt"
+      },
+      {
+        "ordinal": 3,
+        "file": "E_Block_5.txt",
+        "line": 2401,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 2093,
+        "bodySha256": "7f2974b2f65d31ba468a01f805652042df7ebf8d9df06b982726e54f399b6a74",
+        "block": "BE014",
+        "topic": "Wounds",
+        "destination": "Examples/E_Block_5_Wounds.txt"
+      },
+      {
+        "ordinal": 4,
+        "file": "E_Block_5.txt",
+        "line": 2460,
+        "kind": "xml-json-content",
+        "expected": "Invalid",
+        "utf8Bytes": 1609,
+        "bodySha256": "6b4f890cebdaa71eb456dab05c8eeb1528174c8dbab6f3aa85a551a329ec7495",
+        "block": "BE014",
+        "topic": "Wounds",
+        "destination": "Examples/E_Block_5_Wounds.txt"
+      },
+      {
+        "ordinal": 5,
+        "file": "E_Block_5.txt",
+        "line": 2653,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 1272,
+        "bodySha256": "50587fcc65827af42adc913c6cdd0623ff526062e1fa43a07cc1c7c643b4cf38",
+        "block": "BE018",
+        "topic": "Combat_Foundations",
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt"
+      },
+      {
+        "ordinal": 6,
+        "file": "E_Block_5.txt",
+        "line": 2685,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 476,
+        "bodySha256": "d12c858f9b233dbb50a1697843a530a65dc123175f973c7a6f209eae69c11cb5",
+        "block": "BE018",
+        "topic": "Combat_Foundations",
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt"
+      },
+      {
+        "ordinal": 7,
+        "file": "E_Block_5.txt",
+        "line": 2704,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 784,
+        "bodySha256": "7e842d8c494aec94fcb5db8ed5b824bb1e58c57edc1b86e0fdcbe997760435db",
+        "block": "BE018",
+        "topic": "Combat_Foundations",
+        "destination": "Examples/E_Block_5_Combat_Foundations.txt"
+      },
+      {
+        "ordinal": 8,
+        "file": "E_Block_5.txt",
+        "line": 2729,
+        "kind": "xml-json-content",
+        "expected": "Valid",
+        "utf8Bytes": 315,
+        "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+        "block": "BE019",
+        "topic": "Units_Ids",
+        "destination": "Examples/E_Block_5_Units_Ids.txt"
+      },
+      {
+        "ordinal": 9,
+        "file": "E_Block_5.txt",
+        "line": 2747,
+        "kind": "xml-json-content",
+        "expected": "Invalid",
+        "utf8Bytes": 373,
+        "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
+        "block": "BE019",
+        "topic": "Units_Ids",
+        "destination": "Examples/E_Block_5_Units_Ids.txt"
+      }
+    ],
+    "qualification": "Pure read-only source inventory via unchanged existing extractor; not a build, test execution, RED, application owner or verification acceptance"
+  },
+  "manifestRows": [
+    {
+      "family": "syntaxExemptions",
+      "index": 11,
+      "before": {
+        "file": "E_Block_5.txt",
+        "line": 2729,
+        "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
+      },
+      "bodySha256": "00f13838ed5b771300f02cefb068bf396dc0d9363b8113c43e125f0183435ff9",
+      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged"
+    },
+    {
+      "family": "syntaxExemptions",
+      "index": 12,
+      "before": {
+        "file": "E_Block_5.txt",
+        "line": 2747,
+        "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
+      },
+      "bodySha256": "d98157310c9744a7409e856014e2be95ba4e1c9ffb715110cc5d1a67ad384323",
+      "pendingChange": "Only file/line locator to actual UnitsIds example extraction; reason/classification/body unchanged"
+    }
+  ],
+  "preservedExistingFinding": {
+    "id": "B-CONTEXT-01",
+    "status": "EXISTING POTENTIAL CONTRADICTION PRESERVED; no relocation precedence or gameplay fix",
+    "beforeImages": [
+      {
+        "path": "Examples/E_Block_5.txt",
+        "text": "Wounds are independent entities. A wound-created lifecycle effect requires activeEffectDefinitions[] plus a separate effectChanges[] apply; see Examples/E_CLI_Effect_Materialization.txt."
+      },
+      {
+        "path": "Rules/Block_5.txt",
+        "ruleId": "5.20.3",
+        "text": "Do not submit ordinary effectChanges[] for a new wound root. The client derives the typed root batch and the shared effect engine allocates every opaque effect identity. Later reaction descendants execute only through the sealed definition graph."
+      }
+    ],
+    "disposition": "Retain source-qualified root context exactly once in compact old navigator; new wrappers reference inherited context without prose duplication. Preserve full newer5.20/5.20.4 and fourconstructor examples/deteriorationPolicy. Any semantic resolution requires separate scoped disposition."
+  },
+  "currentDependencyPins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "gitBlob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "bytes": 63857,
+      "sha256": "e717e304825af013f6204d35dad6654b25ac12e49da7fe3c6e74630e704bd518",
+      "gitBlob": "e163e54e80d1cc757bc8c9fe58e8efd66421894a",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/content-map.json",
+      "bytes": 442700,
+      "sha256": "a119733a11f24e630f355bfa0a7c53fe9cca155e9fb53e66c1c00c8b5a050d12",
+      "gitBlob": "1612f2f01c14e30f2f86569f21a9c36edccc0d41",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "bytes": 71141,
+      "sha256": "c383f0772aaf2dbf613a18acd55dac0f7bd97122dc6440189a169d2a3ab1744b",
+      "gitBlob": "a22ccb28ea1c2fab1e357acd97c8e6d563732d8a",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs",
+      "bytes": 13097,
+      "sha256": "4248033b7a485f8c1993dea1fcf94df9367c7938ee37b0676dcedf512c60fb94",
+      "gitBlob": "89f284dcc934f9e03842d629f5fa1603eb9950da",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+      "bytes": 21943,
+      "sha256": "a95d25a23a5e43252e6d04b4f6523cf969d3db46c6ba0194490945b5f6132c30",
+      "gitBlob": "26929cc9346f1f3d08c850f95c6169766a6e6365",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+      "bytes": 35596,
+      "sha256": "73ee12e4d0b5daf6610cb6dd600caaede280a2dd359718f432428b21a340b645",
+      "gitBlob": "8ba2e650fa70ca493aa99e8952c973ce53058e69",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
+      "bytes": 17012,
+      "sha256": "bb4ae8d7aeac5e177b0199a26e093b536abdce2f407a28db5a6c310e4a9ca386",
+      "gitBlob": "7369f615fa56265248567bf87ad159c0023c342c",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+      "bytes": 29551,
+      "sha256": "45ef04d367a754510a3a04a19c1a278b60f747d1556343b9a4d8cc4db3b39d2f",
+      "gitBlob": "643dbf5698654c1ae0833c97ad72e2fff12a74c5",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+      "bytes": 20209,
+      "sha256": "acc4b49bd5349ed40e09575a2fc2ca0122ed949a3848b0f228b40bb350f09805",
+      "gitBlob": "845eeec6ac8c308cc4b3612779ef67e438580229",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "bytes": 214166,
+      "sha256": "2031daaaedef312439c267141f638f3a4c4e7e0bde2b2895e6b6e6d2bc826a9d",
+      "gitBlob": "4618ffe8f75c9972c7e90af014cfe610dd3ecea2",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs",
+      "bytes": 29375,
+      "sha256": "59e545d99a95dec9812b93ef223c75f43873072ba8c7fc2e612a2c34f19cfd41",
+      "gitBlob": "0d0953496485af7e14e0653cf9f0ee5cbda3de22",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs",
+      "bytes": 87318,
+      "sha256": "f8db4b44bbda03db42f154b877ac0d2593ac12f9dba5b79812979d0a2a05edc6",
+      "gitBlob": "5e21024c747374e4ab4ef26a4f7ef3eb1aea44cf",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47350,
+      "sha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0",
+      "gitBlob": "5ff4b945a274b367fa7f305414779c0a0b9c48be",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs",
+      "bytes": 21528,
+      "sha256": "12c6b055d628ccbf45b9a3b3e0876e9a62567435398b23e0ce2e011013cd454a",
+      "gitBlob": "6f7d8aa88500e9e6d9a04af82b0dae87b44888f5",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "bytes": 11183,
+      "sha256": "5057fce7aecc7495bd77f231785771c4cbb9ef53c4b5efb1b3995a94beacc9bb",
+      "gitBlob": "ec11a0358141f589e03e32a06e31fc68e9d3cca5",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 404348,
+      "sha256": "ceae0092297e503272fe20c8422577e63551f838bfab5091c0f3c7d4805e7c31",
+      "gitBlob": "a077b18b0ec3725e6a1327f9229c14b53e677e46",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 192331,
+      "sha256": "d5683fc1757de86feb225be280cb8e182e4a939b097acb90c1bc9534d324bc8f",
+      "gitBlob": "72129dd0d5ef1918b9413246f82c5a165bd58dfc",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "bytes": 38278,
+      "sha256": "4e94d8f360503875d3cc4383bda88eb30550378eaca7a66e4fde744aa40be81f",
+      "gitBlob": "af3221f5d1915690ce92a8641f9600df8bb6b30c",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "bytes": 89624,
+      "sha256": "3bde751e8ffb5a1bae01ad169a0104d093a1c055f75333609a52d49a6a3fc2d3",
+      "gitBlob": "deb142a59de6995e2a6f1021f19635c444b4cf21",
+      "coverage": "Retained full7a+59completeGitHubdeltas; sourcebaseb6e1, no repeatedfullbasebyte transport"
+    }
+  ],
+  "partitionContract": {
+    "payloadGroups": 50,
+    "retainedFramingPieces": 5,
+    "totalPieces": 55,
+    "gapFreeExactEverySourceByte": true,
+    "framingOwner": "Original old-path compact navigators; root/title/description/effect note and closing parent boundaries remain one owned source copy",
+    "moduleWrappers": "Only inventoried new XML/comment scaffolding to preserve original instructionblock id5 and actual content ancestry; inherited context referenced, never silently summarized or copied as second authority",
+    "sourceIntervals": "UTF8 byte offsets, no whitespace/newline normalization",
+    "ownership": "Actual outer XML group and longest component-aware approved numeric ancestor; explicit5.mortal_item_materialization_v1 override; foreignnestedIDs inherit containing actual5.18.B tree"
+  }
+}
