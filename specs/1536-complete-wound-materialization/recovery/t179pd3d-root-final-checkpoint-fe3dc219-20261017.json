@@ -1,0 +1,325 @@
+{
+  "kind": "ROOT_FINAL_BOUNDED_PD3D_CHECKPOINT_EXACT_REMOTE_RECOVERY_AND_CURRENT_PINS",
+  "head": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "remote": {
+    "refs/heads/1536-wound-b2-cloud-20261012": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+    "refs/heads/main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4"
+  },
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "onlySpecMetadataSinceCompiled": [
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-delta-github-60400613-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/000-31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d-pd3d-product-ordinary52.FIRST.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/001-process.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/002-record.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/003-source-binding.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/004-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/005-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/006-fr063-ordinary-output-existing-unit-001.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/007-fr063-ordinary-output-policy-boundary-unit-002.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/008-fr063-ordinary-output-policy-regression-unit-003.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/009-fr063-ordinary-output-policy-source-unit-004.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/010-fr063-ordinary-output-projection-integration-005.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/011-plan.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/012-summary.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-ordinary52-files-20261017/archive.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-delta-github-702f7998-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-late2-evidence-decision-delta-github-31fe14fa-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-delta-github-0f00ee25-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-packet-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-product-first.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-product-preparation.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-product-first-run.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-product-preparation-run.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-root-inspect-product-late2.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/000-e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63-pd3d-product-protected-late2.FIRST.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/001-process.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/002-record.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/003-source-binding.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/004-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/005-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/006-fr063-joint-late-completion-integration-001.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/007-plan.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/008-summary.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-late2-files-20261017/archive.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/000-0f00ee256797a4e21b6f314a2a0053ec6084f972-pd3d-product-build-plan.FIRST.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/001-process.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/002-record.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/003-source-binding.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/004-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/005-Build-integration.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/006-Build-unit.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/007-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/008-plan.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/009-summary.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-first-preparation-files-20261017/archive.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-prepared-delta-github-a06ac89a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-product-source-decision-delta-github-e1d9885a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-final-bounded-evidence-acceptance-60400613-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-ordinary52-activation-31fe14fa-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-ordinary52-inspection-31fe14fa-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-product-late2-activation-e1d9885a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-product-late2-inspection-e1d9885a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-late2-accepted-ordinary52-conditional-702f7998-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-product-preparation-activation-0f00ee25-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-product-preparation-readback-0f00ee25-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-product-source-accepted-late2-conditional-a06ac89a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-0f00ee25-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-31fe14fa-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-60400613-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-702f7998-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-a06ac89a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-e1d9885a-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-retained-predicate-recovery-mapping-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "sourcePinsExact": 67,
+  "nineFreshManagedBinaryCopiesUnchanged": true,
+  "acceptedExactArtifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.md",
+      "sha256": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587",
+      "bytes": 3598
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-review-20261017.json",
+      "sha256": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a",
+      "bytes": 5482
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-minimal-product-source-independent-check-20261017.json",
+      "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d",
+      "bytes": 67675
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+      "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f",
+      "bytes": 2568
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+      "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630",
+      "bytes": 5601
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+      "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119",
+      "bytes": 24128
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+      "sha256": "e88c7e1d95a48dc78b0b1b81e937377531b6b7c59f0b1418e40ed264a40eebee",
+      "bytes": 3536
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+      "sha256": "1f91c863a67043d2aa579fa9ee42926a121d51bafe847c646e50346388c5a82d",
+      "bytes": 8099
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+      "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48",
+      "bytes": 92183
+    }
+  ],
+  "packetStatus": "BOUNDED_ORDINARY_KERNELS_REAL_CONSUMERS_SOURCE_EVIDENCE_ACCEPTED_FINAL_CARRIER_CHECK_REQUIRED",
+  "packetCounts": {
+    "categoryOwners": 6,
+    "declaredMethods": 31,
+    "declaredRows": 54,
+    "discovery": "Fresh0f BOTH/PlanOnly confirmed6owners6descriptors31methods54planned; ZERO executions during preparation. Subsequent qualified ordinary52 and separate protected2 actuals are currentActuals, not UNRUN.",
+    "postProductActuals": {
+      "protectedLate2": [
+        {
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "executionId": "3c85fca6-7f34-42ac-b761-0807160bba1d",
+          "outcome": "Passed",
+          "message": null,
+          "stack": null,
+          "stdoutBytes": 7319087,
+          "stdoutSha256": "612f2d40926f27566540b05b2e8d71adadf773fee654d0b12f4e9f0f43c81a2b",
+          "diagnosticBoundaries": [
+            "fr063_guaranteed_native_pre_original_npc_shape",
+            "qte_story_actual_client_append",
+            "qte_story_actual_engine_result",
+            "qte_physical_actual_occurrence",
+            "fr063_joint_actual_prior42_inactive_tail",
+            "fr063_joint_original_progression_reader_before_owner",
+            "fr063_joint_signed_original_schedule_before_owner",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_confirmed_claim_inspection",
+            "fr063_joint_completion_actual_prerequisites",
+            "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+            "fr063_joint_completion_actual_owner_outcome",
+            "fr063_joint_complete_union",
+            "fr063_joint_progression_phase_report_arithmetic",
+            "fr063_joint_completion_inert_repeat"
+          ]
+        },
+        {
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "executionId": "cbedd795-04e1-4f23-8840-a360863364f6",
+          "outcome": "Passed",
+          "message": null,
+          "stack": null,
+          "stdoutBytes": 6645709,
+          "stdoutSha256": "e152f590fadb770a86ad2372ad899882241901d240d856d00e509e13bb6d1ae7",
+          "diagnosticBoundaries": [
+            "fr063_guaranteed_native_pre_original_npc_shape",
+            "qte_story_actual_client_append",
+            "qte_story_actual_engine_result",
+            "qte_physical_actual_occurrence",
+            "fr063_joint_actual_prior42_inactive_tail",
+            "fr063_joint_original_progression_reader_before_owner",
+            "fr063_joint_signed_original_schedule_before_owner",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_original_inventory_structural_absence_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_joint_natural_stage43_image_before_assert",
+            "fr063_confirmed_claim_inspection",
+            "fr063_joint_completion_actual_prerequisites",
+            "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+            "fr063_joint_completion_actual_owner_outcome",
+            "fr063_joint_complete_union",
+            "fr063_joint_progression_phase_report_arithmetic",
+            "fr063_joint_completion_inert_repeat"
+          ]
+        }
+      ],
+      "ordinary52": {
+        "executed": 52,
+        "passed": 52,
+        "failed": 0,
+        "independentEvidence": "ACCEPTED_FINAL_e88c/1f91/58b4_ROOTedf1",
+        "protected2Excluded": true
+      },
+      "protectedLate2Evidence": "ACCEPTED_NEW2PASS_SEPARATE_FROM_ORDINARY52"
+    },
+    "historicalTestsOnlyActuals": {
+      "executed": 2,
+      "passed": 0,
+      "failed": 2,
+      "distinctOwnersObserved": [
+        "Narrative",
+        "Interface"
+      ],
+      "independentCausalEvidence": "ACCEPTED_STRUCTURAL_RED2_NOT_GREEN",
+      "otherOrdinaryCasesUnrun": 50,
+      "protectedLate2Unrun": 2,
+      "phase": "Historical FIRST structuralRED2 on unchanged product, not current accepted runtime. Raw2FAIL unchanged."
+    },
+    "currentActuals": {
+      "ordinary52": {
+        "executed": 52,
+        "passed": 52,
+        "failed": 0,
+        "methods": 29,
+        "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.md",
+            "bytes": 3536,
+            "sha256": "e88c7e1d95a48dc78b0b1b81e937377531b6b7c59f0b1418e40ed264a40eebee"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-review-20261017.json",
+            "bytes": 8099,
+            "sha256": "1f91c863a67043d2aa579fa9ee42926a121d51bafe847c646e50346388c5a82d"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-ordinary52-evidence-independent-check-20261017.json",
+            "bytes": 92183,
+            "sha256": "58b45b1e0352e43211d55ed284f3691fd34d8dcbe180d342d841aefd72021d48"
+          }
+        ]
+      },
+      "separateProtectedLate2": {
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "methods": 2,
+        "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+        "evidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+            "bytes": 2568,
+            "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+            "bytes": 5601,
+            "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+            "bytes": 24128,
+            "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119"
+          }
+        ]
+      },
+      "boundedDistinctCases": 54,
+      "boundedMethods": 31,
+      "scope": "Two separately named/accepted native runs on compiled0f; not one54-case command or full Pd3d acceptance."
+    }
+  },
+  "recovery": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-fe3dc219-20261017.json",
+    "sha256": "701966d8b48ddf5bdae4d92a2b258c518d0bb6798e4a0ec257e90a8a058d9cbc",
+    "completeConsecutiveDeltas": 47,
+    "trackedPaths": 54930
+  },
+  "retainedRootOrdinaryInspection": {
+    "path": "/tmp/t179pd3d-root-first-ordinary52-inspection-31fe14fa-20261017.json",
+    "sha256": "3b18d23f08853838c3d34faf20a051cc90982520c3211b1806af16ea87209ccc"
+  },
+  "scope": "Only current bounded ordinary kernels/actual consumers: ordinary52 and separately qualified protectedLate2. Initial NI-PREFLIGHT/NI-S01/causal RED preserved. No runtime rerun after accepted first outcomes. HOT/history/fullF1/M3/T197/oldWorld/platformWindows/A3 remain held. No main/merge/force/delete/credentials/security changes.",
+  "checkerSource": "from pathlib import Path\nimport datetime, hashlib, json, os, subprocess, sys\n\nrepo = Path('/workspace/The-Book-of-Eternity-Reborn')\nhead, review_manifest = sys.argv[1:]\nsha = lambda b: hashlib.sha256(b).hexdigest()\ngit = lambda *a: subprocess.check_output(['git', *a], cwd=repo)\nassert git('rev-parse', 'HEAD').decode().strip() == head\nassert not git('status', '--porcelain')\nremote = dict(line.split()[::-1] for line in git('ls-remote', 'origin', 'refs/heads/1536-wound-b2-cloud-20261012', 'refs/heads/main').decode().splitlines())\nassert remote['refs/heads/1536-wound-b2-cloud-20261012'] == head\nassert remote['refs/heads/main'] == 'd0241e71e349fbe2020e4a41b6be7c627c81cbb4'\ncompiled = '0f00ee256797a4e21b6f314a2a0053ec6084f972'\nchanged = git('diff', '--name-only', compiled, head).decode().splitlines()\nassert changed and all(p.startswith('specs/1536-complete-wound-materialization/') for p in changed)\nrecovery = Path('/tmp/t179pd3d-root-recovery-composition-' + head[:8] + '-20261017.json')\ncomposition = json.loads(recovery.read_text())\nassert composition['head'] == head\npacket_path = repo / 'specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tests-source-packet-20261017.json'\npacket = json.loads(packet_path.read_text())\nassert len(packet['sourcePins']) == 67 and len(packet['productDelta']) == 2\nfor pin in packet['sourcePins']:\n    b = (repo / pin['path']).read_bytes()\n    assert len(b) == pin['bytes'] and sha(b) == pin['sha256']\n    blob = hashlib.sha1(b'blob ' + str(len(b)).encode() + b'\\0' + b).hexdigest()\n    assert blob == pin['gitBlob']\nassert sha(json.dumps(packet['sourcePins'], ensure_ascii=False, separators=(',', ':')).encode()) == packet['sourcePinDigest']\nassert sha((repo / packet['currentLedger']['path']).read_bytes()) == packet['currentLedger']['sha256']\ncurrent = packet['counts']['currentActuals']\nassert current['ordinary52']['passed'] == current['ordinary52']['executed'] == 52\nassert current['ordinary52']['failed'] == 0 and current['ordinary52']['methods'] == 29\nassert current['separateProtectedLate2']['passed'] == current['separateProtectedLate2']['executed'] == 2\nassert current['separateProtectedLate2']['failed'] == 0 and current['boundedDistinctCases'] == 54\nassert packet['counts']['historicalTestsOnlyActuals']['failed'] == 2\nassert packet['futureProductionQualification']['ordinarySelection'].startswith('COMPLETE_BOUNDED')\nassert packet['futureProductionQualification']['protectedLate2'].startswith('COMPLETE_SEPARATE')\nassert packet['futureChecks']['remaining'].startswith('No bounded runtime/source work remains.')\nmanifest = json.loads(Path(review_manifest).read_text())\naccepted = []\nfor pin in manifest['acceptedExactArtifacts']:\n    p = repo / pin['path']\n    assert sha(p.read_bytes()) == pin['sha256']\n    accepted.append(dict(path=pin['path'], sha256=pin['sha256'], bytes=p.stat().st_size))\nrecord_path = Path('/tmp/t179pd3d-implementation-tools/t179pd3d-product-ordinary52-first-31fe14fa-20261017/record.json')\nrecord = json.loads(record_path.read_text())\nassert record['nativeExit'] == 0 and len(record['binaryAfter']) == 9\nassert sha(Path('/tmp/t179pd3d-root-first-ordinary52-inspection-31fe14fa-20261017.json').read_bytes()) == '3b18d23f08853838c3d34faf20a051cc90982520c3211b1806af16ea87209ccc'\nfor pin in record['binaryAfter']:\n    b = (repo / pin['path']).read_bytes()\n    assert len(b) == pin['bytes'] and sha(b) == pin['sha256']\nout = dict(kind='ROOT_FINAL_BOUNDED_PD3D_CHECKPOINT_EXACT_REMOTE_RECOVERY_AND_CURRENT_PINS', head=head, remote=remote,\n           compiledSource=compiled, onlySpecMetadataSinceCompiled=changed,\n           sourcePinsExact=67, nineFreshManagedBinaryCopiesUnchanged=True,\n           acceptedExactArtifacts=accepted, packetStatus=packet['status'], packetCounts=packet['counts'],\n           recovery=dict(path=str(recovery), sha256=sha(recovery.read_bytes()), completeConsecutiveDeltas=len(composition['completeConsecutiveDeltas']), trackedPaths=composition['trackedPaths']),\n           retainedRootOrdinaryInspection=dict(path='/tmp/t179pd3d-root-first-ordinary52-inspection-31fe14fa-20261017.json', sha256='3b18d23f08853838c3d34faf20a051cc90982520c3211b1806af16ea87209ccc'),\n           scope='Only current bounded ordinary kernels/actual consumers: ordinary52 and separately qualified protectedLate2. Initial NI-PREFLIGHT/NI-S01/causal RED preserved. No runtime rerun after accepted first outcomes. HOT/history/fullF1/M3/T197/oldWorld/platformWindows/A3 remain held. No main/merge/force/delete/credentials/security changes.',\n           checkerSource=Path(__file__).read_text(), utc=datetime.datetime.now(datetime.timezone.utc).isoformat())\ndest = Path('/tmp/t179pd3d-root-final-checkpoint-' + head[:8] + '-20261017.json')\nassert not dest.exists()\ndest.write_text(json.dumps(out, indent=2) + '\\n')\nprint(dest, sha(dest.read_bytes()))\n",
+  "utc": "2026-10-17T17:24:18.648396+00:00"
+}

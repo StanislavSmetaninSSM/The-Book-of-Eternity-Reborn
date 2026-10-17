@@ -1,0 +1,65 @@
+{
+  "kind": "INDEPENDENT_NECESSITY_AND_DEPENDENCY_REVIEW",
+  "date": "2026-10-17",
+  "head": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "verdict": "SELECT_ORDINARY_3E_PREFIX_FOR_TESTS_ONLY_AUTHORING",
+  "materialBlockers": [],
+  "scope": "ZIP-independent ordinary public Full debug document/scope policy prerequisite; not HOT or Full-family completion",
+  "necessity": "The accepted 3e design explicitly names ordinary extraction as a separate prerequisite. Current Full production owns duplicate-in-place document/scope diagnostics before its first dependency read. A real public consumer exists in ordinary validation and joint completion. Extracting only those value computations gives the intended shared policy seam without activating source authority or moving the already-pure Actor Brain/parser code.",
+  "exactBoundary": {
+    "owner": "ValidationService.AcceptedTurnAndInkFeathers.cs:7411",
+    "freshness": "7416 original lookup; conditional current freshness read in helper 3006; distinct parse read 7423",
+    "document": "A:7440 Parse/using and 7489 JsonException catch remain owner; exact thoughts/root checks are candidate values",
+    "timestamp": "7459-7467 remains owner at same slot, existing PlayerAndInventory.cs:7052 ambient TryParse",
+    "scope": "A:7515–7623 value work; terminal missing scope preserved; parsed erroneous scope still continues",
+    "end": "Immediately before var guardianPolicyContext = await ResolveGuardianPolicyContextAsync() (current A:7625)",
+    "tail": "All dependency reads/alias mutation and six Full audits at current A:7850–7872 remain unchanged"
+  },
+  "currentEdges": [
+    "ValidationService.cs:61-66 public Full/default and internal selection",
+    "GameEngine.ValidationAndRepair.cs:247 public Full",
+    "GameEngine.MortalJointRepairCompletion.cs:99 public Full",
+    "CaptureCurrentHotCustodyAsync:177 closes current capture; later HOT source integration needs its own owner changes"
+  ],
+  "requiredConditions": [
+    "Keep JsonDocument ownership/disposal and actual JsonException message/catch boundary in owner; no escaped JsonElement or duplicate parse.",
+    "Preserve original lookup, conditional freshness read and separate parse read; stale equality remains Warning. Invalid/unusable snapshot policy-null, domain malformed JSON and escaping source faults retain their current distinctions; no new rejection or authenticated absence.",
+    "Preserve exact-case thoughts lookup, case-insensitive allowed names, duplicate-property behavior, underscore exclusion, enumeration and complete issue order; timestamp still runs before unknown/missing-thoughts issues when originally reachable.",
+    "Reuse unchanged TryParseReasoningScope/ParseReasoningScopeMode/ContainsAny. Preserve CRLF-only normalization, first heading/next boundary, actor deduplication order, parsed-invalid-scope continuation and all six Full audits. Do not substitute Core for public Full.",
+    "Compositional source inverse must first reverse only exact new 3e adapters to accepted 3d A SHA 8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31, then retain exact existing four inverses to original A SHA 6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936. Preserve whole 3d partial and old World fence unchanged; no automatic current-hash blessing."
+  ],
+  "tddFrontier": [
+    "One separately selectable structural boundary: genuine public Full prerequisites and unchanged raw payload must succeed before missing shared kernel assertion; after product, prove real owner delegation. Missing API alone is not semantic RED.",
+    "Bounded public Full document/scope rows: blank/malformed/nonobject; null/wrong-kind/case/duplicate thoughts; timestamp/unknown/missing order; CRLF/heading/mode/duplicate actor and missing field rules. Full ordered diagnostics and no-write raw-byte checks.",
+    "Actual LiveTurnPreparation original setup for equal original stale Warning, changed current, corrupt/invalid tracked-original behavior and separate freshness/parse read faults. Use real existing read hooks and current policy outcomes, not synthetic original authority.",
+    "Valid parsed scope including empty actors and parsed-but-invalid scope reaches later dependencies in existing order; late failure/diagnostic witness prevents an early-return optimization from masquerading as equivalence. At least one valid public Full fixture cannot be replaced by Core-only controls.",
+    "Selected compositional inverse existing source Fact plus exact new partial extraction/source delegation; review concrete source fixtures and fresh discovery before runtime.",
+    "After product only, separately requalify existing protected Late2 because joint completion line99 directly calls the changed Full prefix. No pre-product repeat required."
+  ],
+  "selectionDisposition": {
+    "newOwners": "Concrete author must provide narrow boundary/document-scope/source-order owners and native exact membership at SOURCE/PREP; no counts invented here.",
+    "existingSourceFactOwner": "fr063-ordinary-output-policy-source",
+    "futureProtectedOwner": "fr063-joint-late-completion (exact existing two methods)",
+    "ordinary52": "Retain accepted unchanged semantics; only source Fact is necessarily affected by whole-A guard. Do not rerun all52 for file adjacency.",
+    "profileControls": "Existing selected ActorBrain/Core methods can supplement, not replace public Full. guardian-residents-rivals is broad; no automatic whole-owner release.",
+    "worldFence": "Old33/9stale remains intact and HELD; not this slice."
+  },
+  "alternatives": {
+    "3dHotRemainder": "Technically possible future work, but needs actual owner/history/repeated-read/transition and no-write/Changed provenance joining before capture closure. No ZIP input dependence is inferred; larger causal scope than ordinary3e.",
+    "3eFullObserved": "Provided-lease completed-musings and volatile guardian/resident observations remain real missing engineering dependencies for HOT Full. Not prerequisites for unchanged-tail ordinary prefix extraction.",
+    "allCandidatesBlocked": false
+  },
+  "held": [
+    "all runtime/build/discovery until separately authorized concrete SOURCE/PREP",
+    "HOT source/history/admission/3b closure integration",
+    "Full observed reasoning/S/B/M3/F1/T197/platform/Windows/A3",
+    "new infrastructure/CI/ZIP or broad family replay"
+  ],
+  "retainedStage": "fe3 ordinary52 plus separately accepted protected2, not earlier A1 re-execution; no old raw/source/evidence requalification performed.",
+  "support": {
+    "path": "/tmp/t179pd3e-next-slice-necessity-independent-fe3dc219-20261017-check-v2.json",
+    "bytes": 74008,
+    "sha256": "ad9dccfd6cc0edc8bb0b486187029d68e903f7ba2d80154c9dbc6aaa337c395f"
+  },
+  "revisionNote": "v2 corrects draft line coordinates; source bytes, anchor-based boundaries and verdict unchanged."
+}

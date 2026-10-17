@@ -1,3 +1,15 @@
+## T179-Pd.3e ordinary debug document/scope prefix — tests-only WIP (2026-10-17)
+
+Latest explicit user/Root autonomous IMPLEMENTATION authority selects the accepted ordinary-only 3e prerequisite from clean `fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26`. [Necessity v2](recovery/t179pd3e-next-slice-necessity-independent-fe3dc219-20261017-v2.md) has no material blocker; it is not concrete SOURCE or runtime acceptance. Historical DESIGN ONLY wording below does not revoke this separate authority. The accepted 3d checkpoint remains historical **ordinary-A narrative/interface52 plus separately accepted protected2**; A1 was accepted earlier. Full HOT/F1/M3/T197 is open.
+
+Current tracked source is **tests/support/catalog/selection only**: 5 finite owners, 18 methods, 45 statically declared rows (discovery/PREP/actual UNRUN). [Method/row ledger](recovery/t179pd3e-ordinary-method-row-ledger-20261017.json) names actual public Full prerequisites, structural boundary1 and ordinary regressions including exact diagnostic vectors, scope contrasts, real preparer originals, policy-null corruption, read/catch order and unchanged raw encodings/mtime. Exactly two existing Core-profile consumers move by method to a narrow owner; they do not substitute for public Full/genuine Stage authority. No old ordinary52 or Late2 replay.
+
+The compositional source guard preserves new3e→exact3dA8bde→original6a9, all original3d frozen segments, and the unchanged HELD World33 Fact. No production partial exists yet. Keep Parse/using/JsonException rendering and timestamp in the actual owner slots, every read/catch/await and later Full audit unchanged. No ActorBrain/helper/serializer/clock/source issuer/history/lease/volatile ownership change. Stale equality remains Warning; unresigned corrupted original remains unusable-policy/null, not a new ordinary Error.
+
+First publish/recover this WIP. Then Root-authorized one FIRST selected BOTH/catalog + exact PlanOnly-NoBuild ZERO execution may prepare the candidate; freeze first unexpected and stop without hidden retry. Independent concrete SOURCE/FIXTURE/SELECTION/PREP and separately named structural boundary1 activation precede all native tests. Actual product and all runtime remain HELD. After a future changed product, the exact direct Full callers VR247 and MortalJointRepairCompletion99 justify separately qualified protectedLate2 before ordinary GREEN; no pre-product repeat is required. Windows ZIP/403/CI, A3, HOT/history/full3e, other branches and broader holds are unchanged.
+
+All following 3d/earlier checkpoint sections are historical accepted scope/provenance or explicitly held remainders. Their immutable reports and old source-pin packets remain unchanged.
+
 ## T179-Pd.3d bounded ordinary-A implementation complete — final persistence gate (2026-10-17)
 
 [Final bounded acceptance](plan.md) qualifies only ordinary kernels/actual consumers with separate protected2; full-family holds below remain unchanged. Completed phase history and bounded completion follow.

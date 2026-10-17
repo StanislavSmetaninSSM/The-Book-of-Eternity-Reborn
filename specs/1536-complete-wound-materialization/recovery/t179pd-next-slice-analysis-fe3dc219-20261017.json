@@ -1,0 +1,206 @@
+{
+  "kind": "READ_ONLY_NEXT_BOUNDED_SLICE_NECESSITY_COMPARISON_NOT_IMPLEMENTATION_RELEASE",
+  "head": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "createdUtc": "2026-10-17T17:32:11.103055+00:00",
+  "chosen": "3e ordinary-only debug document/scope diagnostic prefix with actual publicFull consumer",
+  "candidateComparison": [
+    {
+      "candidate": "3d source-aware remainder",
+      "disposition": "Later genuine Capturing/source/history assembly; accepted ordinary-A alreadycomplete, no unused new DTO/kernel. Not chosen under current noHOT scope."
+    },
+    {
+      "candidate": "3e ordinary document/scope prefix",
+      "disposition": "Chosen accepted DESIGN2ab nofindings; explicit ordinary-only prerequisite. Real Full consumer alreadyexists; shared extracted policy is needed to prevent future observed-prefix divergence, not new ordinary behavior."
+    },
+    {
+      "candidate": "SBM06 provided-lease completion/volatile/history adapters",
+      "disposition": "Real remaining prerequisites, but isolated new adapter lacks current source-session consumer and genuine projection/owner proof. Not minimal first slice; audit is not implementation acceptance."
+    }
+  ],
+  "proposedProductFiles": [
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+  ],
+  "boundary": "Only value-only debug blank/root/gmthoughts/unknown-field and parsed scope issue fragments. Actual JsonDocument.Parse/disposal, JsonException message, ambient timestamp, original/current repeated IO and all downstream ResolveGuardianPolicyContext/structured/memory audits stay in owner with exact order. Existing scope/ActorBrain helpers unchanged; signature names are engineering choices, not authority.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "role": "Actual Full owner7411–7875; extraction target prefix before guardian dependencies",
+      "bytes": 447528,
+      "sha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+      "gitBlob": "7f2da09100365bf44f0605dee29d32e53874a54d",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "role": "Existing scope parser/mode and ActorBrain/memory helper callees remain byte-unchanged",
+      "bytes": 431342,
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "role": "Public Full entry61–62; scoped overload is distinct",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "role": "Existing ambient timestamp leaf unchanged",
+      "bytes": 379285,
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "gitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "role": "Downstream dependency/catch/completion policy unchanged",
+      "bytes": 141625,
+      "sha256": "fee7954509cf733de02ecbc18eabed531546888f19061c6bfcec9cca4cebf865",
+      "gitBlob": "29bfb470f09a9daf1025fb9b95b7b69f1cdb4196",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "role": "Existing nested ordinary lease comparison retained; later provided-lease source assembly deferred",
+      "bytes": 17736,
+      "sha256": "5fefc400888488ae912bee4c0808d888d524eaa81be71fe073e611201dea4855",
+      "gitBlob": "619c123044a87dc8ed8bd76c9a5ed307ca44948f",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "role": "Actual publicFull engine caller247",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "role": "Actual protected committed-joint Full caller99",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
+      "role": "Existing strict wholeA inverse Fact requires compositional3e→3d→original preservation, not hash bless",
+      "bytes": 6766,
+      "sha256": "7deb77e15298e456680905b740be7fa1cb6757f081bb984bc884c1e85de71984",
+      "gitBlob": "f174caac1e5a1328eef57f12f9648d4dbfc4a54b",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TestData/t179pd3d-ordinary-source-segments.json",
+      "role": "Immutable3d frozen4segments/original6a9 baseline retained",
+      "bytes": 8342,
+      "sha256": "6a00f3e04bdb0148e7c1e302f09d47773ef1f97ef7639bb60516618978a20c18",
+      "gitBlob": "3ff25b4b7249dcd0d1a9c73ebb9fbdca713cfb23",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "role": "Accepted3d actual partial unchanged",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
+      "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
+      "role": "Existing named actor scope regressions use scoped profiles; not publicFull/source authority",
+      "bytes": 115669,
+      "sha256": "b5c5e8bf94bfc5bacfc1bce67ea64f76154e23f7c07536da657b12e136d82fc5",
+      "gitBlob": "045e15c77f597279333058be447dc3421d15c7f2",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
+      "role": "Existing ordinary actor persistence controls use Core profile; do not treat authored snapshot as Stage proof",
+      "bytes": 27502,
+      "sha256": "d7ba512287d9c035b8ac6025bad36a2b1f10f009c80ad3b9d0bf4f73e4e44552",
+      "gitBlob": "386cc0dcefc7e676bded742f338069a227c3b10f",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GuardianValidationProfiles.cs",
+      "role": "Explicit scoped versus Full fixture distinction",
+      "bytes": 7884,
+      "sha256": "c4dfd0f2a82595050f1455d2a623312ff0443ab2a6b2c2a387432d6c49317865",
+      "gitBlob": "25bf35ae12b679019c7394ba23e20a40e5875f98",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+      "role": "Actual PrepareAsync producer recipe for linked original/request/authority, not manually rewritten fixture",
+      "bytes": 27666,
+      "sha256": "b4f3535b7443ecdb1b7fee4a62f51eaff05a27ff275b2380fef11e019d619d3d",
+      "gitBlob": "ed499fa9a3d2572ca22037c9eb31787507052427",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "role": "Real owned original/snapshot producer, candidate genuine freshness fixture dependency",
+      "bytes": 20289,
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "mode": "100644"
+    }
+  ],
+  "acceptedDesignContinuity": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "method": "ValidateAcceptedTurnReasoningInternalAsync",
+      "bytes": 28844,
+      "sha256": "8063e6a618cd53cd1c1922945a68726a0ade6b6fb62711c3e4165cf1dfc9ae16",
+      "lines": [
+        7411,
+        7875
+      ],
+      "unchangedFromAcceptedDesign3fdc": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "method": "TryParseReasoningScope",
+      "bytes": 3138,
+      "sha256": "6c92f3ccd19f04f4c7d3c437e97920496abb770c5a39e01240cf4ec9c96d8296",
+      "lines": [
+        124,
+        204
+      ],
+      "unchangedFromAcceptedDesign3fdc": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "method": "ParseReasoningScopeMode",
+      "bytes": 657,
+      "sha256": "66f062fe474727fa3a036506720f75555342610e5e246a4af992c56ff4ab9c17",
+      "lines": [
+        227,
+        242
+      ],
+      "unchangedFromAcceptedDesign3fdc": true
+    }
+  ],
+  "requiredGuardDisposition": "New frozen3e fragment inverse reconstructs exact compiled3d A8bde0129 first; existing strict4adapter inverse then reconstructs original6a9. Keep3d snapshot unchanged; no currenthashbless/dropguard. Existing sourceFact1 affected, select singly; no automatic ordinary52 replay.",
+  "testFrontier": [
+    "Structural missing-shared-prefix oracle only after actual publicFull valid Scene-local emptyactor success and no-write/raw prerequisites; genuine semantic regression is not invented.",
+    "Actual publicFull doc/root/blank/thoughts kind/case/duplicate/unknown/underscore, complete issue order incl timestamp-beforeunknown-beforemissing.",
+    "Scope CRLF/firstheading/terminatingheading/dedup/mode and missing fields; parsed error scope still reaches downstream reads evenemptyactors; missing scope remains terminal.",
+    "Freshness original→conditionalcurrent→separateparsecurrent via actual FS hooks. Genuine original comes from actual LiveTurnPreparationService PrepareAsync; never mutate/re-sign old fixture to claim original authority.",
+    "Unchangeddebug equality only Warning, not refusal. Corrupt/hashed-original reader returns current policy-null/unusable proof: preserve actual boundary and never invent new ordinary Error. Malformed/nonobject debug yields existing diagnostics; escaping versus swallowed storage errors follow exact current callsite.",
+    "Future new-product protectedLate2 required by actual VR247/MortalRepair99 Full edges; reuse unchanged accepted fixture/source lineage without oldactual replay before tests-onlyRED.",
+    "Existing compositional3d sourceFact1 plus fresh3e source guard; exact regression selectors/rows fixed only after authoring/discovery/SOURCE, no broad guardian-lifecycle/residents family."
+  ],
+  "dependencyReuse": "Existing full7a+47delta54930 tree and accepted3d67-source/9DLL closure reused; newsource/context fixture pins are currentGit evidence, no fullclone or acceptedtest/raw replay.",
+  "holds": "No repository edits/build/discovery/test/runtime in this analysis. A3NO-PROCEED; no HOT capture/history/S/B/M3/F1/T197 activation; no WindowsZIP/403/CI/platform/security/main/merge/branchintegration. ZIP is acceptance/scheduling dependency of held3b integration, not a data input of ordinary policy.",
+  "rootDependencyInspection": {
+    "path": "/tmp/t179pd3e-root-current-dependency-inspection-fe3dc219-20261017.json",
+    "sha256": "a11344098c9be35aa37275936f04c1f1f9e0b27b81719db59eaa118901f312db"
+  }
+}

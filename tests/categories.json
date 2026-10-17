@@ -2,6 +2,115 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "fr063-reasoning-prefix-boundary",
+      "responsibility": "Real public Full, seeded byte/presence and successful prefix/tail prerequisites before final missing named document-policy seam. Only structural RED1 is predicted.",
+      "excludes": "Ordinary document/scope prefix only; no HOT/history/source issuer/lease/completion adapter/ActorBrain move, clocks/parsers/serialization/IO changes, World-fence qualification, A3, platform/CI/ZIP or broader Full closure.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-reasoning-prefix-source",
+      "responsibility": "Exact new three-segment inverse to accepted 3d A8bde, canonical value-only partial and retained original four-segment inverse to A6a9; source guard is intended postproduct.",
+      "excludes": "Ordinary document/scope prefix only; no HOT/history/source issuer/lease/completion adapter/ActorBrain move, clocks/parsers/serialization/IO changes, World-fence qualification, A3, platform/CI/ZIP or broader Full closure.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-reasoning-prefix-regression",
+      "responsibility": "Actual public Full document/scope diagnostic vectors, ordering/mode/case/duplicates, unchanged reads/catches, raw encodings/mtime, genuine LiveTurnPreparation original and unresigned corruption/policy-null contrasts.",
+      "excludes": "Ordinary document/scope prefix only; no HOT/history/source issuer/lease/completion adapter/ActorBrain move, clocks/parsers/serialization/IO changes, World-fence qualification, A3, platform/CI/ZIP or broader Full closure.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-reasoning-prefix-existing",
+      "responsibility": "Exactly two unchanged ordinary Core-profile callers directly traverse the changed prefix: directly named NPC scope and persisted NPC. These are scoped regression fixtures, not genuine Stage/HOT authority or public Full proof.",
+      "excludes": "Ordinary document/scope prefix only; no HOT/history/source issuer/lease/completion adapter/ActorBrain move, clocks/parsers/serialization/IO changes, World-fence qualification, A3, platform/CI/ZIP or broader Full closure.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+            "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError"
+          ]
+        }
+      ]
+    },
+    {
       "id": "fr063-ordinary-output-policy-boundary",
       "responsibility": "Two structural causal rows after real public narrative/interface success and exact unchanged output bytes; missing named shared stages is the final oracle. No semantic defect is invented.",
       "excludes": "Ordinary-A Pd.3d only. No source-aware HOT/history/family acceptance, whole World fence, full spiritual/reader/A1/A2 replay, clocks/serializer changes, M3/F1/activation or platform qualification.",
@@ -17603,7 +17712,6 @@
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_AfterlifeResidentDecisionAcceptsNewThoughtJournalEntry",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_AfterlifeResidentDecisionRejectsReplacingOldThoughtInsteadOfAppending",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_AfterlifeResidentDecisionRejectsUnchangedThoughtJournal",
-                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedGuardianShortNameCannotBeHiddenByEmptyScope",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedShiningActorWithProfileCannotBeHiddenByDuplicateAliases",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DoesNotAttributeAnotherActorsHeadingBySubstring",
@@ -17931,7 +18039,6 @@
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalPlayerCharacterParentheticalAnnotationMatchesPlayerAliasAndBlock",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalPlayerCharacterRussianParentheticalDoesNotRequireNpcPersistence",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantFactionWithPersistenceDoesNotRequireNpcPersistence",
-                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithoutPersistenceReportsError",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_UnchangedCanonicalUpdateNpcsFromPreTurnSnapshotDoNotRequireCurrentScope",
                         "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AscensionValidation_EnlightenmentExperienceThresholdAllowsMidgameShiningEntry",

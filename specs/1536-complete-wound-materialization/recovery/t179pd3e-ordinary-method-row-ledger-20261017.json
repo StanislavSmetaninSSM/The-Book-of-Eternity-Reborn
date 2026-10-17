@@ -1,0 +1,271 @@
+{
+  "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
+  "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "status": "SOURCE_REVIEW_AND_FRESH_PREPARATION_PENDING_ALL_ACTUAL_UNRUN",
+  "counts": {
+    "categories": 5,
+    "methods": 18,
+    "declaredRows": 45,
+    "actualExecuted": 0
+  },
+  "methods": [
+    {
+      "category": "fr063-reasoning-prefix-boundary",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
+      "line": 17,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-source",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
+      "line": 50,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 17,
+      "declaredRows": 12,
+      "inlineData": [
+        "\"absent\", \"missing_gm_thoughts\"",
+        "\"blank\", \"missing_gm_thoughts\"",
+        "\"malformed\", \"invalid_debug_logs_json\"",
+        "\"array\", \"invalid_debug_logs_json_root\"",
+        "\"null-root\", \"invalid_debug_logs_json_root\"",
+        "\"empty-object\", \"debug_logs_missing_timestamp,missing_gm_thoughts\"",
+        "\"null-thoughts\", \"missing_gm_thoughts\"",
+        "\"numeric-thoughts\", \"missing_gm_thoughts\"",
+        "\"wrong-case-thoughts\", \"missing_gm_thoughts\"",
+        "\"duplicate-last-empty\", \"missing_gm_thoughts\"",
+        "\"duplicate-last-valid\", \"\"",
+        "\"underscore\", \"\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 58,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 90,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 101,
+      "declaredRows": 3,
+      "inlineData": [
+        "\"World-progression\"",
+        "\"Guardian-centric\"",
+        "\"Mixed\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 124,
+      "declaredRows": 7,
+      "inlineData": [
+        "\"no-heading\", \"missing_npc_scope\"",
+        "\"missing-mode\", \"missing_scope_mode\"",
+        "\"unknown-mode\", \"invalid_scope_mode\"",
+        "\"no-relevant-field\", \"missing_relevant_actors_field\"",
+        "\"no-relevance-reason\", \"missing_scope_relevance_reason\"",
+        "\"no-outside-field\", \"missing_out_of_scope_actors_field\"",
+        "\"no-outside-reason\", \"missing_scope_out_of_scope_reason\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 151,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 167,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 191,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 209,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 219,
+      "declaredRows": 4,
+      "inlineData": [
+        "\"utf8\"",
+        "\"utf16\"",
+        "\"malformed-utf8\"",
+        "\"malformed-utf16\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 253,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 267,
+      "declaredRows": 3,
+      "inlineData": [
+        "\"unchanged\"",
+        "\"changed\"",
+        "\"corrupt-original\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "AUTHORED_UNCOMPILED_UNRUN",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 297,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-existing",
+      "project": "integration",
+      "status": "UNCHANGED_RETAINED_FIXTURE_NOT_RUN_IN_THIS_PHASE",
+      "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+      "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
+      "declaredRows": 1,
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-existing",
+      "project": "integration",
+      "status": "UNCHANGED_RETAINED_FIXTURE_NOT_RUN_IN_THIS_PHASE",
+      "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+      "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
+      "declaredRows": 1,
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-ordinary-output-policy-source",
+      "project": "unit",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
+      "declaredRows": 1,
+      "kind": "Fact",
+      "status": "CHANGED_COMPOSITION_GUARD_UNCOMPILED_UNRUN"
+    }
+  ],
+  "firstCausalRed": {
+    "category": "fr063-reasoning-prefix-boundary",
+    "methods": 1,
+    "rows": 1,
+    "prerequisites": "Real public Full returns no issues; all seeded files retain exact presence/bytes; REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE; strict owned cleanup before qualification.",
+    "finalOracle": "Assert.NotNull on actual private EvaluateAcceptedReasoningDocumentPrefix. Missing scaffold/import/compile/setup cannot qualify. The new source Fact is postproduct, not another causal RED."
+  },
+  "fixtures": {
+    "newOwnedPrefix": "boe-pd3e-reasoning-*",
+    "newCleanup": "Each fixture Dispose emits actual root/removed PD3E_REASONING_STRICT_CLEANUP; later recording must verify physical absence. No raw or cleanup assertion has run yet.",
+    "legacyPrefix": "boe-guardian-system-regressions-*",
+    "legacyCleanup": "Existing Dispose swallows cleanup failures; namespace census proves physical absence only, not invented per-case strict receipts.",
+    "realOriginal": "LiveTurnPreparationService.PrepareAsync produces request/manifest/detached authority/raw debug original; diagnostic output retains exact base64. Corrupt original by physical append without resigning; existing reader null is not a new ordinary Error.",
+    "inFlight": "NONE"
+  },
+  "futureProductGate": "Only after actual extraction and accepted SOURCE/PREP: exact genuinely changed protected Late2 separate FIRST/EVIDENCE, then ordinary selection; no unchanged52 replay before causal RED.",
+  "scopeHolds": [
+    "Full3e observed/HOT source/history/completed-musings provided lease/volatile projection ownership",
+    "Full3d/HOT/F1/M3/T197 activation",
+    "World33 pin Fact held with nine historical stale values",
+    "A3 NO-PROCEED",
+    "Windows ZIP403/CI and other branches"
+  ]
+}
