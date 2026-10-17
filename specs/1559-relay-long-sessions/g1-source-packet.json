@@ -2,7 +2,7 @@
   "kind": "G1_CONCRETE_TEST_ONLY_SOURCE_FIXTURE_SELECTION_CANDIDATE",
   "generatedUtc": "2026-10-17T13:26:26.233731+00:00",
   "preparation": "FRESH_BOTH_CATALOG_NATIVE0_AND_EXACT_PLAN_NATIVE0_ZERO_TESTS",
-  "actual": "ENGINE2_ACCEPTED_CAUSAL_RED_2; LIVE5_SAVE1_FIRST_RAW_6COMPLETE_2PASS_4FAIL; COMBINED_CAUSAL_PENDING; NO_PRODUCTION",
+  "actual": "Original stage baseline8 accepted (2positive/6causalRED); see lifecycle-source-packet.json for UNCOMPILED_UNRUN protection candidate. Original119/d473 native binding retained as historical.",
   "sourceParent": "eda1a34c356d6ac1812eff1ac0643f0e698572fd",
   "baselineProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
   "sourcePinCount": 119,
@@ -981,7 +981,7 @@
   },
   "currentLedger": {
     "path": "specs/1559-relay-long-sessions/g1-method-row-ledger.json",
-    "sha256": "3e17015763ee42bb9344f6c4aabbc16643978b66c3c6b2b14ab7a91afd3b8f21"
+    "sha256": "b212320298be82513327fa5e9d4d8e69915faa34782b3a3f366014f9719de63b"
   },
   "productDeltaFromAccepted1558": [],
   "nativeDiscoveryCounts": {
@@ -1199,7 +1199,8 @@
     "eligibleAfterNamedActivation": "gm-relay-operational-engine-rollback:1descriptor/1method/2rows",
     "actual": "Named360b activation executed once; FIRST engine2 raw saved, causal verdict pending. Other47 and all production HELD.",
     "allOtherOwnersAndProduction": "HELD",
-    "proofLimits": "C01-C06 plusG1-L01/L02 remain mandatory OPEN; no fullissue or runtime acceptance."
+    "proofLimits": "C01-C06 plusG1-L01/L02 remain mandatory OPEN; no fullissue or runtime acceptance.",
+    "historicalStage": "Original bounded G1 Source/engine2 eligibility snapshot; current scope and outcomes are in currentPriority/lifecycle-source-packet.json; immutable reports/raw remain unchanged."
   },
   "firstActualRaw": {
     "packet": "recovery/g1-first-engine2.json",
@@ -1268,5 +1269,6 @@
     "passed": 0,
     "failed": 1,
     "qualification": "FIRST_RAW_SAVED; COMBINED_LIVE5_SAVE1_CAUSAL_EVIDENCE_PENDING"
-  }
+  },
+  "currentLifecycleSource": "lifecycle-source-packet.json"
 }

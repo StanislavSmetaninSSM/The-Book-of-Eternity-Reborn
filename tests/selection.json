@@ -2,67 +2,75 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-long-session-exchange",
-      "reason": "#1559 G1 Maintained original relay/helper synthetic exact-byte and lifetime boundaries: actual first three completions precede fourth-submission cap; >120lines/>65000characters/>1MiB/>32writes; protected-third-member all-before rejection; small exact response positive.",
-      "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
-      ]
-    },
-    {
-      "category": "gm-relay-long-session-retention",
-      "reason": "#1559 G1 Real bridge pipe >256 retained operations plus actual daemon functions with controlled current launcher/status: advancing source retention and cold process same-binding operation identity.",
-      "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
-      ]
-    },
-    {
       "category": "gm-relay-operational-engine-rollback",
       "reason": "#1559 G1 Actual engine backup/restore with created-after and changed-preexisting two exact operational records, ordinary restore and delete neighbors.",
       "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     },
     {
       "category": "gm-relay-operational-live-preparation",
       "reason": "#1559 G1 Actual live preparation snapshot and exact frozen-draft two-name exclusions with ordinary suffix neighbors.",
       "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     },
     {
       "category": "gm-relay-operational-save-load",
       "reason": "#1559 G1 Actual save then load: two operational records excluded from archive/new generation; ordinary canonical neighbor restored.",
       "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     },
     {
-      "category": "gm-relay-publication-foundation",
-      "reason": "#1559 G1 Actual existing multi-member publisher controlled member/commit cuts preserve all-before or whole-after and settle cleanup on a fresh real admission. Prerequisite proof, not dedicated helper batch/client acceptance.",
+      "category": "gm-relay-operational-private-policy",
+      "reason": "#1559 inactive operational lifecycle: Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
       "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     },
     {
-      "category": "gm-relay-long-session-neighbors",
-      "reason": "#1559 Narrow existing positive/negative neighbors of the reviewed prompt and two-name lifetime seams: idempotent/changed/stale/two-live/partial-input, ordinary snapshot/load and unsafe-draft paths.",
+      "category": "gm-relay-operational-engine-alias",
+      "reason": "#1559 inactive operational lifecycle: Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups.",
       "contracts": [
-        "#1559",
-        "accepted ARCH A01 / G1 tests-only components; C01-C06 later gates open"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     },
     {
-      "category": "gm-relay-reusable-contract",
-      "reason": "#1559 Existing actual relay-contract identity/stale/duplicate/close/partial-winner neighbors; old packet-bound row is a current-baseline control, must be migrated honestly with G2 budget behavior.",
+      "category": "gm-relay-operational-live-alias",
+      "reason": "#1559 inactive operational lifecycle: Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members.",
       "contracts": [
-        "#1559",
-        "exact retained request/winner/close; no replay"
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
+      ]
+    },
+    {
+      "category": "gm-relay-operational-helper-policy",
+      "reason": "#1559 inactive operational lifecycle: Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed.",
+      "contracts": [
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
+      ]
+    },
+    {
+      "category": "gm-relay-operational-neighbors",
+      "reason": "#1559 exact six ordinary snapshot/live/save/draft neighbors of the inactive two-name lifecycle policy. Original bodies/rows preserved; ownership moved from the broader long-session neighbors without duplication.",
+      "contracts": [
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
+      ]
+    },
+    {
+      "category": "gm-doc-afterlife-package-delivery",
+      "reason": "#1559 lifecycle-only changed-input edge: GM_Turn_Helper.ps1 must match its fresh managed/package copy hash in the real PackagedProductionWriterPublishesExactRequiredReadingClosure. The same52 reading documents and CLI/daemon/six inverse entrypoints remain unchanged; no A255/B78 or old document-family replay. Later GREEN only, no baseline producer rerun.",
+      "contracts": [
+        "#1559 lifecycle-only inactive exact-two-name reservation",
+        "No new relay runtime authority; full relay backlog deferred"
       ]
     }
   ]

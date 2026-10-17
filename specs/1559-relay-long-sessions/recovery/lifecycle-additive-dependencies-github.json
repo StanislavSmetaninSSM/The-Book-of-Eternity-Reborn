@@ -1,0 +1,85 @@
+{
+  "kind": "LIFECYCLE_ADDITIVE_ACTUAL_FIXTURE_AND_PACKAGE_SOURCE_EXACT_GITHUB_RECOVERY",
+  "source": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+  "createdUtc": "2026-10-17T14:12:56.497951+00:00",
+  "retainedOriginal119": true,
+  "retainedSourcePinDigest": "97fe785df1b33868876082cfd5907e2be9480274608f664390c7a252aaadc7a1",
+  "newSourceCount": 9,
+  "newEmptyDirectory": "/tmp/gm1559-lifecycle-dependencies-recovered-6b4a54ef-20261017",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Block5.cs",
+      "mode": "100644",
+      "gitBlob": "f69ca0671c48a4ed12443a9d43daf43e908cfd4f",
+      "bytes": 1685,
+      "sha256": "fc4454a3750c667cc4b6ab1095fd6cd8c4d98b95eccfc46536afd4e5456cca8c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Block5.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.GeneratedTemplate.cs",
+      "mode": "100644",
+      "gitBlob": "17667387e4344cdb11b904187d74c5d7f0999c62",
+      "bytes": 2887,
+      "sha256": "20723cea8313baac5cc5ceeeb1a1868d4d315c38dc8757c758a8aaab678d373e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.GeneratedTemplate.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs",
+      "mode": "100644",
+      "gitBlob": "9ce75cf7c0b98ee4f84a04ee3e4c050c18b00265",
+      "bytes": 12624,
+      "sha256": "bd0ed93c22a99bbd94d2ea5158b2cc1eeba3b657fd7f3196819edfceb28a48ed",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.Lifetime.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationGeneratedTemplateSource.cs",
+      "mode": "100644",
+      "gitBlob": "030c6cf7a6c36bae2c6ec0e1eef280c0379cec0e",
+      "bytes": 2136,
+      "sha256": "b8bf30decbcabf8c625c9915ace837e6a8fc122bd43fc8806442881eb3cb8c49",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmDocumentationGeneratedTemplateSource.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmHelperContractScenario.cs",
+      "mode": "100644",
+      "gitBlob": "712f078a48b7815f6db622f0ff04b1dec5fe62c1",
+      "bytes": 9716,
+      "sha256": "2e88b2ab2be981fd4ce9b288af93bdb57702b7a9f52082a18e7026c179abe5b9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmHelperContractScenario.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+      "mode": "100644",
+      "gitBlob": "ea75b52977130b7c46dfe21ee53d3459ab4585bf",
+      "bytes": 20858,
+      "sha256": "12ae9d263c04417621ce92937d7a99ba736eb8f8bea81df65f97fd820417b8f6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "mode": "100644",
+      "gitBlob": "d22609c657bbaf4c4e1674216809d5887ce04f98",
+      "bytes": 15753,
+      "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+    },
+    {
+      "path": "tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1",
+      "mode": "100644",
+      "gitBlob": "9f10f361aba43426c1c2005151875bc40a27ab6a",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1"
+    },
+    {
+      "path": "tests/fixtures/GmTurnHelper/contract-bootstrap.ps1",
+      "mode": "100644",
+      "gitBlob": "eb3f652775d41d351760f90f77acac37fbc09e4e",
+      "bytes": 1776,
+      "sha256": "4ae0abde3372642277bd2dd0498bf02c8e4b91bf6a5df53f0658647857066124",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/6b4a54ef084a91b6b1ee58db950672f8a38f71ba/tests/fixtures/GmTurnHelper/contract-bootstrap.ps1"
+    }
+  ],
+  "runtime": "NOT_RUN",
+  "scope": "Only newly reached current helper owned scenario/glue/dedicated child and genuine package partials; prior119 not refetched."
+}

@@ -2,6 +2,155 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "gm-relay-operational-private-policy",
+      "responsibility": "#1559 inactive operational lifecycle: Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary.",
+      "excludes": "No new relay schema/writer/reader/dispatch/batch/sequence/retry/budget, accepted turn/client/provider, full relay backlog, native Windows qualification or broad old-family replay. Source/prep review and separate Root FIRST actual release required.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/Validation",
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "specs/1559-relay-long-sessions"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayOperationalProtectionTests.OperationalRecords_ActualPrivatePolicyIsExact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-engine-alias",
+      "responsibility": "#1559 inactive operational lifecycle: Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups.",
+      "excludes": "No new relay schema/writer/reader/dispatch/batch/sequence/retry/budget, accepted turn/client/provider, full relay backlog, native Windows qualification or broad old-family replay. Source/prep review and separate Root FIRST actual release required.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/Validation",
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "specs/1559-relay-long-sessions"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RelayOperationalRecords_RealEnginePhysicalAliasRefusesBeforeBackupPublication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-live-alias",
+      "responsibility": "#1559 inactive operational lifecycle: Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members.",
+      "excludes": "No new relay schema/writer/reader/dispatch/batch/sequence/retry/budget, accepted turn/client/provider, full relay backlog, native Windows qualification or broad old-family replay. Source/prep review and separate Root FIRST actual release required.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/Validation",
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "specs/1559-relay-long-sessions"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.RelayOperationalRecords_ActualLivePhysicalAliasRefusesBeforePublication"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-helper-policy",
+      "responsibility": "#1559 inactive operational lifecycle: Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed.",
+      "excludes": "No new relay schema/writer/reader/dispatch/batch/sequence/retry/budget, accepted turn/client/provider, full relay backlog, native Windows qualification or broad old-family replay. Source/prep review and separate Root FIRST actual release required.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/Validation",
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "specs/1559-relay-long-sessions"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayOperationalHelperTests.OperationalRecords_RealCurrentHelperDeniesOnlyExactTargets"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-operational-neighbors",
+      "responsibility": "#1559 exact six ordinary snapshot/live/save/draft neighbors of the inactive two-name lifecycle policy. Original bodies/rows preserved; ownership moved from the broader long-session neighbors without duplication.",
+      "excludes": "No bridge retention/queue/input replay, broad storage/spiritual/afterlife suites, new relay behavior or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+            "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-relay-long-session-exchange",
       "responsibility": "#1559 G1 Maintained original relay/helper synthetic exact-byte and lifetime boundaries: actual first three completions precede fourth-submission cap; >120lines/>65000characters/>1MiB/>32writes; protected-third-member all-before rejection; small exact response positive.",
       "excludes": "No provider, accepted gameplay/story/history, actual shell-less agent, native Windows, new helper API, full authoritative-reader crash cuts or resource qualification. Those mandatory ARCH C01-C06 later gates remain OPEN. Runtime requires independent concrete SOURCE and separate Root activation.",
@@ -168,13 +317,10 @@
     },
     {
       "id": "gm-relay-long-session-neighbors",
-      "responsibility": "#1559 Narrow existing positive/negative neighbors of the reviewed prompt and two-name lifetime seams: idempotent/changed/stale/two-live/partial-input, ordinary snapshot/load and unsafe-draft paths.",
-      "excludes": "No broad bridge/storage/afterlife/1557/1558 replay; not current-source game acceptance or Windows qualification.",
+      "responsibility": "#1559 original long-session bridge-only positive/negative neighbors: duplicate/changed/stale/two-live/partial input. The six snapshot/live/save/draft methods now belong solely to gm-relay-operational-neighbors.",
+      "excludes": "Inactive lifecycle neighbor methods are owned separately; no broad bridge/storage/afterlife/#1557/#1558 replay, client acceptance or native Windows qualification.",
       "changeHints": [
-        "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
-        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
-        "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
-        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+        "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs"
       ],
       "related": [],
       "requirements": {
@@ -192,18 +338,7 @@
             "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
             "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
             "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
-            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
-            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
-            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
-            "BookOfEternityClient.Tests.SpiritualOriginalDraftInputsTests.OriginalInputs_RejectUnsafeAliasesAndExcludedControlPayload"
-          ]
-        },
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays"
           ]
         }
       ]

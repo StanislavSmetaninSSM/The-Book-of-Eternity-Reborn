@@ -1,0 +1,129 @@
+{
+  "kind": "INDEPENDENT_REMAINING_A01_FIRST_BASELINE_CAUSAL_EVIDENCE",
+  "utc": "2026-10-17T14:08:31.923871+00:00",
+  "carrier": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+  "compiledSource": "d473ed332fe7443f93759e44973ba963a790a13b",
+  "unchangedProduct": "a82b3d8439f76f83baade6df8516e78eea86e546",
+  "sourceVerdict": "RETAIN_PREVIOUSLY_ACCEPTED_G1_SOURCE_FOR_EXACT_EXECUTED_BASELINE_ONLY; NO_NEW_SOURCE_ACCEPTANCE",
+  "evidenceVerdict": "ACCEPT_NEW6_AS_2_POSITIVE_PASS_AND_4_GENUINE_A01_CAUSAL_RED",
+  "materialBlockers": [],
+  "actuals": [
+    {
+      "owner": "gm-relay-operational-live-preparation",
+      "actualSource": "981ae845ae09081148434e6db1455e07951c173f",
+      "nativeExit": 1,
+      "wallSeconds": 5.281682761997217,
+      "descriptors": 1,
+      "methods": 2,
+      "executed": 5,
+      "passed": 2,
+      "causalRed": 3,
+      "complete": true,
+      "qualification": [
+        {
+          "kind": "Exact draft classifier",
+          "rows": 2,
+          "observed": "Both exact reserved names return True while expected False at unchanged Assert.Equal line70.",
+          "cause": "Current SpiritualOriginalDraftInputs.IsDraftPath still classifies those operational names as ordinary draft inputs."
+        },
+        {
+          "kind": "Suffix neighbors",
+          "rows": 2,
+          "observed": "Both source-bound .neighbor rows PASS expected True.",
+          "limit": "xUnit display names are truncated; original InlineData fixes exact full paths. No arbitrary suffix family claimed."
+        },
+        {
+          "kind": "Actual live preparation",
+          "rows": 1,
+          "observed": "PrepareAsync returns, manifest deserializes, ordinary neighbor is in Files and RollbackBaselineFiles, request identity matches and first operational file exists; original Assert.DoesNotContain line31 fails on gm_prompt_delivery.json in actual Files.",
+          "limit": "First-path failure stops line32 and second loop iteration. Do not claim executed rollback-baseline exclusions or second-path postconditions. Raw collection text shows the second name but does not complete its assertions."
+        }
+      ],
+      "root": "/tmp/boe-live-turn-prep-dcabf87799394c97b21647c7f6c2c286"
+    },
+    {
+      "owner": "gm-relay-operational-save-load",
+      "actualSource": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+      "nativeExit": 1,
+      "wallSeconds": 5.443158889000188,
+      "descriptors": 1,
+      "methods": 1,
+      "executed": 1,
+      "passed": 0,
+      "causalRed": 1,
+      "complete": true,
+      "qualification": [
+        {
+          "kind": "Actual save/load lifecycle",
+          "observed": "SaveGameAsync true; one archive selected and ordinary member present; LoadGameAsync true; ordinary revision restored to1; physical generation bytes differ. Original final Assert.Empty line30 lists both exact operational names.",
+          "cause": "Actual save/load lifecycle violates the combined requirement that neither reserved record be archived nor survive session replacement.",
+          "limit": "Per-name predicate is archiveContains OR liveFileExists. Existing raw cannot separate the disjuncts or prove exact archive/postload operational bytes. Preceding successful assertions are established by original source order and the actual final failure, not invented diagnostic fields."
+        }
+      ],
+      "root": "/tmp/boe-save-load-tests-b4ca72c536154a4a8fe4ade9acb7c63d"
+    }
+  ],
+  "integrity": {
+    "nativeChains": 16,
+    "allStoredDecompressedLiveCommittedEqual": true,
+    "sourceContexts119": true,
+    "binaryCopies9StableThroughBoth": true,
+    "ordinaryPrerequisitesReached": true,
+    "distinctOwnedRoots": 2,
+    "rootReceiptsRemovedTrueFailureNull": true,
+    "rootsPhysicallyAbsent": true,
+    "unfilled": 0,
+    "duplicateCases": 0,
+    "timeouts": 0,
+    "runnerCleanupSucceeded": true,
+    "source119Reaudit": "Not repeated; actual binding bytes/digests and unchanged source scope verified at both exact actual commits.",
+    "recovery": [
+      {
+        "path": "/tmp/gm1559-first-live5-delta-github-52a2e71e-20261017.json",
+        "sha256": "1584c61d7088b96ba2b6848e6d8adcac3e49e2089f4d3f396c1ddb329b30a8bb",
+        "base": "981ae845ae09081148434e6db1455e07951c173f",
+        "sha": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+        "files": 22,
+        "allChangedPaths": 18
+      },
+      {
+        "path": "/tmp/gm1559-first-save1-delta-github-6b4a54ef-20261017.json",
+        "sha256": "ad435b73e0912f3ba5c4d3a9b698e5ef63e3b83a29eb00aa31eb509d3ad8a0bf",
+        "base": "52a2e71edf810deb74bf1f36d60264f7841f427e",
+        "sha": "6b4a54ef084a91b6b1ee58db950672f8a38f71ba",
+        "files": 22,
+        "allChangedPaths": 18
+      }
+    ]
+  },
+  "retained": {
+    "engine2Report": "/tmp/gm1559-first-engine2-evidence-independent-20261017.json",
+    "engine2Sha256": "89e0e9ca69ee7020a1bd005f1d97acbc538c41c597a53526d6d40492198faa2d",
+    "engine2CausalRed": 2,
+    "repeated": false,
+    "stageDistinctCases": 8,
+    "stagePassed": 2,
+    "stageCausalRed": 6,
+    "fullOriginalPlannedRows": 49,
+    "remainingUnrun": 41,
+    "originalAllFailuresPreserved": true
+  },
+  "nextBoundary": {
+    "scope": "Complete operational-record lifecycle stage only, then saved affected-GREEN/independent review/remote checkpoint and T179-Pd.3d handoff.",
+    "production": "No implementation acceptance or release from this report. Root owns subsequent exact activation.",
+    "coherentPatch": "Exact two opaque client-owned names across accepted eight T014 lifecycle/protection files, with concrete focused TDD guards and actual affected neighbors. No wildcard exclusion or changed ordinary suffix behavior.",
+    "inert": "No record schema, producer, trusted reader, receipt acceptance, dispatch, sequence, batching or journal activation.",
+    "newDrafts": "Writer current tests-only guard drafts are outside this evidence review; their SOURCE/selection/preparation/actual gates remain separate.",
+    "deferred": "Full relay C01-C06 remain open for future full-relay implementation; they do not block completion of intentionally inactive lifecycle reservation."
+  },
+  "limits": [
+    "Reviewer did no native test/build/replay, repository edit or security/CI change.",
+    "Opaque fixture marker bytes prove lifecycle classification only, not trusted operational authority, valid receipt schema or client acceptance.",
+    "No GREEN/product/full#1559/platform/session-restart claim.",
+    "Do not silently promote predicted or unreachable postconditions to executed evidence."
+  ],
+  "support": {
+    "path": "/tmp/gm1559-remaining-a01-baseline-evidence-independent-check-20261017.json",
+    "sha256": "cd13c45c0ffac60e3303002d228560d097428192c4813303653e1433147c771e"
+  }
+}

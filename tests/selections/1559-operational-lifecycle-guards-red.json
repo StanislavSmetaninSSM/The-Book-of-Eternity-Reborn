@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-relay-operational-private-policy",
+      "reason": "#1559 inactive operational lifecycle: Actual four private repair/FilesModified/validation policy predicates classify only the two inactive reserved operational paths as client-owned; independent suffix neighbors remain ordinary. FIRST original one-owner execution only; stop on unexpected fixture/cleanup/underfill. Prediction is not outcome.",
+      "contracts": [
+        "#1559 lifecycle-only protection TDD",
+        "Each owner separate because runner stops after a failed descriptor"
+      ]
+    },
+    {
+      "category": "gm-relay-operational-engine-alias",
+      "reason": "#1559 inactive operational lifecycle: Real engine CreatePreTurnBackup sees raw physical aliases of each exact reserved name and rejects before backup mutation/publication; ordinary suffix images still receive exact real backups. FIRST original one-owner execution only; stop on unexpected fixture/cleanup/underfill. Prediction is not outcome.",
+      "contracts": [
+        "#1559 lifecycle-only protection TDD",
+        "Each owner separate because runner stops after a failed descriptor"
+      ]
+    },
+    {
+      "category": "gm-relay-operational-live-alias",
+      "reason": "#1559 inactive operational lifecycle: Real Live Prepare sees raw physical aliases of each exact reserved name and rejects before any session image change/publication; ordinary suffixes remain linked snapshot members. FIRST original one-owner execution only; stop on unexpected fixture/cleanup/underfill. Prediction is not outcome.",
+      "contracts": [
+        "#1559 lifecycle-only protection TDD",
+        "Each owner separate because runner stops after a failed descriptor"
+      ]
+    },
+    {
+      "category": "gm-relay-operational-helper-policy",
+      "reason": "#1559 inactive operational lifecycle: Real current-generation dedicated helper Write-BoeJson and actual Assert-BoeGmFilesModifiedEntries consumer deny only the two exact reserved paths, retain bytes and no terminal; suffix write/FilesModified operations remain allowed. FIRST original one-owner execution only; stop on unexpected fixture/cleanup/underfill. Prediction is not outcome.",
+      "contracts": [
+        "#1559 lifecycle-only protection TDD",
+        "Each owner separate because runner stops after a failed descriptor"
+      ]
+    }
+  ]
+}
