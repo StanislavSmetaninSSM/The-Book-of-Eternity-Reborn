@@ -1,0 +1,87 @@
+{
+  "kind": "ROOT_FIRST_FAILED_PD3E_ZERO_TEST_PREPARATION_LITERAL_INSPECTION",
+  "actualSource": "d377f91c8604f38355e4941f6a8487d9758a4c8c",
+  "compiledSource": "d377f91c8604f38355e4941f6a8487d9758a4c8c",
+  "carrier": "c0ba4299e528cd9bd937b6e2738f21f8ee6bfb59",
+  "nativeExit": 1,
+  "wallSeconds": 88.86742144200252,
+  "rawChains": 8,
+  "archiveSha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
+  "sourcePinsExactAtActual": 54,
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "d377f91c8604f38355e4941f6a8487d9758a4c8c",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0330015,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0455855,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0992912,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 74.2504424,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 11.3835888,
+        "Completed": false
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:28.1721727",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "compilerOccurrences": [
+    "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs(203,29): error CS0121: The call is ambiguous between the following methods or properties: 'System.Linq.Enumerable.Select<TSource, TResult>(System.Collections.Generic.IEnumerable<TSource>, System.Func<TSource, int, TResult>)' and 'System.Linq.Enumerable.Select<TSource, TResult>(System.Collections.Generic.IEnumerable<TSource>, System.Func<TSource, TResult>)' [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj]",
+    "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs(203,29): error CS0121: The call is ambiguous between the following methods or properties: 'System.Linq.Enumerable.Select<TSource, TResult>(System.Collections.Generic.IEnumerable<TSource>, System.Func<TSource, int, TResult>)' and 'System.Linq.Enumerable.Select<TSource, TResult>(System.Collections.Generic.IEnumerable<TSource>, System.Func<TSource, TResult>)' [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj]"
+  ],
+  "diagnosis": "Only CS0121 at203: IndexOf overload methodgroup ambiguous between nonindexed/indexed Select; repeated twice in same build log, one actual build failure. Explicit singlearg lambda preserves intended first-occurrence oracle.",
+  "noPlanOrActualCases": true,
+  "nineFreshCoherenceNotQualified": true,
+  "namespaceEmpty": true,
+  "scope": "Initial PREPcompileFAIL, not structuralRED, not productfailure. Originalraw preserved; only one explicitlambda correction authorized aftersavedfailure/recovery. Correctedsource needsfreshBOTH/catalog/Plan0 and SOURCE beforeboundaryactual.",
+  "utc": "2026-10-17T17:52:19.525024+00:00"
+}

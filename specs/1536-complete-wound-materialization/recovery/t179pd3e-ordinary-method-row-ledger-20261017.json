@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_CATALOG_PREPARATION_NATIVE1_STOP_ALL_CASES_UNRUN_CAUSE_PENDING",
+  "status": "C01_EXACT_ONE_LINE_TEST_CORRECTED_FRESH_PREPARATION_PENDING_ALL_ACTUALS_UNRUN",
   "counts": {
     "categories": 5,
     "methods": 18,
@@ -278,5 +278,28 @@
       "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
       "rawChains": 8
     }
+  },
+  "sourceCorrection": {
+    "status": "ONE_LINE_SOURCE_CORRECTED_UNCOMPILED_UNRUN",
+    "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
+    "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
+    "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-prep-stop-inspection-d377f91c-20261017.json",
+        "sha256": "9ccfddca5b3dc40c36b0e2455d23be79c7f1783573f2f14d14137f1f285d682e",
+        "bytes": 3806
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
+        "sha256": "40f044cc0b2680d3d6929be31086e28c60c1cebd35c0b4cac90370304c25612f",
+        "bytes": 17554
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c0ba4299-20261017.json",
+        "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
+        "bytes": 17211
+      }
+    ]
   }
 }

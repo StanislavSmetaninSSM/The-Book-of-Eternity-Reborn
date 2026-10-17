@@ -200,7 +200,7 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         Assert.Empty(await validator.ValidateAcceptedTurnReasoningAsync());
         var paths = new[] { "game_state/meta/guardians.json", "game_state/npcs/npc_core.json",
             "game_state/meta/guardian_abode_residents.json", "game_state/meta/afterlife_entity_profiles.json", "game_state/meta/shining_abode_state.json" };
-        var indices = paths.Select(reads.IndexOf).ToArray();
+        var indices = paths.Select(path => reads.IndexOf(path)).ToArray();
         Assert.All(indices, x => Assert.True(x >= 0));
         Assert.Equal(indices.Order(), indices);
         Assert.True(reads.Count(x => x == "game_state/npcs/npc_core.json") >= 2, "Repeated ordinary reads must not collapse to one cached path value.");

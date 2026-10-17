@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_DEBUG_PREFIX_TESTS_ONLY_CURRENT_SOURCE_NOT_PRODUCT_OR_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "FIRST_CATALOG_PREPARATION_NATIVE1_STOP_PLAN_UNRUN_ALL_TESTS_UNRUN_SOURCE_REVIEW_PENDING",
+  "status": "C01_EXACT_ONE_LINE_TEST_CORRECTION_FRESH_PREPARATION_PENDING_ALL_TESTS_UNRUN",
   "productDelta": [],
   "counts": {
     "categories": 5,
@@ -272,13 +272,14 @@
     },
     {
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
-      "bytes": 19368,
-      "sha256": "09e1068f9cd66ed9384dce37c12c5a7d2a772ec6f089468be7772eb6ea21ef92",
-      "gitBlob": "769f1f10c36dc57f2cd05e999edf00983bcdd9e6",
+      "bytes": 19382,
+      "sha256": "73a051cada687706da58bebec36c6b5f80ed67503a0686c2580e38300c6c705a",
+      "gitBlob": "9d1f2e615b0eaf1ba49dc4745647b230f47c02fc",
       "mode": "100644",
       "role": "authored or actual strict source composition fixture",
       "baselineStatus": "NEW_TEST_SOURCE",
-      "baselineGitBlob": null
+      "baselineGitBlob": null,
+      "correction": "C01 sole CS0121 overload disambiguation; exact one-argument lambda retains first IndexOf semantics/oracles/rows."
     },
     {
       "path": "BookOfEternityClient.Tests/TestData/t179pd3e-ordinary-source-segments.json",
@@ -551,10 +552,10 @@
       "baselineGitBlob": "681a69a272ae137417d1f1d887978fd20b6c7f6d"
     }
   ],
-  "sourcePinDigest": "ae5159c9b26bae44671033f05f58fbe48185fedd48626db9c20f559d350fb89e",
+  "sourcePinDigest": "a8c9e79b97dc51ac4a16c2ccfb7be1015979ea5c78264e1fdadf182928bbbfaf",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "9ad453bf34d3a4f527aded6e4cf780683e92617fb4b7d1150241f80917fb13c6"
+    "sha256": "13f76f57822bb19e5e58fa9d29680bf1a19c0deaff4fa815a9456a4452f54c04"
   },
   "references": [
     {
@@ -623,6 +624,40 @@
     ]
   },
   "preparation": {
+    "status": "CORRECTED_FIRST_UNRUN",
+    "priorFirstStop": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-preparation-stop-files-20261017/archive.json",
+      "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
+      "rawChains": 8
+    },
+    "recipe": "Root authorized after corrected WIP push/exactremote/full GitHub delta: same fixed1c3e controller with distinct corrected labels, fresh BOTH/catalog then successful native0 only exact PlanOnly-NoBuild ZERO execution. No test actual or product change."
+  },
+  "historicalBindings": {
+    "previous3d": "fe3 is accepted ordinary-A52 and separate protected2; old immutable3d packet67pins/9DLL and all evidence remain historical, not rehashed as new3e context.",
+    "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
+  },
+  "futureProduct": {
+    "status": "HELD_PENDING_STRUCTURAL_CAUSAL_EVIDENCE",
+    "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
+    "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
+    "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
+  },
+  "docsDisposition": "Internal behavior-preserving extraction; no GM schema/validator meaning/output contract change planned, so no GM prompt/example/manifest changes triggered. Stale remains Warning and unusable-original policy-null remains non-authority. Full 3e/HOT/Windows remains held.",
+  "authoringUtilityOutcomes": [
+    {
+      "kind": "METADATA_HELPER_ONLY_NOT_BUILD_PREP_OR_TEST_FAILURE",
+      "fact": "First packet generator stopped on guessed standalone declaration path AcceptedTurnReasoningValidationSelection.cs; actual declaration is in already selected ValidationService.cs. PathPresence declaration is in actual PendingTurnSnapshotReader.cs. Source declarations located before completing current pin packet; no product/test behavior changed and no native command ran."
+    }
+  ],
+  "futureBoundaryRecorder": {
+    "status": "UNRUN_NOT_SOURCE_ACCEPTED_NOT_RUNTIME_AUTHORIZED",
+    "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-ordinary-boundary-first-run.py",
+    "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
+    "category": "fr063-reasoning-prefix-boundary",
+    "declaredRows": 1,
+    "scope": "No execution until corrected/qualified fresh PREP and independent concrete SOURCE/FIXTURE/SELECTION/PREP plus exact named Root activation."
+  },
+  "firstPreparationStop": {
     "status": "FIRST_NATIVE1_FROZEN_CAUSE_NOT_YET_QUALIFIED",
     "actualSource": "d377f91c8604f38355e4941f6a8487d9758a4c8c",
     "recordPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-catalog-d377f91c-20261017/record.json",
@@ -2431,29 +2466,27 @@
       }
     ]
   },
-  "historicalBindings": {
-    "previous3d": "fe3 is accepted ordinary-A52 and separate protected2; old immutable3d packet67pins/9DLL and all evidence remain historical, not rehashed as new3e context.",
-    "initialFinding": "NI-S01 original SOURCE_NOT_READY and structuralRED2 retained in prior3d; no new prep/native/failure yet."
-  },
-  "futureProduct": {
-    "status": "HELD_PENDING_STRUCTURAL_CAUSAL_EVIDENCE",
-    "scope": "Only three frozen document/unknown/scope stages around actual parse/catch/timestamp slots; all later Full tail IO/await/catch/helper semantics unchanged.",
-    "sourceGuard": "new3e inverse reconstructs whole3dA8bde; existing four3d steps reconstruct wholeoriginal6a9. No current hash blessing or World migration.",
-    "protected": "Only postproduct exact Late2 direct consumers separately qualified; no prior fixture/raw replay for counts."
-  },
-  "docsDisposition": "Internal behavior-preserving extraction; no GM schema/validator meaning/output contract change planned, so no GM prompt/example/manifest changes triggered. Stale remains Warning and unusable-original policy-null remains non-authority. Full 3e/HOT/Windows remains held.",
-  "authoringUtilityOutcomes": [
-    {
-      "kind": "METADATA_HELPER_ONLY_NOT_BUILD_PREP_OR_TEST_FAILURE",
-      "fact": "First packet generator stopped on guessed standalone declaration path AcceptedTurnReasoningValidationSelection.cs; actual declaration is in already selected ValidationService.cs. PathPresence declaration is in actual PendingTurnSnapshotReader.cs. Source declarations located before completing current pin packet; no product/test behavior changed and no native command ran."
-    }
-  ],
-  "futureBoundaryRecorder": {
-    "status": "UNRUN_NOT_SOURCE_ACCEPTED_NOT_RUNTIME_AUTHORIZED",
-    "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-ordinary-boundary-first-run.py",
-    "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
-    "category": "fr063-reasoning-prefix-boundary",
-    "declaredRows": 1,
-    "scope": "No execution until corrected/qualified fresh PREP and independent concrete SOURCE/FIXTURE/SELECTION/PREP plus exact named Root activation."
+  "c01Correction": {
+    "status": "ONE_LINE_SOURCE_CORRECTED_UNCOMPILED_UNRUN",
+    "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
+    "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
+    "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-prep-stop-inspection-d377f91c-20261017.json",
+        "sha256": "9ccfddca5b3dc40c36b0e2455d23be79c7f1783573f2f14d14137f1f285d682e",
+        "bytes": 3806
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
+        "sha256": "40f044cc0b2680d3d6929be31086e28c60c1cebd35c0b4cac90370304c25612f",
+        "bytes": 17554
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c0ba4299-20261017.json",
+        "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
+        "bytes": 17211
+      }
+    ]
   }
 }
