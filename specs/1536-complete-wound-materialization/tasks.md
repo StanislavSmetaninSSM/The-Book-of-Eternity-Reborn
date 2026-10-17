@@ -1,3 +1,7 @@
+## A2 Configuration import WIP — static preflight then preparation (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): secondFAIL preserved/recovered before one Configuration using correction; actual Characteristics in GameSettings.cs233. [Current checkpoint](plan.md): reconcile all9methods/input/logger/factory/hook bindings; targeted independent static preflight before thirdfresh prep. Immediate WIP persistence, no actual/production/causalRED or count/budget/scope change.
+
 ## A2 second preparation nativeFAIL — static compile closure before repeat (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): b764 secondprep native1/CS0103 Configuration.Characteristics import/0tests. [Current checkpoint](plan.md) preserves4secondchains before edit; static all-type/import closure then minimal import/persistence/freshprep. Not semanticRED/productfailure; no actual/production or scope/count/budget change.
