@@ -1,0 +1,579 @@
+{
+  "source": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+  "classification": "First finite pure preservation RED:16executed14PASS2FAIL; planned44 incomplete, reading28UNRUN; not A acceptance",
+  "branch": "1557-gm-doc-modularization-cloud-20261013",
+  "issue": 1557,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 7304,
+      "uncompressedSha256": "24c847ce8f6279a772dfd6a8de0b6f38bd14efbff496db817a13de19cfd67c49",
+      "compressedBytes": 1639,
+      "compressedSha256": "f8e5c4b991fa69f4558043074246110d9724ff949b5a6902c7c2c23c6be26ef9"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 503,
+      "uncompressedSha256": "ce653dabd6d1b75a29ef7f2125279d976b13613acf32f5aeecfba2b204ced41e",
+      "compressedBytes": 304,
+      "compressedSha256": "953275b90a747d1287a729900d01878ecd34d527794b06c9a8407b65ce89fcf0"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 3,
+      "uncompressedSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "compressedBytes": 23,
+      "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 15236,
+      "uncompressedSha256": "2ea7b72255450bd4a625854316c79f32e3678dab58c087d060b7ac4e5a4d95b8",
+      "compressedBytes": 2882,
+      "compressedSha256": "cc8b28f52eea75d18da39f41f0faa8148b833c427a3ef679d628dcb4506708ca"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "d56136f133168c63dde3ae27d60734d0d2e6c956edc493e58ce9ee5950fbcc80",
+      "compressedBytes": 259,
+      "compressedSha256": "0e7eb2ded91d1b8e5350d643a83fb1acb2e01ca8a10ab141d06e7515f5299a07"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 446458,
+      "uncompressedSha256": "6d3fc2cf25ccc750e7382ff4fa4d438799290863d4632c2afa159ab9d10cd615",
+      "compressedBytes": 120164,
+      "compressedSha256": "3fb64bde4ec0c5a769f05f1a78f1234b8c1c1d1466d10e4e597abb4efbe9b6a1"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 4268,
+      "uncompressedSha256": "000d1bff53057c79f0f67b20e7afd24239a5533ef57e37835d25b5ae942bde73",
+      "compressedBytes": 1019,
+      "compressedSha256": "8f89e881bc418b19781ce9312218f2e0a184879988e8eabdf10eca5a90c3f410"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 520,
+      "uncompressedSha256": "70464627df344b9a968d6b59cbc5a73f99dd6f93659eb82b87ce70999c99c5af",
+      "compressedBytes": 313,
+      "compressedSha256": "a40c7c212aedb57872db0045371183ca2aed39fb4c891bd4fa0674b900359305"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1294,
+      "uncompressedSha256": "536c4b79f0cfa3fd3314267b3852e73db791cac6b3813422df7c118c8b7e33f1",
+      "compressedBytes": 615,
+      "compressedSha256": "ee9cb47574b8cbcae45dade15709f8f49f75f31f2174d716df38f71bee313d90"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "14ff0cfbc9b62154eb89cdb1e98794b35c7f8a7c86b1ff778d512d906e1ecf7a",
+      "compressedBytes": 257,
+      "compressedSha256": "10cb85fb36d98cc95581523a9553b27660d80ce7a823f0cd0d69d62dacacc78b"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2494,
+      "uncompressedSha256": "dfd39fde9fb05856a0893e17371c6c2fbb2eb25c9c8f49ab6e1a6608c64335c6",
+      "compressedBytes": 655,
+      "compressedSha256": "ee68715cdfe9f36872826b489b10076c50ec418e07b7d0f5506aebed0225ebc8"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 740,
+      "uncompressedSha256": "2dc8ba7f8012c1441452b9f6df8060769c7363d94806919c1229224c1a0d898d",
+      "compressedBytes": 399,
+      "compressedSha256": "d96592a606cb35c4018509fe1ea1c8a1168114f43941a1409e1491600e4aa487"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 415,
+      "uncompressedSha256": "6f5adde1094b619f286ff689b4d13358d25618e45c83f78f62f9bbfa515d7a74",
+      "compressedBytes": 273,
+      "compressedSha256": "e7a2e7b77ddca05bb6fef6cd96ea6d0bd3965c1f3467bd2a9943b58c194b2944"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 1428,
+      "uncompressedSha256": "89bc3e406112cbf865993cc0bba11f1a74941fa225065a9f05014678e92210ab",
+      "compressedBytes": 655,
+      "compressedSha256": "4d7f0741b341f238abbe8cbfe8a98fdb374543b0017d228b48e6379fa8d5a8a8"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "440e98096951369a37cb3294aa673cf4207d11cbf0495819d5dc10352486bd75",
+      "compressedBytes": 259,
+      "compressedSha256": "70f4cdb5c73b19ca45a692d0e549b70096408c6131c2e78e0da05b164d0a2092"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1679018,
+      "uncompressedSha256": "c3d18aa2085ae36590df782d5f27b5c0565fb0e5eb72fac3ca811496089c44c7",
+      "compressedBytes": 186140,
+      "compressedSha256": "9c0cb24dbf56dd9803690fac00243422beb3e8613a8d3296704ae23c9c55ba46"
+    },
+    {
+      "name": "actual-gm-doc-afterlife-preservation-unit-001.trx.gz",
+      "uncompressedBytes": 31441,
+      "uncompressedSha256": "ef2ba780d553b4ef17dc6dd2cdd892c01e9433e3859d6c8e74af825ce9f6c4e6",
+      "compressedBytes": 3793,
+      "compressedSha256": "73f637df4e51648bccbf931e6c2957adf458fc471d3295479ae09042f2b711a5"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 6466,
+      "uncompressedSha256": "0d88811c161272c42505ccd12ce2df7e19de098f4c32e4dac470c073a0e76786",
+      "compressedBytes": 1812,
+      "compressedSha256": "43e4ed53526f5c55535df5d746f6467772f4a98d3346b1ae33d4824a56b4f8ca"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 3358,
+      "uncompressedSha256": "4c020e623350ed080157b9c33db623e158b38552c96951e51a7f2291d3f1f613",
+      "compressedBytes": 1525,
+      "compressedSha256": "07927d2ffdd8eaf07436034126c023ec74a818f4118f3a40ac94b1a028c8213f"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1675604,
+      "uncompressedSha256": "46b14cf5436200719f7cd327aecaf07118e065ed54913f25ae35ef161eaf200c",
+      "compressedBytes": 185358,
+      "compressedSha256": "a2a8859101693ccb58aa554a43494fe4aed433e04e850bb1b7a1e098956d0923"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 6466,
+      "uncompressedSha256": "aa7e6afa6d1e104e9bd92167be16b01816f3daf69b8b268f98356f624fa6f1ce",
+      "compressedBytes": 1813,
+      "compressedSha256": "03f95b377752a3023d1a430b9f1988ad3bae3a0f6ea43789ed66602da3ea5b58"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 3354,
+      "uncompressedSha256": "6c55602e443c0ad7fa4e52194fa7ef0d7b4d52daf45de9f1b87f0f2513df8000",
+      "compressedBytes": 1520,
+      "compressedSha256": "d2313cbec920e2e9737789c2a7506db1e894c25ea8eeded38ef6ba4d0c62b09f"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 89526,
+      "uncompressedSha256": "a41da50edccbf2b576e48358e72631783866e16794bfc479c17af75f524c8af1",
+      "compressedBytes": 6579,
+      "compressedSha256": "1a2cf38d5ee9c26e17998027f622e3d638778385859c41974749bcd55df7e61a"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 28645,
+      "uncompressedSha256": "4e15af91dbcab8467e6d5bf98a886b481f2b729d05250b9993d41b81c3f9e7c9",
+      "compressedBytes": 1777,
+      "compressedSha256": "ec2a4b123304f2cfcf35b6605f477314c9ed40d90245faa64c479743eaafe534"
+    },
+    {
+      "name": "preparation-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "80763d2a452d4851e8a0095bbf2424817ad9404c40a0964d79fe32cbdd4879b0",
+      "compressedBytes": 103,
+      "compressedSha256": "98b9940c3b342838de6e2aa7c58eeb8aac2a44531c2a8e9a21f73c8bd60046cc"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3456288,
+      "uncompressedSha256": "395689f2421638b559f529c4b8fc5f4d436fe7f02509238552607b144bfd1b63",
+      "compressedBytes": 377908,
+      "compressedSha256": "af9bb6862439979160b6e5019fd7510f098ca1ab33e857a7175e7b250750eade"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 1601,
+      "uncompressedSha256": "86e8f879584aabc9cc305ad9cea6d893f94c10be51bbcb9a665225d5034d8439",
+      "compressedBytes": 639,
+      "compressedSha256": "83647ea4832c2a3e4516973042bdd4138f12100a28aa77361504bffcfab6e795"
+    }
+  ],
+  "frozenUtc": "2026-10-13T23:15:30.991492+00:00",
+  "preparation": {
+    "source": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "compileSource": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "run": "20261013-231224-517-65721-ade9b659a2d449a9adb404b2676bfaca-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261013-231224-517-65721-ade9b659a2d449a9adb404b2676bfaca-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T23:14:49.777981+00:00",
+    "classification": "Fresh BOTH compilation and catalog discovery; zero test executions",
+    "wallTime": "00:02:25.2143652",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2158,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:14:54.853639+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11578,
+      "Categories": 729,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {
+      "Build-integration.log": 96,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "compileSource": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "run": "20261013-231455-733-66530-2eb3eb928daf4566861fe22f5e4f72eb-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261013-231455-733-66530-2eb3eb928daf4566861fe22f5e4f72eb-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T23:14:58.096872+00:00",
+    "classification": "Exact new pure owners; zero executions",
+    "wallTime": "00:00:02.3233077",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 44,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "gm-doc-afterlife-preservation-unit-001",
+        "gm-doc-afterlife-reading-unit-002"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2158,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:15:05.454770+00:00",
+    "methods": 10,
+    "cases": 44,
+    "descriptors": 2,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "compileSource": "a3fcec91f4be3288e1dcb664b4be6df26a0932c4",
+    "run": "20261013-231506-326-66678-2984b87c1d954647aee5eb55beb0bcf2-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261013-231506-326-66678-2984b87c1d954647aee5eb55beb0bcf2-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T23:15:11.482358+00:00",
+    "classification": "First finite pure attempt; native failures preserved, not A acceptance",
+    "wallTime": "00:00:05.1179436",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 16,
+      "Executed": 16,
+      "Passed": 14,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 44,
+      "CompletedCases": 16,
+      "UnderfilledDescriptors": [
+        "gm-doc-afterlife-reading-unit-002"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2158,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:15:19.671713+00:00",
+    "methods": 10,
+    "cases": 44,
+    "descriptors": 2,
+    "allNativeResults": [
+      {
+        "executionId": "e47ae76e-0875-4d72-a466-1a45508e1ea7",
+        "testId": "d97e5c40-f468-1d8d-0b57-5d369bc404bb",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0357409",
+        "startTime": "2026-10-13T23:15:10.9458661+00:00",
+        "endTime": "2026-10-13T23:15:10.9458663+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "e47ae76e-0875-4d72-a466-1a45508e1ea7",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "568c239d-baf0-40cb-b4f7-c15fb1f43196",
+        "testId": "cf37d259-efbf-e4f1-7bf1-c00c05971628",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0049469",
+        "startTime": "2026-10-13T23:15:11.2301317+00:00",
+        "endTime": "2026-10-13T23:15:11.2301318+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "568c239d-baf0-40cb-b4f7-c15fb1f43196",
+        "errorMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"manifest.locator:spiritual_wound_binding_result_cl\"···, \"manifest.locator:spiritual_wound_dependent_frontie\"···, \"manifest.locator:spiritual_wound_position_dependen\"···, \"manifest.locator:spiritual_wound_position_v1\", \"manifest.locator:spiritual_wound_source_only_publi\"···, ···]",
+        "stackTrace": "   at BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners() in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs:line 141\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+      },
+      {
+        "executionId": "2897b6e6-fb48-4b67-9a53-4a5f256a3658",
+        "testId": "2cda6651-361a-5041-9efb-1657198df210",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0349749",
+        "startTime": "2026-10-13T23:15:11.2159687+00:00",
+        "endTime": "2026-10-13T23:15:11.2159689+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2897b6e6-fb48-4b67-9a53-4a5f256a3658",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "29541bf1-aaf5-4e41-8aee-75159e301e46",
+        "testId": "609dc782-b1c9-8925-9f0e-70eca4a8dd2c",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"missing\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0348479",
+        "startTime": "2026-10-13T23:15:11.0700240+00:00",
+        "endTime": "2026-10-13T23:15:11.0700243+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "29541bf1-aaf5-4e41-8aee-75159e301e46",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "98182a6c-3a35-4bfc-bed3-9d300c96a4a5",
+        "testId": "8b36f4d6-92d4-dfaa-822c-ccf470766f31",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"orphan\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0765413",
+        "startTime": "2026-10-13T23:15:10.8646892+00:00",
+        "endTime": "2026-10-13T23:15:10.8646895+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "98182a6c-3a35-4bfc-bed3-9d300c96a4a5",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "3fa4f8fd-5108-4dd2-94a8-7f509769dafb",
+        "testId": "52e9b2bc-3e77-1032-d35b-7ac2c26ee77f",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"companion\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0174267",
+        "startTime": "2026-10-13T23:15:10.7631128+00:00",
+        "endTime": "2026-10-13T23:15:10.7631130+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "3fa4f8fd-5108-4dd2-94a8-7f509769dafb",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "69a8e942-6849-4590-aee9-ff25dd8ec009",
+        "testId": "6f5c98f7-7c38-8f46-ff0a-03f12f8910a6",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"context\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0355342",
+        "startTime": "2026-10-13T23:15:11.1808474+00:00",
+        "endTime": "2026-10-13T23:15:11.1808476+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "69a8e942-6849-4590-aee9-ff25dd8ec009",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "40cac9f7-c7f1-40c6-b796-ddd700c87f8f",
+        "testId": "232ed021-e2f5-f3d5-f2b1-194cb1c42c34",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"duplicate_owner\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0368369",
+        "startTime": "2026-10-13T23:15:11.1070105+00:00",
+        "endTime": "2026-10-13T23:15:11.1070108+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "40cac9f7-c7f1-40c6-b796-ddd700c87f8f",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "45e9c0e4-8514-4593-ae99-7889bf0929b1",
+        "testId": "9f125dc7-7d41-08e3-db2e-171367c7dee4",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"missing\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0126666",
+        "startTime": "2026-10-13T23:15:10.7459764+00:00",
+        "endTime": "2026-10-13T23:15:10.7459859+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "45e9c0e4-8514-4593-ae99-7889bf0929b1",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "7a690154-1f07-41f4-91c0-31b697456a62",
+        "testId": "269f5132-72e6-4e4e-0a66-ac9c43bf326f",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"unlisted_edit\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0520707",
+        "startTime": "2026-10-13T23:15:11.0350401+00:00",
+        "endTime": "2026-10-13T23:15:11.0350405+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7a690154-1f07-41f4-91c0-31b697456a62",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "d9df9e76-185e-4e05-9139-a2fbed404851",
+        "testId": "514c527d-0563-d58f-93b0-c5dd9d337c88",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"duplicate\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0107927",
+        "startTime": "2026-10-13T23:15:10.7877820+00:00",
+        "endTime": "2026-10-13T23:15:10.7877822+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d9df9e76-185e-4e05-9139-a2fbed404851",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "b9848f49-61ea-48c6-a8cb-698265dc9ca2",
+        "testId": "6eae5db2-311e-82fe-0944-f4af8cc367d5",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"reordered_fences\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0379953",
+        "startTime": "2026-10-13T23:15:11.1451757+00:00",
+        "endTime": "2026-10-13T23:15:11.1451760+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b9848f49-61ea-48c6-a8cb-698265dc9ca2",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "bd583499-ce05-4bdd-95ce-0ccac0fe3caf",
+        "testId": "6939f4ac-e8e1-b6e9-dcc4-afb01bf8e518",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"lost_companion\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0367916",
+        "startTime": "2026-10-13T23:15:10.9827847+00:00",
+        "endTime": "2026-10-13T23:15:10.9827848+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "bd583499-ce05-4bdd-95ce-0ccac0fe3caf",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "8d435c4d-d447-4101-8068-f26f38e087e6",
+        "testId": "4c942b36-fdaa-5219-9e39-15d8bb8e1db9",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0035167",
+        "startTime": "2026-10-13T23:15:11.2305276+00:00",
+        "endTime": "2026-10-13T23:15:11.2305278+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8d435c4d-d447-4101-8068-f26f38e087e6",
+        "errorMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"destination.missing:OtherGuides/GM_Common_Core.md\", \"destination.missing:OtherGuides/Afterlife_Effects_\"···, \"destination.missing:OtherGuides/Afterlife_Wound_Co\"···, \"destination.missing:OtherGuides/Afterlife_Actor_Pr\"···, \"destination.missing:OtherGuides/Afterlife_Lifecycl\"···, ···]",
+        "stackTrace": "   at BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority() in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs:line 64\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+      },
+      {
+        "executionId": "c0f8192a-53e5-435c-b585-a2505e81767d",
+        "testId": "9724826e-ff4d-dc40-dbe7-1e478e863429",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior(mutation: \"semantics\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0137011",
+        "startTime": "2026-10-13T23:15:10.7768631+00:00",
+        "endTime": "2026-10-13T23:15:10.7768632+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c0f8192a-53e5-435c-b585-a2505e81767d",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "45e2b411-dce4-464d-9e48-974762b698c1",
+        "testId": "86086de8-fe75-c7b9-3469-3c0090f8cbf7",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure(mutation: \"invalid_context\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0452332",
+        "startTime": "2026-10-13T23:15:10.9104321+00:00",
+        "endTime": "2026-10-13T23:15:10.9104323+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "45e2b411-dce4-464d-9e48-974762b698c1",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 0,
+    "nativeObservationBoundaries": {},
+    "strictCleanupReceipts": [],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING"
+  }
+}

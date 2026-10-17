@@ -1,0 +1,1769 @@
+{
+  "source": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+  "classification": "First connected source14:11PASS1intendedsourceRED2fixtureFAIL;realwriter1UNRUN; selectionincomplete; no deliveryqualification",
+  "branch": "1557-gm-doc-modularization-cloud-20261013",
+  "issue": 1557,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 711853,
+      "uncompressedSha256": "48f83aa18761489328886a0ac006e812e960a1fed1a94ee27adc95c84f7eab03",
+      "compressedBytes": 126784,
+      "compressedSha256": "cb19d21c89501b963262899f2573b6e65c12bd928fa6f74504ff5ae823dbae6a"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 7677524,
+      "uncompressedSha256": "401729aeb001d2f1fdde5bfb22e32688d842ecde3f3fac894175748b3cc246a8",
+      "compressedBytes": 1427556,
+      "compressedSha256": "b85363895eba1f934c67cee03fe6c37329e38d3543ab9bff5428e400cf501310"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 511,
+      "uncompressedSha256": "6419d0db206eff0e687ebf776a504b167834d1cdf4bc6f68591b4870321f66f5",
+      "compressedBytes": 313,
+      "compressedSha256": "6dcc6e26af931f69357b4b336fa66151e0d5d90d34f91954308a87b8b56c5116"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436386,
+      "uncompressedSha256": "3305f9b0452310525e41298e194e0ce9661b0ef7f99289345f9ce9d70e8bf81a",
+      "compressedBytes": 227960,
+      "compressedSha256": "6c597b50455c18fc6b88c490dedbd25a745fc496a245b96976de4a0c293ec966"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "5efb4039a9b72a0ec1c4fa80ee0101667d9169602e24dd6683de4a7ceb85dc1c",
+      "compressedBytes": 113918,
+      "compressedSha256": "8cee9d15bb99d6190986fbbb89d99ec47de83c39122a18ac355bc9eea6a1124e"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-outcome.json.gz",
+      "uncompressedBytes": 1265060,
+      "uncompressedSha256": "21c091c11ab7e70c1d1e577050210e6e2c3374a5777a3b5953e048dff12a0471",
+      "compressedBytes": 236027,
+      "compressedSha256": "cd796373f6e090d230d7e0d3787582d3e9675f8ff1c8df161fba3c4c2e8cf6e2"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436141,
+      "uncompressedSha256": "42f88f824c6f79fc36251d5383d677b8cb5e8705cb85bdf6fbdf54717c891273",
+      "compressedBytes": 227203,
+      "compressedSha256": "dba67713c737691d90ff3416adc7030efdb1d8551d241d2c52eb63bc250dbe53"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "a31a27d4caf0f824b5387885d779a0679c4fe8a7fde7202388a50fc91aa80c32",
+      "compressedBytes": 113563,
+      "compressedSha256": "25c9cd18b82beb749d4516a6038f6888f31f6dd042cc80d4bd003e3a2839ffaf"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-outcome.json.gz",
+      "uncompressedBytes": 29647,
+      "uncompressedSha256": "97445e59077c4f17d0cbbe23a4ef05af37cd98c8b5be5c1d3aad2d957bdbfda4",
+      "compressedBytes": 12178,
+      "compressedSha256": "9b6319c0439a86bdadc0173d03b30e466538225bcbd2d66db233e0cf410aa991"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-ast-and-publication.json.gz",
+      "uncompressedBytes": 701849,
+      "uncompressedSha256": "e7e3e7f43c3d0431edb1f11dcec1831659c580384a7a2232605294056c0f5a21",
+      "compressedBytes": 113303,
+      "compressedSha256": "fbe9b6641d28697fac61e79a158abcd4b9c3d95e476c0462250037d33780e1c3"
+    },
+    {
+      "name": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-outcome.json.gz",
+      "uncompressedBytes": 646502,
+      "uncompressedSha256": "f52fde85f931f6fde6702c8cd9a22ba5fd47fbc6bbd0cef300e168bc29c71a21",
+      "compressedBytes": 123738,
+      "compressedSha256": "e901f3f81b0e1c1f35f2c602a4feec8c071d26e7d7d99906ba8c79e27f47b608"
+    },
+    {
+      "name": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436482,
+      "uncompressedSha256": "2a71c1441b531857b1aae34b2b33a90b80d507d9ebe0f6e9ed770a20abc2bf1a",
+      "compressedBytes": 228275,
+      "compressedSha256": "4fded884a97a9ec47e067deca7eba3e34c233a07dcd8cabd3587c2e833c46faf"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "a67aa21c8723b5411e7cf159a5009115204dad2bb0b1e388ec6f15060c4cc4a5",
+      "compressedBytes": 114091,
+      "compressedSha256": "50f07364513ebaec7fe31e6f854cd9996c03176ac19bd9f0293c42f7c8409fba"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-outcome.json.gz",
+      "uncompressedBytes": 1265094,
+      "uncompressedSha256": "cf1c2b4e2f8bad71393db34b64239acf44e6def62ca68469e785286d58ca9dc9",
+      "compressedBytes": 236626,
+      "compressedSha256": "b7380a46d8f8b416d9ea707daa449c10786aabf153f2264ec4f2cda41f3f56c5"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436570,
+      "uncompressedSha256": "2207d133bdd13ef024b230653b46e30e120af49dbb9d971ebc289c8bc04dc425",
+      "compressedBytes": 227501,
+      "compressedSha256": "0cecd69e8a2a809c6bc181de1ab09f6d391798b462e0b8f08b2cf6dc23038d42"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "237629efb0fb98dce389de17449e8c6c4393ead75f03fed00c680b51800ca827",
+      "compressedBytes": 113704,
+      "compressedSha256": "e272e5b531cf472c2bf763b33f151f6f5144f980063acd8a42f16a9976c05132"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-outcome.json.gz",
+      "uncompressedBytes": 1265152,
+      "uncompressedSha256": "79d3ba23b134a4c908c94b98a62f6fe2ab02cd0c929e211125eb50127b6ad3e8",
+      "compressedBytes": 235811,
+      "compressedSha256": "8c648a2836ee6e5fb581e996d82352f662d513e6a4bf8d5bcbc801bf9201adfc"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436445,
+      "uncompressedSha256": "329be8353cbe12f9e8bfd68ff1c8218f12260dceff001b7c9c66c5deb6f2c812",
+      "compressedBytes": 227317,
+      "compressedSha256": "7f43e62f1bf090e6560f3263469d24bba133027a117f40f1b05ab9867e45f5b8"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "219631ad3183d58212721e8b868950758c03bb9aa77dc46f2c958b9bd2878e69",
+      "compressedBytes": 113615,
+      "compressedSha256": "4724f9622205044e00fbbde6bce994974a2fdec2074579e29f833e2bbf1a2442"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-outcome.json.gz",
+      "uncompressedBytes": 1265056,
+      "uncompressedSha256": "9a66add9144900ac01d6f787f8bcd1f4fc167e230a04eb13d58f18a147089452",
+      "compressedBytes": 235675,
+      "compressedSha256": "59697b2b1fab02311d108ce89605abcd95e76e002174b21a396af2c357c0f0df"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-ast-and-publication.json.gz",
+      "uncompressedBytes": 701849,
+      "uncompressedSha256": "f3fbcd28940d7ce2f07e2a37590368c8d1a37ddb9d24e0c3838f14cc7205fd81",
+      "compressedBytes": 113738,
+      "compressedSha256": "e1640fc808462ec69cd73c1813042f0fa1c074ac690b29b12b9ab26fee709cc1"
+    },
+    {
+      "name": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-outcome.json.gz",
+      "uncompressedBytes": 646505,
+      "uncompressedSha256": "5f3b938e6fd98a0393a1243c04c617e3d4b40a41ef160ffba670c74897da7246",
+      "compressedBytes": 124163,
+      "compressedSha256": "6161a8a074b32664e79078e80039b1fc6a595f9d7b72ef0e4c9e4c2a2011d29a"
+    },
+    {
+      "name": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-ast-and-publication.json.gz",
+      "uncompressedBytes": 1436072,
+      "uncompressedSha256": "bf2813a8c8a371184a516b2ebd7fd3beaa25d55f98bf946b5379f7975c55c798",
+      "compressedBytes": 227459,
+      "compressedSha256": "c37e2359c5800455ed2d767f38f860229315ae9f0155fcc92285536c8d01d7d9"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "cf11b30a14a950d79b32de75cc8880770ca653e4e41e10e3527d29f05898c612",
+      "compressedBytes": 113697,
+      "compressedSha256": "45480ea9ddb8ce9a493ef50a74a743796b835b07057ea42bd8eaa0fc0da5c93f"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-outcome.json.gz",
+      "uncompressedBytes": 1264756,
+      "uncompressedSha256": "913f41f2b81b85c5c4240c3d091820bf11d7dcc4f46691ac0a01971fb0389c44",
+      "compressedBytes": 235717,
+      "compressedSha256": "5f0d9dcab2a02a47d70a86e549547e748b7d1c6ff6a5155e0b9251057df085b5"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-ast-and-publication.json.gz",
+      "uncompressedBytes": 734520,
+      "uncompressedSha256": "45ac173e481d41435780b87be1f1ea294ff767c2655ff232d19e2ac911df6eb8",
+      "compressedBytes": 114632,
+      "compressedSha256": "1d954692721241bd87d1e3370e8f15502ea4302d6b91ce6e1307cd7bb677b80f"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-ast-and-publication.json.seed.gz",
+      "uncompressedBytes": 701804,
+      "uncompressedSha256": "c9ce2ab504c386875df6d1d6b646bc9b2b0a3fd55409c001b17b13fe1065ca20",
+      "compressedBytes": 113836,
+      "compressedSha256": "4aff32062d480570b324b1974d6ae52f0ed15c758d46d21394daef21d2916369"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-inspect-and-publish.ps1.gz",
+      "uncompressedBytes": 9144,
+      "uncompressedSha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "compressedBytes": 2666,
+      "compressedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-nonexecuting-source-seed.ps1.gz",
+      "uncompressedBytes": 398649,
+      "uncompressedSha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e",
+      "compressedBytes": 90813,
+      "compressedSha256": "5f58d5b3e300f3914072bf16c24a541d865dcba03c8436c55757dbf436dd507a"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-outcome.json.gz",
+      "uncompressedBytes": 29460,
+      "uncompressedSha256": "273599885da15a227d51124c95cdb2ac63d1ad8ee8c7b4156a4123c6bb10cf17",
+      "compressedBytes": 12137,
+      "compressedSha256": "9b1de3a8ed481b41a9f6b853fd560dead89a1b366b223be7baf2b1160d03c920"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-stderr.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-stdout.log.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressedBytes": 20,
+      "compressedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 10041691,
+      "uncompressedSha256": "dcdd238fd3b790ca5eefa35dca561f6dbe0fd95e086b2d711662b45eeaacd488",
+      "compressedBytes": 1485743,
+      "compressedSha256": "2d6fc4fa095338a4b9a2e8be570998b7f25f315f5bbd0a6518703be8bf061660"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 49296,
+      "uncompressedSha256": "dbd96bf62b2d2a57719a5f7334855f3e1aac95277f0a836283342b9a2f3a907f",
+      "compressedBytes": 6104,
+      "compressedSha256": "1461c23676fa92e812ceb9917ea272dd840dd385c708e48788a36a549730dda0"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "bd280c61b0c24b6b22e4a90c4c53dea38763e9d1c4aab641d0dbbf03c871c6a1",
+      "compressedBytes": 258,
+      "compressedSha256": "c32f999dcead42363b9c0fe8cdbf747d2baa04b4cfa73d74857c63e06dd01237"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 474907,
+      "uncompressedSha256": "f1040a92ae58fadb9fb5e511d76314a62bf151922fe445596b147ea3e4dc3509",
+      "compressedBytes": 129229,
+      "compressedSha256": "d101f9b5ae29a0b59ff8a459c5ff86a3f8d49485932e304fe24fd0af6162b85b"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 3104,
+      "uncompressedSha256": "c46191df81d12e1a25e7852919eb15e339cf92158ffbab16703688ba08a38b0a",
+      "compressedBytes": 872,
+      "compressedSha256": "5a0c2a37127913e15e131514eb3f565ba02c9e4fad5d82bca50bfcb91d5248fb"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 528,
+      "uncompressedSha256": "5121cafc9ae56d1556ae5b9ddd5bbcc332b7b4e40c48dbd0cdbbf74b450f0b8a",
+      "compressedBytes": 320,
+      "compressedSha256": "c4ac159969f863e4f91253d7839fd4778e5a9064238a356cedd650e5f794bcf1"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1334,
+      "uncompressedSha256": "410df83edc03d17392e73e089022eae69d2244f2216a70f0252276d8ce7de9fc",
+      "compressedBytes": 633,
+      "compressedSha256": "3a174d84fd4ab2c8b92fa0168bada1bff637bbf32aed8709faa1bf60df5ab28b"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "c45b50f127e72aa68b3d6e66f17f4867ef43d3848c548f70232e9d82784d716b",
+      "compressedBytes": 259,
+      "compressedSha256": "80cde942311808eb613559cb95ac82de05a7b1e4662b68be0420263c92ad48a7"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 51694,
+      "uncompressedSha256": "fc651c5e9f57a5519cc6a7639e72b6d9bdea9fa56daf157743658b7f92e7aa62",
+      "compressedBytes": 12668,
+      "compressedSha256": "b5f13bf67154df13987a062674f8b9d7241ee81c47b63c3201bfb1ddd24503e6"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 740,
+      "uncompressedSha256": "80f172ba5975a09551f064d903fd16c58be013bea61f2eaef1fe425793572446",
+      "compressedBytes": 400,
+      "compressedSha256": "66cda76298e476500b68c07ad8dcd06f6cd369c22f46b6d3edc68c24e96d542a"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 415,
+      "uncompressedSha256": "030a380c6760efa8e6930aa6e0405a2eb6e85022d000ae43f93a40b61d71d27f",
+      "compressedBytes": 274,
+      "compressedSha256": "b97a8f06ff67eb65a9d0250b539fb79088a85920f0c0e08dc76b79fff66e8b51"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 1427,
+      "uncompressedSha256": "26ca6e6e1ded8711f6bbfc0a45fbf4526282edccb4f864f7c1391d5627dfdf58",
+      "compressedBytes": 663,
+      "compressedSha256": "993c7546df00956fb28aa21763581a0840282e1c0ce496168d86d74e99e71ea9"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 445,
+      "uncompressedSha256": "9351a32a439562c1fe95966721da6286ab857f2612d94d071fea6364106c618f",
+      "compressedBytes": 259,
+      "compressedSha256": "2b20c00d0f78c2786df37e776de8060cbd5eb8b1101f8e3326a65b5b4fe90802"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 2374921,
+      "uncompressedSha256": "9477bd3950da284263a4ec18a80a47ea64444e1a0463ce4924a983c62c878e9a",
+      "compressedBytes": 311327,
+      "compressedSha256": "b93bf578edf650897152dc2d18dff8cec732092b5d68928ddbddbeeb67a282f6"
+    },
+    {
+      "name": "actual-gm-doc-afterlife-delivery-source-guards-integration-001.trx.gz",
+      "uncompressedBytes": 8411946,
+      "uncompressedSha256": "5e64c3529e852307dec60f8d3150c49a03dc3483274eb107466eacee3514fdf0",
+      "compressedBytes": 1559602,
+      "compressedSha256": "2006f3b6533fa96b15ed7e2be51c3eca18d92da31f05745e5620228a7acae477"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 5507,
+      "uncompressedSha256": "c620330619fdc1d6bcc73bd11e94fe553632ec9852ebb60bd029aa0357d8b949",
+      "compressedBytes": 1856,
+      "compressedSha256": "b527ed970a9672871daccaa30ea5c3ed7af1684f5a2c6e547f10a326a4b34a64"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 3779,
+      "uncompressedSha256": "883ba9111b427aa9dad64ec5fff428e41afe36d3c4dd7688d0b1542fd19b8703",
+      "compressedBytes": 1731,
+      "compressedSha256": "c07ef482b38af13be0b21049bd57c9dc3eff3a5bd3faa0d5c158bfbacc0ca6ce"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1665726,
+      "uncompressedSha256": "437450544ab795d7e4a1ec094213baa4ce5deb7d883bce9be5caf6158f725d5e",
+      "compressedBytes": 185302,
+      "compressedSha256": "964c80ab8b7f62d9ef6c9eb7bc691afca9abe413fdfbbfaf5f35b17849a67862"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 5508,
+      "uncompressedSha256": "a63399c3b0e135356241c973dd950f7d5d622d003791de3cb31cd1099eec36e1",
+      "compressedBytes": 1858,
+      "compressedSha256": "e0b2f24b4a49ca7811db9e96605c23558ab452b0d4306b90f2751da7a89c6fd7"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 3781,
+      "uncompressedSha256": "6248253842aab9041a52f18dbacba496591ca3fb082904cfc8d70baca95f0f62",
+      "compressedBytes": 1724,
+      "compressedSha256": "b4d82cfff1c4eede5244df73de2f302d2ea0abd82746d1bb9f35dd9e27f85737"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 89134,
+      "uncompressedSha256": "8821471f45e2520784dc1c06dab66dfc7b4be166c448969d0b0445ccdefb98b1",
+      "compressedBytes": 6560,
+      "compressedSha256": "3c82a80b53579b49c84e9db5980a7b3e8bc8ed56d5eb74695d66c2c4eeffd5bf"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 28228,
+      "uncompressedSha256": "53c2a58dba5f2d55d606ee5dd0e6a644d20b3212a37fb569d32307c7ea626efe",
+      "compressedBytes": 1745,
+      "compressedSha256": "47c30b8dffb9c0965b91fe8a1d33d6b200e9da6e6d5be3adae7b3ac9e9f16f71"
+    },
+    {
+      "name": "preparation-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "24c8c4d201804a5e5a4ac5909315a4b535e3a8e2f46a0786162910cc45884a01",
+      "compressedBytes": 103,
+      "compressedSha256": "f053f2e7257c5792136e163686112ce975b8cabdaabb0a6f9d388a5e16f74ecc"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3457490,
+      "uncompressedSha256": "865b316d6fe066f83bf60a5f5f4730e0a057cf0cb0e89dbdd413bb0aa38e2763",
+      "compressedBytes": 378123,
+      "compressedSha256": "0328421153681a7f6ae27ca4fa7ecf14f8553b751339e19b67e4fa1c7baecfe9"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 1598,
+      "uncompressedSha256": "c3da8aef0b69482b8ff9449f3fcfe433ad3f6345b7d5527f3f15ffc684e5a554",
+      "compressedBytes": 639,
+      "compressedSha256": "8c51e17eb6eb86f61a7df643063feab1ba83a40ed673af036b3ec869a4c55428"
+    }
+  ],
+  "frozenUtc": "2026-10-14T00:30:06.620016+00:00",
+  "preparation": {
+    "source": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "compileSource": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "run": "20261014-002444-877-88763-465d4920a69f4b5084a7332dcaa69902-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261014-002444-877-88763-465d4920a69f4b5084a7332dcaa69902-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T00:26:58.735514+00:00",
+    "classification": "Fresh BOTH connected-delivery build/catalog only; zero executions",
+    "wallTime": "00:02:13.8056559",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2331,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T00:27:45.028545+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11584,
+      "Categories": 731,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {
+      "Build-integration.log": 96,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "compileSource": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "run": "20261014-002745-992-89090-92f0e24853ae4c74974c1763c069f675-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261014-002745-992-89090-92f0e24853ae4c74974c1763c069f675-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T00:27:48.540980+00:00",
+    "classification": "Exact fresh connected owners; zero executions",
+    "wallTime": "00:00:02.5093283",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 15,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "gm-doc-afterlife-delivery-source-guards-integration-001",
+        "gm-doc-afterlife-package-delivery-integration-002"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2331,
+    "freshBinaryPinsPrePostMatched": 233,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T00:28:13.145954+00:00",
+    "methods": 6,
+    "cases": 15,
+    "descriptors": 2,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "compileSource": "4f867b2ae9e9399941b01a455b8c89cc576ffae1",
+    "run": "20261014-002814-027-89240-17f30b358c6a4d77b39956cd1e2eda27-categories",
+    "path": "/workspace/1557-gm-doc-modularization-cloud-20261013/TestResults/test-categories/20261014-002814-027-89240-17f30b358c6a4d77b39956cd1e2eda27-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-14T00:28:50.650524+00:00",
+    "classification": "First connected finite attempt; exact failfast/fixture/RED classification pending",
+    "wallTime": "00:00:36.5844494",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 14,
+      "Executed": 14,
+      "Passed": 11,
+      "Failed": 3
+    },
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 15,
+      "CompletedCases": 14,
+      "UnderfilledDescriptors": [
+        "gm-doc-afterlife-package-delivery-integration-002"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2331,
+    "freshBinaryPinsPrePostMatched": 233,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T00:29:08.993869+00:00",
+    "methods": 6,
+    "cases": 15,
+    "descriptors": 2,
+    "allNativeResults": [
+      {
+        "executionId": "12037974-bd6b-4f42-949b-18b96d60d073",
+        "testId": "46fc86b4-5f1b-1228-5842-25f5c52fe6d9",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedDaemonAstCutsOnlyCompleteTwoCommandStartup",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:02.0764945",
+        "startTime": "2026-10-14T00:28:48.0658907+00:00",
+        "endTime": "2026-10-14T00:28:48.0658910+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "12037974-bd6b-4f42-949b-18b96d60d073",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "4cf6ce82-a93c-4bfb-8765-4b36753ac551",
+        "testId": "d23bbb4b-9eb8-d380-13f8-ede0485118e0",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalLinkVerifierRefusesSymlinkEscape",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0031413",
+        "startTime": "2026-10-14T00:28:48.0935611+00:00",
+        "endTime": "2026-10-14T00:28:48.0935611+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4cf6ce82-a93c-4bfb-8765-4b36753ac551",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "3810df54-0f53-4663-b4f1-2a215e058f6c",
+        "testId": "2b7cef66-c879-2c82-41b3-44f3b3f52242",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"repair_ban\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:04.2549274",
+        "startTime": "2026-10-14T00:28:31.6816164+00:00",
+        "endTime": "2026-10-14T00:28:31.6816167+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "3810df54-0f53-4663-b4f1-2a215e058f6c",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "08c03dd8-0c68-43ea-b115-f6a0421d6df5",
+        "testId": "9a711d98-029e-263a-1d2e-9ac26e878cfa",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"escape\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0000900",
+        "startTime": "2026-10-14T00:28:48.0907311+00:00",
+        "endTime": "2026-10-14T00:28:48.0907311+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "08c03dd8-0c68-43ea-b115-f6a0421d6df5",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "993c9aab-ecc8-4a2e-9ac9-35f053006ae9",
+        "testId": "94ce8c9f-15f4-4f69-1d57-af24b6f0dbb0",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"receipt_ordinary\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:04.5502562",
+        "startTime": "2026-10-14T00:28:23.2771074+00:00",
+        "endTime": "2026-10-14T00:28:23.2771179+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "993c9aab-ecc8-4a2e-9ac9-35f053006ae9",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "d0c1a88b-185f-45f6-986a-5c934461402f",
+        "testId": "a0722e01-84d8-2b34-cd9f-6f66eb0d810c",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"missing_copy\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0001499",
+        "startTime": "2026-10-14T00:28:48.0907187+00:00",
+        "endTime": "2026-10-14T00:28:48.0907187+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d0c1a88b-185f-45f6-986a-5c934461402f",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "5d4a46c3-aa4f-4ae7-925f-84fa5f922bf7",
+        "testId": "e61dd45f-e76e-a29c-bfa9-aed769df7d07",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"broken_anchor\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0007054",
+        "startTime": "2026-10-14T00:28:48.0900590+00:00",
+        "endTime": "2026-10-14T00:28:48.0900591+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5d4a46c3-aa4f-4ae7-925f-84fa5f922bf7",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "8d05ef74-4b14-4671-8eed-f4ee64c7b009",
+        "testId": "9449d783-222f-077b-b5ce-1ff58838274a",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:02.1452745",
+        "startTime": "2026-10-14T00:28:50.2438261+00:00",
+        "endTime": "2026-10-14T00:28:50.2438265+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8d05ef74-4b14-4671-8eed-f4ee64c7b009",
+        "errorMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [\"source.router_dependency_missing\", \"source.bootstrap_source_exception\"]",
+        "stackTrace": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch() in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 52\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "1f8da24f-e8df-42ac-bf7a-7e9901a5971a",
+        "testId": "968c40d9-ea5b-68b2-1a18-9d3d0ece373f",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"late_empty_reset\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:04.0251550",
+        "startTime": "2026-10-14T00:28:38.0985301+00:00",
+        "endTime": "2026-10-14T00:28:38.0985303+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "1f8da24f-e8df-42ac-bf7a-7e9901a5971a",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "f0b16e55-d2f9-43d1-8c3c-597375f5b1ab",
+        "testId": "26b130d3-a47e-861c-7297-d7ff2a006f39",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"wrong_boundary\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:02.3897441",
+        "startTime": "2026-10-14T00:28:34.0772202+00:00",
+        "endTime": "2026-10-14T00:28:34.0772206+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f0b16e55-d2f9-43d1-8c3c-597375f5b1ab",
+        "errorMessage": "System.NullReferenceException : Object reference not set to an instance of an object.",
+        "stackTrace": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(String mutation) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 68\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "6d1f612c-9b4b-4c43-9946-367eca00c141",
+        "testId": "6fc72774-4766-d06f-239c-6ade097db304",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"read_all\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:04.1443913",
+        "startTime": "2026-10-14T00:28:27.4327889+00:00",
+        "endTime": "2026-10-14T00:28:27.4327892+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "6d1f612c-9b4b-4c43-9946-367eca00c141",
+        "errorMessage": "System.NullReferenceException : Object reference not set to an instance of an object.",
+        "stackTrace": "   at BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(String mutation) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs:line 68\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "b4ac41ea-5a05-41ed-8c72-026bbd79626b",
+        "testId": "ccee9315-5204-eb13-0eaf-fd2107340f38",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"late_override\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:03.9652433",
+        "startTime": "2026-10-14T00:28:42.0648147+00:00",
+        "endTime": "2026-10-14T00:28:42.0648150+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b4ac41ea-5a05-41ed-8c72-026bbd79626b",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "09ecdfb2-4ada-4768-a929-2ec27b655d1e",
+        "testId": "37c1242d-99ed-f573-7b62-a8861a4901a9",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(mutation: \"fenced_anchor\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:00.0224570",
+        "startTime": "2026-10-14T00:28:48.0887312+00:00",
+        "endTime": "2026-10-14T00:28:48.0887314+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "09ecdfb2-4ada-4768-a929-2ec27b655d1e",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "36f00af9-a710-4ad2-b9ad-ffaa7d7b4c0a",
+        "testId": "ed99c404-9700-d731-4fae-4aabc0fc9563",
+        "testName": "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(mutation: \"receipt_post_builder\")",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:03.9224120",
+        "startTime": "2026-10-14T00:28:45.9888652+00:00",
+        "endTime": "2026-10-14T00:28:45.9888656+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "36f00af9-a710-4ad2-b9ad-ffaa7d7b4c0a",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 9,
+    "nativeObservationBoundaries": {
+      "GM1557_AST": 1,
+      "GM1557_SOURCE_NEGATIVE": 7,
+      "GM1557_FINAL_SOURCE": 1
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gm1557-link-6a525e7a2d554cea8a2b5d784c10e94d",
+        "Removed": true
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING",
+    "strictCleanupReceiptReadbacks": [
+      {
+        "raw": {
+          "CleanupOwnedRoot": "/tmp/boe-gm1557-link-6a525e7a2d554cea8a2b5d784c10e94d",
+          "Removed": true
+        },
+        "schema": "Removed only; no invented failure field",
+        "physicallyAbsent": true,
+        "qualifiedRemoval": true
+      }
+    ],
+    "strictCleanupAllEmittedQualified": true,
+    "gmDeliveryReadbacks": [
+      {
+        "boundary": "GM1557_AST",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89570,
+            "BirthTicks": 2200795,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-a0ac8a4dee6b4f7582fb59cf48cb8e21/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-a0ac8a4dee6b4f7582fb59cf48cb8e21/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/ast-and-publication.json",
+              "-Mode",
+              "inspect"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-a0ac8a4dee6b4f7582fb59cf48cb8e21",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-a0ac8a4dee6b4f7582fb59cf48cb8e21",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 5
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89441,
+            "BirthTicks": 2198938,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-a3d9bc84ca834d2cb6b0cbe7953e4b46/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-a3d9bc84ca834d2cb6b0cbe7953e4b46/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-a3d9bc84ca834d2cb6b0cbe7953e4b46",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-a3d9bc84ca834d2cb6b0cbe7953e4b46",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89384,
+            "BirthTicks": 2198073,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-004e52edcc6545a0a0de031fba772350/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-004e52edcc6545a0a0de031fba772350/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-004e52edcc6545a0a0de031fba772350",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-004e52edcc6545a0a0de031fba772350",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_FINAL_SOURCE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89595,
+            "BirthTicks": 2201004,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-1d731809ee484665a38f9df50fbf10aa/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-1d731809ee484665a38f9df50fbf10aa/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/ast-and-publication.json",
+              "-Mode",
+              "inspect"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-1d731809ee484665a38f9df50fbf10aa",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-1d731809ee484665a38f9df50fbf10aa",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 5
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89491,
+            "BirthTicks": 2199604,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-54c52595294e4c0883b8e8597804663f/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-54c52595294e4c0883b8e8597804663f/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-54c52595294e4c0883b8e8597804663f",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-54c52595294e4c0883b8e8597804663f",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": "System.IO.InvalidDataException: delivery.retained_identity_changed\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.SameAlive(Identity identity) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 330\n   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)\n   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)\n   at System.Linq.Enumerable.ToHashSet[TSource](IEnumerable`1 source)\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.Census(Identity original, String package, String root, Dictionary`2 authorized, Dictionary`2 unknown, List`1 issues) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 349\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunAsync(String repo, Boolean publish, Func`2 sourceMutation, Func`2 sourceSeedMutation) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 184",
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89466,
+            "BirthTicks": 2199363,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-f89ddb90347448139fd14c10e74e2d4c/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-f89ddb90347448139fd14c10e74e2d4c/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-f89ddb90347448139fd14c10e74e2d4c",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-f89ddb90347448139fd14c10e74e2d4c",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": "System.IO.InvalidDataException: delivery.retained_identity_changed\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.SameAlive(Identity identity) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 330\n   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()\n   at System.Collections.Generic.HashSet`1.UnionWith(IEnumerable`1 other)\n   at System.Collections.Generic.HashSet`1..ctor(IEnumerable`1 collection, IEqualityComparer`1 comparer)\n   at System.Linq.Enumerable.ToHashSet[TSource](IEnumerable`1 source, IEqualityComparer`1 comparer)\n   at System.Linq.Enumerable.ToHashSet[TSource](IEnumerable`1 source)\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.Census(Identity original, String package, String root, Dictionary`2 authorized, Dictionary`2 unknown, List`1 issues) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 349\n   at BookOfEternityClient.Tests.GmDocumentationDeliveryScenario.RunAsync(String repo, Boolean publish, Func`2 sourceMutation, Func`2 sourceSeedMutation) in /workspace/1557-gm-doc-modularization-cloud-20261013/BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs:line 184",
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89411,
+            "BirthTicks": 2198528,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-1b9a7b642ee743178edf9ab831b66ccf/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-1b9a7b642ee743178edf9ab831b66ccf/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-1b9a7b642ee743178edf9ab831b66ccf",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-1b9a7b642ee743178edf9ab831b66ccf",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89517,
+            "BirthTicks": 2200005,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-23b3e09f41ee4aeaaf4f8d61a64896e1/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-23b3e09f41ee4aeaaf4f8d61a64896e1/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-23b3e09f41ee4aeaaf4f8d61a64896e1",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-23b3e09f41ee4aeaaf4f8d61a64896e1",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      },
+      {
+        "boundary": "GM1557_SOURCE_NEGATIVE",
+        "nativeExitConfirmed": true,
+        "nativeRootsRemoved": true,
+        "nativeCleanupFailures": [],
+        "nativeFailure": null,
+        "nativeIssues": [],
+        "nativeStdoutEof": true,
+        "nativeStderrEof": true,
+        "nativeIdentities": [
+          {
+            "Pid": 89545,
+            "BirthTicks": 2200401,
+            "ParentPid": 89361,
+            "Args": [
+              "pwsh",
+              "-NoLogo",
+              "-NoProfile",
+              "-NonInteractive",
+              "-File",
+              "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/inspect-and-publish.ps1",
+              "-DaemonPath",
+              "/tmp/boe-gm1557-package-4ac1b561d57d4b7fbb0daf8dabde01eb/game_master_daemon.ps1",
+              "-SessionPath",
+              "/tmp/boe-gm1557-session-4ac1b561d57d4b7fbb0daf8dabde01eb/game_session",
+              "-ReportPath",
+              "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/ast-and-publication.json",
+              "-Mode",
+              "inspect",
+              "-SeedDaemonPath",
+              "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/nonexecuting-source-seed.ps1"
+            ],
+            "Role": "pwsh"
+          }
+        ],
+        "nativeRemaining": [],
+        "physicalRoots": {
+          "package": {
+            "path": "/tmp/boe-gm1557-package-4ac1b561d57d4b7fbb0daf8dabde01eb",
+            "physicallyAbsent": true
+          },
+          "root": {
+            "path": "/tmp/boe-gm1557-session-4ac1b561d57d4b7fbb0daf8dabde01eb",
+            "physicallyAbsent": true
+          }
+        },
+        "retainedArtifacts": 7
+      }
+    ],
+    "retainedNativeArtifactFiles": [
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-ast-and-publication.json",
+        "bytes": 701849,
+        "sha256": "f3fbcd28940d7ce2f07e2a37590368c8d1a37ddb9d24e0c3838f14cc7205fd81"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/outcome.json",
+        "scratchName": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-outcome.json",
+        "bytes": 646505,
+        "sha256": "5f3b938e6fd98a0393a1243c04c617e3d4b40a41ef160ffba670c74897da7246"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/stderr.log",
+        "scratchName": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a0ac8a4dee6b4f7582fb59cf48cb8e21/stdout.log",
+        "scratchName": "actual-native-artifact-a0ac8a4dee6b4f7582fb59cf48cb8e21-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-ast-and-publication.json",
+        "bytes": 1436072,
+        "sha256": "bf2813a8c8a371184a516b2ebd7fd3beaa25d55f98bf946b5379f7975c55c798"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "cf11b30a14a950d79b32de75cc8880770ca653e4e41e10e3527d29f05898c612"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/outcome.json",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-outcome.json",
+        "bytes": 1264756,
+        "sha256": "913f41f2b81b85c5c4240c3d091820bf11d7dcc4f46691ac0a01971fb0389c44"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/stderr.log",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-a3d9bc84ca834d2cb6b0cbe7953e4b46/stdout.log",
+        "scratchName": "actual-native-artifact-a3d9bc84ca834d2cb6b0cbe7953e4b46-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-ast-and-publication.json",
+        "bytes": 1436386,
+        "sha256": "3305f9b0452310525e41298e194e0ce9661b0ef7f99289345f9ce9d70e8bf81a"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "5efb4039a9b72a0ec1c4fa80ee0101667d9169602e24dd6683de4a7ceb85dc1c"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/outcome.json",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-outcome.json",
+        "bytes": 1265060,
+        "sha256": "21c091c11ab7e70c1d1e577050210e6e2c3374a5777a3b5953e048dff12a0471"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/stderr.log",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-004e52edcc6545a0a0de031fba772350/stdout.log",
+        "scratchName": "actual-native-artifact-004e52edcc6545a0a0de031fba772350-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-ast-and-publication.json",
+        "bytes": 701849,
+        "sha256": "e7e3e7f43c3d0431edb1f11dcec1831659c580384a7a2232605294056c0f5a21"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/outcome.json",
+        "scratchName": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-outcome.json",
+        "bytes": 646502,
+        "sha256": "f52fde85f931f6fde6702c8cd9a22ba5fd47fbc6bbd0cef300e168bc29c71a21"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/stderr.log",
+        "scratchName": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1d731809ee484665a38f9df50fbf10aa/stdout.log",
+        "scratchName": "actual-native-artifact-1d731809ee484665a38f9df50fbf10aa-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-ast-and-publication.json",
+        "bytes": 1436445,
+        "sha256": "329be8353cbe12f9e8bfd68ff1c8218f12260dceff001b7c9c66c5deb6f2c812"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "219631ad3183d58212721e8b868950758c03bb9aa77dc46f2c958b9bd2878e69"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/outcome.json",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-outcome.json",
+        "bytes": 1265056,
+        "sha256": "9a66add9144900ac01d6f787f8bcd1f4fc167e230a04eb13d58f18a147089452"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/stderr.log",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-54c52595294e4c0883b8e8597804663f/stdout.log",
+        "scratchName": "actual-native-artifact-54c52595294e4c0883b8e8597804663f-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-ast-and-publication.json",
+        "bytes": 734520,
+        "sha256": "45ac173e481d41435780b87be1f1ea294ff767c2655ff232d19e2ac911df6eb8"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "c9ce2ab504c386875df6d1d6b646bc9b2b0a3fd55409c001b17b13fe1065ca20"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/outcome.json",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-outcome.json",
+        "bytes": 29460,
+        "sha256": "273599885da15a227d51124c95cdb2ac63d1ad8ee8c7b4156a4123c6bb10cf17"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/stderr.log",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-f89ddb90347448139fd14c10e74e2d4c/stdout.log",
+        "scratchName": "actual-native-artifact-f89ddb90347448139fd14c10e74e2d4c-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-ast-and-publication.json",
+        "bytes": 1436141,
+        "sha256": "42f88f824c6f79fc36251d5383d677b8cb5e8705cb85bdf6fbdf54717c891273"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "a31a27d4caf0f824b5387885d779a0679c4fe8a7fde7202388a50fc91aa80c32"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/outcome.json",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-outcome.json",
+        "bytes": 29647,
+        "sha256": "97445e59077c4f17d0cbbe23a4ef05af37cd98c8b5be5c1d3aad2d957bdbfda4"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/stderr.log",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-1b9a7b642ee743178edf9ab831b66ccf/stdout.log",
+        "scratchName": "actual-native-artifact-1b9a7b642ee743178edf9ab831b66ccf-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-ast-and-publication.json",
+        "bytes": 1436482,
+        "sha256": "2a71c1441b531857b1aae34b2b33a90b80d507d9ebe0f6e9ed770a20abc2bf1a"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "a67aa21c8723b5411e7cf159a5009115204dad2bb0b1e388ec6f15060c4cc4a5"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/outcome.json",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-outcome.json",
+        "bytes": 1265094,
+        "sha256": "cf1c2b4e2f8bad71393db34b64239acf44e6def62ca68469e785286d58ca9dc9"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/stderr.log",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-23b3e09f41ee4aeaaf4f8d61a64896e1/stdout.log",
+        "scratchName": "actual-native-artifact-23b3e09f41ee4aeaaf4f8d61a64896e1-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/ast-and-publication.json",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-ast-and-publication.json",
+        "bytes": 1436570,
+        "sha256": "2207d133bdd13ef024b230653b46e30e120af49dbb9d971ebc289c8bc04dc425"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/ast-and-publication.json.seed",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-ast-and-publication.json.seed",
+        "bytes": 701804,
+        "sha256": "237629efb0fb98dce389de17449e8c6c4393ead75f03fed00c680b51800ca827"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/inspect-and-publish.ps1",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-inspect-and-publish.ps1",
+        "bytes": 9144,
+        "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/nonexecuting-source-seed.ps1",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-nonexecuting-source-seed.ps1",
+        "bytes": 398649,
+        "sha256": "f3e30c4326c9268841ad38a757b024e0ebdaa83eddb62f358f64970d42a0740e"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/outcome.json",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-outcome.json",
+        "bytes": 1265152,
+        "sha256": "79d3ba23b134a4c908c94b98a62f6fe2ab02cd0c929e211125eb50127b6ad3e8"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/stderr.log",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "originalPath": "/tmp/boe-gm1557-evidence-4ac1b561d57d4b7fbb0daf8dabde01eb/stdout.log",
+        "scratchName": "actual-native-artifact-4ac1b561d57d4b7fbb0daf8dabde01eb-stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "source": "5091bdff75ee3277f35c83d7f5b53453ce5e1014",
+  "classification": "preparation setupFAIL before catalog load/build/discovery/tests: malformed related schema; pair/writer UNRUN; SOURCE diagnostic pending; no security refusal observed",
+  "branch": "1557-gm-doc-modularization-cloud-20261013",
+  "issue": 1557,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 475104,
+      "uncompressedSha256": "bec8cf6da3c3b221c120c204e6f0a487c0d30c70c60ce2afdb0dc0811820a747",
+      "compressedBytes": 129288,
+      "compressedSha256": "0837b4c093aaaedb3748117a671523a9e1001973cd2f23d615286268d8e3f8f0"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 376,
+      "uncompressedSha256": "f035ad5bd698e65920b7992b88996861775ed0fe38e344138b41d7cedab2511f",
+      "compressedBytes": 245,
+      "compressedSha256": "6324a5a2947f6b5d5f9d6f5836bf2c85ea3e94b4b108446c9ec7a667ef36eeff"
+    },
+    {
+      "name": "preparation-failure-root-readback.json.gz",
+      "uncompressedBytes": 1400,
+      "uncompressedSha256": "b74c3173f0c9d2c53bf0bbfeaa1018fa4d095f195bba4a2887bed48861d0ad90",
+      "compressedBytes": 795,
+      "compressedSha256": "82fb2325bc4c4070f40bf574b573713d486426ac91c439ddde33fc3328978236"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 415,
+      "uncompressedSha256": "f3d8a9ceeb21859b62135060d73776c8ce0ef7dfaf5069f46c3e5002d4bbcd69",
+      "compressedBytes": 274,
+      "compressedSha256": "628a6617819e853f632d0ac4f9379deb8729189150912a9824d76c6d858f7131"
+    },
+    {
+      "name": "source-related-shape-diagnosis.json.gz",
+      "uncompressedBytes": 709,
+      "uncompressedSha256": "43eba2a008cea4e8669ef33bf5a18ff45222bd509992df2d543aa9dcccec1d14",
+      "compressedBytes": 457,
+      "compressedSha256": "f161208bd0909ddac0c28915beb3865965e27b4f8c1eebaf7ade1f99493b9572"
+    }
+  ],
+  "frozenUtc": "2026-10-14T00:58:50.294319+00:00"
+}

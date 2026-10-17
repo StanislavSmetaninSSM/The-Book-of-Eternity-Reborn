@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 1,
+  "edits": [
+    {
+      "id": "N001",
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 8273,
+      "end": 10284,
+      "kind": "D01 authority-conflict reconciliation",
+      "beforeSha256": "f8a12fe62f7e65204d618d18df36f9ba46d33a67daf53457cc29c94931ab517e",
+      "beforeBase64": "IyMgQ2xpZW50IGNvZGUgZmFsbGJhY2ssINC10YHQu9C4INC60L7QvdGC0YDQsNC60YIg0LfQsNCx0LvQvtC60LjRgNC+0LLQsNC7INGF0L7QtAoK0J/RgNC+0LzQv9GC0YssINC/0YDQsNCy0LjQu9CwLCBgT3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZGAg0LggYEV4YW1wbGVzL0VfQ0xJX0FmdGVybGlmZV9UdXJucy50eHRgINGP0LLQu9GP0Y7RgtGB0Y8g0L7RgdC90L7QstC90YvQvCDRgNCw0LHQvtGH0LjQvCDQuNC90YLQtdGA0YTQtdC50YHQvtC8INCT0JzQsC4g0JrQvtC0INC60LvQuNC10L3RgtCwINCd0JUg0L3Rg9C20L3QviDRh9C40YLQsNGC0Ywg0LTQu9GPINC+0LHRi9GH0L3QvtCz0L4g0YXQvtC00LAg0Lgg0L3QtdC70YzQt9GPINC40YHQv9C+0LvRjNC30L7QstCw0YLRjCDQstC80LXRgdGC0L4gcmVhbG0gZ2F0ZSwg0LzQsNGC0YDQuNGG0YssIGV4YW1wbGVzINC40LvQuCDQt9Cw0L/RgNC10YLQvtCyINC/0YDQsNCy0LjQuy4KCtCV0YHQu9C4INC/0L7RgdC70LUg0L7QsdGP0LfQsNGC0LXQu9GM0L3Ri9GFINC00L7QutGD0LzQtdC90YLQvtCyINC60L7QvdGC0YDQsNC60YIg0LLRgdGRINC10YnRkSDQvNC10YXQsNC90LjRh9C10YHQutC4INC90LXQv9C+0L3Rj9GC0LXQvSwg0LvQuNCx0L4gcmVwYWlyIHJlcXVlc3Qg0YPQutCw0LfRi9Cy0LDQtdGCINC90LAgc2NoZW1hL3N1cmZhY2UgbWlzbWF0Y2gsINCT0Jwg0LzQvtC20LXRgiDQvtGC0LrRgNGL0YLRjCDQutC+0LQg0LrQu9C40LXQvdGC0LAg0LrQsNC6IGZhbGxiYWNrIHNvdXJjZSBvZiB0cnV0aCDRgtC+0LvRjNC60L4g0LTQu9GPINGC0LXRhdC90LjRh9C10YHQutC+0Lkg0YTQvtGA0LzRiyDQutC+0L3RgtGA0LDQutGC0LA6Ci0gYEJvb2tPZkV0ZXJuaXR5Q2xpZW50L0NvbmZpZ3VyYXRpb24vRmlsZU1hcHBpbmcuY3NgIOKAlCDQutCw0LrQuNC1IHJlc3BvbnNlIGZpZWxkcyDQv9C40YjRg9GCINC60LDQutC40LUg0YTQsNC50LvRiy4KLSBgQm9va09mRXRlcm5pdHlDbGllbnQvTW9kZWxzL0dhbWVSZXNwb25zZS5jc2Ag0Lgg0YHQstGP0LfQsNC90L3Ri9C1INC80L7QtNC10LvQuCDigJQg0LrQsNC60LjQtSDQv9C+0LvRjyDRgdGD0YnQtdGB0YLQstGD0Y7RgiDQsiDQvtGC0LLQtdGC0LUuCi0gYEJvb2tPZkV0ZXJuaXR5Q2xpZW50L1NlcnZpY2VzL1ZhbGlkYXRpb24vYCDigJQg0LrQsNC60LjQtSDQv9C+0LvRjywgcmVjZWlwdHMsIHJlcG9ydHMg0Lggc3RhdGUgcm9vdHMg0LLQsNC70LjQtNC40YDRg9GO0YLRgdGPLgotIHJlbGV2YW50IHNlcnZpY2VzL25vcm1hbGl6ZXJzIHVuZGVyIGBCb29rT2ZFdGVybml0eUNsaWVudC9TZXJ2aWNlcy9gIOKAlCDQutCw0LrQuNC1IGNhbm9uaWNhbCBzdXJmYWNlcyDQuCBzaWRlIGVmZmVjdHMg0L7QttC40LTQsNC10YIgcnVudGltZS4KCtCi0LDQutC+0LkgZmFsbGJhY2sg0YDQsNC30YDQtdGI0LDQtdGCINGD0YLQvtGH0L3QuNGC0Ywg0LjQvNC10L3QsCDRhNCw0LnQu9C+0LIsIEpTT04t0L/QvtC70Y8sIGFsbG93ZWQgdmFsdWVzLCByZWNlaXB0L3JlcG9ydCBzaGFwZSwgY2Fub25pY2FsIHN0YXRlIHN1cmZhY2VzINC4INC/0L7RgNGP0LTQvtC6INC90L7RgNC80LDQu9C40LfQsNGG0LjQuC4g0J7QvSDQndCVINGA0LDQt9GA0LXRiNCw0LXRgiDQv9GA0LjQtNGD0LzRi9Cy0LDRgtGMINC90L7QstGL0LUgZ2FtZXBsYXkt0YHQuNGB0YLQtdC80YssINC30LDQutGA0YvQstCw0YLRjCBhZnRlcmxpZmUg0YHQvNGL0YHQuyDRh9C10YDQtdC3IE1vcnRhbCBXb3JsZCBjaGFubmVscyDQuNC70Lgg0L7QsdGF0L7QtNC40YLRjCDQv9GA0L7QvNC/0YLRiy4g0JXRgdC70LggZmFsbGJhY2sg0LjRgdC/0L7Qu9GM0LfQvtCy0LDQu9GB0Y8sINC60YDQsNGC0LrQviDRg9C60LDQttC4INCyIGBnbV90aG91Z2h0c19tYXJrZG93bmAsINC60LDQutC+0Lkg0LrQvtC90YLRgNCw0LrRgiDQsdGL0Lsg0YPRgtC+0YfQvdGR0L0g0Lgg0LrQsNC60L7QtSBjYW5vbmljYWwg0YDQtdGI0LXQvdC40LUg0LLRi9Cx0YDQsNC90L4uCg==",
+      "afterSha256": "c03cdd1d2d9c49b567e4392cad6bf5d4a488de64b1eb8e949eda7e53dc770941",
+      "afterBase64": "IyMg0JXRgdC70LggR00t0LrQvtC90YLRgNCw0LrRgiDQvtGB0YLQsNGR0YLRgdGPINC90LXRj9GB0L3Ri9C8CgrQn9GA0L7QvNC/0YLRiywg0L/RgNCw0LLQuNC70LAsIGBPdGhlckd1aWRlcy9BZnRlcmxpZmVfQ29udHJhY3RfTWF0cml4Lm1kYCDQuCBgRXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dGAg0Y/QstC70Y/RjtGC0YHRjyDRgNCw0LHQvtGH0LjQvCDQuNC90YLQtdGA0YTQtdC50YHQvtC8INCT0JzQsC4g0JzQsNGC0YDQuNGG0LAg0LggZXhhbXBsZXMg0L3QsNC/0YDQsNCy0LvRj9GO0YIg0Log0L/RgNC40LzQtdC90LjQvNGL0Lwg0YLQtdC80LDRgtC40YfQtdGB0LrQuNC8INC00L7QutGD0LzQtdC90YLQsNC8INC4INC/0YDQuNC80LXRgNCw0Lw7INC+0YLQutGA0YvQstCw0Lkg0LjRhSDQv9C+INGC0LXQutGD0YnQtdC5INC30LDQtNCw0YfQtS4g0JLQviDQstGA0LXQvNGPINC+0LHRi9GH0L3QvtC5INC40LPRgNGLINC4IHZhbGlkYXRpb24gcmVwYWlyINC30LDQv9GA0LXRidC10L3QviDRh9C40YLQsNGC0YwgaW1wbGVtZW50YXRpb24gY29kZSDQutC70LjQtdC90YLQsCwg0LIg0YLQvtC8INGH0LjRgdC70LUgYEJvb2tPZkV0ZXJuaXR5Q2xpZW50LyoqLyouY3NgLCDRh9GC0L7QsdGLINCy0YvRj9GB0L3Rj9GC0Ywg0L/RgNCw0LLQuNC70LAg0LjQu9C4INGC0LXRhdC90LjRh9C10YHQutGD0Y4g0YTQvtGA0LzRgyDQutC+0L3RgtGA0LDQutGC0LAuCgrQldGB0LvQuCDQv9C+0YHQu9C1INC+0LHRj9C30LDRgtC10LvRjNC90YvRhSDQtNC+0LrRg9C80LXQvdGC0L7QsiDQutC+0L3RgtGA0LDQutGCINC+0YHRgtCw0ZHRgtGB0Y8g0LzQtdGF0LDQvdC40YfQtdGB0LrQuCDQvdC10L/QvtC90Y/RgtC90YvQvCDQu9C40LHQviByZXBhaXIgcmVxdWVzdCDRg9C60LDQt9GL0LLQsNC10YIg0L3QsCBzY2hlbWEvc3VyZmFjZSBtaXNtYXRjaCwg0LjRgdC/0L7Qu9GM0LfRg9C5INGC0L7Qu9GM0LrQviDQv9GA0LXQtNGD0YHQvNC+0YLRgNC10L3QvdGL0LUgR00tZmFjaW5nINC40YHRgtC+0YfQvdC40LrQuDoKLSDRgtC10LrRg9GJ0LjQuSDQt9Cw0L/RgNC+0YEg0LrQu9C40LXQvdGC0LAg0Lgg0L3QsNC30LLQsNC90L3Ri9C1INCyINC90ZHQvCDRgdC60L7Qv9C40YDQvtCy0LDQvdC90YvQtSBHTS3QtNC+0LrRg9C80LXQvdGC0YssINC/0YDQuNC80LXQvdC40LzRi9C1INGB0YLRgNC+0LrQuCDQvNCw0YLRgNC40YbRiyDQuCB3b3JrZWQgZXhhbXBsZXM7Ci0gYHZhbGlkYXRpb25fcmVwYWlyX3JlcXVlc3QuanNvbi5oYXJuZXNzUmVwYWlyUGFja2V0c2Ag0LTQu9GPINGC0LXQutGD0YnQtdCz0L4gcmVwYWlyLCBzYWZlIEdNIHByb2JlcyDQuCBoZWxwZXIgY29tbWFuZHMg0LIg0L/RgNC10LTQtdC70LDRhSDQuNGFINGA0LDQt9GA0LXRiNGR0L3QvdC+0LPQviBzY29wZTsKLSDRgNCw0LfRgNC10YjRkdC90L3Ri9C1INC00LvRjyDRgtC10LrRg9GJ0LXQs9C+IHJlYWxtINC4IHBlbmRpbmct0LrQvtC90YLRgNCw0LrRgtCwIHNlc3Npb24gc3RhdGUvY29udHJvbCBmaWxlcy4KCtCV0YHQu9C4INGC0L7Rh9C90LDRjyDRhNC+0YDQvNCwINC60L7QvdGC0YDQsNC60YLQsCDQvtGC0YHRg9GC0YHRgtCy0YPQtdGCINCyINGN0YLQuNGFINC40YHRgtC+0YfQvdC40LrQsNGFINC40LvQuCDQvdC10LTQvtGB0YLRg9C/0L3QsCwg0LfQsNGE0LjQutGB0LjRgNGD0Lkg0L3QtdC00L7RgdGC0LDRjtGJ0YPRjiBkb2N1bWVudGF0aW9uL2hhcm5lc3Mgc3VyZmFjZSDQsiBgZ21fdGhvdWdodHNfbWFya2Rvd25gINCyINGA0LDQvNC60LDRhSDRgtC10LrRg9GJ0LXQs9C+INC/0YDQvtGC0L7QutC+0LvQsC4g0J3QtSDQstC+0YHRgdGC0LDQvdCw0LLQu9C40LLQsNC5INC10ZEg0L/QviBpbXBsZW1lbnRhdGlvbiBjb2RlINC4INC90LUg0L/RgNC40LTRg9C80YvQstCw0LkgZ2FtZXBsYXkgb3V0Y29tZXMsIEpTT04t0L/QvtC70Y8sIGFsbG93ZWQgdmFsdWVzLCByZWNlaXB0L3JlcG9ydCBzaGFwZSDQuNC70LggY2Fub25pY2FsIHN0YXRlIHN1cmZhY2VzLgoK0K3RgtC4INC40YHRgtC+0YfQvdC40LrQuCDQvdC1INC+0YLQvNC10L3Rj9GO0YIgcmVhbG0gZ2F0ZSwgcGVuZGluZy3QutC+0L3RgtGA0LDQutGC0YssIGNhbm9uaWNhbC13cml0ZSByZXN0cmljdGlvbnMg0Lgg0LfQsNC/0YDQtdGC0Ysg0L/RgNCw0LLQuNC7LiDQndC10LvRjNC30Y8g0LfQsNC60YDRi9Cy0LDRgtGMIGFmdGVybGlmZS3RgdC80YvRgdC7INGH0LXRgNC10LcgTW9ydGFsIFdvcmxkIGNoYW5uZWxzINC40LvQuCDQvtCx0YXQvtC00LjRgtGMINC/0YDQvtC80L/RgtGLLiDQodC+0LHQu9GO0LTQsNC5INGC0LXQutGD0YnQuNC5IHRlcm1pbmFsL3JlcGFpciBwcm90b2NvbDsg0Y3RgtC+0YIg0YDQsNC30LTQtdC7INC90LUg0YDQsNC30YDQtdGI0LDQtdGCINC90L7QstGL0Lkg0YXQvtC0INC40LvQuCDQtNC+0L/QvtC70L3QuNGC0LXQu9GM0L3Ri9C1INC30LDQv9C40YHQuCDQstC90LUg0LXQs9C+IHNjb3BlLgo=",
+      "authority": "recovery/coordinator-review-and-D01-disposition.md + final-source-gate-readonly-supplement.md",
+      "applied": false
+    },
+    {
+      "id": "N002",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "start": 3286,
+      "end": 4070,
+      "kind": "D01 authority-conflict reconciliation",
+      "beforeSha256": "9fd1a49e71ec74f094dfdd501206536bec0e866be108ca98257d61c6a7c6dd7a",
+      "beforeBase64": "VGhlIEdNIG5vcm1hbGx5IGRvZXMgbm90IG5lZWQgdG8gcmVhZCBjbGllbnQgY29kZS4gVXNlIHRoaXMgbWF0cml4IHRvIGRlY2lkZSB3aGljaCBhZnRlcmxpZmUgY29udHJhY3RzIGFyZSBhY3RpdmUsIHdoaWNoIGZpbGVzIG11c3QgYmUgcmVhZCwgd2hpY2ggY2Fub25pY2FsIHN1cmZhY2VzIG11c3QgYmUgd3JpdHRlbiwgYW5kIHdoaWNoIE1vcnRhbCBXb3JsZCBzdWJzdGl0dXRpb25zIGFyZSBmb3JiaWRkZW4uIFVzZSBgRXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dGAgZm9yIGZ1bGwgd29ya2VkIEpTT04gZnJhZ21lbnRzIGFmdGVyIHNlbGVjdGluZyB0aGUgcmVsZXZhbnQgY29udHJhY3Qgcm93cyBoZXJlLiBJZiB0aGUgbWF0cml4IGFuZCBleGFtcGxlcyBzdGlsbCBsZWF2ZSBhIG1lY2hhbmljYWwgY29udHJhY3QgdW5jbGVhciwgb3IgYSB2YWxpZGF0aW9uIHJlcGFpciBwb2ludHMgYXQgYW4gZXhhY3Qgc2NoZW1hL3N1cmZhY2UgbWlzbWF0Y2gsIHRoZSBHTSBtYXkgaW5zcGVjdCBjbGllbnQgY29kZSBhcyBhIGZhbGxiYWNrIHNvdXJjZSBvZiB0cnV0aCBmb3IgZmlsZSBtYXBwaW5ncywgYWxsb3dlZCBmaWVsZHMsIHZhbGlkYXRvcnMsIGNhbm9uaWNhbCBzdGF0ZSBzdXJmYWNlcywgcmVjZWlwdHMsIHJlcG9ydHMsIGFuZCBub3JtYWxpemVycy4gVGhpcyBmYWxsYmFjayBuZXZlciByZXBsYWNlcyB0aGUgcHJvbXB0cyBhbmQgbXVzdCBub3QgYmUgdXNlZCB0byBpbnZlbnQgbmV3IGdhbWVwbGF5IG91dGNvbWVzIG9yIGJ5cGFzcyBhZnRlcmxpZmUgcnVsZXMuCg==",
+      "afterSha256": "134e46f72809ef9ce3de97dd04f221e8bf64b17e26d0b492fea3d820266d1834",
+      "afterBase64": "VGhlIEdNIG11c3Qgbm90IHJlYWQgY2xpZW50IGltcGxlbWVudGF0aW9uIGNvZGUgZHVyaW5nIG5vcm1hbCBwbGF5IG9yIHZhbGlkYXRpb24gcmVwYWlyLiBVc2UgY3VycmVudCByZXF1ZXN0LCBuYW1lZCBjb3BpZWQgR00gZG9jcywgdmFsaWRhdGlvbl9yZXBhaXJfcmVxdWVzdC5qc29uLmhhcm5lc3NSZXBhaXJQYWNrZXRzLCBzYWZlIHByb2JlcywgYWxsb3dlZCBzZXNzaW9uIHN0YXRlL2NvbnRyb2wgZmlsZXMgYW5kIGhlbHBlciBjb21tYW5kcy4gUmVwb3J0IGFuIHVuZG9jdW1lbnRlZC91bmF2YWlsYWJsZSBjb250cmFjdCBpbiBnbV90aG91Z2h0c19tYXJrZG93bjsgbmV2ZXIgaW52ZW50IGdhbWVwbGF5IG91dGNvbWVzIG9yIGJ5cGFzcyByZWFsbS9wZW5kaW5nL2Nhbm9uaWNhbCByZXN0cmljdGlvbnMuCg==",
+      "authority": "recovery/coordinator-review-and-D01-disposition.md + final-source-gate-readonly-supplement.md",
+      "applied": false
+    },
+    {
+      "id": "N003",
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 82671,
+      "end": 83145,
+      "kind": "D01 authority-conflict reconciliation",
+      "beforeSha256": "002065a8b036534b4089f1807aaafc16bc122e1565f270497ee18ba642eb5639",
+      "beforeBase64": "ICAgICAgICAgICAgLSBJZiB0aGUgbWF0cml4IGFuZCBgRXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dGAgc3RpbGwgbGVhdmUgYW4gZXhhY3QgYWZ0ZXJsaWZlIHNjaGVtYSB1bmNsZWFyLCBvciB2YWxpZGF0aW9uIHJlcGFpciByZXBvcnRzIGEgZmllbGQvc3VyZmFjZSBtaXNtYXRjaCwgaW5zcGVjdCB0aGUgY2xpZW50IGNvZGUgYnkgcGVuZGluZyBmaWxlIG5hbWUsIGBhY3Rpb25UeXBlYCwgcmVzcG9uc2UgZmllbGQsIG9yIG91dHB1dCBzdXJmYWNlIGFzIGEgZmFsbGJhY2sgbWVjaGFuaWNhbCBzb3VyY2Ugb2YgdHJ1dGg7IHVzZSBpdCBvbmx5IHRvIGNvbmZpcm0gZmlsZSBtYXBwaW5ncywgdmFsaWRhdG9ycywgY2Fub25pY2FsIHN1cmZhY2VzLCByZWNlaXB0cywgcmVwb3J0cywgYW5kIG5vcm1hbGl6ZXJzLCB0aGVuIHJlY29yZCB0aGUgY2xhcmlmaWVkIGNvbnRyYWN0IGluIGBnbV90aG91Z2h0c19tYXJrZG93bmAK",
+      "afterSha256": "93e64b94c4ca870865f19d0f167847ce8c19abcb23ddf98f683ff15b29067eca",
+      "afterBase64": "ICAgICAgICAgICAgLSBEdXJpbmcgbm9ybWFsIHBsYXkgb3IgdmFsaWRhdGlvbiByZXBhaXIsIGRvIG5vdCByZWFkIGNsaWVudCBpbXBsZW1lbnRhdGlvbiBjb2RlLiBVc2UgdGhlIGN1cnJlbnQgcmVxdWVzdCwgbmFtZWQgY29waWVkIEdNIGRvY3MsIHZhbGlkYXRpb25fcmVwYWlyX3JlcXVlc3QuanNvbi5oYXJuZXNzUmVwYWlyUGFja2V0cywgc2FmZSBwcm9iZXMsIGFsbG93ZWQgc2Vzc2lvbiBzdGF0ZS9jb250cm9sIGZpbGVzIGFuZCBoZWxwZXIgY29tbWFuZHMuIFJlcG9ydCBtaXNzaW5nIGRvY3VtZW50YXRpb24vaGFybmVzcyBzdXJmYWNlcyBpbiBnbV90aG91Z2h0c19tYXJrZG93bjsgZG8gbm90IGludmVudCBmaWVsZHMsIHJlY2VpcHRzIG9yIGNhbm9uaWNhbCBhbnN3ZXJzIG9yIGJ5cGFzcyByZWFsbS9wZW5kaW5nL2Nhbm9uaWNhbCByZXN0cmljdGlvbnMuCg==",
+      "authority": "recovery/coordinator-review-and-D01-disposition.md + final-source-gate-readonly-supplement.md",
+      "applied": false
+    },
+    {
+      "id": "N004",
+      "source": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "start": 3009,
+      "end": 3285,
+      "kind": "approved conditional-reading replacement",
+      "beforeSha256": "8b37be78697313885d4c347d8cd5f713dbf65bbbc26d30aa6f611f36ade6c2a4",
+      "beforeBase64": "VGhpcyBndWlkZSBpcyBtYW5kYXRvcnkgb3BlcmF0aW9uYWwgY29udGV4dCBmb3IgZXZlcnkgR00gdHVybiB3aGVyZSBgZ2FtZV9zdGF0ZS9tZXRhL3NvdWxfc3RhdGUuanNvbi5jdXJyZW50UmVhbG1gIGlzIGBDaGFvcyBTZWFgLCBg0JzQvtGA0LUg0KXQsNC+0YHQsGAsIGBTaGluaW5nIEFib2RlYCwgb3IgYNCh0LjRj9GO0YnQsNGPINCe0LHQuNGC0LXQu9GMYCwgYW5kIGZvciBhbnkgdHVybiB3aG9zZSBgcHJvZ3Jlc3Npb25Db250cm9sYCBjb250YWlucyBhZnRlcmxpZmUgZGVidC4K",
+      "afterSha256": "50e36a4dfa0a6048cd40d49b7b46d340c1dcbc1a633665024c13cb8400d6a323",
+      "afterBase64": "VGhpcyBtYXRyaXggaXMgdGhlIGFmdGVybGlmZSBuYXZpZ2F0aW9uIGVudHJ5cG9pbnQuIFJlYWQgdGhlIGNvbXBhY3QgY29tbW9uIGNvcmUgYW5kIG9ubHkgdG9waWNzIHNlbGVjdGVkIGJ5IHRoZSBjdXJyZW50IHJlcXVlc3QsIHJlYWxtL2xpZmVjeWNsZSBhbmQgZXhhY3QgYWN0aXZlIGNvbnRyYWN0IHVuaW9uIGluIENMSV9SdWxlc19JbmRleC5tZDsgYm9vdHN0cmFwIGFuZCBkZWRpY2F0ZWQgcmVjZWlwdC1vbmx5IHRhc2tzIHJldGFpbiB0aGVpciBuYXJyb3dlciByZWFkaW5nIHNjb3BlLgo=",
+      "authority": "recovery/coordinator-review-and-D01-disposition.md + final-source-gate-readonly-supplement.md",
+      "applied": false
+    },
+    {
+      "id": "N005",
+      "source": "Examples/E_CLI_Afterlife_Turns.txt",
+      "start": 9138,
+      "end": 9301,
+      "kind": "approved conditional-reading replacement",
+      "beforeSha256": "6a8032b450249c2a0225e8d3bdcd2d796777cdacd76443bc2468ee50147d85e4",
+      "beforeBase64": "UmVhZCB0aGlzIGZpbGUgd2hlbmV2ZXIgYGdhbWVfc3RhdGUvbWV0YS9zb3VsX3N0YXRlLmpzb24uY3VycmVudFJlYWxtYCBpcyBgQ2hhb3MgU2VhYCwgYNCc0L7RgNC1INCl0LDQvtGB0LBgLCBgU2hpbmluZyBBYm9kZWAsIG9yIGDQodC40Y/RjtGJ0LDRjyDQntCx0LjRgtC10LvRjGAuCg==",
+      "afterSha256": "554968a5d9302e70e4d012fbdfb9a7935537fdfaa34ea892038fc5d7de4d14e1",
+      "afterBase64": "VXNlIHRoaXMgZXhhbXBsZSBuYXZpZ2F0b3IgZm9yIHRoZSBleGFjdCBhY3RpdmUgcm91dGUgaW4gQ0xJX1J1bGVzX0luZGV4Lm1kLiBSZWFkIG9ubHkgdGhlIG1hdGNoaW5nIGNvbXBsZXRlIHRoZW1hdGljIGV4YW1wbGVzIGFuZCB0aGVpciBhY3R1YWwgcHJlcmVxdWlzaXRlczsgYXZhaWxhYmlsaXR5IG5ldmVyIHJlcXVpcmVzIGFsbCBleGFtcGxlIGJvZGllcywgYW5kIGJvb3RzdHJhcC9yZWNlaXB0LW9ubHkgc2NvcGUgcmVtYWlucyBuYXJyb3cuCg==",
+      "authority": "recovery/coordinator-review-and-D01-disposition.md + final-source-gate-readonly-supplement.md",
+      "applied": false
+    }
+  ],
+  "stableReferenceInventory": [
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 10517,
+      "end": 10557,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 73813,
+      "end": 73853,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 73861,
+      "end": 73895,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 91544,
+      "end": 91578,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 233685,
+      "end": 233725,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 239325,
+      "end": 239365,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_API_Specification.md",
+      "start": 239523,
+      "end": 239557,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 6507,
+      "end": 6547,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 6824,
+      "end": 6858,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 8390,
+      "end": 8430,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 8436,
+      "end": 8470,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 67625,
+      "end": 67665,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 74668,
+      "end": 74708,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 74870,
+      "end": 74904,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 90937,
+      "end": 90971,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Agent_Daemon_Specification.md",
+      "start": 92751,
+      "end": 92785,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 2047,
+      "end": 2081,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 2781,
+      "end": 2815,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 8287,
+      "end": 8327,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 8535,
+      "end": 8569,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 18579,
+      "end": 18619,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 81301,
+      "end": 81341,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 81354,
+      "end": 81388,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 82521,
+      "end": 82561,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 82704,
+      "end": 82738,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 86776,
+      "end": 86816,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 86866,
+      "end": 86900,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 93404,
+      "end": 93438,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 120708,
+      "end": 120742,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 128833,
+      "end": 128867,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 148427,
+      "end": 148467,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 148480,
+      "end": 148514,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 186900,
+      "end": 186940,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "TaskGuides/CLI_Step_Main.txt",
+      "start": 186945,
+      "end": 186979,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "CLI_Rules_Index.md",
+      "start": 19657,
+      "end": 19697,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 4825,
+      "end": 4865,
+      "bytesBase64": "T3RoZXJHdWlkZXNcQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 4935,
+      "end": 4969,
+      "bytesBase64": "RXhhbXBsZXNcRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 107471,
+      "end": 107505,
+      "bytesBase64": "RXhhbXBsZXNcRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 107628,
+      "end": 107668,
+      "bytesBase64": "T3RoZXJHdWlkZXNcQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 192733,
+      "end": 192773,
+      "bytesBase64": "T3RoZXJHdWlkZXNcQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 192852,
+      "end": 192886,
+      "bytesBase64": "RXhhbXBsZXNcRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 208950,
+      "end": 208990,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 208994,
+      "end": 209028,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 209960,
+      "end": 210000,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/game_master_daemon.ps1",
+      "start": 210004,
+      "end": 210038,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "start": 1409,
+      "end": 1449,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "start": 1519,
+      "end": 1553,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "start": 2721,
+      "end": 2761,
+      "bytesBase64": "T3RoZXJHdWlkZXMvQWZ0ZXJsaWZlX0NvbnRyYWN0X01hdHJpeC5tZA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    },
+    {
+      "source": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "start": 2831,
+      "end": 2865,
+      "bytesBase64": "RXhhbXBsZXMvRV9DTElfQWZ0ZXJsaWZlX1R1cm5zLnR4dA==",
+      "disposition": "retain stable routing entrypoint; inspect actual reading directions separately; no unlisted path substitution"
+    }
+  ],
+  "D01": "RESOLVED: existing normal/repair implementation-code ban; no new exception",
+  "newWrapperContract": "Every destination has exactly its declared header plus per-block start/end marker. No unlisted wrapper bytes or whitespace normalization. Contextual table columns inherit the complete original source section; module-specific applicability must be explicit before moves.",
+  "status": "All edits unapplied; actual docs/daemon/production byte-exact."
+}
