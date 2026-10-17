@@ -225,8 +225,15 @@
       "change": "Exact Number level or nullable null; root and GetInt32 failures remain exposed to unchanged owner catch."
     },
     {
-      "owner": "ordinary ComputeAsync/GetTrainingStateAsync/TrainAsync",
-      "change": "Actual ordinary computation/training consume GetPlayerLevel immediately; two existing cap/write cases intentionally overlap category ownership."
+      "owner": "ordinary ComputeAsync / ApplyStatsIncreasedAsync",
+      "change": "ComputeAsync(cs68/71) and ApplyStatsIncreasedAsync(cs148/155) directly call actual GetPlayerLevel. The retained two-row real training cap/write control invokes ApplyStatsIncreasedAsync at MortalJointAutomaticCalculationTests.cs:194 and checks ordered cap outcomes plus exact characteristics bytes.",
+      "sourceRefs": [
+        "BookOfEternityClient/Services/CharacteristicsService.cs:68",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:71",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:148",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:155",
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:194"
+      ]
     },
     {
       "owner": "existing joint derived projection",
@@ -239,14 +246,37 @@
   ],
   "recovery": {
     "base": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
-    "fullStatus": "ONE exact GitHub codeload archive transport IN_PROGRESS; complete raw/blob/mode/path verification required before ANY actual",
-    "currentDeltaReceipt": "t179pd-training-level-source-wip-delta-recovery-20261017.json",
-    "coverage": "All10 changed/new source/checkpoint/report paths+4 mandatory governance files recovered exact from GitHub; does not alone constitute complete sourcebase recovery."
+    "fullStatus": "VERIFIED_FULL_GITHUB_BASE_PLUS_COMPLETE_CURRENT_DELTA; independent verification pending",
+    "fullBaseReceipt": "t179pd-training-level-current-full-source-recovery-20261017.json.gz",
+    "fullBaseFiles": 54526,
+    "fullBaseBytes": 3681361580,
+    "currentSourceAt": "3da75b412022f9268d10b289ddf620fee5ab63d3",
+    "currentTrackedFiles": 54546,
+    "currentDeltaReceipt": "t179pd-training-level-source-prepared-delta-recovery-20261017.json",
+    "coverageReceipt": "t179pd-training-level-current-source-recovery-coverage-20261017.json",
+    "coverage": "All current tracked paths and Git blob/modes covered by full exact new GitHub sourcebase plus all changed exact GitHub delta paths; new source dependency LevelPolicies.cs included. This metadata checkpoint requires its own new delta after push."
   },
   "sourceGate": "PENDING independent affected SOURCE/FIXTURE/SELECTION. No actual release from writer packet.",
   "nextActual": "Only FIRST fr063-joint-late-completion after accepted saved/readback SOURCE and verified complete source recovery; freeze/persist/separate EVIDENCE before each specifically released A1 owner actual.",
   "actualCurrentSource": "UNRUN: Late2 and all52A1; no runtime PASS claim",
   "platform": "Debian13 linux-x64 / SDK10.0.401 / .NET8.0.31 / PowerShell7.5.4",
   "gmUpdateRationale": "Behavior-preserving internal extraction; no changed game capability, emitted schema or GM-authored contract, so Mortal/afterlife prompts/docs/examples/manifests/guards need no update.",
-  "holds": "No CI/Windows/worker/denied-artifact workaround/settings/newQTE/HOT/S/B/M3/F1/T197 activation; D4/guidedUS5/actualDOM+visual/Windows/D8 remainOPEN; main/merge/force/deletion/credentials/issues untouched."
+  "holds": "No CI/Windows/worker/denied-artifact workaround/settings/newQTE/HOT/S/B/M3/F1/T197 activation; D4/guidedUS5/actualDOM+visual/Windows/D8 remainOPEN; main/merge/force/deletion/credentials/issues untouched.",
+  "sourceMetadataCorrections": [
+    {
+      "id": "A1-S01",
+      "finding": "Source packet invented two ordinary consumer API names; confirmed by independent Astra and root, then writer checked actual source.",
+      "previousOwner": "ordinary ComputeAsync/GetTrainingStateAsync/TrainAsync",
+      "correctedOwner": "ordinary ComputeAsync / ApplyStatsIncreasedAsync",
+      "status": "CORRECTED_PENDING_INDEPENDENT_VERIFICATION",
+      "impact": "Metadata only; production/tests/catalog/selection/runner/fixtures and compiled e247/four DLLs/preparation unchanged; no rerun.",
+      "refs": [
+        "BookOfEternityClient/Services/CharacteristicsService.cs:68",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:71",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:148",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:155",
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:194"
+      ]
+    }
+  ]
 }
