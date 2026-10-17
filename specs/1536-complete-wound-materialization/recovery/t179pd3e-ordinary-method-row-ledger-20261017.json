@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
   "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "CORRECTED_PREPARATION_NATIVE0_ZEROEXEC_BOUNDARY1_SOURCE_ELIGIBILITY_PENDING_S02_REGRESSION_HELD",
+  "status": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY_ALL_ACTUALS_UNRUN_AWAIT_NAMED_ROOT_ACTIVATION",
   "counts": {
     "categories": 5,
     "methods": 18,
@@ -12,7 +12,7 @@
     {
       "category": "fr063-reasoning-prefix-boundary",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "SOURCE_ELIGIBLE_BOUNDARY1_ONLY_UNRUN_AWAIT_NAMED_ROOT",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 17,
@@ -23,7 +23,7 @@
     {
       "category": "fr063-reasoning-prefix-source",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
       "line": 50,
@@ -34,7 +34,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 17,
@@ -58,7 +58,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 58,
@@ -69,7 +69,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 90,
@@ -95,7 +95,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 124,
@@ -114,7 +114,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 151,
@@ -128,7 +128,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 167,
@@ -142,7 +142,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 191,
@@ -153,7 +153,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 209,
@@ -164,7 +164,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 219,
@@ -180,7 +180,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 253,
@@ -194,7 +194,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 267,
@@ -209,7 +209,7 @@
     {
       "category": "fr063-reasoning-prefix-regression",
       "project": "unit",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
       "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
       "line": 297,
@@ -220,7 +220,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
       "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
       "declaredRows": 1,
@@ -229,7 +229,7 @@
     {
       "category": "fr063-reasoning-prefix-existing",
       "project": "integration",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING",
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION",
       "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
       "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
       "declaredRows": 1,
@@ -242,7 +242,7 @@
       "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
       "declaredRows": 1,
       "kind": "Fact",
-      "status": "COMPILED_DISCOVERED_UNRUN_SOURCE_REVIEW_PENDING"
+      "status": "COMPILED_DISCOVERED_UNRUN_HELD_OUTSIDE_BOUNDARY_ONLY_SOURCE_DECISION"
     }
   ],
   "firstCausalRed": {
@@ -329,5 +329,50 @@
       "safeBoundary": "Separate public Full boundary class/Scene-local fixture remains unchanged and unaffected. Seek eligibility ONLY structural boundary1; no semantic execution/acceptance of known-wrong regression method or blanket45-source acceptance.",
       "disposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held."
     }
-  ]
+  ],
+  "acceptedSourceDecision": {
+    "verdict": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY",
+    "carrier": "2dcfa0dde3e2111792c39fba4b102ca51995ad62",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.md",
+        "bytes": 4710,
+        "sha256": "ff954088d2bf868299f5458fea38fe5a2555622c96c269b86bb52fd428a061fa"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.json",
+        "bytes": 9137,
+        "sha256": "a72ce6362c993e5d0019a7fde68c58c64fb60b45dd5e5f9fe5e6427f9de3458a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-check-20261017.json",
+        "bytes": 38789,
+        "sha256": "becf848cd8b2d693c92e8d4597f17a88f8f754a023b9f86c4886ca186679e44d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-source-boundary1-conditional-2dcfa0dd-20261017.json",
+        "bytes": 2668,
+        "sha256": "687a49ff4aca540ec0137a57f4cc6d4d86a3ddf62d930c8a29ae922cee6580d6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-prep-delta-github-2dcfa0dd-20261017.json",
+        "bytes": 25490,
+        "sha256": "f44bd99ea7dbe092a7b0274558744b63f921b12e6c2f2e494c5f6cdc7a5e26fb"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2dcfa0dd-20261017.json",
+        "bytes": 17887,
+        "sha256": "e0d3c2a92c050659711256679dc053a0bc4a7b470e4c2c17e53aafa36d0d5d23"
+      }
+    ],
+    "sourceEligibleRows": 1,
+    "otherHeldRows": 44,
+    "actualExecuted": 0,
+    "category": "fr063-reasoning-prefix-boundary",
+    "scope": "Independent SOURCE/FIXTURE/SELECTION/PREP accepts isolated Scene-local public Full structural boundary1 only. No native command or product change authorized by this conditional decision. Persist/push/exactremote/new GitHub recovery and Root verification precede separately named exact successor activation.",
+    "S02": "OPEN material expected-vector defect for future full45; whole3row method and all other44 actuals held. Only after qualified structuralRED may exact two vector correction join minimal product WIP as separate test capsule before fresh product BOTH/Plan and complete affected SOURCE.",
+    "C01": "CLOSED by sole lambda correction and fresh catalog0/Plan0; original d377 compile failure and eight raw chains remain immutable, never semantic RED.",
+    "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner."
+  }
 }

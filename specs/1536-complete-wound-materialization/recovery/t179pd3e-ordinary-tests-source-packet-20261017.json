@@ -1,7 +1,7 @@
 {
   "kind": "PD3E_ORDINARY_DEBUG_PREFIX_TESTS_ONLY_CURRENT_SOURCE_NOT_PRODUCT_OR_RUNTIME_ACCEPTANCE",
   "baseline": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
-  "status": "CORRECTED_PREPARATION_NATIVE0_ZEROEXEC_BOUNDARY1_SOURCE_ELIGIBILITY_PENDING_S02_REGRESSION_HELD",
+  "status": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY_ALL_ACTUALS_UNRUN_AWAIT_NAMED_ROOT_ACTIVATION",
   "productDelta": [],
   "counts": {
     "categories": 5,
@@ -555,7 +555,7 @@
   "sourcePinDigest": "a8c9e79b97dc51ac4a16c2ccfb7be1015979ea5c78264e1fdadf182928bbbfaf",
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
-    "sha256": "764b3b06734d6b2dfedce0f73a94e0e02d4da88c06da4922783108004b0831c2"
+    "sha256": "2ee080c7b5e2ed2f96253d88fdfbd06ba2cb39cc667a1742ec563cc5f8eec778"
   },
   "references": [
     {
@@ -918,7 +918,7 @@
     }
   ],
   "futureBoundaryRecorder": {
-    "status": "UNRUN_SOURCE_ELIGIBILITY_PENDING_FOR_BOUNDARY1_ONLY_NOT_RUNTIME_AUTHORIZED",
+    "status": "SOURCE_ACCEPTED_FOR_BOUNDARY1_ONLY_UNRUN_AWAIT_SEPARATE_NAMED_ROOT_ACTIVATION",
     "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-ordinary-boundary-first-run.py",
     "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
     "category": "fr063-reasoning-prefix-boundary",
@@ -2735,7 +2735,7 @@
     ]
   },
   "c01Correction": {
-    "status": "ONE_LINE_COMPILED_DISCOVERED_ZEROEXEC_SOURCE_REVIEW_PENDING",
+    "status": "CLOSED_BY_FRESH_ZERO_PREPARATION_AND_BOUNDARY_ONLY_SOURCE_REVIEW",
     "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
     "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
     "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
@@ -2784,5 +2784,50 @@
         "bytes": 9928
       }
     }
-  ]
+  ],
+  "acceptedSourceDecision": {
+    "verdict": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY",
+    "carrier": "2dcfa0dde3e2111792c39fba4b102ca51995ad62",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.md",
+        "bytes": 4710,
+        "sha256": "ff954088d2bf868299f5458fea38fe5a2555622c96c269b86bb52fd428a061fa"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.json",
+        "bytes": 9137,
+        "sha256": "a72ce6362c993e5d0019a7fde68c58c64fb60b45dd5e5f9fe5e6427f9de3458a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-check-20261017.json",
+        "bytes": 38789,
+        "sha256": "becf848cd8b2d693c92e8d4597f17a88f8f754a023b9f86c4886ca186679e44d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-source-boundary1-conditional-2dcfa0dd-20261017.json",
+        "bytes": 2668,
+        "sha256": "687a49ff4aca540ec0137a57f4cc6d4d86a3ddf62d930c8a29ae922cee6580d6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-prep-delta-github-2dcfa0dd-20261017.json",
+        "bytes": 25490,
+        "sha256": "f44bd99ea7dbe092a7b0274558744b63f921b12e6c2f2e494c5f6cdc7a5e26fb"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2dcfa0dd-20261017.json",
+        "bytes": 17887,
+        "sha256": "e0d3c2a92c050659711256679dc053a0bc4a7b470e4c2c17e53aafa36d0d5d23"
+      }
+    ],
+    "sourceEligibleRows": 1,
+    "otherHeldRows": 44,
+    "actualExecuted": 0,
+    "category": "fr063-reasoning-prefix-boundary",
+    "scope": "Independent SOURCE/FIXTURE/SELECTION/PREP accepts isolated Scene-local public Full structural boundary1 only. No native command or product change authorized by this conditional decision. Persist/push/exactremote/new GitHub recovery and Root verification precede separately named exact successor activation.",
+    "S02": "OPEN material expected-vector defect for future full45; whole3row method and all other44 actuals held. Only after qualified structuralRED may exact two vector correction join minimal product WIP as separate test capsule before fresh product BOTH/Plan and complete affected SOURCE.",
+    "C01": "CLOSED by sole lambda correction and fresh catalog0/Plan0; original d377 compile failure and eight raw chains remain immutable, never semantic RED.",
+    "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner."
+  }
 }
