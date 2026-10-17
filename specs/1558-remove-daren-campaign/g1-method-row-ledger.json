@@ -1,5 +1,5 @@
 {
-  "status": "CORRECTED_G1_LEDGER_AND_ZEROEXEC_NATIVE_MEMBERSHIP; targeted independent SOURCE/actual pending",
+  "status": "CURRENT_EXACT_RUNTIME_DATA_AND_SELECTOR_PARTITION; compiled0b method/row bodies unchanged; freshNoBuildcatalog/finitePlanOnly pending; no consumer actual",
   "baseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "transfer": {
     "newOwners": [
@@ -9572,5 +9572,20 @@
     "G1-S01": "Genuine ChargeRelease keys + exact selected chapter/result/live-frame witness; per-ready-snapshot keys; task settling before any root cleanup, unresolved task retains input/root and fails qualification. Existing11 rows/category3m unchanged.",
     "G1-S03": "Existing strict FileSystemManager.ParseSessionGenerationText with BOM-aware captured byte decoding; Capture/Instantiate/storage4 read corrections. No new alias/fallback or product serialization change."
   },
-  "nativeMembershipSource": "0b721c7c37207f1f1622172351fd515150eaf18d"
+  "nativeMembershipSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "selectorPartition": {
+    "source": "46f916bd8b7848285d4ec4a369a2a7668f7219b1",
+    "method": "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation",
+    "oldOwner": "daren-retirement-storage-refusal",
+    "newOwner": "daren-retirement-original-schema6-green",
+    "reason": "Future GREEN/source-order only; baseline Original+current refusal is not meaningful retirement RED",
+    "sameCSharpMethodAndRows": true,
+    "removedCoverage": false,
+    "currentFullOwners": 17,
+    "currentFullEstimatedCases": 99,
+    "finiteRedOwners": 5,
+    "finiteRedMethods": 10,
+    "finiteRedCases": 28,
+    "nativeStatus": "PENDING_FIRST_NOBUILD_DISCOVERY_AND_FINITE_PLAN; counts proposed until native observed"
+  }
 }

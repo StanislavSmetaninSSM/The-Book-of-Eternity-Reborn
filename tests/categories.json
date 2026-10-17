@@ -28471,7 +28471,7 @@
     },
     {
       "id": "daren-retirement-storage-refusal",
-      "responsibility": "1558 five retired-evidence rows: captured-derived current browser with coexistence, standalone/mixed ordinary-first whole journal and explicit synthetic schema6 classification shape. Requires separately frozen captures; no data fallback. No recovery/mutation before specific retired refusal.",
+      "responsibility": "1558 four current-data retirement refusal rows: two capture-derived browser/coexistence and two standalone/mixed ordinary-first whole-journal cases. Exact reviewed original packets and explicit source-derived transport required. Every real owner/byte/callback diagnostic precedes causal oracle; synthetic original schema6 is separately owned GREEN/source-order only.",
       "excludes": "Unrelated subsystems, removed campaign success/playthroughs, broad suites, Windows/CI and previous accepted A255/B78 families.",
       "changeHints": [
         "specs/1558-remove-daren-campaign/spec.md"
@@ -28489,8 +28489,7 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredCurrentBrowserEvidence_RefusesBeforeAnyRecovery",
-            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery",
-            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation"
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredStandaloneMember_RefusesBeforeWholeSetRecovery"
           ]
         }
       ]
@@ -28740,6 +28739,30 @@
             "BookOfEternityClient.WebFrontend/test/uiStructure.test.ts"
           ],
           "runner": "node"
+        }
+      ]
+    },
+    {
+      "id": "daren-retirement-original-schema6-green",
+      "responsibility": "1558 existing synthetic original-schema6 classification/admission-order Fact, future GREEN/source-order only. Baseline already refuses Original+current evidence before mutation; different message alone is not retirement RED. Retain exact C# body, no Windows-authentic producer or execution claim.",
+      "excludes": "Current-data browser/standalone/mixed causal four rows, original producer captures, old campaign success, Windows/CI and broad historical families.",
+      "changeHints": [
+        "specs/1558-remove-daren-campaign/spec.md"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenRetirementStorageTests.RetiredOriginalSchemaShape_RefusesAtClassificationWithoutMutation"
+          ]
         }
       ]
     }

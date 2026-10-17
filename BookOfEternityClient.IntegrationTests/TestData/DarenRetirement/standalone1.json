@@ -1,0 +1,21 @@
+{
+  "Kind": "standalone1",
+  "ProductSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "Producer": "DarenRewardProfileFileStore.WriteExactBytesAtomicAsync / original standalone publisher; actual Committed observer cleanup cut",
+  "OriginalRoot": "/tmp/boe-daren-retirement-capture-e8d6134ff48544278d5d4d71035181aa",
+  "GenerationPath": ".boe_runtime/session-generation/current.json",
+  "Generation": "4578ba8a389a4d29a56e8b4123a9edf5",
+  "EvidencePath": ".boe_runtime/trusted-local-publication-v1/active.json",
+  "FilesBase64": {
+    "client_profile/qte_showcase_rewards.json": "0JQA/yo=",
+    "game_session/game_state/meta/retirement-ordinary-member.bin": "77u/AP8p",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI0NTc4YmE4YTM4OWE0ZDI5YTU2ZThiNDEyM2E5ZWRmNSJ9",
+    ".boe_runtime/trusted-local-publication-v1/active.json": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI3YmY0MjY2NDkzYmE0OWI5YjRlZWVlNjcxNGRjZjhmZSIsIkNvbW1pdHRlZCI6dHJ1ZSwiR2VuZXJhdGlvbkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIklkIjoiNDU3OGJhOGEzODlhNGQyOWE1NmU4YjQxMjNhOWVkZjUifSwiR2VuZXJhdGlvbkFmdGVyIjp7IkV4aXN0cyI6dHJ1ZSwiSWQiOiI0NTc4YmE4YTM4OWE0ZDI5YTU2ZThiNDEyM2E5ZWRmNSJ9LCJNZW1iZXJzIjpbeyJQYXRoIjoiL3RtcC9ib2UtZGFyZW4tcmV0aXJlbWVudC1jYXB0dXJlLWU4ZDYxMzRmZjQ4NTQ0Mjc4ZDVkNGQ3MTAzNTE4MWFhL2NsaWVudF9wcm9maWxlL3F0ZV9zaG93Y2FzZV9yZXdhcmRzLmpzb24iLCJCZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6Ijc3dS9BUDhwIiwiU2hhMjU2IjoiNTVGQjVGQzlCRjY2Rjc0QUIyOTlFOEU2RDdDRjA3NUQ1OTU0Mzk1MUZGQzRCRDM1NkFGNjExQTY2NTJBQTBGRCJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiMEpRQS95bz0iLCJTaGEyNTYiOiI2OTEzNTBFOUQ2QUUzN0FGNzkwRDczNjFDQjg2NjIyQjI4RjU0QTlCNUM3QzBCNkIxQTkxMEQ2ODFDQkYwQzUxIn19XX0="
+  },
+  "Sha256": {
+    "client_profile/qte_showcase_rewards.json": "691350E9D6AE37AF790D7361CB86622B28F54A9B5C7C0B6B1A910D681CBF0C51",
+    "game_session/game_state/meta/retirement-ordinary-member.bin": "55FB5FC9BF66F74AB299E8E6D7CF075D59543951FFC4BD356AF611A6652AA0FD",
+    ".boe_runtime/session-generation/current.json": "C5596D8594671EB6B21777DD55E9C6376F89B985209AC5C5198F3CB1F5F6E908",
+    ".boe_runtime/trusted-local-publication-v1/active.json": "ED1EAAF34DEB3A1B98A5387010C6835A99D8F81EC964BB6B26F58FC66D67653B"
+  }
+}

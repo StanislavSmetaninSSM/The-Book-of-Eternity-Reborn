@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: Corrected FIRST original-producer capture2 observed native0/2PASS atactualb2e / compiled0b / unchanged product46ff;10raw chains include2 original packets and strict2root cleanup. Raw/Root observations are preserved, not independent EVIDENCE or retirement RED. Packet/derived-transport review is next; TestData/install/rebase/consumerRED/otheractual/production remain held. Prior05d2FAIL/no-packets history unchanged. T004–T020 unchecked, includingT006/T009.
+**Status**: Independent capture2 EVIDENCE and actual-byte transport SOURCE accepted. Exact original2JSON installed; existing synthetic6 Fact moved to separate GREEN owner, current/full17owners and finiteRED5owners/28cases authored. Compiled0b57 nonselector pins/sevenDLL unchanged; historical60pins retained. FIRST NoBuildcatalog/finitePlanOnly and targetedbinding review pending; no consumer or retirementRED/production actual. T004–T020 unchecked.
 
 ## Source issues and scope
 
@@ -66,4 +66,7 @@ The historical read-only [initial inventory](recovery/preflight-source-inventory
 Historical pre-activation G1 source-only disposition was [accepted independently](recovery/gm1558-g1-corrected-source-independent-20261017.md), with [conditional Root capture2 eligibility](recovery/gm1558-root-corrected-capture2-only-release-230d5980-20261017.json). Findings S01/S02/S03 are closed at source only; authentic packets, derived transport and consumer RED remain unaccepted. No functional requirement or success criterion is declared complete. Exact metadata persistence/readback/recovery and separate Root activation still precede a corrected capture; all other actuals and G2 remain held.
 
 
-Current [corrected capture2 raw outcome](recovery/g1-corrected-first-capture-20261017.json) preserves two original-producer PASS results and exact packets, with independent frozen-data/derived-transport EVIDENCE pending. No consumer retirement RED or functional/success-criterion completion is claimed; production and all noncapture actuals remain held.
+Historical [corrected capture2 raw outcome](recovery/g1-corrected-first-capture-20261017.json) preserves two original-producer PASS results and exact packets, with independent frozen-data/derived-transport EVIDENCE pending. No consumer retirement RED or functional/success-criterion completion is claimed; production and all noncapture actuals remain held.
+
+
+Current [capture and actual-byte transport EVIDENCE/SOURCE acceptance](recovery/gm1558-corrected-capture-evidence-independent-20261017.md) permits exact runtime JSON installation and selector partition only. [Current binding](g1-data-selector-source-packet-20261017.json) distinguishes57 unchanged compiled source pins/seven0b DLLs from current data/catalog/selectors. Fresh zero-execution discovery/finitePlanOnly and independent binding review still precede consumer runtime and meaningful retirement RED; no requirement/success criterion or production removal is complete.

@@ -1,0 +1,103 @@
+{
+  "kind": "ROOT_ACCEPTED_CAPTURE_EVIDENCE_AND_BOUNDED_DATA_SELECTOR_PREPARATION_RELEASE",
+  "createdUtc": "2026-10-17T09:23:56.041874+00:00",
+  "carrier": "46f916bd8b7848285d4ec4a369a2a7668f7219b1",
+  "actualCaptureSource": "b2e51273678d5d2ea4e9b937b538c575722159fa",
+  "compiledSource": "0b721c7c37207f1f1622172351fd515150eaf18d",
+  "productSource": "46ff637a01390a27c45a7fc36dc30e31d688e499",
+  "independentVerdicts": {
+    "EVIDENCE": "ACCEPTED_TWO_AUTHENTIC_ORIGINAL_PRODUCER_CAPTURES_WITH_STRICT_CLEANUP",
+    "FIXTURE_DATA": "ACCEPTED_ORIGINAL_IMMUTABLE_PACKET_BYTES_FOR_EXACT_INSTALLATION",
+    "TRANSPORT_SOURCE": "ACCEPTED_BOUNDED_SOURCE_DERIVED_TRANSPORT_CONTRACT_FOR_THESE_BYTES; ACTUAL_INSTANTIATION_UNRUN",
+    "FUTURE_SOURCE_PREPARATION": "CONDITIONAL_ON_EXACT_DATA_INSTALLATION_PINS_SELECTOR_SPLIT_AND_ZERO_EXECUTION_DISCOVERY_PLAN_BINDING",
+    "RETIREMENT_RED": "NOT_EXECUTED_OR_ACCEPTED",
+    "RUNTIME_AUTHORIZATION": "NONE"
+  },
+  "rootDecision": "ACCEPT_CAPTURE2_EVIDENCE_AND_ACTUAL_BYTE_TRANSPORT_SOURCE__RELEASE_TESTS_ONLY_INSTALL_SELECTOR_PARTITION_AND_ZEROEXEC_PREPARATION",
+  "pins": [
+    {
+      "path": "/tmp/gm1558-corrected-capture-evidence-independent-20261017.md",
+      "sha256": "17e49ed7b2186e85d6d9818bb817ea15bf661246a5887a12006808de7079ce4f"
+    },
+    {
+      "path": "/tmp/gm1558-corrected-capture-evidence-independent-20261017.json",
+      "sha256": "2baca7fb3770adec17b22952c8f59435047faa762ee199198d8b786c657aecff"
+    },
+    {
+      "path": "/tmp/gm1558-corrected-capture-evidence-independent-check-20261017.json",
+      "sha256": "1e34b17a19d0bc42d42db7387152dc3ac27a928d179b4db53c73161c8c67ca93"
+    },
+    {
+      "path": "/tmp/gm1558-root-corrected-capture-carrier-readback-46f916bd-20261017.json",
+      "sha256": "819fc0f9ad0f91baf4426a40d3181e862843c16e91f05261b6a9d92177cfe1a2"
+    },
+    {
+      "path": "/tmp/gm1558-consumer-red-run.py",
+      "sha256": "1b48849b4efe732c5e799630c59874820c35ee418ad0e4a28076008bb3defd1c"
+    },
+    {
+      "path": "/tmp/gm1558-archive-consumer-red.py",
+      "sha256": "6020e29ab28e39a69e2159fb281e7120804fb39ad0650421cd189ee9ab46a0a7"
+    },
+    {
+      "path": "/tmp/gm1558-consumer-red-inspection-recipe.md",
+      "sha256": "782e660eee9167e3105021ba7a6109f18d91ff4b21f51f6f6b307806e7ac85f5"
+    }
+  ],
+  "allowedAuthoring": [
+    "Persist exact immutable captureEVIDENCE reviewerMD/JSON/support, thisRootrelease,Rootcarrierreadback,46f immediate recovery and90delta composition. Keep originalFAIL/raw/verdicts unchanged.",
+    "Install only byte-exact original browser7.json and standalone1.json at existing TestData/DarenRetirement filenames. Original roots/generations/images remain unchanged in these JSONs.",
+    "Move existing synthetic schema6 Fact selector to separately documented GREEN/source-order owner, preserve C# method and all futureGREEN coverage. Keep current storageowner exactlyfour current-data rows; no C#/project/product/prompt/frontend implementation edits. Update main/named selection and exact finiteREDselection, categoryreasons/ledger currentbinding as necessary.",
+    "Bind new runtime-data and currentcatalog/selection hashes separately from57unchanged nonselector sourcepins+sevencompiled0bDLLs. Preserve historical60compiledpins. Avoid unrelated or duplicate report changes.",
+    "Update existing spec/plan/tasks honestly for acceptedcapture vs unexecutedconsumer/transport/production; publish [skip ci] WIP nonforce, exactremote and complete immediateGitHubdelta/newemptydir."
+  ],
+  "allowedPreparationAfterOwnVerifiedPublication": [
+    "ONE FIRST canonical -ValidateCatalog -NoBuild to validate changedownership with unchanged7DLLs and zeroexecutions. No BOTH rebuild because no compileddependency change.",
+    "ONE FIRST canonical finiteRED SelectionFile -PlanOnly -NoBuild; exact5owners/5integrationdescriptors/10methods/28cases expected, no schema6; preserveFIRST stdout/summary/plan/process/native/namespace/source/7DLLhashes.",
+    "Stop/freeze any unexpected preparation/catalog/identity/binary/cleanup outcome; do not silentlyretry. Publish frozenpreparation metadata and exactremote/immediatedelta before targetedindependent data/selector/prep review."
+  ],
+  "proposedFutureRuntime": {
+    "totalCases": 28,
+    "owners": 5,
+    "groups": [
+      {
+        "owner": "daren-retirement-console-menu",
+        "cases": 1,
+        "purpose": "Real console menu retirement boundary"
+      },
+      {
+        "owner": "daren-retirement-save-rewards",
+        "cases": 4,
+        "purpose": "Three actual fresh-soul profile variants plus positive earned save/load preservation"
+      },
+      {
+        "owner": "daren-retirement-storage-refusal",
+        "cases": 4,
+        "purpose": "Two current browser rows plus standalone committed/mixed ordinary-first rows; schema6 excluded from causal owner"
+      },
+      {
+        "owner": "daren-retirement-ordinary-storage",
+        "cases": 2,
+        "purpose": "Positive actual ordinary browser and explicit synthetic shared Format1 recovery neighbors"
+      },
+      {
+        "owner": "daren-retirement-browser-host",
+        "cases": 17,
+        "purpose": "Real host menu plus five stale route boundaries and eleven practice start/action/retry/exit positive neighbors"
+      }
+    ],
+    "execution": "Only after separate source/data/selection binding and Root release; each canonical owner invoked once and frozen separately because runner aborts a descriptor batch on nonzero.",
+    "classification": [
+      "Expected owner-specific failures must be distinguished from setup/platform/cleanup/incomplete results. Native total is not a predicted all-fail count.",
+      "Malformed inert profile may fail inside the actual old strict UTF8 profile reader before owner completion. Qualify only if actual stack and prerequisites establish forbidden profile access; never fabricate completion diagnostics.",
+      "An HTTP non404 alone does not establish route causality; inspect actual registered-owner response/stack and unchanged-profile witness. Practice HTTP submitted success is current HTTP contract coverage, not interactive minigame skill proof."
+    ]
+  },
+  "held": [
+    "All native test/consumer/host/console/frontend/browser/capture runtime; currentrelease only0execprep",
+    "Any source-derived fixture instantiation before revieweddata/selector/Planbinding and explicitexactRootactualrelease",
+    "Productionremoval/G2 until independentlyaccepted meaningfulcausalRED",
+    "Windows/Libraryretry/CI/oldacceptedfamilies"
+  ],
+  "scope": "No additionalproducerexecution, no newsemanticcontract, no reuseofdeletedoriginalroots. Root will inspect newcarrier/delta/pins and independentbinding before exactruntime activation."
+}
