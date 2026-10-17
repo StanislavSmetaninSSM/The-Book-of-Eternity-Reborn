@@ -1,3 +1,7 @@
+## A3 / AP06 contract WIP — necessity review before tests (2026-10-17)
+
+- [ ] #1536 ordinary3c-A3: independent source-backed necessity/shortCONTRACT for watermark initializer and processed-award data policies; proposed44A3+separate2Late2 cases. [Current checkpoint](plan.md) preserves unchecked arithmetic and exact owner timing; publish/readback/recover then contract review. Product/tests/preparation/runtime HELD; acceptedA1/A2 remain separate, no full3c/HOT/M3/F1/QTE/Windows/#1557 expansion or proof replay.
+
 ## Bounded ordinary3c-A2 complete — independently accepted (2026-10-17)
 
 - [x] #1536 ordinary3c-A2: two named nullable award readers and two immediate real CheckLevelUp leaf replacements, accepted contract/causalTDD/affectedSOURCE/EVIDENCE; FIRST57unique nativePASS (2+33+20+2), 24rawchains/24strictroots/fourfreshDLLs, separately new affectedLate2 2PASS. [Final checkpoint](plan.md) preserves exact reports/recovery, two PREPFAIL0tests, structuralRED2expectedFAIL, honest boundary-resume reconciliation and all limits. OriginalA1/oldLate2 retain separate provenance; no replay or broader stage/GM/platform acceptance. Final non-force publication/readback/newexactdelta/clean continuity required, no more actual.
