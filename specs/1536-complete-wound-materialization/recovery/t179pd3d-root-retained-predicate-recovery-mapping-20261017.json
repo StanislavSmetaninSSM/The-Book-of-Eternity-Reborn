@@ -1,0 +1,11 @@
+{
+  "kind": "ROOT_RETAINED_LATE2_PREDICATE_TOOL_EXACT_DURABLE_RECOVERY_MAPPING",
+  "durableSource": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-first-late2-20261017-writer-inspection.json",
+  "jsonField": "checkerText",
+  "reconstructedCachePath": "/tmp/a2-writer-inspect-late.py",
+  "exactBytes": 17520,
+  "sha256": "7cdbb73516536659bdfcdcd4b26f352e781bdbad4aafd954d8d5c86a6fefbdbb",
+  "consumer": "t179pd3d-root-inspect-product-late2.py embeds its own helperSource and pins oldorigin+unchanged semantic segment; reconstruct original tool from existing durable JSON field when no local cache exists.",
+  "verification": "Exact existing JSONfield UTF8 bytes equal immutable original tool; no new oldpackage copy, raw rereview or native replay.",
+  "utc": "2026-10-17T17:09:04.652854+00:00"
+}

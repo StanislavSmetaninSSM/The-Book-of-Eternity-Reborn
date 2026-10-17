@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "FIRST_POST_PRODUCT_PROTECTED_LATE2_RAW_FROZEN_INDEPENDENT_EVIDENCE_PENDING_ORDINARY52_HELD",
+  "status": "PROTECTED_LATE2_EVIDENCE_ACCEPTED_FIRST_ORDINARY52_CONDITIONAL_UNRUN",
   "methods": [
     {
       "project": "unit",
@@ -211,14 +211,14 @@
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
       "declaredRows": 1,
       "kind": "existing unchanged staged/Late Fact; retained accepted fixture source",
-      "status": "FIRST_POST_PRODUCT_LATE2_EXECUTED_RAW_FROZEN_PENDING_INDEPENDENT_EVIDENCE"
+      "status": "POST_PRODUCT_PROTECTED_LATE2_INDEPENDENT_EVIDENCE_ACCEPTED_PASS"
     },
     {
       "project": "integration",
       "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
       "declaredRows": 1,
       "kind": "existing unchanged staged/Late Fact; retained accepted fixture source",
-      "status": "FIRST_POST_PRODUCT_LATE2_EXECUTED_RAW_FROZEN_PENDING_INDEPENDENT_EVIDENCE"
+      "status": "POST_PRODUCT_PROTECTED_LATE2_INDEPENDENT_EVIDENCE_ACCEPTED_PASS"
     }
   ],
   "methodCount": 31,
@@ -644,7 +644,7 @@
     },
     "scope": "Exactly one four-stage value-only partial and four actual A adapter replacements; original timestamp leaves/IO/catches/awaits/remainder retained byte-exact.",
     "postProductBuild": "COMPLETED_ONCE_NATIVE0_91.202518280S_ZERO_CASES",
-    "postProductActual": "FIRST protectedLate2 raw complete; ordinary52 held until separate accepted EVIDENCE/persistence/named release.",
+    "postProductActual": "ProtectedLate2 separately EVIDENCE accepted2PASS; ordinary52 remains unrun until named Root activation.",
     "references": [
       {
         "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-minimal-product-activation-e9823e84-20261017.json",
@@ -1123,7 +1123,58 @@
         "sha256": "1a44f15ff1155dd0fa72c800bf1380919a930b667c34cc4f23466c0c87162c88"
       }
     ],
-    "independentEvidence": "PENDING; raw first native/case outcome is not self-accepted EVIDENCE. Ordinary52 held; no retry.",
+    "independentEvidence": "ACCEPTED95dc/328a/c1b6 and Root0661; exact2 newPASS only, final computed body not retained.",
     "proofLimits": "Exact existing staged/Late2 actual consumers only; current raw semantic observations require separate independent EVIDENCE. No broader HOT/history/ProcessPlayerTurn/World/fullF1/Windows qualification. Do not infer unretained final file bodies from digests."
+  },
+  "protectedLate2EvidenceAcceptance": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.md",
+        "bytes": 2568,
+        "sha256": "95dc7841cfe945685736b0d3df58af7a1e802701990f238547aca8c7ad2e981f"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-review-20261017.json",
+        "bytes": 5601,
+        "sha256": "328a685c7c4a4b6a7a56e55cf4919f72548b46f5766152cbef74a23356440630"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-evidence-independent-check-20261017.json",
+        "bytes": 24128,
+        "sha256": "c1b69d27f9ec714c1e472e041fd3ec800ede8a28eb68169a6dd55b7c9d052119"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-first-product-late2-inspection-e1d9885a-20261017.json",
+        "bytes": 18601,
+        "sha256": "feef882aa35dadc84ea355b96de5c2a86618975d8cdf84ebbcea96b4a6dd1fdd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-late2-accepted-ordinary52-conditional-702f7998-20261017.json",
+        "bytes": 2643,
+        "sha256": "066121f9507963be460bc6ccbfc423b9a5ee356a808028c1f47de8b11e9549ca"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-retained-predicate-recovery-mapping-20261017.json",
+        "bytes": 819,
+        "sha256": "9a85268be82a95eccf29ff01b7549e4b87a33933d0be1341476faa54946fcedd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-first-product-late2-delta-github-702f7998-20261017.json",
+        "bytes": 17126,
+        "sha256": "4c993459c7ce3f41f803a326535fe98827e79f9937c30b61599f67a3453aa588"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-702f7998-20261017.json",
+        "bytes": 15504,
+        "sha256": "4536a03d50dc2903a8886356975f886d869a03af0e9c7f1c0813c6f6e3ac8007"
+      }
+    ],
+    "rootInspector": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-root-inspect-product-late2.py",
+      "bytes": 4092,
+      "sha256": "3804e0bd3e4219c42be0e3b431be4567804c333e26a80aa476d054db472de258",
+      "scope": "Credited Root read-only new-Late2 raw inspector; retained semantic predicate recovery mapping above, no old runtime/raw replay."
+    },
+    "scope": "Exactly new2PASS accepted; no material blocker. Final computed raw body absent, digest/inert equality only. Ordinary52 still unrun pending exact saveddecision/readback and named activation."
   }
 }
