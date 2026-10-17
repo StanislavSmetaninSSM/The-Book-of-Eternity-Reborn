@@ -1008,3 +1008,5 @@ D4 allocator, guided US5, frontend visual qualification и D8 payload/earned-XP 
 Новый GM authoring/runtime contract этим документом не вводится; будущая реализация потребует
 same-change prompts/examples/manifests/source guards по §14. После итогового независимого
 DESIGN review, non-force сохранения и exact GitHub document recovery — **STOP**.
+
+Current restored-mandate closeout: [independent DESIGN review](../recovery/f1-design-mandate-independent-review-20261017.md) at `b8584299ea431cbf8594a66963dc6261fb254c45` found no confirmed blocking/material finding in this bounded restoration/proof-index diff and affected dependencies. Root independently verified its exact pins/projections/diffs/recovery/links; reports remain immutable. READY FOR DESIGN DISCUSSION only; no contract/grant acceptance, implementation/actual release or full F1/T197 qualification. Publish/read back/recover this documentary carrier, then STOP for discussion.
