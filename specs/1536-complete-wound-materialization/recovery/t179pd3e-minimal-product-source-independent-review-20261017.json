@@ -1,0 +1,130 @@
+{
+  "kind": "INDEPENDENT_3E_MINIMAL_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP",
+  "date": "2026-10-17",
+  "carrier": "b197cb2be439f110d0f5a4a6934a593c5731ec11",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "verdict": "ACCEPT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_WITH_SEPARATE_RUNTIME_GATES",
+  "sourceVerdict": "ACCEPT bounded ordinary document/unknown-field/scope extraction only",
+  "fixtureVerdict": "ACCEPT existing genuine ordinary/strict source fixture coverage with isolated S02 vector correction; retained protected fixture source closure",
+  "selectionVerdict": "ACCEPT exact47=ordinary45 plus protected2; require protected2 first in separate invocation and EVIDENCE",
+  "preparationVerdict": "ACCEPT fresh selected BOTH build plus PlanOnly0,6descriptors20methods47planned0executed",
+  "materialBlockers": [],
+  "S02Disposition": {
+    "state": "CLOSED_AT_SOURCE_NOT_YET_RUNTIME_QUALIFIED",
+    "change": "Only Mixed/Guardian-centric expected-vector expression plus necessary conditional branch. Same three InlineData, signature, fixture, first diagnostic detail assertions and full ordered equality.",
+    "expectedCodes": {
+      "World-progression": [
+        "empty_relevant_actors_for_mode"
+      ],
+      "Mixed": [
+        "empty_relevant_actors_for_mode",
+        "guardian_scope_invalid_validated_snapshot_context",
+        "guardian_scope_missing_validated_guardians_snapshot"
+      ],
+      "Guardian-centric": [
+        "empty_relevant_actors_for_mode",
+        "guardian_scope_invalid_validated_snapshot_context",
+        "guardian_scope_missing_validated_guardians_snapshot",
+        "guardian_scope_missing_active_guardian"
+      ]
+    },
+    "basis": "Original source-only S02 analysis precedes product extraction; exact two-vector capsule inverse restores pre-product test file."
+  },
+  "sourceAssessment": {
+    "productionFiles": 2,
+    "newPartialBytes": 10278,
+    "newPartialLines": 187,
+    "valueOnlyStages": 3,
+    "wholeAInverseSha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+    "composedOriginalSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+    "parity": [
+      "Exact property lookup, duplicate handling, JSON enumeration and issue ordering retained.",
+      "Parse/using/disposal/JsonException rendering and ambient timestamp remain in original owner.",
+      "Freshness and parse current reads retain distinct occurrences; all original lookups, catches and later Full structured-family audits unchanged.",
+      "New helpers only append issues or return local document/scope outputs; no IO, write, clock, lease/history or authority acquisition.",
+      "Stale Warning and unusable-original policy-null behavior remain unchanged."
+    ],
+    "preserved": "Boundary/fixture/frozen3e fragments/old3d source inventory and canonical partial checks unchanged. OldWorld33 stale fence stays held/unselected.",
+    "docs": "No GM schema/output contract/rule semantics change, so no GM prompt/example/manifest update is required for this internal extraction."
+  },
+  "fixtureAndCoverage": {
+    "ordinary45": {
+      "boundary": 1,
+      "newRegression": 40,
+      "legacyCoreProfile": 2,
+      "sourceFacts": 2
+    },
+    "protected2": "Two unchanged genuine staged/Late callers traverse actual joint completion -> publicFull edge; retained source closure only, fresh product evidence mandatory.",
+    "cleanup": "41 new ordinary rows require strict individual receipts and physical root absence; legacy2 provide namespace evidence only; source2 rootN/A. Protected2 require their separate genuine raw/cleanup qualification.",
+    "sufficiency": "Bounded selection covers root/type/case/duplicate/unknown enumeration, exact diagnostic vectors and mode continuation, field ordering, CRLF/scope parsing, empty structured-family reads, IO/JsonException fault placement, no-write encodings/mtime, genuine original provenance, corruption policy-null and separate current reads. Exact composition guards whole unrelated A bytes. No broad unchanged old52/family replay required."
+  },
+  "freshPreparation": {
+    "record": {
+      "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-prep-first-build-plan-f766d9d0-20261017/record.json",
+      "bytes": 77517,
+      "sha256": "177b49d129dc9e2a523549ed1960b0f95ffa4ca18f00e2d730dc84dca79b1ffb"
+    },
+    "archive": {
+      "path": "/tmp/t179pd3e-product-preparation-archive-first-f766d9d0-20261017/archive.json",
+      "bytes": 6982,
+      "sha256": "b14e77a923a5639718359f0e52cd9a40f72864ba73e7f1a8a620f3f764683c63"
+    },
+    "nativeExit": 0,
+    "seconds": 87.41372441299609,
+    "categories": 6,
+    "descriptors": 6,
+    "methods": 20,
+    "plannedCases": 47,
+    "executed": 0,
+    "newBinaryCopies": 9,
+    "sourcePins": 55,
+    "managedFilesExact": 335,
+    "underfilledExplanation": "All descriptors unexecuted and Selection.Complete=false are expected PlanOnly facts, not runtime failure."
+  },
+  "controllers": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-product-preparation-run.py",
+      "sha256": "dc95995b1ed3c2c79dca3dc09906bdcb56547a018b9a7cb3d1499b55ed10cadd",
+      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-product-first-run.py",
+      "sha256": "a679cb0016abd5aa4f756d3cc904901c5aba14a9ebd42a61ea38d59de4bcf4e7",
+      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-preparation.py",
+      "sha256": "04610e299e618a0f2b25bec8164bd17023670e0a6c8f116ea3f9043a6845d8d5",
+      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-archive-product-first.py",
+      "sha256": "023d589a97f1d94158343e5f650998d38a7111b310dfc2836d325bf3bcf74a3c",
+      "status": "UNRUN_AWAIT_ROOT_PREPARATION_OR_SEPARATE_ACTUAL_RELEASE"
+    }
+  ],
+  "runtimeGates": [
+    "Persist this exact decision, verify exact remote/recovery and current source55/newbinary9 bindings.",
+    "Separate named Root FIRST protected-late2 invocation only; preserve raw and independently qualify its evidence before any ordinary45 release.",
+    "Then separate named Root ordinary45 invocation on unchanged compiled product/pins; canonical fail-stop, no auto retry or broad owner execution.",
+    "Any unexpected assertion, underfill, timeout, ownership or cleanup defect requires preserved first outcome and separate diagnosis."
+  ],
+  "runtimeAuthorization": false,
+  "greenAcceptance": false,
+  "history": "Initial CS0121 FIRST PREP failure, corrected-C01 readiness, original S02 finding/conditional boundary-only SOURCE, and actual boundary1 structural RED remain immutable. No old ordinary3d52 or old protected2 execution is counted as new product evidence.",
+  "scopeLimits": [
+    "Ordinary prefix extraction with real ordinary consumers only; no HOT/source/history adapter or Full-family authority.",
+    "No S/B/M3/F1/T197/Windows/CI/A3 or full wounds completion.",
+    "No reviewer native/build/test/runtime or repo edit."
+  ],
+  "support": {
+    "path": "/tmp/t179pd3e-minimal-product-source-independent-check-20261017.json",
+    "bytes": 33077,
+    "sha256": "329065d832c8de3cbf004f61181228e56bd9e746b1f75e6a75711c0e272e0fd1"
+  },
+  "newRecovery": {
+    "path": "/tmp/t179pd3e-product-prep-delta-github-b197cb2b-20261017.json",
+    "bytes": 19284,
+    "sha256": "1ce7558b372e8bb38c7407bdb376cc2b5aa2aecae6136c4a96cc8230bfbf5223"
+  }
+}

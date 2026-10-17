@@ -1,0 +1,25 @@
+{
+  "kind": "ROOT_ACCEPT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_WITH_SEPARATE_RUNTIME_GATES",
+  "carrier": "b197cb2be439f110d0f5a4a6934a593c5731ec11",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "reports": {
+    "/tmp/t179pd3e-minimal-product-source-independent-review-20261017.md": "22f627dce75eb793261b8b63880d1503ebd646080888d5981d7611cb65843942",
+    "/tmp/t179pd3e-minimal-product-source-independent-review-20261017.json": "aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487",
+    "/tmp/t179pd3e-minimal-product-source-independent-check-20261017.json": "329065d832c8de3cbf004f61181228e56bd9e746b1f75e6a75711c0e272e0fd1"
+  },
+  "sourcePins": 55,
+  "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+  "source": "Accepted exact2productionfiles/3frozen stages;3e inverse8bde then3d inverse6a9; owner IO/parse/lifetime/catches/timestamp/tail preserved",
+  "S02": "Closed at SOURCE only, isolated two vectors plus branch, same3rows/full equality/fixture",
+  "prep": "Native0/87.413724413s/6descriptors20methods47planned/zeroactual;9freshcurrent+335managed",
+  "nonmaterialReportMetadataDisposition": "ReviewJSON controllers[] retains stale generic UNRUN labels for all4tools. Explicit freshPreparation section and independently checked raw/MD establish dc959 prep and0461 prep archiver executed once successfully. a679 actual recorder and023d actual archiver remain UNRUN at this decision. Immutable pair preserved; no new build/review needed for this descriptive status field.",
+  "next": "Persist exact3reports+thisdecision+b197 recovery56composition; commit/nonforcepush/exactremote/GitHubdelta. Only after readback Root names FIRST protectedLate2. Separate accepted new Late2 evidence before ordinary45 activation.",
+  "runtimeAuthorizedByThisFile": false,
+  "held": [
+    "ordinary45 until newLate2 EVIDENCE saved",
+    "HOT/history/full S/B/M3/F1/T197",
+    "Windows ZIP/CI",
+    "A3"
+  ],
+  "utc": "2026-10-17T18:27:25.157137+00:00"
+}

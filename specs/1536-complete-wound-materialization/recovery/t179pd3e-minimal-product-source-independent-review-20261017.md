@@ -1,0 +1,18 @@
+Independent affected product SOURCE / FIXTURE / SELECTION / PREP — ordinary 3e, 2026-10-17
+
+**ACCEPT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_WITH_SEPARATE_RUNTIME_GATES.** Carrier `b197cb2be439f110d0f5a4a6934a593c5731ec11`; compiled product `f766d9d0036fc4abd889770e5b2a2383408a6b59`. No material blocker found. This accepts bounded readiness, not GREEN or runtime authorization.
+
+The actual production diff contains only the existing A owner and one187-line/10278-byte partial. Its three value-only stages exactly reconstruct the frozen source fragments. Reversing all three adapters restores whole accepted3d A `8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31`; the unchanged four3d inverses then restore original A `6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936`. Existing scope parsing/string/list callees introduce no IO/clock/ownership. Parse/using/disposal, current reads, catch boundaries, ambient timestamp and all later Full dependency/audit code retain their original slots. Stale remains Warning; unusable original remains policy-null. No GM contract/schema/doc change is required.
+
+**S02 is closed at SOURCE.** The test-only diff changes exactly the Mixed and Guardian-centric expected vectors plus the needed conditional branch. Signature, three InlineData rows, shared fixture, first-diagnostic checks and whole ordered equality are unchanged. The correction follows the independently established old-source behavior; it is not yet runtime-qualified. Boundary/frozen fragments, old3d canonical/inverse guard and held OldWorld33 fence remain unchanged.
+
+Fresh FIRST selected BOTH+PlanOnly succeeded native0 in 87.413724412996s. Independently checked10 frozen/local/gzip/committed chains, both successful build logs,55 source pins/current ledger,9 fresh current DLL copies and all335 managed files/set. Native membership is exactly6 owners/descriptors,20 unique methods,47 planned cases and **zero executions**: ordinary45 (boundary1+regression40+legacy2+source2), separately protected2. PlanOnly underfill/Complete=false is expected non-execution.
+
+Selection is sufficient for this bounded prefix change. New ordinary rows cover exact document/diagnostic/scope behavior, ordering, read/catch distinctions, raw no-write encodings/mtime and genuine original/corruption/current-read contrasts; strict composite source guards preserve all other A bytes. The actual joint completion public Full call at line99 makes protectedLate2 a real changed dependency. Its unchanged fixture/source closure is retained; new runtime proof is required. No old52/family replay is requested.
+
+Reviewed fixed recorder `a679cb0016abd5aa4f756d3cc904901c5aba14a9ebd42a61ea38d59de4bcf4e7` offers separate protected-late2 or ordinary45 modes, exact selectors/pins/new DLL binding, separate exclusive FIRST sentinels, original raw capture and all four real root prefixes. It neither builds nor automatically advances/retries. Root must persist/read back this decision, name protected2 first, save and independently qualify that evidence, and only then separately name ordinary45. New ordinary41 rows require strict receipts/physical absence; legacy2 have namespace proof only; source2 rootN/A.
+
+Original CS0121, conditional SOURCE/S02 and structural RED1 history is preserved. No HOT/history/fullS/B/M3/F1/T197/Windows/CI/A3/full-wounds claim follows. Repository unchanged by reviewer; no native tests executed.
+
+JSON `/tmp/t179pd3e-minimal-product-source-independent-review-20261017.json` SHA256 `aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487`.
+Support `/tmp/t179pd3e-minimal-product-source-independent-check-20261017.json` SHA256 `329065d832c8de3cbf004f61181228e56bd9e746b1f75e6a75711c0e272e0fd1`.
