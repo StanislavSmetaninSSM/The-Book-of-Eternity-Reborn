@@ -1,0 +1,175 @@
+{
+  "kind": "INDEPENDENT_AFFECTED_NI_S01_SOURCE_FIXTURE_SELECTION_PREP_REVIEW",
+  "createdUtc": "2026-10-17T16:25:56.350921+00:00",
+  "source": "b501b2b77ed363e9135766082c47386e7562651a",
+  "carrier": "b5859fcf175bde1f3752f303c33d1b1c84ba8b13",
+  "productBaseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "verdict": "ACCEPT_CORRECTED_SOURCE_FIXTURE_SELECTION_PREP_FOR_BOUNDARY2_ELIGIBILITY",
+  "materialBlockers": [],
+  "NI_S01": "CLOSED_IN_SOURCE; original56/ec60 SOURCE_NOT_READY report and18 preparation chains retained unchanged. No executed failure or runtime repair is claimed.",
+  "decisions": {
+    "SOURCE": "ACCEPT_TARGETED_CORRECTION_AND_TWO_REAL_DECLARATION_BINDINGS",
+    "FIXTURE": "ACCEPT_CORRECTED_TYPED_CLOSE_ORACLE; original unchanged fixture assessment/cleanup limits retained",
+    "SELECTION": "ACCEPT_CURRENT5_OWNERS_29_METHODS_52_CASES; first eligible scope only existing boundary2",
+    "PREP": "ACCEPT_B501_FIRST_BOTH_BUILD_AND_SELECTED_PLAN_NATIVE0_ZERO_EXECUTION",
+    "RECORDER": "ACCEPT_74c15_FIXED_BOUNDARY2_CONTROLLER_SOURCE_ONLY_UNRUN",
+    "EVIDENCE": "NONE; all52 remain UNRUN"
+  },
+  "correction": {
+    "oneCodeChange": "One assertion block in OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch; reversing it reproduces the whole previous test file exactly.",
+    "witnesses": [
+      "MainOperationContinuationException<int>",
+      "EstablishedResult17",
+      "EstablishedOutcome.Completed (completed inner callback, not overall continuation success)",
+      "exact seeded IOException as InnerException",
+      "exact seeded IOException in wrapper SessionFinalizationFailure",
+      "true finalization flag in original failure",
+      "retained publicOwnerReturned=true, overallReturned=false, one close, matching projected afterimage"
+    ],
+    "declarations": [
+      {
+        "path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
+        "bytes": 1118,
+        "sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+        "bytes": 2993,
+        "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9"
+      }
+    ],
+    "productChanged": false,
+    "catalogSelectorsMethodsRowsChanged": false
+  },
+  "preparation": {
+    "nativeExit": 0,
+    "wallSeconds": 87.50410339600057,
+    "builds": [
+      "integration",
+      "unit"
+    ],
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "tests/selection.json",
+      "-PlanOnly"
+    ],
+    "owners": 5,
+    "descriptors": 5,
+    "uniqueMethods": 29,
+    "plannedCases": 52,
+    "executedCases": 0,
+    "semanticPlanIdenticalTo56": true,
+    "rawChains": 10,
+    "sourcePins": 64,
+    "freshDLLCopies": 9,
+    "managedFiles": 335,
+    "allChecked": true,
+    "cleanupComplete": true,
+    "timeout": false,
+    "catalog": "Unchanged789categories/11755methods-files inventory retained; no repeated catalog audit was required."
+  },
+  "boundaryEligibility": {
+    "category": "fr063-ordinary-output-policy-boundary",
+    "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
+    "cases": 2,
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "fr063-ordinary-output-policy-boundary",
+      "-NoBuild"
+    ],
+    "recorderSha256": "74c15e75ea4dc52f2847fb148a019d670dcaff63cefd3581783527913cfad45c",
+    "conditions": [
+      "Persist exact decision and verify published successor/recovery.",
+      "Root separately names exact actual metadata carrier and fresh b501 preparation record.",
+      "Run only one FIRST boundary2 invocation; preserve original outcomes/strict cleanup/raw.",
+      "Qualify actual public prerequisites, byte assertions and final missing-stage oracle independently; native1 alone is not causal RED."
+    ],
+    "remainingCurrentCases": 50,
+    "runtimeAuthority": "None granted by reviewer."
+  },
+  "futureProductionDependency": {
+    "disposition": "PROTECTED_LATE2_REQUIRED_SEPARATELY_FROM_ORDINARY52_AFTER_ACTUAL_EXTRACTION",
+    "category": "fr063-joint-late-completion",
+    "reason": "Direct committed-joint caller invokes sealed narrative and ordinary interface, which forward to the exact two internal owners being extracted. The two retained staged/Late completion Facts cover actual completed and inert-repeat paths.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "bytes": 505887,
+        "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+        "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+        "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+        "bytes": 10819,
+        "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+        "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+        "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ValidationService.cs",
+        "bytes": 5130,
+        "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+        "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+        "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "bytes": 83808,
+        "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0",
+        "gitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+        "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+      }
+    ],
+    "retainedProof": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-first-late2-evidence-independent-review-20261017.md",
+        "sha256": "aed96da7958fa0ccf8b2ea73750fd57d3a0f8096b89e279801139c4e98d0c1b3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-first-late2-evidence-independent-review-20261017.json",
+        "sha256": "fb0cea191d908ca5899e1572c9de0ab86524a0fa90c48017f93c02fc4ab92d89"
+      }
+    ],
+    "required": "Include current callsite/fixture pins in future production binding. Fresh production PlanOnly must bind exact existing2; separately release FIRST protectedLate2 and accept its EVIDENCE before ordinary52 GREEN/stage closure.",
+    "limits": "Reuses unchanged accepted fixture/source provenance; no old raw replay or broader HOT/family/Windows qualification."
+  },
+  "recovery": [
+    {
+      "path": "/tmp/t179pd3d-nis01-source-wip-delta-github-b501b2b7-20261017.json",
+      "sha256": "b0e89cc5a6f14c07a84eb8e53500067d008c96663bb0eb436237f921cfffc555",
+      "bytes": 13073,
+      "sha": "b501b2b77ed363e9135766082c47386e7562651a",
+      "files": 16,
+      "changedPaths": 12
+    },
+    {
+      "path": "/tmp/t179pd3d-nis01-prepared-wip-delta-github-b5859fcf-20261017.json",
+      "sha256": "8f232cfbb1304cd9584d4a157ca4c8105e4b35b6dca4dfdcc31703349aa3e09c",
+      "bytes": 21383,
+      "sha": "b5859fcf175bde1f3752f303c33d1b1c84ba8b13",
+      "files": 27,
+      "changedPaths": 23
+    }
+  ],
+  "limits": [
+    "Tests-only eligibility, not production/source-extraction acceptance or runtime GREEN.",
+    "Old World33 source fence remains unchanged/HELD; nine old stale pins not blessed.",
+    "SP best-effort disposal is accurately distinguished from strict new ordinary root receipts; namespace absence alone is not per-case provenance.",
+    "No HOT adapter/history/fullF1/M3/Windows/CI or full T179-Pd.3d completion."
+  ],
+  "support": {
+    "path": "/tmp/t179pd3d-nis01-source-independent-check-20261017.json",
+    "sha256": "fad0ae6e216bd554fda16e7bc06e8b712cb0408f8d0f8376d3e6e02e1a8ec70a"
+  }
+}

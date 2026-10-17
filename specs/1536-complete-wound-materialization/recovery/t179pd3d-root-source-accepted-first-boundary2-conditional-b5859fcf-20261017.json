@@ -1,0 +1,49 @@
+{
+  "kind": "ROOT_ACCEPTED_SOURCE_AND_CONDITIONAL_FIRST_BOUNDARY2_ACTIVATION",
+  "preparedCarrier": "b5859fcf175bde1f3752f303c33d1b1c84ba8b13",
+  "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "review": [
+    {
+      "path": "/tmp/t179pd3d-nis01-source-independent-review-20261017.md",
+      "sha256": "6eca0af6840caec2c2bca13677b3f2b2797b5f1e4cad60ea01e77449dfe10daa"
+    },
+    {
+      "path": "/tmp/t179pd3d-nis01-source-independent-review-20261017.json",
+      "sha256": "c6f90bf2d9105c9ec26bbd3e5e2dfd1c5b4b0c9e5fc1f9cbcc133352258ff274"
+    },
+    {
+      "path": "/tmp/t179pd3d-nis01-source-independent-check-20261017.json",
+      "sha256": "fad0ae6e216bd554fda16e7bc06e8b712cb0408f8d0f8376d3e6e02e1a8ec70a"
+    }
+  ],
+  "freshPreparationRootReadback": {
+    "path": "/tmp/t179pd3d-root-nis01-preparation-readback-b501b2b7-20261017.json",
+    "sha256": "333be989f2d04efac08b9d08fbceae27ed1488db7c0281ee908e6a4201bc5942"
+  },
+  "decision": "NI-S01 closed in source; accepted concrete fixture/selection/PREP. Eligible only FIRST boundary2 after this decision is published/exactremote/newcleancompleteGitHubdelta verified and Root names actualdecisionHEAD.",
+  "controller": {
+    "path": "/tmp/t179pd3d-ordinary-boundary-first-run.py",
+    "sha256": "74c15e75ea4dc52f2847fb148a019d670dcaff63cefd3581783527913cfad45c"
+  },
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-ordinary-output-policy-boundary",
+    "-NoBuild"
+  ],
+  "expectedSelection": "Exactly one known method/two rows, originalfreshb501 plan. Productbyteunchangeda5; cleanmetadata-onlyactualsource successorb501; all64sourcepins/currentledger and9freshmanagedcopies exact.",
+  "firstOutcomeProtocol": "Execute once only, capture full original native/stdout/process/FIRST/runner/TRX/cleanup. Freeze FIRST even unexpected; no retry. Native1 alone never proves RED. Independentliteralactualpublicprereqs/rawseedcomparisons/onlyfinalmissingprefixNotNull and2strictrootphysicalabsence must be reviewed separately after publication/exactremote/newdelta recovery.",
+  "held": [
+    "Other50ordinarycases",
+    "All production implementation until separate accepted causalRED EVIDENCE",
+    "FutureseparateprotectedLate2 until actualprodchange+freshSOURCE/PREP",
+    "OldWorld33fence/fullHOT/history/M3/F1/fullwounds/platformWindows/ZIP/CI/QTEactivation",
+    "Merge/force-push/branchdeletion/issueclosure/newcredentials/securitysettings/main edits"
+  ],
+  "scope": "Ordinary3d sharedpolicykernel/delegation structural contract, not an existing gameplay defect or HOTauthority proof. EarlierinitialSOURCE_NOT_READY and18+10ZEROprepraw remainretained.",
+  "utc": "2026-10-17T16:26:53.385331+00:00"
+}

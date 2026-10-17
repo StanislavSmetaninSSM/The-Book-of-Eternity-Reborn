@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_METHOD_ROW_LEDGER",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "NI_S01_CORRECTED_SOURCE_FRESH_BOTH_PLAN_ZERO_EXECUTION_AFFECTED_SOURCE_PENDING",
+  "status": "ACCEPTED_CORRECTED_SOURCE_PREP_BOUNDARY2_ELIGIBLE_ACTUAL_ACTIVATION_HELD",
   "methods": [
     {
       "project": "unit",
@@ -372,7 +372,7 @@
     "id": "NI-S01",
     "scope": "Only typed continuation/result17/Completed/exact retained inner/finalization assertions; publictrue/overallfalse/oneclose/matching-image preserved.",
     "history": "Initial56 test and valid18-chain zero-test prep remain immutable; initial SOURCE_NOT_READY retained exact; no actual failure reproduced or product change.",
-    "status": "CORRECTED_AND_FRESH_PREPARED_AWAIT_FINAL_TARGETED_SOURCE"
+    "status": "NI_S01_CLOSED_BY_INDEPENDENT_AFFECTED_SOURCE_AND_ROOT_ACCEPTANCE"
   },
   "currentNativeMembership": {
     "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
@@ -500,5 +500,31 @@
       }
     ],
     "sameMembershipAsInitial56": true
+  },
+  "sourceAcceptance": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-review-20261017.md",
+        "sha256": "6eca0af6840caec2c2bca13677b3f2b2797b5f1e4cad60ea01e77449dfe10daa",
+        "bytes": 3395
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-review-20261017.json",
+        "sha256": "c6f90bf2d9105c9ec26bbd3e5e2dfd1c5b4b0c9e5fc1f9cbcc133352258ff274",
+        "bytes": 8256
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-check-20261017.json",
+        "sha256": "fad0ae6e216bd554fda16e7bc06e8b712cb0408f8d0f8376d3e6e02e1a8ec70a",
+        "bytes": 13329
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-source-accepted-first-boundary2-conditional-b5859fcf-20261017.json",
+        "sha256": "b189985c7baacdf8710bf966b39b190aafc1b91b1f474df66627f2b3fac53726",
+        "bytes": 2757
+      }
+    ],
+    "scope": "SOURCE/FIXTURE/SELECTION/PREP only; first boundary2 source-eligible after decision persistence/exact successor readback/recovery and separate named Root activation. Other50/production/futureLate2 held.",
+    "actualTestsExecuted": 0
   }
 }

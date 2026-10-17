@@ -1,7 +1,7 @@
 {
   "kind": "T179_PD3D_ORDINARY_TESTS_ONLY_SOURCE_PACKET",
   "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
-  "status": "NI_S01_CORRECTED_FRESH_BOTH_PLAN_ZERO_EXECUTION_AFFECTED_SOURCE_PENDING",
+  "status": "ACCEPTED_CORRECTED_SOURCE_PREP_BOUNDARY2_ELIGIBLE_ACTUAL_ACTIVATION_HELD",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
@@ -333,9 +333,9 @@
     },
     {
       "path": "specs/1536-complete-wound-materialization/tasks.md",
-      "bytes": 1576058,
-      "sha256": "03923f2c15c38dc5ed6ee9f929649e137789b0b86e6ac882753df2ab627b84d9",
-      "gitBlob": "a8c31b3d87254823980ca9cc87bdf729b16f736e",
+      "bytes": 1576149,
+      "sha256": "a37954a2ab4a274273aeacc2c0ca7e0bb2d81bb94b4eb809fc562af11e1cc361",
+      "gitBlob": "3950498162e42392893f532940e21406f7da095c",
       "mode": "100644",
       "role": "current_governance_or_accepted_implementation_contract"
     },
@@ -527,7 +527,7 @@
   ],
   "currentLedger": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-method-row-ledger-20261017.json",
-    "sha256": "6253eac2255d5753c50cca5c8e5a7ecb5763f56c1d9ba7ef4352005e9a5f4b17"
+    "sha256": "bd071ab139808d031f47374dc0f8f91e0edb2d1d2ae81a69832b5b9f84f5cdad"
   },
   "preflightReferences": [
     {
@@ -610,7 +610,7 @@
   ],
   "futureChecks": {
     "first": "COMPLETED FIRST corrected b501 fresh selected BOTH+exact PlanOnly0 in87.504103396s; no repeated catalog. No more preparation until relevant changes.",
-    "actual": "Independent affected SOURCE/PREP of correction/current64/new9/10raw+UNRUN boundary recorder, then persisted decision/exact successor recovery and named Root boundary2 activation; ALLactual tests remain UNRUN.",
+    "actual": "Source/PREP accepted. Persist decision/exact remote/complete recovery, then separate named Root actualSource activation for ONLY boundary2. Actual0; original future helpers/sentinels unrun.",
     "remaining": "Ordinary semantic/existing/SP/source parity controls only after relevant production SOURCE/root release."
   },
   "counts": {
@@ -627,7 +627,7 @@
       "disposition": "Read actual file inventory, resumed only unfinished metadata steps; catalog mutations were not repeated. This is authoring metadata, not build/PREP/native failure."
     }
   ],
-  "sourcePinDigest": "cf8c59abbaf04f64855445eaab82cf48d64d73b3501d7ca6a3d22856803fc230",
+  "sourcePinDigest": "c7118d97ff5783c025d4c07a358046e4c6a21738940f58a2e646d0af102627aa",
   "supplementalFixturePins": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
@@ -697,7 +697,7 @@
   "sourceReviewKnownFindings": [
     {
       "id": "NI-S01",
-      "status": "CORRECTED_FRESH_PREPARED_AWAIT_AFFECTED_SOURCE_VERDICT",
+      "status": "NI_S01_CLOSED_BY_FINAL_AFFECTED_SOURCE_AND_ROOT",
       "fact": "Initial56/ec60 test expected raw IOException instead of actual typed continuation. That original test/preparation is preserved in prior Git/raw history; current b501 test asserts the actual wrapper/result/outcome/retained failures.",
       "scope": "Later bounded tests-only correction after consolidated reviewer/Root release; no actual test result, no production semantics change.",
       "correction": "Assert actual MainOperationContinuationException<int>, EstablishedResult17, Completed, exact InnerException and SessionFinalizationFailure. No OriginalClose nonnull/authority claim."
@@ -975,6 +975,49 @@
     "protectedLate2Receipt": {
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-protected-late2-dependency-b501b2b7-20261017.json",
       "sha256": "c1640c31ed50f031bcd44d402fcf8706cd2e3d64735884a15b9f346da46fd5a6"
+    }
+  },
+  "acceptedSourceDecision": {
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-review-20261017.md",
+        "sha256": "6eca0af6840caec2c2bca13677b3f2b2797b5f1e4cad60ea01e77449dfe10daa",
+        "bytes": 3395
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-review-20261017.json",
+        "sha256": "c6f90bf2d9105c9ec26bbd3e5e2dfd1c5b4b0c9e5fc1f9cbcc133352258ff274",
+        "bytes": 8256
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-source-independent-check-20261017.json",
+        "sha256": "fad0ae6e216bd554fda16e7bc06e8b712cb0408f8d0f8376d3e6e02e1a8ec70a",
+        "bytes": 13329
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-source-accepted-first-boundary2-conditional-b5859fcf-20261017.json",
+        "sha256": "b189985c7baacdf8710bf966b39b190aafc1b91b1f474df66627f2b3fac53726",
+        "bytes": 2757
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-nis01-prepared-wip-delta-github-b5859fcf-20261017.json",
+        "sha256": "8f232cfbb1304cd9584d4a157ca4c8105e4b35b6dca4dfdcc31703349aa3e09c",
+        "bytes": 21383
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-b5859fcf-20261017.json",
+        "sha256": "8e88c86ad925aa2384b31f8cf4e6b5a5f85c554286753fb02151ee16b572709b",
+        "bytes": 13089
+      }
+    ],
+    "materialBlockers": 0,
+    "actualExecutions": 0,
+    "eligibleAfterNamedActivationOnly": "fr063-ordinary-output-policy-boundary one existing unit method/two rows, real public prerequisite then missing shared-stage oracle.",
+    "held": "All other50 plus production/protectedLate2; preserve FIRST unexpected raw, no retry; separate causal EVIDENCE before any product release.",
+    "archiveHelper": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-boundary.py",
+      "sha256": "9f967f101e452c4c3ef8673ac51e94054ee37d23d7730cbc599aeac00171f11c",
+      "status": "UNRUN_READ_ONLY_FUTURE_BOUNDARY_ARCHIVE"
     }
   }
 }
