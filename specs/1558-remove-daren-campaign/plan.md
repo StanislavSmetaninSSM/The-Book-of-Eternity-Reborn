@@ -1,7 +1,7 @@
 # Implementation Plan: #1558 Daren campaign removal
 
 **Issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558). **Spec**: [spec.md](spec.md). **Date**: 2026-10-17.
-**Current status**: G2 implementation candidate revised before first build for reviewer R02/R03: exact shared rollback helper restored; complete retired Format1/2 private intent refuses before discard, with eight new source-derived GREEN controls. Current816catalog/static17selectedowners; UNCOMPILED/UNRUN. Fresh frontend→managed BOTH/catalog→exact GREEN PlanOnly0 follows published source recovery; SOURCE and runtime GREEN remain held, no task completion.
+**Current status**: G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01–R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.
 
 ## Isolation, instructions and recovery
 
@@ -311,3 +311,7 @@ Published coherent candidate `77547b99851d37f68313e31d9b573c4d578235f6` was pres
 New `daren-retirement-private-intent` owns three methods/eight proposed GREEN cases: recognized retired Format1/2 retain exact evidence; ordinary1/2 and truncated1/2 discard only the private stage; exact retired paths with invalid later images1/2 remain malformed scratch and discard. Fixtures declare `SOURCE_DERIVED_FULL_FORMATn_INTENT_NOT_AUTHENTIC_CAPTURE`, current owned generation/root and opaque exact images. Whole snapshots/callbacks/strict roots are asserted. These are source-authoring corrections, not new native/PREP failures; all new controls are UNRUN. Existing28 causal baseline remains accepted with original provenance and is not replayed before implementation.
 
 Root verified the preceding coherent carrier in [101-delta composition](recovery/gm1558-root-recovery-composition-77547b99-20261017.json). This correction extends that retained recovery chain; no full base re-read or runtime was needed.
+
+### FIRST G2 frontend preparation STOP — preserved before diagnosis
+
+At exact source `ce7cf01204c55016fc8da636e603690155f008a9`, the first `npm run build` returned native127 after0.280499s (actual10:42:02UTC), literal `sh: 1: tsc: not found`. [Exact FIRST packet](recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json) freezes record/stdout/process/sentinel/helper as five gzip/raw chains. This is a frontend compiler-invocation dependency failure, not a gameplay RED or a successful typecheck/bundle. Seven prior binary hashes, source HEAD/clean status and owned namespaces stayed unchanged. Managed output cleanup/build/catalog/PlanOnly and all runtime were not started. Source [ce7 complete delta](recovery/gm1558-g2-r02-r03-source-delta-github-ce7cf012-20261017.json) is preserved. Stop publication precedes bounded dependency diagnosis/correction; no automatic retry.

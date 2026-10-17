@@ -1,0 +1,148 @@
+{
+  "kind": "FIRST_G2_FRONTEND_PREPARATION_STOP_NATIVE127_NOT_GAMEPLAY_RED",
+  "utc": "2026-10-17T10:42:46.615159+00:00",
+  "sourceHead": "ce7cf01204c55016fc8da636e603690155f008a9",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "nativeExit": 127,
+  "wallSeconds": 0.28049916899908567,
+  "startedUtc": "2026-10-17T10:42:02.005335+00:00",
+  "finishedUtc": "2026-10-17T10:42:02.351082+00:00",
+  "observedStderr": "sh: 1: tsc: not found",
+  "meaning": "Frontend compiler invocation dependency stop; no app/node typecheck or bundle qualified; no managed catalog/PlanOnly/test execution.",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/record.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/record.json.gz",
+      "bytes": 15351,
+      "sha256": "b711e078facda4798db55ac7c704e766944b9feebcc1d4291fe5afdb06f8f1c7",
+      "storedSha256": "1e6d1cf5b26f6d4a39772cb0500e23351d0b2a022e4cc2ec92eb9e476a9cc2b4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/stdout.log",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/stdout.log.gz",
+      "bytes": 238,
+      "sha256": "69f00b3ca662960d3ca72c91e0eef45fd42f396e7ad1835258607d10a077b056",
+      "storedSha256": "d92d6f6053ff8bb01622d7d5e85d723410c73f9b74ff3a001f6357aa5a5cf42b",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z/process.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/process.json.gz",
+      "bytes": 211,
+      "sha256": "bb853293beeeedaff0f3349dbfeeba0f442eea442319542126dc165aadaa5dd7",
+      "storedSha256": "c38ef0d56a0a106d58ed88821bdddc32ad8833156992d7a8920535cf03bf5b5f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/ce7cf01204c55016fc8da636e603690155f008a9-g2-frontend.first-launch.json.gz",
+      "bytes": 355,
+      "sha256": "721ed70054f62bf1115780b4017d4a23d7a8198b96c691f4eb80f91e5f2b188a",
+      "storedSha256": "4e2f1ee148565b9cd43c427dfbe2641ea530d124aaf817cb70da3cd01f9a4a7c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-preparation-run.py",
+      "storedPath": "specs/1558-remove-daren-campaign/recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files/gm1558-g2-preparation-run.py.gz",
+      "bytes": 7522,
+      "sha256": "6ea8f61a2a29d762378865b1421c8f491bf003da21c00502a190be073550616b",
+      "storedSha256": "60707d1ea771df2230808e8ccfcf2c0e341bc354e1e8bd25480e9fe9dd3629b0",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9560064,
+      "sha256": "575557c4531a9d5a920ed8b4b98ee14655e68ef46c10c532d19b7dc13924ee04"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29326336,
+      "sha256": "30b12c57583a3fbd90f22cfc2459eba4f6614fb256d8a20cb0227ccddf96b111"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1992192,
+      "sha256": "eda42cc4ad3beb2d5ae1407b46de648e82f0da89b0f243fcaa1fe5a05ce2a331"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26183168,
+      "sha256": "f8aaa01d6e237a23926d68a2e908357384d887b9dcee5d5188e066a5c67dc505"
+    }
+  ],
+  "ownedPrefixesBefore": [
+    "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c",
+    "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082",
+    "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+    "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+    "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+    "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+    "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+    "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+    "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+    "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c",
+    "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468",
+    "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+    "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+    "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+    "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+    "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+    "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb",
+    "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+    "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+    "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+    "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+    "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc",
+    "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64"
+  ],
+  "ownedPrefixesAfter": [
+    "/tmp/boe-daren-retirement-artifacts-46121ce8204d4cd1b12318c9080f1c4c",
+    "/tmp/boe-daren-retirement-artifacts-8dda4a6598eb4da6af4b0c65d86f7082",
+    "/tmp/boe-gm1557-evidence-01fc81242f9a4186bca15fbf01ad7a97",
+    "/tmp/boe-gm1557-evidence-0a5183eb55c64ca0bd858b08a502847a",
+    "/tmp/boe-gm1557-evidence-0a81b87c9c3a4a8d83b25b636fe6e37c",
+    "/tmp/boe-gm1557-evidence-0f780e877521494dad34584a303f7ce4",
+    "/tmp/boe-gm1557-evidence-1585a6b6996d484398563c2d345c6c0b",
+    "/tmp/boe-gm1557-evidence-162f451309064c328b404b8a8dc8ed16",
+    "/tmp/boe-gm1557-evidence-2be0b2d261584b86a0dbbd62b455ffc7",
+    "/tmp/boe-gm1557-evidence-3429d6773557471aa0fe8e9b48e15a3c",
+    "/tmp/boe-gm1557-evidence-3a361872fb424c1497d99064c862b468",
+    "/tmp/boe-gm1557-evidence-7ab8fac845114257a042daa127e625af",
+    "/tmp/boe-gm1557-evidence-847f24e007af4d48934f806983cb48dd",
+    "/tmp/boe-gm1557-evidence-85f93edc3a2546159d5f92491a4d2e89",
+    "/tmp/boe-gm1557-evidence-a56ec64ddcf547bea36f85bab64a3f76",
+    "/tmp/boe-gm1557-evidence-a9aa8455b47a47529d73615fc82b8316",
+    "/tmp/boe-gm1557-evidence-b7b1cad9ec24449b9c4953fd594c8ccb",
+    "/tmp/boe-gm1557-evidence-be8fcb77879c40d9a119ef3226d3debe",
+    "/tmp/boe-gm1557-evidence-ccf5ddc3a3294ffeab500e94172bcbfa",
+    "/tmp/boe-gm1557-evidence-d3e83b0fa7c742cf84359912fd4f7bce",
+    "/tmp/boe-gm1557-evidence-e8d8f29ef5184c62a370b3d5c6f8dfaa",
+    "/tmp/boe-gm1557-evidence-ed25b79fdef74354ad167b8d960b24cc",
+    "/tmp/boe-gm1557-evidence-fa787675ea2d49ee8927469401e81e64"
+  ],
+  "nextGate": "Remote preservation/readback/complete delta before bounded dependency diagnosis; no retry authorized by this packet.",
+  "labelLimit": "Unique label is an identifier, not execution time; actual startedUtc10:42:02 is authoritative.",
+  "helperText": "from pathlib import Path\nimport json,hashlib,gzip,datetime\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1558');f=r/'specs/1558-remove-daren-campaign';d=Path('/tmp/gm1558-implementation-tools/gm1558-g2-frontend-first-ce7cf012-20261017t1046z');j=json.loads((d/'record.json').read_text());assert j['nativeExit']==127 and j['headAfter']==j['sourceHead']=='ce7cf01204c55016fc8da636e603690155f008a9' and j['statusAfter']=='' and not j['resultDirectories'];assert j['binaryBefore']==j['binaryAfter']and j['ownedPrefixesBefore']==j['ownedPrefixesAfter']\nfolder=f/'recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017-files';assert not folder.exists();folder.mkdir();rows=[]\nraw=[d/'record.json',d/'stdout.log',d/'process.json',Path(j['firstLaunchSentinel']),Path('/tmp/gm1558-g2-preparation-run.py')]\nfor p in raw:\n b=p.read_bytes();compressed=gzip.compress(b,mtime=0);dest=folder/(p.name+'.gz');assert not dest.exists();dest.write_bytes(compressed);assert gzip.decompress(dest.read_bytes())==b\n rows.append(dict(rawPath=str(p),storedPath=str(dest.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(compressed).hexdigest(),compression='gzip mtime0'))\npacket=dict(kind='FIRST_G2_FRONTEND_PREPARATION_STOP_NATIVE127_NOT_GAMEPLAY_RED',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),sourceHead=j['sourceHead'],command=j['argv'],nativeExit=j['nativeExit'],wallSeconds=j['wallSeconds'],startedUtc=j['startedUtc'],finishedUtc=j['finishedUtc'],observedStderr='sh: 1: tsc: not found',meaning='Frontend compiler invocation dependency stop; no app/node typecheck or bundle qualified; no managed catalog/PlanOnly/test execution.',files=rows,binaryPins=j['binaryAfter'],ownedPrefixesBefore=j['ownedPrefixesBefore'],ownedPrefixesAfter=j['ownedPrefixesAfter'],nextGate='Remote preservation/readback/complete delta before bounded dependency diagnosis; no retry authorized by this packet.',labelLimit='Unique label is an identifier, not execution time; actual startedUtc10:42:02 is authoritative.',helperText=Path(__file__).read_text());(f/'recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json').write_text(json.dumps(packet,indent=2)+'\\n')\nfor p in [Path('/tmp/gm1558-g2-r02-r03-source-delta-github-ce7cf012-20261017.json'),Path('/tmp/gm1558-root-recovery-composition-ce7cf012-20261017.json')]:\n if p.exists():\n  dest=f/'recovery'/p.name;assert not dest.exists();dest.write_bytes(p.read_bytes());assert dest.read_bytes()==p.read_bytes()\nstatus='G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01\u2013R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.'\nfor n,m in [('plan.md','**Current status**:'),('spec.md','**Status**:'),('tasks.md','**Current phase**:')]:\n p=f/n;s=p.read_text();a=s.index(m);b=s.index('\\n',a);s=s[:a]+m+' '+status+s[b:];p.write_text(s)\np=f/'plan.md';s=p.read_text();s+='''\\n### FIRST G2 frontend preparation STOP \u2014 preserved before diagnosis\\n\\nAt exact source `ce7cf01204c55016fc8da636e603690155f008a9`, the first `npm run build` returned native127 after0.280499s (actual10:42:02UTC), literal `sh: 1: tsc: not found`. [Exact FIRST packet](recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json) freezes record/stdout/process/sentinel/helper as five gzip/raw chains. This is a frontend compiler-invocation dependency failure, not a gameplay RED or a successful typecheck/bundle. Seven prior binary hashes, source HEAD/clean status and owned namespaces stayed unchanged. Managed output cleanup/build/catalog/PlanOnly and all runtime were not started. Source [ce7 complete delta](recovery/gm1558-g2-r02-r03-source-delta-github-ce7cf012-20261017.json) is preserved. Stop publication precedes bounded dependency diagnosis/correction; no automatic retry.\\n''';p.write_text(s)\np=f/'g2-implementation-source-packet-20261017.json';q=json.loads(p.read_text());q['status']=status;q['preparation']['firstFrontendOutcome']={'source':'ce7cf01204c55016fc8da636e603690155f008a9','nativeExit':127,'packet':'recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json','observed':'tsc:not found','managedCatalogPlan':'NOT_STARTED','runtime':'NOT_STARTED'};p.write_text(json.dumps(q,indent=2)+'\\n');print('FIRST127 STOP frozen5chains; no retry/diagnostic mutation; status metadata only')\n"
+}

@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "G2 implementation candidate revised before first build for reviewer R02/R03: exact shared rollback helper restored; complete retired Format1/2 private intent refuses before discard, with eight new source-derived GREEN controls. Current816catalog/static17selectedowners; UNCOMPILED/UNRUN. Fresh frontend\u2192managed BOTH/catalog\u2192exact GREEN PlanOnly0 follows published source recovery; SOURCE and runtime GREEN remain held, no task completion.",
+  "status": "G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01\u2013R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -2154,7 +2154,15 @@
     "managed": "Clean only settled own1558generatedbin/Debug/net8.0; ONEFIRST canonicalBOTH/ValidateCatalog afterfreshdist; fresh managed servedassets and noorphan campaigninventory",
     "plan": "Only ifcompiler/catalog native0, ONEFIRST exact17owner SelectionFile PlanOnly-NoBuild0; observedC#cases/descriptor/frontendfile estimates separate",
     "stop": "FIRSTunexpected source/compiler/catalog/plan/cleanup outcome frozen/published, no automaticretry",
-    "typecheck": "frontend-shell-types is separate actual selected-test tsconfig compiler contract, retained; not synonymous with npm app/node typechecks"
+    "typecheck": "frontend-shell-types is separate actual selected-test tsconfig compiler contract, retained; not synonymous with npm app/node typechecks",
+    "firstFrontendOutcome": {
+      "source": "ce7cf01204c55016fc8da636e603690155f008a9",
+      "nativeExit": 127,
+      "packet": "recovery/g2-first-frontend-preparation-stop-ce7cf012-20261017.json",
+      "observed": "tsc:not found",
+      "managedCatalogPlan": "NOT_STARTED",
+      "runtime": "NOT_STARTED"
+    }
   },
   "futureRuntime": "HELD until independently accepted concreteSOURCE/PREP +persistedRootexactrelease; Root one realChromium BranchChoice/retry/exit/staleSPA sample with actualnewDLL/servedReact/owneddata binding",
   "recovery": "Retainedfull7a+101completeconsecutiveGitHubdeltas at775; Rootcomposition775 and exactee\u2192775 receipt preserved. This R02/R03 correction extends recovery with a new complete immediate delta; no fullclone/basebyte rehash.",

@@ -3,7 +3,7 @@
 **Source issue**: [#1558](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1558) (read 2026-10-17: open, zero comments).
 **Branch**: `1558-remove-daren-campaign-20261017`.
 **Baseline**: `46ff637a01390a27c45a7fc36dc30e31d688e499`.
-**Status**: G2 implementation candidate revised before first build for reviewer R02/R03: exact shared rollback helper restored; complete retired Format1/2 private intent refuses before discard, with eight new source-derived GREEN controls. Current816catalog/static17selectedowners; UNCOMPILED/UNRUN. Fresh frontend→managed BOTH/catalog→exact GREEN PlanOnly0 follows published source recovery; SOURCE and runtime GREEN remain held, no task completion.
+**Status**: G2 production candidate ce7 is remotely preserved, UNCOMPILED/UNRUN. FIRST frontend preparation native127 at tsc:not found is frozen; managed BOTH/catalog and GREEN PlanOnly remain UNRUN. Source findings R01–R03 addressed in candidate, independent SOURCE/runtime acceptance held. No retry, package/React freshness claim or task completion.
 
 ## Source issues and scope
 
