@@ -1,0 +1,393 @@
+{
+  "kind": "EXACT_FIRST_E02_REMAINING_G2_GREEN_RAW_ARCHIVE_NOT_EVIDENCE_ACCEPTANCE",
+  "utc": "2026-10-17T12:02:47.180203+00:00",
+  "actualSource": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "nativeExit": 0,
+  "recordPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z/record.json",
+  "recordSha256": "e783aa99efa94050c4078f9b33b5bae79e49a54485d539a3c8e8cdacfcf9106d",
+  "files": [
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z/record.json",
+      "storedPath": "native/record.json.gz",
+      "bytes": 49771,
+      "sha256": "e783aa99efa94050c4078f9b33b5bae79e49a54485d539a3c8e8cdacfcf9106d",
+      "storedBytes": 11653,
+      "storedSha256": "1835a44e14755dd158a323666eeffdcd72c8b930cfc08045c87937bb2c3d4819",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z/stdout.log",
+      "storedPath": "native/stdout.log.gz",
+      "bytes": 27608,
+      "sha256": "597730b33e1af7d2d9c7eb52175cc0fe3ad93353256eb026225d7988b1e478c3",
+      "storedBytes": 3340,
+      "storedSha256": "bf103fb7ce830202a3c441f0e6b31b14eb02ae3098b4b55a3ded2c5e87d33bb4",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z/process.json",
+      "storedPath": "native/process.json.gz",
+      "bytes": 911,
+      "sha256": "f55d9cffc07cdcbd4342aca2355652b230fb493ad5856b1201b5792f84a7d0ca",
+      "storedBytes": 453,
+      "storedSha256": "d24af312f8fb657fda980a5e5536f32048313b06c8c3afb513a0020c9b534043",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/5441e49f3662dd319de9f5935910a3a37fd14fd9-g2-e02-remaining-selection-green.first-launch.json",
+      "storedPath": "native/sentinel.json.gz",
+      "bytes": 514,
+      "sha256": "f30bf59f8cf98fa860a5812803a42704152602db9ff05858c58f295796996ae8",
+      "storedBytes": 345,
+      "storedSha256": "6922f2c7480fc8cc4d38ef893a56c778fd4c6bc04b305a0af3fc61e533fa99ed",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-g2-e02-remaining-green-first-run.py",
+      "storedPath": "support/approved-first-recorder.py.gz",
+      "bytes": 11292,
+      "sha256": "88df9fd56e4fdf09514b02fce289f4eda57d4602b10ae1ba4d6b1f21e689b421",
+      "storedBytes": 4595,
+      "storedSha256": "b82c676bc1e8b14cac0f822041a25763ac25dfdf1e7a21aee8707c875c35006e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-archive-g2-e02-remaining-green-first.py",
+      "storedPath": "support/archive-helper.py.gz",
+      "bytes": 3523,
+      "sha256": "4515e0e8695b1e6b5060f11b5d81e01e7c43f6f9e19ef22dbf91e3b832756fd9",
+      "storedBytes": 1583,
+      "storedSha256": "0b8dc2159a9459695958f007faee5defa21143e1a249ba37ba4a68ea272db3fb",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-affected-client-contracts-unit-001.trx",
+      "storedPath": "runner/0/daren-retirement-affected-client-contracts-unit-001.trx.gz",
+      "bytes": 26341,
+      "sha256": "649288cb9917f4f311fffe7a61a5c6d4ea89613bc05ae77f89e96eb41e487283",
+      "storedBytes": 5905,
+      "storedSha256": "3e342c99f8c6521662b31dabb1d440fab10d5d828270f4d0076af29c6d75f4e9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-browser-host-integration-002.trx",
+      "storedPath": "runner/0/daren-retirement-browser-host-integration-002.trx.gz",
+      "bytes": 37192,
+      "sha256": "5c64ab70b0d21f1d0b3c78d4046906d259a637ad751afe0ed4d5c137047171c3",
+      "storedBytes": 4244,
+      "storedSha256": "8ce8368d04c231cb9ca2798d0fb5261250f4c488b7541d1b95003b6861afdb14",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-integration-003.trx",
+      "storedPath": "runner/0/daren-retirement-common-qte-integration-003.trx.gz",
+      "bytes": 11743,
+      "sha256": "7604a4ccc9561b2e29dba1f01b16e936dd108fde94ae132cd6bd361a76bdab0b",
+      "storedBytes": 2255,
+      "storedSha256": "bf0f5de4489451eb028af95929858e92b38f7a25a94aa5abb5e8c612fe9d0931",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-common-qte-unit-004.trx",
+      "storedPath": "runner/0/daren-retirement-common-qte-unit-004.trx.gz",
+      "bytes": 20925,
+      "sha256": "2d1861fc22146ac74aacb716d3ec8333afdf3664875e7247805ee8872bacb155",
+      "storedBytes": 2767,
+      "storedSha256": "cdd5d6a06526f139c4e5c187a27c74a5a6e4d94bd8c8d692bd480f63250809e3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-menu-integration-005.trx",
+      "storedPath": "runner/0/daren-retirement-console-menu-integration-005.trx.gz",
+      "bytes": 3477,
+      "sha256": "e35404dd1be9431f632e2bc808b5ddb0fec6759a744c742199cb851588ccad76",
+      "storedBytes": 1421,
+      "storedSha256": "25823b603f3e258b9f958185fd63a2ba681e2f7f6ee5d793e14b4945b13bca52",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-console-practice-integration-006.trx",
+      "storedPath": "runner/0/daren-retirement-console-practice-integration-006.trx.gz",
+      "bytes": 261653,
+      "sha256": "11cd9e1216533bdab9fcb333f60f804ac5c6b796bc0ef4fadfdf2b0703acb89f",
+      "storedBytes": 14947,
+      "storedSha256": "449eba5f07da05c569c6f4f95f869889af625953028b9b5ade4ae1075ab78d7c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-frontend-shell-frontend-007-compiled/package.json",
+      "storedPath": "runner/0/daren-retirement-frontend-shell-frontend-007-compiled/package.json.gz",
+      "bytes": 18,
+      "sha256": "1239d4d885dcad42201a27ed9324f8f0f760b78700d8db9ced39a511cffe7eae",
+      "storedBytes": 38,
+      "storedSha256": "64b61774d77b5a31a1f209757b9f5964c5804719e3c7585562ef818070e2b7e7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-frontend-shell-frontend-007-compiled/test/gameLauncherMenuLayout.test.js",
+      "storedPath": "runner/0/daren-retirement-frontend-shell-frontend-007-compiled/test/gameLauncherMenuLayout.test.js.gz",
+      "bytes": 11687,
+      "sha256": "53af089a245ad464764dcf4ac67ba839efc9d9f36618318fe253a0a356757867",
+      "storedBytes": 3113,
+      "storedSha256": "697278f5c27afb404e03136b683453a9331c9cd33bdff1daa4b6d8ab4adec74e",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-frontend-shell-frontend-007-compiled/test/uiStructure.test.js",
+      "storedPath": "runner/0/daren-retirement-frontend-shell-frontend-007-compiled/test/uiStructure.test.js.gz",
+      "bytes": 6473,
+      "sha256": "c27252d1b6968ad68e541e8f04059e4690fe123c7b2e715ddb091f173dea8f93",
+      "storedBytes": 2024,
+      "storedSha256": "9f9f2f17b3ad68a70b084e0abed509b84ea87e9227fec541ab4877fc2062d0d9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-frontend-shell-frontend-007.trx",
+      "storedPath": "runner/0/daren-retirement-frontend-shell-frontend-007.trx.gz",
+      "bytes": 835,
+      "sha256": "93a867df95e19cd46747d18bb3e12b5a3e676e01bf161f3dd62353a5bb1c77da",
+      "storedBytes": 400,
+      "storedSha256": "485847886352e7b1f7de20e21915f461e79de18b13d84e67c639e40dfe54e8b5",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-frontend-shell-frontend-007.tsconfig.json",
+      "storedPath": "runner/0/daren-retirement-frontend-shell-frontend-007.tsconfig.json.gz",
+      "bytes": 752,
+      "sha256": "ed19d9c1c8cac291cd910363b2c22754a57fb8d66fa375e145600640fd7acb2c",
+      "storedBytes": 340,
+      "storedSha256": "1614e3252b25ecb0c061b7891efa8efc84f789cc1f2b0d292df0b65ea8c7d984",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-ordinary-storage-integration-008.trx",
+      "storedPath": "runner/0/daren-retirement-ordinary-storage-integration-008.trx.gz",
+      "bytes": 5572,
+      "sha256": "d7d71ed909969ef801d9dd8958fb90b8b6252a997d25d7e6fa935eb64bd4ca5c",
+      "storedBytes": 1843,
+      "storedSha256": "3466d645541342ee4b8811a6336819c1ed3b1d587c937655c685402a255f1bd2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-original-schema6-green-integration-009.trx",
+      "storedPath": "runner/0/daren-retirement-original-schema6-green-integration-009.trx.gz",
+      "bytes": 7569,
+      "sha256": "e1238b3881400a1660efe280c5bb92494d02e51ff794379d718d97452046e0f7",
+      "storedBytes": 2566,
+      "storedSha256": "8a6b2e9dd4f2a12969f218557defb8c189a3c336d981ac01f2fbde5990f743ad",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-private-intent-integration-010.trx",
+      "storedPath": "runner/0/daren-retirement-private-intent-integration-010.trx.gz",
+      "bytes": 45393,
+      "sha256": "f8c6ffbe45c7d275961cb06efda34a9be4b3f80d74328eb12dbdef3c26b9d78a",
+      "storedBytes": 5257,
+      "storedSha256": "8908606725f8a3e86ae25d5b9b47402bce433b27324534bc3b0c884f122ca5d0",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-save-rewards-integration-011.trx",
+      "storedPath": "runner/0/daren-retirement-save-rewards-integration-011.trx.gz",
+      "bytes": 10576,
+      "sha256": "1e9df8a4778c4cda2930490b34d0962c7adc08f87bca533bc7614adb25f2b78d",
+      "storedBytes": 2594,
+      "storedSha256": "eda6cebd87858c50d2ec0b30da6d5f2421157b8dd50b6cb2e5b9bec4c1e249ce",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-source-guidance-unit-012.trx",
+      "storedPath": "runner/0/daren-retirement-source-guidance-unit-012.trx.gz",
+      "bytes": 15291,
+      "sha256": "813f7b62730c46352c0d7d989a28dbce6f879aae574e38dc886f2b619164ffd1",
+      "storedBytes": 2476,
+      "storedSha256": "f11c3598d109e539b3d28d09267785857860a2c54569fec9f7ddf361ff8f8633",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/daren-retirement-storage-refusal-integration-013.trx",
+      "storedPath": "runner/0/daren-retirement-storage-refusal-integration-013.trx.gz",
+      "bytes": 37230,
+      "sha256": "9ad83d08933c204e107f2877a576f87880b18180915437b7190a2ca4970b9fdc",
+      "storedBytes": 4693,
+      "storedSha256": "6f2234020f9d578404fa131dabc530324efbb333dccd1691dc51fea38e67f90c",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/dotnet-test.log",
+      "storedPath": "runner/0/dotnet-test.log.gz",
+      "bytes": 3435327,
+      "sha256": "d88ced39bdb5d23e32069a00cf14e310466c8a6241e003fa43e3675b8f282004",
+      "storedBytes": 379841,
+      "storedSha256": "4712f4754db27583182f1759a80f98278fe3b66bbf15d42296f617ad41811a48",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/frontend-qte-frontend-014.trx",
+      "storedPath": "runner/0/frontend-qte-frontend-014.trx.gz",
+      "bytes": 12209,
+      "sha256": "e95790d9f47841d02d593e59ad13e47995326259ebfd3f53f74c296fca2dff52",
+      "storedBytes": 2913,
+      "storedSha256": "c64aca45fc37d4cd01ff464d065bca0e23307dafb3a932cf83fe86b1b5eb6b48",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/frontend-qte-frontend-014.vitest.json",
+      "storedPath": "runner/0/frontend-qte-frontend-014.vitest.json.gz",
+      "bytes": 11541,
+      "sha256": "4ed3239f841cb6392e7579995b6a065d02592e89e6abcfa1f5aa9ad889ef9f7f",
+      "storedBytes": 2101,
+      "storedSha256": "6f5db01f700def06401efb1b71578dba93e90dd0da98fb53368c18a7e58afcc0",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/frontend-shell-types-frontend-015.trx",
+      "storedPath": "runner/0/frontend-shell-types-frontend-015.trx.gz",
+      "bytes": 862,
+      "sha256": "75f1beec48a1777912dd2806931c27cb2e64f360ba2001179b6c0beaa55dfa3d",
+      "storedBytes": 408,
+      "storedSha256": "553891344deea3c2252969322b8b14f4a0c7a81a0a768d0a3bd62db18a58cae0",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/frontend-shell-types-frontend-015.tsconfig.json",
+      "storedPath": "runner/0/frontend-shell-types-frontend-015.tsconfig.json.gz",
+      "bytes": 747,
+      "sha256": "bc3393991e076e5ba93eddefa7901414b8003acb6dd8c55ae0fa28d257d972fe",
+      "storedBytes": 330,
+      "storedSha256": "7ed92a383e7a1b9b2dfcd09d9c63ab8fe58ad6d399ba3e52ac9435b146cf9a86",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/gm-doc-afterlife-package-delivery-integration-016.trx",
+      "storedPath": "runner/0/gm-doc-afterlife-package-delivery-integration-016.trx.gz",
+      "bytes": 918176,
+      "sha256": "0081b6f96836fa4380d6d5532fc5d0101103a29bac0e2c1aa4e7097a164e175a",
+      "storedBytes": 143052,
+      "storedSha256": "b692df3ef7df9629b903e833fea97da4fada2db6f76c5e56cd7a08bab622ab3f",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/plan.json",
+      "storedPath": "runner/0/plan.json.gz",
+      "bytes": 29964,
+      "sha256": "661f286daabc70d23e53bb42e8285fb2b5e8772b4d8bc99c8f5744140af855dc",
+      "storedBytes": 4855,
+      "storedSha256": "11213b093d4cb199dfb10546d11d1e8cdd34a70eb5a9b14a129bd78697efac76",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-browser-protocol-admission-linux-integration-017.trx",
+      "storedPath": "runner/0/portable-browser-protocol-admission-linux-integration-017.trx.gz",
+      "bytes": 10276,
+      "sha256": "710813d7a043ee1be03ec165d7361fd86848da5d8cd14d47cf811165a047c910",
+      "storedBytes": 1909,
+      "storedSha256": "42972536549379561a17258e1c57e10b2cfdb9fc27370cd39127841f8dfc1e77",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/portable-original-remaining-owning-close-linux-integration-018.trx",
+      "storedPath": "runner/0/portable-original-remaining-owning-close-linux-integration-018.trx.gz",
+      "bytes": 200722,
+      "sha256": "100fc7cfae5fb565f894f9741907505b50de1b61cfdbc0b3b04dc9746d385e05",
+      "storedBytes": 41442,
+      "storedSha256": "321ed715c36694be4f484e43b7ec308583429719a0e45b341ce33326abda80ef",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-120040-691-108208-79a0848c8bdc4d51a0220e11a8282751-categories/summary.json",
+      "storedPath": "runner/0/summary.json.gz",
+      "bytes": 13013,
+      "sha256": "b15f9c4183dd8064c9b13641a2c9db106ec324ace19cac1a15a6977c1b42b1b4",
+      "storedBytes": 3308,
+      "storedSha256": "fe48b635a28fb32080979c3989f597acd30cb80ff24c5ceca5c958b99b05bf26",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/ast-and-publication.json",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/ast-and-publication.json.gz",
+      "bytes": 710209,
+      "sha256": "3030ef1fe7e757ceca488d47a1b6cacb28db2ed4f057455993643a6f9d3163ef",
+      "storedBytes": 116235,
+      "storedSha256": "c38db368983cba8e90d769d86e524cc4d1328b78cc94c923b732ae6331f494fe",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/generated-MORTAL_NPC_UPDATE_TEMPLATE.md",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/generated-MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "bytes": 12977,
+      "sha256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "storedBytes": 4878,
+      "storedSha256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/inspect-and-publish.ps1",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/inspect-and-publish.ps1.gz",
+      "bytes": 9144,
+      "sha256": "0dddef27081fb4794df95fecb4d9e0d333bc755b5d7c3c37a29c5b0237a6df57",
+      "storedBytes": 2666,
+      "storedSha256": "52db6f4f420bf1bbc35c423bc8d5802c57286d04624a19a85105fe5daab11e49",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/outcome.json",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/outcome.json.gz",
+      "bytes": 914962,
+      "sha256": "7c5f5396010891923c6ce855f2b0c4782b8a018330f0348e1a1e9755be179d0b",
+      "storedBytes": 141680,
+      "storedSha256": "7644465b91e11a996e369e6357a852c749d29997ae1020c12da8a0d97bc7fed9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/stderr.log",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/stderr.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/stdout.log",
+      "storedPath": "fixture-artifacts/boe-gm1557-evidence-7858c83b3eee44f3a6ae243c52c5c079/stdout.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storedBytes": 20,
+      "storedSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/specs/1558-remove-daren-campaign/g2-implementation-source-packet-20261017.json",
+      "storedPath": "support/current-source-binding.json.gz",
+      "bytes": 151292,
+      "sha256": "c89c56ee881983eab5909b0624fa2a2346ecc864dfafa77bf920dfe8a642f821",
+      "storedBytes": 38005,
+      "storedSha256": "7ef24bdd3373f04e30a7b2eef78d7862365e24bd7e2069b9f9d4fb77a54d38c8",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn-1558/TestResults/test-categories/20261017-115426-694-106599-a8f999b5b659439fa2b6fca230d87543-categories/plan.json",
+      "storedPath": "support/reviewed-plan.json.gz",
+      "bytes": 29964,
+      "sha256": "ba9b84a2d92a63ba523ef1d6a694dcbc331cd4fb57f2b56551c1c046f8fb0f9d",
+      "storedBytes": 4857,
+      "storedSha256": "97b3184f85b8cb46f9bf7d4588f0174910611e3d4278ff62b02d50790bba9bb3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/gm1558-implementation-tools/gm1558-g2-e02-p01-catalog-first-5441e49f-20261017t1153z/fresh-package-frontend-docs-manifest.json",
+      "storedPath": "support/fresh-package-manifest.json.gz",
+      "bytes": 109073,
+      "sha256": "ed90a4f0e221f29636a40c1293cb40f88ab39da1f75628836cebcb251179699f",
+      "storedBytes": 25305,
+      "storedSha256": "ba78e2df1ee983dcbc7ba9355768c2b3fc00ac2ddf5d190e993c9dac014026b7",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "skippedNonRegularArtifacts": [],
+  "scope": "FIRST native/runner/TRX/frontend/process/sentinel/helper and observed retained fixture artifact bytes only. No execution/cleanup/migration/replay. A failed/incomplete command remains failed/incomplete; qualified counts and independent EVIDENCE remain separate.",
+  "helperText": "\"\"\"Exact FIRST G2 actual archive into a NEW /tmp directory; no launch/cleanup/retry.\"\"\"\nfrom pathlib import Path\nimport sys,json,hashlib,gzip,datetime\n\ndef sha(b):return hashlib.sha256(b).hexdigest()\ndef main():\n assert len(sys.argv)==3;record=Path(sys.argv[1]);dest=Path(sys.argv[2]);assert dest.is_absolute()and str(dest).startswith('/tmp/')and not dest.exists();dest.mkdir();j=json.loads(record.read_text());assert j['kind']=='FIRST_E02_REMAINING_G2_GREEN_RAW_NOT_INDEPENDENT_ACCEPTANCE';assert j['nativeProcessSettled'],'Do not archive live/uncertain raw; reconcile exact owner first';rows=[];skipped=[]\n def save(p,name,expected=None):\n  p=Path(p)\n  if p.is_symlink():skipped.append(dict(path=str(p),kind='SYMLINK_NOT_FOLLOWED',target=p.readlink().as_posix()));return\n  assert p.is_file();b=p.read_bytes()\n  if expected:assert len(b)==expected['bytes']and sha(b)==expected['sha256'],str(p)\n  z=gzip.compress(b,mtime=0);target=dest/(name+'.gz');assert not target.exists();target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(z);assert gzip.decompress(target.read_bytes())==b;rows.append(dict(rawPath=str(p),storedPath=name+'.gz',bytes=len(b),sha256=sha(b),storedBytes=len(z),storedSha256=sha(z),compression='gzip mtime0'))\n save(record,'native/record.json');save(j['stdoutPath'],'native/stdout.log');save(j['processRecord'],'native/process.json');save(j['firstLaunchSentinel'],'native/sentinel.json');save('/tmp/gm1558-g2-e02-remaining-green-first-run.py','support/approved-first-recorder.py');save(Path(__file__),'support/archive-helper.py')\n for p in j['resultFiles']:\n  path=Path(p['path']);matches=[(i,Path(d))for i,d in enumerate(j['resultDirectories'])if path.is_relative_to(Path(d))];assert len(matches)==1;i,d=matches[0];save(path,'runner/'+str(i)+'/'+str(path.relative_to(d)),p)\n for p in j['fixtureArtifactFiles']:\n  path=Path(p['path']);matches=[Path(d)for d in j['newRetainedArtifactDirectories']if path.is_relative_to(Path(d))];assert len(matches)==1;d=matches[0];assert d.parent==Path('/tmp')and d.name.startswith('boe-');save(path,'fixture-artifacts/'+d.name+'/'+str(path.relative_to(d)),p)\n root=Path(j['cwd']);save(root/j['sourceBindingPath'],'support/current-source-binding.json',dict(bytes=(root/j['sourceBindingPath']).stat().st_size,sha256=j['sourceBindingSha256']));save(j['reviewedPlanPath'],'support/reviewed-plan.json',dict(bytes=Path(j['reviewedPlanPath']).stat().st_size,sha256=j['reviewedPlanSha256']));save(j['packageManifestPath'],'support/fresh-package-manifest.json',dict(bytes=Path(j['packageManifestPath']).stat().st_size,sha256=j['packageManifestSha256']))\n result=dict(kind='EXACT_FIRST_E02_REMAINING_G2_GREEN_RAW_ARCHIVE_NOT_EVIDENCE_ACCEPTANCE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=j['actualSource'],compiledSource=j['compiledSource'],retainedFrontendSource=j['retainedFrontendSource'],nativeExit=j['nativeExit'],recordPath=str(record),recordSha256=sha(record.read_bytes()),files=rows,skippedNonRegularArtifacts=skipped,scope='FIRST native/runner/TRX/frontend/process/sentinel/helper and observed retained fixture artifact bytes only. No execution/cleanup/migration/replay. A failed/incomplete command remains failed/incomplete; qualified counts and independent EVIDENCE remain separate.',helperText=Path(__file__).read_text());(dest/'archive.json').write_text(json.dumps(result,indent=2)+'\\n');print('EXACT_FIRST_G2_ARCHIVE',dest,'chains',len(rows),'native',j['nativeExit'],'skipped',len(skipped))\nif __name__=='__main__':main()\n"
+}

@@ -6,7 +6,7 @@
   "productBaseline": "46ff637a01390a27c45a7fc36dc30e31d688e499",
   "acceptedCausalEvidence": "recovery/gm1558-first-s04-consumers-evidence-independent-20261017.md",
   "rootActivation": "recovery/gm1558-root-g2-implementation-activated-02393166-20261017.json",
-  "status": "Final targeted E02 SOURCE/FIXTURE/SELECTION/PREP accepted independently and by Root; no blockers. Exact sample/source-guard/catalog repairs, remaining partition, fresh7DLL/retained17329frontend113/package370/docs52 and88dfFIRST recorder bound. Named remaining17owners18desc93C#minimum+8FEest stillUNRUN until exact carrier Rootactivation; retained5 c5e/f076PASS and all original failures immutable. No actual/fullGREEN/RootChromium/task completion.",
+  "status": "FIRST named remaining observed native0/complete: 136 actual aggregate cases, 136PASS/0FAIL; 18/18descriptors completed. Exact42raw/native/frontend/fixture/process chains frozen; source277/new7DLL stable. Counts/unique union/semantic cleanup pending independent EVIDENCE; retained5 keepc5e/f076provenance, RootChromium and task completion held. No retry/source correction.",
   "sourcePins": [
     {
       "path": ".specify/memory/constitution.md",
@@ -3218,5 +3218,33 @@
     "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
     "verdict": "ACCEPTED_SOURCE_FIXTURE_SELECTION_PREPARATION_NO_BLOCKERS",
     "runtime": "NAMED_REMAINING_FIRST_UNRUN_REQUIRES_SEPARATE_ROOT_ACTIVATION"
+  },
+  "firstE02RemainingOutcome": {
+    "packet": "recovery/g2-e02-first-remaining-observed-d6318f0e-20261017.json",
+    "nativeExit": 0,
+    "nativeObservation": {
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 18,
+        "CompletedDescriptors": 18,
+        "PlannedCases": 101,
+        "CompletedCases": 136,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 136,
+        "Executed": 136,
+        "Passed": 136,
+        "Failed": 0
+      },
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true
+    },
+    "rawChains": 42,
+    "independentEvidence": "PENDING",
+    "rootChromium": "HELD_SEPARATE_ROOT_GATE",
+    "retainedFive": "ACTUAL_C5E_COMPILED_F076_NOT_REPLAYED"
   }
 }

@@ -1,0 +1,26 @@
+{
+  "kind": "ROOT_ACTIVATED_ONE_FIRST_E02_NAMED_REMAINING_GREEN",
+  "utc": "2026-10-17T12:00:29.481480+00:00",
+  "actualSource": "d6318f0e109258852e4da4146e14c7a1365abb4d",
+  "compiledSource": "5441e49f3662dd319de9f5935910a3a37fd14fd9",
+  "retainedFrontendSource": "17329db678313999b77ef53660d7ffb8291bcff8",
+  "acceptedSourceVerdict": "gm1558-g2-e02-source-independent-20261017.md",
+  "conditionalDecision": "gm1558-root-e02-source-accepted-remaining-green-conditional-release-f3eee2a1-20261017.json",
+  "readback": "Rootverifiedexactcleanremote/d631new15filesall11metadata/117composeddeltas56151paths/reports/ledger/277pins/7DLL/88dfhelper/8c9frontendtree",
+  "recovery": "/tmp/gm1558-g2-e02-accepted-source-delta-github-d6318f0e-20261017.json",
+  "composition": "/tmp/gm1558-root-recovery-composition-d6318f0e-20261017.json",
+  "helper": {
+    "path": "/tmp/gm1558-g2-e02-remaining-green-first-run.py",
+    "sha256": "88df9fd56e4fdf09514b02fce289f4eda57d4602b10ae1ba4d6b1f21e689b421"
+  },
+  "invocation": [
+    "python",
+    "/tmp/gm1558-g2-e02-remaining-green-first-run.py",
+    "gm1558-g2-e02-remaining-green-first-d6318f0e-20261017t1202z",
+    "d6318f0e109258852e4da4146e14c7a1365abb4d"
+  ],
+  "scope": "ExactlyONEcanonical namedremainingSelection-NoBuild17owners18desc45entries,93C#minimum+8FEestimates. Observedactualcounts only; wholeAPI11+Reactrequalifiedfirst. RetainfiveindependentPASSfromc5e/f076, no fullaggregate orpreviouslyretained5replay.",
+  "failurePolicy": "Firstunexpectednative/semantic/incomplete/duplicate/timeout/cleanup STOPSdependentactuals; freeze/publishFIRSTbeforecausalreview/correction. No auto retry/countfill. All oldfailures/sentinelsimmutable.",
+  "continuation": "Immediatelyfreeze/publishFIRSToutcome; Rootrawunionqualification ofremaining+retained5 precedesseparateexactRootChromiumactivation. FinalindependentEVIDENCE andfinalcheckpointstillrequired.",
+  "limits": "No build/newdependencies/npm/otherownerinvocation/Rootbrowsernow/main/merge/forcepush/branchdelete/issueclose/Windowsartifact/CI/Library/newcredentials/settings/HOTM3/newQTE."
+}
