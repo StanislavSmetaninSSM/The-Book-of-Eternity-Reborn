@@ -1,3 +1,7 @@
+## A1-F01 corrected fixture compiled/prepared — affected SOURCE pending (2026-10-17)
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): immutable independent F01 classification preserves limited first2PASS and withdraws fixture-byte sufficiency only. Corrected TEST source4d1 published/recovered; fresh BOTH/catalog0(780/11732), same4desc54case PlanOnly0/0execution/12chains/fourfreshDLLs preserved in [current packet/checkpoint](plan.md). Product/integration source unchanged; old accepted Late2 retains originale247 provenance and is not replayed for newassembly hashes. Publish/readback/newdelta and affected independent SOURCE before all52 corrected actuals; no hidden retry or design/user gate.
+
 ## A1-F01 TEST fixture correction WIP — fresh preparation/SOURCE pending (2026-10-17)
 
 [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536): first344 packet persisted/recovered before edits. Minimal corrected physical snapshot uses files.ResolvePath plus supplied presence/exact encoded preimage guard; product and same category membership/counts/budgets unchanged. Current selection documents affected WithOwner controls and retains accepted Late2 without replay. [Current checkpoint](plan.md): immediate WIP persistence/newdelta, fresh changed-test BOTH/catalog/PlanOnly0, affected independent SOURCE before corrected52. No user/design/oldRED/Late2/base repetition; all actual HELD.
