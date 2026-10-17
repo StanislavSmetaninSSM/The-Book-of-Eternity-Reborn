@@ -1,0 +1,142 @@
+{
+  "kind": "A_E03_FRESH_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_EVIDENCE_ACCEPTANCE",
+  "createdUtc": "2026-10-17T04:58:33.067164+00:00",
+  "compiledSource": "17043cf18e72d8e5a62c48505abc2ef7eda3e42f",
+  "nativeCatalog": {
+    "exit": 0,
+    "seconds": 89.28517164399818,
+    "categories": 799,
+    "discoveredMethods": 11773,
+    "testExecutions": 0,
+    "phases": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0384388,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0352816,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0932562,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 70.8430488,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 12.3908613,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0029955,
+        "Completed": true
+      }
+    ]
+  },
+  "exactPlan": {
+    "exit": 0,
+    "seconds": 5.814428230001795,
+    "categories": 14,
+    "descriptors": 16,
+    "uniqueMethods": 167,
+    "cases": 255,
+    "testExecutions": 0,
+    "bodySplit": [
+      60,
+      54
+    ],
+    "affectedDescriptors": [
+      {
+        "Name": "gm-doc-afterlife-repair-corrected-consumers-integration-016",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "gm-doc-afterlife-repair-corrected-consumers",
+        "Categories": [
+          "gm-doc-afterlife-repair-corrected-consumers"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies",
+        "Adapter": "integration",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 3,
+        "EstimatedCases": 3,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies",
+            "Cases": 3
+          }
+        ]
+      }
+    ],
+    "planSha256": "78f923d8c2eefb5a5aa439364f67d820be19104fe082a091667745fc78122dee",
+    "exactPrior166MethodCaseTuplesWithExplicitRepair9to6plusNew3": true
+  },
+  "rawChainsVerified": 12,
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "71db6fbec36457e573f643f898970adaf55768e55fe9636acf886d9c8548f70f",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "df2c810f1c7b2b5a06803da8a4e0be73062aba9daf40d22576d322c7cabd7bb8",
+      "bytes": 9533952
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "71db6fbec36457e573f643f898970adaf55768e55fe9636acf886d9c8548f70f",
+      "bytes": 26181632
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "758def1cf578d5c14eff6aaccbde23b7d5d0289d0f43b9757bcdb7082cccb73e",
+      "bytes": 29219840
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "d0b013e147ebeaed0549a311c1debbd3fecae5652155fb285e2437674042f019",
+      "bytes": 1944064
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "d0b013e147ebeaed0549a311c1debbd3fecae5652155fb285e2437674042f019",
+      "bytes": 1944064
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "71db6fbec36457e573f643f898970adaf55768e55fe9636acf886d9c8548f70f",
+      "bytes": 26181632
+    }
+  ],
+  "packagePinChain": {
+    "rawPath": "/tmp/gm1557-repair-fix-package-pins-17043cf1-20261017.json",
+    "storedPath": "specs/1557-gm-doc-modularization/recovery/current-A-repair-fix-package-pins-17043cf1-20261017.json.gz",
+    "bytes": 81772,
+    "sha256": "567ce4ffb28b253ca069b7745a00894aad904ae806c9f1cc0e3a6110d1121938",
+    "storedSha256": "3f5b6ffdc08641c4aa752dce89bdc74b72ad3fbcdc4e37e9bf220c149ee9ad24",
+    "compression": "gzip mtime0",
+    "files": 244,
+    "totalBytes": 45038544,
+    "all36SourcePackageDocsEqual": true
+  },
+  "preparationPrefixesUnchanged": true,
+  "retainedEvidenceDirectories": "Ten prior diagnostic artifact directories intentionally retained; package/session roots absent",
+  "qualification": {
+    "retainedQualifiedPass": 247,
+    "correctedRepairCasesNeedingActual": 3,
+    "stillUnrunGenuineWriterAndNegativesAndLifetime": 5,
+    "totalUniqueCases": 255
+  },
+  "actual": "HELD until affected SOURCE verdict persisted/recovered and separate root release",
+  "retainedHistory": "Genuine PREPFAIL0tests, first SOURCE_NOT_READY, accepted corrected SOURCE missed A-E01, and first93cases92PASS1FAIL and second130results125PASS5FAIL/body2UNRUN all immutable; no replay of unaffected families",
+  "recovery": "Retained full7a+complete consecutive exact GitHub deltas; only all new changed paths recovered, no full clone/base bytes rehash",
+  "helperText": "from pathlib import Path\nimport json,gzip,hashlib,datetime\nr=Path('/workspace/The-Book-of-Eternity-Reborn-1557');rec=r/'specs/1557-gm-doc-modularization/recovery';p=rec/'current-A-repair-fix-fresh-preparation-20261017.json';j=json.loads(p.read_text());assert len(j['commands'])==2 and len(j['files'])==12\nfor f in j['files']:\n z=(r/f['storedPath']).read_bytes();b=gzip.decompress(z);assert hashlib.sha256(z).hexdigest()==f['storedSha256'] and len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'] and b==Path(f['rawPath']).read_bytes()\ncatalog,plan=j['commands'];source='17043cf18e72d8e5a62c48505abc2ef7eda3e42f';assert catalog['mode']=='catalog' and plan['mode']=='plan' and catalog['nativeExit']==plan['nativeExit']==0 and catalog['sourceHead']==plan['sourceHead']==source\nassert len(catalog['binaryAfter'])==7 and catalog['binaryAfter']==plan['binaryBefore']==plan['binaryAfter']\nfor x in plan['binaryAfter']:\n b=(r/x['path']).read_bytes();assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256']\nfor c in j['commands']:\n s=json.loads((Path(c['resultDirectories'][0])/'summary.json').read_text());assert s['ExitCode']==0 and s['Tests']==dict(Total=0,Executed=0,Passed=0,Failed=0) and not s['TimedOut'] and s['OwnedTreeCleanupSucceeded'] and s['RuntimeCleanupSucceeded'] and c['ownedPrefixesBefore']==c['ownedPrefixesAfter'] and c['statusAfter']==''\ncs=json.loads((Path(catalog['resultDirectories'][0])/'summary.json').read_text());audit=cs['CatalogAudit'];assert audit['Valid'] and audit['Categories']==799 and audit['Methods']==11773 and not audit['Unmapped'] and not audit['StaleSelectors']\nps=json.loads((Path(plan['resultDirectories'][0])/'summary.json').read_text());assert ps['PlanOnly'] and ps['Selection']['PlannedDescriptors']==16 and ps['Selection']['PlannedCases']==255\npp=Path(plan['resultDirectories'][0])/'plan.json';ds=json.loads(pp.read_text())['Descriptors'];assert len(ds)==16 and len({d['Category'] for d in ds})==14\nmethods=[m for d in ds for m in d['ExpectedMethodCounts']];assert len(methods)==len({m['Name'] for m in methods})==167 and sum(m['Cases'] for m in methods)==255\nassert [d['EstimatedCases'] for d in ds if d['Category']=='gm-doc-afterlife-current-body-guards']==[60,54]\naffected=[d for d in ds if d['Category']=='gm-doc-afterlife-repair-corrected-consumers'];assert len(affected)==1 and sorted(d['EstimatedCases'] for d in affected)==[3]\n# Exact same selected method/case identities across the source-only fix; ownership alone changes.\nold=Path('/tmp/gm1557-implementation-tools/gm1557-A-owned-section-plan-first-3e57c8da/record.json');oldj=json.loads(old.read_text());od=json.loads((Path(oldj['resultDirectories'][0])/'plan.json').read_text())['Descriptors'];oldmethods={m['Name']:m['Cases'] for d in od for m in d['ExpectedMethodCounts']};name='BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPacketsResolveActualBoundedBodies';assert len(oldmethods)==166 and oldmethods[name]==9;oldmethods[name]=6;oldmethods['BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GmDocumentationRepairPreviouslyFailedRowsResolveActualBoundedBodies']=3;assert oldmethods=={m['Name']:m['Cases'] for m in methods}\n\npackage=Path('/tmp/gm1557-repair-fix-package-pins-17043cf1-20261017.json');b=package.read_bytes();pk=json.loads(b);assert pk['sourceHead']==source and pk['fileCount']==244 and len(pk['requiredSourcePackageDocs'])==36 and pk['daemonAndTwoLauncherSourcesEqual']\nz=gzip.compress(b,mtime=0);dest=rec/'current-A-repair-fix-package-pins-17043cf1-20261017.json.gz';assert not dest.exists();dest.write_bytes(z)\ninspection=dict(kind='A_E03_FRESH_PREPARATION_INSPECTION_NOT_INDEPENDENT_SOURCE_OR_EVIDENCE_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),compiledSource=source,nativeCatalog=dict(exit=0,seconds=catalog['wallSeconds'],categories=799,discoveredMethods=11773,testExecutions=0,phases=cs['PhaseResults']),exactPlan=dict(exit=0,seconds=plan['wallSeconds'],categories=14,descriptors=16,uniqueMethods=167,cases=255,testExecutions=0,bodySplit=[60,54],affectedDescriptors=affected,planSha256=hashlib.sha256(pp.read_bytes()).hexdigest(),exactPrior166MethodCaseTuplesWithExplicitRepair9to6plusNew3=True),rawChainsVerified=12,binaryPins=plan['binaryAfter'],packagePinChain=dict(rawPath=str(package),storedPath=str(dest.relative_to(r)),bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),storedSha256=hashlib.sha256(z).hexdigest(),compression='gzip mtime0',files=pk['fileCount'],totalBytes=pk['totalBytes'],all36SourcePackageDocsEqual=True),preparationPrefixesUnchanged=True,retainedEvidenceDirectories='Ten prior diagnostic artifact directories intentionally retained; package/session roots absent',qualification=dict(retainedQualifiedPass=247,correctedRepairCasesNeedingActual=3,stillUnrunGenuineWriterAndNegativesAndLifetime=5,totalUniqueCases=255),actual='HELD until affected SOURCE verdict persisted/recovered and separate root release',retainedHistory='Genuine PREPFAIL0tests, first SOURCE_NOT_READY, accepted corrected SOURCE missed A-E01, and first93cases92PASS1FAIL and second130results125PASS5FAIL/body2UNRUN all immutable; no replay of unaffected families',recovery='Retained full7a+complete consecutive exact GitHub deltas; only all new changed paths recovered, no full clone/base bytes rehash',helperText=Path(__file__).read_text())\nout=rec/'current-A-repair-fix-preparation-writer-inspection-20261017.json';assert not out.exists();out.write_text(json.dumps(inspection,indent=2)+'\\n')\nprint('PREPARATION_INSPECTED 12chains/7DLL/244packagefiles/36docs; native14categories16descriptors167methods255cases; correctedrepair3in1descriptor;0tests')\n"
+}

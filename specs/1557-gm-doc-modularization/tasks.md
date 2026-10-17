@@ -1,5 +1,11 @@
 # Tasks: GM Documentation Modularization
 
+## A-E03 fresh preparation frozen — affected SOURCE pending (2026-10-17)
+
+[Complete source recovery](recovery/current-repair-fix-complete-delta-recovery-17043cf1-20261017.json) binds `17043cf18e72d8e5a62c48505abc2ef7eda3e42f`,20GitHubfiles/all16changedpaths. [First fresh preparation](recovery/current-A-repair-fix-fresh-preparation-20261017.json) freezes12raw chains: BOTH/catalog native0 **89.285171644s**, integration70.8430488s/unit12.3908613s completed,799categories/11773methods valid/no stale/unmapped, **0tests**. ExactSelectionFilePlanOnly native0 **5.814428230001795s**, observed **14categories/16descriptors/167unique methods/255cases**, correctedrepair3 in1descriptor. [Writer inspection](recovery/current-A-repair-fix-preparation-writer-inspection-20261017.json) verifies exact previous method/case counts through explicit oldrepair9→retained6+new3 lineage, without adding cases or duplicate ownership.
+
+Seven fresh DLLs remain stable catalog→Plan/current. [Package pins](recovery/current-A-repair-fix-package-pins-17043cf1-20261017.json.gz) cover244files/45038544bytes/all36source-package docs and daemon/twohelpers; prior diagnostic roots remain retained, no new runtime roots. Generated-template physical proof is stillUNRUN and cannot be inferred from preparation/source declarations. This checkpoint changes metadata only after compile1704. Affected independent SOURCE and root release precede remaining8actuals; retain247qualifiedPASS and all genuine FAIL/weakPASS/underfill history. No replay of unchanged6repair/oldfamilies, fullA/Block5/provider/gameplay/Windows/CI qualification.
+
 ## A-E03 three-row repair reference correction WIP (2026-10-17)
 
 [Exact independent third-stop EVIDENCE](recovery/current-A-third-stop-evidence-independent-review-20261017.md), MD`9533eb99…`/JSON`09bb490f…`, confirms fixture defects: actual faction bodies belong to ShiningActions; the mixed Mortal template is generated under the context pack, not a repo file. [Complete first-outcome recovery](recovery/current-third-stop-complete-delta-recovery-eeb4a318-20261017.json) covers34GitHubfiles/all30paths. Preserve original9semantic rows/6PASS3FAIL and all prior history; no production defect or template delivery success is inferred.
