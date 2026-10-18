@@ -1,3 +1,7 @@
+## T179-Pd-NI-IOBS-L01 — current diagnostic phase labels clarified (2026-10-18)
+
+Prior selected-routing causal/source/PREP acceptance objects are retained explicitly as historical at original bindings. Current packet fields now point to diagnostic1 SOURCE101/product23 and UNRUN ZERO3 with52 retained; prior99/ZERO4 acceptance does not authorize current native. Original snapshots/raw records/ledger unchanged. This satisfies independent SOURCE metadata feedback; no code/native change. Following sections historical.
+
 ## T179-Pd-NI-IOBS-L01 — diagnostic SOURCE budget finding corrected before any native (2026-10-18)
 
 Independent SOURCE identified the unrun5min singleton category could truncate the original220s child timeout/flush/join evidence. The diagnostic category now preserves the original900s outer ceiling, with220s child/assertions and frozencrash5 ceiling unchanged. This corrects an unrun proposal; no budget increase to rerun a hang, production change or actual. Save/recover corrected101-pin candidate and finish affected SOURCE. Qualified52/all originals/oldUNKNOWN unchanged. Following sections historical.

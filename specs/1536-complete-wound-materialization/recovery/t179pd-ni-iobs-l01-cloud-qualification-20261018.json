@@ -1638,143 +1638,19 @@
     "scope": "Environment prerequisite only; no product/controller/fixture/assertion/catalog/source change. Original failed preparation remains immutable."
   },
   "sourceReview": {
-    "verdict": "ACCEPT_UNCHANGED_SOURCE_RETENTION37_EXACT_SELECTION_AND_SEPARATE_NEW_CRASH5_PLAN",
-    "model": "gpt-6-astra",
-    "reasoningEffort": "xhigh",
-    "artifacts": [
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.md",
-        "sha256": "543856bf95942bf270da3fa2d31f4dc5e8f0e5e8776fbb8e37218021d787f6d6",
-        "bytes": 2603
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.json",
-        "sha256": "41631dd68066a7106f1703add6c1665734217a2ba96ea7b573151aaa245aac67",
-        "bytes": 8337
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-check-20261018.json",
-        "sha256": "473548b98f1f4737847a7d31d0b99409d32e0e488fc4dabacfcfe69611276749",
-        "bytes": 8069
-      },
-      {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-checker-20261018.py",
-        "sha256": "320e5baf0862d273009091a52891a352807af9193fc2a953e31854dd189981cb",
-        "bytes": 7878
-      }
-    ],
-    "findings": [],
-    "phase": "HISTORICAL_PRE_DIAGNOSTIC_CORRECTION_SOURCE_ACCEPTANCE_INELIGIBLE_FOR_CORRECTED_ACTUALS"
+    "status": "PENDING_CURRENT_DIAGNOSTIC1_SOURCE_REVIEW",
+    "phase": "101pins/product23 fixture-only",
+    "currentPointer": "cloud-qualification.crashDiagnostic1"
   },
   "freshPreparation": {
-    "status": "ACCEPTED_INDEPENDENT_AND_PARENT_NEW_CLOUD_ZERO3",
-    "actualSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
-    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
-    "records": [
-      {
-        "mode": "catalog",
-        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-cloud-xdg-813f1057/record.json",
-        "sha256": "67f629deb5a6e2ce48086c0e4d47a3281ef0113d6847c4731f30ce1c0b7f1cb7",
-        "nativeExit": 0,
-        "seconds": 343.4147662790001,
-        "actualTestsExecuted": 0,
-        "resultDirectories": [
-          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094036-624-3501-b167d62e228b4805b1c3998254317e79-categories"
-        ]
-      },
-      {
-        "mode": "plan",
-        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-cloud-813f1057/record.json",
-        "sha256": "614457d4e636be2056ba8baa6d32032ba4d545e46277a8edb2c68055f968323e",
-        "nativeExit": 0,
-        "seconds": 26.61719420899999,
-        "actualTestsExecuted": 0,
-        "resultDirectories": [
-          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094653-749-4417-774551f4bc4841a584bb0f7217c38544-categories"
-        ]
-      },
-      {
-        "mode": "remaining-plan",
-        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
-        "sha256": "896e477b1dc543eb5d28969479b63cf009211450eb6aa49d244f1717b471e74a",
-        "nativeExit": 0,
-        "seconds": 15.637611821000064,
-        "actualTestsExecuted": 0,
-        "resultDirectories": [
-          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094723-498-4626-892658fd63784973bfa1a01f930b0a0d-categories"
-        ]
-      }
+    "status": "UNRUN_CURRENT_DIAGNOSTIC_ZERO3",
+    "currentPointer": "cloud-qualification.crashDiagnostic1",
+    "modes": [
+      "catalog",
+      "plan",
+      "diagnostic-plan"
     ],
-    "archive": {
-      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-preparation-813f1057-files-20261018/archive.json",
-      "sha256": "06abc6c48256844aafd5e4b9761c505f82aa3ae6b906c20378c7c9075b80081d",
-      "rawChains": 32
-    },
-    "catalog": {
-      "valid": true,
-      "categories": 808,
-      "methods": 11800,
-      "unmapped": [],
-      "staleSelectors": []
-    },
-    "whole": {
-      "descriptors": 16,
-      "methods": 33,
-      "cases": 57,
-      "executed": 0
-    },
-    "pending": {
-      "descriptors": 7,
-      "methods": 12,
-      "cases": 20,
-      "executed": 0
-    },
-    "binaryCopies": 9,
-    "completeOutputFiles": 1575,
-    "sourcePinCount": 98,
-    "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
-    "cleanup": "No owned fixture roots/game processes before or after; native runner cleanup complete",
-    "limits": "Fresh environment preparation only; no actual case executed. Original failure remains separate. No old binary equality or new runtime evidence for retained37.",
-    "review": {
-      "verdict": "ACCEPT_NEW_CLOUD_FRESH_ZERO3_PREPARATION",
-      "model": "gpt-6-astra",
-      "reasoningEffort": "xhigh",
-      "findings": [],
-      "artifacts": [
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.md",
-          "sha256": "058e9a17f9fe2a476b69f9156c8a90cbd92e3c8126b4ad2e2226fc2ef7dec761",
-          "bytes": 2576
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.json",
-          "sha256": "ded58e8ff999dd01472749f7a47234f63659f8e489eea043eedb3afe871d5573",
-          "bytes": 6310
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-check-a35ec-20261018.json",
-          "sha256": "2849db4806a6f7258e4ab8f4b1b389cfdd06afe6b0ee4957441f4427dc9f8459",
-          "bytes": 7662
-        },
-        {
-          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-checker-a35ec-20261018.py",
-          "sha256": "9ff8a3d4dcbad6c419e7cfb87ed04e1b983880a6081608d4c16a16f3ee80b148",
-          "bytes": 16531
-        }
-      ],
-      "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
-      "carrierRecovery": {
-        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-carrier-recovery-a35ec-20261018.json",
-        "sha256": "53f45cb11ce2f18af045743e3d1412a3f25299dae5dd650ff0cff2f2fc3efa3c"
-      },
-      "buildWarnings": {
-        "integration": 148,
-        "unit": 37
-      },
-      "buildErrors": 0,
-      "limits": "Remaining-plan immediate cmdline snapshot empty; recorded launch argv/PID/kernel identity/runner-owned result dir bind it. Cleanup excludes ordinary compiler/runtime scratch."
-    },
-    "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
+    "qualified": 52
   },
   "release": {
     "status": "NONE_DIAGNOSTIC1_SOURCE_AND_PREP_REQUIRED",
@@ -3891,7 +3767,8 @@
       "finding": "New unrun5min diagnostic category could interrupt original220s child timeout/diagnostic flush/join before the useful event record",
       "remedy": "Preserve original900s outer category ceiling for singleton, child220unchanged; no native run on5min proposal",
       "candidateBeforeCorrection": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0"
-    }
+    },
+    "metadataPhaseLabels": "Prior packet causal/source/preparation/contract objects preserved exactly in historicalSelectedRoutingMetadataBeforeDiagnostic1 and pre-diagnostic snapshot; current fields point to diagnostic1 SOURCE/ZERO3 with52 retained."
   },
   "historicalMaterialReviewHoldBeforeCrash5": {
     "kind": "CURRENT_RESUME_NESTED_CANONICAL_LEASE",
@@ -3996,5 +3873,144 @@
       "bytes": 2551
     }
   ],
-  "historicalSourceCheckpointBeforeCrashDiagnostic1": "fed1f7789db0145de866cd4d73b97ab030871509"
+  "historicalSourceCheckpointBeforeCrashDiagnostic1": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "historicalSourceReviewBeforeDiagnostic1": {
+    "verdict": "ACCEPT_UNCHANGED_SOURCE_RETENTION37_EXACT_SELECTION_AND_SEPARATE_NEW_CRASH5_PLAN",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.md",
+        "sha256": "543856bf95942bf270da3fa2d31f4dc5e8f0e5e8776fbb8e37218021d787f6d6",
+        "bytes": 2603
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-plan-review-20261018.json",
+        "sha256": "41631dd68066a7106f1703add6c1665734217a2ba96ea7b573151aaa245aac67",
+        "bytes": 8337
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-check-20261018.json",
+        "sha256": "473548b98f1f4737847a7d31d0b99409d32e0e488fc4dabacfcfe69611276749",
+        "bytes": 8069
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-source-checker-20261018.py",
+        "sha256": "320e5baf0862d273009091a52891a352807af9193fc2a953e31854dd189981cb",
+        "bytes": 7878
+      }
+    ],
+    "findings": [],
+    "phase": "HISTORICAL_PRE_DIAGNOSTIC_CORRECTION_SOURCE_ACCEPTANCE_INELIGIBLE_FOR_CORRECTED_ACTUALS"
+  },
+  "historicalFreshPreparationBeforeDiagnostic1": {
+    "status": "ACCEPTED_INDEPENDENT_AND_PARENT_NEW_CLOUD_ZERO3",
+    "actualSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-cloud-xdg-813f1057/record.json",
+        "sha256": "67f629deb5a6e2ce48086c0e4d47a3281ef0113d6847c4731f30ce1c0b7f1cb7",
+        "nativeExit": 0,
+        "seconds": 343.4147662790001,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094036-624-3501-b167d62e228b4805b1c3998254317e79-categories"
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-cloud-813f1057/record.json",
+        "sha256": "614457d4e636be2056ba8baa6d32032ba4d545e46277a8edb2c68055f968323e",
+        "nativeExit": 0,
+        "seconds": 26.61719420899999,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094653-749-4417-774551f4bc4841a584bb0f7217c38544-categories"
+        ]
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
+        "sha256": "896e477b1dc543eb5d28969479b63cf009211450eb6aa49d244f1717b471e74a",
+        "nativeExit": 0,
+        "seconds": 15.637611821000064,
+        "actualTestsExecuted": 0,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-094723-498-4626-892658fd63784973bfa1a01f930b0a0d-categories"
+        ]
+      }
+    ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "06abc6c48256844aafd5e4b9761c505f82aa3ae6b906c20378c7c9075b80081d",
+      "rawChains": 32
+    },
+    "catalog": {
+      "valid": true,
+      "categories": 808,
+      "methods": 11800,
+      "unmapped": [],
+      "staleSelectors": []
+    },
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "pending": {
+      "descriptors": 7,
+      "methods": 12,
+      "cases": 20,
+      "executed": 0
+    },
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "sourcePinCount": 98,
+    "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "cleanup": "No owned fixture roots/game processes before or after; native runner cleanup complete",
+    "limits": "Fresh environment preparation only; no actual case executed. Original failure remains separate. No old binary equality or new runtime evidence for retained37.",
+    "review": {
+      "verdict": "ACCEPT_NEW_CLOUD_FRESH_ZERO3_PREPARATION",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "findings": [],
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.md",
+          "sha256": "058e9a17f9fe2a476b69f9156c8a90cbd92e3c8126b4ad2e2226fc2ef7dec761",
+          "bytes": 2576
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-review-a35ec-20261018.json",
+          "sha256": "ded58e8ff999dd01472749f7a47234f63659f8e489eea043eedb3afe871d5573",
+          "bytes": 6310
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-independent-check-a35ec-20261018.json",
+          "sha256": "2849db4806a6f7258e4ab8f4b1b389cfdd06afe6b0ee4957441f4427dc9f8459",
+          "bytes": 7662
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-checker-a35ec-20261018.py",
+          "sha256": "9ff8a3d4dcbad6c419e7cfb87ed04e1b983880a6081608d4c16a16f3ee80b148",
+          "bytes": 16531
+        }
+      ],
+      "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
+      "carrierRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-prep-carrier-recovery-a35ec-20261018.json",
+        "sha256": "53f45cb11ce2f18af045743e3d1412a3f25299dae5dd650ff0cff2f2fc3efa3c"
+      },
+      "buildWarnings": {
+        "integration": 148,
+        "unit": 37
+      },
+      "buildErrors": 0,
+      "limits": "Remaining-plan immediate cmdline snapshot empty; recorded launch argv/PID/kernel identity/runner-owned result dir bind it. Cleanup excludes ordinary compiler/runtime scratch."
+    },
+    "phase": "HISTORICAL_COMPILED_6AB43F6A_ZERO3_PRE_CORRECTION_INELIGIBLE_FOR_CORRECTED_ACTUALS"
+  }
 }
