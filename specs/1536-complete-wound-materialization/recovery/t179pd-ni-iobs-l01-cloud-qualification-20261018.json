@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "LEGACY3_ORIGINAL_3PASS_SAVED_CLOSE2_NAMED_RELEASE_PENDING_READBACK",
+  "status": "CLOSE2_ORIGINAL_1PASS1FAIL_FROZEN_ALL_EXECUTION_HELD",
   "sourceCheckpoint": "2e0463ff3b5e52510e86f1c8b53bd714923e156d",
   "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
   "sourcePinCount": 98,
@@ -376,7 +376,7 @@
           "cases": 1
         }
       ],
-      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+      "status": "EXECUTED_ORIGINAL_1PASS1FAIL_FROZEN_UNQUALIFIED"
     },
     {
       "mode": "races2",
@@ -494,6 +494,55 @@
         "ownedRoots": []
       },
       "processesAfter": []
+    },
+    "close2": {
+      "status": "UNEXPECTED_ORIGINAL_NATIVE_FAILURE_FROZEN_CAUSE_PENDING_INDEPENDENT_DIAGNOSIS",
+      "actualSource": "61e712e319e8f480b77755aebae4c2db69e1423c",
+      "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+      "nativeExit": 1,
+      "seconds": 338.778737054,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 1,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-close2-cloud-813f1057/record.json",
+      "recordSha256": "44bd4147341b6590ecd5867a0c1719989dd4b02f7480641b1b134f6037a59219",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-frozen-813f1057-files-20261018/archive.json",
+        "sha256": "82477104f4dc7b6e2c68b7b56300223b6d44075f811b57f0ffbded33d1e04319",
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-frozen-parent-inspection-20261018.json",
+        "sha256": "514b65fa4f8ec23cfaeaa3f2f163946e9a65824a76364122a35287cebbe122dd"
+      },
+      "firstFailure": {
+        "method": "GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+        "file": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+        "line": 105,
+        "assertion": "Assert.Contains(_initialCloseFailure.Message, diagnostics)",
+        "message": "Expected actual I-owning release failure string missing in owning diagnostics",
+        "attribution": "PENDING_INDEPENDENT_DIAGNOSIS",
+        "priorStateAssertions": "Earlier exact Published/pending/I/mtime/no fresh DATA/expired lease/turn42/no common/no mechanical effects assertions completed; only final diagnostic containment failed."
+      },
+      "passedMethod": "GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+      "nineBinariesUnchanged": true,
+      "all1575OutputsUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "processesAfter": [],
+      "retry": "NONE"
     }
   },
   "holds": [
@@ -507,7 +556,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "Separately named close2 only. Remaining12 originally UNRUN and separate new crash5 not executed; legacy3 EVIDENCE review pending.",
+  "next": "Independent causal diagnosis of close2 diagnostic failure and bounded remedy plan. Preserve original3 legacy PASS and close2 1PASS1FAIL unchanged; remaining10 UNRUN plus separate new crash5 HELD.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -681,18 +730,17 @@
     }
   },
   "release": {
-    "mode": "close2",
-    "label": "t179pd-ni-iobs-l01-process-first-close2-cloud-813f1057",
-    "expectedCases": 2,
-    "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
-    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
-    "controller": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
-    "conditions": "Next close2 only after this carrier push/readback/recovery and same98pins/9DLL1575outputs. NoBuild; original outcomes first, unexpected failure freezes. Not automatic advance or retry.",
-    "outcomeBeforePersistedRecord": "UNKNOWN_AFTER_ACTIVATION_UNTIL_ORIGINAL_RECORD_IS_SAVED"
+    "status": "NONE_ALL_EXECUTION_FROZEN_AFTER_UNEXPECTED_CLOSE2_FAILURE",
+    "mode": null,
+    "scope": "No other actual, retry, source or assertion change before independent diagnosis; any accepted source fix requires affected SOURCE/PREP before new named execution."
   },
-  "newOriginalObservedPassingCases": 3,
+  "newOriginalObservedPassingCases": 4,
   "lastAcceptanceRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-9acc5708-20261018.json",
     "sha256": "0169b9dc0a8cd326ae9537577986ccf3f2597f6b7fc134c86a94d01c90d98e1a"
+  },
+  "lastOutcomeCarrierRecovery": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-carrier-recovery-61e712e3-20261018.json",
+    "sha256": "05cce2f8b9fc00d3621c7bf202cd5a0d3ce15a986af42dc548f9a174ef56c241"
   }
 }
