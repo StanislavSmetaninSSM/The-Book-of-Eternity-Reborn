@@ -91,6 +91,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             var checkpoint = GetPrivateFieldValue<MortalJointRepairCheckpoint?>(engine, "_mortalJointRepairCheckpoint"); Assert.NotNull(checkpoint);
             var before = CaptureCanonicalFiles();
             object? settled = null;
+            var priorObserver = fixture._consolePublicationObserver;
+            fixture._consolePublicationObserver = (phase, index) =>
+            {
+                priorObserver?.Invoke(phase, index);
+                ObserveSettlementPublication(phase, index);
+            };
             _terminalArmed = true;
             try
             {
@@ -100,7 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return true;
                 });
             }
-            finally { _terminalArmed = false; }
+            finally { _terminalArmed = false; fixture._consolePublicationObserver = priorObserver; }
             Assert.NotNull(settled); Assert.NotNull(_terminalMembers); Assert.NotEmpty(_terminalMembers);
             var disposition = Assert.IsType<MortalJointRepairPublicationDisposition>(settled.GetType().GetProperty("Disposition")!.GetValue(settled));
             var after = CaptureCanonicalFiles();

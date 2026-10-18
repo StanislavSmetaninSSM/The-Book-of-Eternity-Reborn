@@ -89,7 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _captureCallbacks, _interfaceAtCapture, _sequence;
         private bool _configured;
         private DateTime? _submittedMtime, _finalMtime;
-        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault";
+        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault" or "CutResume";
 
         internal void Attach(GameEngine engine)
         {
@@ -106,6 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         await ObserveActualGenericSelectorAsync(engine);
                     if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization && scenario == "Warning")
                         await ObserveFrozenWarningConsumersAsync(engine);
+                    await ObserveUncertainCurrentResumeCheckpointAsync(engine, checkpoint);
                     if (checkpoint.ToString() != "MortalJointCustodyCaptureCompletedBeforePreparation") return;
                     _captureCallbacks++;
                     _interfaceAtCapture = _publications.Count(p => p.InterfaceChanged);
@@ -118,6 +119,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                         InterfaceRaw = Raw(_atCapture), Trace = _publications.ToArray(),
                         Meaning = "Existing actual capture checkpoint, not NI authority or a synthetic preparation hook"
                     });
+                    if (scenario == "CutResume" && _captureCallbacks == 1)
+                        throw _uncertainCutFailure;
                 }
             });
             AttachInitialCloseObservation();
@@ -296,6 +299,11 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics)
         {
+            if (scenario == "CutResume")
+            {
+                await AssertUncertainCurrentResumeAsync(engine, owningDiagnostics);
+                return;
+            }
             if (scenario == "CommonFault")
             {
                 await AssertCompensatedCommonAsync(engine);
@@ -304,13 +312,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (scenario is "ReadRace" or "ReadyDrift")
             {
                 AssertSourceRaceHeld(engine, owningDiagnostics);
-                await AssertActualRetainingOwnersAsync(engine);
+                await AssertActualRetainingOwnersAsync(engine, invokeWrapper: scenario == "ReadRace");
                 return;
             }
             if (scenario == "InterfaceClose")
             {
                 AssertInterfaceCloseHeld(engine, owningDiagnostics);
-                await AssertActualRetainingOwnersAsync(engine);
+                await AssertActualRetainingOwnersAsync(engine, invokeWrapper: false);
                 return;
             }
             var pendingBytes = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);

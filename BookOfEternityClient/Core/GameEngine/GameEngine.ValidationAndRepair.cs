@@ -473,16 +473,29 @@ public partial class GameEngine
         }
         try
         {
-            if (MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) &&
-                _mortalJointRepairCanonicalRefresh?.Disposition == MortalJointRepairPublicationDisposition.PublicationUncertain)
-                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
-            if (entry.State == MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted && entry.MayResubmit)
+            var uncertainJointDiagnostic = MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) &&
+                _mortalJointRepairCanonicalRefresh?.Disposition == MortalJointRepairPublicationDisposition.PublicationUncertain;
+            var mayInspectCompletedJoint = !uncertainJointDiagnostic;
+            if (uncertainJointDiagnostic && activeSnapshotContext is { } currentFrame &&
+                entry.State == MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted && entry.MayResubmit)
+            {
+                await using var currentProofLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                // Only an independently validated CURRENT child3 proof may
+                // supersede this selected protocol's old diagnostic. Child1/v1
+                // retains its existing uncertain-publication hold policy.
+                mayInspectCompletedJoint = await MortalQteDecisionPublication.ReadCurrentJointInterfaceDataAsync(_fs,
+                    currentProofLease, currentFrame.SessionId, currentFrame.RequestId,
+                    currentFrame.Payload.ManifestPayloadHash, expectedTurn) is not null;
+            }
+            if (mayInspectCompletedJoint && entry.State == MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted && entry.MayResubmit)
             {
                 var jointContinuation = await TryReadMortalJointCompletedContinuationAsync(source, activeSnapshotContext, expectedTurn);
                 if (jointContinuation.HasValue) return jointContinuation.Value;
             }
             var resumedInterface = await TryResumeMortalJointInterfaceBeforeCoreAsync(source, activeSnapshotContext, expectedTurn);
             if (resumedInterface.HasValue) return resumedInterface.Value;
+            if (uncertainJointDiagnostic)
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
             var result = await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,
                 expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);
             if (result is not (AcceptedTurnValidationDisposition.Accepted or AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady))

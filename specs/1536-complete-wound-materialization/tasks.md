@@ -1,17 +1,17 @@
 ## T179-Pd-NI-IOBS-L01 current frontier (2026-10-18)
 
-- [x] Original genuine ordering RED independently accepted and frozen.
-- [ ] Whole implementation/finite27methods50staticrows and bounded GM guidance uncompiled/unrun.
-- [ ] Freeze current fixed verification tools and connected final SOURCE/FIXTURE/SELECTION.
-- [ ] Separately named fresh ZERO preparation and actual/EVIDENCE, no current execution release.
+- [x] Original genuine ordering RED independently accepted and immutable.
+- [ ] Whole implementation/current-owner recovery +static28methods51rows uncompiled/unrun.
+- [ ] Freeze fixed verification tools and connected final SOURCE/FIXTURE/SELECTION.
+- [ ] Separately named fresh ZERO/actual EVIDENCE; no current execution release.
 
-## T179-Pd-NI-IOBS-L01 — finite whole-owner and GM candidate WIP (2026-10-18)
+## T179-Pd-NI-IOBS-L01 — current-owner recovery candidate WIP (2026-10-18)
 
-Authored finite controls now cover actual common-member compensation, complete terminal success/fault settlement and strict current-resume partial integrity after a genuine abrupt Prepared producer. Initial/I owning close, later outer finalization, immutable Ready/read-preimage races, v1 genuine factory/current fallback and whole cut-record continuity remain distinct. The connected review's source-only selector mtime-local defect is corrected; no compiler or native failure was observed.
+Selected2 pending/current child3 physical proof now precedes obsolete uncertain diagnostic bookkeeping, with strict independent current admission/readback/owning release before same-frame diagnostic retirement. Canonical publisher's strict barrier and legacy v1 uncertainty policy remain. A new real one-shot completed-capture stop case then invokes the actual late caller under a NEW Main on the same engine: frozen I, current full proof, once-only mechanics, terminal cleanup and inert repeat are the intended oracles, never old Ready/attempt revival.
 
-The existing Mortal joint GM paragraph/mirrors and worked continuation now explain one-pass client-owned I and frozen-error same-operation hold; public response fields remain unchanged and no GM authors private records/versions. The exact existing guidance Fact covers seven mirrors/two daemon copies; the old worked adapter's JSON bodies and coverage limitations remain intact. No afterlife rule/surface changes. Daemon edits are prompt text only, not new commands/launch flow; no unrelated branch package/entrypoint family is imported.
+The source review's S06 mtime local, S07 cached barrier and S08 destructive-restore versus authorized-current-resume distinction are preserved as source-only findings, not compiler/native failures. Valid Published InterfaceClose/ReadyDrift cases assert direct restore refusal without incorrectly forbidding a new current owning resume. Actual common/terminal observer scopes and Changed-I setup are corrected before execution. Applicable joint guidance/mirrors/worked continuation are included; no public response/private-field authoring or afterlife rule change.
 
-Static **27new methods50rows/10owners**, plus exact affected guidance1/CUT01new3/protectedLate2, propose **32methods56cases14owners**; discovery remains UNRUN. Current production/tests/GM source is uncompiled/unrun. Final fixed current-product tooling and connected SOURCE/FIXTURE/SELECTION/PREP/actual EVIDENCE remain OPEN, under existing implementation authorization. No build/discovery/native, old-family replay or broader HOT/NI/platform/A3 activation. Following scopes are historical.
+Static new **28methods51rows11owners** plus exact affected guidance1/CUT01new3/protectedLate2 propose **33methods57cases15owners**. Current source is UNCOMPILED/UNRUN, discovery pending. Finish fixed verification tooling and connected final SOURCE/FIXTURE/SELECTION, then separately named ZERO preparation/actual EVIDENCE. No current build/native/old-family replay or broader HOT/NI/platform/A3 activation. Following sections are historical.
 
 ## T179-Pd-CUT01 bounded implementation/source/EVIDENCE complete (2026-10-18)
 

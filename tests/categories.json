@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
 {
+  "id": "fr063-joint-interface-uncertain-current",
+  "responsibility": "Genuine Published I followed by one-shot existing completed-capture stop, expired attempt and uncertain diagnostic/no common; same engine NEW ordinary Main validates/release-acknowledges stored DATA and completes common/mechanics/cleanup exactly once. Legacy uncertain policy stays held; no old Ready/attempt revival.",
+  "excludes": "No seeded cache/capability, changed CUT01 test, legacy uncertainty bypass, current-image-only authority or normalizer/time/cost replay. Published ownership is distinct from a destructive rollback permission.",
+  "changeHints": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs"
+  ],
+  "related": [
+    {
+      "id": "fr063-joint-capture-cut-stop",
+      "when": "Existing production cut is used by a NEW recovery control; unchanged old stop remains independently selected."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 10,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic"
+      ]
+    }
+  ]
+},
+{
   "id": "fr063-joint-interface-settlement",
   "responsibility": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore.",
   "excludes": "No synthetic owner/capability, serializer-only whole-vertical proof, ordinary CAS rule, full HOT/NI activation, or old-family replay. Actual source/PREP/EVIDENCE gates remain separate.",

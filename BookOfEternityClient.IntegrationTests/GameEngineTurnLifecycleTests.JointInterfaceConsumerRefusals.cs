@@ -55,7 +55,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private sealed partial class JointInterfaceLifecycleProbe
     {
-        private bool ChangesInterface => scenario is "Changed" or "Error" or "LateCurrent" or "InterfaceClose" or "OuterClose" or "ReadRace" or "ReadyDrift" ||
+        private bool ChangesInterface => scenario is "Changed" or "Error" or "LateCurrent" or "InterfaceClose" or "OuterClose" or "ReadRace" or "ReadyDrift" or
+            "CommonFault" or "CutResume" or "Terminal" or "TerminalFault" ||
             scenario.StartsWith("Selector:", StringComparison.Ordinal) || scenario.StartsWith("Crash:", StringComparison.Ordinal);
         private int _selectorChecks;
         private int _lateWarningCount = -1;

@@ -1,7 +1,7 @@
 {
   "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
   "sourceBase": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
-  "status": "FINITE_WHOLE_OWNER_AND_GM_CANDIDATE_WIP_UNCOMPILED_UNRUN",
+  "status": "WHOLE_FINITE_CURRENT_RESUME_SOURCE_CANDIDATE_WIP_UNCOMPILED_UNRUN",
   "rows": [
     {
       "category": "fr063-joint-interface-lifecycle-order",
@@ -313,14 +313,23 @@
       "staticRows": 4,
       "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
       "prerequisite": "Genuine abruptly terminated Prepared producer followed by a new current ordinary owner; partial checkpoint version, result fingerprint, signed original manifest or current I byte corruption must hold without normalization, write/common/effect replay."
+    },
+    {
+      "category": "fr063-joint-interface-uncertain-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CURRENT_OWNER_RECOVERY",
+      "prerequisite": "Genuine Published I followed by one-shot existing completed-capture stop, expired attempt and uncertain diagnostic/no common; same engine NEW ordinary Main validates/release-acknowledges stored DATA and completes common/mechanics/cleanup exactly once. Legacy uncertain policy stays held; no old Ready/attempt revival."
     }
   ],
   "staticTotals": {
-    "newMethods": 27,
-    "newRows": 50,
-    "newOwners": 10,
-    "predictedDescriptors": 10,
-    "scope": "Static authored new inventory, not discovery or PASS. Affected existing guidance1+CUT01new3+protectedLate2 are separate: prospective union32methods56cases14owners/14descriptors."
+    "newMethods": 28,
+    "newRows": 51,
+    "newOwners": 11,
+    "predictedDescriptors": 11,
+    "scope": "Static current source inventory only; prospective affected union33methods57cases15owners/15descriptors, not discovery or runtime."
   },
   "actualCases": 0,
   "productChanged": true,
@@ -359,7 +368,7 @@
       "status": "READ_ONLY_ARCHIVED_BOTH_FIRST_ZERO_RECORDS_ONE_INVOCATION_19CHAINS"
     }
   ],
-  "priority": "Freeze bounded whole finite+GM source candidate and fixed verification tooling for connected final SOURCE/FIXTURE/SELECTION; no build/discovery/native until named.",
+  "priority": "Finish fixed verification tooling, then freeze final connected SOURCE/FIXTURE/SELECTION/PREP candidate; no runtime/build yet.",
   "firstActual": {
     "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
     "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
@@ -518,7 +527,7 @@
   },
   "historicalFirstNativeCases": 1,
   "currentImplementation": {
-    "sourceBase": "116393ee1793846489a480a075210c06e9c7a23b",
+    "sourceBase": "d6dac5251f902041d76dff983ce38e5c23693959",
     "status": "DRAFT_UNCOMPILED_UNRUN_CONNECTED_SOURCE_REVIEW_PENDING",
     "integrated": [
       "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
@@ -531,9 +540,9 @@
       "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
     ],
     "open": [
-      "Current whole source uncompiled/unrun; connected reviewer must qualify exact remaining finite/GM changes and final selection",
-      "Freeze fixed current whole-product zero preparation, original-outcome actual recorder and raw archiver; old44pin tools remain immutable historical only",
-      "Named fresh BOTH/catalog+PlanOnly ZERO, then separately named actual first outcomes/EVIDENCE; no current runtime permission",
+      "Current whole source and every changed finite case uncompiled/unrun; connected SOURCE final verdict pending actual final verification-tool source",
+      "Freeze fixed current-product zero/actual/archive tools with current source/selection/managed output binding",
+      "Separately named fresh BOTH/catalog discovery+PlanOnly ZERO and actual/EVIDENCE; no current execution authorization",
       "No broader NI/HOT/S/B/D9/M3/F1/platform/Windows/A3 qualification"
     ],
     "draftReviewCorrections": [
@@ -546,7 +555,10 @@
       "S05 crash fixture freezes complete current DATA proof before actual terminal original cleanup, never recreates original or reads removed proof afterward. Original cut record/resultFP/all fields stay exact across recovery, modulo legitimate Prepared\u2192Published seal/state; held first comparison checks exact keysets.",
       "Crash source independently checks 2\u21920 energy,5\u21922 damage,exact two turn43 resource rows,preserved wound prefix+create/treat suffix,matching request and actual current registry no-open-take/reservation before cleanup.",
       "If actual native child exit/join/EOF cannot all be positively established, retain parent-owned container and report unresolved owned PIDs; normal joined runs retain strict physical removal.",
-      "Connected reviewer identified a source-only selector mtime local scope mistake at1163; selector now owns its local, and warning consumer also asserts its existing local mtime. No compiler/native failure occurred."
+      "Connected reviewer identified a source-only selector mtime local scope mistake at1163; selector now owns its local, and warning consumer also asserts its existing local mtime. No compiler/native failure occurred.",
+      "Connected S07: matching selected2 strict pending resume precedes old uncertain diagnostic barrier; child3 completed continuation precedes only after full current proof. Retire ONLY same-frame obsolete diagnostic after new current admission/result readback/owning release. Canonical publication strict gate unchanged; v1 uncertain policy preserved.",
+      "Connected S08: valid Published after failed initial I owning release can be independently consumed by a NEW current Main; direct destructive restore refusal is tested without imposing a false blanket current-resume hold. ErrorPrepared/missing-result held wrapper controls remain.",
+      "d6 source-only fixture corrections: CommonFault/CutResume/terminal cases now author actual Changed I; terminal and same-engine resume observations reattach existing fixture publication observer around their actual owner after shared caller clears it."
     ],
     "authoringCorrection": "Two uncompiled aee4 bool reflection reads used the class-constrained helper; corrected to the existing value helper before any build. No compiler/native failure occurred.",
     "proofLimits": [

@@ -104,6 +104,13 @@ public partial class GameEngine
             _mortalJointInterfaceResumeCheckpoint = checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>();
             _mortalJointInterfacePreparationHeld = false;
             _mortalJointRepairCorrectionReady = true;
+            if (_mortalJointRepairCanonicalRefresh is { Disposition: MortalJointRepairPublicationDisposition.PublicationUncertain } diagnostic &&
+                SameMortalJointOriginalFrame(diagnostic.Frame, frame, expectedTurn))
+                _mortalJointRepairCanonicalRefresh = null;
+            // Retire ONLY obsolete bookkeeping after this selected2 NEW current
+            // admission, exact stored-result publication/readback and own release.
+            // No old attempt, Ready, take or historical return is revived. The
+            // actual canonical entry still reconstructs/consumes every owner.
             var baseline = await LoadCanonicalBaselineSnapshotAsync(expectedTurn, frame)
                 ?? throw new InvalidDataException("joint_interface_resume_current_baseline_missing");
             var publication = await PublishCurrentMortalJointRepairAsync(frame, expectedTurn, baseline);
