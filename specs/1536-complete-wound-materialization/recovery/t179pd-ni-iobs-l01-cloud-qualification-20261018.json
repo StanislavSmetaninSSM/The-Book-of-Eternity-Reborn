@@ -1,6 +1,6 @@
 {
   "kind": "NI_IOBS_L01_NEW_CLOUD_QUALIFICATION_LEDGER",
-  "status": "SETTLEMENT3CORRECTED_NATIVE_PASS_EVIDENCE_PENDING_NEXT_INTEGRITY4_SEPARATELY_NAMED",
+  "status": "INTEGRITY4_NATIVE_PASS_EVIDENCE_PENDING_NEXT_UNCERTAIN1_SEPARATELY_NAMED",
   "sourceCheckpoint": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
   "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
   "sourcePinCount": 98,
@@ -408,7 +408,7 @@
           "cases": 2
         }
       ],
-      "status": "NEW_CORRECTED_NATIVE_PASS_EVIDENCE_PENDING"
+      "status": "NEW_CORRECTED_INDEPENDENT_EVIDENCE_ACCEPTED_3PASS"
     },
     {
       "mode": "integrity4",
@@ -420,7 +420,7 @@
           "cases": 4
         }
       ],
-      "status": "UNRUN_IN_NEW_ENVIRONMENT"
+      "status": "NEW_ORIGINAL_NATIVE_PASS_EVIDENCE_PENDING"
     },
     {
       "mode": "uncertain1",
@@ -896,7 +896,7 @@
       }
     },
     "settlement3Corrected": {
-      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "status": "INDEPENDENT_EVIDENCE_ACCEPTED_3PASS",
       "actualSource": "3119d29ae5a44c6bc5804b91a9f6efe47e4b66d6",
       "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
       "nativeExit": 0,
@@ -971,7 +971,96 @@
         "sha256": "9ce6befbbf768c4b6cd09ac5b50a3bbfbb49ed39921c9d21d003904a1e6c557f",
         "bytes": 1636
       },
-      "censusTimingLimit": "Before-to-launch2.708841s; completion-to-after2.375432s. Finite dated snapshots only, no instantaneous/continuous absence claim."
+      "censusTimingLimit": "Before-to-launch2.708841s; completion-to-after2.375432s. Finite dated snapshots only, no instantaneous/continuous absence claim.",
+      "evidenceReview": {
+        "verdict": "ACCEPT_CORRECTED_SETTLEMENT3_EVIDENCE_THREE_DISTINCT_TARGETS_ONLY",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "findings": [],
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-corrected-independent-review-20261018.json",
+            "sha256": "bff59b2b2b9713ecae37978f9db46469fd2a10e338c9a7cb912c5705dfd4deea",
+            "bytes": 18597
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-corrected-independent-review-20261018.md",
+            "sha256": "66e015f19c516220189d1cefdc419da905cf2004dfdcf19392341bd9fd979fc6",
+            "bytes": 3265
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-corrected-independent-check-c82b8a09-20261018.json",
+            "sha256": "67f063bb29c5a44bc33cdbf11e48440dc390b3c765a86c0ee4ed357b13ee10a0",
+            "bytes": 15319
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-corrected-evidence-checker-20261018.py",
+            "sha256": "befb4df60a4450c2517429f4c5443cbdbc949ffecefb342b690d55471d75537d",
+            "bytes": 33225
+          }
+        ]
+      }
+    },
+    "integrity4": {
+      "status": "ORIGINAL_NATIVE_PASS_INDEPENDENT_EVIDENCE_PENDING",
+      "actualSource": "c82b8a095fb200ae5f02d3f920edb2181a531a19",
+      "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+      "nativeExit": 0,
+      "seconds": 422.74216070700095,
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 4,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "recordPath": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-integrity4-settlement-fixture-cloud-813f1057/record.json",
+      "recordSha256": "aba7ad1dc1301329ef926b3616f32e94f88b7af754f03a6dbbb4990f7931fa34",
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-integrity4-813f1057-files-20261018/archive.json",
+        "sha256": "48f53f9d0c73ed0459bf8ac5c9ea5c1bc96fa6521ff52e48008b9e4591cb5e43",
+        "bytes": 8022,
+        "rawChains": 11
+      },
+      "parentInspection": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-parent-inspection-20261018.json",
+        "sha256": "8f66c05402858fa2b71a947068422ff16c71b42516dbd6c50bad35b4a0e16d1f",
+        "bytes": 5521
+      },
+      "supplementalAuthoritativeCensuses": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-before-census-20261018.json",
+          "sha256": "fe40318b80e8de4df77da745bfa080b8edabf88887eeef469ccb12218698f6cf",
+          "bytes": 74896
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-after-census-20261018.json",
+          "sha256": "68dd0f964b6b562589d013ff709e7661eda5c64c54871e83655c74654610de81",
+          "bytes": 76065
+        }
+      ],
+      "nineBinariesUnchanged": true,
+      "all1575OutputsUnchanged": true,
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "originalProcessesAfter": [],
+      "processArrayLimitation": "Original exe-link-dependent arrays are incomplete observer output. Dated independently accepted argv/stat census is authoritative boundary only.",
+      "censusAfterGapSeconds": 1.077795,
+      "limits": "Observed native outcome is not independent EVIDENCE acceptance or additional qualified targets; original frozen failures and oldUNKNOWN remain unchanged.",
+      "strongOracleParentReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-integrity4-parent-oracles-20261018.json",
+        "sha256": "451b17947a1cb262897bbc9b16c22c8a85fe4556dd963890ef1c66e6092087a3",
+        "bytes": 3701
+      },
+      "censusTimingLimit": "Before-to-launch2.538864s; completion-to-after1.077795s. Finite dated boundaries only."
     }
   },
   "holds": [
@@ -985,7 +1074,7 @@
     "CI_NO_RUN",
     "No_main_merge_force_push_delete_or_issue_close"
   ],
-  "next": "After outcome recovery, independent EVIDENCE forsettlement3Corrected; separately named FIRSTintegrity4 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
+  "next": "After outcome recovery, independent EVIDENCE forintegrity4; separately named FIRSTuncertain1 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance.",
   "preparationAttempts": [
     {
       "mode": "catalog",
@@ -1162,16 +1251,16 @@
   },
   "release": {
     "status": "SEPARATELY_NAMED_FIRST_AFTER_SAVED_OUTCOME_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
-    "mode": "integrity4",
-    "label": "t179pd-ni-iobs-l01-process-first-integrity4-settlement-fixture-cloud-813f1057",
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-settlement-fixture-cloud-813f1057",
     "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
     "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057/record.json",
-    "expectedCases": 4,
-    "category": "fr063-joint-interface-current-integrity",
+    "expectedCases": 1,
+    "category": "fr063-joint-interface-uncertain-current",
     "methods": [
       {
-        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
-        "cases": 4
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+        "cases": 1
       }
     ],
     "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
@@ -1191,10 +1280,10 @@
   },
   "qualifiedCases": {
     "retainedOriginal": 37,
-    "newQualified": 7,
-    "totalDistinctTargets": 44,
+    "newQualified": 10,
+    "totalDistinctTargets": 47,
     "wholeTarget": 57,
-    "limits": "Retained37 plus independently accepted new legacy3, corrected close2 and corrected races2. Each retains original actual/compiled provenance; no retained-case replay or cross-build equivalence claim. Original fixture failures, original cloud close2/races2 RED and lost old corrected crash5 UNKNOWN remain immutable. Settlement3 native1 with1PASS2FAIL is not qualified; remaining10 are unrun."
+    "limits": "Retained37 plus independently accepted new legacy3/corrected close2/corrected races2/corrected settlement3, each at original actual/compiled provenance. Original failures and lost old corrected crash5 UNKNOWN remain immutable. New integrity4 original native4PASS not yet independently qualified; uncertain1/newcrash5 remain6 UNRUN."
   },
   "lastFreezeCarrierRecovery": {
     "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-freeze-recovery-f647853f-20261018.json",
@@ -1610,6 +1699,11 @@
       "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-4406e723-20261018.json",
       "sha256": "a9128fba7df2576d16c730ab40f5b9bf19d3fcb8c965ae7322a96f78b7944a5f",
       "bytes": 7199
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-c82b8a09-20261018.json",
+      "sha256": "e3850b9656b88ec00d799a4330d6768a5d5c70c9250ce47ce9c407d065fa59cd",
+      "bytes": 8658
     }
   ],
   "sourcePinDigestBeforeReadyDriftCorrection": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",

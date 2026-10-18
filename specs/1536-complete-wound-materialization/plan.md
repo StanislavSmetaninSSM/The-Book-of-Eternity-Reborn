@@ -1,3 +1,17 @@
+## T179-Pd-NI-IOBS-L01 — 47/57 qualified; integrity4 original PASS, EVIDENCE pending (2026-10-18)
+
+[Corrected settlement3 independent EVIDENCE accepted](recovery/t179pd-ni-iobs-l01-settlement3-corrected-independent-review-20261018.md), findings empty: all three full settlement oracles, one I-changing cohort, exact Published retention and terminal release/compensation images. Qualified union is now 47/57 at original actual/compiled provenance; original failures and old crash UNKNOWN remain unchanged.
+
+New integrity4: actual c82b8a09 / compiled7dbfbddc, native 0, 4 PASS, 422.742 s, exact complete selection, category completed 388.881 s under 900 s, unchanged9/1575 outputs and native cleanup. [Original 11-chain archive](recovery/t179pd-ni-iobs-l01-cloud-integrity4-813f1057-files-20261018/archive.json). Parent confirms eight distinct PID+kernel-birth identities, four unique nonces/containers, producer exit73 and resume0 with join/EOF, held/no new I commits, absent fresh authority and inert repeat in all four cases. Independent full EVIDENCE remains pending; these four are not yet qualified.
+
+Separately named next FIRST is uncertain1 only after this outcome's exact-remote recovery, no known concern and fresh clean v2 preflight, on accepted remaining-plan. Serial actuals; read-only prior EVIDENCE may overlap, no repo mutation during actual. Any unexpected outcome or material finding freezes. New crash5 still requires its separate named release and isolation gate; old lost crash result is not recovered or reclassified. All broader holds remain. Following sections historical.
+
+## T179-Pd-NI-IOBS-L01 — integrity4 original outcome saved; next gate explicit (2026-10-18)
+
+Новый отдельно именованныйintegrity4: actualc82b8a09/compiled7dbfbddc, native0, 4executed/4PASS/0FAIL, 422.742s. [Original11rawchains](t179pd-ni-iobs-l01-cloud-integrity4-813f1057-files-20261018/archive.json) и exactbefore/afterauthoritativecensuses сохранены; observedpositive=True. Это originaloutcome, independentEVIDENCE ещё pending, qualifiedcount пока47. Frozenoriginalclose2FAIL/семьстарыхfixtureFAIL/oldcorrectedcrashUNKNOWN неизменны.
+
+After outcome recovery, independent EVIDENCE forintegrity4; separately named FIRSTuncertain1 only after immediate clean authoritative census and no unresolved finding. Qualified count unchanged until acceptance. Все исходные assertions и once-only/Ready/ownedtransition contracts неизменны. Noactual/retry приunexpectedfailure; всеbroaderholds/Windows403/CI/A3 сохраняются. Следующие sections исторические.
+
 ## T179-Pd-NI-IOBS-L01 — corrected settlement3 original PASS saved, EVIDENCE pending (2026-10-18)
 
 Actual `3119d29a`, compiled `7dbfbddc`: native 0, 3/3 PASS, 495.089 s, exact complete selection, unchanged nine DLL and all 1575 outputs, native cleanup and clean dated v2 boundaries. CommonFault reaches RetryableHeld, retained Published I, mechanical assertions and actual direct restore retention. Terminal and TerminalFault reach the full post-terminal assertions and emit TerminalReleased / PublicationUncertain respectively. [Original 11-chain archive](recovery/t179pd-ni-iobs-l01-cloud-settlement3-corrected-813f1057-files-20261018/archive.json); [parent reached-oracle readback](recovery/t179pd-ni-iobs-l01-settlement3-corrected-parent-oracles-20261018.json).
